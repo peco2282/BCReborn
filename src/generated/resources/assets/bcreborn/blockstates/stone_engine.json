@@ -1,0 +1,1408 @@
+{
+  "variants": {
+    "engine_model=1,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2",
+      "x": 180
+    },
+    "engine_model=1,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=1,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2",
+      "x": 90
+    },
+    "engine_model=1,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=1,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2"
+    },
+    "engine_model=1,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2"
+    },
+    "engine_model=1,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2"
+    },
+    "engine_model=1,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2"
+    },
+    "engine_model=1,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2"
+    },
+    "engine_model=1,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2"
+    },
+    "engine_model=1,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=1,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=1,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=1,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=1,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=1,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_2",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3",
+      "x": 180
+    },
+    "engine_model=2,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=2,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3",
+      "x": 90
+    },
+    "engine_model=2,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=2,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3"
+    },
+    "engine_model=2,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3"
+    },
+    "engine_model=2,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3"
+    },
+    "engine_model=2,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3"
+    },
+    "engine_model=2,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3"
+    },
+    "engine_model=2,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3"
+    },
+    "engine_model=2,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=2,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_3",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4",
+      "x": 180
+    },
+    "engine_model=3,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=3,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4",
+      "x": 90
+    },
+    "engine_model=3,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=3,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4"
+    },
+    "engine_model=3,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4"
+    },
+    "engine_model=3,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4"
+    },
+    "engine_model=3,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4"
+    },
+    "engine_model=3,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4"
+    },
+    "engine_model=3,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4"
+    },
+    "engine_model=3,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=3,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_4",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5",
+      "x": 180
+    },
+    "engine_model=4,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=4,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5",
+      "x": 90
+    },
+    "engine_model=4,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=4,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5"
+    },
+    "engine_model=4,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5"
+    },
+    "engine_model=4,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5"
+    },
+    "engine_model=4,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5"
+    },
+    "engine_model=4,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5"
+    },
+    "engine_model=4,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5"
+    },
+    "engine_model=4,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=4,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_5",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6",
+      "x": 180
+    },
+    "engine_model=5,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=5,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6",
+      "x": 90
+    },
+    "engine_model=5,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=5,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6"
+    },
+    "engine_model=5,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6"
+    },
+    "engine_model=5,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6"
+    },
+    "engine_model=5,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6"
+    },
+    "engine_model=5,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6"
+    },
+    "engine_model=5,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6"
+    },
+    "engine_model=5,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=5,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_6",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7",
+      "x": 180
+    },
+    "engine_model=6,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=6,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7",
+      "x": 90
+    },
+    "engine_model=6,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=6,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7"
+    },
+    "engine_model=6,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7"
+    },
+    "engine_model=6,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7"
+    },
+    "engine_model=6,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7"
+    },
+    "engine_model=6,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7"
+    },
+    "engine_model=6,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7"
+    },
+    "engine_model=6,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=6,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_7",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8",
+      "x": 180
+    },
+    "engine_model=7,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=7,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8",
+      "x": 90
+    },
+    "engine_model=7,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=7,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8"
+    },
+    "engine_model=7,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8"
+    },
+    "engine_model=7,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8"
+    },
+    "engine_model=7,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8"
+    },
+    "engine_model=7,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8"
+    },
+    "engine_model=7,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8"
+    },
+    "engine_model=7,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=7,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_8",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9",
+      "x": 180
+    },
+    "engine_model=8,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=8,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9",
+      "x": 90
+    },
+    "engine_model=8,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=8,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9"
+    },
+    "engine_model=8,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9"
+    },
+    "engine_model=8,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9"
+    },
+    "engine_model=8,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9"
+    },
+    "engine_model=8,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9"
+    },
+    "engine_model=8,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9"
+    },
+    "engine_model=8,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=8,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_9",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=down,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=down,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=down,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=down,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=down,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=down,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1",
+      "x": 180
+    },
+    "engine_model=9,facing=east,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=east,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=east,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=east,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=east,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=east,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1",
+      "x": 90,
+      "y": 90
+    },
+    "engine_model=9,facing=north,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=north,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=north,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=north,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=north,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=north,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1",
+      "x": 90
+    },
+    "engine_model=9,facing=south,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=south,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=south,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=south,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=south,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=south,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1",
+      "x": 90,
+      "y": 180
+    },
+    "engine_model=9,facing=up,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1"
+    },
+    "engine_model=9,facing=up,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1"
+    },
+    "engine_model=9,facing=up,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1"
+    },
+    "engine_model=9,facing=up,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1"
+    },
+    "engine_model=9,facing=up,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1"
+    },
+    "engine_model=9,facing=up,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1"
+    },
+    "engine_model=9,facing=west,stage=black": {
+      "model": "bcreborn:block/engine/stone/black/stone_engine_1",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=west,stage=blue": {
+      "model": "bcreborn:block/engine/stone/blue/stone_engine_1",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=west,stage=green": {
+      "model": "bcreborn:block/engine/stone/green/stone_engine_1",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=west,stage=overheat": {
+      "model": "bcreborn:block/engine/stone/overheat/stone_engine_1",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=west,stage=red": {
+      "model": "bcreborn:block/engine/stone/red/stone_engine_1",
+      "x": 90,
+      "y": 270
+    },
+    "engine_model=9,facing=west,stage=yellow": {
+      "model": "bcreborn:block/engine/stone/yellow/stone_engine_1",
+      "x": 90,
+      "y": 270
+    }
+  }
+}
