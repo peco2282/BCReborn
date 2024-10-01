@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-public abstract sealed class GoldOil extends FlowingFluid permits GoldOil.Source, GoldOil.Flowing {
+public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel.Flowing {
   @Override
   protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> p_76046_) {
     super.createFluidStateDefinition(p_76046_);
@@ -23,12 +23,12 @@ public abstract sealed class GoldOil extends FlowingFluid permits GoldOil.Source
 
   @Override
   public Fluid getFlowing() {
-    return BCCoreFluids.GOLD_FLOWING.get();
+    return BCCoreFluids.FUEL_FLOWING.get();
   }
 
   @Override
   public Fluid getSource() {
-    return BCCoreFluids.GOLD_SOURCE.get();
+    return BCCoreFluids.FUEL_SOURCE.get();
   }
 
   /**
@@ -86,14 +86,14 @@ public abstract sealed class GoldOil extends FlowingFluid permits GoldOil.Source
     return this instanceof Source;
   }
 
-  public static final class Source extends GoldOil {
+  public static final class Source extends Fuel {
     @Override
     public int getAmount(FluidState p_164509_) {
       return 8;
     }
   }
 
-  public static final class Flowing extends GoldOil {
+  public static final class Flowing extends Fuel {
     @Override
     public int getAmount(FluidState p_164509_) {
       return p_164509_.getValue(LEVEL);

@@ -30,7 +30,7 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
   private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
 
   public EngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    this(BlockEntities.ENGINE.get(), p_155229_, p_155230_);
+    this(BCCoreBlockEntityTypes.ENGINE.get(), p_155229_, p_155230_);
   }
 
   protected EngineBlockEntity(BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState state) {
@@ -50,10 +50,12 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
     this.isActive = state.getValue(BCProperties.ACTIVE);
 //    System.out.println("update " + state);
     if (this.isActive) {
+      int timer = state.getValue(BCProperties.ENGINE_TIMER);
       int curr = state.getValue(BCProperties.ENGINE_MODEL);
-      if (curr > stage.threshold()) state = state.setValue(BCProperties.ENERGY_STAGE, stage.next());
+      if (timer > stage.threshold()) state = state.setValue(BCProperties.ENERGY_STAGE, stage = stage.next());
       state = state.setValue(BCProperties.ENGINE_MODEL, Integer.valueOf((curr % 9) + 1));
       System.out.println((curr % 9) + 1);
+      state = state.setValue(BCProperties.ENGINE_TIMER, timer + 1);
       level.setBlock(pos, state, 2);
     }
   }

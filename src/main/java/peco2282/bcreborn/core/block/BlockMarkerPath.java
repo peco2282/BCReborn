@@ -1,5 +1,6 @@
 package peco2282.bcreborn.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -8,6 +9,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.lib.block.BlockMarkerBase;
+import peco2282.bcreborn.lib.block.TileBaseNeptune;
 
 public class BlockMarkerPath extends BlockMarkerBase {
   public BlockMarkerPath(Properties properties, @NotNull String id) {
@@ -16,6 +18,11 @@ public class BlockMarkerPath extends BlockMarkerBase {
 
   @Override
   public @NotNull BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    return null;
+  }
+
+  @Override
+  protected @NotNull MapCodec<? extends TileBaseNeptune> codec() {
     return null;
   }
 

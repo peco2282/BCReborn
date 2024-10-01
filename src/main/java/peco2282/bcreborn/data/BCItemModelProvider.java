@@ -33,7 +33,16 @@ public class BCItemModelProvider extends BlockStateProvider {
     textureItem();
 
     blockState();
+    blockModel();
     textureBlockItem();
+  }
+
+  private void blockModel() {
+    models().getBuilder("oil")
+        .texture("particle", modLoc("fluid/oil_source"));
+
+    models().getBuilder("fuel")
+        .texture("particle", modLoc("fluid/fuel_source"));
   }
 
   private void textureBlockItem() {
@@ -47,6 +56,7 @@ public class BCItemModelProvider extends BlockStateProvider {
     Property<?>[] ignores = new Property<?>[]{
         BCProperties.ACTIVE,
         BCProperties.ENGINE_TYPE,
+        BCProperties.ENGINE_TIMER
     };
     getVariantBuilder(BCCoreBlocks.WOOD_ENGINE.get())
         .forAllStatesExcept(state -> {

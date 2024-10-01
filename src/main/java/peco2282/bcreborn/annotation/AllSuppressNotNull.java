@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.PACKAGE, ElementType.TYPE})
 @TypeQualifierDefault({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE_PARAMETER, ElementType.RECORD_COMPONENT})
-public @interface AllSupplessNotNull {
+public @interface AllSuppressNotNull {
 }

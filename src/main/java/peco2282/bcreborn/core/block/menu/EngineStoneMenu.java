@@ -13,7 +13,7 @@ import peco2282.bcreborn.lib.block.menu.BCMenu;
 public class EngineStoneMenu extends BCMenu {
   private final Container container = new SimpleContainer(1);
   public EngineStoneMenu(int id, Inventory inventory, @Nullable FriendlyByteBuf buf) {
-    super(BCMenues.STONE_ENGINE.get(), id, inventory, buf);
+    super(BCCoreMenuTypes.STONE_ENGINE.get(), id, inventory, buf);
     addFullPlayerInventory(8, 95);
     addSlot(new Slot(container, 0, 56, 17));
   }

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -31,9 +31,8 @@ import peco2282.bcreborn.api.block.IEngine;
 import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.api.enums.EnumEngineType;
 import peco2282.bcreborn.api.enums.EnumPowerStage;
-import peco2282.bcreborn.core.block.entity.BlockEntities;
+import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.EngineBlockEntity;
-import peco2282.bcreborn.lib.block.BlockBaseNeptune;
 import peco2282.bcreborn.lib.block.TileBaseNeptune;
 
 @SuppressWarnings("UnnecessaryBoxing")
@@ -62,11 +61,10 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
       box(0, 4, 4, 12, 12, 12),
       box(12, 0, 0, 16, 16, 16)
   );
-  private static final EnumProperty<EnumPowerStage> STAGE = BCProperties.ENERGY_STAGE;
-  private static final EnumProperty<EnumEngineType> ENGINE = BCProperties.ENGINE_TYPE;
   public static final MapCodec<BlockEngine> CODEC = RecordCodecBuilder
       .mapCodec(instance -> instance.group(
-          Codec.STRING.fieldOf("id").forGetter(BlockBaseNeptune::getId),
+          propertiesCodec(),
+          Codec.STRING.fieldOf("id").forGetter(TileBaseNeptune::getId),
           EnumEngineType.CODEC.fieldOf("engine_type").forGetter(BlockEngine::type)
       ).apply(instance, BlockEngine::new));
   private final EnumEngineType type;
@@ -76,11 +74,23 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
         Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().lightLevel(s -> 1),
         id,
         new Tuple<>(BCProperties.ACTIVE, Boolean.valueOf(false)),
-        new Tuple<>(STAGE, EnumPowerStage.BLACK),
+        new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
         new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
-        new Tuple<>(ENGINE, type),
-        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1))
+        new Tuple<>(BCProperties.ENGINE_TYPE, type),
+        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)),
+        new Tuple<>(BCProperties.ENGINE_TIMER, Integer.valueOf(0))
     );
+    this.type = type;
+  }
+
+  private BlockEngine(Properties properties, @NotNull String id, EnumEngineType type) {
+    super(properties, id,
+        new Tuple<>(BCProperties.ACTIVE, Boolean.valueOf(false)),
+        new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
+        new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
+        new Tuple<>(BCProperties.ENGINE_TYPE, type),
+        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)),
+        new Tuple<>(BCProperties.ENGINE_TIMER, Integer.valueOf(0)));
     this.type = type;
   }
 
@@ -103,7 +113,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
 
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(BCProperties.ACTIVE, STAGE, BCProperties.BLOCK_FACING, BCProperties.ENGINE_TYPE, BCProperties.ENGINE_MODEL);
+    builder.add(BCProperties.ACTIVE, BCProperties.ENERGY_STAGE, BCProperties.BLOCK_FACING, BCProperties.ENGINE_TYPE, BCProperties.ENGINE_MODEL, BCProperties.ENGINE_TIMER);
   }
 
   @Override
@@ -150,18 +160,18 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
   }
 
   @Override
-  protected @NotNull MapCodec<? extends Block> codec() {
+  protected @NotNull MapCodec<BlockEngine> codec() {
     return CODEC;
   }
 
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BlockEntities.ENGINE.get(), EngineBlockEntity::tick);
+    return BaseEntityBlock.createTickerHelper(p_153214_, BCCoreBlockEntityTypes.ENGINE.get(), EngineBlockEntity::tick);
   }
 
   @Override
   public boolean isActive(Level level, BlockPos pos, BlockState state) {
-    return state.getValue(BCProperties.ACTIVE) && state.getValue(STAGE).isRunning();
+    return state.getValue(BCProperties.ACTIVE) && state.getValue(BCProperties.ENERGY_STAGE).isRunning();
   }
 }

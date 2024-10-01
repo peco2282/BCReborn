@@ -23,11 +23,6 @@ import java.util.Map;
 
 public abstract class BlockMarkerBase extends TileBaseNeptune {
   private static final Map<Direction, AABB> BOUNDING_BOXES = new EnumMap<>(Direction.class);
-  public static final MapCodec<BlockMarkerVolume> CODEC = RecordCodecBuilder
-      .mapCodec(instance -> instance.group(
-          propertiesCodec(),
-          Codec.STRING.fieldOf("id").forGetter(BlockBaseNeptune::getId)
-      ).apply(instance, BlockMarkerVolume::new));
 
   static {
     double halfWidth = 0.1;
@@ -66,10 +61,5 @@ public abstract class BlockMarkerBase extends TileBaseNeptune {
   protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
     if (p_60509_.getBlock() != this) return;
     p_60510_.destroyBlock(p_60511_, true);
-  }
-
-  @Override
-  protected final @NotNull MapCodec<? extends Block> codec() {
-    return CODEC;
   }
 }

@@ -9,7 +9,7 @@ import peco2282.bcreborn.lib.block.menu.BCMenu;
 
 public class EngineIronMenu extends BCMenu {
   public EngineIronMenu(int id, Inventory inventory, @Nullable FriendlyByteBuf buf) {
-    super(BCMenues.IRON_ENGINE.get(), id, inventory, buf);
+    super(BCCoreMenuTypes.IRON_ENGINE.get(), id, inventory, buf);
     addFullPlayerInventory(8, 95);
   }
 

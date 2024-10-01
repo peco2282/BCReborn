@@ -1,11 +1,13 @@
 package peco2282.bcreborn.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.lib.block.BlockMarkerBase;
+import peco2282.bcreborn.lib.block.TileBaseNeptune;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
 
 public class BlockMarkerVolume extends BlockMarkerBase {
@@ -15,6 +17,11 @@ public class BlockMarkerVolume extends BlockMarkerBase {
 
   @Override
   public @NotNull TileNeptune newBlockEntity(BlockPos pos, BlockState state) {
+    return null;
+  }
+
+  @Override
+  protected @NotNull MapCodec<? extends TileBaseNeptune> codec() {
     return null;
   }
 
