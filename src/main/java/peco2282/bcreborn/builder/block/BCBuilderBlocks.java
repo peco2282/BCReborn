@@ -14,4 +14,6 @@ public class BCBuilderBlocks {
   private static <L extends Block & BCBlock> RegistryObject<L> register(String name, Supplier<L> block) {
     return BCRegistry.registerBlockItem(name, block);
   }
+
+  public static void init() {}
 }
