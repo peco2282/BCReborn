@@ -71,11 +71,9 @@ public class BCRegistry {
   }
 
   private static void init() {
-    // Lib
+    // Core
     BCCoreBlocks.init();
     BCCoreFluids.init();
-
-    // Core
     BCCoreItems.init();
     BCCoreBlockEntityTypes.init();
     BCCoreMenuTypes.init();
