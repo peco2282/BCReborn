@@ -77,8 +77,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
         new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
         new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
         new Tuple<>(BCProperties.ENGINE_TYPE, type),
-        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)),
-        new Tuple<>(BCProperties.ENGINE_TIMER, Integer.valueOf(0))
+        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1))
     );
     this.type = type;
   }
@@ -89,8 +88,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
         new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
         new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
         new Tuple<>(BCProperties.ENGINE_TYPE, type),
-        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)),
-        new Tuple<>(BCProperties.ENGINE_TIMER, Integer.valueOf(0)));
+        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)));
     this.type = type;
   }
 
@@ -113,7 +111,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
 
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(BCProperties.ACTIVE, BCProperties.ENERGY_STAGE, BCProperties.BLOCK_FACING, BCProperties.ENGINE_TYPE, BCProperties.ENGINE_MODEL, BCProperties.ENGINE_TIMER);
+    builder.add(BCProperties.ACTIVE, BCProperties.ENERGY_STAGE, BCProperties.BLOCK_FACING, BCProperties.ENGINE_TYPE, BCProperties.ENGINE_MODEL);
   }
 
   @Override

@@ -18,6 +18,9 @@ import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.api.item.BCItem;
 import peco2282.bcreborn.builder.block.BCBuilderBlocks;
+import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
+import peco2282.bcreborn.builder.block.menu.BCBuilderMenuTypes;
+import peco2282.bcreborn.builder.item.BCBuilderItems;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
@@ -80,6 +83,9 @@ public class BCRegistry {
 
     // Builder
     BCBuilderBlocks.init();
+    BCBuilderBlockEntityTypes.init();
+    BCBuilderItems.init();
+    BCBuilderMenuTypes.init();
   }
 
   public static void init(IEventBus bus) {

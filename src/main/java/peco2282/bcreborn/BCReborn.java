@@ -2,9 +2,12 @@ package peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,6 +17,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import peco2282.bcreborn.annotation.LateinitField;
+import peco2282.bcreborn.data.BCRegistryProvider;
+import peco2282.bcreborn.data.DataGenerator;
 import peco2282.bcreborn.misc.Commands;
 import peco2282.bcreborn.registry.BCRegistry;
 
@@ -69,7 +74,7 @@ public class BCReborn {
 
     // Register the item to a creative tab
     modEventBus.addListener(this::addCreative);
-//    modEventBus.register(DataGenerator.class);
+    modEventBus.register(DataGenerator.class);
 
     // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
     context.registerConfig(ModConfig.Type.COMMON, BCConfiguration.SPEC);
@@ -100,10 +105,5 @@ public class BCReborn {
   public void onServerStarting(ServerStartingEvent event) {
     // Do something when the server starts
     LOGGER.info("HELLO from server starting");
-  }
-
-  @SubscribeEvent
-  public void onReg(RegisterEvent event) {
-    System.out.println(event);
   }
 }
