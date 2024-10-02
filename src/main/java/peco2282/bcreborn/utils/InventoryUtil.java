@@ -3,6 +3,7 @@ package peco2282.bcreborn.utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,4 +38,12 @@ public class InventoryUtil {
     world.addFreshEntity(entity);
   }
 
+  public static boolean sameItemCheck(Item target, ItemStack... stacks) {
+    if (target == null) return false;
+    for (ItemStack stack: stacks) {
+      if (stack == null) return false;
+      if (!target.equals(stack.getItem())) return false;
+    }
+    return true;
+  }
 }

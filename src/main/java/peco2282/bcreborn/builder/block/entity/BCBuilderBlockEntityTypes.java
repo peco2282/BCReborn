@@ -14,4 +14,8 @@ public class BCBuilderBlockEntityTypes {
   private static <T extends BlockEntity & BCBlockEntity> RegistryObject<BlockEntityType<T>> register(final String name, final Supplier<BlockEntityType<T>> type) {
     return BCRegistry.registerBlockEntityType(name, type);
   }
+
+  public static void init() {
+
+  }
 }

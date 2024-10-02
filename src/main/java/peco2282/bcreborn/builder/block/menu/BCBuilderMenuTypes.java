@@ -14,4 +14,8 @@ public class BCBuilderMenuTypes {
   private static <M extends BCMenu> RegistryObject<MenuType<M>> register(final String name, final Supplier<MenuType<M>> type) {
     return BCRegistry.registerMenuType(name, type);
   }
+
+  public static void init() {
+
+  }
 }
