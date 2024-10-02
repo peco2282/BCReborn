@@ -56,7 +56,6 @@ public class BCItemModelProvider extends BlockStateProvider {
     Property<?>[] ignores = new Property<?>[]{
         BCProperties.ACTIVE,
         BCProperties.ENGINE_TYPE,
-        BCProperties.ENGINE_TIMER
     };
     getVariantBuilder(BCCoreBlocks.WOOD_ENGINE.get())
         .forAllStatesExcept(state -> {
