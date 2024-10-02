@@ -54,6 +54,6 @@ public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
 
   @Override
   public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BCBuilderBlockEntityTypes.FILLER.get(), FillerBlockEntity::tivk);
+    return BaseEntityBlock.createTickerHelper(p_153214_, BCBuilderBlockEntityTypes.FILLER.get(), FillerBlockEntity::tick);
   }
 }

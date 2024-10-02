@@ -27,7 +27,7 @@ public class FillerBlockEntity extends TileNeptune {
     type.run();
   }
 
-  public static void tivk(Level level, BlockPos pos, BlockState state, FillerBlockEntity entity) {
+  public static void tick(Level level, BlockPos pos, BlockState state, FillerBlockEntity entity) {
     entity.update(level, pos, state);
   }
 }
