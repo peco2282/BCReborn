@@ -29,6 +29,8 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
   private EnumPowerStage stage;
   private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
 
+  private long timer = 0;
+
   public EngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     this(BCCoreBlockEntityTypes.ENGINE.get(), p_155229_, p_155230_);
   }
@@ -40,22 +42,21 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
   }
 
   public static void tick(Level level, BlockPos pos, BlockState state, EngineBlockEntity entity) {
-    entity.update(pos);
+    entity.update(pos, entity);
   }
 
-  private void update(BlockPos pos) {
+  private void update(BlockPos pos,  EngineBlockEntity entity) {
     if (level == null) return;
     BlockState state = level.getBlockState(pos);
     this.stage = state.getValue(BCProperties.ENERGY_STAGE);
     this.isActive = state.getValue(BCProperties.ACTIVE);
 //    System.out.println("update " + state);
     if (this.isActive) {
-      int timer = state.getValue(BCProperties.ENGINE_TIMER);
+      // TODO Change algo
+      timer = entity.timer;
       int curr = state.getValue(BCProperties.ENGINE_MODEL);
       if (timer > stage.threshold()) state = state.setValue(BCProperties.ENERGY_STAGE, stage = stage.next());
       state = state.setValue(BCProperties.ENGINE_MODEL, Integer.valueOf((curr % 9) + 1));
-      System.out.println((curr % 9) + 1);
-      state = state.setValue(BCProperties.ENGINE_TIMER, timer + 1);
       level.setBlock(pos, state, 2);
     }
   }

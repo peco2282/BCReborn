@@ -24,11 +24,12 @@ public interface BCProperties {
   EnumProperty<EnumPowerStage> ENERGY_STAGE = EnumProperty.create("stage", EnumPowerStage.class);
   EnumProperty<EnumOptionalSnapshotType> SNAPSHOT_TYPE = EnumProperty.create("snapshot_type", EnumOptionalSnapshotType.class);
   EnumProperty<EnumDecoratedBlock> DECORATED_BLOCK = EnumProperty.create("decoration_type", EnumDecoratedBlock.class);
+  EnumProperty<EnumFillerType> FILLER_TYPE = EnumProperty.create("filler", EnumFillerType.class);
 
   IntegerProperty GENERIC_PIPE_DATA = IntegerProperty.create("pipe_data", 0, 15);
   IntegerProperty LED_POWER = IntegerProperty.create("led_power", 0, 3);
   IntegerProperty ENGINE_MODEL = IntegerProperty.create("engine_model", 1, 9);
-  IntegerProperty ENGINE_TIMER = IntegerProperty.create("engine_timer", 0, 20 * 60);
+  IntegerProperty ENGINE_TIMER = IntegerProperty.create("engine_timer", 0, 60);
 
   BooleanProperty JOINED_BELOW = BooleanProperty.create("joined_below");
   BooleanProperty MOVING = BooleanProperty.create("moving");
