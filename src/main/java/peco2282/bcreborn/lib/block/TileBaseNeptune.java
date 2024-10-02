@@ -22,11 +22,6 @@ public abstract class TileBaseNeptune extends BlockBaseNeptune implements Entity
     super(properties, id, states);
   }
 
-  @Override
-  public String getId() {
-    return "";
-  }
-
   @NotNull
   @Override
   public abstract BlockEntity newBlockEntity(BlockPos pos, BlockState state);
