@@ -14,10 +14,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 import peco2282.bcreborn.annotation.LateinitField;
-import peco2282.bcreborn.data.BCRegistryProvider;
+import peco2282.bcreborn.api.mj.CapabilityEvent;
 import peco2282.bcreborn.data.DataGenerator;
 import peco2282.bcreborn.misc.Commands;
 import peco2282.bcreborn.registry.BCRegistry;
@@ -71,6 +70,7 @@ public class BCReborn {
     // Register ourselves for server and other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
     MinecraftForge.EVENT_BUS.register(Commands.class);
+    MinecraftForge.EVENT_BUS.register(CapabilityEvent.class);
 
     // Register the item to a creative tab
     modEventBus.addListener(this::addCreative);
