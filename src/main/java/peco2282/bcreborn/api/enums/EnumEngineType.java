@@ -5,10 +5,10 @@ import net.minecraft.util.StringRepresentable;
 import peco2282.bcreborn.BCReborn;
 
 public enum EnumEngineType implements StringRepresentable {
-  WOOD("wood"),
-  STONE("stone"),
-  IRON("iron"),
-  CREATIVE("creative");
+  WOOD("wood", 10),
+  STONE("stone", 40),
+  IRON("iron", 100),
+  CREATIVE("creative", 100);
 
   public static final EnumEngineType[] VALUES = values();
   public static final Codec<EnumEngineType> CODEC = StringRepresentable
@@ -16,11 +16,13 @@ public enum EnumEngineType implements StringRepresentable {
 
   public final String unlocalizedTag;
   public final String resourceLocation;
+  public final int output;
 
 
-  EnumEngineType(String loc) {
+  EnumEngineType(String loc, int output) {
     unlocalizedTag = loc;
     resourceLocation = BCReborn.MODID + ":blocks/engine/inv/" + loc;
+    this.output = output;
   }
 
   public static EnumEngineType fromMeta(int meta) {

@@ -6,7 +6,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import peco2282.bcreborn.BCReborn;
 
 public class MJCapabilities {
-  public static final Capability<MJConector> CONECTOR;
+  public static final Capability<MJConnector> CONECTOR;
   public static final Capability<MJReceiver> RECEIVER;
   public static final Capability<MJGenerator> GENERATOR;
 

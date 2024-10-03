@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MJCapabilityHelper implements ICapabilityProvider {
-  private final MJConector conector;
+  private final MJConnector conector;
   private final MJReceiver receiver;
   private final MJGenerator generator;
 
-  public MJCapabilityHelper(MJConector conector, MJReceiver receiver, MJGenerator generator) {
+  public MJCapabilityHelper(MJConnector conector, MJReceiver receiver, MJGenerator generator) {
     this.conector = conector;
     this.receiver = receiver;
     this.generator = generator;

@@ -105,6 +105,12 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
     return 0;
   }
 
+  @Override
+  public long perTick(Level level, BlockState state) {
+    EnumEngineType type = state.getValue(BCProperties.ENGINE_TYPE);
+    return (long) (stage.power() * type.output);
+  }
+
   public static class Provider implements MenuProvider {
     EnumEngineType type;
 

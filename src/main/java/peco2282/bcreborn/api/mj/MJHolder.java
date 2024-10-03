@@ -21,7 +21,7 @@ public class MJHolder implements INBTSerializable<CompoundTag> {
     var tag = new CompoundTag();
     tag.putLong(CAP, capacity);
     tag.putLong(MJ, microJoules.get());
-    return null;
+    return tag;
   }
 
   @Override
