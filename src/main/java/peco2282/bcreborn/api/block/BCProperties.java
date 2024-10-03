@@ -29,7 +29,6 @@ public interface BCProperties {
   IntegerProperty GENERIC_PIPE_DATA = IntegerProperty.create("pipe_data", 0, 15);
   IntegerProperty LED_POWER = IntegerProperty.create("led_power", 0, 3);
   IntegerProperty ENGINE_MODEL = IntegerProperty.create("engine_model", 1, 9);
-  IntegerProperty ENGINE_TIMER = IntegerProperty.create("engine_timer", 0, 60);
 
   BooleanProperty JOINED_BELOW = BooleanProperty.create("joined_below");
   BooleanProperty MOVING = BooleanProperty.create("moving");
