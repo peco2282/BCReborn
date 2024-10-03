@@ -13,6 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.enums.EnumPowerStage;
+import peco2282.bcreborn.builder.block.BCBuilderBlocks;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.item.BCCoreItems;
 import peco2282.bcreborn.core.item.ItemGear;
@@ -221,6 +222,22 @@ public class BCItemModelProvider extends BlockStateProvider {
               .rotationY(rotY).build();
         }, ignores)
     ;
+
+    getVariantBuilder(BCBuilderBlocks.FILLER.get())
+        .forAllStatesExcept(state -> {
+          Direction facing = state.getValue(BCProperties.BLOCK_FACING);
+          int x = switch (facing) {
+            case DOWN, UP, NORTH -> 0;
+            case SOUTH -> 180;
+            case WEST -> 270;
+            case EAST -> 90;
+          };
+          return ConfiguredModel
+              .builder().modelFile(unchecked(modLoc("filler")))
+              .rotationX(x)
+              .rotationY(0)
+              .build();
+        }, BCProperties.FILLER_TYPE);
   }
 
   private void textureItem() {
