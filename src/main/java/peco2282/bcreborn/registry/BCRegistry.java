@@ -38,6 +38,7 @@ public class BCRegistry {
   private static final DeferredRegister<MenuType<?>> MENU_TYPE = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BCReborn.MODID);
   private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BCReborn.MODID);
   private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, BCReborn.MODID);
+  private static final DeferredRegister<MenuTextureRegistry> MENU_TEXTURE = DeferredRegister.create(MenuTextureRegistry.MENU_TEXTURE, BCReborn.MODID);
 
   public static <B extends Block & BCBlock> RegistryObject<B> registerBlockItem(String name, Supplier<B> block) {
     return registerBlockItem(name, block, BlockItemNeptune::new);

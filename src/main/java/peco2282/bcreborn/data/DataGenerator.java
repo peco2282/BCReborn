@@ -27,5 +27,6 @@ public class DataGenerator {
     generator.addProvider(true, new BCItemModelProvider(output, helper));
     generator.addProvider(true, new BCRecipeProvider(output, provider));
     generator.addProvider(true, new BCLanguageProvider(output, "en_us"));
+    generator.addProvider(true, new BCRegistryProvider(output, provider));
   }
 }

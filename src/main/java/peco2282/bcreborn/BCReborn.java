@@ -2,24 +2,23 @@ package peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DataPackRegistryEvent;
 import org.slf4j.Logger;
 import peco2282.bcreborn.annotation.LateinitField;
-import peco2282.bcreborn.api.mj.CapabilityEvent;
 import peco2282.bcreborn.data.DataGenerator;
+import peco2282.bcreborn.event.CapabilityEvent;
 import peco2282.bcreborn.misc.Commands;
 import peco2282.bcreborn.registry.BCRegistry;
+import peco2282.bcreborn.registry.MenuTextureRegistry;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BCReborn.MODID)
@@ -74,6 +73,7 @@ public class BCReborn {
 
     // Register the item to a creative tab
     modEventBus.addListener(this::addCreative);
+    modEventBus.addListener(this::onNewRegistry);
     modEventBus.register(DataGenerator.class);
 
     // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
@@ -105,5 +105,9 @@ public class BCReborn {
   public void onServerStarting(ServerStartingEvent event) {
     // Do something when the server starts
     LOGGER.info("HELLO from server starting");
+  }
+
+  public void onNewRegistry(DataPackRegistryEvent.NewRegistry event) {
+    event.dataPackRegistry(MenuTextureRegistry.MENU_TEXTURE, MenuTextureRegistry.CODEC);
   }
 }
