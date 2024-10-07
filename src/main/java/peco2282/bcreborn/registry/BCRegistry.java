@@ -87,6 +87,9 @@ public class BCRegistry {
     BCBuilderBlockEntityTypes.init();
     BCBuilderItems.init();
     BCBuilderMenuTypes.init();
+
+    // Misc
+    BCMisc.init();
   }
 
   public static void init(IEventBus bus) {
