@@ -11,6 +11,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.builder.block.menu.BCBuilderMenuTypes;
+import peco2282.bcreborn.builder.block.screen.FillerScreen;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.block.container.EngineIronScreen;
 import peco2282.bcreborn.core.block.container.EngineStoneScreen;
@@ -27,6 +29,7 @@ public class ClientModEvents {
     log.trace("Register MenuScreens");
     MenuScreens.register(BCCoreMenuTypes.STONE_ENGINE.get(), EngineStoneScreen::new);
     MenuScreens.register(BCCoreMenuTypes.IRON_ENGINE.get(), EngineIronScreen::new);
+    MenuScreens.register(BCBuilderMenuTypes.FILLER.get(), FillerScreen::new);
     log.trace("Done");
     log.trace("Register ItemBlockRenderTypes");
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.STONE_ENGINE.get(), RenderType.cutout());
