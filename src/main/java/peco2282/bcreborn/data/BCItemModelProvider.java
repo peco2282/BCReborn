@@ -51,6 +51,8 @@ public class BCItemModelProvider extends BlockStateProvider {
     cube("stone_engine", it -> "engine/stone/blue/" + it + "_1");
     cube("iron_engine", it -> "engine/iron/blue/" + it + "_1");
     cube("creative_engine", it -> "engine/creative/blue/" + it + "_1");
+
+    cube("filler", UnaryOperator.identity());
   }
 
   private void blockState() {
@@ -233,7 +235,7 @@ public class BCItemModelProvider extends BlockStateProvider {
             case EAST -> 90;
           };
           return ConfiguredModel
-              .builder().modelFile(unchecked(modLoc("filler")))
+              .builder().modelFile(existing(modLoc("block/filler")))
               .rotationX(x)
               .rotationY(0)
               .build();
@@ -257,17 +259,20 @@ public class BCItemModelProvider extends BlockStateProvider {
   }
 
   ModelFile generated() {
-    return unchecked(mcLoc("minecraft:item/generated"));
+    return existing(mcLoc("minecraft:item/generated"));
   }
 
   ModelFile unchecked(ResourceLocation location) {
     return new ModelFile.UncheckedModelFile(location);
   }
+  ModelFile existing(ResourceLocation location) {
+    return new ModelFile.ExistingModelFile(location, helper);
+  }
 
   void cube(String name, UnaryOperator<String> operator) {
     itemModels()
         .getBuilder(name)
-        .parent(unchecked(modLoc("block/" + operator.apply(name))));
+        .parent(existing(modLoc("block/" + operator.apply(name))));
 
   }
 }
