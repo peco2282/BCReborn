@@ -32,19 +32,20 @@ public class FillerBlockEntity extends TileNeptune {
 
   private void update(Level level, BlockPos pos, BlockState state) {
     type = state.getValue(BCProperties.FILLER_TYPE);
-    BlockState gen;
-    {
-      BlockState up = level.getBlockState(pos.above());
-      BlockState down = level.getBlockState(pos.below());
-      BlockState west = level.getBlockState(pos.west());
-      BlockState east = level.getBlockState(pos.east());
-      BlockState south = level.getBlockState(pos.south());
-      BlockState north = level.getBlockState(pos.north());
-      var ans = BlockUtil.anyMatch(b -> b instanceof MJGenerator, up, down, west, east, south, north);
-      if (!ans.getA()) return;
-      gen = ans.getB();
-    }
-    HOLDER.add(((MJGenerator) gen).perTick(level, gen));
+
+    BlockState up = level.getBlockState(pos.above());
+    BlockState down = level.getBlockState(pos.below());
+    BlockState west = level.getBlockState(pos.west());
+    BlockState east = level.getBlockState(pos.east());
+    BlockState south = level.getBlockState(pos.south());
+    BlockState north = level.getBlockState(pos.north());
+    var map = BlockUtil.allMatch(b -> b instanceof MJGenerator, up, down, west, east, south, north);
+    map.forEach((key, value) -> {
+      MJGenerator mjGen = (MJGenerator) key;
+      if (mjGen.isActive(level, pos, state)) {
+        HOLDER.add(mjGen.perTick(level, state));
+      }
+    });
   }
 
   @Override
