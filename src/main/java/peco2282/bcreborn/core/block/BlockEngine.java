@@ -174,7 +174,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
 
   @Override
   public long perTick(Level level, BlockState state) {
-    float power = state.getValue(BCProperties.ENERGY_STAGE).power();
-    return (long) (type.output * power);
+    int power = state.getValue(BCProperties.ENERGY_STAGE).power();
+    return (long) type.output * power;
   }
 }

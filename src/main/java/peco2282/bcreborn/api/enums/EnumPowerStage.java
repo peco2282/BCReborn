@@ -5,16 +5,16 @@ import net.minecraft.util.StringRepresentable;
 import java.util.Locale;
 
 public enum EnumPowerStage implements StringRepresentable {
-  BLUE(.3F, 0),
-  GREEN(.5F, 50),
-  YELLOW(.8F, 100),
-  RED(1F, 200),
-  OVERHEAT(0F, 0),
-  BLACK(0F, 0);
+  BLUE(3, 0),
+  GREEN(5, 50),
+  YELLOW(8, 100),
+  RED(10, 200),
+  OVERHEAT(0, 0),
+  BLACK(0, 0);
 
-  private final float power;
+  private final int power;
   private final int threshold;
-  EnumPowerStage(final float power, final int threshold) {
+  EnumPowerStage(final int power, final int threshold) {
     this.power = power;
     this.threshold = threshold;
   }
@@ -27,12 +27,31 @@ public enum EnumPowerStage implements StringRepresentable {
     return modelName;
   }
 
-  public float power() {
+  public int power() {
     return power;
   }
 
   public int threshold() {
     return threshold;
+  }
+
+  public boolean hasPrev() {
+    return isRunning();
+  }
+
+  public EnumPowerStage prev() {
+    return switch (this) {
+      case BLUE -> BLACK;
+      case GREEN -> BLUE;
+      case YELLOW -> GREEN;
+      case RED -> YELLOW;
+      case OVERHEAT -> BLACK.prev();
+      case BLACK -> this;
+    };
+  }
+
+  public boolean hasNext() {
+    return this != OVERHEAT;
   }
 
   public EnumPowerStage next() {
