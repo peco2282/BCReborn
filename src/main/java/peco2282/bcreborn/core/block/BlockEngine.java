@@ -134,7 +134,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
   protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
     super.neighborChanged(p_60509_, p_60510_, p_60511_, p_60512_, p_60513_, p_60514_);
     if (p_60510_.isClientSide()) return;
-    boolean signal = p_60510_.hasNeighborSignal(p_60513_);
+    boolean signal = p_60510_.hasNeighborSignal(p_60511_);
     BlockState state = p_60509_;
     if (signal) {
       if (!state.getValue(BCProperties.ACTIVE)) {
