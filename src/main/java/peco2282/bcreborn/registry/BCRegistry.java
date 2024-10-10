@@ -45,7 +45,7 @@ public class BCRegistry {
   }
 
   public static <B extends Block & BCBlock, BI extends BlockItem & BCItem> RegistryObject<B> registerBlockItem(String name, Supplier<B> block, BlockItemFunction<B, BI> function) {
-    var ret = BLOCK.register(name, block);
+    var ret = registerBlock(name, block);
     registerItem(name, () -> function.create(ret.get(), ret.get().itemProperties(), ret.get().getId()));
     return ret;
   }
