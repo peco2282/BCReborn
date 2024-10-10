@@ -1,5 +1,7 @@
 package peco2282.bcreborn.api.mj;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -11,9 +13,20 @@ public class MJHolder implements INBTSerializable<CompoundTag> {
   private final AtomicLong microJoules = new AtomicLong(0);
   public static final String CAP = "capacity";
   public static final String MJ = "current";
+  public static final Codec<MJHolder> CODEC = RecordCodecBuilder
+      .create(instance -> instance.group(
+          Codec.LONG.fieldOf(CAP).forGetter(MJHolder::capacity),
+          Codec.LONG.fieldOf(MJ).forGetter(MJHolder::current)
+      ).apply(instance, MJHolder::new));
 
   public MJHolder(long capacity) {
-    this.capacity.set(capacity);
+    this(capacity, 0);
+  }
+
+  public MJHolder(long capacity, long current) {
+    assert capacity > 0;
+    assert current >= 0;
+    this.microJoules.set(current);
   }
 
   @Override
@@ -31,6 +44,7 @@ public class MJHolder implements INBTSerializable<CompoundTag> {
   }
 
   public long add(long mj) {
+    assert mj >= 0;
     if (isFull()) return 0;
     if (current() + mj > capacity.get()) {
       var overflow = current() + mj - capacity.get();
@@ -42,7 +56,12 @@ public class MJHolder implements INBTSerializable<CompoundTag> {
     }
   }
 
+  public long capacity() {
+    return capacity.get();
+  }
+
   public void extract(long mj) {
+    assert mj >= 0;
     microJoules.addAndGet(-mj);
   }
 
