@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 public class BCBuilderBlocks {
   public static final RegistryObject<BlockFiller> FILLER = register("filler", () -> new BlockFiller(BlockBehaviour.Properties.of().randomTicks(), "filler"));
+  public static final RegistryObject<BlockQuarry> QUARRY = register("quarry", () -> new BlockQuarry(BlockBehaviour.Properties.of().randomTicks(), "quarry"));
 
   private static <L extends Block & BCBlock> RegistryObject<L> register(String name, Supplier<L> block) {
     return BCRegistry.registerBlockItem(name, block);

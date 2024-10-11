@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 public class BCBuilderBlockEntityTypes {
   public static final RegistryObject<BlockEntityType<FillerBlockEntity>> FILLER = register("filler", () -> BlockEntityType.Builder.of(FillerBlockEntity::new, BCBuilderBlocks.FILLER.get()).build(null));
+  public static final RegistryObject<BlockEntityType<QuarryBlockEntity>> QUARRY = register("quarry", () -> BlockEntityType.Builder.of(QuarryBlockEntity::new, BCBuilderBlocks.QUARRY.get()).build(null));
 
   private static <T extends BlockEntity & BCBlockEntity> RegistryObject<BlockEntityType<T>> register(final String name, final Supplier<BlockEntityType<T>> type) {
     return BCRegistry.registerBlockEntityType(name, type);
