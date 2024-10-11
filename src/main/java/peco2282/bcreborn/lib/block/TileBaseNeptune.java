@@ -1,6 +1,8 @@
 package peco2282.bcreborn.lib.block;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Explosion;
@@ -16,10 +18,21 @@ import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public abstract class TileBaseNeptune extends BlockBaseNeptune implements EntityBlock, BCBlock {
   @SafeVarargs
   public TileBaseNeptune(Properties properties, @NotNull String id, Tuple<Property<?>, ?>... states) {
     super(properties, id, states);
+  }
+
+  protected static <T extends TileBaseNeptune> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
+    return RecordCodecBuilder
+        .mapCodec(instance -> instance.group(
+            propertiesCodec(),
+            Codec.STRING.fieldOf("id").forGetter(BlockBaseNeptune::getId)
+        ).apply(instance, function));
   }
 
   @NotNull
