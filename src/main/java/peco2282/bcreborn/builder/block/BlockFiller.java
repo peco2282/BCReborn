@@ -32,12 +32,6 @@ import peco2282.bcreborn.builder.block.menu.FillerMenu;
 import peco2282.bcreborn.lib.block.TileBaseNeptune;
 
 public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
-  private static final MapCodec<BlockFiller> CODEC = RecordCodecBuilder
-      .mapCodec(instance -> instance.group(
-          propertiesCodec(),
-          Codec.STRING.fieldOf("id").forGetter(BlockFiller::getId)
-      ).apply(instance, BlockFiller::new));
-
   public BlockFiller(Properties properties, @NotNull String id) {
     super(properties, id,
         new Tuple<>(BCProperties.BLOCK_FACING, Direction.NORTH),
@@ -52,7 +46,7 @@ public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
 
   @Override
   protected @NotNull MapCodec<BlockFiller> codec() {
-    return CODEC;
+    return codecInstance(BlockFiller::new);
   }
 
   @Override
