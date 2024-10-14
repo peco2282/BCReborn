@@ -17,6 +17,7 @@ import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.block.container.EngineIronScreen;
 import peco2282.bcreborn.core.block.container.EngineStoneScreen;
 import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
+import peco2282.bcreborn.transport.block.BCTransportBlocks;
 
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @Mod.EventBusSubscriber(modid = BCReborn.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -34,6 +35,7 @@ public class ClientModEvents {
     log.trace("Register ItemBlockRenderTypes");
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.STONE_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.IRON_ENGINE.get(), RenderType.cutout());
+    ItemBlockRenderTypes.setRenderLayer(BCTransportBlocks.WOOD_ITEM_PIPE.get(), RenderType.cutout());
     log.trace("Done");
     // Some client setup code
 //    LOGGER.info("HELLO FROM CLIENT SETUP");
