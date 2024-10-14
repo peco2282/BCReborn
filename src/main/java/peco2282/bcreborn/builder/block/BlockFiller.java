@@ -1,12 +1,9 @@
 package peco2282.bcreborn.builder.block;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,12 +27,16 @@ import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.FillerBlockEntity;
 import peco2282.bcreborn.builder.block.menu.FillerMenu;
 import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
   public BlockFiller(Properties properties, @NotNull String id) {
     super(properties, id,
-        new Tuple<>(BCProperties.BLOCK_FACING, Direction.NORTH),
-        new Tuple<>(BCProperties.FILLER_TYPE, EnumFillerType.NONE)
+        PropertyBuilder
+            .builder()
+            .add(BCProperties.BLOCK_FACING, Direction.NORTH)
+            .add(BCProperties.FILLER_TYPE, EnumFillerType.NONE)
+            .add(BCProperties.ACTIVE, false)
     );
   }
 
@@ -51,7 +52,7 @@ public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
 
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(BCProperties.FILLER_TYPE, BCProperties.BLOCK_FACING);
+    builder.add(BCProperties.FILLER_TYPE, BCProperties.BLOCK_FACING, BCProperties.ACTIVE);
   }
 
   @Override

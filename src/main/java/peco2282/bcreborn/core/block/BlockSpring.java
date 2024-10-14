@@ -3,7 +3,6 @@ package peco2282.bcreborn.core.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.lib.block.BlockBaseNeptune;
 import peco2282.bcreborn.api.enums.EnumSpring;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class BlockSpring extends BlockBaseNeptune {
   public static final Property<EnumSpring> SPRING_TYPE = BCProperties.SPRING_TYPE;
@@ -26,7 +26,7 @@ public class BlockSpring extends BlockBaseNeptune {
             .instabreak()
             .destroyTime(5.0F)
             .sound(SoundType.METAL),
-        id, new Tuple<>(SPRING_TYPE, EnumSpring.WATER)
+        id, PropertyBuilder.builder().add(SPRING_TYPE, EnumSpring.WATER)
     );
   }
 

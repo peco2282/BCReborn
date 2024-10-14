@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -33,6 +32,7 @@ import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.EngineBlockEntity;
 import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 @SuppressWarnings("UnnecessaryBoxing")
 public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFacing {
@@ -69,25 +69,21 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
   private final EnumEngineType type;
 
   public BlockEngine(@NotNull String id, EnumEngineType type) {
-    super(
+    this(
         Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().lightLevel(s -> 1),
         id,
-        new Tuple<>(BCProperties.ACTIVE, Boolean.valueOf(false)),
-        new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
-        new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
-        new Tuple<>(BCProperties.ENGINE_TYPE, type),
-        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1))
+        type
     );
-    this.type = type;
   }
 
   private BlockEngine(Properties properties, @NotNull String id, EnumEngineType type) {
     super(properties, id,
-        new Tuple<>(BCProperties.ACTIVE, Boolean.valueOf(false)),
-        new Tuple<>(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK),
-        new Tuple<>(BCProperties.BLOCK_FACING, Direction.EAST),
-        new Tuple<>(BCProperties.ENGINE_TYPE, type),
-        new Tuple<>(BCProperties.ENGINE_MODEL, Integer.valueOf(1)));
+        PropertyBuilder.builder()
+            .add(BCProperties.ACTIVE, Boolean.valueOf(false))
+            .add(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK)
+            .add(BCProperties.BLOCK_FACING, Direction.EAST)
+            .add(BCProperties.ENGINE_TYPE, type)
+            .add(BCProperties.ENGINE_MODEL, Integer.valueOf(1)));
     this.type = type;
   }
 

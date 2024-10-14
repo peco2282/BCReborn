@@ -1,6 +1,5 @@
 package peco2282.bcreborn.core.block;
 
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.lib.block.BlockBaseNeptune;
 import peco2282.bcreborn.api.enums.EnumDecoratedBlock;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class BlockDecoration extends BlockBaseNeptune {
   public static final Property<EnumDecoratedBlock> DECORATED_TYPE = BCProperties.DECORATED_BLOCK;
@@ -25,7 +25,7 @@ public class BlockDecoration extends BlockBaseNeptune {
             .sound(SoundType.METAL)
         ,
         id,
-        new Tuple<>(DECORATED_TYPE, EnumDecoratedBlock.DESTROY)
+        PropertyBuilder.builder().add(DECORATED_TYPE, EnumDecoratedBlock.DESTROY)
     );
   }
 

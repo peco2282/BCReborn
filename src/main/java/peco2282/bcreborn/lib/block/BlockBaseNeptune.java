@@ -2,7 +2,6 @@ package peco2282.bcreborn.lib.block;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -16,22 +15,18 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.api.block.BCBlock;
-import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.block.Facing;
 import peco2282.bcreborn.api.block.RotatableFacing;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public abstract class BlockBaseNeptune extends Block implements BCBlock {
   private static final Logger log = LoggerFactory.getLogger(BlockBaseNeptune.class);
   protected final String id;
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  @SafeVarargs
-  public BlockBaseNeptune(Properties properties, @NotNull String id, Tuple<Property<?>, ?>... states) {
+  public BlockBaseNeptune(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(update(properties));
     BlockState raw = getStateDefinition().any();
-    for (Tuple<Property<?>, ?> state : states)
-      raw.setValue((Property) state.getA(), (Comparable) state.getB());
-    registerDefaultState(raw);
+    registerDefaultState(builder.set(raw));
     this.id = id;
   }
 
