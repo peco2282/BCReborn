@@ -7,13 +7,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.lib.block.BlockMarkerBase;
 import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class BlockMarkerPath extends BlockMarkerBase {
   public BlockMarkerPath(Properties properties, @NotNull String id) {
-    super(properties, id);
+    super(properties, id, PropertyBuilder.builder());
   }
 
   @Override
@@ -23,7 +23,7 @@ public class BlockMarkerPath extends BlockMarkerBase {
 
   @Override
   protected @NotNull MapCodec<? extends TileBaseNeptune> codec() {
-    return null;
+    return codecInstance(BlockMarkerPath::new);
   }
 
   @Override
