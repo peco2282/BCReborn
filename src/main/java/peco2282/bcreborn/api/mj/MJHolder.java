@@ -8,6 +8,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+@SuppressWarnings("deprecation")
 public class MJHolder implements INBTSerializable<CompoundTag> {
   private final AtomicLong capacity = new AtomicLong(0);
   private final AtomicLong microJoules = new AtomicLong(0);
