@@ -12,6 +12,10 @@ import peco2282.bcreborn.api.enums.*;
 
 import java.util.Map;
 
+/**
+ * BlockState-properties
+ * @author peco2282
+ */
 public interface BCProperties {
   DirectionProperty BLOCK_FACING = DirectionProperty.create("facing");
   DirectionProperty BLOCK_FACING_6 = DirectionProperty.create("facing");
