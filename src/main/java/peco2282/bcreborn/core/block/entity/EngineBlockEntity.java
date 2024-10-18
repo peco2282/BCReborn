@@ -1,6 +1,7 @@
 package peco2282.bcreborn.core.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -14,11 +15,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.block.IEngine;
 import peco2282.bcreborn.api.enums.EnumEngineType;
 import peco2282.bcreborn.api.enums.EnumPowerStage;
+import peco2282.bcreborn.api.mj.MJCapailityHelper;
+import peco2282.bcreborn.api.mj.impl.MJEngineConnector;
 import peco2282.bcreborn.core.block.menu.EngineIronMenu;
 import peco2282.bcreborn.core.block.menu.EngineStoneMenu;
 import peco2282.bcreborn.lib.block.entity.TileContainerNeptune;
@@ -28,6 +34,8 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
   private boolean isActive;
   private EnumPowerStage stage;
   private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
+
+  private final MJCapailityHelper helper = new MJCapailityHelper(new MJEngineConnector(), null, null);
 
   private long timer = 0;
 
@@ -109,6 +117,16 @@ public class EngineBlockEntity extends TileContainerNeptune implements MenuProvi
   public long perTick(Level level, BlockState state) {
     EnumEngineType type = state.getValue(BCProperties.ENGINE_TYPE);
     return (long) stage.power() * type.output;
+  }
+
+  @Override
+  public boolean canGenerate() {
+    return isActive;
+  }
+
+  @Override
+  public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
+    return helper.getCapability(this, cap, side);
   }
 
   public static class Provider implements MenuProvider {

@@ -2,6 +2,7 @@ package peco2282.bcreborn.api.mj;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,32 @@ public class MJCapailityHelper implements ICapabilityProvider {
     if (cap == MJCapabilities.RECEIVER) return MJCapabilities.RECEIVER.orEmpty(cap, lazy(receiver)).cast();
     if (cap == MJCapabilities.GENERATOR) return MJCapabilities.GENERATOR.orEmpty(cap, lazy(generator)).cast();
     return lazy(null).cast();
+  }
+
+  @SuppressWarnings("UnstableApiUsage")
+  public <T> LazyOptional<T> getCapability(
+      CapabilityProvider<?> provider,
+      @NotNull Capability<T> cap,
+      Direction side
+      ) {
+    return getCapability(provider, cap, side, true);
+  }
+  @SuppressWarnings("UnstableApiUsage")
+  public <T> LazyOptional<T> getCapability(
+      CapabilityProvider<?> provider,
+      @NotNull Capability<T> cap,
+      Direction side,
+      boolean prvFirst
+      ) {
+    if (prvFirst) {
+      LazyOptional<T> ret = provider.getCapability(cap, side).cast();
+      if (ret.isPresent()) return ret;
+      return getCapability(cap, side).cast();
+    } else {
+      LazyOptional<T> ret = getCapability(cap, side).cast();
+      if (ret.isPresent()) return ret;
+      return provider.getCapability(cap, side).cast();
+    }
   }
   static <T> LazyOptional<T> lazy(T cap) {
     return LazyOptional.of(() -> cap);

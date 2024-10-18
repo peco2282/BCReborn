@@ -7,4 +7,5 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 @AutoRegisterCapability
 public interface MJGenerator extends MJCapability {
   long perTick(Level level, BlockState state);
+  boolean canGenerate();
 }
