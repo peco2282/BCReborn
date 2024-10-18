@@ -21,6 +21,8 @@ import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.renderer.MarkerVolumeRenderer;
 import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
 import peco2282.bcreborn.transport.block.BCTransportBlocks;
+import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
+import peco2282.bcreborn.transport.block.entity.renderer.PipeRenderer;
 
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @Mod.EventBusSubscriber(modid = BCReborn.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -42,6 +44,7 @@ public class ClientModEvents {
     log.trace("Done");
 
     BlockEntityRenderers.register(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeRenderer::new);
+    BlockEntityRenderers.register(BCTransportBlockEntities.ITEM_PIPE.get(), PipeRenderer::new);
 
     // Some client setup code
 //    LOGGER.info("HELLO FROM CLIENT SETUP");

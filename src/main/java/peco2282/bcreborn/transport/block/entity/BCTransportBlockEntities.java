@@ -8,7 +8,6 @@ import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.registry.BCRegistry;
 import peco2282.bcreborn.transport.block.BCTransportBlocks;
 import peco2282.bcreborn.transport.block.BaseBlockPipe;
-import peco2282.bcreborn.utils.RegistryUtil;
 
 import java.util.function.Supplier;
 
