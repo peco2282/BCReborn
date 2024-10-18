@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 public class BCCoreBlockEntityTypes {
   public static final RegistryObject<BlockEntityType<EngineBlockEntity>> ENGINE          = register("engine", () -> BlockEntityType.Builder.of(EngineBlockEntity::new, BCCoreBlocks.WOOD_ENGINE.get(), BCCoreBlocks.STONE_ENGINE.get(), BCCoreBlocks.IRON_ENGINE.get(), BCCoreBlocks.CREATIVE_ENGINE.get()).build(null));
   public static final RegistryObject<BlockEntityType<IronEngineBlockEntity>> IRON_ENGINE = register("iron_engine", () -> BlockEntityType.Builder.of(IronEngineBlockEntity::new, BCCoreBlocks.IRON_ENGINE.get()).build(null));
+  public static final RegistryObject<BlockEntityType<MarkerVolumeBlockEntity>> MARKER_VOLUME = register("volume_marker", () -> BlockEntityType.Builder.of(MarkerVolumeBlockEntity::new, BCCoreBlocks.MARKER_VOLUME.get()).build(null));
 
   private static <T extends BlockEntity & BCBlockEntity> RegistryObject<BlockEntityType<T>> register(final String name, final Supplier<BlockEntityType<T>> type) {
     return BCRegistry.registerBlockEntityType(name, type);

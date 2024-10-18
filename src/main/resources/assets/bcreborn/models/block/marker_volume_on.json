@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "bcreborn:block/marker_volume",
-		"particle": "bcreborn:block/marker_volume"
+		"0": "bcreborn:block/marker/marker_volume",
+		"particle": "bcreborn:block/marker/marker_volume"
 	},
 	"elements": [
 		{

@@ -4,27 +4,23 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public abstract class TileBaseNeptune extends BlockBaseNeptune implements EntityBlock, BCBlock {
-  @SafeVarargs
-  public TileBaseNeptune(Properties properties, @NotNull String id, Tuple<Property<?>, ?>... states) {
-    super(properties, id, states);
+  public TileBaseNeptune(Properties properties, @NotNull String id, PropertyBuilder builder) {
+    super(properties, id, builder);
   }
 
   protected static <T extends TileBaseNeptune> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
