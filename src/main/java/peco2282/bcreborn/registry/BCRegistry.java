@@ -29,6 +29,7 @@ import peco2282.bcreborn.core.item.BCCoreItems;
 import peco2282.bcreborn.lib.block.menu.BCMenu;
 import peco2282.bcreborn.lib.item.BlockItemNeptune;
 import peco2282.bcreborn.transport.block.BCTransportBlocks;
+import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 
 import java.util.function.Supplier;
 
@@ -91,6 +92,7 @@ public class BCRegistry {
 
     // Transport
     BCTransportBlocks.init();
+    BCTransportBlockEntities.init();
 
     // Misc
     BCMisc.init();
