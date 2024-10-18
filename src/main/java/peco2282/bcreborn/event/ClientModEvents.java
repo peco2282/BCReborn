@@ -4,6 +4,7 @@ package peco2282.bcreborn.event;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +17,8 @@ import peco2282.bcreborn.builder.block.screen.FillerScreen;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.block.container.EngineIronScreen;
 import peco2282.bcreborn.core.block.container.EngineStoneScreen;
+import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
+import peco2282.bcreborn.core.block.entity.renderer.MarkerVolumeRenderer;
 import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
 import peco2282.bcreborn.transport.block.BCTransportBlocks;
 
@@ -37,6 +40,9 @@ public class ClientModEvents {
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.IRON_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCTransportBlocks.WOOD_ITEM_PIPE.get(), RenderType.cutout());
     log.trace("Done");
+
+    BlockEntityRenderers.register(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeRenderer::new);
+
     // Some client setup code
 //    LOGGER.info("HELLO FROM CLIENT SETUP");
 //    LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
