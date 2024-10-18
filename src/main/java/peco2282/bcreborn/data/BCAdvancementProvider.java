@@ -2,15 +2,19 @@ package peco2282.bcreborn.data;
 
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeAdvancementProvider;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.builder.block.BCBuilderBlocks;
 import peco2282.bcreborn.core.item.BCCoreItems;
+import peco2282.bcreborn.data.tag.BCItemTag;
+import peco2282.bcreborn.utils.RegistryUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +31,7 @@ public class BCAdvancementProvider extends ForgeAdvancementProvider {
    * @param existingFileHelper a helper used to find whether a file exists
    */
   public BCAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper existingFileHelper) {
-    super(output, registries, existingFileHelper, List.of(new Core()));
+    super(output, registries, existingFileHelper, List.of(new Core(), new Builder(), new Transport()));
   }
 
   private static class Core implements AdvancementGenerator {
@@ -41,7 +45,7 @@ public class BCAdvancementProvider extends ForgeAdvancementProvider {
      */
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
-      Advancements.ROOT = Advancement.Builder
+      Advancements.ROOT.set(Advancement.Builder
           .advancement()
           .display(
               new DisplayInfo(
@@ -54,16 +58,10 @@ public class BCAdvancementProvider extends ForgeAdvancementProvider {
           )
           .requirements(AdvancementRequirements.Strategy.OR)
           .addCriterion("has_stick",
-              new Criterion<>(
-                  new InventoryChangeTrigger(), new InventoryChangeTrigger.TriggerInstance(
-                  Optional.empty(),
-                  InventoryChangeTrigger.TriggerInstance.Slots.ANY,
-                  List.of(
-                      ItemPredicate.Builder.item().of(BCCoreItems.GEAR_WOOD.get()).build()
-                  )
-              )
-              )
-          ).save(saver, BCReborn.location("root"));
+              InventoryChangeTrigger.TriggerInstance.hasItems(RegistryUtil.fromItemTag(BCItemTag.GEAR).stream().map(Holder::get).toArray(ItemLike[]::new))
+          ).save(saver, BCReborn.location("root")));
+
+
 
 //      AdvancementHolder guide = new Advancement.Builder()
 //          .display(
@@ -86,6 +84,35 @@ public class BCAdvancementProvider extends ForgeAdvancementProvider {
   }
 
   private static class Builder implements AdvancementGenerator {
+    /**
+     * A method used to generate advancements for a mod. Advancements should be
+     * built via {@link net.minecraftforge.common.data.ForgeAdvancementProvider.AdvancementGenerator#generate(HolderLookup.Provider, Consumer, ExistingFileHelper)}.
+     *
+     * @param registries         a lookup for registries and their objects
+     * @param saver              a consumer used to write advancements to a file
+     * @param existingFileHelper a helper used to find whether a file exists
+     */
+    @Override
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
+      Advancements.BUILDER.set(Advancement.Builder.advancement()
+          .display(new DisplayInfo(
+              new ItemStack(BCBuilderBlocks.FILLER.get().asItem()),
+              Component.translatable("b"),
+              Component.translatable("b"),
+              Optional.empty(),
+              AdvancementType.TASK,
+              true,
+              true,
+              false
+          ))
+          .requirements(AdvancementRequirements.Strategy.OR)
+          .parent(Advancements.ROOT.getNotNull())
+          .addCriterion("has_filler", InventoryChangeTrigger.TriggerInstance.hasItems(BCBuilderBlocks.FILLER.get()))
+          .save(saver, BCReborn.location("builder")));
+    }
+  }
+
+  private static class Transport implements AdvancementGenerator {
     /**
      * A method used to generate advancements for a mod. Advancements should be
      * built via {@link net.minecraftforge.common.data.ForgeAdvancementProvider.AdvancementGenerator#generate(HolderLookup.Provider, Consumer, ExistingFileHelper)}.
