@@ -23,6 +23,10 @@ public abstract class BaseBlockPipe extends TileBaseNeptune implements Rotatable
   public static final VoxelShape SHAPE_NORTH_SOUTH = box(0, 4, 4, 16, 12, 12);
   public static final VoxelShape SHAPE_EAST_WEST = box(4, 4, 0, 12, 12, 16);
   public static final VoxelShape SHAPE_UP_DOWN = box(4, 0, 4, 12, 16, 12);
+
+  public static final Codec<PipeMaterial> MATERIAL_CODEC = StringRepresentable.fromEnum(PipeMaterial::values);
+  public static final Codec<PipeType> TYPE_CODEC = StringRepresentable.fromEnum(PipeType::values);
+
   private final PipeMaterial material;
   private final PipeType type;
   public BaseBlockPipe(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
@@ -58,8 +62,8 @@ public abstract class BaseBlockPipe extends TileBaseNeptune implements Rotatable
     return RecordCodecBuilder.mapCodec(instance -> instance.group(
         propertiesCodec(),
         Codec.STRING.fieldOf("id").forGetter(BaseBlockPipe::getId),
-        StringRepresentable.fromEnum(PipeMaterial::values).fieldOf("material").forGetter(BaseBlockPipe::getPipeMaterial),
-        StringRepresentable.fromEnum(PipeType::values).fieldOf("material").forGetter(BaseBlockPipe::getPipeType)
+        MATERIAL_CODEC.fieldOf("material").forGetter(BaseBlockPipe::getPipeMaterial),
+        TYPE_CODEC.fieldOf("material").forGetter(BaseBlockPipe::getPipeType)
     ).apply(instance, function));
   }
 
