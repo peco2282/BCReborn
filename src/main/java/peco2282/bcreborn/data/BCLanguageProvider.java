@@ -21,11 +21,11 @@ public class BCLanguageProvider extends LanguageProvider {
     translations.put(key, value);
   }
 
-  public static void putBlock(Supplier<Block> key, String value) {
+  public static void putBlock(Supplier<? extends Block> key, String value) {
     put(key.get().getDescriptionId(), value);
   }
 
-  public static void putItem(Supplier<Item> key, String value) {
+  public static void putItem(Supplier<? extends Item> key, String value) {
     put(key.get().getDescriptionId(), value);
   }
 
