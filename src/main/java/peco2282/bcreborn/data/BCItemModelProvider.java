@@ -58,8 +58,11 @@ public class BCItemModelProvider extends BlockStateProvider {
     cube("creative_engine", it -> "engine/creative/blue/engine_1");
 
     cube("filler", UnaryOperator.identity());
-
-    cube("marker_volume", it -> it + "_off");
+    itemModels()
+        .getBuilder("marker_volume")
+        .parent(generated())
+        .texture("layer0", modLoc("block/marker/marker_volume"))
+        .renderType(mcLoc("cutout"));
   }
 
   private void blockState() {

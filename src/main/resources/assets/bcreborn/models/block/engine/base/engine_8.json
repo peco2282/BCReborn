@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"3": "bcreborn:block/engine/trunk_head",
-		"4": "bcreborn:block/engine/trunk_black",
+		"2": "bcreborn:block/engine/trunk_head",
+		"3": "bcreborn:block/engine/trunk_black",
 		"particle": "#0"
 	},
 	"elements": [

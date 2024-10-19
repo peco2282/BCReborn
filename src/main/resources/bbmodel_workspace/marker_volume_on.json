@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "bcreborn:block/marker/marker_volume",
-		"particle": "bcreborn:block/marker/marker_volume"
+		"0": "bcreborn:block/marker_volume",
+		"particle": "bcreborn:block/marker_volume"
 	},
 	"elements": [
 		{
@@ -30,6 +30,11 @@
 			}
 		}
 	],
+	"display": {
+		"gui": {
+			"rotation": [22, 45, 0]
+		}
+	},
 	"groups": [
 		{
 			"name": "group",
