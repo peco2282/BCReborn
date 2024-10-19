@@ -1,4 +1,4 @@
-package peco2282.bcreborn.lib.block.container;
+package peco2282.bcreborn.lib.block.screen;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

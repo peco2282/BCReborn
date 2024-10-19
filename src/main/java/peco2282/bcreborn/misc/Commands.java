@@ -43,7 +43,7 @@ public class Commands {
                       if (info.size() > 1)
                         throw new SimpleCommandExceptionType(Component.literal("There is more than one " + BCReborn.MODID + " mod in cntainer")).create();
                       if (info.isEmpty())
-                        throw new SimpleCommandExceptionType(Component.literal("Does not exist " + BCReborn.MODID + " mod in container")).create();
+                        throw new SimpleCommandExceptionType(Component.literal("Does not exist " + BCReborn.MODID + " mod in screen")).create();
                       if (context.getSource().getPlayer() == null) return Command.SINGLE_SUCCESS;
                       VersionChecker.CheckResult result = VersionChecker.getResult(info.getFirst());
                       if (result.status() == VersionChecker.Status.FAILED) {

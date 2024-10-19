@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.builder.block.menu.FillerMenu;
 import peco2282.bcreborn.builder.block.screen.widget.ModeChangeButton;
-import peco2282.bcreborn.lib.block.container.BCContainerScreen;
+import peco2282.bcreborn.lib.block.screen.BCContainerScreen;
 
 public class FillerScreen extends BCContainerScreen<FillerMenu> {
   private static final ResourceLocation TEXTURE = BCReborn.location("textures/gui/filler.png");

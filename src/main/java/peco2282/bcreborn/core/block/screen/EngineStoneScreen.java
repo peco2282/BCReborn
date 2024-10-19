@@ -1,4 +1,4 @@
-package peco2282.bcreborn.core.block.container;
+package peco2282.bcreborn.core.block.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.core.block.menu.EngineStoneMenu;
-import peco2282.bcreborn.lib.block.container.BCContainerScreen;
+import peco2282.bcreborn.lib.block.screen.BCContainerScreen;
 
 public class EngineStoneScreen extends BCContainerScreen<EngineStoneMenu> {
   private static final ResourceLocation TEXTURE = BCReborn.location("textures/gui/steam_engine_gui.png");
