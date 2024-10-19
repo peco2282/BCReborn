@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import peco2282.bcreborn.BCReborn;
@@ -32,9 +33,9 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   ) {
     int i = yStart + height;
     stack.pushPose();
-    stack.translate(0.5, 0.0, 0.5);
+    stack.mulPose(Direction.NORTH.getRotation());
+    stack.translate(0.5, 0.5, 0.5);
     float f = Math.floorMod(gameTime, 40) + yStart;
-    stack.pushPose();
     renderPart(
         stack,
         source.getBuffer(RenderType.beaconBeam(BEAM, false)),
@@ -91,7 +92,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
 //        0.2F,
 //        0.25F
 //    );
-//    renderBeam(p_112309_, p_112310_, p_112308_, 0.25F, p_112307_.getLevel().getGameTime(), 0, 1024, BLUE, 0.25F);
+    renderBeam(p_112309_, p_112310_, p_112308_, 25F, p_112307_.getLevel().getGameTime(), 0, 1024, BLUE, 0.25F);
   }
 
   @Override
