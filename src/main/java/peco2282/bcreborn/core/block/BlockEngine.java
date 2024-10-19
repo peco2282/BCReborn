@@ -173,4 +173,9 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
     int power = state.getValue(BCProperties.ENERGY_STAGE).power();
     return (long) type.output * power;
   }
+
+  @Override
+  public boolean canGenerate() {
+    return true;
+  }
 }
