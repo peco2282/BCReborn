@@ -61,7 +61,7 @@ public class BCItemModelProvider extends BlockStateProvider {
     itemModels()
         .getBuilder("marker_volume")
         .parent(generated())
-        .texture("layer0", modLoc("block/marker/marker_volume"))
+        .texture("layer0", modLoc("block/marker_volume_on"))
         .renderType(mcLoc("cutout"));
   }
 
