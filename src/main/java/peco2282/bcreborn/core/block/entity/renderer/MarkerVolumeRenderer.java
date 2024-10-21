@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import peco2282.bcreborn.BCReborn;
@@ -20,79 +19,107 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   public MarkerVolumeRenderer(BlockEntityRendererProvider.Context context) {
   }
 
-  static void renderBeam(
+  private static void renderBeamToX(
       PoseStack stack,
-      MultiBufferSource source,
-      float partialTick,
-      float scale,
-      long gameTime,
-      int yStart,
-      int height,
-      int color,
-      float radius
+      MultiBufferSource source
   ) {
-    int i = yStart + height;
     stack.pushPose();
-    stack.mulPose(Direction.NORTH.getRotation());
-    stack.translate(0.5, 0.5, 0.5);
-    float f = Math.floorMod(gameTime, 40) + yStart;
+
+    RangeMap map = new RangeMap(
+       0.45F,
+       0.55F,
+        0.55F,
+        5.0F
+    );
+
     renderPart(
         stack,
-        source.getBuffer(RenderType.beaconBeam(BEAM, false)),
-        color,
-        yStart,
-        height,
-        0F,
-        0F
+        source,
+        map
     );
     stack.popPose();
   }
 
-  private static void renderPart(PoseStack stack, VertexConsumer buffer, int color, int yStart, int height, float x, float z) {
-    PoseStack.Pose pose = stack.last();
-    buffer.addVertex(pose, 0.45F, 0.5F, 0.45F)
-        .setColor(color)
+  private static void renderPart(PoseStack stack, MultiBufferSource source, RangeMap map) {
+    final float width = 1F;
+
+    float f = map.minZ();
+    float fMax = map.minZ() + width;
+
+    while (fMax < map.maxZ()) {
+      stack.pushPose();
+      PoseStack.Pose pose = stack.last();
+      VertexConsumer buffer = source.getBuffer(RenderType.beaconBeam(BEAM, false));
+      /*
+               $4
+            \------|
+         $2 |      | $1
+            |------|
+               $3
+       */
+      // $1(right)
+      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+
+      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+
+      // $2(left)
+      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+
+
+      // $3 (bottom)
+      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+
+      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+
+
+      // $4(top)
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+
+      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+
+      f += width;
+      fMax += width;
+      stack.popPose();
+    }
+  }
+
+  private static VertexConsumer vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v) {
+    return buffer.addVertex(pose, x, y, z)
+        .setUv(u, v)
+        .setColor(BLUE)
         .setLight(15728880)
-        .setUv(1, 1)
-        .setOverlay(OverlayTexture.NO_OVERLAY)
-        .setNormal(pose, 1F, 0F, 1F);
-    buffer.addVertex(pose, 0.45F, 0.5F, 0.55F)
-        .setColor(color)
-        .setLight(15728880)
-        .setUv(1, 1)
-        .setOverlay(OverlayTexture.NO_OVERLAY)
-        .setNormal(pose, 1F, 0F, 1F);
-    buffer.addVertex(pose, 0.55F, 0.5F, 0.55F)
-        .setColor(color)
-        .setLight(15728880)
-        .setUv(1, 1)
-        .setOverlay(OverlayTexture.NO_OVERLAY)
-        .setNormal(pose, 1F, 0F, 1F);
-    buffer.addVertex(pose, 0.55F, 0.5F, 0.45F)
-        .setColor(color)
-        .setLight(15728880)
-        .setUv(1, 1)
-        .setOverlay(OverlayTexture.NO_OVERLAY)
-        .setNormal(pose, 1F, 0F, 1F);
-//    buffer.addVertex(pose, 0.25F, 0.25F, 0.25F).setColor(color);
+        .setOverlay(OverlayTexture.NO_OVERLAY);
   }
 
   @Override
   public void render(MarkerVolumeBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
-//    BeaconRenderer.renderBeaconBeam(
-//        p_112309_,
-//        p_112310_,
-//        BEAM,
-//        p_112308_,
-//        1F,
-//        p_112307_.getLevel().getGameTime(),
-//        0,
-//        1024,
-//        Color.BLUE.getRGB(),
-//        0.2F,
-//        0.25F
-//    );
-    renderBeam(p_112309_, p_112310_, p_112308_, 25F, p_112307_.getLevel().getGameTime(), 0, 1024, BLUE, 0.25F);
+    renderBeamToX(p_112309_, p_112310_);
   }
 
   @Override
@@ -104,4 +131,10 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
             getViewDistance()
         );
   }
+  private record RangeMap(
+      float minXY,
+      float maxXY,
+      float minZ,
+      float maxZ
+  ) {}
 }
