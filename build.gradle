@@ -144,6 +144,7 @@ dependencies {
 
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+ 
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -224,4 +225,7 @@ sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
+}
+test {
+  useJUnitPlatform()
 }
