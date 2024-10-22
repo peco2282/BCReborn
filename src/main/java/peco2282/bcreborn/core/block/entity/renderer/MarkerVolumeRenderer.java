@@ -28,6 +28,8 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
     RangeMap map = new RangeMap(
        0.45F,
        0.55F,
+        0.45F,
+       0.55F,
         0.55F,
         5.0F
     );
@@ -58,50 +60,50 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
                $3
        */
       // $1(right)
-      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
-      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
-      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
       // $2(left)
-      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
-      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
 
       // $3 (bottom)
-      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
-      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxXY(), map.minXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
-      vertex(buffer, pose, map.maxXY(), map.minXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minXY(), map.minXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minXY(), map.minXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
 
       // $4(top)
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minXY(), map.maxXY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
-      vertex(buffer, pose, map.minXY(), map.maxXY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxXY(), map.maxXY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
       f += width;
       fMax += width;
@@ -132,9 +134,12 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
         );
   }
   private record RangeMap(
-      float minXY,
-      float maxXY,
+      float minX,
+      float maxX,
+      float minY,
+      float maxY,
       float minZ,
       float maxZ
-  ) {}
+  ) {
+  }
 }
