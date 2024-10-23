@@ -2,6 +2,8 @@ package peco2282.bcreborn.core;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class MarkerPlaceHolder {
   private int yEnd;
   private int zEnd;
 
-  public MarkerPlaceHolder(final BlockPos start, final BlockPos end) {
+  public MarkerPlaceHolder(final @NotNull BlockPos start, final @NotNull BlockPos end) {
     this.xStart = Math.min(end.getX(), start.getX());
     this.yStart = Math.min(end.getY(), start.getY());
     this.zStart = Math.min(end.getZ(), start.getZ());
@@ -26,13 +28,14 @@ public class MarkerPlaceHolder {
     this.end = new BlockPos(this.xEnd, this.yEnd, this.zEnd);
   }
 
-  public boolean inRange(final BlockPos pos) {
+  public boolean inRange(final @NotNull BlockPos pos) {
     boolean x = xStart <= pos.getX() && xEnd >= pos.getX();
     boolean y = yStart <= pos.getY() && yEnd >= pos.getY();
     boolean z = zStart <= pos.getZ() && zEnd >= pos.getZ();
     return x && y && z;
   }
 
+  @Contract(" -> new")
   public Corner getCorner() {
     return new Corner(
         new BlockPos(xStart, yStart, zStart),
@@ -111,8 +114,9 @@ public class MarkerPlaceHolder {
       return ImmutableList.of(f, s, e1, e2, e3, e4);
     }
 
+    @Contract(" -> new")
     @Override
-    public String toString() {
+    public @NotNull String toString() {
       return String.join(", ", renderList().stream().flatMap(List::stream).map(BlockPos::toString).toList());
     }
   }
