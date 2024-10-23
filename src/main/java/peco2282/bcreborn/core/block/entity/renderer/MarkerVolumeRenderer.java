@@ -2,47 +2,85 @@ package peco2282.bcreborn.core.block.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
+
+import java.util.EnumMap;
+import java.util.function.Consumer;
 
 public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlockEntity> {
   private static final ResourceLocation BEAM = BCReborn.location("textures/block/marker/marker_volume_signal.png");
   private static final int BLUE = (0xFF << 24) | 0xFF;
 
+  private static final EnumMap<Direction, Consumer<PoseStack>> DIRECTION_MAP = new EnumMap<>(Direction.class);
+
+  static {
+    DIRECTION_MAP.put(Direction.SOUTH, stack -> {
+      stack.translate(0F, 0F, 0F);
+      stack.mulPose(Axis.YP.rotationDegrees(0));
+    });
+    DIRECTION_MAP.put(Direction.EAST, stack -> {
+      stack.translate(0F, 0F, 1F);
+      stack.mulPose(Axis.YP.rotationDegrees(90));
+    });
+    DIRECTION_MAP.put(Direction.NORTH, stack -> {
+      stack.translate(1F, 0F, 1F);
+      stack.mulPose(Axis.YP.rotationDegrees(180));
+    });
+    DIRECTION_MAP.put(Direction.WEST, stack -> {
+      stack.translate(1F, 0F, 0F);
+      stack.mulPose(Axis.YP.rotationDegrees(270));
+    });
+    DIRECTION_MAP.put(Direction.UP, stack -> {
+      stack.translate(1F, -1F, 0F);
+      stack.mulPose(Axis.XP.rotationDegrees(90));
+    });
+    DIRECTION_MAP.put(Direction.DOWN, stack -> {
+      stack.translate(0F, 1F, 0F);
+      stack.mulPose(Axis.XP.rotationDegrees(90));
+    });
+  }
+
   public MarkerVolumeRenderer(BlockEntityRendererProvider.Context context) {
   }
 
-  private static void renderBeamToX(
+  private static void renderBeam(
       PoseStack stack,
-      MultiBufferSource source
+      MultiBufferSource source,
+      Direction direction,
+      int size
   ) {
     stack.pushPose();
 
     RangeMap map = new RangeMap(
-       0.45F,
-       0.55F,
         0.45F,
-       0.55F,
         0.55F,
-        5.0F
+        0.45F,
+        0.55F,
+        0.55F,
+        size
     );
 
     renderPart(
         stack,
         source,
-        map
+        map,
+        direction
     );
     stack.popPose();
   }
 
-  private static void renderPart(PoseStack stack, MultiBufferSource source, RangeMap map) {
+  private static void renderPart(PoseStack stack, MultiBufferSource source, RangeMap map, Direction direction) {
     final float width = 1F;
 
     float f = map.minZ();
@@ -50,6 +88,10 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
 
     while (fMax < map.maxZ()) {
       stack.pushPose();
+
+      Consumer<PoseStack> consumer = DIRECTION_MAP.get(direction);
+      consumer.accept(stack);
+
       PoseStack.Pose pose = stack.last();
       VertexConsumer buffer = source.getBuffer(RenderType.beaconBeam(BEAM, false));
       /*
@@ -121,7 +163,29 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
 
   @Override
   public void render(MarkerVolumeBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
-    renderBeamToX(p_112309_, p_112310_);
+//    if (!p_112307_.isActive()) return;
+    MarkerPlaceHolder holder = p_112307_.renderer();
+    if (!holder.canRender()) return;
+    PoseStack stack = new PoseStack();
+    stack.translate(
+        holder.getStart().getX(),
+        holder.getStart().getY(),
+        holder.getStart().getZ()
+    );
+    if (holder.rangeX() != 0) {
+      renderBeam(stack, p_112310_, Direction.NORTH, holder.rangeX());
+    }
+    if (holder.rangeY() != 0) {
+      renderBeam(stack, p_112310_, Direction.UP, holder.rangeY());
+    }
+    if (holder.rangeZ() != 0) {
+      renderBeam(stack, p_112310_, Direction.SOUTH, holder.rangeZ());
+    }
+  }
+
+  @Override
+  public int getViewDistance() {
+    return BlockEntityRenderer.super.getViewDistance() << 1;
   }
 
   @Override
@@ -133,6 +197,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
             getViewDistance()
         );
   }
+
   private record RangeMap(
       float minX,
       float maxX,
