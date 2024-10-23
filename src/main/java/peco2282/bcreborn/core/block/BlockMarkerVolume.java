@@ -113,4 +113,23 @@ public class BlockMarkerVolume extends BlockMarkerBase {
   protected boolean canSurvive(BlockState p_60525_, LevelReader p_60526_, BlockPos p_60527_) {
     return canSupportCenter(p_60526_, p_60527_.below(), Direction.UP);
   }
+
+  @Override
+  protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
+    super.neighborChanged(p_60509_, p_60510_, p_60511_, p_60512_, p_60513_, p_60514_);
+    if (p_60510_.isClientSide()) return;
+    boolean signal = p_60510_.hasNeighborSignal(p_60511_);
+    BlockState state = p_60509_;
+    if (signal) {
+      if (!state.getValue(BCProperties.ACTIVE)) {
+        state = state.setValue(BCProperties.ACTIVE, Boolean.valueOf(true));
+        p_60510_.setBlockAndUpdate(p_60511_, state);
+      }
+    } else {
+      if (state.getValue(BCProperties.ACTIVE)) {
+        state = state.setValue(BCProperties.ACTIVE, Boolean.valueOf(false)).setValue(BCProperties.ENGINE_MODEL, 1);
+        p_60510_.setBlockAndUpdate(p_60511_, state);
+      }
+    }
+  }
 }
