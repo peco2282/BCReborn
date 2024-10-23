@@ -7,10 +7,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
 import peco2282.bcreborn.api.item.IToolWrench;
-import peco2282.bcreborn.lib.item.ItemBaseNeptune;
+import peco2282.bcreborn.lib.item.BaseNeptuneItem;
 
-public class ItemWrench extends ItemBaseNeptune implements IToolWrench {
-  public ItemWrench(String id) {
+public class WrenchItem extends BaseNeptuneItem implements IToolWrench {
+  public WrenchItem(String id) {
     super(new Properties().stacksTo(1), id);
   }
 

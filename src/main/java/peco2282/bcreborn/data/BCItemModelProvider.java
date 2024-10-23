@@ -18,7 +18,7 @@ import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.builder.block.BCBuilderBlocks;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 import peco2282.bcreborn.core.item.BCCoreItems;
-import peco2282.bcreborn.core.item.ItemGear;
+import peco2282.bcreborn.core.item.GearItem;
 
 import java.util.Arrays;
 import java.util.List;
@@ -171,7 +171,7 @@ public class BCItemModelProvider extends BlockStateProvider {
 
 
   private void registerGears() {
-    for (RegistryObject<ItemGear> item : List.of(BCCoreItems.GEAR_WOOD, BCCoreItems.GEAR_STONE, BCCoreItems.GEAR_IRON, BCCoreItems.GEAR_GOLD, BCCoreItems.GEAR_DIAMOND)) {
+    for (RegistryObject<GearItem> item : List.of(BCCoreItems.GEAR_WOOD, BCCoreItems.GEAR_STONE, BCCoreItems.GEAR_IRON, BCCoreItems.GEAR_GOLD, BCCoreItems.GEAR_DIAMOND)) {
       generatedTexture(item.get(), modLoc("item/" + item.get().getId()));
 //      itemModels().basicItem(item.get()).parent(generated()).texture("layer0", BCReborn.location("item/" + item.get().getId()));
     }
