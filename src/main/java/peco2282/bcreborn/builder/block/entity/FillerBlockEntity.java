@@ -10,13 +10,13 @@ import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.api.mj.MJGenerator;
 import peco2282.bcreborn.api.mj.MJHolder;
-import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.BlockUtil;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FillerBlockEntity extends TileNeptune {
+public class FillerBlockEntity extends NeptuneBlockEntity {
 
   private static final long capacity = 16000 * 1_000_000L;
   private final MJHolder HOLDER = new MJHolder(capacity);

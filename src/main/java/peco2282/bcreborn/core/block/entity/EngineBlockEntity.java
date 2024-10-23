@@ -27,10 +27,10 @@ import peco2282.bcreborn.api.mj.MJCapailityHelper;
 import peco2282.bcreborn.api.mj.impl.MJEngineConnector;
 import peco2282.bcreborn.core.block.menu.EngineIronMenu;
 import peco2282.bcreborn.core.block.menu.EngineStoneMenu;
-import peco2282.bcreborn.lib.block.entity.TileContainerNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneContainerBlockEntity;
 
 @SuppressWarnings("UnnecessaryBoxing")
-public class EngineBlockEntity extends TileContainerNeptune implements MenuProvider, IEngine {
+public class EngineBlockEntity extends NeptuneContainerBlockEntity implements MenuProvider, IEngine {
   private boolean isActive;
   private EnumPowerStage stage;
   private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);

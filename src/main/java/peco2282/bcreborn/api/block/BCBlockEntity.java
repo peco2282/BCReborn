@@ -1,10 +1,10 @@
 package peco2282.bcreborn.api.block;
 
-import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 
 /**
  * Marker interface for BCReborn BE.
- * @see TileNeptune
+ * @see NeptuneBlockEntity
  * @author peco2282
  */
 public interface BCBlockEntity {

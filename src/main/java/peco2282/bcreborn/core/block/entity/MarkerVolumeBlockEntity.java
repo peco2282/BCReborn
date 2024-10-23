@@ -8,13 +8,13 @@ import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.MarkerVolumeBlock;
-import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.OptionalWith;
 
 import java.util.Objects;
 
 
-public class MarkerVolumeBlockEntity extends TileNeptune {
+public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
   private final OptionalWith<BlockPos> FROM = OptionalWith.empty();
   private final OptionalWith<BlockPos> TO = OptionalWith.empty();
 

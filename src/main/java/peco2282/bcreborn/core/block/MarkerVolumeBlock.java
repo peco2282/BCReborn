@@ -26,7 +26,7 @@ import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
 import peco2282.bcreborn.lib.block.MarkerBaseBlock;
 import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
-import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class MarkerVolumeBlock extends MarkerBaseBlock {
@@ -75,7 +75,7 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
   }
 
   @Override
-  public @NotNull TileNeptune newBlockEntity(BlockPos pos, BlockState state) {
+  public @NotNull NeptuneBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new MarkerVolumeBlockEntity(pos, state);
   }
 

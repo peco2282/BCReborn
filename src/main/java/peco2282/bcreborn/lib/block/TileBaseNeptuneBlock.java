@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCBlock;
-import peco2282.bcreborn.lib.block.entity.TileNeptune;
+import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 import java.util.function.BiFunction;
@@ -48,7 +48,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
   @Override
   public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
     BlockEntity entity = level.getBlockEntity(pos);
-    if (entity instanceof TileNeptune nep) {
+    if (entity instanceof NeptuneBlockEntity nep) {
       nep.onExplode(explosion);
     }
     super.onBlockExploded(state, level, pos, explosion);
@@ -56,7 +56,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
 
   @Override
   protected void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
-    if (p_60516_.getBlockEntity(p_60517_) instanceof TileNeptune nep) {
+    if (p_60516_.getBlockEntity(p_60517_) instanceof NeptuneBlockEntity nep) {
       nep.onRemove();
     }
     super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);

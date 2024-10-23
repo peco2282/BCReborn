@@ -11,8 +11,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.utils.InventoryUtil;
 
-public abstract class TileNeptune extends BlockEntity implements BCBlockEntity, ICapabilityProvider {
-  public TileNeptune(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
+public abstract class NeptuneBlockEntity extends BlockEntity implements BCBlockEntity, ICapabilityProvider {
+  public NeptuneBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
     super(p_155228_, p_155229_, p_155230_);
   }
   public void onExplode(Explosion explosion) {
