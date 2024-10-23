@@ -1,13 +1,21 @@
 package peco2282.bcreborn.core;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MarkerPlaceHolder {
+  public static final Codec<MarkerPlaceHolder> CODEC = RecordCodecBuilder
+      .create(instance -> instance.group(
+          BlockPos.CODEC.fieldOf("start").forGetter(MarkerPlaceHolder::getStart),
+          BlockPos.CODEC.fieldOf("end").forGetter(MarkerPlaceHolder::getEnd)
+      ).apply(instance, MarkerPlaceHolder::new));
   private BlockPos start;
   private BlockPos end;
   private int xStart;
@@ -16,6 +24,10 @@ public class MarkerPlaceHolder {
   private int xEnd;
   private int yEnd;
   private int zEnd;
+
+  public MarkerPlaceHolder(BlockPos start) {
+    this(start, start);
+  }
 
   public MarkerPlaceHolder(final @NotNull BlockPos start, final @NotNull BlockPos end) {
     this.xStart = Math.min(end.getX(), start.getX());
@@ -35,18 +47,21 @@ public class MarkerPlaceHolder {
     return x && y && z;
   }
 
-  @Contract(" -> new")
-  public Corner getCorner() {
-    return new Corner(
-        new BlockPos(xStart, yStart, zStart),
-        new BlockPos(xStart, yStart, zEnd),
-        new BlockPos(xStart, yEnd, zEnd),
-        new BlockPos(xStart, yEnd, zStart),
-        new BlockPos(xEnd, yStart, zStart),
-        new BlockPos(xEnd, yStart, zEnd),
-        new BlockPos(xEnd, yEnd, zEnd),
-        new BlockPos(xEnd, yEnd, zStart)
-    );
+  public Optional<Corner> getCorner() {
+    return canRender() ?
+        Optional.empty() :
+        Optional.of(
+            new Corner(
+                new BlockPos(xStart, yStart, zStart),
+                new BlockPos(xStart, yStart, zEnd),
+                new BlockPos(xStart, yEnd, zEnd),
+                new BlockPos(xStart, yEnd, zStart),
+                new BlockPos(xEnd, yStart, zStart),
+                new BlockPos(xEnd, yStart, zEnd),
+                new BlockPos(xEnd, yEnd, zEnd),
+                new BlockPos(xEnd, yEnd, zStart)
+            )
+        );
   }
 
   public boolean add(BlockPos pos) {
@@ -68,6 +83,30 @@ public class MarkerPlaceHolder {
         new BlockPos(this.xStart, this.yStart, this.zStart),
         new BlockPos(this.xEnd, this.yEnd, this.zEnd)
     );
+  }
+
+  public BlockPos getStart() {
+    return start.mutable();
+  }
+
+  public BlockPos getEnd() {
+    return end;
+  }
+
+  public boolean canRender() {
+    return this.start != this.end;
+  }
+
+  public int rangeX() {
+    return this.xEnd - this.xStart;
+  }
+
+  public int rangeY() {
+    return this.yEnd - this.yStart;
+  }
+
+  public int rangeZ() {
+    return this.zEnd - this.zStart;
   }
 
   public record Corner(
