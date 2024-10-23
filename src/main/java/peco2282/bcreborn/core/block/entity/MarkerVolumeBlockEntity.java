@@ -2,8 +2,12 @@ package peco2282.bcreborn.core.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
+import peco2282.bcreborn.core.MarkerPlaceHolder;
+import peco2282.bcreborn.core.block.BlockMarkerVolume;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
 import peco2282.bcreborn.utils.OptionalWith;
 
@@ -19,7 +23,44 @@ public class MarkerVolumeBlockEntity extends TileNeptune {
   }
 
   public static void tick(Level level, BlockPos pos, BlockState state, MarkerVolumeBlockEntity entity) {
-    entity.update(level, pos, state);
+  }
+
+  public static MarkerPlaceHolder holder(Level level, BlockPos pos, MarkerVolumeBlockEntity volume) {
+    int max = BCConfiguration.maxVolumeLength;
+    int curr;
+    BlockPos currPos;
+    MarkerPlaceHolder holder = new MarkerPlaceHolder(pos);
+
+    // X
+    for (curr = -max; curr <= max; curr++) {
+      if (curr == 0) continue;
+      Block block = level.getBlockState(currPos = pos.north(curr)).getBlock();
+      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+        holder.add(currPos);
+        break;
+      }
+    }
+
+    // Y
+    for (curr = -max; curr <= max; curr++) {
+      if (curr == 0) continue;
+      Block block = level.getBlockState(currPos = pos.above(curr)).getBlock();
+      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+        holder.add(currPos);
+        break;
+      }
+    }
+
+    // Z
+    for (curr = -max; curr <= max; curr++) {
+      if (curr == 0) continue;
+      Block block = level.getBlockState(currPos = pos.east(curr)).getBlock();
+      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+        holder.add(currPos);
+        break;
+      }
+    }
+    return holder;
   }
 
   public BlockState active() {
@@ -34,24 +75,7 @@ public class MarkerVolumeBlockEntity extends TileNeptune {
     return getBlockState().setValue(BCProperties.ACTIVE, false);
   }
 
-  public void render(Level level, BlockPos startPos, BlockPos endPos) {
-    FROM.ifAbsentSet(startPos);
-    TO.ifAbsentSet(endPos);
-  }
-
-  public boolean isEach(MarkerVolumeBlockEntity target) {
-    if (FROM.isPresent() && TO.isPresent() && target.FROM.isPresent() && target.TO.isPresent()) {
-      BlockPos tFrom = target.FROM.get();
-      BlockPos tTo = target.TO.get();
-
-      if (Objects.equals(FROM.get(), tFrom) && Objects.equals(TO.get(), tTo)) {
-        return true;
-      }
-      return Objects.equals(FROM.get(), tTo) && Objects.equals(TO.get(), tFrom);
-    }
-    return false;
-  }
-
-  private void update(Level level, BlockPos pos, BlockState state) {
+  public MarkerPlaceHolder renderer() {
+    return holder(Objects.requireNonNull(getLevel()), getBlockPos(), this);
   }
 }
