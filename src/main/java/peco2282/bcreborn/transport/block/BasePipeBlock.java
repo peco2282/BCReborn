@@ -15,11 +15,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.RotatableFacing;
-import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 
-public abstract class BaseBlockPipe extends TileBaseNeptune implements RotatableFacing {
+public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements RotatableFacing {
   public static final VoxelShape SHAPE_NORTH_SOUTH = box(0, 4, 4, 16, 12, 12);
   public static final VoxelShape SHAPE_EAST_WEST = box(4, 4, 0, 12, 12, 16);
   public static final VoxelShape SHAPE_UP_DOWN = box(4, 0, 4, 12, 16, 12);
@@ -29,7 +29,7 @@ public abstract class BaseBlockPipe extends TileBaseNeptune implements Rotatable
 
   private final PipeMaterial material;
   private final PipeType type;
-  public BaseBlockPipe(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
+  public BasePipeBlock(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
     super(properties, id, PropertyBuilder.builder());
     this.material = material;
     this.type = type;
@@ -58,12 +58,12 @@ public abstract class BaseBlockPipe extends TileBaseNeptune implements Rotatable
 
   public abstract @NotNull String getId();
 
-  protected static <P extends BaseBlockPipe> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
+  protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
     return RecordCodecBuilder.mapCodec(instance -> instance.group(
         propertiesCodec(),
-        Codec.STRING.fieldOf("id").forGetter(BaseBlockPipe::getId),
-        MATERIAL_CODEC.fieldOf("material").forGetter(BaseBlockPipe::getPipeMaterial),
-        TYPE_CODEC.fieldOf("material").forGetter(BaseBlockPipe::getPipeType)
+        Codec.STRING.fieldOf("id").forGetter(BasePipeBlock::getId),
+        MATERIAL_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeMaterial),
+        TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
     ).apply(instance, function));
   }
 

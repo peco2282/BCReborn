@@ -13,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 import peco2282.bcreborn.transport.block.entity.ItemPipeBlockEntity;
 
-public class BlockPipeItem extends BaseBlockPipe {
-  public BlockPipeItem(Properties properties, @NotNull String id, PipeMaterial material) {
+public class PipeItemBlock extends BasePipeBlock {
+  public PipeItemBlock(Properties properties, @NotNull String id, PipeMaterial material) {
     this(properties, id, material, PipeType.ITEM);
   }
 
-  private BlockPipeItem(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
+  private PipeItemBlock(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
     super(properties, id, material, type);
   }
 
@@ -33,8 +33,8 @@ public class BlockPipeItem extends BaseBlockPipe {
   }
 
   @Override
-  protected @NotNull MapCodec<BlockPipeItem> codec() {
-    return codecInstance(BlockPipeItem::new);
+  protected @NotNull MapCodec<PipeItemBlock> codec() {
+    return codecInstance(PipeItemBlock::new);
   }
 
 

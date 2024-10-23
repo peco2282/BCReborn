@@ -13,7 +13,7 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 import java.util.EnumMap;
 import java.util.Map;
 
-public abstract class BlockMarkerBase extends TileBaseNeptune {
+public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
   private static final Map<Direction, AABB> BOUNDING_BOXES = new EnumMap<>(Direction.class);
 
   static {
@@ -31,7 +31,7 @@ public abstract class BlockMarkerBase extends TileBaseNeptune {
     BOUNDING_BOXES.put(Direction.WEST, new AABB(ih, nw, nw, 1, pw, pw));
   }
 
-  public BlockMarkerBase(Properties properties, @NotNull String id, PropertyBuilder builder) {
+  public MarkerBaseBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(properties.destroyTime(.25F), id,
   builder.add(
       BCProperties.BLOCK_FACING_6, Direction.UP).add(

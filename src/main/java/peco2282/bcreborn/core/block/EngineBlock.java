@@ -31,11 +31,11 @@ import peco2282.bcreborn.api.enums.EnumEngineType;
 import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.EngineBlockEntity;
-import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 @SuppressWarnings("UnnecessaryBoxing")
-public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFacing {
+public class EngineBlock extends TileBaseNeptuneBlock implements IEngine, RotatableFacing {
   public static final VoxelShape SHAPE_UP = Shapes.or(
       box(0, 0, 0, 16, 4, 16),
       box(4, 4, 4, 12, 16, 12)
@@ -60,15 +60,15 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
       box(0, 4, 4, 12, 12, 12),
       box(12, 0, 0, 16, 16, 16)
   );
-  public static final MapCodec<BlockEngine> CODEC = RecordCodecBuilder
+  public static final MapCodec<EngineBlock> CODEC = RecordCodecBuilder
       .mapCodec(instance -> instance.group(
           propertiesCodec(),
-          Codec.STRING.fieldOf("id").forGetter(TileBaseNeptune::getId),
-          EnumEngineType.CODEC.fieldOf("engine_type").forGetter(BlockEngine::type)
-      ).apply(instance, BlockEngine::new));
+          Codec.STRING.fieldOf("id").forGetter(TileBaseNeptuneBlock::getId),
+          EnumEngineType.CODEC.fieldOf("engine_type").forGetter(EngineBlock::type)
+      ).apply(instance, EngineBlock::new));
   private final EnumEngineType type;
 
-  public BlockEngine(@NotNull String id, EnumEngineType type) {
+  public EngineBlock(@NotNull String id, EnumEngineType type) {
     this(
         Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().lightLevel(s -> 1),
         id,
@@ -76,7 +76,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
     );
   }
 
-  private BlockEngine(Properties properties, @NotNull String id, EnumEngineType type) {
+  private EngineBlock(Properties properties, @NotNull String id, EnumEngineType type) {
     super(properties, id,
         PropertyBuilder.builder()
             .add(BCProperties.ACTIVE, Boolean.valueOf(false))
@@ -153,7 +153,7 @@ public class BlockEngine extends TileBaseNeptune implements IEngine, RotatableFa
   }
 
   @Override
-  protected @NotNull MapCodec<BlockEngine> codec() {
+  protected @NotNull MapCodec<EngineBlock> codec() {
     return CODEC;
   }
 

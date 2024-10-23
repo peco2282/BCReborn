@@ -2,13 +2,13 @@ package peco2282.bcreborn.api.block;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import peco2282.bcreborn.lib.block.BlockBaseNeptune;
-import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.lib.block.BaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 
 /**
  * Base interface for BCReborn mod's block.
- * @see BlockBaseNeptune
- * @see TileBaseNeptune
+ * @see BaseNeptuneBlock
+ * @see TileBaseNeptuneBlock
  * @author peco2282
  */
 public interface BCBlock {

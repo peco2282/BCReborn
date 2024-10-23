@@ -24,17 +24,17 @@ import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
-import peco2282.bcreborn.lib.block.BlockMarkerBase;
-import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.lib.block.MarkerBaseBlock;
+import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class BlockMarkerVolume extends BlockMarkerBase {
+public class MarkerVolumeBlock extends MarkerBaseBlock {
 
   private static final VoxelShape BOTTOM = box(7, 0, 7, 9, 9, 9);
   private static final VoxelShape UP = box(7, 7, 7, 9, 16, 9);
 
-  public BlockMarkerVolume(Properties properties, @NotNull String id) {
+  public MarkerVolumeBlock(Properties properties, @NotNull String id) {
     super(
         properties.lightLevel(s -> s.getValue(BCProperties.ACTIVE) ? 8 : 1).noCollission(),
         id,
@@ -50,21 +50,21 @@ public class BlockMarkerVolume extends BlockMarkerBase {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.north(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume) return currPos;
+      if (block instanceof MarkerVolumeBlock) return currPos;
     }
 
     // Y
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.above(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume) return currPos;
+      if (block instanceof MarkerVolumeBlock) return currPos;
     }
 
     // Z
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.east(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume) return currPos;
+      if (block instanceof MarkerVolumeBlock) return currPos;
     }
     return null;
   }
@@ -80,8 +80,8 @@ public class BlockMarkerVolume extends BlockMarkerBase {
   }
 
   @Override
-  protected @NotNull MapCodec<? extends TileBaseNeptune> codec() {
-    return codecInstance(BlockMarkerVolume::new);
+  protected @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec() {
+    return codecInstance(MarkerVolumeBlock::new);
   }
 
   @Override
@@ -100,7 +100,7 @@ public class BlockMarkerVolume extends BlockMarkerBase {
     BlockPos pos = matchLine(p_60504_, p_60505_);
     if (pos != null) {
       BlockEntity entity = p_60504_.getBlockEntity(pos);
-      System.out.println("BlockMarkerVolume.useWithoutItem " + p_60505_ + " " + pos);
+      System.out.println("MarkerVolumeBlock.useWithoutItem " + p_60505_ + " " + pos);
       if (entity instanceof MarkerVolumeBlockEntity volume) {
         BlockState activate = volume.disabled();
         p_60504_.setBlockAndUpdate(pos, activate);

@@ -6,14 +6,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.lib.block.BlockBaseNeptune;
+import peco2282.bcreborn.lib.block.BaseNeptuneBlock;
 import peco2282.bcreborn.api.enums.EnumDecoratedBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class BlockDecoration extends BlockBaseNeptune {
+public class DecorationBlock extends BaseNeptuneBlock {
   public static final Property<EnumDecoratedBlock> DECORATED_TYPE = BCProperties.DECORATED_BLOCK;
 
-  public BlockDecoration(String id) {
+  public DecorationBlock(String id) {
     super(
         Properties.of()
             .lightLevel(state -> {

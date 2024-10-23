@@ -26,11 +26,11 @@ import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.FillerBlockEntity;
 import peco2282.bcreborn.builder.block.menu.FillerMenu;
-import peco2282.bcreborn.lib.block.TileBaseNeptune;
+import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
-  public BlockFiller(Properties properties, @NotNull String id) {
+public class FillerBlock extends TileBaseNeptuneBlock implements RotatableFacing {
+  public FillerBlock(Properties properties, @NotNull String id) {
     super(properties, id,
         PropertyBuilder
             .builder()
@@ -46,8 +46,8 @@ public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
   }
 
   @Override
-  protected @NotNull MapCodec<BlockFiller> codec() {
-    return codecInstance(BlockFiller::new);
+  protected @NotNull MapCodec<FillerBlock> codec() {
+    return codecInstance(FillerBlock::new);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class BlockFiller extends TileBaseNeptune implements RotatableFacing {
     return new MenuProvider() {
       @Override
       public @NotNull Component getDisplayName() {
-        if (p_60563_.getBlock() instanceof BlockFiller filler)
+        if (p_60563_.getBlock() instanceof FillerBlock filler)
           return Component.literal(filler.getId());
         return Component.empty();
       }

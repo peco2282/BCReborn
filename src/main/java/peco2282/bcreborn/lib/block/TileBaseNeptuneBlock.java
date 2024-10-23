@@ -18,16 +18,16 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 
 import java.util.function.BiFunction;
 
-public abstract class TileBaseNeptune extends BlockBaseNeptune implements EntityBlock, BCBlock {
-  public TileBaseNeptune(Properties properties, @NotNull String id, PropertyBuilder builder) {
+public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements EntityBlock, BCBlock {
+  public TileBaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(properties, id, builder);
   }
 
-  protected static <T extends TileBaseNeptune> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
+  protected static <T extends TileBaseNeptuneBlock> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
     return RecordCodecBuilder
         .mapCodec(instance -> instance.group(
             propertiesCodec(),
-            Codec.STRING.fieldOf("id").forGetter(BlockBaseNeptune::getId)
+            Codec.STRING.fieldOf("id").forGetter(BaseNeptuneBlock::getId)
         ).apply(instance, function));
   }
 
@@ -36,7 +36,7 @@ public abstract class TileBaseNeptune extends BlockBaseNeptune implements Entity
   public abstract BlockEntity newBlockEntity(BlockPos pos, BlockState state);
 
   @Override
-  protected abstract @NotNull MapCodec<? extends TileBaseNeptune> codec();
+  protected abstract @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec();
 
   abstract protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder);
 

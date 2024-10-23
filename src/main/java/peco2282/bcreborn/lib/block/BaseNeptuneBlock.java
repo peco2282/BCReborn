@@ -19,11 +19,11 @@ import peco2282.bcreborn.api.block.Facing;
 import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public abstract class BlockBaseNeptune extends Block implements BCBlock {
-  private static final Logger log = LoggerFactory.getLogger(BlockBaseNeptune.class);
+public abstract class BaseNeptuneBlock extends Block implements BCBlock {
+  private static final Logger log = LoggerFactory.getLogger(BaseNeptuneBlock.class);
   protected final String id;
 
-  public BlockBaseNeptune(Properties properties, @NotNull String id, PropertyBuilder builder) {
+  public BaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(update(properties));
     BlockState raw = getStateDefinition().any();
     registerDefaultState(builder.set(raw));

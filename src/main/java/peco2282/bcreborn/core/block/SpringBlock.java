@@ -11,14 +11,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.lib.block.BlockBaseNeptune;
+import peco2282.bcreborn.lib.block.BaseNeptuneBlock;
 import peco2282.bcreborn.api.enums.EnumSpring;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class BlockSpring extends BlockBaseNeptune {
+public class SpringBlock extends BaseNeptuneBlock {
   public static final Property<EnumSpring> SPRING_TYPE = BCProperties.SPRING_TYPE;
 
-  public BlockSpring(@NotNull String id) {
+  public SpringBlock(@NotNull String id) {
     super(
         Properties.of()
             .randomTicks()

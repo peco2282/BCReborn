@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
-import peco2282.bcreborn.core.block.BlockMarkerVolume;
+import peco2282.bcreborn.core.block.MarkerVolumeBlock;
 import peco2282.bcreborn.lib.block.entity.TileNeptune;
 import peco2282.bcreborn.utils.OptionalWith;
 
@@ -35,7 +35,7 @@ public class MarkerVolumeBlockEntity extends TileNeptune {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.north(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
         holder.add(currPos);
         break;
       }
@@ -45,7 +45,7 @@ public class MarkerVolumeBlockEntity extends TileNeptune {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.above(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
         holder.add(currPos);
         break;
       }
@@ -55,7 +55,7 @@ public class MarkerVolumeBlockEntity extends TileNeptune {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.east(curr)).getBlock();
-      if (block instanceof BlockMarkerVolume && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
         holder.add(currPos);
         break;
       }
