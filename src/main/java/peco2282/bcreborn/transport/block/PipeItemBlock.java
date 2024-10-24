@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
-import peco2282.bcreborn.transport.block.entity.ItemPipeBlockEntity;
+import peco2282.bcreborn.transport.block.entity.pipe.*;
 
 public class PipeItemBlock extends BasePipeBlock {
   public PipeItemBlock(Properties properties, @NotNull String id, PipeMaterial material) {
@@ -24,12 +24,19 @@ public class PipeItemBlock extends BasePipeBlock {
 
   @Override
   public @NotNull BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return new ItemPipeBlockEntity(pos, state, getPipeMaterial());
+    return switch (getPipeMaterial()) {
+      case WOOD -> new WoddenItemPipeBlockEntity(pos, state);
+      case STONE -> new StoneItemPipeBlockEntity(pos, state);
+      case COBBLESTONE -> new CobbleStoneItemPipeBlockEntity(pos, state);
+      case IRON -> new IronItemPipeBlockEntity(pos, state);
+      case GOLD -> new GoldItemPipeBlockEntity(pos, state);
+      case DIAMOND -> new DiamondItemPipeBlockEntity(pos, state);
+    };
   }
 
   @Override
   public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BCTransportBlockEntities.ITEM_PIPE.get(), ItemPipeBlockEntity::tick);
+    return BaseEntityBlock.createTickerHelper(p_153214_, BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), WoddenItemPipeBlockEntity::tick);
   }
 
   @Override

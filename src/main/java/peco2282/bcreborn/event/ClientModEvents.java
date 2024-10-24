@@ -50,6 +50,6 @@ public class ClientModEvents {
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeRenderer::new);
-    event.registerBlockEntityRenderer(BCTransportBlockEntities.ITEM_PIPE.get(), PipeRenderer::new);
+    event.registerBlockEntityRenderer(BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), PipeRenderer::new);
   }
 }
