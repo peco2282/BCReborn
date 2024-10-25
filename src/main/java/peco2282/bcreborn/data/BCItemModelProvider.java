@@ -60,8 +60,7 @@ public class BCItemModelProvider extends BlockStateProvider {
     cube("filler", UnaryOperator.identity());
     itemModels()
         .getBuilder("marker_volume")
-        .parent(generated())
-        .texture("layer0", modLoc("block/marker_volume_on"))
+        .parent(existing(modLoc("block/marker_volume_on")))
         .renderType(mcLoc("cutout"));
   }
 
