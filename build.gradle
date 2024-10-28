@@ -229,3 +229,10 @@ sourceSets.each {
 test {
   useJUnitPlatform()
 }
+
+idea {
+  module {
+    downloadJavadoc = true
+    downloadSources = true
+  }
+}
