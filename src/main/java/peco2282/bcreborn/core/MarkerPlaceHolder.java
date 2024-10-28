@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +19,12 @@ public class MarkerPlaceHolder {
       ).apply(instance, MarkerPlaceHolder::new));
   private BlockPos start;
   private BlockPos end;
-  private int xStart;
-  private int yStart;
-  private int zStart;
-  private int xEnd;
-  private int yEnd;
-  private int zEnd;
+  public int xStart;
+  public int yStart;
+  public int zStart;
+  public int xEnd;
+  public int yEnd;
+  public int zEnd;
 
   public MarkerPlaceHolder(BlockPos start) {
     this(start, start);
@@ -86,7 +87,7 @@ public class MarkerPlaceHolder {
   }
 
   public BlockPos getStart() {
-    return start.mutable();
+    return start;
   }
 
   public BlockPos getEnd() {
@@ -109,6 +110,11 @@ public class MarkerPlaceHolder {
     return this.zEnd - this.zStart;
   }
 
+  @Override
+  public String toString() {
+    return "start: %s, end: %s x: %d y: %d z: %d".formatted(start, end, rangeX(), rangeY(), rangeZ());
+  }
+
   public record Corner(
       BlockPos corner1,
       BlockPos corner2,
@@ -119,7 +125,7 @@ public class MarkerPlaceHolder {
       BlockPos corner7,
       BlockPos corner8
   ) {
-    public List<List<BlockPos>> renderList() {
+    public @NotNull @Unmodifiable List<List<BlockPos>> renderList() {
       List<BlockPos> f = ImmutableList.<BlockPos>builder()
           .add(corner1())
           .add(corner2())
