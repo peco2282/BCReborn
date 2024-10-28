@@ -42,7 +42,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
       stack.mulPose(Axis.YP.rotationDegrees(270));
     });
     DIRECTION_MAP.put(Direction.UP, stack -> {
-      stack.translate(1F, -1F, 0F);
+      stack.translate(0F, 1F, 0F);
       stack.mulPose(Axis.XP.rotationDegrees(90));
     });
     DIRECTION_MAP.put(Direction.DOWN, stack -> {
@@ -68,7 +68,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
         0.45F,
         0.55F,
         0.55F,
-        size
+        size + 1.0F
     );
 
     renderPart(
@@ -86,7 +86,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
     float f = map.minZ();
     float fMax = map.minZ() + width;
 
-    while (fMax < map.maxZ()) {
+    while (fMax <= map.maxZ()) {
       stack.pushPose();
 
       Consumer<PoseStack> consumer = DIRECTION_MAP.get(direction);
@@ -164,22 +164,21 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   @Override
   public void render(MarkerVolumeBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
 //    if (!p_112307_.isActive()) return;
+    if (MarkerVolumeBlockEntity.rendered.contains(p_112307_)) return;
     MarkerPlaceHolder holder = p_112307_.renderer();
     if (!holder.canRender()) return;
-    PoseStack stack = new PoseStack();
-    stack.translate(
-        holder.getStart().getX(),
-        holder.getStart().getY(),
-        holder.getStart().getZ()
-    );
     if (holder.rangeX() != 0) {
-      renderBeam(stack, p_112310_, Direction.NORTH, holder.rangeX());
+      renderBeam(p_112309_, p_112310_, Direction.EAST, holder.rangeX());
+      p_112309_.pushPose();
+      p_112309_.translate(0, 0, holder.rangeZ());
+      renderBeam(p_112309_, p_112310_, Direction.EAST, holder.rangeX());
+      p_112309_.popPose();
     }
     if (holder.rangeY() != 0) {
-      renderBeam(stack, p_112310_, Direction.UP, holder.rangeY());
+      renderBeam(p_112309_, p_112310_, Direction.UP, holder.rangeY());
     }
     if (holder.rangeZ() != 0) {
-      renderBeam(stack, p_112310_, Direction.SOUTH, holder.rangeZ());
+      renderBeam(p_112309_, p_112310_, Direction.NORTH, holder.rangeZ());
     }
   }
 
