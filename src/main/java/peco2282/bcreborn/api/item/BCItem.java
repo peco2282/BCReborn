@@ -1,5 +1,7 @@
 package peco2282.bcreborn.api.item;
 
-public interface BCItem {
+import peco2282.bcreborn.api.Debuggable;
+
+public interface BCItem extends Debuggable {
   String getId();
 }

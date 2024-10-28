@@ -1,5 +1,6 @@
 package peco2282.bcreborn.api.block;
 
+import peco2282.bcreborn.api.Debuggable;
 import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 
 /**
@@ -7,5 +8,5 @@ import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
  * @see NeptuneBlockEntity
  * @author peco2282
  */
-public interface BCBlockEntity {
+public interface BCBlockEntity extends Debuggable {
 }

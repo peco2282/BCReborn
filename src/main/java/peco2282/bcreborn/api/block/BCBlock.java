@@ -2,6 +2,7 @@ package peco2282.bcreborn.api.block;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import peco2282.bcreborn.api.Debuggable;
 import peco2282.bcreborn.lib.block.BaseNeptuneBlock;
 import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 
@@ -11,7 +12,7 @@ import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
  * @see TileBaseNeptuneBlock
  * @author peco2282
  */
-public interface BCBlock {
+public interface BCBlock extends Debuggable {
   String getId();
   default Block getBlock() {
     return (Block) this;
