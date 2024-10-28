@@ -9,15 +9,15 @@ import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.MarkerVolumeBlock;
 import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
-import peco2282.bcreborn.utils.OptionalWith;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
 public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
-  private final OptionalWith<BlockPos> FROM = OptionalWith.empty();
-  private final OptionalWith<BlockPos> TO = OptionalWith.empty();
-
+  public static final List<MarkerVolumeBlockEntity> rendered = new ArrayList<>();
+  private final MarkerVolumeBlockEntity[] connections = new MarkerVolumeBlockEntity[3];
   public MarkerVolumeBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), p_155229_, p_155230_);
   }
@@ -35,8 +35,11 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.north(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
+        rendered.add(entity);
+        volume.connections[0] = entity;
+        entity.connections[0] = volume;
         break;
       }
     }
@@ -45,8 +48,11 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.above(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
+        rendered.add(entity);
+        volume.connections[1] = entity;
+        entity.connections[1] = volume;
         break;
       }
     }
@@ -55,11 +61,15 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.east(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity) {
+      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
+        rendered.add(entity);
+        volume.connections[2] = entity;
+        entity.connections[2] = volume;
         break;
       }
     }
+    LOGGER.info(String.valueOf(holder));
     return holder;
   }
 
