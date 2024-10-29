@@ -17,7 +17,6 @@ import java.util.Objects;
 
 public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
   public static final List<MarkerVolumeBlockEntity> rendered = new ArrayList<>();
-  private final MarkerVolumeBlockEntity[] connections = new MarkerVolumeBlockEntity[3];
   public MarkerVolumeBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), p_155229_, p_155230_);
   }
@@ -38,8 +37,6 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
       if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
         rendered.add(entity);
-        volume.connections[0] = entity;
-        entity.connections[0] = volume;
         break;
       }
     }
@@ -51,8 +48,6 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
       if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
         rendered.add(entity);
-        volume.connections[1] = entity;
-        entity.connections[1] = volume;
         break;
       }
     }
@@ -64,8 +59,6 @@ public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
       if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         holder.add(currPos);
         rendered.add(entity);
-        volume.connections[2] = entity;
-        entity.connections[2] = volume;
         break;
       }
     }
