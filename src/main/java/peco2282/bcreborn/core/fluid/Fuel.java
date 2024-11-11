@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.FluidType;
+import peco2282.bcreborn.core.block.BCCoreBlocks;
 
 public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel.Flowing {
   @Override
@@ -78,12 +80,20 @@ public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel
 
   @Override
   protected BlockState createLegacyBlock(FluidState p_76136_) {
-    return null;
+    return isSource(p_76136_) ?
+        BCCoreBlocks.FUEL_SOURCE.get().defaultBlockState() :
+        BCCoreBlocks.FUEL_FLOWING.get().defaultBlockState()
+            .setValue(LEVEL, getLegacyLevel(p_76136_));
   }
 
   @Override
   public boolean isSource(FluidState p_76140_) {
     return this instanceof Source;
+  }
+
+  @Override
+  public FluidType getFluidType() {
+    return BCCoreFluids.FUEL.get();
   }
 
   public static final class Source extends Fuel {
