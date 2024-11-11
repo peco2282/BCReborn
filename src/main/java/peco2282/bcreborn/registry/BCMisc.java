@@ -2,10 +2,12 @@ package peco2282.bcreborn.registry;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.data.tag.BCBlockTag;
 import peco2282.bcreborn.data.tag.BCItemTag;
+import peco2282.bcreborn.registry.levelgen.OilPlacementFilter;
 import peco2282.bcreborn.utils.RegistryUtil;
 
 public class BCMisc {
@@ -25,6 +27,8 @@ public class BCMisc {
       .registerTab(name("transport"), () -> CreativeModeTab.builder()
           .displayItems((params, output) -> output.acceptAll(RegistryUtil.flattenBlock(BCBlockTag.TRANSPORT).stream().map(ItemStack::new).toList()))
           .build());
+
+  public static final RegistryObject<PlacementModifierType<OilPlacementFilter>> OIL_PMT = BCRegistry.registerPlacementModifierType("oil_source_type", OilPlacementFilter.CODEC);
 
   private static String name(String name) {
     return BCReborn.MODID + "_" + name;
