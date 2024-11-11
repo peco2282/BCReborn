@@ -39,6 +39,7 @@ public interface BCProperties {
   BooleanProperty LED_DONE = BooleanProperty.create("led_done");
   BooleanProperty ACTIVE = BooleanProperty.create("active");
   BooleanProperty VALID = BooleanProperty.create("valid");
+  BooleanProperty CONNECTED = BooleanProperty.create("connected");
 
   BooleanProperty CONNECTED_UP = BooleanProperty.create("connected_up");
   BooleanProperty CONNECTED_DOWN = BooleanProperty.create("connected_down");
