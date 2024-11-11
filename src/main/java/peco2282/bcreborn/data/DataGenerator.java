@@ -24,7 +24,7 @@ public class DataGenerator {
     generator.addProvider(true, new BCFluidTagsProvider(output, provider, helper));
     generator.addProvider(true, new BCItemTagsProvider(output, provider, blockTags.contentsGetter()));
     generator.addProvider(true, new BCAdvancementProvider(output, provider, helper));
-    generator.addProvider(true, new BCItemModelProvider(output, helper));
+    generator.addProvider(true, new BCItemModelProvider(output, provider, helper));
     generator.addProvider(true, new BCRecipeProvider(output, provider));
     generator.addProvider(true, new BCLanguageProvider(output, "en_us"));
     generator.addProvider(true, new BCRegistryProvider(output, provider));
