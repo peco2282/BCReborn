@@ -1,10 +1,12 @@
 package peco2282.bcreborn.data;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -23,14 +25,17 @@ import peco2282.bcreborn.core.item.GearItem;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
 
 public class BCItemModelProvider extends BlockStateProvider {
   final ExistingFileHelper helper;
+  final HolderLookup.Provider provider;
 
-  public BCItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+  public BCItemModelProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
     super(output, BCReborn.MODID, existingFileHelper);
     this.helper = existingFileHelper;
+    this.provider = provider.getNow(null);
   }
 
   @Override
@@ -44,10 +49,10 @@ public class BCItemModelProvider extends BlockStateProvider {
 
   private void blockModel() {
     engine();
-    models().getBuilder("oil")
+    models().getBuilder("oil_source")
         .texture("particle", modLoc("fluid/oil_source"));
 
-    models().getBuilder("fuel")
+    models().getBuilder("fuel_source")
         .texture("particle", modLoc("fluid/fuel_source"));
   }
 
@@ -79,7 +84,7 @@ public class BCItemModelProvider extends BlockStateProvider {
         .forAllStatesExcept(s -> engineModels(s, EnumEngineType.IRON), ignores)
     ;
     getVariantBuilder(BCCoreBlocks.CREATIVE_ENGINE.get())
-        .forAllStatesExcept(s -> engineModels(s, EnumEngineType.CREATIVE) , ignores)
+        .forAllStatesExcept(s -> engineModels(s, EnumEngineType.CREATIVE), ignores)
     ;
 
     getVariantBuilder(BCBuilderBlocks.FILLER.get())
@@ -102,57 +107,60 @@ public class BCItemModelProvider extends BlockStateProvider {
         .forAllStatesExcept(state -> {
           boolean active = state.getValue(BCProperties.ACTIVE);
           return ConfiguredModel
-             .builder()
-             .modelFile(existing(modLoc("block/marker_volume_" + (active ? "on" : "off"))))
-             .build();
+              .builder()
+              .modelFile(existing(modLoc("block/marker_volume_" + (active ? "on" : "off"))))
+              .build();
         }, BCProperties.BLOCK_FACING);
+
+    getVariantBuilder(BCCoreBlocks.OIL_SOURCE.get())
+        .forAllStatesExcept(s -> ConfiguredModel.builder().modelFile(unchecked(modLoc("block/oil_source"))).build(), BlockStateProperties.LEVEL);
   }
 
   private ConfiguredModel[] engineModels(BlockState state, EnumEngineType type) {
-      Direction direction = state.getValue(BCProperties.BLOCK_FACING);
-      int line = state.getValue(BCProperties.ENGINE_MODEL);
+    Direction direction = state.getValue(BCProperties.BLOCK_FACING);
+    int line = state.getValue(BCProperties.ENGINE_MODEL);
 
-      EnumPowerStage stage = state.getValue(BCProperties.ENERGY_STAGE);
-      int rotX, rotY;
-      switch (direction) {
-        case DOWN -> {
-          rotX = 180;
-          rotY = 0;
-        }
-        case SOUTH -> {
-          rotX = 90;
-          rotY = 180;
-        }
-        case WEST -> {
-          rotX = 90;
-          rotY = 270;
-        }
-        case EAST -> {
-          rotX = 90;
-          rotY = 90;
-        }
-        case NORTH -> {
-          rotX = 90;
-          rotY = 0;
-        }
-        default -> {
-          rotX = 0;
-          rotY = 0;
-        }
+    EnumPowerStage stage = state.getValue(BCProperties.ENERGY_STAGE);
+    int rotX, rotY;
+    switch (direction) {
+      case DOWN -> {
+        rotX = 180;
+        rotY = 0;
       }
+      case SOUTH -> {
+        rotX = 90;
+        rotY = 180;
+      }
+      case WEST -> {
+        rotX = 90;
+        rotY = 270;
+      }
+      case EAST -> {
+        rotX = 90;
+        rotY = 90;
+      }
+      case NORTH -> {
+        rotX = 90;
+        rotY = 0;
+      }
+      default -> {
+        rotX = 0;
+        rotY = 0;
+      }
+    }
 
-      return ConfiguredModel
-          .builder()
-          .modelFile(unchecked(modLoc("block/engine/" + type.getSerializedName() + "/" + stage.getSerializedName() + "/engine_" + line)))
-          .rotationX(rotX)
-          .rotationY(rotY).build();
+    return ConfiguredModel
+        .builder()
+        .modelFile(unchecked(modLoc("block/engine/" + type.getSerializedName() + "/" + stage.getSerializedName() + "/engine_" + line)))
+        .rotationX(rotX)
+        .rotationY(rotY).build();
   }
 
   private void engine() {
     String[] names = Arrays.stream(EnumEngineType.values()).map(EnumEngineType::getSerializedName).toArray(String[]::new);
     String[] types = Arrays.stream(EnumPowerStage.values()).map(EnumPowerStage::getSerializedName).toArray(String[]::new);
     for (String name : names) {
-      for (String type: types){
+      for (String type : types) {
         for (int i = 1; i < 10; i++) {
           models().getBuilder(String.format(Locale.ENGLISH, "block/engine/%s/%s/engine_%s", name, type, i))
               .parent(existing(modLoc("block/engine/base/engine_" + i)))
@@ -187,6 +195,7 @@ public class BCItemModelProvider extends BlockStateProvider {
   ModelFile unchecked(ResourceLocation location) {
     return new ModelFile.UncheckedModelFile(location);
   }
+
   ModelFile existing(ResourceLocation location) {
     return new ModelFile.ExistingModelFile(location, helper);
   }
