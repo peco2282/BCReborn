@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -19,6 +20,8 @@ public class MarkerPlaceHolder {
       ).apply(instance, MarkerPlaceHolder::new));
   private BlockPos start;
   private BlockPos end;
+  private BlockPos base;
+  private BlockPos last;
   public int xStart;
   public int yStart;
   public int zStart;
@@ -39,6 +42,8 @@ public class MarkerPlaceHolder {
     this.zEnd = Math.max(end.getZ(), start.getZ());
     this.start = new BlockPos(this.xStart, this.yStart, this.zStart);
     this.end = new BlockPos(this.xEnd, this.yEnd, this.zEnd);
+    this.base = this.start;
+    this.last = this.end;
   }
 
   public boolean inRange(final @NotNull BlockPos pos) {
@@ -75,6 +80,7 @@ public class MarkerPlaceHolder {
     this.zEnd = Math.max(pos.getZ(), this.zEnd);
     this.start = new BlockPos(this.xStart, this.yStart, this.zStart);
     this.end = new BlockPos(this.xEnd, this.yEnd, this.zEnd);
+    this.last = pos;
     return true;
   }
 
@@ -108,6 +114,26 @@ public class MarkerPlaceHolder {
 
   public int rangeZ() {
     return this.zEnd - this.zStart;
+  }
+
+  public Direction directionX() {
+    return (last.getX() - base.getX()) > 0 ? Direction.EAST : Direction.WEST;
+  }
+  public Direction directionY() {
+    return (last.getY() - base.getY()) > 0 ? Direction.UP : Direction.DOWN;
+  }
+  public Direction directionZ() {
+    return (last.getZ() - base.getZ()) > 0 ? Direction.SOUTH : Direction.NORTH;
+  }
+
+  public int distanceX() {
+    return last.getX() - base.getX();
+  }
+  public int distanceY() {
+    return last.getY() - base.getY();
+  }
+  public int distanceZ() {
+    return last.getZ() - base.getZ();
   }
 
   @Override

@@ -38,7 +38,7 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
     super(
         properties.lightLevel(s -> s.getValue(BCProperties.ACTIVE) ? 8 : 1).noCollission(),
         id,
-        PropertyBuilder.builder().add(BCProperties.ACTIVE, false));
+        PropertyBuilder.builder().add(BCProperties.ACTIVE, false).add(BCProperties.CONNECTED, false));
   }
 
   public static @Nullable BlockPos matchLine(Level level, BlockPos pos) {
@@ -86,6 +86,7 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
 
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(BCProperties.CONNECTED);
   }
 
   @Override
@@ -100,7 +101,6 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
     BlockPos pos = matchLine(p_60504_, p_60505_);
     if (pos != null) {
       BlockEntity entity = p_60504_.getBlockEntity(pos);
-      System.out.println("MarkerVolumeBlock.useWithoutItem " + p_60505_ + " " + pos);
       if (entity instanceof MarkerVolumeBlockEntity volume) {
         BlockState activate = volume.disabled();
         p_60504_.setBlockAndUpdate(pos, activate);

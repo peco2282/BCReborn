@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
@@ -164,21 +165,39 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   @Override
   public void render(MarkerVolumeBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
 //    if (!p_112307_.isActive()) return;
-    if (MarkerVolumeBlockEntity.rendered.contains(p_112307_)) return;
+    if (p_112307_.norender()) return;
     MarkerPlaceHolder holder = p_112307_.renderer();
     if (!holder.canRender()) return;
+    if (p_112307_.isSignal()) {
+      int max = BCConfiguration.maxVolumeLength;
+      renderBeam(p_112309_, p_112310_, Direction.NORTH, max);
+      renderBeam(p_112309_, p_112310_, Direction.SOUTH, max);
+      renderBeam(p_112309_, p_112310_, Direction.EAST, max);
+      renderBeam(p_112309_, p_112310_, Direction.WEST, max);
+      renderBeam(p_112309_, p_112310_, Direction.UP, max);
+      renderBeam(p_112309_, p_112310_, Direction.DOWN, max);
+      return;
+    }
     if (holder.rangeX() != 0) {
-      renderBeam(p_112309_, p_112310_, Direction.EAST, holder.rangeX());
+      renderBeam(p_112309_, p_112310_, holder.directionX(), holder.rangeX());
       p_112309_.pushPose();
-      p_112309_.translate(0, 0, holder.rangeZ());
-      renderBeam(p_112309_, p_112310_, Direction.EAST, holder.rangeX());
+      p_112309_.translate(0, 0, (holder.distanceZ() > 0 ? 1 : -1) * holder.rangeZ());
+      renderBeam(p_112309_, p_112310_, holder.directionX(), holder.rangeX());
       p_112309_.popPose();
     }
     if (holder.rangeY() != 0) {
-      renderBeam(p_112309_, p_112310_, Direction.UP, holder.rangeY());
+      renderBeam(p_112309_, p_112310_, holder.directionY(), holder.rangeY());
+      p_112309_.pushPose();
+      p_112309_.translate(0, (holder.distanceY() > 0 ? 1 : -1) * holder.rangeY(), 0);
+      renderBeam(p_112309_, p_112310_, holder.directionY(), holder.rangeY());
+      p_112309_.popPose();
     }
     if (holder.rangeZ() != 0) {
-      renderBeam(p_112309_, p_112310_, Direction.NORTH, holder.rangeZ());
+      renderBeam(p_112309_, p_112310_, holder.directionZ(), holder.rangeZ());
+      p_112309_.pushPose();
+      p_112309_.translate((holder.distanceX() > 0 ? 1 : -1) * holder.rangeX(), 0, 0);
+      renderBeam(p_112309_, p_112310_, holder.directionZ(), holder.rangeZ());
+      p_112309_.popPose();
     }
   }
 
