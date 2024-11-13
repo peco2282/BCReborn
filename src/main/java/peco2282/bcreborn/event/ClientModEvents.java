@@ -12,6 +12,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.builder.block.BCBuilderBlocks;
+import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
+import peco2282.bcreborn.builder.block.entity.renderer.TankRenderer;
 import peco2282.bcreborn.builder.block.menu.BCBuilderMenuTypes;
 import peco2282.bcreborn.builder.block.screen.FillerScreen;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
@@ -51,5 +54,6 @@ public class ClientModEvents {
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeRenderer::new);
     event.registerBlockEntityRenderer(BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), PipeRenderer::new);
+    event.registerBlockEntityRenderer(BCBuilderBlockEntityTypes.TANK.get(), TankRenderer::new);
   }
 }
