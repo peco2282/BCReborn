@@ -126,6 +126,7 @@ public class ChuteBlockEtity extends NeptuneContainerBlockEntity {
   public static boolean addItem(Container inventory, ItemEntity entity) {
     boolean flag = false;
     ItemStack stack = entity.getItem().copy();
+    return false;
   }
 
   public void moveItems(Level level, BlockPos pos, BlockState state, BlockEntity entity, BooleanSupplier supplier) {}
