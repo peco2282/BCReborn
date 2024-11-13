@@ -1,5 +1,6 @@
 package peco2282.bcreborn.bean;
 
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -23,8 +24,12 @@ public class ContextProcessor {
     return instance;
   }
 
+  private static ModFileScanData getScanData() {
+    return getInstance().container.getModInfo().getOwningFile().getFile().getScanResult();
+  }
+
   public static void initRegister() {
-    ModFileScanData data = getInstance().container.getModInfo().getOwningFile().getFile().getScanResult();
+    ModFileScanData data = getScanData();
     data.getAnnotations().stream().filter(a -> {
           try {
             Class<?> cls = Class.forName(a.annotationType().getClassName());
