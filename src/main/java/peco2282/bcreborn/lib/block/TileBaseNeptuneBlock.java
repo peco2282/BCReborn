@@ -23,6 +23,10 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
     super(properties, id, builder);
   }
 
+  public TileBaseNeptuneBlock(Properties properties, @NotNull String id) {
+    super(properties, id, PropertyBuilder.builder());
+  }
+
   protected static <T extends TileBaseNeptuneBlock> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
     return RecordCodecBuilder
         .mapCodec(instance -> instance.group(
