@@ -92,7 +92,7 @@ public class BCRegistry {
   }
 
   public static void init(IEventBus bus) {
-    ContextProcessor.getInstance().initRegister();
+    ContextProcessor.initRegister();
 
     BLOCK.register(bus);
     ITEM.register(bus);

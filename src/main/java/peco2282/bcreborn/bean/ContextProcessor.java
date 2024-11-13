@@ -23,8 +23,8 @@ public class ContextProcessor {
     return instance;
   }
 
-  public void initRegister() {
-    ModFileScanData data = container.getModInfo().getOwningFile().getFile().getScanResult();
+  public static void initRegister() {
+    ModFileScanData data = getInstance().container.getModInfo().getOwningFile().getFile().getScanResult();
     data.getAnnotations().stream().filter(a -> {
           try {
             Class<?> cls = Class.forName(a.annotationType().getClassName());
