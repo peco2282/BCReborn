@@ -6,12 +6,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.api.block.VolumeMarked;
+import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.QuarryBlockEntity;
 import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
@@ -37,6 +41,11 @@ public class QuarryBlock extends TileBaseNeptuneBlock implements RotatableFacing
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(BCProperties.BLOCK_FACING).add(BCProperties.ACTIVE);
+  }
+
+  @Override
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+    return createTickerHelper(type, BCBuilderBlockEntityTypes.QUARRY.get(), QuarryBlockEntity::tick);
   }
 
   @Override

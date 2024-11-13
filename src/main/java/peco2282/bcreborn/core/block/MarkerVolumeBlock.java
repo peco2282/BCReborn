@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -90,8 +89,8 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
   }
 
   @Override
-  public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeBlockEntity::tick);
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+    return createTickerHelper(type, BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeBlockEntity::tick);
   }
 
   @Override

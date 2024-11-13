@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -110,6 +109,11 @@ public class EngineBlock extends TileBaseNeptuneBlock implements IEngine, Rotata
   }
 
   @Override
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+    return createTickerHelper(type, BCCoreBlockEntityTypes.ENGINE.get(), EngineBlockEntity::tick);
+  }
+
+  @Override
   public @NotNull BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new EngineBlockEntity(pos, state);
   }
@@ -155,12 +159,6 @@ public class EngineBlock extends TileBaseNeptuneBlock implements IEngine, Rotata
   @Override
   protected @NotNull MapCodec<EngineBlock> codec() {
     return CODEC;
-  }
-
-  @Nullable
-  @Override
-  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BCCoreBlockEntityTypes.ENGINE.get(), EngineBlockEntity::tick);
   }
 
   @Override

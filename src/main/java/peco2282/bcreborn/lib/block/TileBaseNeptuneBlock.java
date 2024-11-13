@@ -9,6 +9,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +18,7 @@ import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
+import javax.annotation.Nullable;
 import java.util.function.BiFunction;
 
 public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements EntityBlock, BCBlock {
@@ -64,5 +67,21 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
       nep.onRemove();
     }
     super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
+  }
+
+  @Nullable
+  protected abstract <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type);
+
+  @Override
+  public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return level.isClientSide() ? null : serverTicker(type);
+  }
+
+  @Nullable
+  @SuppressWarnings("unchecked")
+  protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(
+      BlockEntityType<A> be1, BlockEntityType<E> be2, BlockEntityTicker<? super E> ticker
+  ) {
+    return be2 == be1 ? (BlockEntityTicker<A>) ticker : null;
   }
 }

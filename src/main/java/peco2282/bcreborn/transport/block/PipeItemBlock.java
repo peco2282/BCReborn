@@ -35,13 +35,13 @@ public class PipeItemBlock extends BasePipeBlock {
   }
 
   @Override
-  public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return BaseEntityBlock.createTickerHelper(p_153214_, BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), WoddenItemPipeBlockEntity::tick);
+  protected @NotNull MapCodec<PipeItemBlock> codec() {
+    return codecInstance(PipeItemBlock::new);
   }
 
   @Override
-  protected @NotNull MapCodec<PipeItemBlock> codec() {
-    return codecInstance(PipeItemBlock::new);
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+    return createTickerHelper(type, BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), WoddenItemPipeBlockEntity::tick);
   }
 
 

@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.ChuteBlockEtity;
@@ -32,10 +30,6 @@ public class ChuteBlock extends TileBaseNeptuneBlock {
     return new ChuteBlockEtity(pos, state);
   }
 
-  @Override
-  public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return p_153212_.isClientSide() ? null : BaseEntityBlock.createTickerHelper(p_153214_, BCBuilderBlockEntityTypes.CHUTE.get(), ChuteBlockEtity::tick);
-  }
 
   @Override
   protected @NotNull MapCodec<ChuteBlock> codec() {
@@ -56,6 +50,11 @@ public class ChuteBlock extends TileBaseNeptuneBlock {
   protected void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
     Containers.dropContentsOnDestroy(p_60515_, p_60518_, p_60516_, p_60517_);
     super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
+  }
+
+  @Override
+  protected <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+    return createTickerHelper(type, BCBuilderBlockEntityTypes.CHUTE.get(), ChuteBlockEtity::tick);
   }
 
   @Override

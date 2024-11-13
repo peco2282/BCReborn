@@ -2,7 +2,6 @@ package peco2282.bcreborn.lib.block;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -90,9 +89,5 @@ public abstract class BaseNeptuneBlock extends Block implements BCBlock {
       return state.setValue(facing.getFacingProperty(), p_49820_.getNearestLookingDirection().getOpposite().getOpposite());
     }
     return state;
-  }
-
-  public Item.Properties itemProperties() {
-    return new Item.Properties();
   }
 }
