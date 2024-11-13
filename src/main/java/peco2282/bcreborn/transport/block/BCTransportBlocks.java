@@ -4,10 +4,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.api.block.BCBlock;
+import peco2282.bcreborn.bean.InitRegister;
 import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;
 
+@InitRegister
 public class BCTransportBlocks {
   // Wood
   public static final RegistryObject<BasePipeBlock> WOOD_ITEM_PIPE = register("wooden_item_pipe", () -> new PipeItemBlock(Properties.of(), "", BasePipeBlock.PipeMaterial.WOOD));
@@ -37,5 +39,4 @@ public class BCTransportBlocks {
   private static <B extends Block & BCBlock> RegistryObject<B> register(String name, Supplier<B> block) {
     return BCRegistry.registerBlockItem(name, block);
   }
-  public static void init() {}
 }

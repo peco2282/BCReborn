@@ -5,11 +5,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.bean.InitRegister;
 import peco2282.bcreborn.data.tag.BCBlockTag;
 import peco2282.bcreborn.data.tag.BCItemTag;
 import peco2282.bcreborn.registry.levelgen.OilPlacementFilter;
 import peco2282.bcreborn.utils.RegistryUtil;
 
+@InitRegister
 public class BCMisc {
   public static final RegistryObject<CreativeModeTab> CORE_TAB = BCRegistry
       .registerTab(name("core"), () -> CreativeModeTab.builder()
@@ -32,8 +34,5 @@ public class BCMisc {
 
   private static String name(String name) {
     return BCReborn.MODID + "_" + name;
-  }
-
-  static void init() {
   }
 }

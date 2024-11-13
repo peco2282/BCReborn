@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -24,19 +25,9 @@ import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.api.item.BCItem;
-import peco2282.bcreborn.builder.block.BCBuilderBlocks;
-import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
-import peco2282.bcreborn.builder.block.menu.BCBuilderMenuTypes;
-import peco2282.bcreborn.builder.item.BCBuilderItems;
-import peco2282.bcreborn.core.block.BCCoreBlocks;
-import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
-import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
-import peco2282.bcreborn.core.fluid.BCCoreFluids;
-import peco2282.bcreborn.core.item.BCCoreItems;
+import peco2282.bcreborn.bean.ContextProcessor;
 import peco2282.bcreborn.lib.block.menu.BCMenu;
 import peco2282.bcreborn.lib.item.BlockItemNeptune;
-import peco2282.bcreborn.transport.block.BCTransportBlocks;
-import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 
 import java.util.function.Supplier;
 
@@ -100,30 +91,8 @@ public class BCRegistry {
     return PMT.register(name, () -> () -> pmt);
   }
 
-  private static void init() {
-    // Core
-    BCCoreBlocks.init();
-    BCCoreFluids.init();
-    BCCoreItems.init();
-    BCCoreBlockEntityTypes.init();
-    BCCoreMenuTypes.init();
-
-    // Builder
-    BCBuilderBlocks.init();
-    BCBuilderBlockEntityTypes.init();
-    BCBuilderItems.init();
-    BCBuilderMenuTypes.init();
-
-    // Transport
-    BCTransportBlocks.init();
-    BCTransportBlockEntities.init();
-
-    // Misc
-    BCMisc.init();
-  }
-
   public static void init(IEventBus bus) {
-    init();
+    ContextProcessor.getInstance().initRegister();
 
     BLOCK.register(bus);
     ITEM.register(bus);

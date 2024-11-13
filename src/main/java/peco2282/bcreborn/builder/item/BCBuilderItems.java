@@ -4,10 +4,12 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.api.item.BCItem;
+import peco2282.bcreborn.bean.InitRegister;
 import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;
 
+@InitRegister
 public class BCBuilderItems {
   public static final RegistryObject<FillerTypePanel> BOX = register("filler_box", () -> new FillerTypePanel(EnumFillerType.BOX));
   public static final RegistryObject<FillerTypePanel> CLEAR = register("filler_clear", () -> new FillerTypePanel(EnumFillerType.CLEAR));
@@ -21,6 +23,4 @@ public class BCBuilderItems {
   private static <I extends Item & BCItem> RegistryObject<I> register(String name, Supplier<I> item) {
     return BCRegistry.registerItem(name, item);
   }
-
-  public static void init() {}
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.api.enums.EnumEngineType;
+import peco2282.bcreborn.bean.InitRegister;
 import peco2282.bcreborn.core.fluid.BCCoreFluids;
 import peco2282.bcreborn.core.fluid.ExplosibleLiquid;
 import peco2282.bcreborn.lib.item.BlockItemNeptune;
@@ -12,6 +13,7 @@ import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;
 
+@InitRegister
 public class BCCoreBlocks {
   public static final RegistryObject<SpringBlock> SPRING = register("spring", () -> new SpringBlock("spring"));
   public static final RegistryObject<DecorationBlock> DECORATED = register("decorated", () -> new DecorationBlock("decorated"));
@@ -30,8 +32,4 @@ public class BCCoreBlocks {
   private static <B extends Block & BCBlock> RegistryObject<B> register(String name, Supplier<B> block) {
     return BCRegistry.registerBlockItem(name, block, BlockItemNeptune::new);
   }
-
-  public static void init() {
-  }
-
 }
