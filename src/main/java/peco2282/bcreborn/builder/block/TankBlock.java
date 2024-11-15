@@ -13,9 +13,30 @@ import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class TankBlock extends TileBaseNeptuneBlock {
+  private final AtomicInteger fluids = new AtomicInteger(8);
+  private static final int MAX = 16;
   public TankBlock(Properties properties, @NotNull String id) {
     super(properties, id, PropertyBuilder.builder());
+  }
+
+  public int add(int amount) {
+    int curr = fluids.get();
+    if (curr == MAX) return 0;
+    if (curr + amount <= MAX) {
+      fluids.addAndGet(amount);
+      return amount;
+    }
+
+    int plus = curr + amount - MAX;
+    fluids.addAndGet(MAX);
+    return plus;
+  }
+
+  public int get() {
+    return fluids.get();
   }
 
   @Override
