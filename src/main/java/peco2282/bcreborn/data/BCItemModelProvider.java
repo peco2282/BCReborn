@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -163,6 +164,7 @@ public class BCItemModelProvider extends BlockStateProvider {
       for (String type : types) {
         for (int i = 1; i < 10; i++) {
           models().getBuilder(String.format(Locale.ENGLISH, "block/engine/%s/%s/engine_%s", name, type, i))
+//              .customLoader((b, m) -> null).visibility().end()
               .parent(existing(modLoc("block/engine/base/engine_" + i)))
               .texture("0", modLoc("block/engine/" + name + "/side"))
               .texture("1", modLoc("block/engine/" + name + "/back"))
@@ -207,4 +209,5 @@ public class BCItemModelProvider extends BlockStateProvider {
         .renderType(mcLoc("cutout"));
 
   }
+//  static class FunctionalLoader extends CustomLoaderBuilder<>
 }

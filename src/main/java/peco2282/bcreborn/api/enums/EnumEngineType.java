@@ -1,6 +1,7 @@
 package peco2282.bcreborn.api.enums;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import peco2282.bcreborn.BCReborn;
 
@@ -14,15 +15,19 @@ public enum EnumEngineType implements StringRepresentable {
   public static final Codec<EnumEngineType> CODEC = StringRepresentable
       .fromEnum(EnumEngineType::values);
 
-  public final String unlocalizedTag;
-  public final String resourceLocation;
+  private final String unlocalizedTag;
+  private final ResourceLocation resourceLocation;
   public final int output;
 
 
   EnumEngineType(String loc, int output) {
     unlocalizedTag = loc;
-    resourceLocation = BCReborn.MODID + ":blocks/engine/inv/" + loc;
+    resourceLocation = BCReborn.location("blocks/engine/inv/" + loc);
     this.output = output;
+  }
+
+  public ResourceLocation getLocation() {
+    return resourceLocation;
   }
 
   public static EnumEngineType fromMeta(int meta) {
