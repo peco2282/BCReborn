@@ -102,4 +102,92 @@ public class MutableVertex {
     normal.set(vector);
     return this;
   }
+
+  /** Rotates this vertex around the X axis 90 degrees.
+   *
+   * @param scale The multiplier for scaling. Positive values will rotate clockwise, negative values rotate
+   *            anti-clockwise. */
+  public MutableVertex rotateX_90(float scale) {
+    float ym = scale;
+    float zm = -ym;
+
+    float t = position.y * ym;
+    position.y = position.z * zm;
+    position.z = t;
+
+    t = normal.y * ym;
+    normal.y = normal.z * zm;
+    normal.z = t;
+    return this;
+  }
+
+  /** Rotates this vertex around the Y axis 90 degrees.
+   *
+   * @param scale The multiplier for scaling. Positive values will rotate clockwise, negative values rotate
+   *            anti-clockwise. */
+  public MutableVertex rotateY_90(float scale) {
+    float xm = scale;
+    float zm = -xm;
+
+    float t = position.x * xm;
+    position.x = position.z * zm;
+    position.z = t;
+
+    t = normal.x * xm;
+    normal.x = normal.z * zm;
+    normal.z = t;
+    return this;
+  }
+
+  /** Rotates this vertex around the Z axis 90 degrees.
+   *
+   * @param scale The multiplier for scaling. Positive values will rotate clockwise, negative values rotate
+   *            anti-clockwise. */
+  public MutableVertex rotateZ_90(float scale) {
+    float xm = scale;
+    float ym = -xm;
+
+    float t = position.x * xm;
+    position.x = position.y * ym;
+    position.y = t;
+
+    t = normal.x * xm;
+    normal.x = normal.y * ym;
+    normal.y = t;
+    return this;
+  }
+
+  /** Rotates this vertex around the X axis by 180 degrees. */
+  public MutableVertex rotateX_180() {
+    position.y = -position.y;
+    position.z = -position.z;
+    normal.y = -normal.y;
+    normal.z = -normal.z;
+    return this;
+  }
+
+  /** Rotates this vertex around the Y axis by 180 degrees. */
+  public MutableVertex rotateY_180() {
+    position.x = -position.x;
+    position.z = -position.z;
+    normal.x = -normal.x;
+    normal.z = -normal.z;
+    return this;
+  }
+
+  /** Rotates this vertex around the Z axis by 180 degrees. */
+  public MutableVertex rotateZ_180() {
+    position.x = -position.x;
+    position.y = -position.y;
+    normal.x = -normal.x;
+    normal.y = -normal.y;
+    return this;
+  }
+
+  public MutableVertex translate(float x, float y, float z) {
+    position.x += x;
+    position.y += y;
+    position.z += z;
+    return this;
+  }
 }

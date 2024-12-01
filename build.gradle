@@ -12,7 +12,13 @@ group = mod_group_id
 base {
     archivesName = mod_id
 }
-createMcpToSrg
+sourceSets {
+  main {
+    java {
+      srcDirs("src/main/autogen")
+    }
+  }
+}
 mixin {
     config 'bcreborn.mixins.json'
 }
