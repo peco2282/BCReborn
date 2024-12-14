@@ -9,13 +9,26 @@ import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TankBlockEntity extends NeptuneBlockEntity {
   private final List<TankBlock> vertical = new ArrayList<>();
+  private final AtomicInteger fluids = new AtomicInteger(0);
   public TankBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCBuilderBlockEntityTypes.TANK.get(), p_155229_, p_155230_);
   }
 
+  public void add(int c) {
+    if (fluids.get() + c <= 8) {
+      fluids.addAndGet(c);
+    } else {
+      fluids.set(8);
+    }
+  }
+
+  public int getFluids() {
+    return fluids.get();
+  }
 
   public void total() {
     BlockPos curr = getBlockPos();

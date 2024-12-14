@@ -66,41 +66,4 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
         TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
     ).apply(instance, function));
   }
-
-  public enum PipeMaterial implements StringRepresentable {
-    WOOD("wood"),
-    STONE("stone"),
-    COBBLESTONE("cobblestone"),
-    IRON("iron"),
-    GOLD("gold"),
-    DIAMOND("diamond"),
-    ;
-    private final String material;
-
-    PipeMaterial(String material) {
-      this.material = material;
-    }
-
-    @Override
-    public String getSerializedName() {
-      return material;
-    }
-  }
-
-  public enum PipeType implements StringRepresentable {
-    ITEM("item"),
-    @ApiStatus.Internal
-    FLUID("fluid"),
-    ENERGY("energy");
-    private final String type;
-
-    PipeType(String type) {
-      this.type = type;
-    }
-
-    @Override
-    public String getSerializedName() {
-      return type;
-    }
-  }
 }

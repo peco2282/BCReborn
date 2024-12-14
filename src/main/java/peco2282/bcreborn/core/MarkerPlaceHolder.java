@@ -136,6 +136,10 @@ public class MarkerPlaceHolder {
     return last.getZ() - base.getZ();
   }
 
+  public int allBlockCount() {
+    return (distanceX() + 1) * (distanceY() + 1) * (distanceZ() + 1);
+  }
+
   @Override
   public String toString() {
     return "start: %s, end: %s x: %d y: %d z: %d".formatted(start, end, rangeX(), rangeY(), rangeZ());
