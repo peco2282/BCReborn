@@ -13,6 +13,15 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 import java.util.EnumMap;
 import java.util.Map;
 
+
+/**
+ * MarkerBaseBlock is an abstract block class that provides a base implementation
+ * for customizable marker blocks in the game. It manages block state properties
+ * such as facing direction and activity status and defines bounding boxes for
+ * rendering based on block placement direction.
+ *
+ * @author peco2282
+ */
 public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
   private static final Map<Direction, AABB> BOUNDING_BOXES = new EnumMap<>(Direction.class);
 
@@ -31,6 +40,13 @@ public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
     BOUNDING_BOXES.put(Direction.WEST, new AABB(ih, nw, nw, 1, pw, pw));
   }
 
+  /**
+   * Constructs a new MarkerBaseBlock with the specified properties.
+   *
+   * @param properties The block properties to define features such as hardness.
+   * @param id The unique identifier for the block.
+   * @param builder A PropertyBuilder instance to define custom block properties.
+   */
   public MarkerBaseBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(properties.destroyTime(.25F), id,
   builder.add(
@@ -39,12 +55,23 @@ public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
     );
   }
 
+  /**
+   * Defines the set of block state properties for the block.
+   *
+   * @param p_49915_ A builder used to register block state properties.
+   */
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
     super.createBlockStateDefinition(p_49915_);
     p_49915_.add(BCProperties.BLOCK_FACING_6, BCProperties.ACTIVE);
   }
 
+  /**
+   * Determines the BlockState to be used when the block is placed in the world.
+   *
+   * @param p_49820_ The context of the block placement, including the face clicked by the user.
+   * @return The block state with the appropriate facing direction based on placement.
+   */
   @Override
   public @NotNull BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
     return defaultBlockState().setValue(BCProperties.BLOCK_FACING_6, p_49820_.getClickedFace());

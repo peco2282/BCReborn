@@ -5,6 +5,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
+
+/**
+ * BCConfiguration handles the configuration settings for the mod.
+ * It initializes and maintains the configuration values and provides mechanisms
+ * to load them during runtime.
+ *
+ * @author peco2282
+ */
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = BCReborn.MODID)
 public class BCConfiguration {
   static class Holder {
@@ -22,9 +30,22 @@ public class BCConfiguration {
   }
   static final ForgeConfigSpec SPEC = Holder.SPEC_BUILDER.build();
 
+  /**
+   * Indicates whether the creative engine is enabled in the mod configuration.
+   */
   public static boolean enableCreativeEngine;
+
+  /**
+   * Represents the maximum volume size setting for blocks in the configuration.
+   */
   public static int maxVolumeLength;
 
+  /**
+   * Loads the configuration settings when the specified configuration event occurs.
+   * Updates the mod's runtime configuration values based on the defined settings.
+   *
+   * @param event the mod configuration event
+   */
   @SubscribeEvent
   public static void onLoadConfig(ModConfigEvent event) {
     enableCreativeEngine = Holder.ENABLE_CREATIVE_ENGINE.get();

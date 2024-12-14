@@ -8,6 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.BCReborn;
 
+
+/**
+ * The ContextProcessor is responsible for handling the processing and management
+ * of mod-related context within the BCReborn Mod. It initializes and registers
+ * annotated classes used by the mod.
+ *
+ * @author peco2282
+ */
 public class ContextProcessor {
   private static final Logger log = LoggerFactory.getLogger(ContextProcessor.class);
   private static final ContextProcessor instance = new ContextProcessor(
@@ -19,10 +27,20 @@ public class ContextProcessor {
     this.container = container;
   }
 
+  /**
+   * Provides the singleton instance of the ContextProcessor.
+   *
+   * @return The singleton instance of ContextProcessor.
+   */
   public static @NotNull ContextProcessor getInstance() {
     return instance;
   }
 
+  /**
+   * Initializes and registers classes annotated with {@code InitRegister}.
+   * Scans the mod's context for annotated classes and logs their discovery.
+   * If a class is missing, logs an error message.
+   */
   public static void initRegister() {
     ModFileScanData data = getInstance().container.getModInfo().getOwningFile().getFile().getScanResult();
     data.getAnnotations().stream().filter(a -> {
