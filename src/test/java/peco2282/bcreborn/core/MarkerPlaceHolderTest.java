@@ -17,7 +17,7 @@ class MarkerPlaceHolderTest {
 
   @Test
   void getCorner() {
-    System.out.println(holder.getCorner());
+    System.out.println(holder.getEdges());
   }
 
   @Test

@@ -1,12 +1,16 @@
 package peco2282.bcreborn.utils;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -47,5 +51,19 @@ public class BlockUtil {
       if (predicate.test(state.getBlock())) map.put(state.getBlock(), state);
     }
     return map;
+  }
+
+  public static List<Tuple<BlockPos, BlockState>> allFaceSearch(Predicate<Block> predicate, Level level, BlockPos pos) {
+    List<Tuple<BlockPos, BlockState>> matches = new ArrayList<>();
+
+    BlockState test;
+    for (BlockPos blockPos : new BlockPos[]{pos.above(), pos.below(), pos.north(), pos.south(), pos.west(), pos.east()}) {
+      if (predicate.test((test = level.getBlockState(blockPos)).getBlock())) matches.add(tuple(blockPos, test));
+    }
+    return matches;
+  }
+
+  private static <T, U> Tuple<T, U> tuple(T t, U u) {
+    return new Tuple<>(t, u);
   }
 }

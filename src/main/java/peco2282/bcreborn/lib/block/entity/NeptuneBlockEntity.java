@@ -4,13 +4,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.utils.InventoryUtil;
 
+import java.util.Objects;
 
 /**
  * Abstract representation of a custom BlockEntity for Neptune blocks.
@@ -56,4 +59,9 @@ public abstract class NeptuneBlockEntity extends BlockEntity implements BCBlockE
 //    tankManager.addDrops(toDrop);
   }
 
+  @Override
+  @NotNull
+  public Level getLevel() {
+    return Objects.requireNonNull(super.getLevel());
+  }
 }

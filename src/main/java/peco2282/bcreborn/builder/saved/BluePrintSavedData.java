@@ -1,12 +1,11 @@
 package peco2282.bcreborn.builder.saved;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.MinecraftForge;
+import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.api.event.SaveDataEvent;
 
 
@@ -78,7 +77,7 @@ public class BluePrintSavedData extends SavedData {
     CompoundTag tag = cache.save(p_77763_);
 
     SaveDataEvent event = new SaveDataEvent(cache);
-    MinecraftForge.EVENT_BUS.post(event);
+    BCReborn.EVENT_BUS.post(event);
     return tag;
   }
 

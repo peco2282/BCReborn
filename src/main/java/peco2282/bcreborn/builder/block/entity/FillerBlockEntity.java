@@ -3,6 +3,7 @@ package peco2282.bcreborn.builder.block.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,10 +11,17 @@ import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.api.mj.MJGenerator;
 import peco2282.bcreborn.api.mj.MJHolder;
+import peco2282.bcreborn.builder.block.FillerBlock;
+import peco2282.bcreborn.core.MarkerPlaceHolder;
+import peco2282.bcreborn.core.block.MarkerVolumeBlock;
+import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
 import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
 import peco2282.bcreborn.utils.BlockUtil;
+import peco2282.bcreborn.utils.OptionalWith;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class FillerBlockEntity extends NeptuneBlockEntity {
@@ -22,6 +30,7 @@ public class FillerBlockEntity extends NeptuneBlockEntity {
   private final MJHolder HOLDER = new MJHolder(capacity);
   private EnumFillerType type = EnumFillerType.NONE;
   private long lastTick;
+  private OptionalWith<MarkerVolumeBlockEntity> markerVolume = OptionalWith.empty();
 
   public FillerBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCBuilderBlockEntityTypes.FILLER.get(), p_155229_, p_155230_);
@@ -38,6 +47,7 @@ public class FillerBlockEntity extends NeptuneBlockEntity {
   private void update(Level level, BlockPos pos, BlockState state) {
     type = state.getValue(BCProperties.FILLER_TYPE);
 
+    // get power
     BlockState up = level.getBlockState(pos.above());
     BlockState down = level.getBlockState(pos.below());
     BlockState west = level.getBlockState(pos.west());
@@ -56,6 +66,23 @@ public class FillerBlockEntity extends NeptuneBlockEntity {
     if (lastTick == 0) {
       level.setBlockAndUpdate(pos, state.setValue(BCProperties.ACTIVE, false));
     }
+    // done
+
+    // filling
+    List<Tuple<BlockPos, BlockState>> stateList = BlockUtil.allFaceSearch(b -> b instanceof MarkerVolumeBlock, level, pos);
+    if (stateList.isEmpty()) return;
+    Tuple<BlockPos, BlockState> first = stateList.getFirst();
+    BlockState blockState = first.getB();
+    if (!blockState.hasBlockEntity()) return;
+    MarkerVolumeBlockEntity block = (MarkerVolumeBlockEntity) level.getBlockEntity(first.getA());
+
+    getRange(this, (FillerBlock) getBlockState().getBlock(), Objects.requireNonNull(block));
+  }
+
+  private static void getRange(FillerBlockEntity entity, FillerBlock block, MarkerVolumeBlockEntity volume) {
+    final MarkerPlaceHolder holder = volume.getHolder();
+    List<BlockPos> target = holder.getPosList();
+    target.stream().forEach(p -> entity.getLevel().removeBlock(p, true));
   }
 
   @Override
