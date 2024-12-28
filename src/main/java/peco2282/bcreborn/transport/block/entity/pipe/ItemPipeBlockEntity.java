@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.transport.block.PipeMaterial;
 import peco2282.bcreborn.transport.block.PipeType;
 import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
-import peco2282.bcreborn.transport.logic.PipeStorage;
+import peco2282.bcreborn.transport.block.pipe.PipeStorage;
 
 public abstract class ItemPipeBlockEntity extends BasePipeBlockEntity {
   public ItemPipeBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_, PipeMaterial material) {

@@ -75,7 +75,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
   protected abstract @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec();
 
   /**
-   * Gathers the state properties for this block and defines any additional custom state logic.
+   * Gathers the state properties for this block and defines any additional custom state pipe.
    *
    * @param builder the state definition builder to configure with the block's state properties
    */

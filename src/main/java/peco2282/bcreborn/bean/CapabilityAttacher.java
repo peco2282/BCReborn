@@ -20,15 +20,15 @@ public @interface CapabilityAttacher {
    */
   enum Type implements StringRepresentable {
     /**
-     * Represents a connector capability that handles connection logic.
+     * Represents a connector capability that handles connection pipe.
      */
     CONNECTOR(MJCapabilities.CONNECTOR_KEY),
     /**
-     * Represents a receiver capability that handles receiving logic.
+     * Represents a receiver capability that handles receiving pipe.
      */
     RECEIVER(MJCapabilities.RECEIVER_KEY),
     /**
-     * Represents a generator capability that handles power generation logic.
+     * Represents a generator capability that handles power generation pipe.
      */
     GENERATOR(MJCapabilities.GENERATOR_KEY);
     private final String name;

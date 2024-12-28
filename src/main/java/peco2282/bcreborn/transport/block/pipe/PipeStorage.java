@@ -1,18 +1,21 @@
-package peco2282.bcreborn.transport.logic;
+package peco2282.bcreborn.transport.block.pipe;
 
+import net.minecraft.core.NonNullList;
 import peco2282.bcreborn.transport.block.BasePipeBlock;
 import peco2282.bcreborn.transport.block.PipeEnergyBlock;
 import peco2282.bcreborn.transport.block.PipeFluidBlock;
 import peco2282.bcreborn.transport.block.PipeItemBlock;
 import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
 
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Represents a base storage implementation for pipes within the system.
  * This abstract class defines common behavior for different types of pipe storages.
  * Subtypes include {@link PipeStorage.ItemStorage}, {@link PipeStorage.FluidStorage}, and {@link PipeStorage.EnergyStorage}.
  */
-public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeStorage.FluidStorage, PipeStorage.EnergyStorage {
+public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.ItemStorage, PipeStorage.FluidStorage, PipeStorage.EnergyStorage {
   protected final BasePipeBlockEntity pipe;
 
   private PipeStorage(BasePipeBlockEntity pipe) {
@@ -26,7 +29,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @param pipe the pipe block entity to associate with the storage
    * @return the corresponding {@link PipeStorage} subtype for the pipe type
    */
-  public static PipeStorage create(BasePipeBlockEntity pipe) {
+  public static PipeStorage<?> create(BasePipeBlockEntity pipe) {
     return switch (pipe.getPipeType()) {
       case ITEM -> new ItemStorage(pipe);
       case FLUID -> new FluidStorage(pipe);
@@ -44,6 +47,45 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
     return (BasePipeBlock) pipe.getBlockState().getBlock();
   }
 
+  public abstract boolean isEmpty();
+
+  public abstract int size();
+
+  public abstract E get(int index);
+
+  public abstract void add(E item);
+  public <T> void add(T t, Function<T, E> function) {
+    add(function.apply(t));
+  }
+
+  public void addAll(List<E> items) {
+    for (E item : items) add(item);
+  }
+
+  public <T> void addAll(List<T> items, Function<T, E> function) {
+    for (T item : items) add(item, function);
+  }
+
+  public abstract void remove(E item);
+
+  public abstract void clear();
+
+  public void removeAll(List<E> items) {
+    for (E item : items) remove(item);
+  }
+
+  public List<ItemEntity> getItems() {
+    throw uoe("items");
+  }
+
+  public List<FluidEntity> getFluids() {
+    throw uoe("fluids");
+  }
+
+  public List<EnergyEntity> getEnergies() {
+    throw uoe("energies");
+  }
+
   /**
    * Retrieves the current pipe and casts it to {@link PipeItemBlock}.
    * This is used specifically for item-related pipe operations.
@@ -52,7 +94,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this is not an item pipe type
    */
   public PipeItemBlock asItemPipe() {
-    throw nie("item pipe");
+    throw uoe("item pipe");
   }
 
   /**
@@ -63,10 +105,10 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this storage is not type {@link ItemStorage}
    */
   public ItemStorage asItemStorage() {
-    throw nie("item storage");
+    throw uoe("item storage");
   }
 
-  
+
   /**
    * Retrieves the current pipe and casts it to {@link PipeFluidBlock}.
    * This is used specifically for fluid-related pipe handling.
@@ -75,7 +117,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this is not a fluid pipe type
    */
   public PipeFluidBlock asFluidPipe() {
-    throw nie("fluid pipe");
+    throw uoe("fluid pipe");
   }
 
   /**
@@ -86,7 +128,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this storage is not type {@link FluidStorage}
    */
   public FluidStorage asFluidStorage() {
-    throw nie("fluid storage");
+    throw uoe("fluid storage");
   }
 
   /**
@@ -97,7 +139,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this is not an energy pipe type
    */
   public PipeEnergyBlock asEnergyPipe() {
-    throw nie("energy pipe");
+    throw uoe("energy pipe");
   }
 
   /**
@@ -108,7 +150,7 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @throws UnsupportedOperationException if this storage is not type {@link EnergyStorage}
    */
   public EnergyStorage asEnergyStorage() {
-    throw nie("energy storage");
+    throw uoe("energy storage");
   }
 
   /**
@@ -123,15 +165,17 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * @param s the context of the unsupported operation
    * @return a {@link RuntimeException} detailing the unsupported operation
    */
-  private RuntimeException nie(String s) {
-      return new UnsupportedOperationException("Unsupported yet as " + s + ".");
+  private RuntimeException uoe(String s) {
+    return new UnsupportedOperationException("Unsupported yet as " + s + ".");
   }
 
   /**
    * Represents an item-based pipe storage.
    * This class provides specific implementations for interacting with item pipes.
    */
-  public static final class ItemStorage extends PipeStorage {
+  public static final class ItemStorage extends PipeStorage<ItemEntity> {
+    private final NonNullList<ItemEntity> items = NonNullList.create();
+
     /**
      * Constructs a new {@link ItemStorage} associated with the given {@link BasePipeBlockEntity}.
      *
@@ -139,6 +183,36 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
      */
     public ItemStorage(BasePipeBlockEntity pipe) {
       super(pipe);
+    }
+
+    @Override
+    public boolean isEmpty() {
+      return items.isEmpty();
+    }
+
+    @Override
+    public int size() {
+      return items.size();
+    }
+
+    @Override
+    public ItemEntity get(int index) {
+      return items.get(index);
+    }
+
+    @Override
+    public void add(ItemEntity item) {
+      items.add(item);
+    }
+
+    @Override
+    public void remove(ItemEntity item) {
+      items.remove(item);
+    }
+
+    @Override
+    public void clear() {
+      items.clear();
     }
 
     /**
@@ -151,10 +225,15 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
       return (PipeItemBlock) pipe.getBlockState().getBlock();
     }
 
-    
+
     @Override
     public PipeStorage.ItemStorage asItemStorage() {
       return this;
+    }
+
+    @Override
+    public NonNullList<ItemEntity> getItems() {
+      return items;
     }
   }
 
@@ -162,14 +241,46 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
    * Represents a fluid-based pipe storage.
    * This class provides specific implementations for interacting with fluid pipes.
    */
-  public static final class FluidStorage extends PipeStorage {
+  public static final class FluidStorage extends PipeStorage<FluidEntity> {
+    private final NonNullList<FluidEntity> fluids = NonNullList.create();
+
     /**
      * Constructs a new {@link FluidStorage} associated with the given {@link BasePipeBlockEntity}.
      *
      * @param pipe the pipe block entity to associate with this storage
      */
     public FluidStorage(BasePipeBlockEntity pipe) {
-        super(pipe);
+      super(pipe);
+    }
+
+    @Override
+    public boolean isEmpty() {
+      return fluids.isEmpty();
+    }
+
+    @Override
+    public int size() {
+      return fluids.size();
+    }
+
+    @Override
+    public FluidEntity get(int index) {
+      return fluids.get(index);
+    }
+
+    @Override
+    public void add(FluidEntity item) {
+      fluids.add(item);
+    }
+
+    @Override
+    public void remove(FluidEntity item) {
+      fluids.remove(item);
+    }
+
+    @Override
+    public void clear() {
+      fluids.clear();
     }
 
     @Override
@@ -181,20 +292,57 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
     public PipeStorage.FluidStorage asFluidStorage() {
       return this;
     }
+
+    @Override
+    public NonNullList<FluidEntity> getFluids() {
+      return fluids;
+    }
   }
 
   /**
    * Represents an energy-based pipe storage.
    * This class provides specific implementations for interacting with energy pipes.
    */
-  public static final class EnergyStorage extends PipeStorage {
+  public static final class EnergyStorage extends PipeStorage<EnergyEntity> {
+    private final NonNullList<EnergyEntity> energies = NonNullList.create();
+
     /**
      * Constructs a new {@link EnergyStorage} associated with the given {@link BasePipeBlockEntity}.
      *
      * @param pipe the pipe block entity to associate with this storage
      */
     public EnergyStorage(BasePipeBlockEntity pipe) {
-        super(pipe);
+      super(pipe);
+    }
+
+    @Override
+    public boolean isEmpty() {
+      return energies.isEmpty();
+    }
+
+    @Override
+    public int size() {
+      return energies.size();
+    }
+
+    @Override
+    public EnergyEntity get(int index) {
+      return energies.get(index);
+    }
+
+    @Override
+    public void add(EnergyEntity item) {
+      energies.add(item);
+    }
+
+    @Override
+    public void remove(EnergyEntity item) {
+      energies.remove(item);
+    }
+
+    @Override
+    public void clear() {
+      energies.clear();
     }
 
     @Override
@@ -205,6 +353,11 @@ public abstract sealed class PipeStorage permits PipeStorage.ItemStorage, PipeSt
     @Override
     public PipeStorage.EnergyStorage asEnergyStorage() {
       return this;
+    }
+
+    @Override
+    public NonNullList<EnergyEntity> getEnergies() {
+      return energies;
     }
   }
 }

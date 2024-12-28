@@ -10,7 +10,7 @@ import peco2282.bcreborn.BCReborn;
  * Tags are used to group blocks for specific purposes, such as engines, pipes, and package types.
  *
  * Usage:
- * - Use these tags to manage sets of blocks in recipes, datapacks, or in-game logic.
+ * - Use these tags to manage sets of blocks in recipes, datapacks, or in-game pipe.
  *
  * @author peco2282
  */
