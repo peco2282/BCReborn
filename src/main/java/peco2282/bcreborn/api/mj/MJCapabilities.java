@@ -10,12 +10,16 @@ public class MJCapabilities {
   public static final Capability<MJReceiver> RECEIVER;
   public static final Capability<MJGenerator> GENERATOR;
 
+  public static final String CONNECTOR_KEY = "connector";
+  public static final String RECEIVER_KEY = "receiver";
+  public static final String GENERATOR_KEY = "generator";
+
   static {
     CONNECTOR = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location("conector"));
+    }, BCReborn.location(CONNECTOR_KEY));
     RECEIVER = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location("receiver"));
+    }, BCReborn.location(RECEIVER_KEY));
     GENERATOR = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location("generator"));
+    }, BCReborn.location(GENERATOR_KEY));
   }
 }

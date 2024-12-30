@@ -95,6 +95,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
 
       PoseStack.Pose pose = stack.last();
       VertexConsumer buffer = source.getBuffer(RenderType.beaconBeam(BEAM, false));
+      // @formatter:off
       /*
                $4
             \------|
@@ -103,50 +104,49 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
                $3
        */
       // $1(right)
-      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
 
       // $2(left)
-      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
-
+      vertex(buffer, pose, map.maxX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
 
       // $3 (bottom)
-      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
-
+      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
 
       // $4(top)
-      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
+      // @formatter:on
 
       f += width;
       fMax += width;
@@ -178,6 +178,20 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
       renderBeam(p_112309_, p_112310_, Direction.DOWN, max);
       return;
     }
+
+    MarkerPlaceHolder.XYZ edges = holder.getEdges();
+
+    if (!edges.isXEmpty()) {
+      edges.x().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+    }
+    if (!edges.isYEmpty()) {
+      edges.y().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+    }
+    if (!edges.isZEmpty()) {
+      edges.z().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+    }
+
+/*
     if (holder.rangeX() != 0) {
       renderBeam(p_112309_, p_112310_, holder.directionX(), holder.rangeX());
       p_112309_.pushPose();
@@ -198,7 +212,7 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
       p_112309_.translate((holder.distanceX() > 0 ? 1 : -1) * holder.rangeX(), 0, 0);
       renderBeam(p_112309_, p_112310_, holder.directionZ(), holder.rangeZ());
       p_112309_.popPose();
-    }
+    }*/
   }
 
   @Override

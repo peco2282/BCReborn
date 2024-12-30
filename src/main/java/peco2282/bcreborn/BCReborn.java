@@ -14,8 +14,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import org.slf4j.Logger;
 import peco2282.bcreborn.annotation.LateinitField;
+import peco2282.bcreborn.bean.ContextProcessor;
 import peco2282.bcreborn.data.DataGenerator;
 import peco2282.bcreborn.event.CapabilityEvent;
+import peco2282.bcreborn.event.internal.BCRebornEventBus;
+import peco2282.bcreborn.event.internal.EventBus;
 import peco2282.bcreborn.misc.Commands;
 import peco2282.bcreborn.registry.BCRegistry;
 import peco2282.bcreborn.registry.MenuTextureRegistry;
@@ -27,6 +30,7 @@ public class BCReborn {
   // Define mod id in a common place for everything to reference
   public static final String MODID = "bcreborn";
   public static final String VERSION = "1.0";
+  public static final EventBus EVENT_BUS = BCRebornEventBus.getEventBus();
   //  // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
 //  public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 //  // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
@@ -78,6 +82,7 @@ public class BCReborn {
 
     // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
     context.registerConfig(ModConfig.Type.COMMON, BCConfiguration.SPEC);
+    ContextProcessor.gatherBcEvent();
   }
 
   public static ResourceLocation location(String path) {

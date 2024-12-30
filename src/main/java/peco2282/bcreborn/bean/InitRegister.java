@@ -11,6 +11,8 @@ import java.lang.annotation.ElementType;
  * Use for {@link BCRegistry#init(IEventBus)} and {@link ContextProcessor#initRegister()}
  *
  * Annotate for register object when before {@link DeferredRegister} bus registering
+ *
+ * @author peco2282
  */
 @TypeQualifierDefault(ElementType.TYPE)
 public @interface InitRegister {

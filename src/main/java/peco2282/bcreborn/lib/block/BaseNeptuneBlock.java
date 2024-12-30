@@ -18,10 +18,25 @@ import peco2282.bcreborn.api.block.Facing;
 import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
+
+/**
+ * BaseNeptuneBlock serves as a foundational block class within the Neptune-themed mod. It provides
+ * default configuration for block properties, including durability, explosion resistance, and sound type.
+ * This class is meant to be extended by specific block implementations which define their own state properties.
+ *
+ * @author peco2282
+ */
 public abstract class BaseNeptuneBlock extends Block implements BCBlock {
   private static final Logger log = LoggerFactory.getLogger(BaseNeptuneBlock.class);
   protected final String id;
 
+  /**
+   * Constructs a BaseNeptuneBlock with the given properties, identifier, and property builder.
+   *
+   * @param properties The block properties to be applied, such as hardness and resistance.
+   * @param id The unique identifier for this block.
+   * @param builder A helper to create and configure block states.
+   */
   public BaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(update(properties));
     BlockState raw = getStateDefinition().any();
@@ -43,10 +58,22 @@ public abstract class BaseNeptuneBlock extends Block implements BCBlock {
 
   protected abstract void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder);
 
+  /**
+   * Retrieves the unique identifier associated with this block.
+   *
+   * @return The unique block ID as a String.
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Rotates the block state based on the given rotation. Supports blocks implementing RotatableFacing.
+   *
+   * @param state The current block state.
+   * @param rotation The rotation to apply.
+   * @return The rotated block state or the original state if not rotatable.
+   */
   @Override
   protected BlockState rotate(BlockState state, Rotation rotation) {
     if (this instanceof RotatableFacing facing) {
@@ -56,6 +83,13 @@ public abstract class BaseNeptuneBlock extends Block implements BCBlock {
     return state;
   }
 
+  /**
+   * Mirrors the block state based on the given mirror transformation. Supports blocks implementing RotatableFacing.
+   *
+   * @param p_60528_ The current block state.
+   * @param p_60529_ The mirroring transformation to apply.
+   * @return The mirrored block state or the original state if not mirroring is applicable.
+   */
   @Override
   protected BlockState mirror(BlockState p_60528_, Mirror p_60529_) {
     if (this instanceof RotatableFacing facing) {
@@ -65,6 +99,12 @@ public abstract class BaseNeptuneBlock extends Block implements BCBlock {
     return p_60528_;
   }
 
+  /**
+   * Determines the initial block state for placement based on player orientation and surrounding context.
+   *
+   * @param p_49820_ Contextual information about the placement, such as player orientation and position.
+   * @return The block state to be set at the placement position.
+   */
   @NotNull
   @Override
   public BlockState getStateForPlacement(BlockPlaceContext p_49820_) {

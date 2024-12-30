@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
@@ -47,7 +46,10 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(getFacingProperty());
+    additionalStateProperties(builder);
   }
+
+  protected void additionalStateProperties(StateDefinition.Builder<Block, BlockState> builder) {}
 
   protected PipeMaterial getPipeMaterial() {
     return material;
@@ -65,42 +67,5 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
         MATERIAL_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeMaterial),
         TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
     ).apply(instance, function));
-  }
-
-  public enum PipeMaterial implements StringRepresentable {
-    WOOD("wood"),
-    STONE("stone"),
-    COBBLESTONE("cobblestone"),
-    IRON("iron"),
-    GOLD("gold"),
-    DIAMOND("diamond"),
-    ;
-    private final String material;
-
-    PipeMaterial(String material) {
-      this.material = material;
-    }
-
-    @Override
-    public String getSerializedName() {
-      return material;
-    }
-  }
-
-  public enum PipeType implements StringRepresentable {
-    ITEM("item"),
-    @ApiStatus.Internal
-    FLUID("fluid"),
-    ENERGY("energy");
-    private final String type;
-
-    PipeType(String type) {
-      this.type = type;
-    }
-
-    @Override
-    public String getSerializedName() {
-      return type;
-    }
   }
 }

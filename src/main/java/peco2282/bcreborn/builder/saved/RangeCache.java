@@ -19,6 +19,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.*;
 import java.util.stream.Stream;
 
+
 public class RangeCache {
   public static final String DATA = "Data";
   public static final String START_X = "StartX";
@@ -66,6 +67,13 @@ public class RangeCache {
     this.millis = millis;
   }
 
+  /**
+   * Loads a RangeCache instance from a given CompoundTag.
+   *
+   * @param tag      The CompoundTag containing the saved data.
+   * @param provider The HolderLookup.Provider used for block state validation.
+   * @return A RangeCache instance initialized with the provided data.
+   */
   public static RangeCache load(CompoundTag tag, HolderLookup.Provider provider) {
     long mills = tag.getLong(DATE);
     BlockPos start = new BlockPos(tag.getInt(START_X), tag.getInt(START_Y), tag.getInt(START_Z));
@@ -116,22 +124,48 @@ public class RangeCache {
     return new UnsupportedOperationException(key + " is not supported");
   }
 
+  /**
+   * Gets the milliseconds value representing the creation time of this RangeCache.
+   *
+   * @return The creation time in milliseconds since epoch.
+   */
   public long getMillis() {
     return this.millis;
   }
 
+  /**
+   * Gets the Date object representing the creation time of this RangeCache.
+   *
+   * @return A Date instance corresponding to when this RangeCache was created.
+   */
   public Date createdAt() {
     return new Date(this.millis);
   }
 
+  /**
+   * Gets the starting BlockPos of the cached range.
+   *
+   * @return The BlockPos representing the starting position.
+   */
   public BlockPos getStart() {
     return start;
   }
 
+  /**
+   * Gets the ending BlockPos of the cached range.
+   *
+   * @return The BlockPos representing the ending position.
+   */
   public BlockPos getEnd() {
     return end;
   }
 
+  /**
+   * Saves the current block states in this range into a provided CompoundTag.
+   *
+   * @param data The CompoundTag to save the range data into.
+   * @return The updated CompoundTag with the saved data.
+   */
   public CompoundTag save(CompoundTag data) {
     CompoundTag tag = new CompoundTag();
 
@@ -161,36 +195,84 @@ public class RangeCache {
     return saved = data;
   }
 
+  /**
+   * Adds a custom key-value pair to the saved CompoundTag.
+   *
+   * @param key The key to be added.
+   * @param tag The Tag value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, Tag tag) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.put(key, tag);
     return this;
   }
 
+  /**
+   * Adds a custom key-value pair with a String value to the saved CompoundTag.
+   *
+   * @param key   The key to be added.
+   * @param value The String value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, String value) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.putString(key, value);
     return this;
   }
 
+  /**
+   * Adds a custom key-value pair with an integer value to the saved CompoundTag.
+   *
+   * @param key   The key to be added.
+   * @param value The integer value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, int value) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.putInt(key, value);
     return this;
   }
 
+  /**
+   * Adds a custom key-value pair with a long value to the saved CompoundTag.
+   *
+   * @param key   The key to be added.
+   * @param value The long value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, long value) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.putLong(key, value);
     return this;
   }
 
+  /**
+   * Adds a custom key-value pair with a short value to the saved CompoundTag.
+   *
+   * @param key   The key to be added.
+   * @param value The short value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, short value) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.putShort(key, value);
     return this;
   }
 
+  /**
+   * Adds a custom key-value pair with a UUID value to the saved CompoundTag.
+   *
+   * @param key   The key to be added.
+   * @param value The UUID value associated with the key.
+   * @return This RangeCache instance with the added data.
+   * @throws UnsupportedOperationException If the key is unsupported.
+   */
   public RangeCache put(String key, UUID value) {
     if (KEYS.contains(key)) throw uoe(key);
     saved.putUUID(key, value);

@@ -14,6 +14,15 @@ import peco2282.bcreborn.registry.levelgen.BCPlacements;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The BCRegistryProvider is responsible for creating and registering custom
+ * game elements such as menu textures, configured features, placed features,
+ * and custom damage types for the BC Reborn mod. It utilizes the data generator
+ * framework provided by Minecraft Forge to automate generating necessary
+ * datapack entries for the mod.
+ *
+ * @author peco2282
+ */
 public class BCRegistryProvider extends DatapackBuiltinEntriesProvider {
   private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
       .add(MenuTextureRegistry.MENU_TEXTURE, MenuTextureRegistry::bootstrap)
@@ -22,12 +31,16 @@ public class BCRegistryProvider extends DatapackBuiltinEntriesProvider {
       .add(Registries.DAMAGE_TYPE, LiquidDamageType::bootstrap);
 
   /**
-   * Constructs a new datapack provider which generates all registry objects
-   * from the provided mods using the holder. All entries that need to be
-   * bootstrapped are provided within the {@link RegistrySetBuilder}.
+   * Creates a new instance of BCRegistryProvider. This class manages the
+   * generation of registry objects and bootstrap procedures defined in
+   * the {@link RegistrySetBuilder} for the BC Reborn mod. All registry
+   * entries are tied to the {@link BCReborn#MODID} namespace.
    *
-   * @param output          the target directory of the data generator
-   * @param registries      a future of a lookup for registries and their objects
+   * @param output     The target output directory for the data generator,
+   *                   where datapack files will be created.
+   * @param registries A {@link CompletableFuture} containing a lookup
+   *                   provider for registries to interact with during
+   *                   the bootstrap process.
    */
   public BCRegistryProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
     super(output, registries, BUILDER, Set.of(BCReborn.MODID));

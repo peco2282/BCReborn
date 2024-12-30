@@ -27,11 +27,22 @@ import peco2282.bcreborn.transport.block.BCTransportBlocks;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 import peco2282.bcreborn.transport.block.entity.renderer.PipeRenderer;
 
-// You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+/**
+ * Handles client-side mod events for BCReborn, such as registering menu screens and entity renderers.
+ * This class is automatically registered to the mod event bus to listen for and respond to events.
+ *
+ * @author peco2282
+ */
 @Mod.EventBusSubscriber(modid = BCReborn.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModEvents {
   private static final Logger log = LoggerFactory.getLogger(ClientModEvents.class);
 
+  /**
+   * Sets up client-specific configurations during the mod's client setup phase.
+   * Registers menu screens and renders item blocks with specific render layers.
+   *
+   * @param event the FMLClientSetupEvent instance providing context for client setup operations
+   */
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     log.trace("onClientSetup");
@@ -50,6 +61,12 @@ public class ClientModEvents {
 //    LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
   }
 
+  /**
+   * Registers block entity renderers for use on the client.
+   * Ensures proper handling of custom entities such as pipes, tanks, and markers.
+   *
+   * @param event the RegisterRenderers event used to register custom entity renderers
+   */
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeRenderer::new);

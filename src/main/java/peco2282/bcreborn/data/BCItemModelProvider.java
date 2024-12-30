@@ -28,27 +28,50 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
 
+
+/**
+ * Provides model and state registrations for blocks and items used in the BCReborn mod.
+ * This class is responsible for generating the necessary block models,
+ * item models, and defining textures for use within the Minecraft forge system.
+ *
+ * @author peco2282
+ */
 public class BCItemModelProvider extends BlockStateProvider {
   final ExistingFileHelper helper;
   final HolderLookup.Provider provider;
 
+  /**
+   * Constructs a new instance of BCItemModelProvider.
+   *
+   * @param output             The PackOutput used for generating data resource packs.
+   * @param provider           A future provider for HolderLookup, allowing instance lookups in the world.
+   * @param existingFileHelper Helper for existing files, used to validate resource presence.
+   */
   public BCItemModelProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
     super(output, BCReborn.MODID, existingFileHelper);
     this.helper = existingFileHelper;
     this.provider = provider.getNow(null);
   }
 
+  /**
+   * Registers block states and item models by invoking associated methods for each type.
+   * Ensures all textures, models, and configurations for in-game representation are created.
+   */
   @Override
   protected void registerStatesAndModels() {
-    textureItem();
+    registerItemTextures();
 
-    blockState();
-    blockModel();
+    registerBlockStates();
+    registerBlockModels();
     textureBlockItem();
   }
 
-  private void blockModel() {
-    engine();
+  /**
+   * Defines and registers custom block models used in the BCReborn mod.
+   * Includes textures for fluid sources and other custom blocks.
+   */
+  private void registerBlockModels() {
+    registerEngineModels();
     models().getBuilder("oil_source")
         .texture("particle", modLoc("fluid/oil_source"));
 
@@ -56,20 +79,28 @@ public class BCItemModelProvider extends BlockStateProvider {
         .texture("particle", modLoc("fluid/fuel_source"));
   }
 
+  /**
+   * Registers textures and models for block items and their in-game representation.
+   * Includes cube-based models and render types for specific items.
+   */
   private void textureBlockItem() {
-    cube("wood_engine", it -> "engine/wood/blue/engine_1");
-    cube("stone_engine", it -> "engine/stone/blue/engine_1");
-    cube("iron_engine", it -> "engine/iron/blue/engine_1");
-    cube("creative_engine", it -> "engine/creative/blue/engine_1");
+    createCubeModel("wood_engine", it -> "engine/wood/blue/engine_1");
+    createCubeModel("stone_engine", it -> "engine/stone/blue/engine_1");
+    createCubeModel("iron_engine", it -> "engine/iron/blue/engine_1");
+    createCubeModel("creative_engine", it -> "engine/creative/blue/engine_1");
 
-    cube("filler", UnaryOperator.identity());
+    createCubeModel("filler", UnaryOperator.identity());
     itemModels()
         .getBuilder("marker_volume")
         .parent(existing(modLoc("block/marker_volume_on")))
         .renderType(mcLoc("cutout"));
   }
 
-  private void blockState() {
+  /**
+   * Registers states and configurations for blocks, such as rotation, facing direction,
+   * and conditional states. Handles custom models for various block states.
+   */
+  private void registerBlockStates() {
     Property<?>[] ignores = new Property<?>[]{
         BCProperties.ACTIVE,
         BCProperties.ENGINE_TYPE,
@@ -116,6 +147,14 @@ public class BCItemModelProvider extends BlockStateProvider {
         .forAllStatesExcept(s -> ConfiguredModel.builder().modelFile(unchecked(modLoc("block/oil_source"))).build(), BlockStateProperties.LEVEL);
   }
 
+  /**
+   * Generates and returns the configured models for an engine based on its type, direction,
+   * and current state.
+   *
+   * @param state The current state of the block.
+   * @param type  The type of the engine, defined by enum EnumEngineType.
+   * @return An array of ConfiguredModel objects with the appropriate configurations.
+   */
   private ConfiguredModel[] engineModels(BlockState state, EnumEngineType type) {
     Direction direction = state.getValue(BCProperties.BLOCK_FACING);
     int line = state.getValue(BCProperties.ENGINE_MODEL);
@@ -156,7 +195,11 @@ public class BCItemModelProvider extends BlockStateProvider {
         .rotationY(rotY).build();
   }
 
-  private void engine() {
+  /**
+   * Registers engine models for all engine types and power stages defined in the BCReborn mod.
+   * Combines parent models and textures to create a complete representation for each engine configuration.
+   */
+  private void registerEngineModels() {
     String[] names = Arrays.stream(EnumEngineType.values()).map(EnumEngineType::getSerializedName).toArray(String[]::new);
     String[] types = Arrays.stream(EnumPowerStage.values()).map(EnumPowerStage::getSerializedName).toArray(String[]::new);
     for (String name : names) {
@@ -172,11 +215,19 @@ public class BCItemModelProvider extends BlockStateProvider {
     }
   }
 
-  private void textureItem() {
+  /**
+   * Registers textures for specific items, such as gears, used in the BCReborn mod.
+   * Ensures proper textures are applied to each item instance.
+   */
+  private void registerItemTextures() {
     registerGears();
   }
 
 
+  /**
+   * Handles the registration of item models for gear items.
+   * Applies appropriate generated textures for all gear types.
+   */
   private void registerGears() {
     for (RegistryObject<GearItem> item : List.of(BCCoreItems.GEAR_WOOD, BCCoreItems.GEAR_STONE, BCCoreItems.GEAR_IRON, BCCoreItems.GEAR_GOLD, BCCoreItems.GEAR_DIAMOND)) {
       generatedTexture(item.get(), modLoc("item/" + item.get().getId()));
@@ -184,23 +235,52 @@ public class BCItemModelProvider extends BlockStateProvider {
     }
   }
 
+  /**
+   * Assigns a generated texture model to the specified item.
+   *
+   * @param item    The item to which the texture will be applied.
+   * @param texture The texture resource location.
+   */
   private void generatedTexture(Item item, ResourceLocation texture) {
     itemModels().basicItem(item).parent(generated()).texture("layer0", texture);
   }
 
+  /**
+   * Retrieves the base "generated" model used commonly for basic item models.
+   *
+   * @return A ModelFile representing the "generated" base model.
+   */
   ModelFile generated() {
     return existing(mcLoc("minecraft:item/generated"));
   }
 
+  /**
+   * Creates a model file with no validation checks for the provided resource location.
+   *
+   * @param location The resource location of the model.
+   * @return A ModelFile pointing to the specified resource.
+   */
   ModelFile unchecked(ResourceLocation location) {
     return new ModelFile.UncheckedModelFile(location);
   }
 
+  /**
+   * Retrieves a pre-existing model file from the specified resource location.
+   *
+   * @param location The resource location of the existing model file.
+   * @return A ModelFile pointing to the specified resource.
+   */
   ModelFile existing(ResourceLocation location) {
     return new ModelFile.ExistingModelFile(location, helper);
   }
 
-  void cube(String name, UnaryOperator<String> operator) {
+  /**
+   * Creates and registers a cube model for the specified block/item name.
+   *
+   * @param name     The name of the block/item.
+   * @param operator A UnaryOperator to manipulate the model path if necessary.
+   */
+  void createCubeModel(String name, UnaryOperator<String> operator) {
     itemModels()
         .getBuilder(name)
         .parent(unchecked(modLoc("block/" + operator.apply(name))))

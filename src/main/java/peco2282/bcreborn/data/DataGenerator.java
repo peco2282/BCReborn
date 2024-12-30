@@ -11,7 +11,23 @@ import peco2282.bcreborn.data.tag.BCItemTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
+
+/**
+ * The DataGenerator class is responsible for handling the Minecraft data generation process.
+ * It listens for the {@link GatherDataEvent} and registers various data providers for blocks,
+ * items, fluids, advancements, languages, recipes, models, and registry entries.
+ *
+ * @author peco2282
+ */
 public class DataGenerator {
+  /**
+   * Handles the {@link GatherDataEvent}, using it to register data providers for the generation of
+   * data such as block tags, item tags, fluid tags, advancements, item models, recipes, language files, 
+   * and registry entries.
+   *
+   * @param event the data gathering event that provides the necessary information and tools
+   *              for registering data providers.
+   */
   @SubscribeEvent
   public static void onGatherData(GatherDataEvent event) {
     final ExistingFileHelper helper = event.getExistingFileHelper();
