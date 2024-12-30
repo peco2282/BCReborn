@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
  *    [CONTAINER] -> (exporter) -> ...
  *  </pre></blockquote>
  */
-public interface EmitterPipe {
+public interface EmitterPipe extends Pipe {
   boolean canEmission(Level level, BlockPos from);
   void emission(Level level, BlockPos from);
 

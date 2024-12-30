@@ -1,18 +1,23 @@
 package peco2282.bcreborn.transport.block.pipe;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
+import peco2282.bcreborn.transport.block.entity.pipe.ItemPipeBlockEntity;
 
 import java.util.List;
 
-public interface TransporterPipe<T extends Entity> {
-  <P extends BasePipeBlockEntity> List<P> targetPipes();
-  void transportTo(List<T> in, BasePipeBlockEntity pipe);
+public interface TransporterPipe extends Pipe {
+  int SPEED = 5; // tick
 
-  boolean canTransport(List<T> in, BasePipeBlockEntity entity);
+  default int speed() {
+    return SPEED;
+  }
 
-  default void transport(List<T> in) {
+  List<? extends ItemPipeBlockEntity> targetPipes();
+
+  void transportTo(List<ItemEntity> in, ItemPipeBlockEntity pipe);
+
+  boolean canTransport(List<ItemEntity> in, ItemPipeBlockEntity entity);
+
+  default void transport(List<ItemEntity> in) {
     var list = this.targetPipes();
     for (var pipe : list) {
       if (canTransport(in, pipe)) {
