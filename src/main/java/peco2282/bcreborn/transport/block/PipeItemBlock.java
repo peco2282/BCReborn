@@ -2,18 +2,17 @@ package peco2282.bcreborn.transport.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
-import peco2282.bcreborn.transport.block.entity.pipe.*;
+import peco2282.bcreborn.transport.block.pipe.PipeMaterialHandler;
 
 public class PipeItemBlock extends BasePipeBlock {
+  private final PipeMaterialHandler HANDLER = new PipeMaterialHandler(getPipeMaterial());
+
   public PipeItemBlock(Properties properties, @NotNull String id, PipeMaterial material) {
     this(properties, id, material, PipeType.ITEM);
   }
@@ -24,14 +23,7 @@ public class PipeItemBlock extends BasePipeBlock {
 
   @Override
   public @NotNull BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return switch (getPipeMaterial()) {
-      case WOOD -> new WoddenItemPipeBlockEntity(pos, state);
-      case STONE -> new StoneItemPipeBlockEntity(pos, state);
-      case COBBLESTONE -> new CobbleStoneItemPipeBlockEntity(pos, state);
-      case IRON -> new IronItemPipeBlockEntity(pos, state);
-      case GOLD -> new GoldItemPipeBlockEntity(pos, state);
-      case DIAMOND -> new DiamondItemPipeBlockEntity(pos, state);
-    };
+    return HANDLER.newBlockEntity(pos, state);
   }
 
   @Override
@@ -41,7 +33,7 @@ public class PipeItemBlock extends BasePipeBlock {
 
   @Override
   protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
-    return createTickerHelper(type, BCTransportBlockEntities.WOODEN_ITEM_PIPE.get(), WoddenItemPipeBlockEntity::tick);
+    return HANDLER.serverTicker(type, PipeItemBlock::createTickerHelper);
   }
 
 
