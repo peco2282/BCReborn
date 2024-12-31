@@ -4,7 +4,7 @@ import peco2282.bcreborn.transport.block.entity.pipe.ItemPipeBlockEntity;
 
 import java.util.List;
 
-public interface TransporterPipe extends Pipe {
+public interface TransporterPipe extends PipeBlock {
   int SPEED = 5; // tick
 
   default int speed() {
