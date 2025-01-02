@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemEntity implements Entity {
   private ItemStack stack;
+  public static final ItemEntity EMPTY = wrap(ItemStack.EMPTY);
 
   public static ItemEntity wrap(ItemStack stack) {
     return new ItemEntity(stack);

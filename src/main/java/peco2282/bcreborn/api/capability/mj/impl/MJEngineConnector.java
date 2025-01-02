@@ -1,11 +1,10 @@
-package peco2282.bcreborn.api.mj.impl;
+package peco2282.bcreborn.api.capability.mj.impl;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.api.mj.MJConnector;
+import peco2282.bcreborn.api.capability.mj.MJConnector;
 
 public class MJEngineConnector implements MJConnector {
   @Override

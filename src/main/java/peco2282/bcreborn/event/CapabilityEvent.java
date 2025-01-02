@@ -5,9 +5,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import peco2282.bcreborn.BCReborn;
-import peco2282.bcreborn.api.mj.MJCapability;
-import peco2282.bcreborn.api.mj.MJConnector;
+import peco2282.bcreborn.api.capability.mj.MJConnector;
 
 public class CapabilityEvent {
   private static final Logger log = LoggerFactory.getLogger(CapabilityEvent.class);

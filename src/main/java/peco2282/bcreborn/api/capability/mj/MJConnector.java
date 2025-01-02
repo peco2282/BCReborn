@@ -1,4 +1,4 @@
-package peco2282.bcreborn.api.mj;
+package peco2282.bcreborn.api.capability.mj;
 
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 

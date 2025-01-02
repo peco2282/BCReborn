@@ -1,7 +1,7 @@
 package peco2282.bcreborn.bean;
 
 import net.minecraft.util.StringRepresentable;
-import peco2282.bcreborn.api.mj.MJCapabilities;
+import peco2282.bcreborn.api.capability.BCCapabilities;
 
 /**
  * The {@code CapabilityAttacher} annotation is used to specify the type of capability 
@@ -22,15 +22,15 @@ public @interface CapabilityAttacher {
     /**
      * Represents a connector capability that handles connection pipe.
      */
-    CONNECTOR(MJCapabilities.CONNECTOR_KEY),
+    CONNECTOR(BCCapabilities.CONNECTOR_KEY),
     /**
      * Represents a receiver capability that handles receiving pipe.
      */
-    RECEIVER(MJCapabilities.RECEIVER_KEY),
+    RECEIVER(BCCapabilities.RECEIVER_KEY),
     /**
      * Represents a generator capability that handles power generation pipe.
      */
-    GENERATOR(MJCapabilities.GENERATOR_KEY);
+    GENERATOR(BCCapabilities.GENERATOR_KEY);
     private final String name;
 
     Type(String name) {

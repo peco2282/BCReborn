@@ -1,4 +1,4 @@
-package peco2282.bcreborn.api.mj;
+package peco2282.bcreborn.api.capability.mj;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -7,6 +7,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import peco2282.bcreborn.api.capability.BCCapabilities;
 
 public class MJCapailityHelper implements ICapabilityProvider {
   private final MJConnector connector;
@@ -34,9 +35,9 @@ public class MJCapailityHelper implements ICapabilityProvider {
    */
   @Override
   public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-    if (cap == MJCapabilities.CONNECTOR) return MJCapabilities.CONNECTOR.orEmpty(cap, lazy(connector)).cast();
-    if (cap == MJCapabilities.RECEIVER) return MJCapabilities.RECEIVER.orEmpty(cap, lazy(receiver)).cast();
-    if (cap == MJCapabilities.GENERATOR) return MJCapabilities.GENERATOR.orEmpty(cap, lazy(generator)).cast();
+    if (cap == BCCapabilities.CONNECTOR) return BCCapabilities.CONNECTOR.orEmpty(cap, lazy(connector)).cast();
+    if (cap == BCCapabilities.RECEIVER) return BCCapabilities.RECEIVER.orEmpty(cap, lazy(receiver)).cast();
+    if (cap == BCCapabilities.GENERATOR) return BCCapabilities.GENERATOR.orEmpty(cap, lazy(generator)).cast();
     return lazy(null).cast();
   }
 
