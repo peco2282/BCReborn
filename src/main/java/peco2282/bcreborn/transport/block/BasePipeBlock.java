@@ -58,7 +58,9 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
     return type;
   }
 
-  public abstract @NotNull String getId();
+  public @NotNull String getId() {
+    return getPipeMaterial().getSerializedName() + "." + getPipeType().getSerializedName() + "." + id;
+  }
 
   protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
     return RecordCodecBuilder.mapCodec(instance -> instance.group(

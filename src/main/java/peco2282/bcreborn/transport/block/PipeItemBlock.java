@@ -35,10 +35,4 @@ public class PipeItemBlock extends BasePipeBlock {
   protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
     return HANDLER.serverTicker(type, PipeItemBlock::createTickerHelper);
   }
-
-
-  @Override
-  public @NotNull String getId() {
-    return getPipeMaterial().getSerializedName() + "." + getPipeType().getSerializedName() + "." + id;
-  }
 }

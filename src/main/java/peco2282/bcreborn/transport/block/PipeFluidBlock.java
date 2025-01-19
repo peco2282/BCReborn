@@ -19,11 +19,6 @@ public class PipeFluidBlock extends BasePipeBlock {
   }
 
   @Override
-  public @NotNull String getId() {
-    return "";
-  }
-
-  @Override
   public @NotNull BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return null;
   }
