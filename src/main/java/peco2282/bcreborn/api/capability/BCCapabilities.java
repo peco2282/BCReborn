@@ -17,7 +17,7 @@ public class BCCapabilities {
   public static final String CONNECTOR_KEY = "connector";
   public static final String RECEIVER_KEY = "receiver";
   public static final String GENERATOR_KEY = "generator";
-  public static final Capability<IPipe> PIPE;
+  public static final Capability<IPipe<?>> PIPE;
   public static final String PIPE_KEY = "pipe";
 
   static {

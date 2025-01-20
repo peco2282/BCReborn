@@ -1,10 +1,12 @@
 package peco2282.bcreborn.api.capability.pipe;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import peco2282.bcreborn.transport.block.pipe.Entity;
 
 import java.util.List;
 
+@AutoRegisterCapability
 public interface IPipe<E extends Entity> {
   boolean isConnected(Direction direction);
 
