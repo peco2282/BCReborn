@@ -23,6 +23,7 @@ import peco2282.bcreborn.core.block.screen.EngineStoneScreen;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.renderer.MarkerVolumeRenderer;
 import peco2282.bcreborn.core.block.menu.BCCoreMenuTypes;
+import peco2282.bcreborn.core.fluid.BCCoreFluids;
 import peco2282.bcreborn.transport.block.BCTransportBlocks;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 import peco2282.bcreborn.transport.block.entity.renderer.PipeRenderer;
@@ -55,6 +56,11 @@ public class ClientModEvents {
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.STONE_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.IRON_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCTransportBlocks.WOOD_ITEM_PIPE.get(), RenderType.cutout());
+
+    ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.OIL_SOURCE.get(), RenderType.translucent());
+    ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.OIL_FLOWING.get(), RenderType.translucent());
+    ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.FUEL_SOURCE.get(), RenderType.translucent());
+    ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.FUEL_FLOWING.get(), RenderType.translucent());
     log.trace("Done");
     // Some client setup code
 //    LOGGER.info("HELLO FROM CLIENT SETUP");

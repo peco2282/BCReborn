@@ -3,11 +3,11 @@ package peco2282.bcreborn.core.fluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -15,14 +15,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidType;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
+import peco2282.bcreborn.core.item.BCCoreItems;
 
 public abstract sealed class Oil extends FlowingFluid permits Oil.Flowing, Oil.Source {
-  @Override
-  protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> p_76046_) {
-    super.createFluidStateDefinition(p_76046_);
-    p_76046_.add(LEVEL);
-  }
-
   @Override
   public Fluid getFlowing() {
     return BCCoreFluids.OIL_FLOWING.get();
@@ -55,17 +50,17 @@ public abstract sealed class Oil extends FlowingFluid permits Oil.Flowing, Oil.S
 
   @Override
   protected int getDropOff(LevelReader p_76087_) {
-    return 0;
+    return 1;
   }
 
   @Override
   public Item getBucket() {
-    return Items.MILK_BUCKET;
+    return BCCoreItems.OIL_BUCKET.get();
   }
 
   @Override
   protected boolean canBeReplacedWith(FluidState p_76127_, BlockGetter p_76128_, BlockPos p_76129_, Fluid p_76130_, Direction p_76131_) {
-    return false;
+    return p_76127_.getHeight(p_76128_, p_76129_) >= 0.44444445F && p_76131_ == Direction.DOWN;
   }
 
   @Override
@@ -75,14 +70,12 @@ public abstract sealed class Oil extends FlowingFluid permits Oil.Flowing, Oil.S
 
   @Override
   protected float getExplosionResistance() {
-    return 30;
+    return 300F;
   }
 
   @Override
   protected BlockState createLegacyBlock(FluidState p_76136_) {
-    return isSource(p_76136_) ?
-        BCCoreBlocks.OIL_SOURCE.get().defaultBlockState() :
-        BCCoreBlocks.OIL_FLOWING.get().defaultBlockState().setValue(LEVEL, getLegacyLevel(p_76136_));
+    return BCCoreBlocks.OIL_SOURCE.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(p_76136_));
   }
 
   @Override
@@ -95,6 +88,11 @@ public abstract sealed class Oil extends FlowingFluid permits Oil.Flowing, Oil.S
     return BCCoreFluids.OIL.get();
   }
 
+  @Override
+  public boolean isSame(Fluid p_76122_) {
+    return p_76122_ instanceof Oil;
+  }
+
   public static final class Source extends Oil {
     @Override
     public int getAmount(FluidState p_164509_) {
@@ -103,6 +101,12 @@ public abstract sealed class Oil extends FlowingFluid permits Oil.Flowing, Oil.S
   }
 
   public static final class Flowing extends Oil {
+    @Override
+    protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> p_76046_) {
+      super.createFluidStateDefinition(p_76046_);
+      p_76046_.add(LEVEL);
+    }
+
     @Override
     public int getAmount(FluidState p_164509_) {
       return p_164509_.getValue(LEVEL);
