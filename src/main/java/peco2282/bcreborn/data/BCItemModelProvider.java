@@ -144,7 +144,18 @@ public class BCItemModelProvider extends BlockStateProvider {
         }, BCProperties.BLOCK_FACING);
 
     getVariantBuilder(BCCoreBlocks.OIL_SOURCE.get())
-        .forAllStatesExcept(s -> ConfiguredModel.builder().modelFile(unchecked(modLoc("block/oil_source"))).build(), BlockStateProperties.LEVEL);
+        .forAllStatesExcept(s ->
+            ConfiguredModel.builder()
+                .modelFile(existing(modLoc("block/oil_source")))
+                .build(), BlockStateProperties.LEVEL
+        );
+
+    getVariantBuilder(BCCoreBlocks.FUEL_SOURCE.get())
+        .forAllStatesExcept(s ->
+            ConfiguredModel.builder()
+                .modelFile(existing(modLoc("block/fuel_source")))
+                .build(), BlockStateProperties.LEVEL
+        );
   }
 
   /**
@@ -221,6 +232,7 @@ public class BCItemModelProvider extends BlockStateProvider {
    */
   private void registerItemTextures() {
     registerGears();
+    registerBuckets();
   }
 
 
@@ -233,6 +245,11 @@ public class BCItemModelProvider extends BlockStateProvider {
       generatedTexture(item.get(), modLoc("item/" + item.get().getId()));
 //      itemModels().basicItem(item.get()).parent(generated()).texture("layer0", BCReborn.location("item/" + item.get().getId()));
     }
+  }
+
+  private void registerBuckets() {
+    itemModels().basicItem(BCCoreItems.OIL_BUCKET.get());
+    itemModels().basicItem(BCCoreItems.FUEL_BUCKET.get());
   }
 
   /**
