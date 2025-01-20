@@ -24,10 +24,10 @@ public class BCCoreBlocks {
 
   public static final RegistryObject<MarkerVolumeBlock> MARKER_VOLUME = register("marker_volume", () -> new MarkerVolumeBlock(BlockBehaviour.Properties.of(), "marker_volume"));
 
-  public static final RegistryObject<ExplosibleLiquid> OIL_SOURCE = register("oil_source", () -> new ExplosibleLiquid(BCCoreFluids.OIL_SOURCE, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "oil_source"));
-  public static final RegistryObject<ExplosibleLiquid> OIL_FLOWING = register("oil_flowing", () -> new ExplosibleLiquid(BCCoreFluids.OIL_FLOWING, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "oil_flowing"));
-  public static final RegistryObject<ExplosibleLiquid> FUEL_SOURCE = register("fuel_source", () -> new ExplosibleLiquid(BCCoreFluids.FUEL_SOURCE, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "fuel_source"));
-  public static final RegistryObject<ExplosibleLiquid> FUEL_FLOWING = register("fuel_flowing", () -> new ExplosibleLiquid(BCCoreFluids.FUEL_FLOWING, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "fuel_flowing"));
+  public static final RegistryObject<ExplosibleLiquid> OIL_SOURCE = register("oil", () -> new ExplosibleLiquid(BCCoreFluids.OIL_SOURCE, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "oil_source"));
+//  public static final RegistryObject<ExplosibleLiquid> OIL_FLOWING = register("oil_flowing", () -> new ExplosibleLiquid(BCCoreFluids.OIL_FLOWING, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "oil_flowing"));
+  public static final RegistryObject<ExplosibleLiquid> FUEL_SOURCE = register("fuel", () -> new ExplosibleLiquid(BCCoreFluids.FUEL_SOURCE, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "fuel_source"));
+//  public static final RegistryObject<ExplosibleLiquid> FUEL_FLOWING = register("fuel_flowing", () -> new ExplosibleLiquid(BCCoreFluids.FUEL_FLOWING, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "fuel_flowing"));
 
   private static <B extends Block & BCBlock> RegistryObject<B> register(String name, Supplier<B> block) {
     return BCRegistry.registerBlockItem(name, block, BlockItemNeptune::new);
