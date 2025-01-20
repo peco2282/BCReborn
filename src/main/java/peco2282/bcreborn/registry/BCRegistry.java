@@ -128,7 +128,7 @@ public class BCRegistry {
    * @param <I>    The type of the item.
    * @return A RegistryObject containing the item.
    */
-  public static <I extends Item & BCItem> RegistryObject<I> registerItem(String name, Supplier<I> item) {
+  public static <I extends Item> RegistryObject<I> registerItem(String name, Supplier<I> item) {
       return ITEM.register(name, item);
   }
 

@@ -1,8 +1,11 @@
 package peco2282.bcreborn.core.item;
 
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.bean.InitRegister;
-import peco2282.bcreborn.lib.item.BaseNeptuneItem;
+import peco2282.bcreborn.core.fluid.BCCoreFluids;
 import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;
@@ -16,7 +19,10 @@ public class BCCoreItems {
   public static final RegistryObject<GearItem> GEAR_GOLD = register("gear_gold", () -> new GearItem("gear.gold"));
   public static final RegistryObject<GearItem> GEAR_DIAMOND = register("gear_diamond", () -> new GearItem("gear.diamond"));
 
-  private static <I extends BaseNeptuneItem> RegistryObject<I> register(String name, Supplier<I> item) {
+  public static final RegistryObject<BucketItem> OIL_BUCKET = register("bucket_oil", () -> new BucketItem(BCCoreFluids.OIL_SOURCE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+  public static final RegistryObject<BucketItem> FUEL_BUCKET = register("bucket_fuel", () -> new BucketItem(BCCoreFluids.FUEL_SOURCE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+
+  private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return BCRegistry.registerItem(name, item);
   }
 }
