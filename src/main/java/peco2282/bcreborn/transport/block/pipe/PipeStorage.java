@@ -7,7 +7,8 @@ import peco2282.bcreborn.transport.block.PipeFluidBlock;
 import peco2282.bcreborn.transport.block.PipeItemBlock;
 import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -51,7 +52,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
 
   public abstract int size();
 
-  public abstract E get(int index);
+  public abstract E poll();
 
   public abstract void add(E item);
   public <T> void add(T t, Function<T, E> function) {
@@ -74,17 +75,11 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     for (E item : items) remove(item);
   }
 
-  public List<ItemEntity> getItems() {
-    throw uoe("items");
+  public int capacity() {
+    return 10;
   }
 
-  public List<FluidEntity> getFluids() {
-    throw uoe("fluids");
-  }
-
-  public List<EnergyEntity> getEnergies() {
-    throw uoe("energies");
-  }
+  public abstract List<E> copy();
 
   /**
    * Retrieves the current pipe and casts it to {@link PipeItemBlock}.
@@ -169,13 +164,19 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     return new UnsupportedOperationException("Unsupported yet as " + s + ".");
   }
 
+  protected void capacityAssersion(int size, String type) {
+    if (capacity() < size) {
+      throw new OverflowStrageException(capacity(), size, type);
+    }
+  }
+
   /**
    * Represents an item-based pipe storage.
    * This class provides specific implementations for interacting with item pipes.
    */
   public static final class ItemStorage extends PipeStorage<ItemEntity> {
-    private final NonNullList<ItemEntity> items = NonNullList.create();
-
+    private final AtomicInteger last = new AtomicInteger(0);
+    private final Queue<ItemEntity> container = new ArrayDeque<>(capacity());
     /**
      * Constructs a new {@link ItemStorage} associated with the given {@link BasePipeBlockEntity}.
      *
@@ -187,32 +188,38 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
 
     @Override
     public boolean isEmpty() {
-      return items.isEmpty();
+      return container.isEmpty();
     }
 
     @Override
     public int size() {
-      return items.size();
+      return container.size();
     }
 
     @Override
-    public ItemEntity get(int index) {
-      return items.get(index);
+    public ItemEntity poll() {
+      return container.poll();
     }
 
     @Override
     public void add(ItemEntity item) {
-      items.add(item);
+      capacityAssersion(size(), "Item");
+      container.add(item);
     }
 
     @Override
     public void remove(ItemEntity item) {
-      items.remove(item);
+      container.remove(item);
     }
 
     @Override
     public void clear() {
-      items.clear();
+      container.clear();
+    }
+
+    @Override
+    public int capacity() {
+      return 100;
     }
 
     /**
@@ -232,8 +239,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public NonNullList<ItemEntity> getItems() {
-      return items;
+    public List<ItemEntity> copy() {
+      return new ArrayList<>(container);
     }
   }
 
@@ -242,7 +249,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
    * This class provides specific implementations for interacting with fluid pipes.
    */
   public static final class FluidStorage extends PipeStorage<FluidEntity> {
-    private final NonNullList<FluidEntity> fluids = NonNullList.create();
+    private final Queue<FluidEntity> fluids = new ArrayDeque<>(capacity());
 
     /**
      * Constructs a new {@link FluidStorage} associated with the given {@link BasePipeBlockEntity}.
@@ -264,12 +271,13 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public FluidEntity get(int index) {
-      return fluids.get(index);
+    public FluidEntity poll() {
+      return fluids.poll();
     }
 
     @Override
     public void add(FluidEntity item) {
+      capacityAssersion(size(), "Fluid");
       fluids.add(item);
     }
 
@@ -294,8 +302,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public NonNullList<FluidEntity> getFluids() {
-      return fluids;
+    public List<FluidEntity> copy() {
+      return new ArrayList<>(fluids);
     }
   }
 
@@ -304,7 +312,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
    * This class provides specific implementations for interacting with energy pipes.
    */
   public static final class EnergyStorage extends PipeStorage<EnergyEntity> {
-    private final NonNullList<EnergyEntity> energies = NonNullList.create();
+    private final Queue<EnergyEntity> energies = new ArrayDeque<>(capacity());
 
     /**
      * Constructs a new {@link EnergyStorage} associated with the given {@link BasePipeBlockEntity}.
@@ -326,12 +334,13 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public EnergyEntity get(int index) {
-      return energies.get(index);
+    public EnergyEntity poll() {
+      return energies.poll();
     }
 
     @Override
     public void add(EnergyEntity item) {
+      capacityAssersion(size(), "Energy");
       energies.add(item);
     }
 
@@ -356,8 +365,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public NonNullList<EnergyEntity> getEnergies() {
-      return energies;
+    public List<EnergyEntity> copy() {
+      return new ArrayList<>(energies);
     }
   }
 }

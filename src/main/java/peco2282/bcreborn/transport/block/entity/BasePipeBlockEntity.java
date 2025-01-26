@@ -11,6 +11,8 @@ import peco2282.bcreborn.transport.block.PipeMaterial;
 import peco2282.bcreborn.transport.block.PipeType;
 import peco2282.bcreborn.transport.block.pipe.PipeStorage;
 
+import java.util.Objects;
+
 public abstract class BasePipeBlockEntity extends NeptuneBlockEntity {
   protected final PipeMaterial material;
   protected final PipeType type;
@@ -30,6 +32,10 @@ public abstract class BasePipeBlockEntity extends NeptuneBlockEntity {
 
   public final PipeMaterial getPipeMaterial() {
     return material;
+  }
+
+  public final Level getLevel() {
+    return Objects.requireNonNull(level, "level is null");
   }
 
   public abstract PipeStorage<?> getStorage();
