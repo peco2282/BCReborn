@@ -10,9 +10,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.BCReborn;
-import peco2282.bcreborn.builder.block.BCBuilderBlocks;
+import peco2282.bcreborn.InternalLogger;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.renderer.TankRenderer;
 import peco2282.bcreborn.builder.block.menu.BCBuilderMenuTypes;
@@ -36,7 +35,7 @@ import peco2282.bcreborn.transport.block.entity.renderer.PipeRenderer;
  */
 @Mod.EventBusSubscriber(modid = BCReborn.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModEvents {
-  private static final Logger log = LoggerFactory.getLogger(ClientModEvents.class);
+  private static final Logger log = InternalLogger.create();
 
   /**
    * Sets up client-specific configurations during the mod's client setup phase.
@@ -46,13 +45,13 @@ public class ClientModEvents {
    */
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
-    log.trace("onClientSetup");
-    log.trace("Register MenuScreens");
+    log.debug("onClientSetup");
+    log.debug("Register MenuScreens");
     MenuScreens.register(BCCoreMenuTypes.STONE_ENGINE.get(), EngineStoneScreen::new);
     MenuScreens.register(BCCoreMenuTypes.IRON_ENGINE.get(), EngineIronScreen::new);
     MenuScreens.register(BCBuilderMenuTypes.FILLER.get(), FillerScreen::new);
-    log.trace("Done");
-    log.trace("Register ItemBlockRenderTypes");
+    log.debug("Done");
+    log.debug("Register ItemBlockRenderTypes");
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.STONE_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCCoreBlocks.IRON_ENGINE.get(), RenderType.cutout());
     ItemBlockRenderTypes.setRenderLayer(BCTransportBlocks.WOOD_ITEM_PIPE.get(), RenderType.cutout());
@@ -61,7 +60,7 @@ public class ClientModEvents {
     ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.OIL_FLOWING.get(), RenderType.translucent());
     ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.FUEL_SOURCE.get(), RenderType.translucent());
     ItemBlockRenderTypes.setRenderLayer(BCCoreFluids.FUEL_FLOWING.get(), RenderType.translucent());
-    log.trace("Done");
+    log.debug("Done");
     // Some client setup code
 //    LOGGER.info("HELLO FROM CLIENT SETUP");
 //    LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());

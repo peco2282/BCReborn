@@ -4,11 +4,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import peco2282.bcreborn.InternalLogger;
 import peco2282.bcreborn.api.capability.mj.MJConnector;
 
 public class CapabilityEvent {
-  private static final Logger log = LoggerFactory.getLogger(CapabilityEvent.class);
+  private static final Logger log = InternalLogger.create();
 
   @SubscribeEvent
   public static void onAttachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {

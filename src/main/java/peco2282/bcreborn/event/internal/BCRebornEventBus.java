@@ -2,7 +2,7 @@ package peco2282.bcreborn.event.internal;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import peco2282.bcreborn.InternalLogger;
 import peco2282.bcreborn.api.event.BCEvent;
 
 import java.lang.reflect.Method;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class BCRebornEventBus implements EventBus {
 
   private static final EventBus EVENT_BUS = new BCRebornEventBus();
-  private static final Logger log = LoggerFactory.getLogger(BCRebornEventBus.class);
+  private static final Logger log = InternalLogger.create();
   private final Map<Class<BCEvent> /*BCEvent extended.*/, List<EventListener>> listeners = new ConcurrentHashMap<>();
 
   private BCRebornEventBus() {
