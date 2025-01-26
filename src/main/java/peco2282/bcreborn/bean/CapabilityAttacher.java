@@ -30,7 +30,8 @@ public @interface CapabilityAttacher {
     /**
      * Represents a generator capability that handles power generation pipe.
      */
-    GENERATOR(BCCapabilities.GENERATOR_KEY);
+    GENERATOR(BCCapabilities.GENERATOR_KEY),
+    PIPE(BCCapabilities.PIPE_KEY);
     private final String name;
 
     Type(String name) {
