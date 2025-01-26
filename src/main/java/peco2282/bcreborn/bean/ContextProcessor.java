@@ -4,14 +4,18 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import peco2282.bcreborn.BCReborn;
+import peco2282.bcreborn.InternalLogger;
 import peco2282.bcreborn.api.event.BCEventAnnotation;
 import peco2282.bcreborn.event.internal.EventBus;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -22,7 +26,7 @@ import java.util.function.Predicate;
  * @author peco2282
  */
 public class ContextProcessor {
-  private static final Logger log = LoggerFactory.getLogger(ContextProcessor.class);
+  private static final Logger log = InternalLogger.create();
   private static final ContextProcessor instance = new ContextProcessor(
       ModList.get().getModContainerById(BCReborn.MODID).orElseThrow()
   );
@@ -62,7 +66,7 @@ public class ContextProcessor {
    */
   public static void initRegister() {
     ModFileScanData data = getScanData();
-    Predicate<ModFileScanData.AnnotationData> predicate = annotationFilter(InitRegister.class);
+    ChainPredicate<InitRegister> predicate = new ChainPredicate<>(InitRegister.class);
     for (ModFileScanData.AnnotationData ad : data.getAnnotations()) {
       if (predicate.test(ad)) {
         try {
@@ -77,7 +81,7 @@ public class ContextProcessor {
 
   public static void capailitySearch() {
     ModFileScanData data = getScanData();
-    Predicate<ModFileScanData.AnnotationData> predicate = annotationFilter(CapabilityAttacher.class);
+    ChainPredicate<CapabilityAttacher> predicate = new ChainPredicate<>(CapabilityAttacher.class);
     for (ModFileScanData.AnnotationData ad : data.getAnnotations()) {
       if (predicate.test(ad)) {
         throw new NotImplementedException();
@@ -87,7 +91,7 @@ public class ContextProcessor {
 
   public static void gatherBcEvent() {
     ModFileScanData data = getScanData();
-    Predicate<ModFileScanData.AnnotationData> predicate = annotationFilter(BCEventAnnotation.class);
+    ChainPredicate<BCEventAnnotation> predicate = new ChainPredicate<>(BCEventAnnotation.class);
     EventBus bus = BCReborn.EVENT_BUS;
     for (ModFileScanData.AnnotationData ad : data.getAnnotations()) {
       if (predicate.test(ad)) {
@@ -99,6 +103,37 @@ public class ContextProcessor {
           log.error("At {} class", ad.clazz().getClassName(), e);
         }
       }
+    }
+  }
+
+  @VisibleForTesting
+  static class ChainPredicate<A extends Annotation> implements Predicate<ModFileScanData.AnnotationData> {
+    private final @NotNull Class<A> annotation;
+    private final List<Predicate<A>> predicates = new ArrayList<>();
+
+    ChainPredicate(@NotNull Class<A> anotation) {
+      this.annotation = anotation;
+    }
+
+    void add(Predicate<@NotNull A> predicate) {
+      this.predicates.add(predicate);
+    }
+
+    @Override
+    public boolean test(ModFileScanData.AnnotationData data) {
+      if (annotationFilter(annotation).test(data)) return true;
+      MutableBoolean found = new MutableBoolean(false);
+      try {
+        Class<?> cls = Class.forName(data.clazz().getClassName());
+        A a = cls.getAnnotation(annotation);
+        if (a != null)
+          for (Predicate<A> predicate : predicates) {
+            found.setValue(predicate.test(a));
+          }
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+      return found.getValue();
     }
   }
 }
