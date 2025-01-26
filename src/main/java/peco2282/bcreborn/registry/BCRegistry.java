@@ -52,8 +52,6 @@ public class BCRegistry {
   private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = createRegistry(Registries.CREATIVE_MODE_TAB);
   /** Registry for block entity types in the mod. */
   private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE = createRegistry(ForgeRegistries.BLOCK_ENTITY_TYPES);
-  /** Registry for custom menu textures in the mod. */
-  private static final DeferredRegister<MenuTextureRegistry> MENU_TEXTURE = createRegistry(MenuTextureRegistry.MENU_TEXTURE);
   /** Registry for fluid types in the mod. */
   private static final DeferredRegister<FluidType> FLUID_TYPE = createRegistry(ForgeRegistries.FLUID_TYPES.getKey());
   /** Registry for placement modifier types in the mod. */
@@ -216,7 +214,6 @@ public class BCRegistry {
       MENU_TYPE.register(bus);
       CREATIVE_MODE_TABS.register(bus);
       BLOCK_ENTITY_TYPE.register(bus);
-      MENU_TEXTURE.register(bus);
       FLUID_TYPE.register(bus);
       PMT.register(bus);
   }

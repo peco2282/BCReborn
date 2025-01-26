@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public class BCRegistryProvider extends DatapackBuiltinEntriesProvider {
   private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-      .add(MenuTextureRegistry.MENU_TEXTURE, MenuTextureRegistry::bootstrap)
       .add(Registries.CONFIGURED_FEATURE, BCFeatures::bootstrap)
       .add(Registries.PLACED_FEATURE, BCPlacements::bootstrap)
       .add(Registries.DAMAGE_TYPE, LiquidDamageType::bootstrap);

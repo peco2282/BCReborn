@@ -21,7 +21,6 @@ import peco2282.bcreborn.event.internal.BCRebornEventBus;
 import peco2282.bcreborn.event.internal.EventBus;
 import peco2282.bcreborn.misc.Commands;
 import peco2282.bcreborn.registry.BCRegistry;
-import peco2282.bcreborn.registry.MenuTextureRegistry;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BCReborn.MODID)
@@ -113,6 +112,5 @@ public class BCReborn {
   }
 
   public void onNewRegistry(DataPackRegistryEvent.NewRegistry event) {
-    event.dataPackRegistry(MenuTextureRegistry.MENU_TEXTURE, MenuTextureRegistry.CODEC);
   }
 }
