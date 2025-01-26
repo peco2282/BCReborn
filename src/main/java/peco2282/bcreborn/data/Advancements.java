@@ -17,8 +17,8 @@ public class Advancements {
    * in the game's advancement progression tree.
    */
   @LateinitField
-  public static OptionalWith<AdvancementHolder> ROOT = OptionalWith.empty();
+  public final static OptionalWith<AdvancementHolder> ROOT = OptionalWith.empty();
 
   @LateinitField
-  public static OptionalWith<AdvancementHolder> BUILDER = OptionalWith.empty();
+  public final static OptionalWith<AdvancementHolder> BUILDER = OptionalWith.empty();
 }
