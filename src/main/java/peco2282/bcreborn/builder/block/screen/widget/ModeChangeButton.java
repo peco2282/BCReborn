@@ -13,6 +13,5 @@ public class ModeChangeButton extends Button {
 
   @Override
   protected void renderWidget(GuiGraphics p_281670_, int p_282682_, int p_281714_, float p_282542_) {
-    ButtonTextureProvider.leftButton(p_281670_, ButtonTextureProvider.Mode.ON, 0, 0, true, isHovered());
   }
 }
