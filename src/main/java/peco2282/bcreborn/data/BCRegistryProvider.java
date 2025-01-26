@@ -7,7 +7,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.lib.damage.LiquidDamageType;
-import peco2282.bcreborn.registry.MenuTextureRegistry;
 import peco2282.bcreborn.registry.levelgen.BCFeatures;
 import peco2282.bcreborn.registry.levelgen.BCPlacements;
 

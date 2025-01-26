@@ -7,12 +7,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.transport.block.PipeMaterial;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
-import peco2282.bcreborn.transport.block.pipe.ItemEntity;
-import peco2282.bcreborn.transport.block.pipe.PipeFilter;
 
-import java.util.List;
-
-public class DiamondItemPipeBlockEntity extends ItemPipeBlockEntity implements PipeFilter<ItemEntity> {
+public class DiamondItemPipeBlockEntity extends ItemPipeBlockEntity {
   public DiamondItemPipeBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCTransportBlockEntities.DIAMOND_ITEM_PIPE.get(), p_155229_, p_155230_, PipeMaterial.DIAMOND);
   }
@@ -22,21 +18,7 @@ public class DiamondItemPipeBlockEntity extends ItemPipeBlockEntity implements P
     blockEntity.update(world, pos, state);
   }
 
-  public void update(Level level, BlockPos pos, BlockState state) {
-  }
-
   @Override
-  public int size() {
-    return 6;
-  }
-
-  @Override
-  public boolean accept(List<ItemEntity> entity) {
-    return true;
-  }
-
-  @Override
-  public List<List<ItemEntity>> getAll() {
-    return List.of();
+  protected void update(Level level, BlockPos pos, BlockState state) {
   }
 }

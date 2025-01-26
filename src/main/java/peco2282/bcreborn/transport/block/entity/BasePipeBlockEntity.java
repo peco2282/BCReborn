@@ -1,6 +1,7 @@
 package peco2282.bcreborn.transport.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.BCReborn;
@@ -32,4 +33,6 @@ public abstract class BasePipeBlockEntity extends NeptuneBlockEntity {
   }
 
   public abstract PipeStorage<?> getStorage();
+
+  protected abstract void update(Level world, BlockPos pos, BlockState state);
 }

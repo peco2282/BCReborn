@@ -28,7 +28,7 @@ public class IronItemPipeBlockEntity extends ItemPipeBlockEntity implements IToo
     blockEntity.update(world, pos, state);
   }
 
-  public void update(Level level, BlockPos pos, BlockState state) {
+  protected void update(Level level, BlockPos pos, BlockState state) {
   }
 
   @Override

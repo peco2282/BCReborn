@@ -18,6 +18,7 @@ public class CobbleStoneItemPipeBlockEntity extends ItemPipeBlockEntity {
     blockEntity.update(world, pos, state);
   }
 
-  public void update(Level level, BlockPos pos, BlockState state) {
+  @Override
+  protected void update(Level level, BlockPos pos, BlockState state) {
   }
 }

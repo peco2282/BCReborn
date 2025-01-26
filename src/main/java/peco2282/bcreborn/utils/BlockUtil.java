@@ -27,8 +27,8 @@ public class BlockUtil {
    *
    * @param predicate the condition to test for a matching block
    * @param states    an array of {@link BlockState} to search through
-   * @return a {@link Tuple} where the first value is {@code true} if a match is found, 
-   *         and the second value is the matched {@link BlockState}, or {@code null} if no match is found
+   * @return a {@link Tuple} where the first value is {@code true} if a match is found,
+   * and the second value is the matched {@link BlockState}, or {@code null} if no match is found
    */
   public static Tuple<Boolean, @Nullable BlockState> firstMatch(Predicate<Block> predicate, BlockState... states) {
     var map = allMatch(predicate, states);
@@ -41,8 +41,8 @@ public class BlockUtil {
    *
    * @param predicate the condition to test for matching blocks
    * @param states    an array of {@link BlockState} to search through
-   * @return a map where the keys are matching {@link Block Blocks} and 
-   *         the values are their corresponding {@link BlockState}s
+   * @return a map where the keys are matching {@link Block Blocks} and
+   * the values are their corresponding {@link BlockState}s
    */
   @NotNull
   public static Map<Block, BlockState> allMatch(@NotNull Predicate<Block> predicate, BlockState... states) {
@@ -59,6 +59,16 @@ public class BlockUtil {
     BlockState test;
     for (BlockPos blockPos : new BlockPos[]{pos.above(), pos.below(), pos.north(), pos.south(), pos.west(), pos.east()}) {
       if (predicate.test((test = level.getBlockState(blockPos)).getBlock())) matches.add(tuple(blockPos, test));
+    }
+    return matches;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <B extends Block> Map<BlockPos, B> getInstanceBlocks(Level level, BlockPos pos, Class<B> clazz) {
+    Map<BlockPos, B> matches = new HashMap<>(6);
+    Block block;
+    for (BlockPos blockPos : new BlockPos[]{pos.above(), pos.below(), pos.north(), pos.south(), pos.west(), pos.east()}) {
+      if (clazz.isInstance((block = level.getBlockState(blockPos).getBlock()))) matches.put(blockPos, (B) block);
     }
     return matches;
   }
