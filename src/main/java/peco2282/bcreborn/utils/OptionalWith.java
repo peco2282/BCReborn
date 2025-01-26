@@ -17,10 +17,6 @@ import java.util.function.Consumer;
  * @author peco2282
  */
 public class OptionalWith<T> {
-  /**
-   * A constant instance of {@code OptionalWith} representing an empty value (no value is present).
-   */
-  private static final OptionalWith<?> EMPTY = new OptionalWith<>(null);
   private @Nullable T value;
 
   private OptionalWith(@Nullable T value) {
@@ -36,7 +32,7 @@ public class OptionalWith<T> {
    * @throws NullPointerException if {@code value} is null.
    */
   public static <T> OptionalWith<T> of(@NotNull T value) {
-    return new OptionalWith<>(Objects.requireNonNull(value));
+    return new OptionalWith<>(Objects.requireNonNull(value, "Given value is null"));
   }
 
   /**
@@ -50,9 +46,8 @@ public class OptionalWith<T> {
     return new OptionalWith<>(value);
   }
 
-  @SuppressWarnings("unchecked")
   public static <T> OptionalWith<T> empty() {
-    return (OptionalWith<T>) EMPTY;
+    return ofNullable(null);
   }
 
   /**
@@ -80,7 +75,7 @@ public class OptionalWith<T> {
    * @throws NullPointerException if no value is present.
    */
   public @NotNull T getNotNull() {
-    return Objects.requireNonNull(value);
+    return Objects.requireNonNull(value, "Value is null");
   }
 
   /**
