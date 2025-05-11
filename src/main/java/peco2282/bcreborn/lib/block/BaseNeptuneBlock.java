@@ -39,8 +39,8 @@ public abstract class BaseNeptuneBlock extends Block implements BCBlock {
    */
   public BaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(update(properties));
-//    BlockState raw = getStateDefinition().any();
-//    registerDefaultState(builder.set(raw));
+    BlockState raw = getStateDefinition().any();
+    registerDefaultState(builder.set(raw));
     this.id = id;
   }
 
