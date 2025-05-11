@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class PipeFluidBlock extends BasePipeBlock {
   public PipeFluidBlock(Properties properties, @NotNull String id, PipeMaterial material) {
-    this(properties, id, material, PipeType.FLUID);
+    this(properties, material, PipeType.FLUID);
   }
 
-  private PipeFluidBlock(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
-    super(properties, id, material, type);
+  private PipeFluidBlock(Properties properties, PipeMaterial material, PipeType type) {
+    super(properties, material, type);
   }
 
   @Override

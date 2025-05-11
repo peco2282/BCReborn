@@ -2,15 +2,19 @@ package peco2282.bcreborn.transport.block.pipe;
 
 import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
+import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.transport.block.PipeMaterial;
 import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 import peco2282.bcreborn.transport.block.entity.pipe.*;
 
+@SuppressWarnings("DuplicateBranchesInSwitch")
 public record PipeMaterialHandler(PipeMaterial material) {
   @NotNull
   public ItemPipeBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -22,6 +26,24 @@ public record PipeMaterialHandler(PipeMaterial material) {
       case GOLD -> new GoldItemPipeBlockEntity(pos, state);
       case DIAMOND -> new DiamondItemPipeBlockEntity(pos, state);
     };
+  }
+
+  public void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    switch (material()) {
+      case WOOD -> {
+        builder.add(BCProperties.ACTIVE);
+      }
+      case STONE -> {
+      }
+      case COBBLESTONE -> {
+      }
+      case IRON -> {
+      }
+      case GOLD -> {
+      }
+      case DIAMOND -> {
+      }
+    }
   }
 
   @SuppressWarnings("unchecked")
