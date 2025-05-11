@@ -8,12 +8,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class PipeFluidBlock extends BasePipeBlock {
-  public PipeFluidBlock(Properties properties, @NotNull String id, PipeMaterial material) {
-    this(properties, material, PipeType.FLUID);
+  public PipeFluidBlock(Properties properties, PipeMaterial material, PropertyBuilder builder) {
+    super(properties, material, PipeType.FLUID, builder);
   }
 
+  // for Codec
   private PipeFluidBlock(Properties properties, PipeMaterial material, PipeType type) {
     super(properties, material, type);
   }
