@@ -4,12 +4,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Function;
-
 public class ItemEntity implements Entity {
   private ItemStack stack;
-  public static final Function<ItemStack, ItemEntity> FACTORY = ItemEntity::new;
   public static final ItemEntity EMPTY = new ItemEntity(ItemStack.EMPTY);
+
+  public static ItemEntity of(ItemStack stack) {
+    return new ItemEntity(stack);
+  }
 
   private ItemEntity(ItemStack stack) {
     this.stack = stack;
