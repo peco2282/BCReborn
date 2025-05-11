@@ -1,5 +1,6 @@
 package peco2282.bcreborn.transport.block;
 
+import com.mojang.datafixers.util.Function3;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -28,8 +29,14 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
 
   private final PipeMaterial material;
   private final PipeType type;
-  public BasePipeBlock(Properties properties, @NotNull String id, PipeMaterial material, PipeType type) {
-    super(properties, id, PropertyBuilder.builder());
+  public BasePipeBlock(Properties properties, PipeMaterial material, PipeType type) {
+    super(properties, "", PropertyBuilder.builder());
+    this.material = material;
+    this.type = type;
+  }
+
+  public BasePipeBlock(Properties properties, PipeMaterial material, PipeType type, PropertyBuilder builder) {
+    super(properties, "", builder);
     this.material = material;
     this.type = type;
   }
@@ -44,7 +51,7 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
   }
 
   @Override
-  protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+  protected final void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(getFacingProperty());
     additionalStateProperties(builder);
   }
@@ -61,7 +68,13 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
   public @NotNull String getId() {
     return getPipeMaterial().getSerializedName() + "." + getPipeType().getSerializedName() + "." + id;
   }
-
+  protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function3<Properties, PipeMaterial, PipeType, P> function) {
+    return RecordCodecBuilder.mapCodec(instance -> instance.group(
+        propertiesCodec(),
+        MATERIAL_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeMaterial),
+        TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
+    ).apply(instance, function));
+  }
   protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
     return RecordCodecBuilder.mapCodec(instance -> instance.group(
         propertiesCodec(),
