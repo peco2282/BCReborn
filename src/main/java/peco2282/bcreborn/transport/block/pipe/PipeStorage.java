@@ -1,6 +1,8 @@
 package peco2282.bcreborn.transport.block.pipe;
 
-import net.minecraft.core.NonNullList;
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
+import net.minecraft.world.item.ItemStack;
 import peco2282.bcreborn.transport.block.BasePipeBlock;
 import peco2282.bcreborn.transport.block.PipeEnergyBlock;
 import peco2282.bcreborn.transport.block.PipeFluidBlock;
@@ -8,7 +10,6 @@ import peco2282.bcreborn.transport.block.PipeItemBlock;
 import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -52,7 +53,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
 
   public abstract int size();
 
-  public abstract E poll();
+  public abstract E removeFirst();
 
   public abstract void add(E item);
   public <T> void add(T t, Function<T, E> function) {
@@ -175,8 +176,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
    * This class provides specific implementations for interacting with item pipes.
    */
   public static final class ItemStorage extends PipeStorage<ItemEntity> {
-    private final AtomicInteger last = new AtomicInteger(0);
-    private final Queue<ItemEntity> container = new ArrayDeque<>(capacity());
+    private final IntObjectMap<ItemEntity> container = new IntObjectHashMap<>();
     /**
      * Constructs a new {@link ItemStorage} associated with the given {@link BasePipeBlockEntity}.
      *
@@ -197,19 +197,35 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public ItemEntity poll() {
-      return container.poll();
+    public ItemEntity removeFirst() {
+      if (isEmpty()) return null;
+      else {
+        int key = container.keySet().iterator().next();
+        return container.remove(key);
+      }
+    }
+
+    public void add(ItemStack stack) {
+      this.add(ItemEntity.of(stack));
+    }
+
+    public void add(int index, ItemStack stack) {
+      container.computeIfAbsent(index, s -> ItemEntity.of(stack));
     }
 
     @Override
     public void add(ItemEntity item) {
       capacityAssersion(size(), "Item");
-      container.add(item);
+      container.put(size(), item);
     }
 
     @Override
     public void remove(ItemEntity item) {
-      container.remove(item);
+      for (IntObjectMap.PrimitiveEntry<ItemEntity> entry : container.entries()) {
+        if (entry.value() == item) {
+          container.remove(entry.key());
+        }
+      }
     }
 
     @Override
@@ -240,7 +256,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
 
     @Override
     public List<ItemEntity> copy() {
-      return new ArrayList<>(container);
+      return new ArrayList<>(container.values());
     }
   }
 
@@ -271,7 +287,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public FluidEntity poll() {
+    public FluidEntity removeFirst() {
       return fluids.poll();
     }
 
@@ -334,7 +350,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     }
 
     @Override
-    public EnergyEntity poll() {
+    public EnergyEntity removeFirst() {
       return energies.poll();
     }
 
