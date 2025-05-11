@@ -1,5 +1,8 @@
 package peco2282.bcreborn.transport.block.entity.pipe;
 
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -28,18 +31,18 @@ public class WoddenItemPipeBlockEntity extends ItemPipeBlockEntity implements II
   }
 
   @Override
-  public ItemStack extractItem(Direction direction) {
+  public IntObjectMap<ItemStack> extractItem(Direction direction) {
     BlockPos targetPos = getBlockPos().relative(direction);
     BlockEntity target = getLevel().getBlockEntity(targetPos);
+    IntObjectMap<ItemStack> items = new IntObjectHashMap<>();
     if (target instanceof Container inventory) {
       for (int i = 0; i < inventory.getContainerSize(); i++) {
         ItemStack stack = inventory.getItem(i);
-        if (stack.isEmpty()) {
-          inventory.setItem(i, ItemStack.EMPTY);
-          return stack;
-        }
+        if (stack.isEmpty()) continue;
+        items.put(i, stack);
+        getStorage().add(i, stack);
       }
     }
-    return ItemStack.EMPTY;
+    return items;
   }
 }

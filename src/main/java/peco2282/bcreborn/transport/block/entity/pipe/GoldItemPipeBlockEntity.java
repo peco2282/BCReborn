@@ -1,5 +1,6 @@
 package peco2282.bcreborn.transport.block.entity.pipe;
 
+import io.netty.util.collection.IntObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -35,7 +36,7 @@ public class GoldItemPipeBlockEntity extends ItemPipeBlockEntity implements IIte
    * @param direction The direction the item came from.
    */
   @Override
-  public void transportItem(ItemStack stack, Direction direction) {
+  public void transportItem(IntObjectMap<ItemStack> stack, Direction direction) {
     for (Direction dir : Direction.values()) {
       BlockPos nextPos = getBlockPos().relative(dir);
       BlockEntity nextEntity = getLevel().getBlockEntity(nextPos);
@@ -54,14 +55,13 @@ public class GoldItemPipeBlockEntity extends ItemPipeBlockEntity implements IIte
    * @param direction The direction to eject to.
    */
   @Override
-  public void ejectItem(ItemStack stack, Direction direction) {
+  public void ejectItem(IntObjectMap<ItemStack> stack, Direction direction) {
     BlockPos targetPos = getBlockPos().relative(direction);
     BlockEntity target = getLevel().getBlockEntity(targetPos);
     if (target instanceof Container inventory) {
       for (int i = 0; i < inventory.getContainerSize(); i++) {
-        if (inventory.canPlaceItem(i, stack)) {
-          inventory.setItem(i, stack);
-          break;
+        if (inventory.canPlaceItem(i, stack.get(i))) {
+          inventory.setItem(i, stack.get(i));
         }
       }
     }

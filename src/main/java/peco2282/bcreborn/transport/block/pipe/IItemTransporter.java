@@ -1,5 +1,6 @@
 package peco2282.bcreborn.transport.block.pipe;
 
+import io.netty.util.collection.IntObjectMap;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,5 +11,5 @@ public interface IItemTransporter extends PipeBlock {
    * @param stack     The ItemStack to transport.
    * @param direction The direction the item came from.
    */
-  void transportItem(ItemStack stack, Direction direction);
+  void transportItem(IntObjectMap<ItemStack> stack, Direction direction);
 }
