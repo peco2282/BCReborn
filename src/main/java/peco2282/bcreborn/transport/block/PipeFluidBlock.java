@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class PipeFluidBlock extends BasePipeBlock {
+public class PipeFluidBlock extends BCBasePipeBlock {
   public PipeFluidBlock(Properties properties, PipeMaterial material, PropertyBuilder builder) {
     super(properties, material, PipeType.FLUID, builder);
   }

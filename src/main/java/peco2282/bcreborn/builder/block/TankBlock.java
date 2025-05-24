@@ -10,12 +10,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TankBlock extends TileBaseNeptuneBlock {
+public class TankBlock extends BCBaseEntityBlock {
   private final AtomicInteger fluids = new AtomicInteger(8);
   private static final int MAX = 16;
   public TankBlock(Properties properties, @NotNull String id) {
@@ -45,7 +45,7 @@ public class TankBlock extends TileBaseNeptuneBlock {
   }
 
   @Override
-  protected @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec() {
+  protected @NotNull MapCodec<? extends BCBaseEntityBlock> codec() {
     return null;
   }
 

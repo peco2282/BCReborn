@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCBlock;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 import javax.annotation.Nullable;
@@ -23,40 +23,40 @@ import java.util.function.BiFunction;
 
 
 
-public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements EntityBlock, BCBlock {
+public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlock, BCBlock {
   /**
-   * Constructs a new instance of TileBaseNeptuneBlock with specified properties, ID, and a property builder.
+   * Constructs a new instance of BCBaseEntityBlock with specified properties, ID, and a property builder.
    *
    * @param properties the properties of the block
    * @param id the unique identifier for the block
    * @param builder the property builder for additional block configuration
    */
-  public TileBaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
+  public BCBaseEntityBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(properties, id, builder);
   }
 
   /**
-   * Constructs a new instance of TileBaseNeptuneBlock with specified properties and ID.
+   * Constructs a new instance of BCBaseEntityBlock with specified properties and ID.
    *
    * @param properties the properties of the block
    * @param id the unique identifier for the block
    */
-  public TileBaseNeptuneBlock(Properties properties, @NotNull String id) {
+  public BCBaseEntityBlock(Properties properties, @NotNull String id) {
     super(properties, id, PropertyBuilder.builder());
   }
 
   /**
-   * Creates and returns a {@link MapCodec} instance for encoding a TileBaseNeptuneBlock.
+   * Creates and returns a {@link MapCodec} instance for encoding a BCBaseEntityBlock.
    *
-   * @param function the bi-function to create a new TileBaseNeptuneBlock instance
+   * @param function the bi-function to create a new BCBaseEntityBlock instance
    * @param <T> the type of the block
-   * @return a codec for encoding properties and ID of a TileBaseNeptuneBlock
+   * @return a codec for encoding properties and ID of a BCBaseEntityBlock
    */
-  protected static <T extends TileBaseNeptuneBlock> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
+  protected static <T extends BCBaseEntityBlock> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
     return RecordCodecBuilder
         .mapCodec(instance -> instance.group(
             propertiesCodec(),
-            Codec.STRING.fieldOf("id").forGetter(BaseNeptuneBlock::getId)
+            Codec.STRING.fieldOf("id").forGetter(BCBaseBlock::getId)
         ).apply(instance, function));
   }
 
@@ -72,7 +72,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
   public abstract BlockEntity newBlockEntity(BlockPos pos, BlockState state);
 
   @Override
-  protected abstract @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec();
+  protected abstract @NotNull MapCodec<? extends BCBaseEntityBlock> codec();
 
   /**
    * Gathers the state properties for this block and defines any additional custom state pipe.
@@ -94,7 +94,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
   @Override
   public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
     BlockEntity entity = level.getBlockEntity(pos);
-    if (entity instanceof NeptuneBlockEntity nep) {
+    if (entity instanceof BCBaseBlockEntity nep) {
       nep.onExplode(explosion);
     }
     super.onBlockExploded(state, level, pos, explosion);
@@ -111,7 +111,7 @@ public abstract class TileBaseNeptuneBlock extends BaseNeptuneBlock implements E
    */
   @Override
   protected void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
-    if (p_60516_.getBlockEntity(p_60517_) instanceof NeptuneBlockEntity nep) {
+    if (p_60516_.getBlockEntity(p_60517_) instanceof BCBaseBlockEntity nep) {
       nep.onRemove();
     }
     super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);

@@ -17,10 +17,10 @@ import peco2282.bcreborn.api.block.RotatableFacing;
 import peco2282.bcreborn.api.block.VolumeMarked;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.QuarryBlockEntity;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class QuarryBlock extends TileBaseNeptuneBlock implements RotatableFacing, VolumeMarked {
+public class QuarryBlock extends BCBaseEntityBlock implements RotatableFacing, VolumeMarked {
   public QuarryBlock(Properties properties, @NotNull String id) {
     super(properties, id,
         PropertyBuilder.builder().add(BCProperties.BLOCK_FACING, Direction.NORTH)
@@ -34,7 +34,7 @@ public class QuarryBlock extends TileBaseNeptuneBlock implements RotatableFacing
   }
 
   @Override
-  protected @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec() {
+  protected @NotNull MapCodec<? extends BCBaseEntityBlock> codec() {
     return codecInstance(QuarryBlock::new);
   }
 

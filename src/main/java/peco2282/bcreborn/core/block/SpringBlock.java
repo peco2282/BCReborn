@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.lib.block.BaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseBlock;
 import peco2282.bcreborn.api.enums.EnumSpring;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class SpringBlock extends BaseNeptuneBlock {
+public class SpringBlock extends BCBaseBlock {
   public static final Property<EnumSpring> SPRING_TYPE = BCProperties.SPRING_TYPE;
 
   public SpringBlock(@NotNull String id) {

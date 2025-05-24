@@ -10,11 +10,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import peco2282.bcreborn.lib.block.MarkerBaseBlock;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
+import peco2282.bcreborn.lib.block.BCBaseMarkerBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class MarkerPathBlock extends MarkerBaseBlock {
+public class MarkerPathBlock extends BCBaseMarkerBlock {
   public MarkerPathBlock(Properties properties, @NotNull String id) {
     super(properties, id, PropertyBuilder.builder());
   }
@@ -25,7 +25,7 @@ public class MarkerPathBlock extends MarkerBaseBlock {
   }
 
   @Override
-  protected @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec() {
+  protected @NotNull MapCodec<? extends BCBaseEntityBlock> codec() {
     return codecInstance(MarkerPathBlock::new);
   }
 

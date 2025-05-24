@@ -10,15 +10,15 @@ import peco2282.bcreborn.api.item.BCItem;
  *
  * @author peco2282
  */
-public class BaseNeptuneItem extends Item implements BCItem {
+public class BCBaseItem extends Item implements BCItem {
   private final String id;
   /**
-   * Creates a new BaseNeptuneItem instance.
+   * Creates a new BCBaseItem instance.
    *
    * @param p_41383_ the item properties used to define behavior and characteristics
    * @param id the unique identifier for the item
    */
-  public BaseNeptuneItem(Properties p_41383_, String id) {
+  public BCBaseItem(Properties p_41383_, String id) {
     super(p_41383_);
     this.id = id;
   }

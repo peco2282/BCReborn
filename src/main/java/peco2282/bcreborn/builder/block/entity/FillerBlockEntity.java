@@ -15,7 +15,7 @@ import peco2282.bcreborn.builder.block.FillerBlock;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.MarkerVolumeBlock;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.utils.BlockUtil;
 import peco2282.bcreborn.utils.OptionalWith;
 
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FillerBlockEntity extends NeptuneBlockEntity {
+public class FillerBlockEntity extends BCBaseBlockEntity {
 
   private static final long capacity = 16000 * 1_000_000L;
   private final MJHolder HOLDER = new MJHolder(capacity);

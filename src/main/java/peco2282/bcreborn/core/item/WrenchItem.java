@@ -11,9 +11,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.api.item.IToolWrench;
-import peco2282.bcreborn.lib.item.BaseNeptuneItem;
+import peco2282.bcreborn.lib.item.BCBaseItem;
 
-public class WrenchItem extends BaseNeptuneItem implements IToolWrench {
+public class WrenchItem extends BCBaseItem implements IToolWrench {
   public WrenchItem(String id) {
     super(new Properties().stacksTo(1), id);
   }

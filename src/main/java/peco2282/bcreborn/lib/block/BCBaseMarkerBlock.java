@@ -15,14 +15,14 @@ import java.util.Map;
 
 
 /**
- * MarkerBaseBlock is an abstract block class that provides a base implementation
+ * BCBaseMarkerBlock is an abstract block class that provides a base implementation
  * for customizable marker blocks in the game. It manages block state properties
  * such as facing direction and activity status and defines bounding boxes for
  * rendering based on block placement direction.
  *
  * @author peco2282
  */
-public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
+public abstract class BCBaseMarkerBlock extends BCBaseEntityBlock {
   private static final Map<Direction, AABB> BOUNDING_BOXES = new EnumMap<>(Direction.class);
 
   static {
@@ -41,13 +41,13 @@ public abstract class MarkerBaseBlock extends TileBaseNeptuneBlock {
   }
 
   /**
-   * Constructs a new MarkerBaseBlock with the specified properties.
+   * Constructs a new BCBaseMarkerBlock with the specified properties.
    *
    * @param properties The block properties to define features such as hardness.
    * @param id The unique identifier for the block.
    * @param builder A PropertyBuilder instance to define custom block properties.
    */
-  public MarkerBaseBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
+  public BCBaseMarkerBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(properties.destroyTime(.25F), id,
   builder.add(
       BCProperties.BLOCK_FACING_6, Direction.UP).add(

@@ -21,15 +21,15 @@ import java.util.Objects;
  *
  * @author peco2282
  */
-public abstract class NeptuneBlockEntity extends BlockEntity implements BCBlockEntity, ICapabilityProvider {
+public abstract class BCBaseBlockEntity extends BlockEntity implements BCBlockEntity, ICapabilityProvider {
   /**
-   * Constructs a new NeptuneBlockEntity.
+   * Constructs a new BCBaseBlockEntity.
    *
    * @param p_155228_ The type of block entity.
    * @param p_155229_ The position of the block in the world.
    * @param p_155230_ The state of the block at the given position.
    */
-  public NeptuneBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
+  public BCBaseBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
     super(p_155228_, p_155229_, p_155230_);
   }
   /**

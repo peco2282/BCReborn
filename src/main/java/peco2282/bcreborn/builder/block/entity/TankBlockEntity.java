@@ -4,14 +4,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.builder.block.TankBlock;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TankBlockEntity extends NeptuneBlockEntity {
+public class TankBlockEntity extends BCBaseBlockEntity {
   private final List<TankBlock> vertical = new ArrayList<>();
   private final AtomicInteger fluids = new AtomicInteger(0);
   public TankBlockEntity(BlockPos p_155229_, BlockState p_155230_) {

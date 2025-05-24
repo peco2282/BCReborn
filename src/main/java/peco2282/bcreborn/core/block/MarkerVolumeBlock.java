@@ -23,12 +23,12 @@ import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
-import peco2282.bcreborn.lib.block.MarkerBaseBlock;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.BCBaseMarkerBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class MarkerVolumeBlock extends MarkerBaseBlock {
+public class MarkerVolumeBlock extends BCBaseMarkerBlock {
 
   private static final VoxelShape BOTTOM = box(7, 0, 7, 9, 9, 9);
   private static final VoxelShape UP = box(7, 7, 7, 9, 16, 9);
@@ -74,12 +74,12 @@ public class MarkerVolumeBlock extends MarkerBaseBlock {
   }
 
   @Override
-  public @NotNull NeptuneBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+  public @NotNull BCBaseBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new MarkerVolumeBlockEntity(pos, state);
   }
 
   @Override
-  protected @NotNull MapCodec<? extends TileBaseNeptuneBlock> codec() {
+  protected @NotNull MapCodec<? extends BCBaseEntityBlock> codec() {
     return codecInstance(MarkerVolumeBlock::new);
   }
 

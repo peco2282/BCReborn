@@ -3,8 +3,7 @@ package peco2282.bcreborn.transport.block.pipe;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
 import net.minecraft.world.item.ItemStack;
-import peco2282.bcreborn.transport.block.BasePipeBlock;
-import peco2282.bcreborn.transport.block.PipeEnergyBlock;
+import peco2282.bcreborn.transport.block.*;
 import peco2282.bcreborn.transport.block.PipeFluidBlock;
 import peco2282.bcreborn.transport.block.PipeItemBlock;
 import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
@@ -41,12 +40,12 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
 
 
   /**
-   * Retrieves the {@link BasePipeBlock} associated with the current pipe storage.
+   * Retrieves the {@link BCBasePipeBlock} associated with the current pipe storage.
    *
-   * @return the {@link BasePipeBlock} associated with this storage
+   * @return the {@link BCBasePipeBlock} associated with this storage
    */
-  public final BasePipeBlock getPipe() {
-    return (BasePipeBlock) pipe.getBlockState().getBlock();
+  public final BCBasePipeBlock getPipe() {
+    return (BCBasePipeBlock) pipe.getBlockState().getBlock();
   }
 
   public abstract boolean isEmpty();

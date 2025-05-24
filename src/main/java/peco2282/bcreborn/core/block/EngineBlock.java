@@ -30,11 +30,11 @@ import peco2282.bcreborn.api.enums.EnumEngineType;
 import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.EngineBlockEntity;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 @SuppressWarnings("UnnecessaryBoxing")
-public class EngineBlock extends TileBaseNeptuneBlock implements IEngine, RotatableFacing {
+public class EngineBlock extends BCBaseEntityBlock implements IEngine, RotatableFacing {
   public static final VoxelShape SHAPE_UP = Shapes.or(
       box(0, 0, 0, 16, 4, 16),
       box(4, 4, 4, 12, 16, 12)
@@ -62,7 +62,7 @@ public class EngineBlock extends TileBaseNeptuneBlock implements IEngine, Rotata
   public static final MapCodec<EngineBlock> CODEC = RecordCodecBuilder
       .mapCodec(instance -> instance.group(
           propertiesCodec(),
-          Codec.STRING.fieldOf("id").forGetter(TileBaseNeptuneBlock::getId),
+          Codec.STRING.fieldOf("id").forGetter(BCBaseEntityBlock::getId),
           EnumEngineType.CODEC.fieldOf("engine_type").forGetter(EngineBlock::type)
       ).apply(instance, EngineBlock::new));
   private final EnumEngineType type;

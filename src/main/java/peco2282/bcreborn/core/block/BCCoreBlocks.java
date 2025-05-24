@@ -8,7 +8,7 @@ import peco2282.bcreborn.api.enums.EnumEngineType;
 import peco2282.bcreborn.bean.InitRegister;
 import peco2282.bcreborn.core.fluid.BCCoreFluids;
 import peco2282.bcreborn.core.fluid.ExplosibleLiquid;
-import peco2282.bcreborn.lib.item.BlockItemNeptune;
+import peco2282.bcreborn.lib.item.BCBlockItem;
 import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;
@@ -30,6 +30,6 @@ public class BCCoreBlocks {
 //  public static final RegistryObject<ExplosibleLiquid> FUEL_FLOWING = register("fuel_flowing", () -> new ExplosibleLiquid(BCCoreFluids.FUEL_FLOWING, BlockBehaviour.Properties.of().liquid().noCollission().noLootTable(), "fuel_flowing"));
 
   private static <B extends Block & BCBlock> RegistryObject<B> register(String name, Supplier<B> block) {
-    return BCRegistry.registerBlockItem(name, block, BlockItemNeptune::new);
+    return BCRegistry.registerBlockItem(name, block, BCBlockItem::new);
   }
 }

@@ -20,24 +20,24 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 
 
 /**
- * BaseNeptuneBlock serves as a foundational block class within the Neptune-themed mod. It provides
+ * BCBaseBlock serves as a foundational block class within the Neptune-themed mod. It provides
  * default configuration for block properties, including durability, explosion resistance, and sound type.
  * This class is meant to be extended by specific block implementations which define their own state properties.
  *
  * @author peco2282
  */
-public abstract class BaseNeptuneBlock extends Block implements BCBlock {
-  private static final Logger log = LoggerFactory.getLogger(BaseNeptuneBlock.class);
+public abstract class BCBaseBlock extends Block implements BCBlock {
+  private static final Logger log = LoggerFactory.getLogger(BCBaseBlock.class);
   protected final String id;
 
   /**
-   * Constructs a BaseNeptuneBlock with the given properties, identifier, and property builder.
+   * Constructs a BCBaseBlock with the given properties, identifier, and property builder.
    *
    * @param properties The block properties to be applied, such as hardness and resistance.
    * @param id The unique identifier for this block.
    * @param builder A helper to create and configure block states.
    */
-  public BaseNeptuneBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
+  public BCBaseBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
     super(update(properties));
     BlockState raw = getStateDefinition().any();
     registerDefaultState(builder.set(raw));

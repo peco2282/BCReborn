@@ -6,14 +6,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.event.PipeCreationEvent;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.transport.block.PipeMaterial;
 import peco2282.bcreborn.transport.block.PipeType;
 import peco2282.bcreborn.transport.block.pipe.PipeStorage;
 
 import java.util.Objects;
 
-public abstract class BasePipeBlockEntity extends NeptuneBlockEntity {
+public abstract class BasePipeBlockEntity extends BCBaseBlockEntity {
   protected final PipeMaterial material;
   protected final PipeType type;
   protected final PipeStorage<?> storage;

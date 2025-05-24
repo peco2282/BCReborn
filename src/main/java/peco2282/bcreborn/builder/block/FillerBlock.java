@@ -25,10 +25,10 @@ import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.FillerBlockEntity;
 import peco2282.bcreborn.builder.block.menu.FillerMenu;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class FillerBlock extends TileBaseNeptuneBlock implements RotatableFacing {
+public class FillerBlock extends BCBaseEntityBlock implements RotatableFacing {
   public FillerBlock(Properties properties, @NotNull String id) {
     super(properties, id,
         PropertyBuilder

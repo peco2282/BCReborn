@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
 import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.bean.InitRegister;
-import peco2282.bcreborn.builder.saved.BluePrintTemplateManager;
 import peco2282.bcreborn.registry.BCRegistry;
 
 import java.util.function.Supplier;

@@ -8,14 +8,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.transport.block.entity.pipe.ItemPipeBlockEntity;
 import peco2282.bcreborn.transport.block.pipe.PipeMaterialHandler;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class PipeItemBlock extends BasePipeBlock {
+public class PipeItemBlock extends BCBasePipeBlock {
   private final PipeMaterialHandler HANDLER = new PipeMaterialHandler(getPipeMaterial());
   private @Nullable ItemPipeBlockEntity entity = null;
 

@@ -15,11 +15,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.RotatableFacing;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 
-public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements RotatableFacing {
+public abstract class BCBasePipeBlock extends BCBaseEntityBlock implements RotatableFacing {
   public static final VoxelShape SHAPE_NORTH_SOUTH = box(0, 4, 4, 16, 12, 12);
   public static final VoxelShape SHAPE_EAST_WEST = box(4, 4, 0, 12, 12, 16);
   public static final VoxelShape SHAPE_UP_DOWN = box(4, 0, 4, 12, 16, 12);
@@ -29,13 +29,13 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
 
   private final PipeMaterial material;
   private final PipeType type;
-  public BasePipeBlock(Properties properties, PipeMaterial material, PipeType type) {
+  public BCBasePipeBlock(Properties properties, PipeMaterial material, PipeType type) {
     super(properties, "", PropertyBuilder.builder());
     this.material = material;
     this.type = type;
   }
 
-  public BasePipeBlock(Properties properties, PipeMaterial material, PipeType type, PropertyBuilder builder) {
+  public BCBasePipeBlock(Properties properties, PipeMaterial material, PipeType type, PropertyBuilder builder) {
     super(properties, "", builder);
     this.material = material;
     this.type = type;
@@ -68,19 +68,19 @@ public abstract class BasePipeBlock extends TileBaseNeptuneBlock implements Rota
   public @NotNull String getId() {
     return getPipeMaterial().getSerializedName() + "." + getPipeType().getSerializedName() + "." + id;
   }
-  protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function3<Properties, PipeMaterial, PipeType, P> function) {
+  protected static <P extends BCBasePipeBlock> MapCodec<P> codecInstance(Function3<Properties, PipeMaterial, PipeType, P> function) {
     return RecordCodecBuilder.mapCodec(instance -> instance.group(
         propertiesCodec(),
-        MATERIAL_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeMaterial),
-        TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
+        MATERIAL_CODEC.fieldOf("material").forGetter(BCBasePipeBlock::getPipeMaterial),
+        TYPE_CODEC.fieldOf("material").forGetter(BCBasePipeBlock::getPipeType)
     ).apply(instance, function));
   }
-  protected static <P extends BasePipeBlock> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
+  protected static <P extends BCBasePipeBlock> MapCodec<P> codecInstance(Function4<Properties, String, PipeMaterial, PipeType, P> function) {
     return RecordCodecBuilder.mapCodec(instance -> instance.group(
         propertiesCodec(),
-        Codec.STRING.fieldOf("id").forGetter(BasePipeBlock::getId),
-        MATERIAL_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeMaterial),
-        TYPE_CODEC.fieldOf("material").forGetter(BasePipeBlock::getPipeType)
+        Codec.STRING.fieldOf("id").forGetter(BCBasePipeBlock::getId),
+        MATERIAL_CODEC.fieldOf("material").forGetter(BCBasePipeBlock::getPipeMaterial),
+        TYPE_CODEC.fieldOf("material").forGetter(BCBasePipeBlock::getPipeType)
     ).apply(instance, function));
   }
 }

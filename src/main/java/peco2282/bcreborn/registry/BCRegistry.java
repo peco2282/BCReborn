@@ -16,7 +16,6 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -27,7 +26,7 @@ import peco2282.bcreborn.api.block.BCBlockEntity;
 import peco2282.bcreborn.api.item.BCItem;
 import peco2282.bcreborn.bean.ContextProcessor;
 import peco2282.bcreborn.lib.block.menu.BCMenu;
-import peco2282.bcreborn.lib.item.BlockItemNeptune;
+import peco2282.bcreborn.lib.item.BCBlockItem;
 
 import java.util.function.Supplier;
 
@@ -97,7 +96,7 @@ public class BCRegistry {
    * @return A RegistryObject containing the block.
    */
   public static <B extends Block & BCBlock> RegistryObject<B> registerBlockItem(String name, Supplier<B> block) {
-      return registerBlockItem(name, block, BlockItemNeptune::new);
+      return registerBlockItem(name, block, BCBlockItem::new);
   }
 
   public static <B extends Block & BCBlock, BI extends BlockItem & BCItem> RegistryObject<B> registerBlockItem(String name, Supplier<B> block, BlockItemFunction<B, BI> function) {

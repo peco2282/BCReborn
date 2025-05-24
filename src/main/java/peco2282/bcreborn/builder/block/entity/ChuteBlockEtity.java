@@ -16,11 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import peco2282.bcreborn.lib.block.entity.NeptuneContainerBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseContainerBlockEntity;
 
 import java.util.function.BooleanSupplier;
 
-public class ChuteBlockEtity extends NeptuneContainerBlockEntity {
+public class ChuteBlockEtity extends BCBaseContainerBlockEntity {
   public static final int SLOT = 4;
   private static final String COOLTIME = "Cooltime";
   private final NonNullList<ItemStack> items = NonNullList.createWithCapacity(SLOT);

@@ -17,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.builder.block.entity.BCBuilderBlockEntityTypes;
 import peco2282.bcreborn.builder.block.entity.ChuteBlockEtity;
-import peco2282.bcreborn.lib.block.TileBaseNeptuneBlock;
+import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-public class ChuteBlock extends TileBaseNeptuneBlock {
+public class ChuteBlock extends BCBaseEntityBlock {
   public ChuteBlock(Properties properties, @NotNull String id) {
     super(properties, id, PropertyBuilder.builder().add(BCProperties.BLOCK_FACING, Direction.DOWN));
   }

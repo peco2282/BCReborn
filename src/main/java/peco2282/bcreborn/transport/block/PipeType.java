@@ -5,8 +5,9 @@ import org.jetbrains.annotations.ApiStatus;
 
 public enum PipeType implements StringRepresentable {
   ITEM("item"),
-  @ApiStatus.Internal
+  @ApiStatus.Experimental
   FLUID("fluid"),
+  @ApiStatus.Experimental
   ENERGY("energy");
   private final String type;
 

@@ -8,12 +8,12 @@ import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.MarkerVolumeBlock;
-import peco2282.bcreborn.lib.block.entity.NeptuneBlockEntity;
+import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 
 import java.util.*;
 
 
-public class MarkerVolumeBlockEntity extends NeptuneBlockEntity {
+public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
   public static final List<MarkerVolumeBlockEntity> rendered = new ArrayList<>();
   private MarkerPlaceHolder holder;
   private final List<MarkerVolumeBlockEntity> chained = new ArrayList<>();
