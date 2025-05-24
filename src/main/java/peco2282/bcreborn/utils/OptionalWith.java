@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.utils;
 
 import org.jetbrains.annotations.NotNull;
@@ -6,14 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-
 /**
- * A utility class representing an enhanced version of Optional with additional functionality.
- * This class allows values to be optionally present or absent, similar to {@link java.util.Optional},
+ * A utility class representing an enhanced version of Optional with additional functionality. This
+ * class allows values to be optionally present or absent, similar to {@link java.util.Optional},
  * but with extended methods for setting, retrieving, and performing operations conditionally.
  *
  * @param <T> The type of the value wrapped by this class.
- *
  * @author peco2282
  */
 public class OptionalWith<T> {
@@ -40,7 +45,8 @@ public class OptionalWith<T> {
    *
    * @param value The value to be wrapped, can be null.
    * @param <T> The type of the value.
-   * @return A new {@code OptionalWith} wrapping the specified value, or an empty {@code OptionalWith} if null.
+   * @return A new {@code OptionalWith} wrapping the specified value, or an empty {@code
+   *     OptionalWith} if null.
    */
   public static <T> OptionalWith<T> ofNullable(@Nullable T value) {
     return new OptionalWith<>(value);
@@ -79,7 +85,8 @@ public class OptionalWith<T> {
   }
 
   /**
-   * Retrieves the value wrapped by this {@code OptionalWith}, or the specified default value if absent.
+   * Retrieves the value wrapped by this {@code OptionalWith}, or the specified default value if
+   * absent.
    *
    * @param other The default value to return if no value is present.
    * @return The wrapped value if present, or {@code other} if value is absent.
@@ -89,8 +96,8 @@ public class OptionalWith<T> {
   }
 
   /**
-   * Sets a new value for this {@code OptionalWith}.
-   * The value must not be null; if null, an exception is thrown.
+   * Sets a new value for this {@code OptionalWith}. The value must not be null; if null, an
+   * exception is thrown.
    *
    * @param value The non-null value to set.
    * @throws NullPointerException if {@code value} is null.
@@ -100,8 +107,8 @@ public class OptionalWith<T> {
   }
 
   /**
-   * Sets a new value for this {@code OptionalWith}.
-   * The behavior depends on the {@code notnull} flag to enforce non-null values.
+   * Sets a new value for this {@code OptionalWith}. The behavior depends on the {@code notnull}
+   * flag to enforce non-null values.
    *
    * @param value The value to set. Can be null if {@code notnull} is {@code false}.
    * @param notnull A flag indicating whether the new value must be non-null.

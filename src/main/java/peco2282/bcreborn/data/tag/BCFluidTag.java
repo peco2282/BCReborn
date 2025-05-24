@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.data.tag;
 
 import net.minecraft.tags.FluidTags;
@@ -8,26 +15,20 @@ import peco2282.bcreborn.BCReborn;
 /**
  * This class defines custom fluid tags for the BC Reborn mod.
  *
- * <p>It provides static references to commonly used fluid tags, such as burnable,
- * burnable sources, and flowing burnable fluids.</p>
+ * <p>It provides static references to commonly used fluid tags, such as burnable, burnable sources,
+ * and flowing burnable fluids.
  *
  * @author peco2282
  */
 public class BCFluidTag {
 
-  /**
-   * Tag for burnable fluids.
-   */
+  /** Tag for burnable fluids. */
   public static final TagKey<Fluid> BURNABLE = create("burnable");
 
-  /**
-   * Tag for burnable fluid sources.
-   */
+  /** Tag for burnable fluid sources. */
   public static final TagKey<Fluid> BURNABLE_SOURCE = create("burnable_source");
 
-  /**
-   * Tag for burnable flowing fluids.
-   */
+  /** Tag for burnable flowing fluids. */
   public static final TagKey<Fluid> BURNABLE_FLOWING = create("burnable_flowing");
 
   /**

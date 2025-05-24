@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block.entity;
 
 import net.minecraft.core.BlockPos;
@@ -21,10 +28,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.api.block.IEngine;
-import peco2282.bcreborn.api.enums.EnumEngineType;
-import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.api.capability.mj.MJCapailityHelper;
 import peco2282.bcreborn.api.capability.mj.impl.MJEngineConnector;
+import peco2282.bcreborn.api.enums.EnumEngineType;
+import peco2282.bcreborn.api.enums.EnumPowerStage;
 import peco2282.bcreborn.core.block.menu.EngineIronMenu;
 import peco2282.bcreborn.core.block.menu.EngineStoneMenu;
 import peco2282.bcreborn.lib.block.entity.BCBaseContainerBlockEntity;
@@ -35,7 +42,8 @@ public class EngineBlockEntity extends BCBaseContainerBlockEntity implements Men
   private EnumPowerStage stage;
   private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
 
-  private final MJCapailityHelper helper = new MJCapailityHelper(new MJEngineConnector(), null, null);
+  private final MJCapailityHelper helper =
+      new MJCapailityHelper(new MJEngineConnector(), null, null);
 
   private long timer = 0;
 
@@ -43,7 +51,8 @@ public class EngineBlockEntity extends BCBaseContainerBlockEntity implements Men
     this(BCCoreBlockEntityTypes.ENGINE.get(), p_155229_, p_155230_);
   }
 
-  protected EngineBlockEntity(BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState state) {
+  protected EngineBlockEntity(
+      BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
     this.isActive = state.getValue(BCProperties.ACTIVE);
     this.stage = state.getValue(BCProperties.ENERGY_STAGE);
@@ -53,17 +62,18 @@ public class EngineBlockEntity extends BCBaseContainerBlockEntity implements Men
     entity.update(pos, entity);
   }
 
-  private void update(BlockPos pos,  EngineBlockEntity entity) {
+  private void update(BlockPos pos, EngineBlockEntity entity) {
     if (level == null) return;
     BlockState state = level.getBlockState(pos);
     this.stage = state.getValue(BCProperties.ENERGY_STAGE);
     this.isActive = state.getValue(BCProperties.ACTIVE);
-//    System.out.println("update " + state);
+    //    System.out.println("update " + state);
     if (this.isActive) {
       // TODO Change algo
       timer = entity.timer;
       int curr = state.getValue(BCProperties.ENGINE_MODEL);
-      if (timer > stage.threshold()) state = state.setValue(BCProperties.ENERGY_STAGE, stage = stage.next());
+      if (timer > stage.threshold())
+        state = state.setValue(BCProperties.ENERGY_STAGE, stage = stage.next());
       state = state.setValue(BCProperties.ENGINE_MODEL, Integer.valueOf((curr % 9) + 1));
       level.setBlock(pos, state, 2);
     }
@@ -147,7 +157,8 @@ public class EngineBlockEntity extends BCBaseContainerBlockEntity implements Men
     }
 
     @Override
-    public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    public @Nullable AbstractContainerMenu createMenu(
+        int p_39954_, Inventory p_39955_, Player p_39956_) {
       return switch (type) {
         case WOOD, CREATIVE -> null;
         case STONE -> new EngineStoneMenu(p_39954_, p_39955_, null);

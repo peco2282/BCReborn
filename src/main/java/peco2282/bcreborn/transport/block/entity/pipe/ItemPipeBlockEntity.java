@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import net.minecraft.core.BlockPos;
@@ -20,7 +27,11 @@ import java.util.Map;
 public abstract class ItemPipeBlockEntity extends BasePipeBlockEntity {
   protected final EnumSet<Direction> connections = EnumSet.noneOf(Direction.class);
 
-  public ItemPipeBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_, PipeMaterial material) {
+  public ItemPipeBlockEntity(
+      BlockEntityType<?> p_155228_,
+      BlockPos p_155229_,
+      BlockState p_155230_,
+      PipeMaterial material) {
     super(p_155228_, p_155229_, p_155230_, material, PipeType.ITEM);
   }
 
@@ -46,8 +57,7 @@ public abstract class ItemPipeBlockEntity extends BasePipeBlockEntity {
     super.saveAdditional(nbt, provider);
     // 接続方向（EnumSet）をビットマスクとして保存
     int connectionMask = 0;
-    for (Direction direction : connections)
-      connectionMask |= 1 << direction.ordinal();
+    for (Direction direction : connections) connectionMask |= 1 << direction.ordinal();
     nbt.putInt("Connections", connectionMask);
   }
 
@@ -59,8 +69,7 @@ public abstract class ItemPipeBlockEntity extends BasePipeBlockEntity {
     int connectionMask = nbt.getInt("Connections");
     connections.clear();
     for (Direction direction : Direction.values())
-      if ((connectionMask & (1 << direction.ordinal())) != 0)
-        connections.add(direction);
+      if ((connectionMask & (1 << direction.ordinal())) != 0) connections.add(direction);
   }
 
   protected PipeItemBlock self() {

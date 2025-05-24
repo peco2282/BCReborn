@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.capability.mj;
 
 import com.mojang.serialization.Codec;
@@ -14,11 +21,14 @@ public class MJHolder implements INBTSerializable<CompoundTag> {
   private final AtomicLong microJoules = new AtomicLong(0);
   public static final String CAP = "capacity";
   public static final String MJ = "current";
-  public static final Codec<MJHolder> CODEC = RecordCodecBuilder
-      .create(instance -> instance.group(
-          Codec.LONG.fieldOf(CAP).forGetter(MJHolder::capacity),
-          Codec.LONG.fieldOf(MJ).forGetter(MJHolder::current)
-      ).apply(instance, MJHolder::new));
+  public static final Codec<MJHolder> CODEC =
+      RecordCodecBuilder.create(
+          instance ->
+              instance
+                  .group(
+                      Codec.LONG.fieldOf(CAP).forGetter(MJHolder::capacity),
+                      Codec.LONG.fieldOf(MJ).forGetter(MJHolder::current))
+                  .apply(instance, MJHolder::new));
 
   public MJHolder(long capacity) {
     this(capacity, 0);

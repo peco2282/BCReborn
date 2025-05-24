@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.saved;
 
 import com.google.common.collect.Maps;
@@ -20,52 +27,42 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-
 public class BluePrintTemplateManager {
-  /**
-   * Converter for mapping blueprint save files to their respective IDs.
-   */
+  /** Converter for mapping blueprint save files to their respective IDs. */
   private static final FileToIdConverter CONVERTER = new FileToIdConverter("blueprint", ".save");
-  /**
-   * Path resource pointing to the mod-specific save data location.
-   */
+
+  /** Path resource pointing to the mod-specific save data location. */
   private static final LevelResource PATH = new LevelResource(BCReborn.MODID);
-  /**
-   * Singleton instance of the BluePrintTemplateManager.
-   */
-  @LateinitField
-  private static BluePrintTemplateManager INSTANCE;
-  /**
-   * Thread-safe map storing blueprint templates by name.
-   */
+
+  /** Singleton instance of the BluePrintTemplateManager. */
+  @LateinitField private static BluePrintTemplateManager INSTANCE;
+
+  /** Thread-safe map storing blueprint templates by name. */
   private final Map<String, BluePrintTemplate> template = Maps.newConcurrentMap();
-  /**
-   * Resource manager for accessing game resources.
-   */
+
+  /** Resource manager for accessing game resources. */
   private final ResourceManager manager;
-  /**
-   * Provides access to the level's storage directory.
-   */
+
+  /** Provides access to the level's storage directory. */
   private final LevelStorageSource.LevelStorageAccess access;
-  /**
-   * Normalized path to the blueprint save files directory.
-   */
+
+  /** Normalized path to the blueprint save files directory. */
   private final Path dir;
-  /**
-   * Accessor for retrieving registered blocks.
-   */
+
+  /** Accessor for retrieving registered blocks. */
   private final HolderGetter<Block> getter;
 
   /**
    * Constructs a new BluePrintTemplateManager.
    *
    * @param manager The resource manager for accessing resources.
-   * @param access  Provides access to the level's storage directory.
-   * @param getter  Accessor for registered blocks.
+   * @param access Provides access to the level's storage directory.
+   * @param getter Accessor for registered blocks.
    */
   public BluePrintTemplateManager(
-      ResourceManager manager, LevelStorageSource.LevelStorageAccess access, HolderGetter<Block> getter
-  ) {
+      ResourceManager manager,
+      LevelStorageSource.LevelStorageAccess access,
+      HolderGetter<Block> getter) {
     this.manager = manager;
     this.access = access;
     this.dir = access.getLevelPath(PATH).normalize();
@@ -84,11 +81,10 @@ public class BluePrintTemplateManager {
   }
 
   /**
-   * Loads blueprint templates from the storage directory.
-   * Currently, this method is a placeholder and doesn't perform any operation.
+   * Loads blueprint templates from the storage directory. Currently, this method is a placeholder
+   * and doesn't perform any operation.
    */
-  public void load() {
-  }
+  public void load() {}
 
   /**
    * Saves a blueprint template with the given name to the storage directory.
@@ -110,7 +106,6 @@ public class BluePrintTemplateManager {
       NbtIo.writeCompressed(compoundtag, out);
     } catch (Throwable ignore) {
     }
-
   }
 
   /**
@@ -122,9 +117,10 @@ public class BluePrintTemplateManager {
   public BluePrintTemplate get(String name) {
     return template.computeIfAbsent(name, k -> new BluePrintTemplate());
   }
+
   /**
-   * Creates the file path for a blueprint template with the given name.
-   * This method ensures the file path is structured properly within the blueprint's directory.
+   * Creates the file path for a blueprint template with the given name. This method ensures the
+   * file path is structured properly within the blueprint's directory.
    *
    * @param name The name of the blueprint template.
    * @return The path of the blueprint template save file.

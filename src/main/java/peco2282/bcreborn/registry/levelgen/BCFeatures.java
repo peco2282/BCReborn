@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.registry.levelgen;
 
 import net.minecraft.core.registries.Registries;
@@ -13,14 +20,16 @@ import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.core.block.BCCoreBlocks;
 
 public class BCFeatures {
-  public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_SOURCE = ResourceKey.create(Registries.CONFIGURED_FEATURE, BCReborn.location("oil_source"));
+  public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_SOURCE =
+      ResourceKey.create(Registries.CONFIGURED_FEATURE, BCReborn.location("oil_source"));
 
   public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
     FeatureUtils.register(
         context,
         OIL_SOURCE,
         Feature.LAKE,
-        new LakeFeature.Configuration(BlockStateProvider.simple(BCCoreBlocks.OIL_SOURCE.get()), BlockStateProvider.simple(Blocks.STONE))
-    );
+        new LakeFeature.Configuration(
+            BlockStateProvider.simple(BCCoreBlocks.OIL_SOURCE.get()),
+            BlockStateProvider.simple(Blocks.STONE)));
   }
 }

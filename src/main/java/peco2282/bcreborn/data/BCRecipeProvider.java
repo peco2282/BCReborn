@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.data;
 
 import net.minecraft.core.HolderLookup;
@@ -13,10 +20,9 @@ import peco2282.bcreborn.transport.block.BCTransportBlocks;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-
 /**
- * BCRecipeProvider is responsible for defining and registering custom recipes for the game.
- * This class generates recipes for items, blocks, and other crafting materials used in the BCReborn mod.
+ * BCRecipeProvider is responsible for defining and registering custom recipes for the game. This
+ * class generates recipes for items, blocks, and other crafting materials used in the BCReborn mod.
  *
  * @author peco2282
  */
@@ -27,7 +33,8 @@ public class BCRecipeProvider extends RecipeProvider {
    * @param p_248933_ The output destination for generated recipes.
    * @param p_333797_ A future that provides a lookup provider for holders.
    */
-  public BCRecipeProvider(PackOutput p_248933_, CompletableFuture<HolderLookup.Provider> p_333797_) {
+  public BCRecipeProvider(
+      PackOutput p_248933_, CompletableFuture<HolderLookup.Provider> p_333797_) {
     super(p_248933_, p_333797_);
   }
 

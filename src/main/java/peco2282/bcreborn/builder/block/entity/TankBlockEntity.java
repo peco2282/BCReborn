@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.entity;
 
 import net.minecraft.core.BlockPos;
@@ -14,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TankBlockEntity extends BCBaseBlockEntity {
   private final List<TankBlock> vertical = new ArrayList<>();
   private final AtomicInteger fluids = new AtomicInteger(0);
+
   public TankBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCBuilderBlockEntityTypes.TANK.get(), p_155229_, p_155230_);
   }

@@ -1,35 +1,34 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.bean;
 
 import net.minecraft.util.StringRepresentable;
 import peco2282.bcreborn.api.capability.BCCapabilities;
 
 /**
- * The {@code CapabilityAttacher} annotation is used to specify the type of capability 
- * that should be attached to a Minecraft object. This helps in managing various capabilities
- * like connectors, receivers, and generators in the modded environment.
+ * The {@code CapabilityAttacher} annotation is used to specify the type of capability that should
+ * be attached to a Minecraft object. This helps in managing various capabilities like connectors,
+ * receivers, and generators in the modded environment.
  */
 public @interface CapabilityAttacher {
-  /**
-   * Specifies the {@code Type} of capability to attach.
-   */
+  /** Specifies the {@code Type} of capability to attach. */
   Type value();
 
   /**
-   * The {@code Type} enum defines different types of capabilities that
-   * can be attached. These include connectors, receivers, and generators.
+   * The {@code Type} enum defines different types of capabilities that can be attached. These
+   * include connectors, receivers, and generators.
    */
   enum Type implements StringRepresentable {
-    /**
-     * Represents a connector capability that handles connection pipe.
-     */
+    /** Represents a connector capability that handles connection pipe. */
     CONNECTOR(BCCapabilities.CONNECTOR_KEY),
-    /**
-     * Represents a receiver capability that handles receiving pipe.
-     */
+    /** Represents a receiver capability that handles receiving pipe. */
     RECEIVER(BCCapabilities.RECEIVER_KEY),
-    /**
-     * Represents a generator capability that handles power generation pipe.
-     */
+    /** Represents a generator capability that handles power generation pipe. */
     GENERATOR(BCCapabilities.GENERATOR_KEY),
     PIPE(BCCapabilities.PIPE_KEY);
     private final String name;

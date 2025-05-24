@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.entity;
 
 import net.minecraft.core.BlockPos;
@@ -8,9 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.api.capability.mj.MJGenerator;
 import peco2282.bcreborn.api.capability.mj.MJHolder;
+import peco2282.bcreborn.api.enums.EnumFillerType;
 import peco2282.bcreborn.builder.block.FillerBlock;
 import peco2282.bcreborn.core.MarkerPlaceHolder;
 import peco2282.bcreborn.core.block.MarkerVolumeBlock;
@@ -54,14 +61,16 @@ public class FillerBlockEntity extends BCBaseBlockEntity {
     BlockState east = level.getBlockState(pos.east());
     BlockState south = level.getBlockState(pos.south());
     BlockState north = level.getBlockState(pos.north());
-    Map<Block, BlockState> map = BlockUtil.allMatch(b -> b instanceof MJGenerator, up, down, west, east, south, north);
+    Map<Block, BlockState> map =
+        BlockUtil.allMatch(b -> b instanceof MJGenerator, up, down, west, east, south, north);
     AtomicLong last = new AtomicLong();
-    map.forEach((key, value) -> {
-      MJGenerator mjGen = (MJGenerator) key;
-      if (mjGen.isActive(level, pos, value)) {
-        last.addAndGet(HOLDER.add(mjGen.perTick(level, value)));
-      }
-    });
+    map.forEach(
+        (key, value) -> {
+          MJGenerator mjGen = (MJGenerator) key;
+          if (mjGen.isActive(level, pos, value)) {
+            last.addAndGet(HOLDER.add(mjGen.perTick(level, value)));
+          }
+        });
     lastTick = last.get();
     if (lastTick == 0) {
       level.setBlockAndUpdate(pos, state.setValue(BCProperties.ACTIVE, false));
@@ -69,7 +78,8 @@ public class FillerBlockEntity extends BCBaseBlockEntity {
     // done
 
     // filling
-    List<Tuple<BlockPos, BlockState>> stateList = BlockUtil.allFaceSearch(b -> b instanceof MarkerVolumeBlock, level, pos);
+    List<Tuple<BlockPos, BlockState>> stateList =
+        BlockUtil.allFaceSearch(b -> b instanceof MarkerVolumeBlock, level, pos);
     if (stateList.isEmpty()) return;
     Tuple<BlockPos, BlockState> first = stateList.getFirst();
     BlockState blockState = first.getB();
@@ -79,7 +89,8 @@ public class FillerBlockEntity extends BCBaseBlockEntity {
     getRange(this, (FillerBlock) getBlockState().getBlock(), Objects.requireNonNull(block));
   }
 
-  private static void getRange(FillerBlockEntity entity, FillerBlock block, MarkerVolumeBlockEntity volume) {
+  private static void getRange(
+      FillerBlockEntity entity, FillerBlock block, MarkerVolumeBlockEntity volume) {
     final MarkerPlaceHolder holder = volume.getHolder();
     List<BlockPos> target = holder.getPosList();
     target.stream().forEach(p -> entity.getLevel().removeBlock(p, true));

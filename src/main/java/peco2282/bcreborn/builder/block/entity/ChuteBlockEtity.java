@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.entity;
 
 import net.minecraft.core.BlockPos;
@@ -27,17 +34,22 @@ public class ChuteBlockEtity extends BCBaseContainerBlockEntity {
   private static final int COOLTIME_TICK = 10; // ticks
   private final CT cooltime = new CT(COOLTIME_TICK);
   private Direction facing;
+
   private static class CT {
     int ct;
+
     public CT(int ct) {
       this.ct = ct;
     }
+
     private void reset() {
       this.ct = COOLTIME_TICK;
     }
+
     private void dec() {
       --ct;
     }
+
     private void set(int ct) {
       this.ct = ct;
     }
@@ -129,5 +141,6 @@ public class ChuteBlockEtity extends BCBaseContainerBlockEntity {
     return false;
   }
 
-  public void moveItems(Level level, BlockPos pos, BlockState state, BlockEntity entity, BooleanSupplier supplier) {}
+  public void moveItems(
+      Level level, BlockPos pos, BlockState state, BlockEntity entity, BooleanSupplier supplier) {}
 }

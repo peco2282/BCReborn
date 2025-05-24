@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block;
 
 import com.mojang.serialization.MapCodec;
@@ -22,10 +29,12 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class QuarryBlock extends BCBaseEntityBlock implements RotatableFacing, VolumeMarked {
   public QuarryBlock(Properties properties, @NotNull String id) {
-    super(properties, id,
-        PropertyBuilder.builder().add(BCProperties.BLOCK_FACING, Direction.NORTH)
-            .add(BCProperties.ACTIVE, false)
-    );
+    super(
+        properties,
+        id,
+        PropertyBuilder.builder()
+            .add(BCProperties.BLOCK_FACING, Direction.NORTH)
+            .add(BCProperties.ACTIVE, false));
   }
 
   @Override
@@ -44,8 +53,10 @@ public class QuarryBlock extends BCBaseEntityBlock implements RotatableFacing, V
   }
 
   @Override
-  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
-    return createTickerHelper(type, BCBuilderBlockEntityTypes.QUARRY.get(), QuarryBlockEntity::tick);
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type) {
+    return createTickerHelper(
+        type, BCBuilderBlockEntityTypes.QUARRY.get(), QuarryBlockEntity::tick);
   }
 
   @Override

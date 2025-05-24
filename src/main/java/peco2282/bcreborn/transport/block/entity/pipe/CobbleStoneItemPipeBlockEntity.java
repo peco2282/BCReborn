@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import net.minecraft.core.BlockPos;
@@ -10,15 +17,22 @@ import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 
 public class CobbleStoneItemPipeBlockEntity extends ItemPipeBlockEntity {
   public CobbleStoneItemPipeBlockEntity(BlockPos p_155229_, BlockState p_155230) {
-    super(BCTransportBlockEntities.COBBLESTONE_ITEM_PIPE.get(), p_155229_, p_155230, PipeMaterial.STONE);
+    super(
+        BCTransportBlockEntities.COBBLESTONE_ITEM_PIPE.get(),
+        p_155229_,
+        p_155230,
+        PipeMaterial.STONE);
   }
 
   @Contract(pure = true)
-  public static void tick(Level world, BlockPos pos, BlockState state, @NotNull CobbleStoneItemPipeBlockEntity blockEntity) {
+  public static void tick(
+      Level world,
+      BlockPos pos,
+      BlockState state,
+      @NotNull CobbleStoneItemPipeBlockEntity blockEntity) {
     blockEntity.update(world, pos, state);
   }
 
   @Override
-  protected void update(Level level, BlockPos pos, BlockState state) {
-  }
+  protected void update(Level level, BlockPos pos, BlockState state) {}
 }

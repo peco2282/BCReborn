@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.menu;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +22,7 @@ public class FillerMenu extends BCMenu {
   private final Container type = new TypeConatiner();
   private final Container resource = new SimpleContainer(27);
   private EnumFillerType current;
+
   public FillerMenu(int id, Inventory inventory, @Nullable FriendlyByteBuf buffer) {
     super(BCBuilderMenuTypes.FILLER.get(), id, inventory, buffer);
     addFullPlayerInventory(8, 153);
@@ -63,13 +71,10 @@ public class FillerMenu extends BCMenu {
     }
 
     @Override
-    public void setItem(int p_18944_, ItemStack p_18945_) {
-
-    }
+    public void setItem(int p_18944_, ItemStack p_18945_) {}
 
     @Override
-    public void setChanged() {
-    }
+    public void setChanged() {}
 
     @Override
     public boolean stillValid(Player p_18946_) {
@@ -77,7 +82,6 @@ public class FillerMenu extends BCMenu {
     }
 
     @Override
-    public void clearContent() {
-    }
+    public void clearContent() {}
   }
 }

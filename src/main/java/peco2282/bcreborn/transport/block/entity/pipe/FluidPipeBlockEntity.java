@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import net.minecraft.core.BlockPos;
@@ -9,7 +16,11 @@ import peco2282.bcreborn.transport.block.entity.BasePipeBlockEntity;
 import peco2282.bcreborn.transport.block.pipe.PipeStorage;
 
 public abstract class FluidPipeBlockEntity extends BasePipeBlockEntity {
-  public FluidPipeBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_, PipeMaterial material) {
+  public FluidPipeBlockEntity(
+      BlockEntityType<?> p_155228_,
+      BlockPos p_155229_,
+      BlockState p_155230_,
+      PipeMaterial material) {
     super(p_155228_, p_155229_, p_155230_, material, PipeType.FLUID);
   }
 

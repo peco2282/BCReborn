@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.registry.levelgen;
 
 import com.mojang.serialization.MapCodec;
@@ -20,11 +27,11 @@ import java.util.Objects;
 
 public class OilPlacementFilter extends PlacementFilter {
   private static final OilPlacementFilter INSTANCE = new OilPlacementFilter();
-  public static final MapCodec<OilPlacementFilter> CODEC = MapCodec.unit(OilPlacementFilter::filter);
+  public static final MapCodec<OilPlacementFilter> CODEC =
+      MapCodec.unit(OilPlacementFilter::filter);
   private static final List<Biome> TARGET = List.of();
 
-  public OilPlacementFilter() {
-  }
+  public OilPlacementFilter() {}
 
   public static OilPlacementFilter filter() {
     return INSTANCE;
@@ -49,14 +56,13 @@ public class OilPlacementFilter extends PlacementFilter {
   }
 
   @Override
-  protected boolean shouldPlace(PlacementContext p_226382_, RandomSource p_226383_, BlockPos p_226384_) {
+  protected boolean shouldPlace(
+      PlacementContext p_226382_, RandomSource p_226383_, BlockPos p_226384_) {
     Holder<Biome> biome = p_226382_.getLevel().getBiome(p_226384_);
     final HolderLookup<Biome> lookup = p_226382_.getLevel().holderLookup(Registries.BIOME);
     System.out.println("BIOME*** " + biome);
-    if (
-        equals(biome.get(), lookup.getOrThrow(Biomes.DESERT).get()) ||
-            equals(biome.get(), lookup.getOrThrow(Biomes.BEACH).get())
-    ) {
+    if (equals(biome.get(), lookup.getOrThrow(Biomes.DESERT).get())
+        || equals(biome.get(), lookup.getOrThrow(Biomes.BEACH).get())) {
       return times(p_226383_, 2);
     }
     return times(p_226383_, 3);

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.data.tag;
 
 import net.minecraft.core.HolderLookup;
@@ -11,8 +18,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * This class provides item tags for the BC Reborn mod.
  *
- * <p>It extends {@link ItemTagsProvider} to define and register custom item tags,
- * such as gear-related tags.</p>
+ * <p>It extends {@link ItemTagsProvider} to define and register custom item tags, such as
+ * gear-related tags.
  *
  * @author peco2282
  */
@@ -25,15 +32,18 @@ public class BCItemTagsProvider extends ItemTagsProvider {
    * @param p_275729_ The lookup provider for obtaining item holders.
    * @param p_275322_ The lookup provider for block tags, used for item-to-block tag mapping.
    */
-  public BCItemTagsProvider(PackOutput p_275343_, CompletableFuture<HolderLookup.Provider> p_275729_, CompletableFuture<TagLookup<Block>> p_275322_) {
+  public BCItemTagsProvider(
+      PackOutput p_275343_,
+      CompletableFuture<HolderLookup.Provider> p_275729_,
+      CompletableFuture<TagLookup<Block>> p_275322_) {
     super(p_275343_, p_275729_, p_275322_);
   }
 
   /**
    * Registers item tags for the mod.
    *
-   * <p>This method defines the {@code GEAR} tag and adds various gear items to it,
-   * such as wooden, stone, iron, gold, and diamond gears.</p>
+   * <p>This method defines the {@code GEAR} tag and adds various gear items to it, such as wooden,
+   * stone, iron, gold, and diamond gears.
    *
    * @param p_256380_ The provider used for looking up item holders.
    */

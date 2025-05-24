@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,9 +19,10 @@ import peco2282.bcreborn.lib.block.screen.BCContainerScreen;
 
 public class FillerScreen extends BCContainerScreen<FillerMenu> {
   private static final ResourceLocation TEXTURE = BCReborn.location("textures/gui/filler.png");
+
   public FillerScreen(FillerMenu p_97741_, Inventory p_97742_, Component p_97743_) {
     super(p_97741_, p_97742_, p_97743_);
-//    imageWidth = 176;
+    //    imageWidth = 176;
     imageHeight = 241;
   }
 
@@ -26,7 +34,8 @@ public class FillerScreen extends BCContainerScreen<FillerMenu> {
   @Override
   protected void init() {
     super.init();
-    addRenderableWidget(new ModeChangeButton(4, this.height - 12, 10, 12, Component.literal("Mode")));
+    addRenderableWidget(
+        new ModeChangeButton(4, this.height - 12, 10, 12, Component.literal("Mode")));
   }
 
   @Override
@@ -36,8 +45,11 @@ public class FillerScreen extends BCContainerScreen<FillerMenu> {
 
   @Override
   protected void renderBg(GuiGraphics p_283065_, float p_97788_, int p_97789_, int p_97790_) {
-    p_283065_.blit(getTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-//    ButtonTextureProvider.leftButton(p_283065_, ButtonTextureProvider.Mode.SELECTED, leftPos + 2, topPos + 40, true, isFocused());
-//    ButtonTextureProvider.rightButton(p_283065_, ButtonTextureProvider.Mode.SELECTED, leftPos + 4-2, topPos + 40);
+    p_283065_.blit(
+        getTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+    //    ButtonTextureProvider.leftButton(p_283065_, ButtonTextureProvider.Mode.SELECTED, leftPos +
+    // 2, topPos + 40, true, isFocused());
+    //    ButtonTextureProvider.rightButton(p_283065_, ButtonTextureProvider.Mode.SELECTED, leftPos
+    // + 4-2, topPos + 40);
   }
 }

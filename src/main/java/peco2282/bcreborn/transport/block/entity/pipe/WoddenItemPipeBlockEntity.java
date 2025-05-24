@@ -1,8 +1,14 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -22,13 +28,13 @@ public class WoddenItemPipeBlockEntity extends ItemPipeBlockEntity implements II
   }
 
   @Contract(pure = true)
-  public static void tick(Level world, BlockPos pos, BlockState state, @NotNull WoddenItemPipeBlockEntity blockEntity) {
+  public static void tick(
+      Level world, BlockPos pos, BlockState state, @NotNull WoddenItemPipeBlockEntity blockEntity) {
     blockEntity.update(world, pos, state);
   }
 
   @Override
-  protected void update(Level level, BlockPos pos, BlockState state) {
-  }
+  protected void update(Level level, BlockPos pos, BlockState state) {}
 
   @Override
   public IntObjectMap<ItemStack> extractItem(Direction direction) {

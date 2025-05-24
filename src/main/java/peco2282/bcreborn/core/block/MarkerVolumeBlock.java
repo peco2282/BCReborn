@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block;
 
 import com.mojang.serialization.MapCodec;
@@ -23,8 +30,8 @@ import peco2282.bcreborn.BCConfiguration;
 import peco2282.bcreborn.api.block.BCProperties;
 import peco2282.bcreborn.core.block.entity.BCCoreBlockEntityTypes;
 import peco2282.bcreborn.core.block.entity.MarkerVolumeBlockEntity;
-import peco2282.bcreborn.lib.block.BCBaseMarkerBlock;
 import peco2282.bcreborn.lib.block.BCBaseEntityBlock;
+import peco2282.bcreborn.lib.block.BCBaseMarkerBlock;
 import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
@@ -37,7 +44,9 @@ public class MarkerVolumeBlock extends BCBaseMarkerBlock {
     super(
         properties.lightLevel(s -> s.getValue(BCProperties.ACTIVE) ? 8 : 1).noCollission(),
         id,
-        PropertyBuilder.builder().add(BCProperties.ACTIVE, false).add(BCProperties.CONNECTED, false));
+        PropertyBuilder.builder()
+            .add(BCProperties.ACTIVE, false)
+            .add(BCProperties.CONNECTED, false));
   }
 
   public static @Nullable BlockPos matchLine(Level level, BlockPos pos) {
@@ -69,7 +78,8 @@ public class MarkerVolumeBlock extends BCBaseMarkerBlock {
   }
 
   @Override
-  protected VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+  protected VoxelShape getShape(
+      BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
     return BOTTOM;
   }
 
@@ -89,13 +99,21 @@ public class MarkerVolumeBlock extends BCBaseMarkerBlock {
   }
 
   @Override
-  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
-    return createTickerHelper(type, BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeBlockEntity::tick);
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type) {
+    return createTickerHelper(
+        type, BCCoreBlockEntityTypes.MARKER_VOLUME.get(), MarkerVolumeBlockEntity::tick);
   }
 
   @Override
-  protected InteractionResult useWithoutItem(BlockState p_60503_, Level p_60504_, BlockPos p_60505_, Player p_60506_, BlockHitResult p_60508_) {
-    if (!p_60504_.isClientSide) return super.useWithoutItem(p_60503_, p_60504_, p_60505_, p_60506_, p_60508_);
+  protected InteractionResult useWithoutItem(
+      BlockState p_60503_,
+      Level p_60504_,
+      BlockPos p_60505_,
+      Player p_60506_,
+      BlockHitResult p_60508_) {
+    if (!p_60504_.isClientSide)
+      return super.useWithoutItem(p_60503_, p_60504_, p_60505_, p_60506_, p_60508_);
 
     BlockPos pos = matchLine(p_60504_, p_60505_);
     if (pos != null) {
@@ -114,7 +132,13 @@ public class MarkerVolumeBlock extends BCBaseMarkerBlock {
   }
 
   @Override
-  protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
+  protected void neighborChanged(
+      BlockState p_60509_,
+      Level p_60510_,
+      BlockPos p_60511_,
+      Block p_60512_,
+      BlockPos p_60513_,
+      boolean p_60514_) {
     super.neighborChanged(p_60509_, p_60510_, p_60511_, p_60512_, p_60513_, p_60514_);
     if (p_60510_.isClientSide()) return;
     boolean signal = p_60510_.hasNeighborSignal(p_60511_);
@@ -126,7 +150,10 @@ public class MarkerVolumeBlock extends BCBaseMarkerBlock {
       }
     } else {
       if (state.getValue(BCProperties.ACTIVE)) {
-        state = state.setValue(BCProperties.ACTIVE, Boolean.valueOf(false)).setValue(BCProperties.ENGINE_MODEL, 1);
+        state =
+            state
+                .setValue(BCProperties.ACTIVE, Boolean.valueOf(false))
+                .setValue(BCProperties.ENGINE_MODEL, 1);
         p_60510_.setBlockAndUpdate(p_60511_, state);
       }
     }

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,11 +22,14 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class MarkerPlaceHolder {
-  public static final Codec<MarkerPlaceHolder> CODEC = RecordCodecBuilder
-      .create(instance -> instance.group(
-          BlockPos.CODEC.fieldOf("start").forGetter(MarkerPlaceHolder::getStart),
-          BlockPos.CODEC.fieldOf("end").forGetter(MarkerPlaceHolder::getEnd)
-      ).apply(instance, MarkerPlaceHolder::new));
+  public static final Codec<MarkerPlaceHolder> CODEC =
+      RecordCodecBuilder.create(
+          instance ->
+              instance
+                  .group(
+                      BlockPos.CODEC.fieldOf("start").forGetter(MarkerPlaceHolder::getStart),
+                      BlockPos.CODEC.fieldOf("end").forGetter(MarkerPlaceHolder::getEnd))
+                  .apply(instance, MarkerPlaceHolder::new));
   public int xStart;
   public int yStart;
   public int zStart;
@@ -121,8 +131,7 @@ public class MarkerPlaceHolder {
   public MarkerPlaceHolder copy() {
     return new MarkerPlaceHolder(
         new BlockPos(this.xStart, this.yStart, this.zStart),
-        new BlockPos(this.xEnd, this.yEnd, this.zEnd)
-    );
+        new BlockPos(this.xEnd, this.yEnd, this.zEnd));
   }
 
   public BlockPos getStart() {
@@ -179,12 +188,11 @@ public class MarkerPlaceHolder {
 
   @Override
   public String toString() {
-    return "start: %s, end: %s x: %d y: %d z: %d".formatted(start, end, rangeX(), rangeY(), rangeZ());
+    return "start: %s, end: %s x: %d y: %d z: %d"
+        .formatted(start, end, rangeX(), rangeY(), rangeZ());
   }
 
-  /**
-   * 辺を表現する内部クラス
-   */
+  /** 辺を表現する内部クラス */
   public record Edge(BlockPos start, BlockPos end) {
     private static int dist(int s, int e) {
       return Math.abs(s - e);
@@ -203,6 +211,7 @@ public class MarkerPlaceHolder {
     public XYZ(List<Edge> x, List<Edge> y, List<Edge> z) {
       this(new EdgeList(x), new EdgeList(y), new EdgeList(z));
     }
+
     public boolean isXEmpty() {
       return x.stream().allMatch(e -> e.start.getX() - e.end.getX() == 0);
     }
@@ -222,6 +231,7 @@ public class MarkerPlaceHolder {
 
   public static class EdgeList implements Iterable<Edge> {
     private final List<Edge> edges;
+
     EdgeList(List<Edge> edges) {
       this.edges = edges;
     }
@@ -229,6 +239,7 @@ public class MarkerPlaceHolder {
     public Stream<Edge> stream() {
       return edges.stream();
     }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -239,12 +250,14 @@ public class MarkerPlaceHolder {
       return this.edges.iterator();
     }
 
-
     public void rendering(BiConsumer<PoseStack, Edge> renderer, PoseStack stack) {
       Edge last = null;
       for (Edge edge : this) {
         if (last != null) {
-          stack.translate(last.end.getX() - edge.start.getX(), last.end.getY() - edge.start.getY(), last.end.getZ() - edge.start.getZ());
+          stack.translate(
+              last.end.getX() - edge.start.getX(),
+              last.end.getY() - edge.start.getY(),
+              last.end.getZ() - edge.start.getZ());
         }
         renderer.accept(stack, edge);
         if (edge.equals(edges.getLast())) return;

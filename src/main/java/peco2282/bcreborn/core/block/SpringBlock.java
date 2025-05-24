@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block;
 
 import net.minecraft.core.BlockPos;
@@ -11,8 +18,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.api.block.BCProperties;
-import peco2282.bcreborn.lib.block.BCBaseBlock;
 import peco2282.bcreborn.api.enums.EnumSpring;
+import peco2282.bcreborn.lib.block.BCBaseBlock;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
 public class SpringBlock extends BCBaseBlock {
@@ -26,8 +33,8 @@ public class SpringBlock extends BCBaseBlock {
             .instabreak()
             .destroyTime(5.0F)
             .sound(SoundType.METAL),
-        id, PropertyBuilder.builder().add(SPRING_TYPE, EnumSpring.WATER)
-    );
+        id,
+        PropertyBuilder.builder().add(SPRING_TYPE, EnumSpring.WATER));
   }
 
   static boolean isAirBlock(Level level, BlockPos pos) {
@@ -35,7 +42,8 @@ public class SpringBlock extends BCBaseBlock {
   }
 
   @Override
-  protected void tick(BlockState p_222945_, ServerLevel p_222946_, BlockPos p_222947_, RandomSource p_222948_) {
+  protected void tick(
+      BlockState p_222945_, ServerLevel p_222946_, BlockPos p_222947_, RandomSource p_222948_) {
     generateSpringBlock(p_222946_, p_222947_, p_222945_, p_222948_);
   }
 

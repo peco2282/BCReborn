@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.saved;
 
 import net.minecraft.core.BlockPos;
@@ -8,10 +15,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import peco2282.bcreborn.BCReborn;
 import peco2282.bcreborn.api.event.SaveDataEvent;
 
-
 /**
- * Represents the saved data for a blueprint with handling for range and cache.
- * Includes functionality for saving, loading, and event handling.
+ * Represents the saved data for a blueprint with handling for range and cache. Includes
+ * functionality for saving, loading, and event handling.
  *
  * @author peco2282
  */
@@ -22,7 +28,7 @@ public class BluePrintSavedData extends SavedData {
    * Initializes the saved data with a specific start and end position.
    *
    * @param start The starting position of the blueprint.
-   * @param end   The ending position of the blueprint.
+   * @param end The ending position of the blueprint.
    */
   public BluePrintSavedData(BlockPos start, BlockPos end) {
     this(new RangeCache(start, end, System.currentTimeMillis()));
@@ -37,10 +43,7 @@ public class BluePrintSavedData extends SavedData {
     this.cache = cache;
   }
 
-  /**
-   * Default constructor, initializes the saved data with default starting
-   * and ending positions.
-   */
+  /** Default constructor, initializes the saved data with default starting and ending positions. */
   public BluePrintSavedData() {
     this(new BlockPos(-1, -1, -1), new BlockPos(1, 1, 1));
   }
@@ -57,7 +60,7 @@ public class BluePrintSavedData extends SavedData {
   /**
    * Loads blueprint saved data from a compound tag.
    *
-   * @param tag      The CompoundTag containing the saved data.
+   * @param tag The CompoundTag containing the saved data.
    * @param provider The holder lookup provider.
    * @return A new instance of {@link BluePrintSavedData}.
    */
@@ -68,7 +71,7 @@ public class BluePrintSavedData extends SavedData {
   /**
    * Saves the blueprint data into a compound tag and posts a save event.
    *
-   * @param p_77763_  The CompoundTag to save data into.
+   * @param p_77763_ The CompoundTag to save data into.
    * @param p_334349_ The holder lookup provider.
    * @return The CompoundTag containing saved data.
    */

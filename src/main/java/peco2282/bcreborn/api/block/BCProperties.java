@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.block;
 
 import com.google.common.collect.Maps;
@@ -14,6 +21,7 @@ import java.util.Map;
 
 /**
  * BlockState-properties
+ *
  * @author peco2282
  */
 public interface BCProperties {
@@ -23,11 +31,15 @@ public interface BCProperties {
   EnumProperty<DyeColor> BLOCK_COLOR = EnumProperty.create("color", DyeColor.class);
   EnumProperty<EnumSpring> SPRING_TYPE = EnumProperty.create("type", EnumSpring.class);
   EnumProperty<EnumEngineType> ENGINE_TYPE = EnumProperty.create("type", EnumEngineType.class);
-  EnumProperty<EnumLaserTableType> LASER_TABLE_TYPE = EnumProperty.create("type", EnumLaserTableType.class);
-  EnumProperty<EnumMachineState> MACHINE_STATE = EnumProperty.create("state", EnumMachineState.class);
+  EnumProperty<EnumLaserTableType> LASER_TABLE_TYPE =
+      EnumProperty.create("type", EnumLaserTableType.class);
+  EnumProperty<EnumMachineState> MACHINE_STATE =
+      EnumProperty.create("state", EnumMachineState.class);
   EnumProperty<EnumPowerStage> ENERGY_STAGE = EnumProperty.create("stage", EnumPowerStage.class);
-  EnumProperty<EnumOptionalSnapshotType> SNAPSHOT_TYPE = EnumProperty.create("snapshot_type", EnumOptionalSnapshotType.class);
-  EnumProperty<EnumDecoratedBlock> DECORATED_BLOCK = EnumProperty.create("decoration_type", EnumDecoratedBlock.class);
+  EnumProperty<EnumOptionalSnapshotType> SNAPSHOT_TYPE =
+      EnumProperty.create("snapshot_type", EnumOptionalSnapshotType.class);
+  EnumProperty<EnumDecoratedBlock> DECORATED_BLOCK =
+      EnumProperty.create("decoration_type", EnumDecoratedBlock.class);
   EnumProperty<EnumFillerType> FILLER_TYPE = EnumProperty.create("filler", EnumFillerType.class);
 
   IntegerProperty GENERIC_PIPE_DATA = IntegerProperty.create("pipe_data", 0, 15);
@@ -48,16 +60,17 @@ public interface BCProperties {
   BooleanProperty CONNECTED_NORTH = BooleanProperty.create("connected_north");
   BooleanProperty CONNECTED_SOUTH = BooleanProperty.create("connected_south");
 
-  Map<Direction, BooleanProperty> CONNECTED_MAP = Util.make(() -> {
-    Map<Direction, BooleanProperty> map;
-    map = Maps.newEnumMap(Direction.class);
-    map.put(Direction.DOWN, CONNECTED_DOWN);
-    map.put(Direction.UP, CONNECTED_UP);
-    map.put(Direction.EAST, CONNECTED_EAST);
-    map.put(Direction.WEST, CONNECTED_WEST);
-    map.put(Direction.NORTH, CONNECTED_NORTH);
-    map.put(Direction.SOUTH, CONNECTED_SOUTH);
-    return Maps.immutableEnumMap(map);
-  });
-
+  Map<Direction, BooleanProperty> CONNECTED_MAP =
+      Util.make(
+          () -> {
+            Map<Direction, BooleanProperty> map;
+            map = Maps.newEnumMap(Direction.class);
+            map.put(Direction.DOWN, CONNECTED_DOWN);
+            map.put(Direction.UP, CONNECTED_UP);
+            map.put(Direction.EAST, CONNECTED_EAST);
+            map.put(Direction.WEST, CONNECTED_WEST);
+            map.put(Direction.NORTH, CONNECTED_NORTH);
+            map.put(Direction.SOUTH, CONNECTED_SOUTH);
+            return Maps.immutableEnumMap(map);
+          });
 }

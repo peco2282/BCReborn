@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import net.minecraft.core.BlockPos;
@@ -24,21 +31,22 @@ public class IronItemPipeBlockEntity extends ItemPipeBlockEntity implements IToo
   }
 
   @Contract(pure = true)
-  public static void tick(Level world, BlockPos pos, BlockState state, @NotNull IronItemPipeBlockEntity blockEntity) {
+  public static void tick(
+      Level world, BlockPos pos, BlockState state, @NotNull IronItemPipeBlockEntity blockEntity) {
     blockEntity.update(world, pos, state);
   }
 
-  protected void update(Level level, BlockPos pos, BlockState state) {
-  }
+  protected void update(Level level, BlockPos pos, BlockState state) {}
 
   @Override
-  public boolean canUseWrench(Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {
+  public boolean canUseWrench(
+      Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {
     return true;
   }
 
   @Override
-  public void useWrench(Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {
-  }
+  public void useWrench(
+      Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {}
 
   @Override
   protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {

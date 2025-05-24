@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.enums;
 
 import com.mojang.serialization.Codec;
@@ -11,13 +18,12 @@ public enum EnumEngineType implements StringRepresentable {
   CREATIVE("creative", 100);
 
   public static final EnumEngineType[] VALUES = values();
-  public static final Codec<EnumEngineType> CODEC = StringRepresentable
-      .fromEnum(EnumEngineType::values);
+  public static final Codec<EnumEngineType> CODEC =
+      StringRepresentable.fromEnum(EnumEngineType::values);
 
   public final String unlocalizedTag;
   public final String resourceLocation;
   public final int output;
-
 
   EnumEngineType(String loc, int output) {
     unlocalizedTag = loc;

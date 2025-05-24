@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.enums;
 
 import net.minecraft.util.StringRepresentable;
@@ -14,6 +21,7 @@ public enum EnumPowerStage implements StringRepresentable {
 
   private final int power;
   private final int threshold;
+
   EnumPowerStage(final int power, final int threshold) {
     this.power = power;
     this.threshold = threshold;
@@ -67,9 +75,9 @@ public enum EnumPowerStage implements StringRepresentable {
   public boolean isRunning() {
     return this != BLACK && this != OVERHEAT;
   }
+
   @Override
   public String getSerializedName() {
     return getModelName();
   }
-
 }

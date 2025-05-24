@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.pipe;
 
 import com.mojang.datafixers.util.Function3;
@@ -33,24 +40,23 @@ public record PipeMaterialHandler(PipeMaterial material) {
       case WOOD -> {
         builder.add(BCProperties.ACTIVE);
       }
-      case STONE -> {
-      }
-      case COBBLESTONE -> {
-      }
-      case IRON -> {
-      }
-      case GOLD -> {
-      }
-      case DIAMOND -> {
-      }
+      case STONE -> {}
+      case COBBLESTONE -> {}
+      case IRON -> {}
+      case GOLD -> {}
+      case DIAMOND -> {}
     }
   }
 
   @SuppressWarnings("unchecked")
   public <E extends BlockEntity, F extends BlockEntity> BlockEntityTicker<F> serverTicker(
       BlockEntityType<E> type,
-      Function3<BlockEntityType<F>, BlockEntityType<E>, BlockEntityTicker<? super E>, BlockEntityTicker<F>> creator
-  ) {
+      Function3<
+              BlockEntityType<F>,
+              BlockEntityType<E>,
+              BlockEntityTicker<? super E>,
+              BlockEntityTicker<F>>
+          creator) {
     BlockEntityType<?> bet;
     BlockEntityTicker<?> ticker;
     switch (material()) {
@@ -64,7 +70,9 @@ public record PipeMaterialHandler(PipeMaterial material) {
       }
       case COBBLESTONE -> {
         bet = BCTransportBlockEntities.COBBLESTONE_ITEM_PIPE.get();
-        ticker = (BlockEntityTicker<CobbleStoneItemPipeBlockEntity>) CobbleStoneItemPipeBlockEntity::tick;
+        ticker =
+            (BlockEntityTicker<CobbleStoneItemPipeBlockEntity>)
+                CobbleStoneItemPipeBlockEntity::tick;
       }
       case IRON -> {
         bet = BCTransportBlockEntities.IRON_ITEM_PIPE.get();
@@ -81,10 +89,6 @@ public record PipeMaterialHandler(PipeMaterial material) {
       case null -> throw new AssertionError();
     }
     ;
-    return creator.apply(
-        (BlockEntityType<F>) bet,
-        type,
-        (BlockEntityTicker<E>) ticker
-    );
+    return creator.apply((BlockEntityType<F>) bet, type, (BlockEntityTicker<E>) ticker);
   }
 }

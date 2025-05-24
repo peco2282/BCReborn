@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.lib.block;
 
 import net.minecraft.core.Direction;
@@ -13,12 +20,10 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 import java.util.EnumMap;
 import java.util.Map;
 
-
 /**
- * BCBaseMarkerBlock is an abstract block class that provides a base implementation
- * for customizable marker blocks in the game. It manages block state properties
- * such as facing direction and activity status and defines bounding boxes for
- * rendering based on block placement direction.
+ * BCBaseMarkerBlock is an abstract block class that provides a base implementation for customizable
+ * marker blocks in the game. It manages block state properties such as facing direction and
+ * activity status and defines bounding boxes for rendering based on block placement direction.
  *
  * @author peco2282
  */
@@ -48,11 +53,10 @@ public abstract class BCBaseMarkerBlock extends BCBaseEntityBlock {
    * @param builder A PropertyBuilder instance to define custom block properties.
    */
   public BCBaseMarkerBlock(Properties properties, @NotNull String id, PropertyBuilder builder) {
-    super(properties.destroyTime(.25F), id,
-  builder.add(
-      BCProperties.BLOCK_FACING_6, Direction.UP).add(
-        BCProperties.ACTIVE, false)
-    );
+    super(
+        properties.destroyTime(.25F),
+        id,
+        builder.add(BCProperties.BLOCK_FACING_6, Direction.UP).add(BCProperties.ACTIVE, false));
   }
 
   /**

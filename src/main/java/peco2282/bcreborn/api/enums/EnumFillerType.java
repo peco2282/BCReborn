@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.enums;
 
 import net.minecraft.util.StringRepresentable;
@@ -20,12 +27,15 @@ public enum EnumFillerType implements StringRepresentable {
   HORIZONTAL(BCBuilderItems.HORIZONRAL),
   NONE(BCBuilderItems.NONE),
   PYRAMID(BCBuilderItems.PYRAMID),
-  STAIR(BCBuilderItems.STAIR),;
+  STAIR(BCBuilderItems.STAIR),
+  ;
 
   private final Supplier<FillerTypePanel> panel;
+
   EnumFillerType(Supplier<FillerTypePanel> panel) {
     this.panel = panel;
   }
+
   @Override
   public String getSerializedName() {
     return name().toLowerCase();
@@ -49,11 +59,13 @@ public enum EnumFillerType implements StringRepresentable {
     ItemStack s8 = container.getItem(8);
 
     // BOX
-    if (InventoryUtil.sameItemCheck(Items.BRICKS, s0, s1, s2, s3, s5, s6, s7, s8) && ItemStack.EMPTY.equals(s4)) {
+    if (InventoryUtil.sameItemCheck(Items.BRICKS, s0, s1, s2, s3, s5, s6, s7, s8)
+        && ItemStack.EMPTY.equals(s4)) {
       return Optional.of(EnumFillerType.BOX);
     }
     // CLEAR
-    if (InventoryUtil.sameItemCheck(Items.GLASS, s0,s1,s2,s3,s5,s6,s7,s8) && ItemStack.EMPTY.equals(s4)) {
+    if (InventoryUtil.sameItemCheck(Items.GLASS, s0, s1, s2, s3, s5, s6, s7, s8)
+        && ItemStack.EMPTY.equals(s4)) {
       return Optional.of(EnumFillerType.CLEAR);
     }
     return Optional.empty();
@@ -62,5 +74,6 @@ public enum EnumFillerType implements StringRepresentable {
   public FillerTypePanel getPanel() {
     return panel.get();
   }
+
   public void run() {}
 }

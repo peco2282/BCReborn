@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.pipe;
 
 import io.netty.util.collection.IntObjectHashMap;
@@ -12,11 +19,13 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * Represents a base storage implementation for pipes within the system.
- * This abstract class defines common behavior for different types of pipe storages.
- * Subtypes include {@link PipeStorage.ItemStorage}, {@link PipeStorage.FluidStorage}, and {@link PipeStorage.EnergyStorage}.
+ * Represents a base storage implementation for pipes within the system. This abstract class defines
+ * common behavior for different types of pipe storages. Subtypes include {@link
+ * PipeStorage.ItemStorage}, {@link PipeStorage.FluidStorage}, and {@link
+ * PipeStorage.EnergyStorage}.
  */
-public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.ItemStorage, PipeStorage.FluidStorage, PipeStorage.EnergyStorage {
+public abstract sealed class PipeStorage<E extends Entity>
+    permits PipeStorage.ItemStorage, PipeStorage.FluidStorage, PipeStorage.EnergyStorage {
   protected final BasePipeBlockEntity pipe;
 
   private PipeStorage(BasePipeBlockEntity pipe) {
@@ -24,8 +33,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Factory method to create the appropriate type of {@link PipeStorage}
-   * based on the provided {@link BasePipeBlockEntity}'s pipe type.
+   * Factory method to create the appropriate type of {@link PipeStorage} based on the provided
+   * {@link BasePipeBlockEntity}'s pipe type.
    *
    * @param pipe the pipe block entity to associate with the storage
    * @return the corresponding {@link PipeStorage} subtype for the pipe type
@@ -37,7 +46,6 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
       case ENERGY -> new EnergyStorage(pipe);
     };
   }
-
 
   /**
    * Retrieves the {@link BCBasePipeBlock} associated with the current pipe storage.
@@ -55,6 +63,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   public abstract E removeFirst();
 
   public abstract void add(E item);
+
   public <T> void add(T t, Function<T, E> function) {
     add(function.apply(t));
   }
@@ -82,8 +91,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   public abstract List<E> copy();
 
   /**
-   * Retrieves the current pipe and casts it to {@link PipeItemBlock}.
-   * This is used specifically for item-related pipe operations.
+   * Retrieves the current pipe and casts it to {@link PipeItemBlock}. This is used specifically for
+   * item-related pipe operations.
    *
    * @return the pipe cast to {@link PipeItemBlock}
    * @throws UnsupportedOperationException if this is not an item pipe type
@@ -93,8 +102,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Casts the {@link PipeStorage} to {@link ItemStorage} for performing item-specific
-   * storage operations.
+   * Casts the {@link PipeStorage} to {@link ItemStorage} for performing item-specific storage
+   * operations.
    *
    * @return the current storage cast to {@link ItemStorage}
    * @throws UnsupportedOperationException if this storage is not type {@link ItemStorage}
@@ -103,10 +112,9 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
     throw uoe("item storage");
   }
 
-
   /**
-   * Retrieves the current pipe and casts it to {@link PipeFluidBlock}.
-   * This is used specifically for fluid-related pipe handling.
+   * Retrieves the current pipe and casts it to {@link PipeFluidBlock}. This is used specifically
+   * for fluid-related pipe handling.
    *
    * @return the pipe cast to {@link PipeFluidBlock}
    * @throws UnsupportedOperationException if this is not a fluid pipe type
@@ -116,8 +124,7 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Casts the {@link PipeStorage} to {@link FluidStorage} for accessing
-   * fluid-specific behaviors.
+   * Casts the {@link PipeStorage} to {@link FluidStorage} for accessing fluid-specific behaviors.
    *
    * @return the current storage cast to {@link FluidStorage}
    * @throws UnsupportedOperationException if this storage is not type {@link FluidStorage}
@@ -127,8 +134,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Retrieves the current pipe and casts it to {@link PipeEnergyBlock}.
-   * This is used specifically for energy-related pipe handling.
+   * Retrieves the current pipe and casts it to {@link PipeEnergyBlock}. This is used specifically
+   * for energy-related pipe handling.
    *
    * @return the pipe cast to {@link PipeEnergyBlock}
    * @throws UnsupportedOperationException if this is not an energy pipe type
@@ -138,8 +145,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Casts the {@link PipeStorage} to {@link EnergyStorage} for performing
-   * energy-specific storage operations.
+   * Casts the {@link PipeStorage} to {@link EnergyStorage} for performing energy-specific storage
+   * operations.
    *
    * @return the current storage cast to {@link EnergyStorage}
    * @throws UnsupportedOperationException if this storage is not type {@link EnergyStorage}
@@ -171,11 +178,12 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Represents an item-based pipe storage.
-   * This class provides specific implementations for interacting with item pipes.
+   * Represents an item-based pipe storage. This class provides specific implementations for
+   * interacting with item pipes.
    */
   public static final class ItemStorage extends PipeStorage<ItemEntity> {
     private final IntObjectMap<ItemEntity> container = new IntObjectHashMap<>();
+
     /**
      * Constructs a new {@link ItemStorage} associated with the given {@link BasePipeBlockEntity}.
      *
@@ -247,7 +255,6 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
       return (PipeItemBlock) pipe.getBlockState().getBlock();
     }
 
-
     @Override
     public PipeStorage.ItemStorage asItemStorage() {
       return this;
@@ -260,8 +267,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Represents a fluid-based pipe storage.
-   * This class provides specific implementations for interacting with fluid pipes.
+   * Represents a fluid-based pipe storage. This class provides specific implementations for
+   * interacting with fluid pipes.
    */
   public static final class FluidStorage extends PipeStorage<FluidEntity> {
     private final Queue<FluidEntity> fluids = new ArrayDeque<>(capacity());
@@ -323,8 +330,8 @@ public abstract sealed class PipeStorage<E extends Entity> permits PipeStorage.I
   }
 
   /**
-   * Represents an energy-based pipe storage.
-   * This class provides specific implementations for interacting with energy pipes.
+   * Represents an energy-based pipe storage. This class provides specific implementations for
+   * interacting with energy pipes.
    */
   public static final class EnergyStorage extends PipeStorage<EnergyEntity> {
     private final Queue<EnergyEntity> energies = new ArrayDeque<>(capacity());

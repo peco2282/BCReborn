@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block;
 
 import com.mojang.serialization.Codec;
@@ -35,48 +42,37 @@ import peco2282.bcreborn.utils.PropertyBuilder;
 
 @SuppressWarnings("UnnecessaryBoxing")
 public class EngineBlock extends BCBaseEntityBlock implements IEngine, RotatableFacing {
-  public static final VoxelShape SHAPE_UP = Shapes.or(
-      box(0, 0, 0, 16, 4, 16),
-      box(4, 4, 4, 12, 16, 12)
-  );
-  public static final VoxelShape SHAPE_DOWN = Shapes.or(
-      box(0, 12, 0, 16, 16, 16),
-      box(4, 0, 4, 12, 12, 12)
-  );
-  public static final VoxelShape SHAPE_SOUTH = Shapes.or(
-      box(0, 0, 0, 16, 16, 4),
-      box(4, 4, 4, 12, 12, 16)
-  );
-  public static final VoxelShape SHAPE_NORTH = Shapes.or(
-      box(4, 4, 0, 12, 12, 12),
-      box(0, 0, 12, 16, 16, 16)
-  );
-  public static final VoxelShape SHAPE_EAST = Shapes.or(
-      box(0, 0, 0, 4, 16, 16),
-      box(4, 4, 4, 16, 12, 12)
-  );
-  public static final VoxelShape SHAPE_WEST = Shapes.or(
-      box(0, 4, 4, 12, 12, 12),
-      box(12, 0, 0, 16, 16, 16)
-  );
-  public static final MapCodec<EngineBlock> CODEC = RecordCodecBuilder
-      .mapCodec(instance -> instance.group(
-          propertiesCodec(),
-          Codec.STRING.fieldOf("id").forGetter(BCBaseEntityBlock::getId),
-          EnumEngineType.CODEC.fieldOf("engine_type").forGetter(EngineBlock::type)
-      ).apply(instance, EngineBlock::new));
+  public static final VoxelShape SHAPE_UP =
+      Shapes.or(box(0, 0, 0, 16, 4, 16), box(4, 4, 4, 12, 16, 12));
+  public static final VoxelShape SHAPE_DOWN =
+      Shapes.or(box(0, 12, 0, 16, 16, 16), box(4, 0, 4, 12, 12, 12));
+  public static final VoxelShape SHAPE_SOUTH =
+      Shapes.or(box(0, 0, 0, 16, 16, 4), box(4, 4, 4, 12, 12, 16));
+  public static final VoxelShape SHAPE_NORTH =
+      Shapes.or(box(4, 4, 0, 12, 12, 12), box(0, 0, 12, 16, 16, 16));
+  public static final VoxelShape SHAPE_EAST =
+      Shapes.or(box(0, 0, 0, 4, 16, 16), box(4, 4, 4, 16, 12, 12));
+  public static final VoxelShape SHAPE_WEST =
+      Shapes.or(box(0, 4, 4, 12, 12, 12), box(12, 0, 0, 16, 16, 16));
+  public static final MapCodec<EngineBlock> CODEC =
+      RecordCodecBuilder.mapCodec(
+          instance ->
+              instance
+                  .group(
+                      propertiesCodec(),
+                      Codec.STRING.fieldOf("id").forGetter(BCBaseEntityBlock::getId),
+                      EnumEngineType.CODEC.fieldOf("engine_type").forGetter(EngineBlock::type))
+                  .apply(instance, EngineBlock::new));
   private final EnumEngineType type;
 
   public EngineBlock(@NotNull String id, EnumEngineType type) {
-    this(
-        Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().lightLevel(s -> 1),
-        id,
-        type
-    );
+    this(Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion().lightLevel(s -> 1), id, type);
   }
 
   private EngineBlock(Properties properties, @NotNull String id, EnumEngineType type) {
-    super(properties, id,
+    super(
+        properties,
+        id,
         PropertyBuilder.builder()
             .add(BCProperties.ACTIVE, Boolean.valueOf(false))
             .add(BCProperties.ENERGY_STAGE, EnumPowerStage.BLACK)
@@ -91,7 +87,8 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
   }
 
   @Override
-  protected VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+  protected VoxelShape getShape(
+      BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
     Direction direction = p_60555_.getValue(BCProperties.BLOCK_FACING);
     return switch (direction) {
       case DOWN -> SHAPE_DOWN;
@@ -105,11 +102,17 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
 
   @Override
   protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(BCProperties.ACTIVE, BCProperties.ENERGY_STAGE, BCProperties.BLOCK_FACING, BCProperties.ENGINE_TYPE, BCProperties.ENGINE_MODEL);
+    builder.add(
+        BCProperties.ACTIVE,
+        BCProperties.ENERGY_STAGE,
+        BCProperties.BLOCK_FACING,
+        BCProperties.ENGINE_TYPE,
+        BCProperties.ENGINE_MODEL);
   }
 
   @Override
-  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type) {
     return createTickerHelper(type, BCCoreBlockEntityTypes.ENGINE.get(), EngineBlockEntity::tick);
   }
 
@@ -119,7 +122,12 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
   }
 
   @Override
-  protected InteractionResult useWithoutItem(BlockState p_60503_, Level p_60504_, BlockPos p_60505_, Player p_60506_, BlockHitResult p_60508_) {
+  protected InteractionResult useWithoutItem(
+      BlockState p_60503_,
+      Level p_60504_,
+      BlockPos p_60505_,
+      Player p_60506_,
+      BlockHitResult p_60508_) {
     if (p_60504_.isClientSide()) {
       return super.useWithoutItem(p_60503_, p_60504_, p_60505_, p_60506_, p_60508_);
     } else {
@@ -131,7 +139,13 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
   }
 
   @Override
-  protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
+  protected void neighborChanged(
+      BlockState p_60509_,
+      Level p_60510_,
+      BlockPos p_60511_,
+      Block p_60512_,
+      BlockPos p_60513_,
+      boolean p_60514_) {
     super.neighborChanged(p_60509_, p_60510_, p_60511_, p_60512_, p_60513_, p_60514_);
     if (p_60510_.isClientSide()) return;
     boolean signal = p_60510_.hasNeighborSignal(p_60511_);
@@ -143,17 +157,22 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
       }
     } else {
       if (state.getValue(BCProperties.ACTIVE)) {
-        state = state.setValue(BCProperties.ACTIVE, Boolean.valueOf(false)).setValue(BCProperties.ENGINE_MODEL, 1);
+        state =
+            state
+                .setValue(BCProperties.ACTIVE, Boolean.valueOf(false))
+                .setValue(BCProperties.ENGINE_MODEL, 1);
         p_60510_.setBlockAndUpdate(p_60511_, state);
       }
     }
 
-//    p_60510_.setBlock(p_60511_, p_60509_, 2);
+    //    p_60510_.setBlock(p_60511_, p_60509_, 2);
   }
 
   @Override
   public @NotNull BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
-    return super.getStateForPlacement(p_49820_).setValue(BCProperties.ACTIVE, Boolean.valueOf(false)).setValue(BCProperties.ENGINE_MODEL, Integer.valueOf(1));
+    return super.getStateForPlacement(p_49820_)
+        .setValue(BCProperties.ACTIVE, Boolean.valueOf(false))
+        .setValue(BCProperties.ENGINE_MODEL, Integer.valueOf(1));
   }
 
   @Override
@@ -163,7 +182,8 @@ public class EngineBlock extends BCBaseEntityBlock implements IEngine, Rotatable
 
   @Override
   public boolean isActive(Level level, BlockPos pos, BlockState state) {
-    return state.getValue(BCProperties.ACTIVE) && state.getValue(BCProperties.ENERGY_STAGE).isRunning();
+    return state.getValue(BCProperties.ACTIVE)
+        && state.getValue(BCProperties.ENERGY_STAGE).isRunning();
   }
 
   @Override

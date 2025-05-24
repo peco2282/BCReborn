@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.enums;
 
 import net.minecraft.util.StringRepresentable;
@@ -12,6 +19,7 @@ public enum EnumMachineState implements StringRepresentable {
   public static EnumMachineState getType(BlockState state) {
     return state.getValue(BCProperties.MACHINE_STATE);
   }
+
   @Override
   public String getSerializedName() {
     return name();

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,68 +27,66 @@ import java.util.EnumMap;
 import java.util.function.Consumer;
 
 public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlockEntity> {
-  private static final ResourceLocation BEAM = BCReborn.location("textures/block/marker/marker_volume_signal.png");
+  private static final ResourceLocation BEAM =
+      BCReborn.location("textures/block/marker/marker_volume_signal.png");
   private static final int BLUE = (0xFF << 24) | 0xFF;
 
-  private static final EnumMap<Direction, Consumer<PoseStack>> DIRECTION_MAP = new EnumMap<>(Direction.class);
+  private static final EnumMap<Direction, Consumer<PoseStack>> DIRECTION_MAP =
+      new EnumMap<>(Direction.class);
 
   static {
-    DIRECTION_MAP.put(Direction.SOUTH, stack -> {
-      stack.translate(0F, 0F, 0F);
-      stack.mulPose(Axis.YP.rotationDegrees(0));
-    });
-    DIRECTION_MAP.put(Direction.EAST, stack -> {
-      stack.translate(0F, 0F, 1F);
-      stack.mulPose(Axis.YP.rotationDegrees(90));
-    });
-    DIRECTION_MAP.put(Direction.NORTH, stack -> {
-      stack.translate(1F, 0F, 1F);
-      stack.mulPose(Axis.YP.rotationDegrees(180));
-    });
-    DIRECTION_MAP.put(Direction.WEST, stack -> {
-      stack.translate(1F, 0F, 0F);
-      stack.mulPose(Axis.YP.rotationDegrees(270));
-    });
-    DIRECTION_MAP.put(Direction.UP, stack -> {
-      stack.translate(0F, 1F, 0F);
-      stack.mulPose(Axis.XP.rotationDegrees(90));
-    });
-    DIRECTION_MAP.put(Direction.DOWN, stack -> {
-      stack.translate(0F, 1F, 0F);
-      stack.mulPose(Axis.XP.rotationDegrees(90));
-    });
+    DIRECTION_MAP.put(
+        Direction.SOUTH,
+        stack -> {
+          stack.translate(0F, 0F, 0F);
+          stack.mulPose(Axis.YP.rotationDegrees(0));
+        });
+    DIRECTION_MAP.put(
+        Direction.EAST,
+        stack -> {
+          stack.translate(0F, 0F, 1F);
+          stack.mulPose(Axis.YP.rotationDegrees(90));
+        });
+    DIRECTION_MAP.put(
+        Direction.NORTH,
+        stack -> {
+          stack.translate(1F, 0F, 1F);
+          stack.mulPose(Axis.YP.rotationDegrees(180));
+        });
+    DIRECTION_MAP.put(
+        Direction.WEST,
+        stack -> {
+          stack.translate(1F, 0F, 0F);
+          stack.mulPose(Axis.YP.rotationDegrees(270));
+        });
+    DIRECTION_MAP.put(
+        Direction.UP,
+        stack -> {
+          stack.translate(0F, 1F, 0F);
+          stack.mulPose(Axis.XP.rotationDegrees(90));
+        });
+    DIRECTION_MAP.put(
+        Direction.DOWN,
+        stack -> {
+          stack.translate(0F, 1F, 0F);
+          stack.mulPose(Axis.XP.rotationDegrees(90));
+        });
   }
 
-  public MarkerVolumeRenderer(BlockEntityRendererProvider.Context context) {
-  }
+  public MarkerVolumeRenderer(BlockEntityRendererProvider.Context context) {}
 
   private static void renderBeam(
-      PoseStack stack,
-      MultiBufferSource source,
-      Direction direction,
-      int size
-  ) {
+      PoseStack stack, MultiBufferSource source, Direction direction, int size) {
     stack.pushPose();
 
-    RangeMap map = new RangeMap(
-        0.45F,
-        0.55F,
-        0.45F,
-        0.55F,
-        0.55F,
-        size + 1.0F
-    );
+    RangeMap map = new RangeMap(0.45F, 0.55F, 0.45F, 0.55F, 0.55F, size + 1.0F);
 
-    renderPart(
-        stack,
-        source,
-        map,
-        direction
-    );
+    renderPart(stack, source, map, direction);
     stack.popPose();
   }
 
-  private static void renderPart(PoseStack stack, MultiBufferSource source, RangeMap map, Direction direction) {
+  private static void renderPart(
+      PoseStack stack, MultiBufferSource source, RangeMap map, Direction direction) {
     final float width = 1F;
 
     float f = map.minZ();
@@ -97,55 +102,55 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
       VertexConsumer buffer = source.getBuffer(RenderType.beaconBeam(BEAM, false));
       // @formatter:off
       /*
-               $4
-            \------|
-         $2 |      | $1
-            |------|
-               $3
-       */
+              $4
+           \------|
+        $2 |      | $1
+           |------|
+              $3
+      */
       // $1(right)
-      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1); // Z軸正方向の法線
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1); // Z軸負方向の法線
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
       // $2(left)
-      vertex(buffer, pose, map.maxX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1); // Z軸正方向の法線
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1); // Z軸負方向の法線
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
       // $3 (bottom)
-      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, 1); // Z軸正方向の法線
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.maxX(), map.minY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.maxX(), map.minY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.maxX(), map.minY(), f, 1, 0).setNormal(pose, 0, 0, -1); // Z軸負方向の法線
       vertex(buffer, pose, map.maxX(), map.minY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.minX(), map.minY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.minX(), map.minY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.minX(), map.minY(), f, 0, 0).setNormal(pose, 0, 0, -1);
 
       // $4(top)
-      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 0, 0).setNormal(pose, 0, 0, 1);  // Z軸正方向の法線
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, 1); // Z軸正方向の法線
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, 1);
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, 1);
-      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, 1);
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, 1);
 
-      vertex(buffer, pose, map.minX(), map.maxY(), f   , 1, 0).setNormal(pose, 0, 0, -1);  // Z軸負方向の法線
+      vertex(buffer, pose, map.minX(), map.maxY(), f, 1, 0).setNormal(pose, 0, 0, -1); // Z軸負方向の法線
       vertex(buffer, pose, map.minX(), map.maxY(), fMax, 1, 1).setNormal(pose, 0, 0, -1);
       vertex(buffer, pose, map.maxX(), map.maxY(), fMax, 0, 1).setNormal(pose, 0, 0, -1);
-      vertex(buffer, pose, map.maxX(), map.maxY(), f   , 0, 0).setNormal(pose, 0, 0, -1);
+      vertex(buffer, pose, map.maxX(), map.maxY(), f, 0, 0).setNormal(pose, 0, 0, -1);
       // @formatter:on
 
       f += width;
@@ -154,8 +159,10 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
     }
   }
 
-  private static VertexConsumer vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v) {
-    return buffer.addVertex(pose, x, y, z)
+  private static VertexConsumer vertex(
+      VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v) {
+    return buffer
+        .addVertex(pose, x, y, z)
         .setUv(u, v)
         .setColor(BLUE)
         .setLight(15728880)
@@ -163,8 +170,14 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   }
 
   @Override
-  public void render(MarkerVolumeBlockEntity p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
-//    if (!p_112307_.isActive()) return;
+  public void render(
+      MarkerVolumeBlockEntity p_112307_,
+      float p_112308_,
+      PoseStack p_112309_,
+      MultiBufferSource p_112310_,
+      int p_112311_,
+      int p_112312_) {
+    //    if (!p_112307_.isActive()) return;
     if (p_112307_.norender()) return;
     MarkerPlaceHolder holder = p_112307_.renderer();
     if (!holder.canRender()) return;
@@ -182,16 +195,43 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
     MarkerPlaceHolder.XYZ edges = holder.getEdges();
 
     if (!edges.isXEmpty()) {
-      edges.x().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+      edges
+          .x()
+          .rendering(
+              (stack, edge) ->
+                  renderBeam(
+                      stack,
+                      p_112310_,
+                      holder.directionX(),
+                      edge.end().getX() - edge.start().getX()),
+              p_112309_);
     }
     if (!edges.isYEmpty()) {
-      edges.y().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+      edges
+          .y()
+          .rendering(
+              (stack, edge) ->
+                  renderBeam(
+                      stack,
+                      p_112310_,
+                      holder.directionX(),
+                      edge.end().getX() - edge.start().getX()),
+              p_112309_);
     }
     if (!edges.isZEmpty()) {
-      edges.z().rendering((stack, edge) -> renderBeam(stack, p_112310_, holder.directionX(), edge.end().getX() - edge.start().getX()), p_112309_);
+      edges
+          .z()
+          .rendering(
+              (stack, edge) ->
+                  renderBeam(
+                      stack,
+                      p_112310_,
+                      holder.directionX(),
+                      edge.end().getX() - edge.start().getX()),
+              p_112309_);
     }
 
-/*
+    /*
     if (holder.rangeX() != 0) {
       renderBeam(p_112309_, p_112310_, holder.directionX(), holder.rangeX());
       p_112309_.pushPose();
@@ -224,19 +264,8 @@ public class MarkerVolumeRenderer implements BlockEntityRenderer<MarkerVolumeBlo
   public boolean shouldRender(MarkerVolumeBlockEntity p_173568_, Vec3 p_173569_) {
     return Vec3.atCenterOf(p_173568_.getBlockPos())
         .multiply(1.0, 0.0, 1.0)
-        .closerThan(
-            p_173569_.multiply(1.0, 0.0, 1.0),
-            getViewDistance()
-        );
+        .closerThan(p_173569_.multiply(1.0, 0.0, 1.0), getViewDistance());
   }
 
-  private record RangeMap(
-      float minX,
-      float maxX,
-      float minY,
-      float maxY,
-      float minZ,
-      float maxZ
-  ) {
-  }
+  private record RangeMap(float minX, float maxX, float minY, float maxY, float minZ, float maxZ) {}
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.data;
 
 import net.minecraft.data.PackOutput;
@@ -10,10 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-
 /**
- * This class is responsible for providing language translations for the mod.
- * It facilitates adding language keys and their respective translations for blocks, items, or general entries.
+ * This class is responsible for providing language translations for the mod. It facilitates adding
+ * language keys and their respective translations for blocks, items, or general entries.
  *
  * @author peco2282
  */
@@ -33,7 +39,7 @@ public class BCLanguageProvider extends LanguageProvider {
   /**
    * Adds a translation entry to the language pack.
    *
-   * @param key   The language key (e.g., "item.modid.item_name").
+   * @param key The language key (e.g., "item.modid.item_name").
    * @param value The translation in the specified locale.
    */
   public static void put(String key, String value) {
@@ -43,7 +49,7 @@ public class BCLanguageProvider extends LanguageProvider {
   /**
    * Adds a translation entry for a block to the language pack.
    *
-   * @param key   The supplier providing the block whose translation ID is used as the language key.
+   * @param key The supplier providing the block whose translation ID is used as the language key.
    * @param value The translation for the block.
    */
   public static void putBlock(Supplier<? extends Block> key, String value) {
@@ -53,7 +59,7 @@ public class BCLanguageProvider extends LanguageProvider {
   /**
    * Adds a translation entry for an item to the language pack.
    *
-   * @param key   The supplier providing the item whose translation ID is used as the language key.
+   * @param key The supplier providing the item whose translation ID is used as the language key.
    * @param value The translation for the item.
    */
   public static void putItem(Supplier<? extends Item> key, String value) {
@@ -61,8 +67,8 @@ public class BCLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Adds all translations from the stored map to the language pack.
-   * This method is called during the generation of the language pack to include the translations.
+   * Adds all translations from the stored map to the language pack. This method is called during
+   * the generation of the language pack to include the translations.
    */
   @Override
   protected void addTranslations() {

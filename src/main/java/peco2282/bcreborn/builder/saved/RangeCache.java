@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.saved;
 
 import com.mojang.serialization.Codec;
@@ -19,7 +26,6 @@ import net.minecraft.world.phys.AABB;
 import java.util.*;
 import java.util.stream.Stream;
 
-
 public class RangeCache {
   public static final String DATA = "Data";
   public static final String START_X = "StartX";
@@ -31,13 +37,17 @@ public class RangeCache {
   public static final String DATE = "Date";
   public static final String BLOCK_NAME = "BlockName";
   public static final String BLOCK_STATE = "BlockState";
-  public static final Set<String> KEYS = Set.of(DATA, START_X, START_Y, START_Z, END_X, END_Y, END_Z, DATE);
-  private static final Codec<RangeCache> CODEC = RecordCodecBuilder
-      .create(instance -> instance.group(
-          BlockPos.CODEC.fieldOf("start").forGetter(RangeCache::getStart),
-          BlockPos.CODEC.fieldOf("end").forGetter(RangeCache::getEnd),
-          Codec.LONG.fieldOf("mills").forGetter(RangeCache::getMillis)
-      ).apply(instance, RangeCache::new));
+  public static final Set<String> KEYS =
+      Set.of(DATA, START_X, START_Y, START_Z, END_X, END_Y, END_Z, DATE);
+  private static final Codec<RangeCache> CODEC =
+      RecordCodecBuilder.create(
+          instance ->
+              instance
+                  .group(
+                      BlockPos.CODEC.fieldOf("start").forGetter(RangeCache::getStart),
+                      BlockPos.CODEC.fieldOf("end").forGetter(RangeCache::getEnd),
+                      Codec.LONG.fieldOf("mills").forGetter(RangeCache::getMillis))
+                  .apply(instance, RangeCache::new));
   private final Level level;
   private final BlockPos start;
   private final BlockPos end;
@@ -70,7 +80,7 @@ public class RangeCache {
   /**
    * Loads a RangeCache instance from a given CompoundTag.
    *
-   * @param tag      The CompoundTag containing the saved data.
+   * @param tag The CompoundTag containing the saved data.
    * @param provider The HolderLookup.Provider used for block state validation.
    * @return A RangeCache instance initialized with the provided data.
    */
@@ -97,10 +107,12 @@ public class RangeCache {
       BlockState state = BlockState.CODEC.decode(NbtOps.INSTANCE, stateTag).getOrThrow().getFirst();
       Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(blockName));
       assert state.getBlock().toString().equals(block.toString());
-      blockMap.compute(new BlockPos(pos[0], pos[1], pos[2]), (k, v) -> {
-        if (v == null) return state;
-        throw new RuntimeException(k + "'s state is present. (" + v + ")");
-      });
+      blockMap.compute(
+          new BlockPos(pos[0], pos[1], pos[2]),
+          (k, v) -> {
+            if (v == null) return state;
+            throw new RuntimeException(k + "'s state is present. (" + v + ")");
+          });
     }
     return new Tuple<>(tag, blockMap);
   }
@@ -110,7 +122,8 @@ public class RangeCache {
     String name = name(state.getBlock());
     if (name.contains("[unregistered]")) throw new RuntimeException("Unregistered block");
     tag.putString(BLOCK_NAME, name);
-    final Tag stateTag = BlockState.CODEC.encode(state, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
+    final Tag stateTag =
+        BlockState.CODEC.encode(state, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
     tag.put(BLOCK_STATE, stateTag);
 
     return tag;
@@ -169,17 +182,20 @@ public class RangeCache {
   public CompoundTag save(CompoundTag data) {
     CompoundTag tag = new CompoundTag();
 
-    final Stream<BlockState> states = level.getBlockStates(new AABB(startX, startY, startZ, endX, endY, endZ));
+    final Stream<BlockState> states =
+        level.getBlockStates(new AABB(startX, startY, startZ, endX, endY, endZ));
     states.forEach(System.out::println);
 
     for (int x = startX; x <= endX; x++) {
       for (int y = startY; y <= endY; y++) {
         for (int z = startZ; z <= endZ; z++) {
           BlockState state = level.getBlockState(new BlockPos(x, y, z));
-          blockMap.compute(new BlockPos(x, y, z), (k, v) -> {
-            if (v == null) return state;
-            throw new RuntimeException(k + "'s state is present. (" + v + ")");
-          });
+          blockMap.compute(
+              new BlockPos(x, y, z),
+              (k, v) -> {
+                if (v == null) return state;
+                throw new RuntimeException(k + "'s state is present. (" + v + ")");
+              });
           tag.put("%s-%s-%s".formatted(x, y, z), blockState(state));
         }
       }
@@ -212,7 +228,7 @@ public class RangeCache {
   /**
    * Adds a custom key-value pair with a String value to the saved CompoundTag.
    *
-   * @param key   The key to be added.
+   * @param key The key to be added.
    * @param value The String value associated with the key.
    * @return This RangeCache instance with the added data.
    * @throws UnsupportedOperationException If the key is unsupported.
@@ -226,7 +242,7 @@ public class RangeCache {
   /**
    * Adds a custom key-value pair with an integer value to the saved CompoundTag.
    *
-   * @param key   The key to be added.
+   * @param key The key to be added.
    * @param value The integer value associated with the key.
    * @return This RangeCache instance with the added data.
    * @throws UnsupportedOperationException If the key is unsupported.
@@ -240,7 +256,7 @@ public class RangeCache {
   /**
    * Adds a custom key-value pair with a long value to the saved CompoundTag.
    *
-   * @param key   The key to be added.
+   * @param key The key to be added.
    * @param value The long value associated with the key.
    * @return This RangeCache instance with the added data.
    * @throws UnsupportedOperationException If the key is unsupported.
@@ -254,7 +270,7 @@ public class RangeCache {
   /**
    * Adds a custom key-value pair with a short value to the saved CompoundTag.
    *
-   * @param key   The key to be added.
+   * @param key The key to be added.
    * @param value The short value associated with the key.
    * @return This RangeCache instance with the added data.
    * @throws UnsupportedOperationException If the key is unsupported.
@@ -268,7 +284,7 @@ public class RangeCache {
   /**
    * Adds a custom key-value pair with a UUID value to the saved CompoundTag.
    *
-   * @param key   The key to be added.
+   * @param key The key to be added.
    * @param value The UUID value associated with the key.
    * @return This RangeCache instance with the added data.
    * @throws UnsupportedOperationException If the key is unsupported.

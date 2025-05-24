@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import io.netty.util.collection.IntObjectMap;
@@ -15,24 +22,25 @@ import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 import peco2282.bcreborn.transport.block.pipe.IItemEjector;
 import peco2282.bcreborn.transport.block.pipe.IItemTransporter;
 
-public class GoldItemPipeBlockEntity extends ItemPipeBlockEntity implements IItemTransporter, IItemEjector {
+public class GoldItemPipeBlockEntity extends ItemPipeBlockEntity
+    implements IItemTransporter, IItemEjector {
   public GoldItemPipeBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BCTransportBlockEntities.GOLD_ITEM_PIPE.get(), p_155229_, p_155230_, PipeMaterial.GOLD);
   }
 
   @Contract(pure = true)
-  public static void tick(Level world, BlockPos pos, BlockState state, @NotNull GoldItemPipeBlockEntity blockEntity) {
+  public static void tick(
+      Level world, BlockPos pos, BlockState state, @NotNull GoldItemPipeBlockEntity blockEntity) {
     blockEntity.update(world, pos, state);
   }
 
   @Override
-  protected void update(Level level, BlockPos pos, BlockState state) {
-  }
+  protected void update(Level level, BlockPos pos, BlockState state) {}
 
   /**
    * Transports an item to the next pipe or container.
    *
-   * @param stack     The storage polled ItemStack to transport.
+   * @param stack The storage polled ItemStack to transport.
    * @param direction The direction the item came from.
    */
   @Override
@@ -51,7 +59,7 @@ public class GoldItemPipeBlockEntity extends ItemPipeBlockEntity implements IIte
   /**
    * Ejects an item into a neighboring container.
    *
-   * @param stack     The ItemStack to eject.
+   * @param stack The ItemStack to eject.
    * @param direction The direction to eject to.
    */
   @Override

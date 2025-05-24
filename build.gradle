@@ -4,7 +4,10 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '6.0.29' //'[6.0.24,6.2)'
     id 'org.spongepowered.mixin' version '0.7.38'
+    id 'com.diffplug.spotless' version '7.0.3'
 }
+
+apply plugin: 'com.diffplug.spotless'
 
 version = mod_version
 group = mod_group_id
@@ -217,6 +220,7 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.compilerArgs += '-nowarn'
 }
 
 eclipse {
@@ -243,5 +247,17 @@ idea {
   module {
     downloadJavadoc = true
     downloadSources = true
+  }
+}
+spotless {
+  java {
+    googleJavaFormat() // Google Java Format を使用
+    importOrder("*", "", "java") // インポート順の整理
+    removeUnusedImports() // 未使用インポートの削除
+    trimTrailingWhitespace() // 行末の空白削除
+    endWithNewline() // ファイル末尾に改行を追加
+    leadingTabsToSpaces(2)
+    licenseHeaderFile 'HEADER' // ライセンスファイルを指定
+    target '**/src/**/*.java' // 対象ファイル
   }
 }

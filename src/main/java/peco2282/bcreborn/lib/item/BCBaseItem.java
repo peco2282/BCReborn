@@ -1,17 +1,24 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.lib.item;
 
 import net.minecraft.world.item.Item;
 import peco2282.bcreborn.api.item.BCItem;
 
-/** 
- * Represents a base item used in the Neptune collection 
- * for the Minecraft modding framework. This class adds
- * unique item identification while supporting BCItem functionality.
+/**
+ * Represents a base item used in the Neptune collection for the Minecraft modding framework. This
+ * class adds unique item identification while supporting BCItem functionality.
  *
  * @author peco2282
  */
 public class BCBaseItem extends Item implements BCItem {
   private final String id;
+
   /**
    * Creates a new BCBaseItem instance.
    *
@@ -24,8 +31,8 @@ public class BCBaseItem extends Item implements BCItem {
   }
 
   /**
-   * Returns the unique identifier for the item.
-   * If the ID contains dots, they are replaced with underscores for compatibility.
+   * Returns the unique identifier for the item. If the ID contains dots, they are replaced with
+   * underscores for compatibility.
    *
    * @return the sanitized item ID
    */

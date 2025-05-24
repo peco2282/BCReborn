@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.bean;
 
 import net.minecraftforge.fml.ModContainer;
@@ -19,17 +26,15 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * The ContextProcessor is responsible for handling the processing and management
- * of mod-related context within the BCReborn Mod. It initializes and registers
- * annotated classes used by the mod.
+ * The ContextProcessor is responsible for handling the processing and management of mod-related
+ * context within the BCReborn Mod. It initializes and registers annotated classes used by the mod.
  *
  * @author peco2282
  */
 public class ContextProcessor {
   private static final Logger log = InternalLogger.create();
-  private static final ContextProcessor instance = new ContextProcessor(
-      ModList.get().getModContainerById(BCReborn.MODID).orElseThrow()
-  );
+  private static final ContextProcessor instance =
+      new ContextProcessor(ModList.get().getModContainerById(BCReborn.MODID).orElseThrow());
   private final @NotNull ModContainer container;
 
   private ContextProcessor(@NotNull ModContainer container) {
@@ -49,7 +54,8 @@ public class ContextProcessor {
     return getInstance().container.getModInfo().getOwningFile().getFile().getScanResult();
   }
 
-  private static <T extends Annotation> Predicate<ModFileScanData.AnnotationData> annotationFilter(Class<T> clazz) {
+  private static <T extends Annotation> Predicate<ModFileScanData.AnnotationData> annotationFilter(
+      Class<T> clazz) {
     return (ad) -> {
       try {
         return Class.forName(ad.annotationType().getClassName()).isAssignableFrom(clazz);
@@ -60,9 +66,8 @@ public class ContextProcessor {
   }
 
   /**
-   * Initializes and registers classes annotated with {@code InitRegister}.
-   * Scans the mod's context for annotated classes and logs their discovery.
-   * If a class is missing, logs an error message.
+   * Initializes and registers classes annotated with {@code InitRegister}. Scans the mod's context
+   * for annotated classes and logs their discovery. If a class is missing, logs an error message.
    */
   public static void initRegister() {
     ModFileScanData data = getScanData();
@@ -107,7 +112,8 @@ public class ContextProcessor {
   }
 
   @VisibleForTesting
-  static class ChainPredicate<A extends Annotation> implements Predicate<ModFileScanData.AnnotationData> {
+  static class ChainPredicate<A extends Annotation>
+      implements Predicate<ModFileScanData.AnnotationData> {
     private final @NotNull Class<A> annotation;
     private final List<Predicate<A>> predicates = new ArrayList<>();
 

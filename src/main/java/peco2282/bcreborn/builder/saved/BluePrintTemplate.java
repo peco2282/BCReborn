@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.saved;
 
 import net.minecraft.core.HolderGetter;
@@ -18,8 +25,7 @@ public class BluePrintTemplate {
    * @param getter The block holder getter used to resolve blocks.
    * @param tag The data tag containing blueprint information to load.
    */
-  public void load(HolderGetter<Block> getter, CompoundTag tag) {
-  }
+  public void load(HolderGetter<Block> getter, CompoundTag tag) {}
 
   /**
    * Saves the blueprint data into a {@link CompoundTag}.
@@ -33,9 +39,7 @@ public class BluePrintTemplate {
     return tag;
   }
 
-  /**
-   * Represents the size of a blueprint with x, y, and z dimensions.
-   */
+  /** Represents the size of a blueprint with x, y, and z dimensions. */
   private record Size(int x, int y, int z) {
 
     /**
@@ -44,7 +48,7 @@ public class BluePrintTemplate {
      * @return An {@link IntArrayTag} containing the size dimensions [x, y, z].
      */
     IntArrayTag tag() {
-      return new IntArrayTag(new int[]{x, y, z});
+      return new IntArrayTag(new int[] {x, y, z});
     }
   }
 }

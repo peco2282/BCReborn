@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block;
 
 import com.mojang.serialization.MapCodec;
@@ -18,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TankBlock extends BCBaseEntityBlock {
   private final AtomicInteger fluids = new AtomicInteger(8);
   private static final int MAX = 16;
+
   public TankBlock(Properties properties, @NotNull String id) {
     super(properties, id, PropertyBuilder.builder());
   }
@@ -50,12 +58,11 @@ public class TankBlock extends BCBaseEntityBlock {
   }
 
   @Override
-  protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-
-  }
+  protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {}
 
   @Override
-  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type) {
     return null;
   }
 }

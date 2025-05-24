@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block.entity;
 
 import net.minecraft.core.BlockPos;
@@ -12,7 +19,6 @@ import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 
 import java.util.*;
 
-
 public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
   public static final List<MarkerVolumeBlockEntity> rendered = new ArrayList<>();
   private MarkerPlaceHolder holder;
@@ -26,19 +32,21 @@ public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
     return holder;
   }
 
-  public static void tick(Level level, BlockPos pos, BlockState state, MarkerVolumeBlockEntity entity) {
-  }
+  public static void tick(
+      Level level, BlockPos pos, BlockState state, MarkerVolumeBlockEntity entity) {}
 
-  public static MarkerPlaceHolder holder(Level level, BlockPos pos, MarkerVolumeBlockEntity volume) {
+  public static MarkerPlaceHolder holder(
+      Level level, BlockPos pos, MarkerVolumeBlockEntity volume) {
     int max = BCConfiguration.maxVolumeLength;
     int curr;
     BlockPos currPos;
     MarkerPlaceHolder holder = new MarkerPlaceHolder(pos);
     Set<MarkerVolumeBlockEntity> entities = search(level, pos, new HashSet<>());
-    entities.forEach(entity -> {
-      holder.add(entity.getBlockPos());
-      volume.chained.add(entity);
-    });
+    entities.forEach(
+        entity -> {
+          holder.add(entity.getBlockPos());
+          volume.chained.add(entity);
+        });
     entities.forEach(entity -> entity.holder = holder);
     volume.holder = holder;
     rendered.addAll(entities);
@@ -48,13 +56,15 @@ public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
 
   public void breakRangeVolume() {
     Objects.requireNonNull(getLevel());
-    this.chained.forEach(e -> {
-      getLevel().removeBlockEntity(e.getBlockPos());
-      getLevel().removeBlock(e.getBlockPos(), true);
-    });
+    this.chained.forEach(
+        e -> {
+          getLevel().removeBlockEntity(e.getBlockPos());
+          getLevel().removeBlock(e.getBlockPos(), true);
+        });
   }
 
-  static Set<MarkerVolumeBlockEntity> search(Level level, BlockPos pos, Set<MarkerVolumeBlockEntity> gathered) {
+  static Set<MarkerVolumeBlockEntity> search(
+      Level level, BlockPos pos, Set<MarkerVolumeBlockEntity> gathered) {
     int max = BCConfiguration.maxVolumeLength;
     int curr;
     BlockPos currPos;
@@ -62,7 +72,8 @@ public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.north(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
+      if (block instanceof MarkerVolumeBlock
+          && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         if (gathered.contains(entity)) continue;
         gathered.add(entity);
         gathered.addAll(search(level, currPos, gathered));
@@ -74,7 +85,8 @@ public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.above(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
+      if (block instanceof MarkerVolumeBlock
+          && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         if (gathered.contains(entity)) continue;
         gathered.add(entity);
         gathered.addAll(search(level, currPos, gathered));
@@ -86,7 +98,8 @@ public class MarkerVolumeBlockEntity extends BCBaseBlockEntity {
     for (curr = -max; curr <= max; curr++) {
       if (curr == 0) continue;
       Block block = level.getBlockState(currPos = pos.east(curr)).getBlock();
-      if (block instanceof MarkerVolumeBlock && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
+      if (block instanceof MarkerVolumeBlock
+          && level.getBlockEntity(currPos) instanceof MarkerVolumeBlockEntity entity) {
         if (gathered.contains(entity)) continue;
         gathered.add(entity);
         gathered.addAll(search(level, currPos, gathered));

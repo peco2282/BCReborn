@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.utils;
 
 import net.minecraft.core.BlockPos;
@@ -38,7 +45,7 @@ public class InventoryUtil {
    * @param stack the item stack to be dropped
    */
   public static void drop(Level world, BlockPos pos, @Nonnull ItemStack stack) {
-    Block.dropResources(world.getBlockState(pos), world, pos);// .spawnAsEntity(world, pos, stack);
+    Block.dropResources(world.getBlockState(pos), world, pos); // .spawnAsEntity(world, pos, stack);
   }
 
   /**
@@ -78,7 +85,7 @@ public class InventoryUtil {
    */
   public static boolean sameItemCheck(Item target, ItemStack... stacks) {
     if (target == null) return false;
-    for (ItemStack stack: stacks) {
+    for (ItemStack stack : stacks) {
       if (stack == null) return false;
       if (!target.equals(stack.getItem())) return false;
     }

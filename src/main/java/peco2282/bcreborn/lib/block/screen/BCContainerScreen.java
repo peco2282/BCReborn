@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.lib.block.screen;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -7,13 +14,11 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import peco2282.bcreborn.lib.block.menu.BCMenu;
 
-
 /**
- * Base class for container screens in the mod, extending the {@link AbstractContainerScreen}.
- * This provides core functionality for rendering container GUIs.
+ * Base class for container screens in the mod, extending the {@link AbstractContainerScreen}. This
+ * provides core functionality for rendering container GUIs.
  *
  * @param <T> The type of the menu that this screen interacts with, extending {@link BCMenu}.
- *
  * @author peco2282
  */
 public abstract class BCContainerScreen<T extends BCMenu> extends AbstractContainerScreen<T> {

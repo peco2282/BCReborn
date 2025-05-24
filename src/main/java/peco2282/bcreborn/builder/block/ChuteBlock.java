@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block;
 
 import com.mojang.serialization.MapCodec;
@@ -30,7 +37,6 @@ public class ChuteBlock extends BCBaseEntityBlock {
     return new ChuteBlockEtity(pos, state);
   }
 
-
   @Override
   protected @NotNull MapCodec<ChuteBlock> codec() {
     return codecInstance(ChuteBlock::new);
@@ -47,7 +53,12 @@ public class ChuteBlock extends BCBaseEntityBlock {
   }
 
   @Override
-  protected void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
+  protected void onRemove(
+      BlockState p_60515_,
+      Level p_60516_,
+      BlockPos p_60517_,
+      BlockState p_60518_,
+      boolean p_60519_) {
     Containers.dropContentsOnDestroy(p_60515_, p_60518_, p_60516_, p_60517_);
     super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
   }
@@ -58,7 +69,8 @@ public class ChuteBlock extends BCBaseEntityBlock {
   }
 
   @Override
-  protected void entityInside(BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_) {
+  protected void entityInside(
+      BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_) {
     BlockEntity entity = p_60496_.getBlockEntity(p_60497_);
     if (entity instanceof ChuteBlockEtity hopper) {
       hopper.inside(p_60495_, p_60496_, p_60497_, p_60498_);

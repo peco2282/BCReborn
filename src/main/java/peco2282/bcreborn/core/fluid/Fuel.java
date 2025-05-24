@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.fluid;
 
 import net.minecraft.core.BlockPos;
@@ -39,9 +46,8 @@ public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel
   }
 
   @Override
-  protected void beforeDestroyingBlock(LevelAccessor p_76002_, BlockPos p_76003_, BlockState p_76004_) {
-
-  }
+  protected void beforeDestroyingBlock(
+      LevelAccessor p_76002_, BlockPos p_76003_, BlockState p_76004_) {}
 
   @Override
   protected int getSlopeFindDistance(LevelReader p_76074_) {
@@ -59,7 +65,12 @@ public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel
   }
 
   @Override
-  protected boolean canBeReplacedWith(FluidState p_76127_, BlockGetter p_76128_, BlockPos p_76129_, Fluid p_76130_, Direction p_76131_) {
+  protected boolean canBeReplacedWith(
+      FluidState p_76127_,
+      BlockGetter p_76128_,
+      BlockPos p_76129_,
+      Fluid p_76130_,
+      Direction p_76131_) {
     return p_76127_.getHeight(p_76128_, p_76129_) >= 0.44444445F || p_76131_ == Direction.DOWN;
   }
 
@@ -75,7 +86,10 @@ public abstract sealed class Fuel extends FlowingFluid permits Fuel.Source, Fuel
 
   @Override
   protected BlockState createLegacyBlock(FluidState p_76136_) {
-    return BCCoreBlocks.FUEL_SOURCE.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(p_76136_));
+    return BCCoreBlocks.FUEL_SOURCE
+        .get()
+        .defaultBlockState()
+        .setValue(LiquidBlock.LEVEL, getLegacyLevel(p_76136_));
   }
 
   @Override

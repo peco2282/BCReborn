@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.block.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,9 +20,9 @@ import java.awt.*;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class EngineIronScreen extends BCContainerScreen<EngineIronMenu> {
-  private final static ResourceLocation TEXTURE = BCReborn.location("textures/gui/combustion_engine_gui.png");
+  private static final ResourceLocation TEXTURE =
+      BCReborn.location("textures/gui/combustion_engine_gui.png");
   private final int HEIGHT = 5;
-
 
   public EngineIronScreen(EngineIronMenu p_97741_, Inventory p_97742_, Component p_97743_) {
     super(p_97741_, p_97742_, p_97743_);
@@ -30,7 +37,8 @@ public class EngineIronScreen extends BCContainerScreen<EngineIronMenu> {
 
   @Override
   protected void renderBg(GuiGraphics p_283065_, float p_97788_, int p_97789_, int p_97790_) {
-    p_283065_.blit(getTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+    p_283065_.blit(
+        getTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     water(p_283065_, Color.BLUE.getRGB(), 0);
     oil(p_283065_, Color.BLACK.getRGB(), 0);
     gold(p_283065_, Color.YELLOW.getRGB(), 0);
@@ -41,10 +49,8 @@ public class EngineIronScreen extends BCContainerScreen<EngineIronMenu> {
     int bottomBase = 78 + topPos; // 18 + 8 * 10
     for (int i = stage - 1; i >= 0; i--) {
       graphics.fill(leftBase, bottomBase, leftBase + 16, (bottomBase -= HEIGHT), color);
-      if ((stage - i) == 5)
-        bottomBase--;
-      else
-        graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
+      if ((stage - i) == 5) bottomBase--;
+      else graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
     }
   }
 
@@ -53,10 +59,8 @@ public class EngineIronScreen extends BCContainerScreen<EngineIronMenu> {
     int bottomBase = 78 + topPos; // 18 + 8 * 10
     for (int i = stage - 1; i >= 0; i--) {
       graphics.fill(leftBase, bottomBase, leftBase + 16, (bottomBase -= HEIGHT), color);
-      if ((stage - i) == 5)
-        bottomBase--;
-      else
-        graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
+      if ((stage - i) == 5) bottomBase--;
+      else graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
     }
   }
 
@@ -65,10 +69,8 @@ public class EngineIronScreen extends BCContainerScreen<EngineIronMenu> {
     int bottomBase = 78 + topPos; // 18 + 8 * 10
     for (int i = stage - 1; i >= 0; i--) {
       graphics.fill(leftBase, bottomBase, leftBase + 16, (bottomBase -= HEIGHT), color);
-      if ((stage - i) == 5)
-        bottomBase--;
-      else
-        graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
+      if ((stage - i) == 5) bottomBase--;
+      else graphics.fill(leftBase + 7, bottomBase, leftBase + 16, --bottomBase, color);
     }
   }
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.core.item;
 
 import net.minecraft.core.BlockPos;
@@ -21,13 +28,22 @@ public class WrenchItem extends BCBaseItem implements IToolWrench {
   @Override
   public InteractionResult useOn(UseOnContext p_41427_) {
     if (p_41427_.getPlayer() == null) return super.useOn(p_41427_);
-    if (canUseWrench(p_41427_.getPlayer(), p_41427_.getHand(), p_41427_.getItemInHand(), p_41427_.getHitResult()))
-      useWrench(p_41427_.getPlayer(), p_41427_.getHand(), p_41427_.getItemInHand(), p_41427_.getHitResult());
+    if (canUseWrench(
+        p_41427_.getPlayer(),
+        p_41427_.getHand(),
+        p_41427_.getItemInHand(),
+        p_41427_.getHitResult()))
+      useWrench(
+          p_41427_.getPlayer(),
+          p_41427_.getHand(),
+          p_41427_.getItemInHand(),
+          p_41427_.getHitResult());
     return super.useOn(p_41427_);
   }
 
   @Override
-  public boolean canUseWrench(Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {
+  public boolean canUseWrench(
+      Player player, InteractionHand hand, ItemStack wrench, BlockHitResult hit) {
     IToolWrench w = wrench(player, hit.getBlockPos());
     if (w == null) return false;
     return w.canUseWrench(player, hand, wrench, hit);

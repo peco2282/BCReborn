@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
@@ -30,30 +37,43 @@ public class BCReborn {
   public static final String MODID = "bcreborn";
   public static final String VERSION = "1.0";
   public static final EventBus EVENT_BUS = BCRebornEventBus.getEventBus();
-  //  // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
-//  public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-//  // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-//  public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", () -> new Block(BlockBehaviour.BCProperties.of().mapColor(MapColor.STONE)));
-//  // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
-//  public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-//  // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
-//  public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_block", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.BCProperties()));
-//  // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
-//  public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.BCProperties().food(new FoodProperties.Builder()
-//      .alwaysEdible().nutrition(1).saturationModifier(2f).build())));
-  // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
-//  public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-//  // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-//  public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-//      .withTabsBefore(CreativeModeTabs.COMBAT)
-//      .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-//      .displayItems((parameters, output) -> {
-//        output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-//      }).build());
+  //  // Create a Deferred Register to hold Blocks which will all be registered under the
+  // "examplemod" namespace
+  //  public static final DeferredRegister<Block> BLOCKS =
+  // DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+  //  // Creates a new Block with the id "examplemod:example_block", combining the namespace and
+  // path
+  //  public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", ()
+  // -> new Block(BlockBehaviour.BCProperties.of().mapColor(MapColor.STONE)));
+  //  // Create a Deferred Register to hold Items which will all be registered under the
+  // "examplemod" namespace
+  //  public static final DeferredRegister<Item> ITEMS =
+  // DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+  //  // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and
+  // path
+  //  public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_block",
+  // () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.BCProperties()));
+  //  // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
+  //  public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () ->
+  // new Item(new Item.BCProperties().food(new FoodProperties.Builder()
+  //      .alwaysEdible().nutrition(1).saturationModifier(2f).build())));
+  // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the
+  // "examplemod" namespace
+  //  public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
+  // DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+  //  // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is
+  // placed after the combat tab
+  //  public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB =
+  // CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
+  //      .withTabsBefore(CreativeModeTabs.COMBAT)
+  //      .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
+  //      .displayItems((parameters, output) -> {
+  //        output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own
+  // tabs, this method is preferred over the event
+  //      }).build());
   // Directly reference a slf4j logger
   private static final Logger LOGGER = LogUtils.getLogger();
-  @LateinitField
-  public static FMLJavaModLoadingContext CONTEXT;
+  @LateinitField public static FMLJavaModLoadingContext CONTEXT;
 
   public BCReborn(FMLJavaModLoadingContext context) {
     CONTEXT = context;
@@ -62,10 +82,10 @@ public class BCReborn {
     // Register the commonSetup method for modloading
     modEventBus.addListener(this::commonSetup);
 
-//    // Register the Deferred Register to the mod event bus so blocks get registered
-//    BLOCKS.register(modEventBus);
-//    // Register the Deferred Register to the mod event bus so items get registered
-//    ITEMS.register(modEventBus);
+    //    // Register the Deferred Register to the mod event bus so blocks get registered
+    //    BLOCKS.register(modEventBus);
+    //    // Register the Deferred Register to the mod event bus so items get registered
+    //    ITEMS.register(modEventBus);
     // Register the Deferred Register to the mod event bus so tabs get registered
     BCRegistry.init(modEventBus);
 
@@ -92,17 +112,16 @@ public class BCReborn {
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
 
-//    if (Config.logDirtBlock)
-//      LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-//
-//    LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
+    //    if (Config.logDirtBlock)
+    //      LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+    //
+    //    LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 
-//    Config.items.forEach(item -> LOGGER.info("ITEM >> {}", item.toString()));
+    //    Config.items.forEach(item -> LOGGER.info("ITEM >> {}", item.toString()));
   }
 
   // Add the example block item to the building blocks tab
-  private void addCreative(BuildCreativeModeTabContentsEvent event) {
-  }
+  private void addCreative(BuildCreativeModeTabContentsEvent event) {}
 
   // You can use SubscribeEvent and let the Event Bus discover methods to call
   @SubscribeEvent
@@ -111,6 +130,5 @@ public class BCReborn {
     LOGGER.info("HELLO from server starting");
   }
 
-  public void onNewRegistry(DataPackRegistryEvent.NewRegistry event) {
-  }
+  public void onNewRegistry(DataPackRegistryEvent.NewRegistry event) {}
 }

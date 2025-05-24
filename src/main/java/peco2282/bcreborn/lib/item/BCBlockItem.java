@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.lib.item;
 
 import net.minecraft.world.item.BlockItem;
@@ -12,7 +19,7 @@ public class BCBlockItem extends BlockItem implements BCItem {
    *
    * @param p_40565_ The block this item is linked to.
    * @param p_40566_ The item properties.
-   * @param id       The unique identifier for this BCBlockItem.
+   * @param id The unique identifier for this BCBlockItem.
    */
   public BCBlockItem(BCBlock p_40565_, Properties p_40566_, String id) {
     super(p_40565_.getBlock(), p_40566_);

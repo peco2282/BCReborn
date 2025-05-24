@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block;
 
 import com.mojang.serialization.MapCodec;
@@ -38,12 +45,19 @@ public class PipeItemBlock extends BCBasePipeBlock {
   }
 
   @Override
-  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type) {
+  protected @Nullable <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type) {
     return HANDLER.serverTicker(type, PipeItemBlock::createTickerHelper);
   }
 
   @Override
-  protected void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
+  protected void neighborChanged(
+      BlockState p_60509_,
+      Level p_60510_,
+      BlockPos p_60511_,
+      Block p_60512_,
+      BlockPos p_60513_,
+      boolean p_60514_) {
     super.neighborChanged(p_60509_, p_60510_, p_60511_, p_60512_, p_60513_, p_60514_);
     entity = p_60510_.getBlockEntity(p_60511_) instanceof ItemPipeBlockEntity pipe ? pipe : null;
   }

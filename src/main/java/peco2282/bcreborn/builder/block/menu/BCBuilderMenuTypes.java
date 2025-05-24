@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.builder.block.menu;
 
 import net.minecraft.world.inventory.MenuType;
@@ -11,9 +18,11 @@ import java.util.function.Supplier;
 
 @InitRegister
 public class BCBuilderMenuTypes {
-  public static final RegistryObject<MenuType<FillerMenu>> FILLER = register("filler", () -> IForgeMenuType.create(FillerMenu::new));
+  public static final RegistryObject<MenuType<FillerMenu>> FILLER =
+      register("filler", () -> IForgeMenuType.create(FillerMenu::new));
 
-  private static <M extends BCMenu> RegistryObject<MenuType<M>> register(final String name, final Supplier<MenuType<M>> type) {
+  private static <M extends BCMenu> RegistryObject<MenuType<M>> register(
+      final String name, final Supplier<MenuType<M>> type) {
     return BCRegistry.registerMenuType(name, type);
   }
 }

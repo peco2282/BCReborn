@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.event.internal;
 
 import org.objectweb.asm.ClassWriter;
@@ -12,13 +19,13 @@ import java.lang.reflect.Modifier;
 
 public class Factory {
   private static final String HANDLER_DESC = Type.getInternalName(EventListener.class);
-  private static final String HANDLER_FUNC_DESC = Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(BCEvent.class));
+  private static final String HANDLER_FUNC_DESC =
+      Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(BCEvent.class));
   private static final ASMClassLoader LOADER = new ASMClassLoader();
   private static final Cache cache = new Cache();
   private static final Factory instance = new Factory();
 
-  private Factory() {
-  }
+  private Factory() {}
 
   public static Factory getFactory() {
     return instance;
@@ -37,7 +44,13 @@ public class Factory {
     String instType = Type.getInternalName(callback.getDeclaringClass());
     String eventType = Type.getInternalName(callback.getParameterTypes()[0]);
 
-    target.visit(Opcodes.V16, Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, desc, null, "java/lang/Object", new String[]{HANDLER_DESC});
+    target.visit(
+        Opcodes.V16,
+        Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
+        desc,
+        null,
+        "java/lang/Object",
+        new String[] {HANDLER_DESC});
 
     target.visitSource(".dynamic", null);
 
@@ -56,7 +69,12 @@ public class Factory {
       mv.visitVarInsn(Opcodes.ALOAD, 0);
       mv.visitVarInsn(Opcodes.ALOAD, 1);
       mv.visitTypeInsn(Opcodes.CHECKCAST, eventType);
-      mv.visitMethodInsn(Opcodes.INVOKESTATIC, instType, callback.getName(), Type.getMethodDescriptor(callback), false);
+      mv.visitMethodInsn(
+          Opcodes.INVOKESTATIC,
+          instType,
+          callback.getName(),
+          Type.getMethodDescriptor(callback),
+          false);
       mv.visitInsn(Opcodes.RETURN);
       mv.visitMaxs(2, 2);
       mv.visitEnd();
@@ -65,28 +83,30 @@ public class Factory {
   }
 
   private static String getUniqueName(Method callback) {
-    return String.format("%s.__%s_%s_%s",
+    return String.format(
+        "%s.__%s_%s_%s",
         callback.getDeclaringClass().getPackageName(),
         callback.getDeclaringClass().getSimpleName(),
         callback.getName(),
-        callback.getParameterTypes()[0].getSimpleName()
-    );
+        callback.getParameterTypes()[0].getSimpleName());
   }
 
   public EventListener create(Method method, Object target) throws ReflectiveOperationException {
     Class<?> cls = createWrapper(method);
     if (Modifier.isStatic(method.getModifiers()))
       return (EventListener) cls.getDeclaredConstructor().newInstance();
-    else
-      return (EventListener) cls.getConstructor(Object.class).newInstance(target);
+    else return (EventListener) cls.getConstructor(Object.class).newInstance(target);
   }
 
   private static Class<?> createWrapper(Method callback) {
-    return cache.computeIfAbsent(callback, () -> {
-      var node = new ClassNode();
-      transformNode(getUniqueName(callback), callback, node);
-      return node;
-    }, Factory::defineClass);
+    return cache.computeIfAbsent(
+        callback,
+        () -> {
+          var node = new ClassNode();
+          transformNode(getUniqueName(callback), callback, node);
+          return node;
+        },
+        Factory::defineClass);
   }
 
   private static class ASMClassLoader extends ClassLoader {
@@ -95,7 +115,8 @@ public class Factory {
     }
 
     @Override
-    protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(final String name, final boolean resolve)
+        throws ClassNotFoundException {
       return Class.forName(name, resolve, Thread.currentThread().getContextClassLoader());
     }
 

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.lib.block;
 
 import com.mojang.serialization.Codec;
@@ -18,14 +25,13 @@ import peco2282.bcreborn.api.block.BCBlock;
 import peco2282.bcreborn.lib.block.entity.BCBaseBlockEntity;
 import peco2282.bcreborn.utils.PropertyBuilder;
 
-import javax.annotation.Nullable;
 import java.util.function.BiFunction;
-
-
+import javax.annotation.Nullable;
 
 public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlock, BCBlock {
   /**
-   * Constructs a new instance of BCBaseEntityBlock with specified properties, ID, and a property builder.
+   * Constructs a new instance of BCBaseEntityBlock with specified properties, ID, and a property
+   * builder.
    *
    * @param properties the properties of the block
    * @param id the unique identifier for the block
@@ -52,12 +58,13 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    * @param <T> the type of the block
    * @return a codec for encoding properties and ID of a BCBaseEntityBlock
    */
-  protected static <T extends BCBaseEntityBlock> MapCodec<T> codecInstance(BiFunction<Properties, String, T> function) {
-    return RecordCodecBuilder
-        .mapCodec(instance -> instance.group(
-            propertiesCodec(),
-            Codec.STRING.fieldOf("id").forGetter(BCBaseBlock::getId)
-        ).apply(instance, function));
+  protected static <T extends BCBaseEntityBlock> MapCodec<T> codecInstance(
+      BiFunction<Properties, String, T> function) {
+    return RecordCodecBuilder.mapCodec(
+        instance ->
+            instance
+                .group(propertiesCodec(), Codec.STRING.fieldOf("id").forGetter(BCBaseBlock::getId))
+                .apply(instance, function));
   }
 
   /**
@@ -79,10 +86,11 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    *
    * @param builder the state definition builder to configure with the block's state properties
    */
-  abstract protected void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder);
+  protected abstract void gatherStateDefinition(StateDefinition.Builder<Block, BlockState> builder);
 
   /**
-   * Sets up the state definition for this block by invoking {@link #gatherStateDefinition(StateDefinition.Builder)}.
+   * Sets up the state definition for this block by invoking {@link
+   * #gatherStateDefinition(StateDefinition.Builder)}.
    *
    * @param p_49915_ the state definition builder used to configure the block's state properties
    */
@@ -101,7 +109,8 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
   }
 
   /**
-   * Handles the removal of this block from the world by performing cleanup on associated block entities.
+   * Handles the removal of this block from the world by performing cleanup on associated block
+   * entities.
    *
    * @param p_60515_ the old block state
    * @param p_60516_ the level in which the block exists
@@ -110,7 +119,12 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    * @param p_60519_ whether the block was removed naturally or via a player action
    */
   @Override
-  protected void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
+  protected void onRemove(
+      BlockState p_60515_,
+      Level p_60516_,
+      BlockPos p_60517_,
+      BlockState p_60518_,
+      boolean p_60519_) {
     if (p_60516_.getBlockEntity(p_60517_) instanceof BCBaseBlockEntity nep) {
       nep.onRemove();
     }
@@ -132,7 +146,8 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    * @return a {@link BlockEntityTicker} for server-side operations, or null if not applicable
    */
   @Nullable
-  protected abstract <E extends BlockEntity> BlockEntityTicker<E> serverTicker(BlockEntityType<E> type);
+  protected abstract <E extends BlockEntity> BlockEntityTicker<E> serverTicker(
+      BlockEntityType<E> type);
 
   @Override
   /**
@@ -144,7 +159,8 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    * @param <T> the type parameter of the block entity
    * @return a BlockEntityTicker for server-side operations or null for client-side
    */
-  public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+  public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+      Level level, BlockState state, BlockEntityType<T> type) {
     return level.isClientSide() ? null : serverTicker(type);
   }
 
@@ -170,9 +186,9 @@ public abstract class BCBaseEntityBlock extends BCBaseBlock implements EntityBlo
    */
   @Nullable
   @SuppressWarnings("unchecked")
-  protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(
-      BlockEntityType<A> be1, BlockEntityType<E> be2, BlockEntityTicker<? super E> ticker
-  ) {
+  protected static <E extends BlockEntity, A extends BlockEntity>
+      BlockEntityTicker<A> createTickerHelper(
+          BlockEntityType<A> be1, BlockEntityType<E> be2, BlockEntityTicker<? super E> ticker) {
     return be2 == be1 ? (BlockEntityTicker<A>) ticker : null;
   }
 }

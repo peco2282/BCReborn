@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.transport.block.entity.pipe;
 
 import net.minecraft.core.BlockPos;
@@ -10,15 +17,22 @@ import peco2282.bcreborn.transport.block.entity.BCTransportBlockEntities;
 
 public class DiamondItemPipeBlockEntity extends ItemPipeBlockEntity {
   public DiamondItemPipeBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    super(BCTransportBlockEntities.DIAMOND_ITEM_PIPE.get(), p_155229_, p_155230_, PipeMaterial.DIAMOND);
+    super(
+        BCTransportBlockEntities.DIAMOND_ITEM_PIPE.get(),
+        p_155229_,
+        p_155230_,
+        PipeMaterial.DIAMOND);
   }
 
   @Contract(pure = true)
-  public static void tick(Level world, BlockPos pos, BlockState state, @NotNull DiamondItemPipeBlockEntity blockEntity) {
+  public static void tick(
+      Level world,
+      BlockPos pos,
+      BlockState state,
+      @NotNull DiamondItemPipeBlockEntity blockEntity) {
     blockEntity.update(world, pos, state);
   }
 
   @Override
-  protected void update(Level level, BlockPos pos, BlockState state) {
-  }
+  protected void update(Level level, BlockPos pos, BlockState state) {}
 }

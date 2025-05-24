@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 peco2282
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package peco2282.bcreborn.api.capability;
 
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,13 +28,9 @@ public class BCCapabilities {
   public static final String PIPE_KEY = "pipe";
 
   static {
-    CONNECTOR = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location(CONNECTOR_KEY));
-    RECEIVER = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location(RECEIVER_KEY));
-    GENERATOR = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location(GENERATOR_KEY));
-    PIPE = CapabilityManager.get(new CapabilityToken<>() {
-    }, BCReborn.location(PIPE_KEY));
+    CONNECTOR = CapabilityManager.get(new CapabilityToken<>() {}, BCReborn.location(CONNECTOR_KEY));
+    RECEIVER = CapabilityManager.get(new CapabilityToken<>() {}, BCReborn.location(RECEIVER_KEY));
+    GENERATOR = CapabilityManager.get(new CapabilityToken<>() {}, BCReborn.location(GENERATOR_KEY));
+    PIPE = CapabilityManager.get(new CapabilityToken<>() {}, BCReborn.location(PIPE_KEY));
   }
 }
