@@ -1,0 +1,27 @@
+package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
+
+import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+
+/**
+ * 焼石液体パイプの振る舞い
+ * 丸石の液体パイプとは接続しない。輸送速度上限: 20mB/tick
+ */
+public class StoneFluidPipeBehaviour extends StandardFluidPipeBehaviour {
+
+  public static final StoneFluidPipeBehaviour INSTANCE = new StoneFluidPipeBehaviour();
+
+  private StoneFluidPipeBehaviour() {
+  }
+
+  @Override
+  public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
+    if (neighbor.getBlock() instanceof PipeBlock otherPipe) {
+      return otherPipe.getPipeMaterial() != PipeMaterial.COBBLESTONE;
+    }
+    return true;
+  }
+}

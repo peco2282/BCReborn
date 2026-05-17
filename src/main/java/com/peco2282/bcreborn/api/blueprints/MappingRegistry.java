@@ -1,0 +1,334 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ *
+ * The BuildCraft API is distributed under the terms of the MIT License.
+ * Please check the contents of the license, which should be located
+ * as "LICENSE.API" in the BuildCraft source code distribution.
+ */
+package com.peco2282.bcreborn.api.blueprints;
+
+
+import com.peco2282.bcreborn.api.core.BCLog;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class MappingRegistry {
+
+	public HashMap<Block, Integer> blockToId = new HashMap<Block, Integer>();
+	public ArrayList<Block> idToBlock = new ArrayList<Block>();
+
+	public HashMap<Item, Integer> itemToId = new HashMap<Item, Integer>();
+	public ArrayList<Item> idToItem = new ArrayList<Item>();
+
+	public HashMap<Class<? extends Entity>, Integer> entityToId = new HashMap<Class<? extends Entity>, Integer>();
+	public ArrayList<Class<? extends Entity>> idToEntity = new ArrayList<Class<? extends Entity>>();
+
+	private void registerItem(Item item) {
+		if (!itemToId.containsKey(item)) {
+			idToItem.add(item);
+			itemToId.put(item, idToItem.size() - 1);
+		}
+	}
+
+	private void registerBlock(Block block) {
+		if (!blockToId.containsKey(block)) {
+			idToBlock.add(block);
+			blockToId.put(block, idToBlock.size() - 1);
+		}
+	}
+
+	private void registerEntity(Class<? extends Entity> entityClass) {
+		if (!entityToId.containsKey(entityClass)) {
+			idToEntity.add(entityClass);
+			entityToId.put(entityClass, idToEntity.size() - 1);
+		}
+	}
+
+	public Item getItemForId(int id) throws MappingNotFoundException {
+		if (id >= idToItem.size()) {
+			throw new MappingNotFoundException("no item mapping at position " + id);
+		}
+
+		Item result = idToItem.get(id);
+
+		if (result == null) {
+			throw new MappingNotFoundException("no item mapping at position " + id);
+		} else {
+			return result;
+		}
+	}
+
+	public int getIdForItem(Item item) {
+		if (!itemToId.containsKey(item)) {
+			registerItem(item);
+		}
+
+		return itemToId.get(item);
+	}
+
+	public int itemIdToRegistry(int id) {
+		Item item = Item.byId(id);
+
+		return getIdForItem(item);
+	}
+
+	public int itemIdToWorld(int id) throws MappingNotFoundException {
+		Item item = getItemForId(id);
+
+		return Item.getId(item);
+	}
+
+	public Block getBlockForId(int id) throws MappingNotFoundException {
+		if (id >= idToBlock.size()) {
+			throw new MappingNotFoundException("no block mapping at position " + id);
+		}
+
+		Block result = idToBlock.get(id);
+
+		if (result == null) {
+			throw new MappingNotFoundException("no block mapping at position " + id);
+		} else {
+			return result;
+		}
+	}
+
+	public int getIdForBlock(Block block) {
+		if (!blockToId.containsKey(block)) {
+			registerBlock(block);
+		}
+
+		return blockToId.get(block);
+	}
+
+	public int blockIdToRegistry(int id) {
+		Block block = BuiltInRegistries.BLOCK.byId(id);
+
+		return getIdForBlock(block);
+	}
+
+	public int blockIdToWorld(int id) throws MappingNotFoundException {
+		Block block = getBlockForId(id);
+
+		return BuiltInRegistries.BLOCK.getId(block);
+	}
+
+	public Class<? extends Entity> getEntityForId(int id) throws MappingNotFoundException {
+		if (id >= idToEntity.size()) {
+			throw new MappingNotFoundException("no entity mapping at position " + id);
+		}
+
+		Class<? extends Entity> result = idToEntity.get(id);
+
+		if (result == null) {
+			throw new MappingNotFoundException("no entity mapping at position " + id);
+		} else {
+			return result;
+		}
+	}
+
+	public int getIdForEntity(Class<? extends Entity> entity) {
+		if (!entityToId.containsKey(entity)) {
+			registerEntity(entity);
+		}
+
+		return entityToId.get(entity);
+	}
+
+	/**
+	 * Relocates a stack nbt from the world referential to the registry
+	 * referential.
+	 */
+	public void stackToRegistry(CompoundTag nbt) {
+		Item item = Item.byId(nbt.getShort("id"));
+		nbt.putShort("id", (short) getIdForItem(item));
+	}
+
+	/**
+	 * Relocates a stack nbt from the registry referential to the world
+	 * referential.
+	 */
+	public void stackToWorld(CompoundTag nbt) throws MappingNotFoundException {
+		Item item = getItemForId(nbt.getShort("id"));
+		nbt.putShort("id", (short) Item.getId(item));
+	}
+
+	private boolean isStackLayout(CompoundTag nbt) {
+		return nbt.contains("id") &&
+				nbt.contains("Count") &&
+				nbt.contains("Damage") &&
+				nbt.get("id") instanceof ShortTag &&
+				nbt.get("Count") instanceof ByteTag &&
+				nbt.get("Damage") instanceof ShortTag;
+	}
+
+	public void scanAndTranslateStacksToRegistry(CompoundTag nbt) {
+		if (isStackLayout(nbt)) {
+			stackToRegistry(nbt);
+		}
+
+		for (String key : nbt.getAllKeys()) {
+			if (nbt.get(key) instanceof CompoundTag) {
+				scanAndTranslateStacksToRegistry(nbt.getCompound(key));
+			}
+
+			if (nbt.get(key) instanceof ListTag list) {
+				if (list.getElementType() == Tag.TAG_COMPOUND) {
+					for (int i = 0; i < list.size(); ++i) {
+						scanAndTranslateStacksToRegistry(list.getCompound(i));
+					}
+				}
+			}
+		}
+	}
+
+	public void scanAndTranslateStacksToWorld(CompoundTag nbt) throws MappingNotFoundException {
+		if (isStackLayout(nbt)) {
+			stackToWorld(nbt);
+		}
+
+		for (String key : nbt.getAllKeys()) {
+			if (nbt.get(key) instanceof CompoundTag) {
+				try {
+					scanAndTranslateStacksToWorld(nbt.getCompound(key));
+				} catch (MappingNotFoundException e) {
+					nbt.remove(key);
+				}
+			}
+
+			if (nbt.get(key) instanceof ListTag list) {
+				if (list.getElementType() == Tag.TAG_COMPOUND) {
+					for (int i = list.size() - 1; i >= 0; --i) {
+						try {
+							scanAndTranslateStacksToWorld(list.getCompound(i));
+						} catch (MappingNotFoundException e) {
+							list.remove(i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void write(CompoundTag nbt) {
+		ListTag blocksMapping = new ListTag();
+
+		for (Block b : idToBlock) {
+			CompoundTag sub = new CompoundTag();
+			if (b != null) {
+				ResourceLocation name = BuiltInRegistries.BLOCK.getKey(b);
+				if (name == null) {
+					BCLog.logger.error("Block " + b.getName().getString() + " (" + b.getClass().getName() + ") has an empty registry name! This is a bug!");
+				} else {
+					sub.putString("name", name.toString());
+				}
+			}
+			blocksMapping.add(sub);
+		}
+
+		nbt.put("blocksMapping", blocksMapping);
+
+		ListTag itemsMapping = new ListTag();
+
+		for (Item i : idToItem) {
+			CompoundTag sub = new CompoundTag();
+			if (i != null) {
+				ResourceLocation name = BuiltInRegistries.ITEM.getKey(i);
+				if (name == null) {
+					BCLog.logger.error("Item " + i.getDescriptionId() + " (" + i.getClass().getName() + ") has an empty registry name! This is a bug!");
+				} else {
+					sub.putString("name", name.toString());
+				}
+			}
+			itemsMapping.add(sub);
+		}
+
+		nbt.put("itemsMapping", itemsMapping);
+
+		ListTag entitiesMapping = new ListTag();
+
+		for (Class<? extends Entity> e : idToEntity) {
+			CompoundTag sub = new CompoundTag();
+			sub.putString("name", e.getCanonicalName());
+			entitiesMapping.add(sub);
+		}
+
+		nbt.put("entitiesMapping", entitiesMapping);
+	}
+
+	public void read(CompoundTag nbt) {
+		ListTag blocksMapping = nbt.getList("blocksMapping", Tag.TAG_COMPOUND);
+
+		for (int i = 0; i < blocksMapping.size(); ++i) {
+			CompoundTag sub = blocksMapping.getCompound(i);
+			if (!sub.contains("name")) {
+				idToBlock.add(null);
+				BCLog.logger.warn("Can't load a block - corrupt blueprint!");
+				continue;
+			}
+			String name = sub.getString("name");
+			ResourceLocation rl = ResourceLocation.tryParse(name);
+			Block b = rl != null ? BuiltInRegistries.BLOCK.get(rl) : null;
+
+			if (b != null) {
+				registerBlock(b);
+			} else {
+				idToBlock.add(null);
+				BCLog.logger.warn("Can't load block " + name);
+			}
+		}
+
+		ListTag itemsMapping = nbt.getList("itemsMapping", Tag.TAG_COMPOUND);
+
+		for (int i = 0; i < itemsMapping.size(); ++i) {
+			CompoundTag sub = itemsMapping.getCompound(i);
+			if (!sub.contains("name")) {
+				idToItem.add(null);
+				BCLog.logger.warn("Can't load an item - corrupt blueprint!");
+				continue;
+			}
+			String name = sub.getString("name");
+			ResourceLocation rl = ResourceLocation.tryParse(name);
+			Item item = rl != null ? BuiltInRegistries.ITEM.get(rl) : null;
+
+			if (item != null) {
+				registerItem(item);
+			} else {
+				idToItem.add(null);
+				BCLog.logger.warn("Can't load item " + name);
+			}
+		}
+
+		ListTag entitiesMapping = nbt.getList("entitiesMapping", Tag.TAG_COMPOUND);
+
+		for (int i = 0; i < entitiesMapping.size(); ++i) {
+			CompoundTag sub = entitiesMapping.getCompound(i);
+			String name = sub.getString("name");
+			Class<? extends Entity> e = null;
+
+			try {
+				e = (Class<? extends Entity>) Class.forName(name);
+			} catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			if (e != null) {
+				registerEntity(e);
+			} else {
+				idToEntity.add(null);
+				BCLog.logger.warn("Can't load entity " + name);
+			}
+		}
+	}
+}

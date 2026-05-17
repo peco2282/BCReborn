@@ -1,0 +1,6 @@
+original/
+.gradle
+build/
+run/*
+run-data/*
+src/generated/

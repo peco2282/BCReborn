@@ -1,0 +1,37 @@
+package com.peco2282.bcreborn.common.packet.c2s;
+
+import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
+import com.peco2282.bcreborn.common.packet.CustomPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
+public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket {
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+  }
+
+  public static UploadNothingToServerPacket decode(FriendlyByteBuf buffer) {
+    return new UploadNothingToServerPacket(buffer.readBlockPos());
+  }
+
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+
+    ctx.enqueueWork(() -> {
+      BlockEntity entity = ctx.getSender().level().getBlockEntity(pos);
+      if (!(entity instanceof BlueprintLibraryBlockEntity library)) return ;
+
+      library.setItem(3, library.getItem(2));
+      library.setItem(4, ItemStack.EMPTY);
+    });
+    
+    ctx.setPacketHandled(true);
+  }
+}

@@ -1,0 +1,23 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "bcreborncore:block/wood_engine/chamber",
+		"particle": "bcreborncore:block/wood_engine/chamber"
+	},
+	"elements": [
+		{
+			"from": [3, 4, 3],
+			"to": [13, 6, 13],
+			"faces": {
+				"north": {"uv": [0.25, 6, 2.75, 6.5], "texture": "#0"},
+				"east": {"uv": [2.75, 6, 5.25, 6.5], "texture": "#0"},
+				"south": {"uv": [5.25, 6, 7.75, 6.5], "texture": "#0"},
+				"west": {"uv": [7.75, 6, 10.25, 6.5], "texture": "#0"},
+				"up": {"uv": [0, 0, 2.5, 2.5], "texture": "#missing"},
+				"down": {"uv": [0, 0, 2.5, 2.5], "texture": "#missing"}
+			}
+		}
+	]
+}
