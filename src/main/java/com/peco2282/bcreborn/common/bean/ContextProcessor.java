@@ -1,0 +1,98 @@
+package com.peco2282.bcreborn.common.bean;
+
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Comparator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+public class ContextProcessor {
+  private static final Logger log = LoggerFactory.getLogger("ContextProcessor");
+  private final String modId;
+  private final @NotNull ModContainer container;
+
+  private ContextProcessor(@NotNull ModContainer container) {
+    this.modId = container.getModId();
+    this.container = container;
+  }
+
+  public static ContextProcessor create(@NotNull ModContainer container) {
+    return new ContextProcessor(container);
+  }
+
+  public static ContextProcessor create(@NotNull String modId) {
+    return new ContextProcessor(ModList.get().getModContainerById(modId).orElseThrow());
+  }
+
+  public String getModId() {
+    return modId;
+  }
+
+  private ModFileScanData getScanData() {
+    return container.getModInfo().getOwningFile().getFile().getScanResult();
+  }
+
+  private static <T> ProcessExaminator<T> examine(
+      Stream<T> values
+  ) {
+    return new ProcessExaminator<>(values);
+  }
+
+  /**
+   * Initializes apply registers classes annotated with {@code InitRegister}. Scans the mod's context
+   * for annotated classes apply logs their discovery. If a class is missing, logs an error message.
+   */
+  public void initRegister() {
+    ModFileScanData data = getScanData();
+    for (ModFileScanData.AnnotationData ad : data.getAnnotations()) {
+
+      if (ad.annotationType().getClassName().equals(InitRegister.class.getName())) {
+        log.debug("Processing annotation data for class {}", ad.annotationType().getClassName());
+        String modId = (String) ad.annotationData().get("modId");
+        if (modId == null) {
+          continue;
+        }
+        if (modId.equals(this.modId)) {
+          try {
+            var cls = Class.forName(ad.clazz().getClassName());
+            log.info("Found apply Accessed class {}", cls.getName());
+          } catch (ClassNotFoundException e) {
+            log.error("{} was not found", ad.clazz().getClassName(), e);
+          }
+        }
+      }
+    }
+  }
+
+  public static class ProcessExaminator<T> {
+    private Stream<T> stream;
+
+    public ProcessExaminator(Stream<T> stream) {
+      this.stream = stream;
+    }
+
+    public ProcessExaminator<T> filter(Predicate<T> predicate) {
+      this.stream = this.stream.filter(predicate);
+      return this;
+    }
+
+    public ProcessExaminator<T> sorted(Comparator<T> comparator) {
+      this.stream = this.stream.sorted(comparator);
+      return this;
+    }
+
+    public <U> ProcessExaminator<U> map(Function<T, U> mapper) {
+      return new ProcessExaminator<>(this.stream.map(mapper));
+    }
+
+    public Stream<T> get() {
+      return this.stream;
+    }
+  }
+}

@@ -1,0 +1,51 @@
+package com.peco2282.bcreborn.energy.block.entity;
+
+import com.peco2282.bcreborn.common.ResourceBuilder;
+import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
+import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class CreativeEngineBlockEntity extends EngineBlockEntity<CreativeEngineBlockEntity> {
+  public CreativeEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
+    super(BlockEntityTypesEnergy.CREATIVE_ENGINE.get(), p_155229_, p_155230_);
+  }
+
+  @Override
+  protected ResourceBuilder getEngineResource() {
+    return ResourceBuilder.energy("creative_engine");
+  }
+
+  @Override
+  public boolean isFuelable(ItemStack stack) {
+    return false;
+  }
+
+  @Override
+  public boolean isBurning() {
+    return true;
+  }
+
+  @Override
+  public void updateProgress() {
+
+  }
+
+  @Override
+  public void overheat() {
+
+  }
+
+  @Override
+  public void explode() {
+
+  }
+
+  @Override
+  public void burinig() {
+    if (this.energyStorage != null) {
+      this.energyStorage.generateEnergy(this.energyStorage.getMaxEnergyStored(), false);
+    }
+  }
+}
