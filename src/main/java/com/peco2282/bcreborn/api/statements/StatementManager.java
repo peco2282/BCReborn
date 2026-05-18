@@ -8,6 +8,8 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +24,7 @@ public final class StatementManager {
 
     public static Map<String, IStatement> statements = new HashMap<>();
     public static Map<String, Class<? extends IStatementParameter>> parameters = new HashMap<>();
+    public static Map<String, Codec<? extends IStatementParameter>> parameterCodecs = new HashMap<>();
     private static List<ITriggerProvider> triggerProviders = new LinkedList<>();
     private static List<IActionProvider> actionProviders = new LinkedList<>();
 
@@ -45,7 +48,20 @@ public final class StatementManager {
     }
 
     public static void registerParameterClass(Class<? extends IStatementParameter> param) {
-        parameters.put(createParameter(param).getUniqueTag(), param);
+        String tag = createParameter(param).getUniqueTag();
+        parameters.put(tag, param);
+        try {
+            parameterCodecs.put(tag, (Codec<? extends IStatementParameter>) param.getField("CODEC").get(null));
+        } catch (Exception e) {
+            // No codec
+        }
+    }
+
+    public static DataResult<? extends Codec<? extends IStatementParameter>> getParameterCodec(String tag) {
+        if (parameterCodecs.containsKey(tag)) {
+            return DataResult.success(parameterCodecs.get(tag));
+        }
+        return DataResult.error(() -> "Unknown parameter tag: " + tag);
     }
 
     @Deprecated

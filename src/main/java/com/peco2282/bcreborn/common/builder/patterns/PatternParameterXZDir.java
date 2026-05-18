@@ -1,5 +1,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -12,6 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterXZDir implements IStatementParameter {
+    public static final Codec<PatternParameterXZDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("dir").forGetter(p -> p.direction)
+    ).apply(instance, PatternParameterXZDir::new));
+
     private static final String[] names = {"west", "east", "north", "south"};
     private static final int[] shiftLeft = {3, 2, 0, 1};
     private static final int[] shiftRight = {2, 3, 1, 0};

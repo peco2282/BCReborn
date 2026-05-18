@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.api.blueprints.SchematicMask;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IStatement;
@@ -29,8 +30,15 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 public abstract class FillerPattern implements IFillerPattern {
-
     public static final Map<String, FillerPattern> patterns = new TreeMap<>();
+
+    public static final Codec<FillerPattern> CODEC = Codec.STRING.dispatch(FillerPattern::getUniqueTag, tag -> {
+        FillerPattern pattern = patterns.get(tag);
+        return pattern != null ? pattern.getCodec() : null;
+    });
+
+    public abstract Codec<? extends FillerPattern> getCodec();
+
     private final String tag;
 
     public FillerPattern(String tag) {

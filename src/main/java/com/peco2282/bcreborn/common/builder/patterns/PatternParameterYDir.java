@@ -1,5 +1,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -12,6 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterYDir implements IStatementParameter {
+    public static final Codec<PatternParameterYDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("up").forGetter(p -> p.up)
+    ).apply(instance, PatternParameterYDir::new));
     public boolean up = false;
 
     public PatternParameterYDir() {
