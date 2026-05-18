@@ -9,6 +9,7 @@
 package com.peco2282.bcreborn.api.blueprints;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.LinkedList;
@@ -35,7 +36,7 @@ public abstract class Schematic {
 	 * Blocks are build in various stages, in order to make sure that a block
 	 * can indeed be placed, and that it's unlikely to disturb other blocks.
 	 */
-	public enum BuildingStage {
+	public enum BuildingStage implements StringRepresentable {
 		/**
 		 * Standalone blocks do not change once placed.
 		 */
@@ -45,7 +46,12 @@ public abstract class Schematic {
 		 * Expanding blocks will grow and may disturb other block locations,
 		 * like liquids.
 		 */
-		EXPANDING
+		EXPANDING;
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase();
+		}
 	}
 
 	/**

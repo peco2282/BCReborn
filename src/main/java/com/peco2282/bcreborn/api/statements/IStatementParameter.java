@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public interface IStatementParameter {
+    Codec<IStatementParameter> CODEC = Codec.STRING.dispatch(
+            IStatementParameter::getUniqueTag,
+            s -> StatementManager.getParameterCodec(s).get().orThrow()
+    );
+
     String getUniqueTag();
 
     @OnlyIn(Dist.CLIENT)

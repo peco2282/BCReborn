@@ -8,12 +8,15 @@
  */
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.common.blueprint.Box;
 import com.peco2282.bcreborn.common.blueprint.Template;
 import net.minecraft.world.level.Level;
 
 public class PatternStairs extends FillerPattern {
+    public static final PatternStairs INSTANCE = new PatternStairs();
+    public static final Codec<PatternStairs> CODEC = Codec.unit(INSTANCE);
 
     public PatternStairs() {
         super("stairs");
@@ -27,6 +30,11 @@ public class PatternStairs extends FillerPattern {
     @Override
     public int minParameters() {
         return 2;
+    }
+
+    @Override
+    public Codec<? extends FillerPattern> getCodec() {
+        return CODEC;
     }
 
     @Override

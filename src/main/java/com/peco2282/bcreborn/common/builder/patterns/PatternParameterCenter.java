@@ -1,5 +1,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -12,6 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterCenter implements IStatementParameter {
+    public static final Codec<PatternParameterCenter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.INT.fieldOf("direction").forGetter(p -> p.direction)
+    ).apply(instance, PatternParameterCenter::new));
     private static final int[] shiftLeft = {6, 3, 0, 7, 4, 1, 8, 5, 2};
     private int direction;
 

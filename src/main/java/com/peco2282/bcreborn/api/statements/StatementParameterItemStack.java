@@ -8,6 +8,8 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +18,15 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class StatementParameterItemStack implements IStatementParameter {
+    public static final Codec<StatementParameterItemStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemStack.CODEC.fieldOf("stack").forGetter(p -> p.stack)
+    ).apply(instance, StatementParameterItemStack::new));
 
     protected ItemStack stack;
+
+    public StatementParameterItemStack(ItemStack stack) {
+        this.stack = stack;
+    }
 
     @Override
     public TextureAtlasSprite getIcon() {
