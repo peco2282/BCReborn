@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.common.blueprint.Blueprint;
 import com.peco2282.bcreborn.common.blueprint.BlueprintBase;
-import com.peco2282.bcreborn.common.blueprint.Box;
+import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import com.peco2282.bcreborn.common.blueprint.Template;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

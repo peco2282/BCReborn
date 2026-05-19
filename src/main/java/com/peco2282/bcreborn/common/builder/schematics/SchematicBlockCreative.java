@@ -1,6 +1,13 @@
 package com.peco2282.bcreborn.common.builder.schematics;
 
-import com.peco2282.bcreborn.common.builder.Schematic;
 
-public class SchematicBlockCreative extends Schematic {
+import com.peco2282.bcreborn.api.blueprints.BuildingPermission;
+import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+
+public class SchematicBlockCreative extends SchematicTile {
+    @Override
+    public BuildingPermission getBuildingPermission() {
+        return BuildingPermission.CREATIVE_ONLY;
+    }
 }

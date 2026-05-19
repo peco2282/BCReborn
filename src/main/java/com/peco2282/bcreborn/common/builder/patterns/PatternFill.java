@@ -11,7 +11,7 @@ package com.peco2282.bcreborn.common.builder.patterns;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
-import com.peco2282.bcreborn.common.blueprint.Box;
+import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.blueprint.Template;
 import net.minecraft.world.level.Level;
 

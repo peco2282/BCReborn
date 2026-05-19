@@ -8,14 +8,20 @@
  */
 package com.peco2282.bcreborn.common.builder;
 
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
+import com.peco2282.bcreborn.api.blueprints.SchematicMask;
 import com.peco2282.bcreborn.api.core.Position;
+import net.minecraft.BlockUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.LinkedList;
 
 public class BuildingSlotBlock extends BuildingSlot {
     public int x, y, z;
+    public SchematicBlockBase schematic;
 
     public enum Mode {
         ClearIfInvalid, Build
@@ -25,8 +31,11 @@ public class BuildingSlotBlock extends BuildingSlot {
     public int buildStage = 0;
 
     @Override
-    public Schematic getSchematic() {
-        return null;
+    public SchematicBlockBase getSchematic() {
+        if (schematic == null) {
+            return new SchematicMask(false);
+        }
+        return schematic;
     }
 
     @Override
@@ -40,6 +49,13 @@ public class BuildingSlotBlock extends BuildingSlot {
 
     @Override
     public boolean writeToWorld(IBuilderContext context) {
+        if (mode == Mode.ClearIfInvalid) {
+            if (getSchematic().isAlreadyBuilt(context, x, y, z)) {
+                return BlockUtil.destroyBlock(context, x, y, z);
+            } else {
+                context.world().setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+            }
+        }
         return false;
     }
 

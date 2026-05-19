@@ -14,6 +14,7 @@ import com.peco2282.bcreborn.api.blueprints.MappingRegistry;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
 import com.peco2282.bcreborn.api.blueprints.Translation;
 import com.peco2282.bcreborn.api.core.BCLog;
+import com.peco2282.bcreborn.common.Box;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

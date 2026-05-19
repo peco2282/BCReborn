@@ -9,6 +9,8 @@
 package com.peco2282.bcreborn.common.builder;
 
 
+import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
+import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
