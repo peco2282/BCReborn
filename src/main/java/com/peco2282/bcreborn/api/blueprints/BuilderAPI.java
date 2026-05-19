@@ -8,7 +8,13 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
+import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
+
 public final class BuilderAPI {
+	/**
+	 *  @deprecated Use {@link BCRegistryKeys#SCHEMATIC}
+	 */
+	@Deprecated
 	public static ISchematicRegistry schematicRegistry;
 	public static ISchematicHelper schematicHelper;
 
