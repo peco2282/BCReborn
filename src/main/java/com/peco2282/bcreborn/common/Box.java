@@ -11,20 +11,42 @@ package com.peco2282.bcreborn.common.blueprint;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.common.LaserData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Box implements IBox {
+    public enum Kind {
+        LASER_RED,
+        LASER_YELLOW,
+        LASER_GREEN,
+        LASER_BLUE,
+        STRIPES,
+        BLUE_STRIPES,
+    }
 
+    public Kind kind = Kind.LASER_RED;
     public int xMin, yMin, zMin, xMax, yMax, zMax;
     public boolean initialized;
+    public LaserData[] lasersData;
 
     public Box() {
         reset();
+    }
+
+    public Box(BlockEntity e) {
+        BlockPos pos = e.getBlockPos();
+        initialize(pos.getX(), pos.getY(), pos.getZ(),
+            pos.getX() + 1, pos.getY() + 1,
+            pos.getZ() + 1);
     }
 
     public Box(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
@@ -230,6 +252,17 @@ public class Box implements IBox {
         if (toBeContained.z > zMax) zMax = toBeContained.z + 1;
         return this;
     }
+
+
+    public AABB getBoundingBox() {
+        return AABB.of(
+            new BoundingBox(
+                xMin, yMin, zMin,
+            xMax, yMax, zMax
+            )
+        );
+    }
+
 
     @Override
     public double distanceTo(BlockIndex index) {
