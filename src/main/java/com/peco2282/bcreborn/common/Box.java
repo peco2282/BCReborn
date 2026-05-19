@@ -6,12 +6,11 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package com.peco2282.bcreborn.common.blueprint;
+package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
-import com.peco2282.bcreborn.common.LaserData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

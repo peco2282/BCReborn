@@ -12,6 +12,7 @@ import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.MappingRegistry;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.common.Box;
 import net.minecraft.world.level.Level;
 
 public class BptContext implements IBuilderContext {

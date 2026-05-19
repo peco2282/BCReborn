@@ -2,8 +2,6 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.INBT;
 import com.peco2282.bcreborn.api.core.ISerializable;
-import com.peco2282.bcreborn.common.NetworkUtils;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.apache.commons.lang3.ArrayUtils;
@@ -134,9 +132,9 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
 
   @Override
   public void readData(FriendlyByteBuf stream) {
-    uniqueId = NetworkUtils.readByteArray(stream);
-    name = NetworkUtils.readUTF(stream);
-    extension = NetworkUtils.readUTF(stream);
+    uniqueId = stream.readByteArray();
+    name = stream.readUtf();
+    extension = stream.readUtf();
   }
 
   public static LibraryId decode(FriendlyByteBuf stream) {
@@ -147,8 +145,8 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
 
   @Override
   public void writeData(FriendlyByteBuf stream) {
-    NetworkUtils.writeByteArray(stream, uniqueId);
-    NetworkUtils.writeUTF(stream, name);
-    NetworkUtils.writeUTF(stream, extension);
+    stream.writeByteArray(uniqueId);
+    stream.writeUtf(name);
+    stream.writeUtf(extension);
   }
 }
