@@ -1,6 +1,7 @@
 package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,7 +25,9 @@ public record UploadBuildersInActionPacket(
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      // TODO: implement when ConstructionMarkerBlockEntity.uploadBuildersInAction is available
+      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get()).ifPresent(be -> {
+        be.sendBuildersInAction(ctx.getSender(), pos);
+      });
     });
     ctx.setPacketHandled(true);
   }

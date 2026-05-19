@@ -1,5 +1,8 @@
 package com.peco2282.bcreborn.common;
 
+import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +39,9 @@ public final class BCRegistry {
   private final DeferredRegister<MenuType<?>> MENU_TYPES;
   private final DeferredRegister<CreativeModeTab> CREATIVE_TABS;
 
+  private final DeferredRegister<Schematic> SCHEMATIC;
+  private final DeferredRegister<IFillerPattern> FILLER_PATTERN;
+
   private BCRegistry(@NotNull String modid) {
     this.modid = modid;
 
@@ -46,6 +52,9 @@ public final class BCRegistry {
     BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, modid);
     MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, modid);
     CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modid);
+
+    SCHEMATIC = DeferredRegister.create(BCRegistryKeys.SCHEMATIC, modid);
+    FILLER_PATTERN = DeferredRegister.create(BCRegistryKeys.FILLER_PATTERNS, modid);
   }
 
   public <B extends Block> RegistryObject<B> registerBlock(@NotNull String name, @NotNull Supplier<B> block) {
@@ -94,6 +103,14 @@ public final class BCRegistry {
     return CREATIVE_TABS.register(name, tab);
   }
 
+  public <S extends Schematic> RegistryObject<S> registerSchematic(@NotNull String name, @NotNull Supplier<S> schematic) {
+    return SCHEMATIC.register(name, schematic);
+  }
+
+  public <P extends IFillerPattern> RegistryObject<P> registerFillerPattern(@NotNull String name, @NotNull Supplier<P> pattern) {
+    return FILLER_PATTERN.register(name, pattern);
+  }
+
   public void register(IEventBus bus) {
     BLOCKS.register(bus);
     ITEMS.register(bus);
@@ -102,6 +119,9 @@ public final class BCRegistry {
     BLOCK_ENTITY_TYPES.register(bus);
     MENU_TYPES.register(bus);
     CREATIVE_TABS.register(bus);
+
+    SCHEMATIC.register(bus);
+    FILLER_PATTERN.register(bus);
   }
 
   @Contract(pure = true)

@@ -2,11 +2,9 @@ package com.peco2282.bcreborn.common.packet;
 
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
+import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
-import com.peco2282.bcreborn.common.packet.s2c.ArchitectNameSyncPacket;
-import com.peco2282.bcreborn.common.packet.s2c.ClearItemRequirementsPacket;
-import com.peco2282.bcreborn.common.packet.s2c.DownloadBlueprintPacket;
-import com.peco2282.bcreborn.common.packet.s2c.RequestSelectedBlueprintPacket;
+import com.peco2282.bcreborn.common.packet.s2c.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,6 +41,10 @@ public class BCNetworkManager {
     sendToServer(new UploadNothingToServerPacket(pos));
   }
 
+  public static void sendUploadBuildersInAction(BlockPos pos) {
+    sendToServer(new UploadBuildersInActionPacket(pos));
+  }
+
   /// Architect
   public static void sendSetArchitectName(BlockPos pos, String name) {
     sendToServer(new SetArchitectNamePacket(pos, name));
@@ -76,6 +78,13 @@ public class BCNetworkManager {
     sendToWorld(blockEntity.getLevel().dimension(), new ClearItemRequirementsPacket(pos));
   }
 
+  public static void sendLaunchItem(ServerPlayer player,BlockPos pos, BuildingItem item) {
+    sendToPlayer(player, new LaunchItemPacket(pos, item));
+  }
+
+  public static void sendNearLaunchItem(Vec3 target, BlockEntity entity, BuildingItem item) {
+    sendToNear(target, entity.getLevel().dimension(), new LaunchItemPacket(entity.getBlockPos(), item), 64);
+  }
   // Helpers
   private static void sendToServer(CustomPacket packet) {
     channel.sendToServer(packet);
