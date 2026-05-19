@@ -10,6 +10,7 @@ package com.peco2282.bcreborn.api.blueprints;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -30,6 +31,7 @@ public class SchematicBlock extends SchematicBlockBase {
 			new BlockIndex(-1, 0, 0),
 			new BlockIndex(1, 0, 0),
 	};
+	protected Direction facing = Direction.UP;
 
 	public Block block = null;
 	public BuildingPermission defaultPermission = BuildingPermission.ALL;
