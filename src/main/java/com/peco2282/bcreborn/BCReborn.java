@@ -34,6 +34,7 @@ public interface BCReborn {
     TRANSPORT,
     ENERGY,
     FACTORY,
+    SILICON,
     ROBOTICS,
     ;
     final String modId;
