@@ -32,7 +32,7 @@ public final class PatternFill extends FillerPattern {
         this.parameters = parameters.toArray(new IStatementParameter[0]);
     }
 
-    private PatternFill() {
+    public PatternFill() {
         super("fill");
     }
 
