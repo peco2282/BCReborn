@@ -1,13 +1,22 @@
 package com.peco2282.bcreborn.common;
 
+import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface RegistryUtil {
   /**
@@ -48,5 +57,21 @@ public interface RegistryUtil {
    */
   static List<Item> flattenItem(TagKey<Item> key) {
     return fromItemTag(key).stream().map(Holder::get).toList();
+  }
+
+  static Set<Map.Entry<ResourceKey<Schematic>, Schematic>> getSchematics(RegistryAccess access) {
+    return getRegistry(access, BCRegistryKeys.SCHEMATIC).entrySet();
+  }
+
+  static Set<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> getFillerPatterns(RegistryAccess access) {
+    return getRegistry(access, BCRegistryKeys.FILLER_PATTERNS).entrySet();
+  }
+
+  @Contract(value = "null,_->fail; _,null->fail; _,_->!null", pure = true)
+  static <T> Registry<T> getRegistry(RegistryAccess access, ResourceKey<Registry<T>> key) {
+    if (access == null || key == null) {
+      throw new IllegalArgumentException("RegistryAccess and ResourceKey cannot be null");
+    }
+    return access.registryOrThrow(key);
   }
 }
