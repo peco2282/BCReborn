@@ -1,8 +1,6 @@
 package com.peco2282.bcreborn.common;
 
-import com.peco2282.bcreborn.BCRebornBuilders;
-import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.BCRebornEnergy;
+import com.peco2282.bcreborn.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -86,6 +84,37 @@ public class ResourceBuilder {
 
   public static ResourceBuilder energy(String path) {
     return new ResourceBuilder(BCRebornEnergy.MODID, path);
+  }
+
+  public static ResourceBuilder transport() {
+    return new ResourceBuilder(BCRebornTransport.MODID);
+  }
+
+  public static ResourceBuilder transport(String path) {
+    return new ResourceBuilder(BCRebornTransport.MODID, path);
+  }
+
+  public static ResourceBuilder factory() {
+    return new ResourceBuilder(BCRebornFactory.MODID);
+  }
+
+  public static ResourceBuilder factory(String path) {
+    return new ResourceBuilder(BCRebornFactory.MODID, path);
+  }
+
+  public static ResourceBuilder silicon() {
+    return new ResourceBuilder(BCRebornSilicon.MODID);
+  }
+
+  public static ResourceBuilder silicon(String path) {
+    return new ResourceBuilder(BCRebornSilicon.MODID, path);
+  }
+
+  public static ResourceBuilder robotics() {
+    return new ResourceBuilder(BCRebornRobotics.MODID);
+  }
+  public static ResourceBuilder robotics(String path) {
+    return new ResourceBuilder(BCRebornRobotics.MODID, path);
   }
 
   public static ResourceBuilder create(String path) {
