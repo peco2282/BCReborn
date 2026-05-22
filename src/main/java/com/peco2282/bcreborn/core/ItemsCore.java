@@ -22,6 +22,8 @@ public class ItemsCore {
   public static final RegistryObject<BuildCraftItem> GOLD_GEAR = register("gold_gear", () -> new BuildCraftItem(new Item.Properties()));
   public static final RegistryObject<BuildCraftItem> DIAMOND_GEAR = register("diamond_gear", () -> new BuildCraftItem(new Item.Properties()));
 
+  public static final RegistryObject<BuildCraftItem> BUILD_TOOL_BOX = register("build_tool_box", () -> new BuildCraftItem(new Item.Properties()));
+
   private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return REGISTRY.registerItem(name, item);
   }

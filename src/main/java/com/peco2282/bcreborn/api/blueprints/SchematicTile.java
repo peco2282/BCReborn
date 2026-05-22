@@ -53,9 +53,6 @@ public class SchematicTile extends SchematicBlock {
 		BlockPos pos = new BlockPos(x, y, z);
 		BlockEntity be = context.world().getBlockEntity(pos);
 		if (be != null) {
-			tileNBT.putInt("x", x);
-			tileNBT.putInt("y", y);
-			tileNBT.putInt("z", z);
 			be.load(tileNBT);
 		}
 	}

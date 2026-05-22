@@ -8,7 +8,10 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
+import java.io.Serial;
+
 public class MappingNotFoundException extends Exception {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public MappingNotFoundException(String msg) {

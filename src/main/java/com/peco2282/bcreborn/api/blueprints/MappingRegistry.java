@@ -11,18 +11,18 @@ package com.peco2282.bcreborn.api.blueprints;
 
 import com.peco2282.bcreborn.api.core.BCLog;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.ShortTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MappingRegistry {
 
@@ -219,6 +219,43 @@ public class MappingRegistry {
 				}
 			}
 		}
+	}
+
+	public void writeBlockStateToNBT(CompoundTag nbt, BlockState state) {
+		if (state == null) {
+			return;
+		}
+		nbt.putInt("blockId", getIdForBlock(state.getBlock()));
+		CompoundTag props = new CompoundTag();
+		for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
+			Property<?> prop = entry.getKey();
+			props.putString(prop.getName(), getName(prop, entry.getValue()));
+		}
+		nbt.put("properties", props);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends Comparable<T>> String getName(Property<T> prop, Comparable<?> value) {
+		return prop.getName((T) value);
+	}
+
+	public BlockState readBlockStateFromNBT(CompoundTag nbt) throws MappingNotFoundException {
+		Block block = getBlockForId(nbt.getInt("blockId"));
+		BlockState state = block.defaultBlockState();
+		if (nbt.contains("properties")) {
+			CompoundTag props = nbt.getCompound("properties");
+			for (String key : props.getAllKeys()) {
+				Property<?> prop = block.getStateDefinition().getProperty(key);
+				if (prop != null) {
+					state = setValueHelper(state, prop, props.getString(key));
+				}
+			}
+		}
+		return state;
+	}
+
+	private <T extends Comparable<T>> BlockState setValueHelper(BlockState state, Property<T> prop, String valueName) {
+		return prop.getValue(valueName).map(t -> state.setValue(prop, t)).orElse(state);
 	}
 
 	public void write(CompoundTag nbt) {

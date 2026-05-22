@@ -31,9 +31,13 @@ public class SchematicBlock extends SchematicBlockBase {
 			new BlockIndex(-1, 0, 0),
 			new BlockIndex(1, 0, 0),
 	};
-	protected Direction facing = Direction.UP;
+	public Direction facing = Direction.UP;
+	@Deprecated
+	public int meta = 0;
 
+	@Deprecated
 	public Block block = null;
+	public BlockState state = null;
 	public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
 	/**
@@ -47,7 +51,13 @@ public class SchematicBlock extends SchematicBlockBase {
 
 	@Override
 	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (block != null) {
+		if (state != null) {
+			if (storedRequirements.length != 0) {
+				Collections.addAll(requirements, storedRequirements);
+			} else {
+				requirements.add(new ItemStack(state.getBlock()));
+			}
+		} else if (block != null) {
 			if (storedRequirements.length != 0) {
 				Collections.addAll(requirements, storedRequirements);
 			} else {
@@ -57,9 +67,21 @@ public class SchematicBlock extends SchematicBlockBase {
 	}
 
 	@Override
+	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+		super.initializeFromObjectAt(context, x, y, z);
+		BlockPos pos = new BlockPos(x, y, z);
+		state = context.world().getBlockState(pos);
+		block = state.getBlock();
+		meta = 0; // No longer used, but keeping it at 0
+	}
+
+	@Override
 	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		BlockState state = context.world().getBlockState(new BlockPos(x, y, z));
-		return block == state.getBlock();
+		BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
+		if (state != null) {
+			return state == worldState;
+		}
+		return block == worldState.getBlock();
 	}
 
 	@Override
@@ -73,17 +95,16 @@ public class SchematicBlock extends SchematicBlockBase {
 	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 		super.storeRequirements(context, x, y, z);
 
-		if (block != null) {
-			BlockPos pos = new BlockPos(x, y, z);
-			List<ItemStack> req = Block.getDrops(
-					context.world().getBlockState(pos),
-					(net.minecraft.server.level.ServerLevel) context.world(),
-					pos,
-					context.world().getBlockEntity(pos));
+		BlockPos pos = new BlockPos(x, y, z);
+		BlockState worldState = context.world().getBlockState(pos);
+		List<ItemStack> req = Block.getDrops(
+				worldState,
+				(net.minecraft.server.level.ServerLevel) context.world(),
+				pos,
+				context.world().getBlockEntity(pos));
 
-			if (req != null) {
-				storedRequirements = req.toArray(new ItemStack[0]);
-			}
+		if (req != null) {
+			storedRequirements = req.toArray(new ItemStack[0]);
 		}
 	}
 
@@ -133,7 +154,9 @@ public class SchematicBlock extends SchematicBlockBase {
 
 	// Utility functions
 	protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
-		if (block != null) {
+		if (state != null) {
+			context.world().setBlock(new BlockPos(x, y, z), state, 3);
+		} else if (block != null) {
 			context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
 		}
 	}
@@ -144,7 +167,8 @@ public class SchematicBlock extends SchematicBlockBase {
 
 	protected void readBlockFromNBT(CompoundTag nbt, MappingRegistry registry) {
 		try {
-			block = registry.getBlockForId(nbt.getInt("blockId"));
+			state = registry.readBlockStateFromNBT(nbt);
+			block = state.getBlock();
 		} catch (MappingNotFoundException e) {
 			doNotUse = true;
 		}
@@ -182,7 +206,7 @@ public class SchematicBlock extends SchematicBlockBase {
 	}
 
 	protected void writeBlockToNBT(CompoundTag nbt, MappingRegistry registry) {
-		nbt.putInt("blockId", registry.getIdForBlock(block));
+		registry.writeBlockStateToNBT(nbt, state);
 	}
 
 	protected void writeRequirementsToNBT(CompoundTag nbt, MappingRegistry registry) {
@@ -198,5 +222,15 @@ public class SchematicBlock extends SchematicBlockBase {
 
 			nbt.put("rq", rq);
 		}
+	}
+
+	protected static boolean isBlock(IBuilderContext context, int x, int y, int z, Block... blocks) {
+		BlockState state = context.world().getBlockState(new BlockPos(x, y, z));
+		for (Block block : blocks) {
+			if (state.is(block)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

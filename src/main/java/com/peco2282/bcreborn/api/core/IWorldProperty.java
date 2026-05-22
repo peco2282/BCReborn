@@ -8,10 +8,11 @@
  */
 package com.peco2282.bcreborn.api.core;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public interface IWorldProperty {
-	boolean get(Level world, int x, int y, int z);
+	boolean get(Level world, BlockPos pos);
 
 	void clear();
 }

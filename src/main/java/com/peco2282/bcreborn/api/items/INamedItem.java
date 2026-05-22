@@ -1,9 +1,10 @@
 package com.peco2282.bcreborn.api.items;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public interface INamedItem {
-    String getName(ItemStack stack);
+    Component getName(ItemStack stack);
 
-    boolean setName(ItemStack stack, String name);
+    boolean setName(ItemStack stack, Component name);
 }
