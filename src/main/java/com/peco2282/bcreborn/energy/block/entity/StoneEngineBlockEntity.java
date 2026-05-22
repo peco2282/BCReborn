@@ -72,7 +72,7 @@ public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngi
 
   @Override
   public void explode() {
-    level.explode(null, xCoord, yCoord, zCoord, 3, Level.ExplosionInteraction.NONE);
+    level.explode(null, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 3, Level.ExplosionInteraction.NONE);
     level.setBlock(getBlockPos(), Blocks.AIR.defaultBlockState(), 3);
   }
 
