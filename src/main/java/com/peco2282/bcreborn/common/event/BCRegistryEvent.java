@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
 public class BCRegistryEvent {
   @SubscribeEvent
-  public void onRegistryEvent(NewRegistryEvent event) {
+  public static void onRegistryEvent(NewRegistryEvent event) {
     event.create(new RegistryBuilder<Schematic>().setName(BCRegistryKeys.SCHEMATIC.location()));
     event.create(new RegistryBuilder<IWorldProperty>().setName(BCRegistryKeys.WORLD_PROPERTY.location()));
     event.create(new RegistryBuilder<ICropHandler>().setName(BCRegistryKeys.CROP_HANDLER.location()));

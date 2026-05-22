@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -117,6 +118,24 @@ public final class SchematicRegistry implements ISchematicRegistry {
     }
 
     @Override
+    public void registerSchematicBlock(Block block, BlockState state, Class<? extends Schematic> clazz, Object... params) {
+        if (block == null) {
+            BCLog.logger.warn("Builder: Mod tried to register a null block schematic! Ignoring.");
+            return;
+        }
+        String key = toStringKey(block, state);
+        if (schematicBlocks.containsKey(key)) {
+            BCLog.logger.warn("Builder: BlockState " + state + " is already associated with a schematic. Skipping.");
+            return;
+        }
+        try {
+            schematicBlocks.put(key, new SchematicConstructor(clazz, params));
+        } catch (IllegalArgumentException e) {
+            BCLog.logger.warn("Builder: Could not register schematic for blockstate " + state + ": " + e.getMessage());
+        }
+    }
+
+    @Override
     public void registerSchematicEntity(
             Class<? extends Entity> entityClass,
             Class<? extends SchematicEntity> schematicClass, Object... params) {
@@ -187,6 +206,16 @@ public final class SchematicRegistry implements ISchematicRegistry {
 
     public void addForbiddenBlock(String blockName) {
         blocksForbidden.add(blockName);
+    }
+
+    @Override
+    public boolean isSupported(Block block, BlockState state) {
+        return schematicBlocks.containsKey(toStringKey(block, state));
+    }
+
+    private String toStringKey(Block block, BlockState state) {
+        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
+        return (name != null ? name.toString() : block.getClass().getName()) + ":" + state.toString();
     }
 
     private String toStringKey(Block block, int meta) {

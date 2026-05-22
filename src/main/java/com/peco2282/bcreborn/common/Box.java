@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.common;
 
+import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
@@ -96,9 +97,13 @@ public class Box implements IBox {
                 || this.xMax == Integer.MAX_VALUE || this.yMax == Integer.MAX_VALUE || this.zMax == Integer.MAX_VALUE);
     }
 
-    public void initialize(Box box) {
-        initialize(box.xMin, box.yMin, box.zMin, box.xMax, box.yMax, box.zMax);
-    }
+   	public void initialize(IAreaProvider box) {
+		initialize(box.xMin(), box.yMin(), box.zMin(), box.xMax(), box.yMax(), box.zMax());
+	}
+
+	public void initialize(Box box) {
+		initialize(box.xMin, box.yMin, box.zMin, box.xMax, box.yMax, box.zMax);
+	}
 
     public void initialize(CompoundTag nbt) {
         initialize(

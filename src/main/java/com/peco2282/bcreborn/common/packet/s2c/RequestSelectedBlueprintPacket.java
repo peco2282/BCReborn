@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
+import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
@@ -28,10 +29,11 @@ public record RequestSelectedBlueprintPacket(
   public void handle(Supplier<NetworkEvent.Context> context) {
     NetworkEvent.Context ctx = context.get();
     ctx.enqueueWork(() -> {
-      BlockEntity entity = ctx.getSender().level().getBlockEntity(pos);
-      if (!(entity instanceof BlueprintLibraryBlockEntity library)) return;
-      // TODO: implement when BlueprintDatabase is available
-      BCNetworkManager.sendUploadNothing(pos);
+      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
+          .ifPresent(library -> {
+            // TODO: implement when BlueprintDatabase is available
+            BCNetworkManager.sendUploadNothing(pos);
+          });
     });
     ctx.setPacketHandled(true);
   }

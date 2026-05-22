@@ -66,6 +66,10 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
     model.renderMoving(poseStack, bufferSource.getBuffer(RenderType.entityCutout(baseTex)), LightTexture.FULL_BRIGHT, packedOverlay);
     model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), LightTexture.FULL_BRIGHT, packedOverlay);
     model.renderTrunk(poseStack, bufferSource.getBuffer(RenderType.entityCutout(trunkTex)), LightTexture.FULL_BRIGHT, packedOverlay);
+    for (int i = 0; i < 8; i += 2) {
+      model.setMovingOffset(offset + i);
+      model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), LightTexture.FULL_BRIGHT, packedOverlay);
+    }
 
     poseStack.popPose();
   }

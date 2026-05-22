@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.common.packet;
 
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
+import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.List;
 
 public class BCNetworkManager {
   private static final SimpleChannel channel = PacketController.CHANNEL;
@@ -45,6 +48,18 @@ public class BCNetworkManager {
     sendToServer(new UploadBuildersInActionPacket(pos));
   }
 
+  public static void sendDeleteBlueprint(BlockPos pos) {
+    sendToServer(new DeleteBlueprintPacket(pos));
+  }
+
+  public static void sendEraseBuilderTank(BlockPos pos) {
+    sendToServer(new EraseBuilderTankPacket(pos));
+  }
+
+  public static void sendSyncBuilderRequirements(ServerPlayer player, BlockPos pos, List<RequirementItemStack> requirements) {
+    sendToPlayer(player, new SyncBuilderRequirementsPacket(pos, requirements));
+  }
+
   /// Architect
   public static void sendSetArchitectName(BlockPos pos, String name) {
     sendToServer(new SetArchitectNamePacket(pos, name));
@@ -52,6 +67,10 @@ public class BCNetworkManager {
 
   public static void sendSetReadArchitectConfiguration(BlockPos pos, BlueprintReadConfiguration config) {
     sendToServer(new SetReadArchitectConfigurationPacket(pos, config));
+  }
+
+  public static void sendSetFillerPattern(BlockPos pos, int pattern) {
+    sendToServer(new SetFillerPatternPacket(pos, pattern));
   }
 
   // Server -> Client
@@ -82,23 +101,23 @@ public class BCNetworkManager {
     sendToPlayer(player, new LaunchItemPacket(pos, item));
   }
 
-  public static void sendNearLaunchItem(Vec3 target, BlockEntity entity, BuildingItem item) {
-    sendToNear(target, entity.getLevel().dimension(), new LaunchItemPacket(entity.getBlockPos(), item), 64);
+  public static void sendNearLaunchItem(Vec3 target, ResourceKey<Level> dimension, BlockPos pos, BuildingItem item) {
+    sendToNear(target, dimension, new LaunchItemPacket(pos, item), 64);
   }
   // Helpers
-  private static void sendToServer(CustomPacket packet) {
+  public static void sendToServer(CustomPacket packet) {
     channel.sendToServer(packet);
   }
 
-  private static void sendToPlayer(ServerPlayer player, CustomPacket packet) {
+  public static void sendToPlayer(ServerPlayer player, CustomPacket packet) {
     channel.send(PacketDistributor.PLAYER.with(() -> player), packet);
   }
 
-  private static void sendToNear(Vec3 vec3, ResourceKey<Level> dimension, CustomPacket packet, int distance) {
+  public static void sendToNear(Vec3 vec3, ResourceKey<Level> dimension, CustomPacket packet, int distance) {
     channel.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(vec3.x, vec3.y, vec3.z, distance, dimension)), packet);
   }
 
-  private static void sendToWorld(ResourceKey<Level> dimension, CustomPacket packet) {
+  public static void sendToWorld(ResourceKey<Level> dimension, CustomPacket packet) {
     channel.send(PacketDistributor.DIMENSION.with(() -> dimension), packet);
   }
 }

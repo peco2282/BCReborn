@@ -1,0 +1,36 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.common.inventory;
+
+
+import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+
+public interface ITransactor {
+
+	/**
+	 * Adds an Item to the inventory.
+	 *
+	 * @param stack
+	 * @param orientation
+	 * @param doAdd
+	 * @return The ItemStack, with stackSize equal to amount moved.
+	 */
+	ItemStack add(ItemStack stack, Direction orientation, boolean doAdd);
+
+	/**
+	 * Removes and returns a single item from the inventory matching the filter.
+	 *
+	 * @param filter
+	 * @param orientation
+	 * @param doRemove
+	 */
+	ItemStack remove(IStackFilter filter, Direction orientation, boolean doRemove);
+}

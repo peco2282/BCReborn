@@ -1,0 +1,110 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.common.inventory;
+
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Allows you to deal with multiple inventories through a single interface.
+ */
+public final class InventoryConcatenator implements Container {
+
+	private final List<Integer> slotMap = new ArrayList<Integer>();
+	private final List<Container> invMap = new ArrayList<Container>();
+
+	private InventoryConcatenator() {
+	}
+
+	public static InventoryConcatenator make() {
+		return new InventoryConcatenator();
+	}
+
+	public InventoryConcatenator add(Container inv) {
+		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
+			slotMap.add(slot);
+			invMap.add(inv);
+		}
+		return this;
+	}
+
+	@Override
+	public int getContainerSize() {
+		return slotMap.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (Container inv : invMap) {
+			if (!inv.isEmpty()) return false;
+		}
+		return true;
+	}
+
+	@Override
+	public ItemStack getItem(int slot) {
+		return invMap.get(slot).getItem(slotMap.get(slot));
+	}
+
+	@Override
+	public ItemStack removeItem(int slot, int amount) {
+		return invMap.get(slot).removeItem(slotMap.get(slot), amount);
+	}
+
+	@Override
+	public ItemStack removeItemNoUpdate(int slot) {
+		return invMap.get(slot).removeItemNoUpdate(slotMap.get(slot));
+	}
+
+	@Override
+	public void setItem(int slot, ItemStack stack) {
+		invMap.get(slot).setItem(slotMap.get(slot), stack);
+	}
+
+	@Override
+	public int getMaxStackSize() {
+		return 64;
+	}
+
+	@Override
+	public boolean stillValid(Player entityplayer) {
+		return true;
+	}
+
+	@Override
+	public void startOpen(Player player) {
+	}
+
+	@Override
+	public void stopOpen(Player player) {
+	}
+
+	@Override
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		return invMap.get(slot).canPlaceItem(slotMap.get(slot), stack);
+	}
+
+	@Override
+	public void setChanged() {
+		for (Container inv : invMap) {
+			inv.setChanged();
+		}
+	}
+
+	@Override
+	public void clearContent() {
+		for (Container inv : invMap) {
+			inv.clearContent();
+		}
+	}
+}

@@ -4,11 +4,13 @@ import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.common.ResourceBuilder;
+import com.peco2282.bcreborn.common.block.TileBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -16,23 +18,32 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.HashSet;
 
 public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, ISerializable {
-  private boolean init = false;
+  protected boolean init = false;
   protected IControllable.Mode mode;
 
   private int receivedTick, extractedTick;
   private long worldTimeEnergyReceive;
   private EnergyStorage battery;
 
-  protected int xCoord, yCoord, zCoord;
+
+  protected TileBuffer[] cache;
+  protected HashSet<Player> guiWatchers = new HashSet<>();
+  private final String owner = "[BuildCraft]";
+
 
   public BuildCraftBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
     super(p_155228_, p_155229_, p_155230_);
-    this.xCoord = p_155229_.getX();
-    this.yCoord = p_155229_.getY();
-    this.zCoord = p_155229_.getZ();
+  }
+
+  public void setBattery(EnergyStorage battery) {
+    this.battery = battery;
+  }
+
+  public EnergyStorage getBattery() {
+    return battery;
   }
 
   public @NotNull BlockPos getBlockPos() {
@@ -69,6 +80,13 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   }
 
   protected abstract void tick(Level level, BlockPos pos, BlockState state);
+
+  public boolean stillValid(Player player) {
+    if (this.level == null || this.level.getBlockEntity(this.worldPosition) != this) {
+      return false;
+    }
+    return player.distanceToSqr(this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D, this.worldPosition.getZ() + 0.5D) <= 64.0D;
+  }
 
   @Override
   protected void saveAdditional(CompoundTag nbt) {
@@ -116,11 +134,11 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
 
   public static <T extends BuildCraftBlockEntity> BlockEntityTicker<T> ticker() {
     return (level, blockPos, blockState, blockEntity) -> {
-      if (blockEntity instanceof BuildCraftBlockEntity) {
-        blockEntity.tick(level, blockPos, blockState);
-      } else {
-        throw new IllegalStateException("BlockEntity is not an instance of BuildCraftBlockEntity!");
+      if (!blockEntity.init) {
+        blockEntity.initialize();
+        blockEntity.init = true;
       }
+      blockEntity.tick(level, blockPos, blockState);
     };
   }
 

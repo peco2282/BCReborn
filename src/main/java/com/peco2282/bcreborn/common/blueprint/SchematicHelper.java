@@ -1,8 +1,8 @@
 package com.peco2282.bcreborn.common.blueprint;
 
-import buildcraft.api.blueprints.ISchematicHelper;
-import buildcraft.core.lib.inventory.StackHelper;
-import net.minecraft.item.ItemStack;
+import com.peco2282.bcreborn.api.blueprints.ISchematicHelper;
+import com.peco2282.bcreborn.common.inventory.StackHelper;
+import net.minecraft.world.item.ItemStack;
 
 public final class SchematicHelper implements ISchematicHelper {
 	public static final SchematicHelper INSTANCE = new SchematicHelper();

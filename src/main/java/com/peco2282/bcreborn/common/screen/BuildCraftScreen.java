@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 public abstract class BuildCraftScreen<M extends BuildCraftMenu<M>> extends AbstractContainerScreen<M> {
   public static final ResourceLocation LEDGER_TEXTURE = ResourceLocation.fromNamespaceAndPath(BCRebornCore.MODID, "textures/gui/ledger.png");
 
@@ -18,4 +20,26 @@ public abstract class BuildCraftScreen<M extends BuildCraftMenu<M>> extends Abst
   }
 
   protected abstract void initilaizeLedger(Inventory p_97742_);
+
+  public void drawTexturedModalRect(GuiGraphics guiGraphics, int x, int y, int u, int v, int width, int height) {
+    ResourceLocation texture = getMenuTexture();
+    if (texture != null)
+      guiGraphics.blit(texture, x, y, u, v, width, height);
+  }
+
+  @Override
+  protected void renderBg(GuiGraphics p_283065_, float p_97788_, int p_97789_, int p_97790_) {
+  }
+
+  protected ResourceLocation getMenuTexture() {
+    return null;
+  }
+
+  public int getXSize() {
+    return this.imageWidth;
+  }
+
+  public int getYSize() {
+    return this.imageHeight;
+  }
 }

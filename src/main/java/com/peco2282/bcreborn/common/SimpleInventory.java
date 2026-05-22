@@ -41,6 +41,7 @@ public class SimpleInventory implements Container, INBT {
     }
   }
 
+
   public void readFromNBT(CompoundTag data, String tag) {
     ListTag nbttaglist = data.getList(tag, CompoundTag.TAG_COMPOUND);
 
@@ -111,7 +112,12 @@ public class SimpleInventory implements Container, INBT {
 
   @Override
   public ItemStack removeItemNoUpdate(int i) {
-    return null;
+    if (i < contents.length) {
+      ItemStack stack = contents[i];
+      contents[i] = ItemStack.EMPTY;
+      return stack;
+    }
+    return ItemStack.EMPTY;
   }
 
   @Override

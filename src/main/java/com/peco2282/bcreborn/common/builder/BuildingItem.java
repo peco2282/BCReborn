@@ -1,5 +1,7 @@
 package com.peco2282.bcreborn.common.builder;
 
+import com.peco2282.bcreborn.common.blueprint.BptContext;
+import com.peco2282.bcreborn.api.blueprints.MappingNotFoundException;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.StackAtPosition;
@@ -18,6 +20,8 @@ public class BuildingItem implements ISerializable {
 
     public Position origin, destination;
     public LinkedList<StackAtPosition> stacksToDisplay = new LinkedList<>();
+
+    public BptContext context;
 
     public boolean isDone = false;
 
@@ -164,7 +168,7 @@ public class BuildingItem implements ISerializable {
         nbt.put("items", items);
     }
 
-    public void readFromNBT(CompoundTag nbt) {
+    public void readFromNBT(CompoundTag nbt) throws MappingNotFoundException {
         origin = new Position(nbt.getCompound("origin"));
         destination = new Position(nbt.getCompound("destination"));
         lifetime = nbt.getFloat("lifetime");

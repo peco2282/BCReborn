@@ -8,20 +8,22 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
-import buildcraft.api.blueprints.BuilderAPI;
-import buildcraft.api.blueprints.SchematicBlockBase;
-import buildcraft.api.core.BuildCraftAPI;
-import buildcraft.api.core.IInvSlot;
-import buildcraft.core.builders.BuildingSlot;
-import buildcraft.core.builders.BuildingSlotBlock;
-import buildcraft.core.builders.BuildingSlotBlock.Mode;
-import buildcraft.core.builders.BuildingSlotIterator;
-import buildcraft.core.builders.TileAbstractBuilder;
-import buildcraft.core.lib.inventory.InventoryIterator;
-import buildcraft.core.lib.utils.BlockUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+
+import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
+import com.peco2282.bcreborn.api.core.BuildCraftAPI;
+import com.peco2282.bcreborn.api.core.IInvSlot;
+import com.peco2282.bcreborn.common.builder.BuildingSlot;
+import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
+import com.peco2282.bcreborn.common.builder.BuildingSlotBlock.Mode;
+import com.peco2282.bcreborn.common.builder.BuildingSlotIterator;
+import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.inventory.InventoryIterator;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.LinkedList;
 
@@ -31,7 +33,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
 	private LinkedList<BuildingSlotBlock> buildList = new LinkedList<BuildingSlotBlock>();
 	private BuildingSlotIterator iteratorBuild, iteratorClear;
 
-	public BptBuilderTemplate(BlueprintBase bluePrint, World world, int x, int y, int z) {
+	public BptBuilderTemplate(BlueprintBase bluePrint, Level world, int x, int y, int z) {
 		super(bluePrint, world, x, y, z);
 	}
 
@@ -115,12 +117,12 @@ public class BptBuilderTemplate extends BptBuilderBase {
 	}
 
 	@Override
-	public BuildingSlot reserveNextBlock(World world) {
+	public BuildingSlot reserveNextBlock(Level world) {
 		return null;
 	}
 
 	@Override
-	public BuildingSlot getNextBlock(World world, TileAbstractBuilder inv) {
+	public BuildingSlot getNextBlock(Level world, TileAbstractBuilder inv) {
 		if (buildList.size() != 0 || clearList.size() != 0) {
 			BuildingSlotBlock slot = internalGetNextBlock(world, inv);
 			checkDone();
@@ -135,19 +137,19 @@ public class BptBuilderTemplate extends BptBuilderBase {
 		return null;
 	}
 
-	private BuildingSlotBlock internalGetNextBlock(World world, TileAbstractBuilder builder) {
+	private BuildingSlotBlock internalGetNextBlock(Level world, TileAbstractBuilder builder) {
 		BuildingSlotBlock result = null;
 
 		IInvSlot firstSlotToConsume = null;
 
-		for (IInvSlot invSlot : InventoryIterator.getIterable(builder, ForgeDirection.UNKNOWN)) {
+		for (IInvSlot invSlot : InventoryIterator.getIterable(builder, Direction.UP)) {
 			if (!builder.isBuildingMaterialSlot(invSlot.getIndex())) {
 				continue;
 			}
 
 			ItemStack stack = invSlot.getStackInSlot();
 
-			if (stack != null && stack.stackSize > 0) {
+			if (stack != null && stack.getCount() > 0) {
 				firstSlotToConsume = invSlot;
 				break;
 			}
@@ -163,7 +165,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
 				break;
 			}
 
-			if (!world.blockExists(slot.x, slot.y, slot.z)) {
+			if (!world.hasChunkAt(new BlockPos(slot.x, slot.y, slot.z))) {
 				continue;
 			}
 

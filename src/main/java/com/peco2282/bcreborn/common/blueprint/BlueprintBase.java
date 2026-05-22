@@ -85,8 +85,8 @@ public abstract class BlueprintBase {
         }
     }
 
-    public void rotateLeft(BptContext context) {
-        SchematicBlockBase[] newContents = new SchematicBlockBase[sizeZ * sizeY * sizeX];
+	public void rotateLeft(BptContext context) {
+		SchematicBlockBase[] newContents = new SchematicBlockBase[sizeZ * sizeY * sizeX];
 
         for (int x = 0; x < sizeZ; ++x) {
             for (int y = 0; y < sizeY; ++y) {

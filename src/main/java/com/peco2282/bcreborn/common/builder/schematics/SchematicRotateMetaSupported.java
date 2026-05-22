@@ -7,28 +7,24 @@ import net.minecraft.core.Direction;
 
 import java.util.Set;
 
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
 public class SchematicRotateMetaSupported extends SchematicRotateMeta {
 
     public SchematicRotateMetaSupported() {
         super();
     }
 
-    public SchematicRotateMetaSupported(int[] rot, boolean rotateForward) {
-        super(rot, rotateForward);
-    }
-
     @Override
     public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-        int pos = facing.get2DDataValue() & infoMask;
-        if (pos == rot[0]) {
-            return Sets.newHashSet(RELATIVE_INDEXES[Direction.NORTH.ordinal()]);
-        } else if (pos == rot[1]) {
-            return Sets.newHashSet(RELATIVE_INDEXES[Direction.EAST.ordinal()]);
-        } else if (pos == rot[2]) {
-            return Sets.newHashSet(RELATIVE_INDEXES[Direction.SOUTH.ordinal()]);
-        } else if (pos == rot[3]) {
-            return Sets.newHashSet(RELATIVE_INDEXES[Direction.WEST.ordinal()]);
+        Direction side = Direction.NORTH;
+        if (state != null) {
+            if (state.hasProperty(BlockStateProperties.FACING)) {
+                side = state.getValue(BlockStateProperties.FACING);
+            } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                side = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            }
         }
-        return Sets.newHashSet();
+        return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
     }
 }
