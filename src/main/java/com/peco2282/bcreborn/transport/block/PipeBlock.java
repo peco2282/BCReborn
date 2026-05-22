@@ -243,6 +243,18 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     return false;
   }
 
+  public static PipeBlockEntity getPipe(Level level, BlockPos pos) {
+    BlockEntity tile = level.getBlockEntity(pos);
+    if (tile instanceof PipeBlockEntity) {
+      return (PipeBlockEntity) tile;
+    }
+    return null;
+  }
+
+  public static boolean isValid(PipeBlockEntity pipe) {
+    return pipe != null && !pipe.isRemoved();
+  }
+
   public PipeType getTransportType() {
     return transportType;
   }
