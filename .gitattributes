@@ -1,0 +1,17 @@
+*.java          text eol=lf
+*.json          text eol=lf
+*.md            text eol=lf
+*.toml          text eol=lf
+*.properties    text eol=lf
+*.yml           text eol=lf
+*.xml           text eol=lf
+*.cfg           text eol=lf
+*.mcmeta        text eol=lf
+*.snbt          text eol=lf
+*.lang          text eol=lf
+*.gradle        text eol=lf
+*.bat           text eol=crlf
+*.jar           binary
+*.png           binary
+*.pf2           binary
+*.bbmodel       binary
