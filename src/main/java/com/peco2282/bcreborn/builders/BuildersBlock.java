@@ -18,6 +18,8 @@ public class BuildersBlock {
   public static final RegistryObject<FrameBlock> FRAME = register("frame", FrameBlock::new);
   public static final RegistryObject<ConstructionMarkerBlock> CONSTRUCTION_MARKER = register("construction_marker", ConstructionMarkerBlock::new);
   public static final RegistryObject<BlueprintLibraryBlock> BLUEPRINT_LIBRARY = register("blueprint_library", BlueprintLibraryBlock::new);
+  public static final RegistryObject<QuarryBlock> QUARRY = register("quarry", QuarryBlock::new);
+  public static final RegistryObject<FillerBlock> FILLER = register("filler", FillerBlock::new);
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> type) {
     return REGISTRY.registerBlockItem(name, type);

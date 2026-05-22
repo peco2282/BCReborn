@@ -1,6 +1,8 @@
 package com.peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.builders.blueprints.BlueprintServerDatabase;
+import com.peco2282.bcreborn.builders.blueprints.LibraryDatabase;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +28,17 @@ public class BCRebornBuilders implements BCReborn {
 
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
+
+  private static final BlueprintServerDatabase serverDB = new BlueprintServerDatabase();
+  private static final LibraryDatabase clientDB = new LibraryDatabase();
+
+  public static BlueprintServerDatabase getServerDB() {
+    return serverDB;
+  }
+  public static LibraryDatabase getClientDB() {
+    return clientDB;
+  }
+
 
   public static BCRegistry getRegistry() {
     return REGISTRY;

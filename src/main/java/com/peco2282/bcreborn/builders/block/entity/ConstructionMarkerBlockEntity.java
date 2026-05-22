@@ -2,13 +2,16 @@ package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.block.ConstructionMarkerBlock;
+import com.peco2282.bcreborn.builders.item.BlueprintItem;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.*;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
+import com.peco2282.bcreborn.common.builder.IBuildingItemsProvider;
+import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -33,14 +36,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity implements MenuProvider {
+public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity implements MenuProvider, IBuildingItemsProvider, IBoxProvider {
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public static Set<ConstructionMarkerBlockEntity> currentMarkers = new HashSet<>();
 
-    public Direction direction = Direction.NORTH;
     public LaserData laser;
-    public ItemStack itemBlueprint;
 
     public Box box = new Box();
     public BptBuilderBase bluePrintBuilder;
@@ -51,6 +52,14 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
 
     public ConstructionMarkerBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), pos, state);
+    }
+
+    public Direction getDirection() {
+        BlockState state = getBlockState();
+        if (state.hasProperty(ConstructionMarkerBlock.FACING)) {
+            return state.getValue(ConstructionMarkerBlock.FACING);
+        }
+        return Direction.NORTH;
     }
 
     public ItemStack getBlueprint() {
@@ -80,21 +89,8 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
     }
 
     @Override
-    public void load(@NotNull CompoundTag tag) {
-        super.load(tag);
-        items = NonNullList.withSize(1, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items);
-    }
-
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, items);
-    }
-
-    @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable("container.bcrebornbuilders.construction_marker");
+      return Component.literal("Construction Marker");
     }
 
     @Override
@@ -133,26 +129,30 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
             return;
         }
 
-        if (itemBlueprint != null && ItemBlueprint.getId(itemBlueprint) != null && bluePrintBuilder == null) {
-            BlueprintBase bpt = ItemBlueprint.loadBlueprint(itemBlueprint);
-            if (bpt != null && bpt instanceof Blueprint) {
-                bpt = bpt.adjustToWorld(level, xCoord, yCoord, zCoord, direction);
+        ItemStack itemBlueprint = getBlueprint();
+        if (!itemBlueprint.isEmpty() && BlueprintItem.getId(itemBlueprint) != null && bluePrintBuilder == null) {
+            BlueprintBase bpt = BlueprintItem.loadBlueprint(itemBlueprint);
+            if (bpt instanceof Blueprint) {
+                BlockPos pos1 = getBlockPos();
+                bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), getDirection());
                 if (bpt != null) {
-                    bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, xCoord, yCoord, zCoord);
+                    bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
                     bptContext = bluePrintBuilder.getContext();
-                    box.initialize(bluePrintBuilder);
+                    box.initialize(bluePrintBuilder.xMin(), bluePrintBuilder.yMin(), bluePrintBuilder.zMin(), bluePrintBuilder.xMax(), bluePrintBuilder.yMax(), bluePrintBuilder.zMax());
                 }
             } else {
                 return;
             }
         }
 
-        if (laser == null && direction != Direction.UP) {
+        Direction direction = getDirection();
+        if (laser == null && direction != null && direction != Direction.UP) {
+            BlockPos pos2 = getBlockPos();
             laser = new LaserData();
-            laser.head = new Position(xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F);
-            laser.tail = new Position(xCoord + 0.5F + direction.getStepX() * 0.5F,
-                yCoord + 0.5F + direction.getStepY() * 0.5F,
-                zCoord + 0.5F + direction.getStepZ() * 0.5F);
+            laser.head = new Position(pos2.getX() + 0.5F, pos2.getY() + 0.5F, pos2.getZ() + 0.5F);
+            laser.tail = new Position(pos2.getX() + 0.5F + direction.getStepX() * 0.5F,
+                pos2.getY() + 0.5F + direction.getStepY() * 0.5F,
+                pos2.getZ() + 0.5F + direction.getStepZ() * 0.5F);
             laser.isVisible = true;
         }
 
@@ -166,40 +166,28 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
+        items = NonNullList.withSize(1, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(nbt, items);
 
-        nbt.putInt("direction", direction.get3DDataValue());
-
-        if (itemBlueprint != null) {
-            CompoundTag bptNBT = new CompoundTag();
-            itemBlueprint.save(bptNBT);
-            nbt.put("itemBlueprint", bptNBT);
+        if (nbt.contains("bptBuilder")) {
+            initNBT = nbt.getCompound("bptBuilder").copy();
         }
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        ContainerHelper.saveAllItems(nbt, items);
 
         CompoundTag bptNBT = new CompoundTag();
-
         if (bluePrintBuilder != null) {
             CompoundTag builderCpt = new CompoundTag();
             bluePrintBuilder.saveBuildStateToNBT(builderCpt, this);
             bptNBT.put("builderState", builderCpt);
         }
-
         nbt.put("bptBuilder", bptNBT);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-
-        direction = Direction.from3DDataValue(nbt.getInt("direction"));
-
-        if (nbt.contains("itemBlueprint")) {
-            itemBlueprint = ItemStack.of(nbt.getCompound("itemBlueprint"));
-        }
-
-        // The rest of load has to be done upon initialize.
-        initNBT = nbt.getCompound("bptBuilder").copy();
     }
 
     @Override
@@ -209,18 +197,18 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
 
 
     @Override
-    public void validate() {
-        super.validate();
-        if (!level.isClientSide) {
-            currentMarkers.add(this);
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null && !level.isClientSide) {
+            currentMarkers.remove(this);
         }
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
-        if (!level.isClientSide) {
-            currentMarkers.remove(this);
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide) {
+            currentMarkers.add(this);
         }
     }
 
@@ -235,19 +223,10 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
     @Override
     public void addAndLaunchBuildingItem(BuildingItem item) {
         buildersInAction.add(item);
-        BCNetworkManager.sendNearLaunchItem(getBlockPos().getCenter(), getBlockPos(), item);
+        BCNetworkManager.sendNearLaunchItem(getBlockPos().getCenter(), level.dimension(), getBlockPos(), item);
     }
 
     @Override
-    public void receiveCommand(String command, Side side, Object sender, ByteBuf stream) {
-        if (side.isServer() && "uploadBuildersInAction".equals(command)) {
-        } else if (side.isClient() && "launchItem".equals(command)) {
-            BuildingItem item = new BuildingItem();
-            item.readData(stream);
-            buildersInAction.add(item);
-        }
-    }
-
     public Box getBox() {
         return box;
     }
@@ -262,11 +241,12 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
     @Override
     public void writeData(FriendlyByteBuf data) {
         box.writeData(data);
-        data.writeByte((laser != null ? 1 : 0) | (itemBlueprint != null ? 2 : 0));
+        ItemStack itemBlueprint = getBlueprint();
+        data.writeByte((laser != null ? 1 : 0) | (!itemBlueprint.isEmpty() ? 2 : 0));
         if (laser != null) {
             laser.writeData(data);
         }
-        if (itemBlueprint != null) {
+        if (!itemBlueprint.isEmpty()) {
             data.writeItem(itemBlueprint);
         }
     }
@@ -282,9 +262,9 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
             laser = null;
         }
         if ((flags & 2) != 0) {
-            itemBlueprint = data.readItem();
+            setBlueprint(data.readItem());
         } else {
-            itemBlueprint = null;
+            setBlueprint(ItemStack.EMPTY);
         }
     }
 
