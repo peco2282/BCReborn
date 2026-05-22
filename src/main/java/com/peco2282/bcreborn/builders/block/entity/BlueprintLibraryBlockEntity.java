@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.library.LibraryTypeHandler;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.menu.BlueprintLibraryMenu;
 import com.peco2282.bcreborn.common.ContainerBlockEntity;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
@@ -55,30 +56,33 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
 
     @Override
     public void load(CompoundTag nbt) {
-        inv.read(nbt);
+        super.load(nbt);
+        inv.readFromNBT(nbt, "Items");
+        if (nbt.contains("selected")) {
+            selected = nbt.getInt("selected");
+        }
     }
 
     @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
-        inv.write(nbt);
+        inv.writeToNBT(nbt, "Items");
+        nbt.putInt("selected", selected);
     }
 
     @Override
     protected void tick(Level level, BlockPos pos, BlockState state) {
-        if (!level.isClientSide) {
-            return;
-        }
+        if (level.isClientSide) {
+            if (progressIn > 0 && progressIn < PROGRESS_TIME) {
+                progressIn++;
+            }
 
-        if (progressIn > 0 && progressIn < PROGRESS_TIME) {
-            progressIn++;
-        }
-
-        if (progressOut > 0 && progressOut < PROGRESS_TIME) {
-            if (selected != -1) {
-                progressOut++;
-            } else {
-                progressOut = 1;
+            if (progressOut > 0 && progressOut < PROGRESS_TIME) {
+                if (selected != -1) {
+                    progressOut++;
+                } else {
+                    progressOut = 1;
+                }
             }
         }
     }
@@ -93,10 +97,10 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
         return Component.literal(inv.getName());
     }
 
-    @Override
-    public AbstractContainerMenu createMenu(int p_58627_, Inventory p_58628_) {
-        return null;
-    }
+  @Override
+  public AbstractContainerMenu createMenu(int windowId, Inventory inventory) {
+    return new BlueprintLibraryMenu(windowId, inventory, this);
+  }
 
     @Override
     public int getContainerSize() {

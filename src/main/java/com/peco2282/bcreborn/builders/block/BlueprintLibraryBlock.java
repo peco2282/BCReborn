@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.builders.block;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,6 +11,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
@@ -46,5 +49,11 @@ public class BlueprintLibraryBlock extends BuildCraftBlock {
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
     return BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get().create(p_153215_, p_153216_);
+  }
+
+  @Nullable
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return createTickerHelper(type, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get(), BuildCraftBlockEntity.ticker());
   }
 }

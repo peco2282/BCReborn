@@ -1,0 +1,48 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.builders.schematics;
+
+import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.InfestedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+
+import java.util.LinkedList;
+
+public class SchematicSilverfish extends SchematicBlock {
+	private BlockState getRealState() {
+		if (state != null && state.getBlock() instanceof InfestedBlock infested) {
+			return infested.getHostBlock().defaultBlockState();
+		}
+		return Blocks.STONE.defaultBlockState();
+	}
+
+	@Override
+	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+		requirements.add(new ItemStack(getRealState().getBlock()));
+	}
+
+	@Override
+	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+
+	}
+
+	@Override
+	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+		context.world().setBlock(new BlockPos(x, y, z), getRealState(), 3);
+	}
+
+	@Override
+	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+		return context.world().getBlockState(new BlockPos(x, y, z)) == getRealState();
+	}
+}

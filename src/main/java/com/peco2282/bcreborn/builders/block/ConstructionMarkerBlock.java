@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.builders.block;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
 import com.peco2282.bcreborn.common.block.MarkerBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -14,6 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -45,6 +48,12 @@ public class ConstructionMarkerBlock extends MarkerBlock {
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get().create(pos, state);
+  }
+
+  @Nullable
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return createTickerHelper(type, BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override
