@@ -8,8 +8,18 @@
  */
 package com.peco2282.bcreborn.api.fuels;
 
+import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
+
 public final class BuildcraftFuelRegistry {
+	/**
+	 * @deprecated Use {@link BCRegistryKeys#FUELS}
+	 */
+	@Deprecated
 	public static IFuelManager fuel;
+	/**
+	 * @deprecated Use {@link BCRegistryKeys#COOLANT}
+	 */
+	@Deprecated
 	public static ICoolantManager coolant;
 
 	private BuildcraftFuelRegistry() {

@@ -22,6 +22,7 @@ public class SafeTimeTracker {
 	/**
 	 * @deprecated should use constructors with parameters instead
 	 */
+	@Deprecated
 	public SafeTimeTracker () {
 
 	}
@@ -55,6 +56,7 @@ public class SafeTimeTracker {
 	 * @deprecated should use the constructor with a delay instead, and call
 	 * this function without a parameter
 	 */
+	@Deprecated
 	public boolean markTimeIfDelay(Level world, long delay) {
 		if (world == null) {
 			return false;

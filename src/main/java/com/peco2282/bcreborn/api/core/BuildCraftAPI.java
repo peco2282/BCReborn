@@ -10,6 +10,7 @@ package com.peco2282.bcreborn.api.core;
 
 
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -52,7 +53,12 @@ public final class BuildCraftAPI {
 		worldProperties.put(name, property);
 	}
 
+	public static boolean isSoftBlock(Level world, BlockPos pos) {
+		IWorldProperty soft = worldProperties.get("soft");
+		return soft != null && soft.get(world, pos);
+	}
+
 	public static boolean isSoftBlock(Level world, int x, int y, int z) {
-		return worldProperties.get("soft").get(world, x, y, z);
+		return isSoftBlock(world, new BlockPos(x, y, z));
 	}
 }

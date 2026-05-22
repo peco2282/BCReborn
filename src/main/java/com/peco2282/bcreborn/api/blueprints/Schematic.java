@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
+import com.peco2282.bcreborn.api.core.IInvSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -235,6 +236,14 @@ public abstract class Schematic {
 	 * Returns the number of cycles to wait after building this schematic. Tiles
 	 * and entities typically require more wait, around 5 cycles.
 	 */
+	public ItemStack useItem(IBuilderContext context, ItemStack requiredStack, IInvSlot slotInv) {
+		ItemStack stack = slotInv.getStackInSlot();
+		if (requiredStack.isEmpty() || isItemMatchingRequirement(stack, requiredStack)) {
+			return slotInv.decreaseStackInSlot(1);
+		}
+		return ItemStack.EMPTY;
+	}
+
 	public int buildTime() {
 		return 1;
 	}

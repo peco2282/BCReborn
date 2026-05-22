@@ -1,6 +1,7 @@
 package com.peco2282.bcreborn.api.core;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -186,4 +187,7 @@ public class Position implements ISerializable {
     return (51 * (int) x) + (13 * (int) y) + (int) z;
   }
 
+  public BlockPos toBlockPos() {
+    return new BlockPos((int) x, (int) y, (int) z);
+  }
 }

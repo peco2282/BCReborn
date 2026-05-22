@@ -26,10 +26,8 @@ public class SchematicFluid extends SchematicBlock {
 
 	@Override
 	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (block instanceof LiquidBlock lb) {
-			if (lb.defaultBlockState().getValue(LiquidBlock.LEVEL) == 0) {
-				requirements.add(fluidItem.copy());
-			}
+		if (state != null && state.hasProperty(LiquidBlock.LEVEL) && state.getValue(LiquidBlock.LEVEL) == 0) {
+			requirements.add(fluidItem.copy());
 		}
 	}
 
@@ -51,8 +49,8 @@ public class SchematicFluid extends SchematicBlock {
 
 	@Override
 	public boolean doNotBuild() {
-		if (block instanceof LiquidBlock lb) {
-			return lb.defaultBlockState().getValue(LiquidBlock.LEVEL) != 0;
+		if (state != null && state.hasProperty(LiquidBlock.LEVEL)) {
+			return state.getValue(LiquidBlock.LEVEL) != 0;
 		}
 		return false;
 	}
@@ -60,14 +58,14 @@ public class SchematicFluid extends SchematicBlock {
 	@Override
 	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
 		if (!doNotBuild()) {
-			context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+			context.world().setBlock(new BlockPos(x, y, z), state != null ? state : block.defaultBlockState(), 3);
 		}
 	}
 
 	@Override
 	public void postProcessing(IBuilderContext context, int x, int y, int z) {
 		if (doNotBuild()) {
-			context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+			context.world().setBlock(new BlockPos(x, y, z), state != null ? state : block.defaultBlockState(), 3);
 		}
 	}
 

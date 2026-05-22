@@ -3,6 +3,7 @@ package com.peco2282.bcreborn;
 import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.common.event.BCRegistryEvent;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.data.ResourceDataGenerator;
@@ -62,6 +63,7 @@ public class BCRebornCore implements BCReborn {
 
     // Register the commonSetup method for modloading
     modEventBus.addListener(this::commonSetup);
+    modEventBus.register(BCRegistryEvent.class);
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);

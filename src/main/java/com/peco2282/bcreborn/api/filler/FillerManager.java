@@ -8,8 +8,14 @@
  */
 package com.peco2282.bcreborn.api.filler;
 
+import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
+
 public final class FillerManager {
 
+	/**
+	 * @deprecated Use {@link BCRegistryKeys#FILLER_PATTERNS}
+	 */
+	@Deprecated
 	public static IFillerRegistry registry;
 
 	/**
