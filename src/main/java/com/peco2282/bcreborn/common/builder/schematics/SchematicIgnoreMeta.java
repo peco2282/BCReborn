@@ -11,7 +11,11 @@ import java.util.LinkedList;
 public class SchematicIgnoreMeta extends SchematicBlock {
     @Override
     public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-        requirements.add(new ItemStack(block, 1));
+        if (state != null) {
+            requirements.add(new ItemStack(state.getBlock()));
+        } else if (block != null) {
+            requirements.add(new ItemStack(block));
+        }
     }
 
     @Override

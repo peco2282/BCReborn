@@ -77,6 +77,30 @@ public class PacketController {
         SetReadArchitectConfigurationPacket::decode,
         SetReadArchitectConfigurationPacket::handle
     );
+    registerC2S(
+        SetFillerPatternPacket.class,
+        SetFillerPatternPacket::encode,
+        SetFillerPatternPacket::decode,
+        SetFillerPatternPacket::handle
+    );
+    registerC2S(
+        DeleteBlueprintPacket.class,
+        DeleteBlueprintPacket::encode,
+        DeleteBlueprintPacket::decode,
+        DeleteBlueprintPacket::handle
+    );
+    registerC2S(
+        EraseBuilderTankPacket.class,
+        EraseBuilderTankPacket::encode,
+        EraseBuilderTankPacket::decode,
+        EraseBuilderTankPacket::handle
+    );
+    registerS2C(
+        SyncBuilderRequirementsPacket.class,
+        SyncBuilderRequirementsPacket::encode,
+        SyncBuilderRequirementsPacket::decode,
+        SyncBuilderRequirementsPacket::handle
+    );
 
     // Server -> Client
     registerS2C(
@@ -112,6 +136,12 @@ public class PacketController {
         ClearItemRequirementsPacket::encode,
         ClearItemRequirementsPacket::decode,
         ClearItemRequirementsPacket::handle
+    );
+    registerS2C(
+        PacketGuiWidget.class,
+        PacketGuiWidget::encode,
+        PacketGuiWidget::decode,
+        PacketGuiWidget::handle
     );
   }
 

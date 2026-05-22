@@ -1,8 +1,9 @@
 package com.peco2282.bcreborn.common.item;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public class EnergyStorage {
+public class EnergyStorage implements IEnergyStorage {
   private int energy, maxEnergy, maxReceive, maxExtract;
 
   public EnergyStorage(int maxEnergy, int maxReceive, int maxExtract) {
@@ -70,6 +71,16 @@ public class EnergyStorage {
 
   public int getMaxEnergyStored() {
     return maxEnergy;
+  }
+
+  @Override
+  public boolean canExtract() {
+    return energy > 0;
+  }
+
+  @Override
+  public boolean canReceive() {
+    return energy < maxEnergy;
   }
 
   public int getMaxEnergyReceive() {

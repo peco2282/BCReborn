@@ -8,50 +8,20 @@ import net.minecraft.core.Direction;
 
 import java.util.Set;
 
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
 public class SchematicWallSide extends SchematicBlock {
     @Override
     public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-        final int yPos = 0;
-        final int yNeg = 5;
-        final int xPos = 2;
-        final int xNeg = 1;
-        final int zPos = 4;
-        final int zNeg = 3;
-
-        switch (facing.get3DDataValue() & 7) {
-            case xPos -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.EAST.get3DDataValue()]
-                );
+        Direction side = Direction.UP;
+        if (state != null) {
+            if (state.hasProperty(BlockStateProperties.FACING)) {
+                side = state.getValue(BlockStateProperties.FACING).getOpposite();
+            } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                side = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
             }
-
-            case xNeg -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.WEST.get3DDataValue()]
-                );
-            }
-            case 7, yPos -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.UP.get3DDataValue()]
-                );
-            }
-            case 6, yNeg -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.DOWN.get3DDataValue()]
-                );
-            }
-            case zPos -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.SOUTH.get3DDataValue()]
-                );
-            }
-            case zNeg -> {
-                return Sets.newHashSet(
-                        RELATIVE_INDEXES[Direction.NORTH.get3DDataValue()]
-                );
-            }
-
         }
-        return Sets.newHashSet();
+
+        return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
     }
 }

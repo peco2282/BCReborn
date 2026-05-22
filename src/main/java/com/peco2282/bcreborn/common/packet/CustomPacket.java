@@ -14,10 +14,13 @@ public interface CustomPacket {
   void handle(Supplier<NetworkEvent.Context> supplier);
 
   default <BE extends BlockEntity> Optional<BE> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos, BlockEntityType<BE> clazz) {
+    net.minecraft.world.level.Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
-      throw new IllegalStateException("Cannot get block entity on server side");
+        level = ctx.getSender().level();
+    } else {
+        level = net.minecraft.client.Minecraft.getInstance().level;
     }
-
-    return ctx.getSender().level().getBlockEntity(pos, clazz);
+    if (level == null) return Optional.empty();
+    return level.getBlockEntity(pos, clazz);
   }
 }

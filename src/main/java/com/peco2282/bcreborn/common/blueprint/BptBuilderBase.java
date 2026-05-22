@@ -10,17 +10,17 @@ package com.peco2282.bcreborn.common.blueprint;
 
 
 
-import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
-import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
-import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
+import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.builder.*;
+import com.peco2282.bcreborn.common.utils.BCFakePlayer;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.ItemsCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -185,7 +185,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 	}
 
 	private int getBlockBreakEnergy(BuildingSlotBlock slot) {
-		return BlockUtils.computeBlockBreakEnergy(context.world(), slot.x, slot.y, slot.z);
+		return BlockUtils.computeBlockBreakEnergy(context.world(), new BlockPos(slot.x, slot.y, slot.z));
 	}
 
 	protected final boolean canDestroy(TileAbstractBuilder builder, IBuilderContext context, BuildingSlotBlock slot) {
@@ -200,7 +200,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 		int hardness = (int) Math.ceil((double) getBlockBreakEnergy(slot) / BuilderAPI.BREAK_ENERGY);
 
 		for (int i = 0; i < hardness; ++i) {
-			slot.addStackConsumed(new ItemStack(BlocksCore.BUILD_TOOL_BOX.get()));
+			slot.addStackConsumed(new ItemStack(ItemsCore.BUILD_TOOL_BOX.get()));
 		}
 	}
 
@@ -267,10 +267,11 @@ public abstract class BptBuilderBase implements IAreaProvider {
 	}
 
 	protected boolean isBlockBreakCanceled(Level world, int x, int y, int z) {
-		if (!world.getBlockState(new BlockPos(x, y, z)).isAir()) {
-			BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(x, y, z, world, world.getBlock(x, y, z),
-					world.getBlockState(new BlockPos(x, y, z)),
-					CoreProxy.proxy.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z).get());
+		BlockPos pos = new BlockPos(x, y, z);
+		if (!world.getBlockState(pos).isAir()) {
+			BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos,
+					world.getBlockState(pos),
+					BCFakePlayer.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z));
 			MinecraftForge.EVENT_BUS.post(breakEvent);
 			return breakEvent.isCanceled();
 		}
@@ -278,13 +279,11 @@ public abstract class BptBuilderBase implements IAreaProvider {
 	}
 
 	protected boolean isBlockPlaceCanceled(Level world, int x, int y, int z, SchematicBlockBase schematic) {
-		Block block = schematic instanceof SchematicBlock ? ((SchematicBlock) schematic).block : Blocks.STONE;
-		int meta = schematic instanceof SchematicBlock ? ((SchematicBlock) schematic).meta : 0;
-
+		BlockPos pos = new BlockPos(x, y, z);
 		BlockEvent.EntityPlaceEvent placeEvent = new BlockEvent.EntityPlaceEvent(
-				BlockSnapshot.create(world.dimension(), world, new BlockPos(x, y, z)),
-				Blocks.AIR,
-				CoreProxy.proxy.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z).get()
+				BlockSnapshot.create(world.dimension(), world, pos),
+				world.getBlockState(pos),
+				BCFakePlayer.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z)
 		);
 
 		MinecraftForge.EVENT_BUS.post(placeEvent);

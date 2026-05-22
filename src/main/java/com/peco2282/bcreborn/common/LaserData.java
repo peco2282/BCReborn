@@ -8,10 +8,11 @@
  */
 package com.peco2282.bcreborn.common;
 
-import buildcraft.api.core.ISerializable;
-import buildcraft.api.core.Position;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
+
+import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.Position;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class LaserData implements ISerializable {
 	public Position head = new Position(0, 0, 0);
@@ -58,26 +59,26 @@ public class LaserData implements ISerializable {
 		laserTexAnimation = (laserTexAnimation + 1) % 40;
 	}
 
-	public void writeToNBT(NBTTagCompound nbt) {
-		NBTTagCompound headNbt = new NBTTagCompound();
+	public void writeToNBT(CompoundTag nbt) {
+		CompoundTag headNbt = new CompoundTag();
 		head.writeToNBT(headNbt);
-		nbt.setTag("head", headNbt);
+		nbt.put("head", headNbt);
 
-		NBTTagCompound tailNbt = new NBTTagCompound();
+		CompoundTag tailNbt = new CompoundTag();
 		tail.writeToNBT(tailNbt);
-		nbt.setTag("tail", tailNbt);
+		nbt.put("tail", tailNbt);
 
-		nbt.setBoolean("isVisible", isVisible);
+		nbt.putBoolean("isVisible", isVisible);
 	}
 
-	public void readFromNBT(NBTTagCompound nbt) {
-		head.readFromNBT(nbt.getCompoundTag("head"));
-		tail.readFromNBT(nbt.getCompoundTag("tail"));
+	public void readFromNBT(CompoundTag nbt) {
+		head.readFromNBT(nbt.getCompound("head"));
+		tail.readFromNBT(nbt.getCompound("tail"));
 		isVisible = nbt.getBoolean("isVisible");
 	}
 
 	@Override
-	public void readData(ByteBuf stream) {
+	public void readData(FriendlyByteBuf stream) {
 		head.readData(stream);
 		tail.readData(stream);
 		int flags = stream.readUnsignedByte();
@@ -86,7 +87,7 @@ public class LaserData implements ISerializable {
 	}
 
 	@Override
-	public void writeData(ByteBuf stream) {
+	public void writeData(FriendlyByteBuf stream) {
 		head.writeData(stream);
 		tail.writeData(stream);
 		int flags = (isVisible ? 1 : 0) | (isGlowing ? 2 : 0);

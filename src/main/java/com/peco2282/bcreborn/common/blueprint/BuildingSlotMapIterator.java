@@ -46,15 +46,14 @@ public class BuildingSlotMapIterator {
 			availablePairs.add(new BuilderItemMetaPair(null));
 
 			if (builder != null) {
-				for (int i = 0; i < builder.getInventory().size(); i++) {
-					ItemStack stack = builder.getInventory().get(i);
-					if (stack != null) {
+				for (ItemStack stack : builder.getInventoryList()) {
+					if (stack != null && !stack.isEmpty()) {
 						availablePairs.add(new BuilderItemMetaPair(stack));
 					}
 				}
 				for (Tank t : builder.getFluidTanks()) {
-					if (t.getFluid().getFluid() != null) {
-						availablePairs.add(new BuilderItemMetaPair(new ItemStack(t.getFluid().getFluid().getBlock())));
+					if (t.getFluid() != null && t.getFluid().getFluid() != null) {
+						availablePairs.add(new BuilderItemMetaPair(new ItemStack(net.minecraft.world.item.Items.BUCKET)));
 					}
 				}
 			}

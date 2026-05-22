@@ -13,12 +13,11 @@ import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
 import com.peco2282.bcreborn.api.blueprints.SchematicEntity;
-import com.peco2282.bcreborn.api.core.BCLog;
-import com.peco2282.bcreborn.api.core.BuildCraftAPI;
-import com.peco2282.bcreborn.api.core.IInvSlot;
-import com.peco2282.bcreborn.api.core.StackKey;
+import com.peco2282.bcreborn.api.core.*;
 import com.peco2282.bcreborn.common.builder.*;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock.Mode;
+import com.peco2282.bcreborn.common.inventory.InventoryCopy;
+import com.peco2282.bcreborn.common.inventory.InventoryIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,9 +27,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -76,7 +77,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 						if (slot == null) {
 							slot = new SchematicBlock();
 							slot.meta = 0;
-							slot.block = Blocks.air;
+							slot.block = Blocks.AIR;
 						}
 
 						if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.meta)) {
@@ -286,7 +287,6 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 
 			if (b.mode == Mode.Build) {
 				requirementMap.add(b, context);
-				b.internalRequirementRemovalListener = requirementMap;
 			}
 		}
 	}
@@ -507,28 +507,25 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 			return !(builder.energyAvailable() < slot.getEnergyRequirement(stacksUsed));
 		}
 
-		IInventory invCopy = new InventoryCopy(builder);
+		Container invCopy = new InventoryCopy(builder);
 
 		for (ItemStack reqStk : tmpReq) {
 			boolean itemBlock = reqStk.getItem() instanceof BlockItem;
-			Fluid fluid = itemBlock ? FluidRegistry.lookupFluidForBlock(((ItemBlock) reqStk.getItem()).field_150939_a) : null;
+			// Fluid handling simplified for now
+			Fluid fluid = null;
 
-			if (fluid != null && builder.drainBuild(new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME), true)) {
-				continue;
-			}
-
-			for (IInvSlot slotInv : InventoryIterator.getIterable(invCopy, Direction.UNKNOWN)) {
+			for (IInvSlot slotInv : InventoryIterator.getIterable(invCopy, Direction.UP)) {
 				if (!builder.isBuildingMaterialSlot(slotInv.getIndex())) {
 					continue;
 				}
 
 				ItemStack invStk = slotInv.getStackInSlot();
-				if (invStk == null || invStk.getCount() == 0) {
+				if (invStk == null || invStk.isEmpty()) {
 					continue;
 				}
 
-				FluidStack fluidStack = fluid != null ? FluidContainerRegistry.getFluidForFilledItem(invStk) : null;
-				boolean compatibleContainer = fluidStack != null && fluidStack.getFluid() == fluid && fluidStack.getAmount() >= FluidContainerRegistry.BUCKET_VOLUME;
+				FluidStack fluidStack = null;
+				boolean compatibleContainer = false;
 
 				if (slot.isItemMatchingRequirement(invStk, reqStk) || compatibleContainer) {
 					try {
@@ -590,13 +587,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 			ItemStack usedStack = reqStk;
 
 			boolean itemBlock = reqStk.getItem() instanceof BlockItem;
-			Fluid fluid = itemBlock ? FluidRegistry.lookupFluidForBlock(((BlockItem) reqStk.getItem()).getBlock()) : null;
-
-			if (fluid != null
-					&& inv instanceof TileAbstractBuilder
-					&& ((TileAbstractBuilder) inv).drainBuild(new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME), true)) {
-				continue;
-			}
+			Fluid fluid = null;
 
 			for (IInvSlot slotInv : InventoryIterator.getIterable(inv, Direction.UP)) {
 				if (inv instanceof TileAbstractBuilder &&
@@ -610,8 +601,8 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 					continue;
 				}
 
-				FluidStack fluidStack = fluid != null ? FluidContainerRegistry.getFluidForFilledItem(invStk) : null;
-				boolean fluidFound = fluidStack != null && fluidStack.getFluid() == fluid && fluidStack.getAmount() >= FluidContainerRegistry.BUCKET_VOLUME;
+				FluidStack fluidStack = null;
+				boolean fluidFound = fluidStack != null && fluidStack.getFluid() == fluid && fluidStack.getAmount() >= FluidType.BUCKET_VOLUME;
 
 				if (fluidFound || slot.getSchematic().isItemMatchingRequirement(invStk, reqStk)) {
 					try {

@@ -8,8 +8,7 @@
  */
 package com.peco2282.bcreborn.common.builder;
 
-import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
-import com.peco2282.bcreborn.api.blueprints.SchematicMask;
+import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
@@ -51,7 +50,7 @@ public class BuildingSlotBlock extends BuildingSlot {
     public boolean writeToWorld(IBuilderContext context) {
         if (mode == Mode.ClearIfInvalid) {
             if (getSchematic().isAlreadyBuilt(context, x, y, z)) {
-                return BlockUtil.destroyBlock(context, x, y, z);
+                return context.world().destroyBlock(new BlockPos(x, y, z), true);
             } else {
                 context.world().setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
             }
