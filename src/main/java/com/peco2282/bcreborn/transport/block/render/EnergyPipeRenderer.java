@@ -50,13 +50,13 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
     EnergyTransportModule module = blockEntity.getEnergyTransportModule();
     if (module == null) return;
 
-    int[] internalPower = module.getInternalPower();
+    double[] internalPower = module.getInternalPower();
     int maxPower = module.getMaxPower();
     boolean overloaded = module.isOverloaded();
 
     // いずれかの方向にエネルギーが流れているか確認
-    int totalPower = 0;
-    for (int p : internalPower) totalPower += p;
+    double totalPower = 0;
+    for (double p : internalPower) totalPower += p;
     if (totalPower <= 0) return;
 
     float r = overloaded ? R_OVERLOAD : R_NORMAL;

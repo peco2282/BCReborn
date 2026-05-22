@@ -1,15 +1,27 @@
 package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.api.core.EnumColor;
+import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.common.SimpleInventory;
+import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.api.transport.PipeManager;
+import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraftforge.registries.RegistryObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
-import com.peco2282.bcreborn.transport.pipe.behaviour.FluidPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviourManager;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
@@ -90,6 +102,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
   private long usedFilters = 0L;
   // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
   private int pipeColor = 0;
+
+  public final SideProperties sideProperties = new SideProperties();
 
   public PipeBlockEntity(BlockPos pos, BlockState state) {
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
@@ -551,4 +565,168 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
       case ENERGY -> BlockEntityTypesTransport.ENERGY_PIPE.get();
     };
   }
+  public Item getPipeItem() {
+    RegistryObject<PipeBlock> block = BlocksTransport.PIPES_BY_MAT.get(pipeMaterial).get(transportType);
+    if (block != null) {
+      return block.get().asItem();
+    }
+    return Items.AIR;
+  }
+
+  public ArrayList<ItemStack> computeItemDrop() {
+    ArrayList<ItemStack> list = new ArrayList<>();
+    // Pluggables
+    for (PipePluggable pluggable : sideProperties.pluggables) {
+      if (pluggable != null) {
+        Collections.addAll(list, pluggable.getDropItems(new IPipeTile() {
+          @Override
+          public PipeType getPipeType() {
+            return switch (transportType) {
+              case ITEM -> PipeType.ITEM;
+              case FLUID -> PipeType.FLUID;
+              case ENERGY -> PipeType.POWER;
+            };
+          }
+
+          @Override
+          public Level getWorld() {
+            return level;
+          }
+
+          @Override
+          public BlockPos getPos() {
+            return worldPosition;
+          }
+
+          @Override
+          public boolean isPipeConnected(Direction with) {
+            return false;
+          }
+
+          @Override
+          public net.minecraft.world.level.block.Block getNeighborBlock(Direction dir) {
+            return level.getBlockState(worldPosition.relative(dir)).getBlock();
+          }
+
+          @Override
+          public BlockEntity getNeighborTile(Direction dir) {
+            return level.getBlockEntity(worldPosition.relative(dir));
+          }
+
+          @Override
+          public com.peco2282.bcreborn.api.transport.IPipe getNeighborPipe(Direction dir) {
+            return null;
+          }
+
+          @Override
+          public com.peco2282.bcreborn.api.transport.IPipe getPipe() {
+            return null;
+          }
+
+          @Override
+          public int getPipeColor() {
+            return pipeColor;
+          }
+
+          @Override
+          public PipePluggable getPipePluggable(Direction direction) {
+            return sideProperties.pluggables[direction.ordinal()];
+          }
+
+          @Override
+          public boolean hasPipePluggable(Direction direction) {
+            return sideProperties.pluggables[direction.ordinal()] != null;
+          }
+
+          @Override
+          public boolean hasBlockingPluggable(Direction direction) {
+            PipePluggable p = getPipePluggable(direction);
+            return p != null && p.isBlocking(this, direction);
+          }
+
+          @Override
+          public void scheduleNeighborChange() {
+          }
+
+          @Override
+          public void scheduleRenderUpdate() {
+          }
+
+          @Override
+          public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
+            if (doAdd) {
+              PipeBlockEntity.this.injectItem(stack, from);
+            }
+            return stack.getCount();
+          }
+
+          @Override
+          public int injectItem(ItemStack stack, boolean doAdd, Direction from) {
+            return injectItem(stack, doAdd, from, null);
+          }
+
+          @Override
+          public boolean canInjectItems(Direction from) {
+            return true;
+          }
+        }));
+      }
+    }
+    return list;
+  }
+
+  public static class SideProperties {
+		public PipePluggable[] pluggables = new PipePluggable[Direction.values().length];
+
+		public void writeToNBT(CompoundTag nbt) {
+			for (int i = 0; i < Direction.values().length; i++) {
+				PipePluggable pluggable = pluggables[i];
+				final String key = "pluggable[" + i + "]";
+				if (pluggable == null) {
+					nbt.remove(key);
+				} else {
+					CompoundTag pluggableData = new CompoundTag();
+					String name = PipeManager.getPluggableName(pluggable.getClass());
+					if (name != null) {
+						pluggableData.putString("pluggableName", name);
+					}
+					pluggable.writeToNBT(pluggableData);
+					nbt.put(key, pluggableData);
+				}
+			}
+		}
+
+		public void readFromNBT(CompoundTag nbt) {
+			for (int i = 0; i < Direction.values().length; i++) {
+				final String key = "pluggable[" + i + "]";
+				if (!nbt.contains(key)) {
+					continue;
+				}
+				try {
+					CompoundTag pluggableData = nbt.getCompound(key);
+					Class<?> pluggableClass = PipeManager.getPluggableByName(pluggableData.getString("pluggableName"));
+
+					if (pluggableClass != null && PipePluggable.class.isAssignableFrom(pluggableClass)) {
+						PipePluggable pluggable = (PipePluggable) pluggableClass.getDeclaredConstructor().newInstance();
+						pluggable.readFromNBT(pluggableData);
+						pluggables[i] = pluggable;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		public void rotateLeft() {
+			PipePluggable[] newPluggables = new PipePluggable[Direction.values().length];
+			for (Direction dir : Direction.values()) {
+				Direction newDir = dir;
+				if (dir.getAxis() != Direction.Axis.Y) {
+					newDir = dir.getClockWise();
+				}
+				newPluggables[newDir.ordinal()] = pluggables[dir.ordinal()];
+			}
+			pluggables = newPluggables;
+		}
+	}
 }

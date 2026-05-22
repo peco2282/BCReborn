@@ -41,7 +41,7 @@ public class DiamondItemPipeBehaviour implements ItemPipeBehaviour {
     }
 
     // フィルターに一致しない場合、フィルターが設定されていない接続方向（catch-all）を除いて
-    // フィルター設定済み方向を除外する（originalのIterator<ForgeDirection> i.remove()相当）
+    // フィルター設定済み方向を除外する（originalのIterator<Direction> i.remove()相当）
     for (Direction dir : Direction.values()) {
       if (dir == item.getEntryDirection()) continue;
       if (!pipe.getBlockState().getValue(PipeBlock.PROPERTY_MAP.get(dir))) continue;
