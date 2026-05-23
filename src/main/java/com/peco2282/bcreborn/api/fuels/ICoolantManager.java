@@ -9,12 +9,15 @@
 package com.peco2282.bcreborn.api.fuels;
 
 import com.peco2282.bcreborn.api.core.StackKey;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.Collection;
 
 public interface ICoolantManager {
     ICoolant addCoolant(ICoolant coolant);
+
+    ICoolant addCoolant(Fluid fluid, float degreesCoolingPerMB);
 
     ICoolant addCoolant(FluidType fluid, float degreesCoolingPerMB);
 
@@ -25,6 +28,8 @@ public interface ICoolantManager {
     Collection<ICoolant> getCoolants();
 
     Collection<ISolidCoolant> getSolidCoolants();
+
+    ICoolant getCoolant(Fluid fluid);
 
     ICoolant getCoolant(FluidType fluid);
 

@@ -8,9 +8,11 @@
  */
 package com.peco2282.bcreborn.api.fuels;
 
+import com.peco2282.bcreborn.api.core.StackKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface ISolidCoolant {
+    StackKey getSolid();
     FluidStack getFluidFromSolidCoolant(ItemStack stack);
 }
