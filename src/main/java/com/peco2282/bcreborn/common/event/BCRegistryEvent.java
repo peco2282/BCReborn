@@ -26,9 +26,6 @@ public class BCRegistryEvent {
     event.create(new RegistryBuilder<ICropHandler>().setName(BCRegistryKeys.CROP_HANDLER.location()));
     event.create(new RegistryBuilder<IFacadeItem>().setName(BCRegistryKeys.FACADE_ITEM.location()));
     event.create(new RegistryBuilder<IFillerPattern>().setName(BCRegistryKeys.FILLER_PATTERNS.location()));
-    event.create(new RegistryBuilder<IFuel>().setName(BCRegistryKeys.FUELS.location()));
-    event.create(new RegistryBuilder<ICoolant>().setName(BCRegistryKeys.COOLANT.location()));
-    event.create(new RegistryBuilder<ISolidCoolant>().setName(BCRegistryKeys.SOLID_COOLANT.location()));
     event.create(new RegistryBuilder<IStatement>().setName(BCRegistryKeys.STATEMENT.location()));
   }
 }
