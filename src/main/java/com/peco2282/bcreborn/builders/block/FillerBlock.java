@@ -6,6 +6,8 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -61,7 +63,7 @@ public class FillerBlock extends BuildCraftBlock {
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
       if (entity instanceof FillerBlockEntity filler) {
-        player.openMenu(filler);
+        NetworkHooks.openScreen((ServerPlayer) player, filler, pos);
         return InteractionResult.SUCCESS;
       }
     }

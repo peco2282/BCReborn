@@ -5,6 +5,8 @@ import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +37,7 @@ public class BlueprintLibraryBlock extends BuildCraftBlock {
     BlockEntity entity = p_60504_.getBlockEntity(p_60505_);
     if (entity instanceof BlueprintLibraryBlockEntity library) {
       if (!p_60504_.isClientSide()) {
-        p_60506_.openMenu( library);
+        NetworkHooks.openScreen((ServerPlayer) p_60506_, library, p_60505_);
       }
     }
     return InteractionResult.SUCCESS;
