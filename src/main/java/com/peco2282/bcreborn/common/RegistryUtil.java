@@ -6,12 +6,13 @@ import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryManager;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -59,19 +60,19 @@ public interface RegistryUtil {
     return fromItemTag(key).stream().map(Holder::get).toList();
   }
 
-  static Set<Map.Entry<ResourceKey<Schematic>, Schematic>> getSchematics(RegistryAccess access) {
-    return getRegistry(access, BCRegistryKeys.SCHEMATIC).entrySet();
+  static Set<Map.Entry<ResourceKey<Schematic>, Schematic>> getSchematics() {
+    return getRegistry(BCRegistryKeys.SCHEMATIC).getEntries();
   }
 
-  static Set<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> getFillerPatterns(RegistryAccess access) {
-    return getRegistry(access, BCRegistryKeys.FILLER_PATTERNS).entrySet();
+  static Set<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> getFillerPatterns() {
+    return getRegistry(BCRegistryKeys.FILLER_PATTERNS).getEntries();
   }
 
-  @Contract(value = "null,_->fail; _,null->fail; _,_->!null", pure = true)
-  static <T> Registry<T> getRegistry(RegistryAccess access, ResourceKey<Registry<T>> key) {
-    if (access == null || key == null) {
-      throw new IllegalArgumentException("RegistryAccess and ResourceKey cannot be null");
+  @Contract(value = "null->fail; _->!null", pure = true)
+  static <T> IForgeRegistry<T> getRegistry(ResourceKey<Registry<T>> key) {
+    if (key == null) {
+      throw new IllegalArgumentException("ResourceKey cannot be null");
     }
-    return access.registryOrThrow(key);
+    return RegistryManager.ACTIVE.getRegistry(key);
   }
 }
