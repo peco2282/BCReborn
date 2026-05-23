@@ -9,6 +9,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.mojang.serialization.Codec;
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.blueprints.SchematicMask;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IStatement;
@@ -31,6 +32,7 @@ import java.util.function.Function;
 
 public abstract class FillerPattern implements IFillerPattern {
     public static final Map<String, FillerPattern> patterns = new TreeMap<>();
+    protected TextureAtlasSprite icon;
 
     public static final Codec<FillerPattern> CODEC = Codec.STRING.dispatch(FillerPattern::getUniqueTag, tag -> {
         FillerPattern pattern = patterns.get(tag);
@@ -69,12 +71,13 @@ public abstract class FillerPattern implements IFillerPattern {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+        this.icon = textureGetter.apply(BCRebornCore.location("item/filler_pattern/" + tag));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public TextureAtlasSprite getIcon() {
-        return null;
+        return this.icon;
     }
 
     @Override
