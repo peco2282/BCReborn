@@ -6,8 +6,10 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -64,7 +66,7 @@ public class ArchitectBlock extends BuildCraftBlock {
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
       if (entity instanceof ArchitectBlockEntity architect) {
-        player.openMenu(architect);
+        NetworkHooks.openScreen((ServerPlayer) player, architect, pos);
         return InteractionResult.SUCCESS;
       }
     }
