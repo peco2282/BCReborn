@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "item/filler_pattern",
+      "prefix": "item/filler_pattern/"
+    }
+  ]
+}

@@ -3,6 +3,8 @@ package com.peco2282.bcreborn.builders.screen;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.block.entity.FillerBlockEntity;
 import com.peco2282.bcreborn.builders.menu.FillerMenu;
+import com.peco2282.bcreborn.common.gui.GuiTools;
+import com.peco2282.bcreborn.common.gui.SpriteSheat;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,26 +21,25 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
     public FillerScreen(FillerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.filler = menu.getFiller();
-        this.imageWidth = 176;
-        this.imageHeight = 166;
+        this.imageWidth = 175;
+        this.imageHeight = 240;
     }
 
     @Override
     protected void init() {
         super.init();
 
-        addRenderableWidget(new FillerButton(leftPos + 115, topPos + 18, 16, 16, 176, 0, b -> {
-            changePattern(-1);
+        addRenderableWidget(new FillerButton(leftPos + 20, topPos + 30, 10, 16, SpriteSheat.BUTTON_LEFT_NORMAL, SpriteSheat.BUTTON_LEFT_SELECTED, b -> {
+          changePattern(-1);
         }));
 
-        addRenderableWidget(new FillerButton(leftPos + 151, topPos + 18, 16, 16, 192, 0, b -> {
-            changePattern(1);
+        addRenderableWidget(new FillerButton(leftPos + 62, topPos + 30, 10, 16, SpriteSheat.BUTTON_RIGHT_NORMAL, SpriteSheat.BUTTON_RIGHT_SELECTED, b -> {
+          changePattern(1);
         }));
     }
 
     private void changePattern(int delta) {
-        int pattern = (menu.getCurrentPattern() + delta + 16) % 16; // Assume 16 patterns
-        BCNetworkManager.sendSetFillerPattern(filler.getBlockPos(), pattern);
+        BCNetworkManager.sendSetFillerPattern(filler.getBlockPos(), delta);
     }
 
     @Override
@@ -48,14 +49,14 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        
-        // Render current pattern icon
+        drawWidgets(graphics, mouseX, mouseY);
+        // Render current delta icon
         int pattern = menu.getCurrentPattern();
         graphics.blit(TEXTURE, leftPos + 133, topPos + 18, 176 + (pattern % 4) * 16, 16 + (pattern / 4) * 16, 16, 16);
 
-        // Tooltip for pattern
+        // Tooltip for delta
         if (isHovering(133, 18, 16, 16, mouseX, mouseY)) {
-            graphics.renderTooltip(this.font, Component.translatable("gui.filler.pattern." + pattern), mouseX, mouseY);
+            graphics.renderTooltip(this.font, Component.translatable("gui.filler.delta." + pattern), mouseX, mouseY);
         }
     }
 
@@ -65,25 +66,23 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
         graphics.drawString(this.font, Component.translatable("gui.inventory"), 8, imageHeight - 94, 0x404040, false);
     }
 
-    private class FillerButton extends Button {
-        private final int u;
-        private final int v;
+    private static class FillerButton extends Button {
+        private final SpriteSheat noActive;
+        private final SpriteSheat hover;
 
-        public FillerButton(int x, int y, int width, int height, int u, int v, OnPress onPress) {
+        public FillerButton(int x, int y, int width, int height, SpriteSheat texture, SpriteSheat hover, Button.OnPress onPress) {
             super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
-            this.u = u;
-            this.v = v;
+            this.noActive = texture;
+            this.hover = hover;
         }
 
         @Override
         public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-            int i = 0;
-            if (!this.active) {
-                i = 2;
-            } else if (this.isHoveredOrFocused()) {
-                i = 1;
+            if (this.isHoveredOrFocused()) {
+                this.hover.blit(graphics, getX(), getY());
+            } else {
+                this.noActive.blit(graphics, getX(), getY());
             }
-            graphics.blit(TEXTURE, getX(), getY(), u, v + i * height, width, height);
         }
     }
 }
