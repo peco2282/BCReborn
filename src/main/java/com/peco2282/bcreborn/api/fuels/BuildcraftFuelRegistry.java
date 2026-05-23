@@ -8,19 +8,33 @@
  */
 package com.peco2282.bcreborn.api.fuels;
 
-import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 
 public final class BuildcraftFuelRegistry {
-	/**
-	 * @deprecated Use {@link BCRegistryKeys#FUELS}
-	 */
-	@Deprecated
-	public static IFuelManager fuel;
-	/**
-	 * @deprecated Use {@link BCRegistryKeys#COOLANT}
-	 */
-	@Deprecated
-	public static ICoolantManager coolant;
+	private static IFuelManager fuel;
+
+	private static ICoolantManager coolant;
+
+	public static IFuelManager getFuelManager() {
+		return fuel;
+	}
+
+	public static ICoolantManager getCoolantManager() {
+		return coolant;
+	}
+
+	public static void setFuelManager(IFuelManager manager) {
+		if (fuel != null) {
+			throw new IllegalStateException("Fuel manager already set");
+		}
+		fuel = manager;
+	}
+
+	public static void setCoolantManager(ICoolantManager manager) {
+		if (coolant != null) {
+			throw new IllegalStateException("Coolant manager already set");
+		}
+		coolant = manager;
+	}
 
 	private BuildcraftFuelRegistry() {
 	}

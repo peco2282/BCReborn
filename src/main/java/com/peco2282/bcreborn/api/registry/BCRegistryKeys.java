@@ -19,9 +19,6 @@ public class BCRegistryKeys {
   public static final ResourceKey<Registry<ICropHandler>> CROP_HANDLER = key("crop_handler");
   public static final ResourceKey<Registry<IFacadeItem>> FACADE_ITEM = key("facade_item");
   public static final ResourceKey<Registry<IFillerPattern>> FILLER_PATTERNS = key("filler_patterns");
-  public static final ResourceKey<Registry<IFuel>> FUELS = key("fuels");
-  public static final ResourceKey<Registry<ICoolant>> COOLANT = key("coolants");
-  public static final ResourceKey<Registry<ISolidCoolant>> SOLID_COOLANT = key("solid_coolants");
   public static final ResourceKey<Registry<IStatement>> STATEMENT = key("statement");
 
 
