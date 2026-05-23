@@ -5,7 +5,6 @@ import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.common.RegistryUtil;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.builder.patterns.*;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -28,7 +27,18 @@ public class BCFillerPatterns {
     return BCRebornCore.getRegistry().registerFillerPattern(name, supplier);
   }
 
-  public static List<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> collection(RegistryAccess access) {
-    return RegistryUtil.getFillerPatterns(access).stream().sorted(Map.Entry.comparingByKey()).toList();
+  public static List<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> collection() {
+    return RegistryUtil.getFillerPatterns().stream().sorted(Map.Entry.comparingByKey()).toList();
+  }
+
+  public static IFillerPattern getCurrentlySelected(int index) {
+    var collection = collection();
+    if (index < 0) {
+      index = 0;
+    }
+    if (index >= collection.size()) {
+      index = collection.size() - 1;
+    }
+    return collection.get(index).getValue();
   }
 }
