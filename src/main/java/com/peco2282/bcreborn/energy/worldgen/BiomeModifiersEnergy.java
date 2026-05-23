@@ -6,8 +6,8 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.world.BiomeModifier;
@@ -24,7 +24,10 @@ public class BiomeModifiersEnergy {
     context.register(
         OIL_LAKE,
         new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-            biomes.getOrThrow(BiomeTags.HAS_DESERT_PYRAMID),
+            HolderSet.direct(
+                biomes.getOrThrow(Biomes.DESERT),
+                biomes.getOrThrow(Biomes.OCEAN)
+            ),
             HolderSet.direct(
                 placedFeatures.getOrThrow(PlacedFeaturesEnergy.OIL_LAKE_PLACED)
             ),
