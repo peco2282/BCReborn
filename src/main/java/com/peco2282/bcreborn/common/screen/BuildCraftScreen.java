@@ -1,6 +1,7 @@
 package com.peco2282.bcreborn.common.screen;
 
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.common.gui.widgets.Widget;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,13 @@ public abstract class BuildCraftScreen<M extends BuildCraftMenu<M>> extends Abst
 
   @Override
   protected void renderBg(GuiGraphics p_283065_, float p_97788_, int p_97789_, int p_97790_) {
+  }
+
+  protected void drawWidgets(GuiGraphics guiGraphics, int mX, int mY) {
+    for (Widget widget : menu.getWidgets()) {
+      if (widget.hidden) continue;
+      widget.draw(guiGraphics, this, getGuiLeft(), getGuiTop(), mX, mY);
+    }
   }
 
   protected ResourceLocation getMenuTexture() {

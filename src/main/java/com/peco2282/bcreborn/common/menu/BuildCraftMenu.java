@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends AbstractContainerMenu {
-  private List<Widget> widgets = new ArrayList<>();
+  private final List<Widget> widgets = new ArrayList<>();
   private int inventorySize;
 
   public BuildCraftMenu(@Nullable MenuType<M> p_38851_, int p_38852_, Inventory p_38853_) {

@@ -24,7 +24,7 @@ public record PacketGuiWidget(int windowId, int widgetId, byte[] data) implement
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
              net.minecraft.client.player.LocalPlayer player = net.minecraft.client.Minecraft.getInstance().player;
-             if (player != null && player.containerMenu != null && player.containerMenu.containerId == windowId) {
+             if (player != null && player.containerMenu.containerId == windowId) {
                  if (player.containerMenu instanceof com.peco2282.bcreborn.common.menu.BuildCraftMenu<?> menu) {
                      menu.handleWidgetClientData(widgetId, new FriendlyByteBuf(io.netty.buffer.Unpooled.wrappedBuffer(data)));
                  }
