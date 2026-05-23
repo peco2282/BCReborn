@@ -1,9 +1,12 @@
 package com.peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.fuel.CoolantManager;
+import com.peco2282.bcreborn.energy.fuel.FuelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -58,6 +61,13 @@ public class BCRebornEnergy implements BCReborn {
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+
+    BuildcraftFuelRegistry.setFuelManager(
+        FuelManager.INSTANCE
+    );
+    BuildcraftFuelRegistry.setCoolantManager(
+        CoolantManager.INSTANCE
+    );
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

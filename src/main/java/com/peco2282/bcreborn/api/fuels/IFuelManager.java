@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.api.fuels;
 
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.Collection;
@@ -15,9 +16,13 @@ import java.util.Collection;
 public interface IFuelManager {
     IFuel addFuel(IFuel fuel);
 
+    IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
+
     IFuel addFuel(FluidType fluid, int powerPerCycle, int totalBurningTime);
 
     Collection<IFuel> getFuels();
 
     IFuel getFuel(FluidType fluid);
+
+    IFuel getFuel(Fluid fluid);
 }
