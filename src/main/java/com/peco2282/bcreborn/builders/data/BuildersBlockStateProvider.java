@@ -15,9 +15,9 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
 
   @Override
   protected void registerStatesAndModels() {
-    simpleBlock(BuildersBlock.BUILDER.get(), unCheckedModel("builder"));
-    simpleBlock(BuildersBlock.FILLER.get(), unCheckedModel("filler"));
-    simpleBlock(BuildersBlock.QUARRY.get(), unCheckedModel("quarry"));
+    simpleBlockWithItem(BuildersBlock.BUILDER.get(), unCheckedModel("builder"));
+    simpleBlockWithItem(BuildersBlock.FILLER.get(), unCheckedModel("filler"));
+    simpleBlockWithItem(BuildersBlock.QUARRY.get(), unCheckedModel("quarry"));
   }
 
   private ModelFile.UncheckedModelFile unCheckedModel(String name) {
