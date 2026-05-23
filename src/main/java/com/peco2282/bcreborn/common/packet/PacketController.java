@@ -16,7 +16,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornCore.MODID)
 public class PacketController {
   private static final String PROTOCOL_VERSION = "1.0";
 

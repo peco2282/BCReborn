@@ -9,10 +9,7 @@ import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.ContainerBlockEntity;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.TileBuffer;
-import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
-import com.peco2282.bcreborn.common.builder.BuildingItem;
-import com.peco2282.bcreborn.common.builder.IBuildingItemsProvider;
 import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
 import com.peco2282.bcreborn.common.builder.patterns.FillerPattern;
 import com.peco2282.bcreborn.common.internal.*;
@@ -127,7 +124,7 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
     }
 
     private void initTemplate() {
-        var patterns = BCFillerPatterns.collection(level.registryAccess());
+        var patterns = BCFillerPatterns.collection();
         if (currentPattern < 0 || currentPattern >= patterns.size()) return;
         IFillerPattern pattern = patterns.get(currentPattern).getValue();
         if (pattern instanceof FillerPattern fp) {
@@ -140,7 +137,7 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
     public void load(CompoundTag nbt) {
         super.load(nbt);
         inv.readFromNBT(nbt, "Items");
-        currentPattern = nbt.getInt("pattern");
+        currentPattern = nbt.getInt("delta");
         if (nbt.contains("box")) {
             box.initialize(nbt.getCompound("box"));
         }
@@ -151,7 +148,7 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
         inv.writeToNBT(nbt, "Items");
-        nbt.putInt("pattern", currentPattern);
+        nbt.putInt("delta", currentPattern);
         if (box.isInitialized()) {
             CompoundTag boxNbt = new CompoundTag();
             box.writeToNBT(boxNbt);
@@ -289,5 +286,19 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
     @Override
     public AABB getRenderBoundingBox() {
         return new Box(this).extendToEncompass(box).getBoundingBox();
+    }
+
+    public IFillerPattern getPattern() {
+        return BCFillerPatterns.collection().get(currentPattern).getValue();
+    }
+
+    public int nextPattern() {
+        currentPattern = (currentPattern + 1) % BCFillerPatterns.collection().size();
+        return currentPattern;
+    }
+
+    public int previousPattern() {
+        currentPattern = (currentPattern - 1 + BCFillerPatterns.collection().size()) % BCFillerPatterns.collection().size();
+        return currentPattern;
     }
 }

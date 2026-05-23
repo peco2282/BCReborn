@@ -69,8 +69,8 @@ public class BCNetworkManager {
     sendToServer(new SetReadArchitectConfigurationPacket(pos, config));
   }
 
-  public static void sendSetFillerPattern(BlockPos pos, int pattern) {
-    sendToServer(new SetFillerPatternPacket(pos, pattern));
+  public static void sendSetFillerPattern(BlockPos pos, int delta) {
+    sendToServer(new SetFillerPatternPacket(pos, delta));
   }
 
   // Server -> Client

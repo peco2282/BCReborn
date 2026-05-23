@@ -77,7 +77,7 @@ public class ActionFiller implements IActionExternal {
 	public void actionActivate(BlockEntity target, Direction side,
 							   IStatementContainer source, IStatementParameter[] parameters) {
 		if (target instanceof FillerBlockEntity) {
-			// ((FillerBlockEntity) target).setPattern(pattern);
+			// ((FillerBlockEntity) target).setPattern(delta);
 			// ((FillerBlockEntity) target).patternParameters = parameters;
 		}
 	}

@@ -8,11 +8,11 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record SetFillerPatternPacket(BlockPos pos, int pattern) implements CustomPacket {
+public record SetFillerPatternPacket(BlockPos pos, int delta) implements CustomPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeInt(pattern);
+        buffer.writeInt(delta);
     }
 
     public static SetFillerPatternPacket decode(FriendlyByteBuf buffer) {
@@ -25,7 +25,13 @@ public record SetFillerPatternPacket(BlockPos pos, int pattern) implements Custo
         ctx.enqueueWork(() -> {
             getBlockEntity(ctx, pos, BlockEntityTypesBuilders.FILLER.get())
                 .ifPresent(be -> {
-                    be.currentPattern = pattern;
+                    if (delta == 1) {
+                        be.nextPattern();
+                    } else if (delta == -1) {
+                        be.previousPattern();
+                    } else {
+                        be.currentPattern = delta;
+                    }
                     be.setChanged();
                 });
         });

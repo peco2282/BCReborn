@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -17,6 +18,7 @@ public class PatternParameterHollow implements IStatementParameter {
     public static final Codec<PatternParameterHollow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("filled").forGetter(p -> p.filled)
     ).apply(instance, PatternParameterHollow::new));
+    private TextureAtlasSprite icon;
     public boolean filled = false;
 
     public PatternParameterHollow() {
@@ -33,7 +35,7 @@ public class PatternParameterHollow implements IStatementParameter {
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return null;
+        return this.icon;
     }
 
     @Override
@@ -43,6 +45,7 @@ public class PatternParameterHollow implements IStatementParameter {
 
     @Override
     public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+        this.icon = textureGetter.apply(BCRebornCore.location("item/filler_parameter/hollow.png"));
     }
 
     @Override

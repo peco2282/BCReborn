@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -17,6 +18,7 @@ public class PatternParameterCenter implements IStatementParameter {
     public static final Codec<PatternParameterCenter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.INT.fieldOf("direction").forGetter(p -> p.direction)
     ).apply(instance, PatternParameterCenter::new));
+    private static final TextureAtlasSprite[] ICONS = new TextureAtlasSprite[9];
     private static final int[] shiftLeft = {6, 3, 0, 7, 4, 1, 8, 5, 2};
     private int direction;
 
@@ -34,7 +36,7 @@ public class PatternParameterCenter implements IStatementParameter {
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return null;
+        return ICONS[direction];
     }
 
     @Override
@@ -44,6 +46,9 @@ public class PatternParameterCenter implements IStatementParameter {
 
     @Override
     public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+        for (int i = 0; i < 9; i++) {
+            ICONS[i] = textureGetter.apply(BCRebornCore.location("item/filler_parameter/center_" + i + ".png"));
+        }
     }
 
     @Override
