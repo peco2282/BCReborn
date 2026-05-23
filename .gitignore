@@ -5,3 +5,6 @@ run/*
 run-data/*
 src/generated/
 .DS_Store
+
+# Blockbench project files (bbres extension); keep .bbmodel for collaboration
+*.bbres
