@@ -153,7 +153,7 @@ public final class BlockUtils {
 		double dz = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
 		ItemEntity entityitem = new ItemEntity(world, pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz, stack);
 
-		// entityitem.lifespan = forcedLifespan; // In 1.20.1, lifespan is handled differently or via accessor
+		entityitem.lifespan = forcedLifespan; // In 1.20.1, lifespan is handled differently or via accessor
 		entityitem.setPickUpDelay(10);
 
 		world.addFreshEntity(entityitem);
