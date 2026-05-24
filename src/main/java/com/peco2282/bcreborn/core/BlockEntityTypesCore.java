@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.core;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
+import com.peco2282.bcreborn.core.block.entity.PathMarkerBlockEntity;
 import com.peco2282.bcreborn.core.block.entity.WoodEngineBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,6 +19,7 @@ public class BlockEntityTypesCore {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   public static final RegistryObject<BlockEntityType<WoodEngineBlockEntity>> WOODEN_ENGINE = register("wood_engine", of(WoodEngineBlockEntity::new, BlocksCore.WOODEN_ENGINE));
+  public static final RegistryObject<BlockEntityType<PathMarkerBlockEntity>> PATH_MARKER = register("path_marker", of(PathMarkerBlockEntity::new, BlocksCore.PATH_MARKER));
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
     return REGISTRY.registerBlockEntityType(name, type);
