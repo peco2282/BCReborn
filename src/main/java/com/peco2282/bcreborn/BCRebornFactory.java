@@ -44,9 +44,6 @@ public class BCRebornFactory implements BCReborn {
         MinecraftForge.EVENT_BUS.register(this);
         processor.initRegister();
         REGISTRY.register(modEventBus);
-
-        // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
-        context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
