@@ -1,50 +1,56 @@
 package com.peco2282.bcreborn;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import com.peco2282.bcreborn.builders.ConfigBuilders;
+import com.peco2282.bcreborn.common.ConfigGeneral;
+import com.peco2282.bcreborn.core.ConfigCore;
+import com.peco2282.bcreborn.energy.ConfigEnergy;
+import com.peco2282.bcreborn.factory.ConfigFactory;
+import com.peco2282.bcreborn.robotics.ConfigRobotics;
+import com.peco2282.bcreborn.silicon.ConfigSilicon;
+import com.peco2282.bcreborn.transport.ConfigTransport;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
 // Demonstrates how to use Forge's config APIs
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
+  private static final Logger LOGGER = BCReborn.createLogger();
+
   private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-  private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER.comment("Whether to log the dirt block on common setup").define("logDirtBlock", true);
+  private static final ForgeConfigSpec.Builder GENERAL;
+  private static final ForgeConfigSpec.Builder CORE;
+  private static final ForgeConfigSpec.Builder ENERGY;
+  private static final ForgeConfigSpec.Builder TRANSPORT;
+  private static final ForgeConfigSpec.Builder BUILDERS;
+  private static final ForgeConfigSpec.Builder FACTORY;
+  private static final ForgeConfigSpec.Builder SILICON;
+  private static final ForgeConfigSpec.Builder ROBOTICS;
 
-  private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER.comment("A magic number").defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+  public static final ForgeConfigSpec SPEC;
 
-  public static final ForgeConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER.comment("What you want the introduction message to be for the magic number").define("magicNumberIntroduction", "The magic number is... ");
+  static {
+    GENERAL = ConfigGeneral.load(BUILDER);
 
-  // a list of strings that are treated as resource locations for items
-  private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER.comment("A list of items to log on common setup.").defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
+    CORE = ConfigCore.load(BUILDER); // Core settings
+    ENERGY = ConfigEnergy.load(BUILDER); // Energy settings
+    TRANSPORT = ConfigTransport.load(BUILDER); // Transport settings
+    BUILDERS = ConfigBuilders.load(BUILDER); // Builders settings
+    FACTORY = ConfigFactory.load(BUILDER); // Factory settings
+    SILICON = ConfigSilicon.load(BUILDER); // Silicon settings
+    ROBOTICS = ConfigRobotics.load(BUILDER); // Robotics settings
 
-  static final ForgeConfigSpec SPEC = BUILDER.build();
-
-  public static boolean logDirtBlock;
-  public static int magicNumber;
-  public static String magicNumberIntroduction;
-  public static Set<Item> items;
-
-  private static boolean validateItemName(final Object obj) {
-    return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(ResourceLocation.parse(itemName));
+    SPEC = BUILDER.build();
   }
 
   @SubscribeEvent
   static void onLoad(final ModConfigEvent event) {
-    logDirtBlock = LOG_DIRT_BLOCK.get();
-    magicNumber = MAGIC_NUMBER.get();
-    magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
-
-    // convert the list of strings into a set of items
-    items = ITEM_STRINGS.get().stream().map(itemName -> ForgeRegistries.ITEMS.getValue(ResourceLocation.parse(itemName))).collect(Collectors.toSet());
+    if (event.getConfig().getModId().equals(BCRebornCore.MODID)) {
+      LOGGER.info("Config loaded: {}", event.getConfig().getFileName());
+    }
   }
 }

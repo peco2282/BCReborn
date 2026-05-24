@@ -52,9 +52,6 @@ public class BCRebornEnergy implements BCReborn {
     var ignoredFluids = FluidsEnergy.OIL_SOURCE;
     FluidsEnergy.registerFluidTypes(modEventBus);
     REGISTRY.register(modEventBus);
-
-    // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
-    context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
@@ -62,12 +59,19 @@ public class BCRebornEnergy implements BCReborn {
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-    BuildcraftFuelRegistry.setFuelManager(
-        FuelManager.INSTANCE
-    );
+    initFuel();
+
     BuildcraftFuelRegistry.setCoolantManager(
         CoolantManager.INSTANCE
     );
+  }
+
+  private static void initFuel() {
+    BuildcraftFuelRegistry.setFuelManager(
+        FuelManager.INSTANCE
+    );
+
+    BuildcraftFuelRegistry.getFuelManager().addFuel(FluidsEnergy.OIL_SOURCE.get(), 1 ,1);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

@@ -64,9 +64,6 @@ public class BCRebornBuilders implements BCReborn {
 
 
     REGISTRY.register(modEventBus);
-
-    // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
-    context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {

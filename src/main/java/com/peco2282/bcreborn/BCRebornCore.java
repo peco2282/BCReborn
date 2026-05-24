@@ -22,6 +22,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
+import java.util.Locale;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BCRebornCore.MODID)
 public class BCRebornCore implements BCReborn {
@@ -79,8 +81,9 @@ public class BCRebornCore implements BCReborn {
     PacketController.init();
     modEventBus.register(DataGatherEvent.class);
 
+    String fileName = String.format(Locale.ROOT, "%s-%s.toml", MOD_ID_BASE, ModConfig.Type.COMMON.extension());
     // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
-    context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, fileName);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
