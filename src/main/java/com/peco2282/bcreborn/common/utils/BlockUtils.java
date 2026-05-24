@@ -8,8 +8,8 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
+import com.peco2282.bcreborn.core.ConfigCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,7 +70,7 @@ public final class BlockUtils {
 	}
 
 	public static boolean breakBlock(ServerLevel world, BlockPos pos) {
-		return breakBlock(world, pos, BCRebornCore.itemLifespan * 20);
+		return breakBlock(world, pos, ConfigCore.getItemLifespan() * 20);
 	}
 
 	public static boolean breakBlock(ServerLevel world, BlockPos pos, int forcedLifespan) {

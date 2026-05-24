@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.core;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
+@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigCore {
   private static ForgeConfigSpec.IntValue itemLifespan;
 
