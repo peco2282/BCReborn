@@ -25,7 +25,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
     engineTag();
     pipeTag();
 
-    tag(CommonBlockTags.CORE).add(BlocksCore.WOODEN_ENGINE.get());
+    tag(CommonBlockTags.CORE).add(BlocksCore.WOODEN_ENGINE.get(), BlocksCore.SPRING.get());
     tag(CommonBlockTags.ENERGY).add(BlocksEnergy.STONE_ENGINE.get(), BlocksEnergy.IRON_ENGINE.get(), BlocksEnergy.CREATIVE_ENGINE.get());
 
     tag(CommonBlockTags.TRANSPORT).addTag(CommonBlockTags.PIPES);

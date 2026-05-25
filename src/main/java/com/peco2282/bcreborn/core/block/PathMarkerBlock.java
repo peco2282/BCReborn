@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class PathMarkerBlock extends MarkerBlock {
-  public PathMarkerBlock(Properties properties) {
-    super(properties);
+  public PathMarkerBlock() {
+    super(Properties.of());
   }
 
   @Override
