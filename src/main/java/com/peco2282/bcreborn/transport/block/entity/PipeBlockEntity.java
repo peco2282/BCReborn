@@ -65,7 +65,7 @@ import java.util.*;
  * </p>
  * Transport logic itself is delegated to transport modules.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock {
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
   // 流体輸送モジュール（FLUID パイプのみ有効）
@@ -102,7 +102,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
   // Diamond Pipe: 使用済みフィルタースロットのbitmask（方向ordinal * 9 + slotIndex）
   private long usedFilters = 0L;
   // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
-  private int pipeColor = 0;
+//  private int pipeColor = 0;
+  private DyeColor pipeColor = DyeColor.WHITE;
 
   public final SideProperties sideProperties = new SideProperties();
 
@@ -398,12 +399,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
     setChanged();
   }
 
-  public int getPipeColor() {
+  public DyeColor getPipeColor() {
     return pipeColor;
   }
 
-  public void setPipeColor(int color) {
-    this.pipeColor = color & 0xF;
+  public void setPipeColor(DyeColor color) {
+    this.pipeColor = color;
     setChanged();
     Level level = getLevel();
     BlockPos pos = getBlockPos();
@@ -443,7 +444,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
       this.usedFilters = tag.getLong("usedFilters");
     }
     if (tag.contains("PipeColor")) {
-      this.pipeColor = tag.getInt("PipeColor");
+      this.pipeColor = DyeColor.byId(tag.getInt("PipeColor"));
     }
     if (tag.contains("Filters")) {
       ListTag filtersTag = tag.getList("Filters", Tag.TAG_COMPOUND);
@@ -492,7 +493,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
     }
     tag.put("Filters", filtersTag);
     tag.putLong("usedFilters", usedFilters);
-    tag.putInt("PipeColor", pipeColor);
+    tag.putInt("PipeColor", pipeColor.getId());
 
     byte[] wires = new byte[wireSignals.length];
     for (int i = 0; i < wireSignals.length; i++) {
@@ -625,7 +626,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
           }
 
           @Override
-          public int getPipeColor() {
+          public DyeColor getPipeColor() {
             return pipeColor;
           }
 
@@ -674,6 +675,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
       }
     }
     return list;
+  }
+
+  @Override
+  public boolean recolorBlock(BlockState state, Level level, BlockPos pos, Direction side, DyeColor color) {
+    this.pipeColor = color;
+    setChanged();
+    level.sendBlockUpdated(pos, state, state, 3);
+    return true;
   }
 
   public static class SideProperties {

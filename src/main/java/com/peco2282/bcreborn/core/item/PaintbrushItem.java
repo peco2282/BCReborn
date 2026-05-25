@@ -73,17 +73,21 @@ public class PaintbrushItem extends BuildCraftItem {
 
         if (color >= 0) {
             DyeColor dyeColor = DyeColor.byId(15 - color);
+            if (block instanceof IColoredBlock colored) {
 
-            if (block.recolorBlock(state, level, pos, side, dyeColor)) {
-                if (!level.isClientSide) {
-                    stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
+                if (colored.recolorBlock(state, level, pos, side, dyeColor)) {
+                    if (!level.isClientSide) {
+                        stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
+                    }
+
+                    if (context.getPlayer() != null) {
+                        context.getPlayer().swing(context.getHand());
+                    }
+
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                } else {
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
-
-                if (context.getPlayer() != null) {
-                    context.getPlayer().swing(context.getHand());
-                }
-
-                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         } else if (block instanceof IColorRemovable removable) {
             if (removable.removeColorFromBlock(level, pos.getX(), pos.getY(), pos.getZ(), side)) {
@@ -96,6 +100,12 @@ public class PaintbrushItem extends BuildCraftItem {
         }
 
         return InteractionResult.PASS;
+    }
+
+    private boolean tryRecolorBlock(Level level, BlockPos pos, BlockState state, DyeColor dyeColor) {
+        // Custom recoloring logic for blocks that support color properties
+        // This is a placeholder - implement actual recoloring based on your block types
+        return false;
     }
 
     @Override
