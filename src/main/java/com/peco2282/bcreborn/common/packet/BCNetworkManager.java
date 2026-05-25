@@ -9,6 +9,7 @@ import com.peco2282.bcreborn.common.packet.s2c.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -71,6 +72,19 @@ public class BCNetworkManager {
 
   public static void sendSetFillerPattern(BlockPos pos, int delta) {
     sendToServer(new SetFillerPatternPacket(pos, delta));
+  }
+
+  /// List
+  public static void sendListSetStack(int lineIndex, int slotIndex, ItemStack stack) {
+    sendToServer(new ListSetStackPacket(lineIndex, slotIndex, stack));
+  }
+
+  public static void sendListSwitchButton(int lineIndex, int button) {
+    sendToServer(new ListSwitchButtonPacket(lineIndex, button));
+  }
+
+  public static void sendListSetLabel(String label) {
+    sendToServer(new ListSetLabelPacket(label));
   }
 
   // Server -> Client

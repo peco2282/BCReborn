@@ -94,6 +94,27 @@ public class PacketController {
         EraseBuilderTankPacket::decode,
         EraseBuilderTankPacket::handle
     );
+
+    /// List
+    registerC2S(
+        ListSetStackPacket.class,
+        ListSetStackPacket::encode,
+        ListSetStackPacket::decode,
+        ListSetStackPacket::handle
+    );
+    registerC2S(
+        ListSwitchButtonPacket.class,
+        ListSwitchButtonPacket::encode,
+        ListSwitchButtonPacket::decode,
+        ListSwitchButtonPacket::handle
+    );
+    registerC2S(
+        ListSetLabelPacket.class,
+        ListSetLabelPacket::encode,
+        ListSetLabelPacket::decode,
+        ListSetLabelPacket::handle
+    );
+
     registerS2C(
         SyncBuilderRequirementsPacket.class,
         SyncBuilderRequirementsPacket::encode,
