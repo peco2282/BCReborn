@@ -1,20 +1,26 @@
 package com.peco2282.bcreborn.common.builder;
 
-import com.peco2282.bcreborn.common.blueprint.BptContext;
 import com.peco2282.bcreborn.api.blueprints.MappingNotFoundException;
+import com.peco2282.bcreborn.api.blueprints.MappingRegistry;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.StackAtPosition;
+import com.peco2282.bcreborn.common.blueprint.BptContext;
+import com.peco2282.bcreborn.common.inventory.InvUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BuildingItem implements ISerializable {
+public class BuildingItem implements ISerializable, IBuildingItem {
 
     public static int ITEMS_SPACE = 2;
 
@@ -81,6 +87,12 @@ public class BuildingItem implements ISerializable {
             vy = dy / maxLifetime;
             vz = dz / maxLifetime;
 
+            if (stacksToDisplay.isEmpty()) {
+                StackAtPosition sPos = new StackAtPosition();
+                sPos.stack = ItemStack.EMPTY;
+                stacksToDisplay.add(sPos);
+            }
+
             initialized = true;
         }
     }
@@ -106,6 +118,12 @@ public class BuildingItem implements ISerializable {
 
         if (lifetime > maxLifetime + stacksToDisplay.size() * ITEMS_SPACE - 1) {
             isDone = true;
+            build();
+        }
+
+        if (slotToBuild != null && lifetime > maxLifetime) {
+            slotToBuild.writeCompleted(context, (lifetime - maxLifetime)
+                    / (stacksToDisplay.size() * ITEMS_SPACE));
         }
 
         lifetimeDisplay = lifetime;
@@ -124,6 +142,28 @@ public class BuildingItem implements ISerializable {
 
         if (lifetimeDisplay - lifetime <= 1.0) {
             lifetimeDisplay += 1.0 * displayPortion;
+        }
+    }
+
+    private void build() {
+        if (slotToBuild != null) {
+            int destX = (int) Math.floor(destination.x);
+            int destY = (int) Math.floor(destination.y);
+            int destZ = (int) Math.floor(destination.z);
+            BlockPos destPos = new BlockPos(destX, destY, destZ);
+            BlockState oldState = context.world().getBlockState(destPos);
+            Block oldBlock = oldState.getBlock();
+
+            if (slotToBuild.writeToWorld(context)) {
+                context.world().levelEvent(null, 2001, destPos,
+                        Block.getId(oldState));
+            } else if (slotToBuild.stackConsumed != null) {
+                for (ItemStack s : slotToBuild.stackConsumed) {
+                    if (s != null && !s.isEmpty() && !(s.getItem() instanceof BlockItem && Block.byItem(s.getItem()) == oldBlock)) {
+                        InvUtils.dropItems(context.world(), s, destX, destY, destZ);
+                    }
+                }
+            }
         }
     }
 
@@ -166,6 +206,24 @@ public class BuildingItem implements ISerializable {
         }
 
         nbt.put("items", items);
+
+        MappingRegistry registry = new MappingRegistry();
+
+        CompoundTag slotNBT = new CompoundTag();
+        CompoundTag registryNBT = new CompoundTag();
+
+        slotToBuild.writeToNBT(slotNBT, registry);
+        registry.write(registryNBT);
+
+        nbt.put("registry", registryNBT);
+
+        if (slotToBuild instanceof BuildingSlotBlock) {
+            nbt.putByte("slotKind", (byte) 0);
+        } else {
+            nbt.putByte("slotKind", (byte) 1);
+        }
+
+        nbt.put("slotToBuild", slotNBT);
     }
 
     public void readFromNBT(CompoundTag nbt) throws MappingNotFoundException {
@@ -180,6 +238,17 @@ public class BuildingItem implements ISerializable {
             sPos.stack = ItemStack.of(items.getCompound(i));
             stacksToDisplay.add(sPos);
         }
+
+        MappingRegistry registry = new MappingRegistry();
+        registry.read(nbt.getCompound("registry"));
+
+        if (nbt.getByte("slotKind") == 0) {
+            slotToBuild = new BuildingSlotBlock();
+        } else {
+            slotToBuild = new BuildingSlotEntity();
+        }
+
+        slotToBuild.readFromNBT(nbt.getCompound("slotToBuild"), registry);
     }
 
     public void setStacksToDisplay(List<ItemStack> stacks) {
@@ -220,5 +289,10 @@ public class BuildingItem implements ISerializable {
             e.readData(data);
             stacksToDisplay.add(e);
         }
+    }
+
+    @Override
+    public boolean isDone() {
+        return isDone;
     }
 }
