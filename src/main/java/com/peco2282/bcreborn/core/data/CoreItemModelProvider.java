@@ -21,6 +21,11 @@ public class CoreItemModelProvider extends ItemModelProvider {
     basicItem(ItemsCore.GOLD_GEAR.get());
     basicItem(ItemsCore.DIAMOND_GEAR.get());
 
+    basicItem(ItemsCore.LIST.get());
+    basicItem(ItemsCore.PAINTBRUSH.get());
+    basicItem(ItemsCore.MAP_LOCATION.get());
+
+
     withExistingParent("wrench", mcLoc("item/generated"))
         .texture("layer0", modLoc("item/wrench_item"));
     getBuilder("wood_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
