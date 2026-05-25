@@ -2,7 +2,7 @@ package com.peco2282.bcreborn.core.item;
 
 
 import com.peco2282.bcreborn.api.blocks.IColorRemovable;
-import com.peco2282.bcreborn.api.core.EnumColor;
+import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,7 +46,7 @@ public class PaintbrushItem extends BuildCraftItem {
         int color = getColor(stack);
 
         if (color >= 0) {
-            return Component.literal(base.getString() + " (" + EnumColor.fromId(color) + ")");
+            return Component.literal(base.getString() + " (" + DyeColor.byId(color) + ")");
         }
 
         return base;
