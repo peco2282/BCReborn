@@ -1,12 +1,13 @@
 package com.peco2282.bcreborn.transport.block.entity;
 
-import com.peco2282.bcreborn.api.core.EnumColor;
+import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.transport.BlocksTransport;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.RegistryObject;
@@ -268,7 +269,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
 
   // ---- Wire signals ----
 
-  public void setWireSignal(EnumColor color, boolean signal) {
+  public void setWireSignal(DyeColor color, boolean signal) {
     int index = getWireIndex(color);
     if (index >= 0 && wireSignals[index] != signal) {
       wireSignals[index] = signal;
@@ -284,7 +285,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
    * A→B→C→A のようなループも visited により安全に停止する。
    * unloaded chunk は level.isLoaded() でスキップする。
    */
-  private void propagateWireSignal(EnumColor color, boolean signal, Set<BlockPos> visited) {
+  private void propagateWireSignal(DyeColor color, boolean signal, Set<BlockPos> visited) {
     if (level == null) return;
     int index = getWireIndex(color);
     if (index < 0) return;
@@ -305,7 +306,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity {
     }
   }
 
-  private int getWireIndex(EnumColor color) {
+  private int getWireIndex(DyeColor color) {
     if (color == null) return -1;
     return switch (color) {
       case RED -> 0;
