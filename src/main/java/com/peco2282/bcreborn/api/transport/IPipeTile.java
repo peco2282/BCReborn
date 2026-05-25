@@ -11,6 +11,7 @@ package com.peco2282.bcreborn.api.transport;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,7 +38,7 @@ public interface IPipeTile extends IInjectable {
 
     IPipe getPipe();
 
-    int getPipeColor();
+    DyeColor getPipeColor();
 
     PipePluggable getPipePluggable(Direction direction);
 
