@@ -29,6 +29,7 @@ import java.util.ArrayList;
 public class GuiImageButton extends Button implements IButtonClickEventTrigger, IToolTipProvider {
 	private final int size, u, v, baseU, baseV;
 	private final ResourceLocation texture;
+	public final int id;
 
 	private ArrayList<IButtonClickEventListener> listeners = new ArrayList<IButtonClickEventListener>();
 	private boolean active = false;
@@ -40,6 +41,7 @@ public class GuiImageButton extends Button implements IButtonClickEventTrigger, 
 
 	public GuiImageButton(int id, int x, int y, int size, ResourceLocation texture, int baseU, int baseV, int u, int v) {
 		super(x, y, size, size, Component.literal(""), GuiTools.EMPTY_PRESS, GuiTools.EMPTY_NARRATION);
+		this.id = id;
 		this.size = size;
 		this.u = u;
 		this.v = v;

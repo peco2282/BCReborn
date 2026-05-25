@@ -27,9 +27,9 @@ public abstract class GuiAdvancedInterface<M extends BuildCraftMenu<M>> extends 
 		super(container, inventory, texture);
 	}
 
-	public int getSlotIndexAtLocation(int i, int j) {
-		int x = i - leftPos;
-		int y = j - topPos;
+	public int getSlotIndexAtLocation(double i, double j) {
+		double x = i - leftPos;
+		double y = j - topPos;
 
 		for (int position = 0; position < slots.size(); ++position) {
 			AdvancedSlot s = slots.get(position);
@@ -41,7 +41,7 @@ public abstract class GuiAdvancedInterface<M extends BuildCraftMenu<M>> extends 
 		return -1;
 	}
 
-	public AdvancedSlot getSlotAtLocation(int i, int j) {
+	public AdvancedSlot getSlotAtLocation(double i, double j) {
 		int id = getSlotIndexAtLocation(i, j);
 
 		if (id != -1) {
