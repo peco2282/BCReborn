@@ -8,6 +8,7 @@ import com.peco2282.bcreborn.common.packet.PacketController;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.data.ResourceDataGenerator;
+import com.peco2282.bcreborn.core.worldgen.SpringPopulate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,6 +71,7 @@ public class BCRebornCore implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
+    MinecraftForge.EVENT_BUS.register(new SpringPopulate());
     processor.initRegister();
 //    REGISTRY
 //        .addRunner(BlocksCore::init)
