@@ -19,7 +19,6 @@ import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.builder.*;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
-import com.peco2282.bcreborn.core.BlocksCore;
 import com.peco2282.bcreborn.core.ItemsCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -28,8 +27,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
@@ -271,7 +268,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 		if (!world.getBlockState(pos).isAir()) {
 			BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos,
 					world.getBlockState(pos),
-					BCFakePlayer.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z));
+					BCFakePlayer.createBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z));
 			MinecraftForge.EVENT_BUS.post(breakEvent);
 			return breakEvent.isCanceled();
 		}
@@ -283,7 +280,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 		BlockEvent.EntityPlaceEvent placeEvent = new BlockEvent.EntityPlaceEvent(
 				BlockSnapshot.create(world.dimension(), world, pos),
 				world.getBlockState(pos),
-				BCFakePlayer.getBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z)
+				BCFakePlayer.createBuildCraftPlayer((ServerLevel) world, this.x, this.y, this.z)
 		);
 
 		MinecraftForge.EVENT_BUS.post(placeEvent);
