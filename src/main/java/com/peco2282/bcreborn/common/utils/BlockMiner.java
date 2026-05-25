@@ -2,12 +2,10 @@ package com.peco2282.bcreborn.common.utils;
 
 
 
-import com.peco2282.bcreborn.BCRebornCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -96,7 +94,7 @@ public class BlockMiner {
 			BlockState meta = world.getBlockState(new BlockPos(x, y, z));
 
 			BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, world.getBlockState(pos),
-					BCFakePlayer.getBuildCraftPlayer((ServerLevel) owner.getLevel(), owner.getBlockPos()));
+					BCFakePlayer.createBuildCraftPlayer((ServerLevel) owner.getLevel(), owner.getBlockPos()));
 			MinecraftForge.EVENT_BUS.post(breakEvent);
 
 			if (!breakEvent.isCanceled()) {

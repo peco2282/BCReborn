@@ -86,7 +86,7 @@ public final class BlockUtils {
 	}
 
 	public static Player getFakePlayerWithTool(ServerLevel world, BlockPos pos, ItemStack tool) {
-		Player player = BCFakePlayer.getBuildCraftPlayer(world, pos);
+		Player player = BCFakePlayer.createBuildCraftPlayer(world, pos);
 		int i = 0;
 
 		while (player.getMainHandItem() != tool && i < 9) {
@@ -127,7 +127,7 @@ public final class BlockUtils {
 	public static boolean breakBlock(ServerLevel world, BlockPos pos, List<ItemStack> drops) {
 		BlockState state = world.getBlockState(pos);
 		BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, state,
-				BCFakePlayer.getBuildCraftPlayer(world, pos));
+				BCFakePlayer.createBuildCraftPlayer(world, pos));
 		MinecraftForge.EVENT_BUS.post(breakEvent);
 
 		if (breakEvent.isCanceled()) {
