@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PaintbrushItem extends BuildCraftItem {
-    private static final String TAG_COLOR = "color";
+    public static final String TAG_COLOR = "color";
 
     public PaintbrushItem() {
         super(new Properties().stacksTo(1).durability(63));

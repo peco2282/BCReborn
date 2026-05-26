@@ -23,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ListItem extends BuildCraftItem implements IList {
-    private static final String TAG_LABEL = "label";
-    private static final String TAG_WRITTEN = "written";
+    public static final String TAG_LABEL = "label";
+    public static final String TAG_WRITTEN = "written";
 
 
     public ListItem() {
