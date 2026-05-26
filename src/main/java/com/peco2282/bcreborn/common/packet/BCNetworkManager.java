@@ -53,8 +53,8 @@ public class BCNetworkManager {
     sendToServer(new DeleteBlueprintPacket(pos));
   }
 
-  public static void sendEraseBuilderTank(BlockPos pos) {
-    sendToServer(new EraseBuilderTankPacket(pos));
+  public static void sendEraseBuilderTank(BlockPos pos, int tankId) {
+    sendToServer(new EraseBuilderTankPacket(pos, tankId));
   }
 
   public static void sendSyncBuilderRequirements(ServerPlayer player, BlockPos pos, List<RequirementItemStack> requirements) {
