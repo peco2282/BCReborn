@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapLocationItem extends BuildCraftItem implements IMapLocation {
-    private static final String TAG_KIND = "kind";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_PATH = "path";
+    public static final String TAG_NAME = "name";
+    public static final String TAG_KIND = "kind";
+    public static final String TAG_PATH = "path";
 
-    private static final byte KIND_SPOT = 0;
-    private static final byte KIND_AREA = 1;
-    private static final byte KIND_PATH = 2;
-    private static final byte KIND_ZONE = 3;
+    public static final byte KIND_SPOT = 0;
+    public static final byte KIND_AREA = 1;
+    public static final byte KIND_PATH = 2;
+    public static final byte KIND_ZONE = 3;
 
     public MapLocationItem() {
         super(new Properties());
