@@ -2,6 +2,8 @@ package com.peco2282.bcreborn.builders.menu;
 
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.block.entity.ArchitectBlockEntity;
+import com.peco2282.bcreborn.common.gui.slots.SlotBase;
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -50,8 +52,8 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
         this.addDataSlots(data);
 
         // Architect slots
-        this.addSlot(new Slot(architect.getInventory(), 0, 135, 35));
-        this.addSlot(new Slot(architect.getInventory(), 1, 194, 35));
+        this.addSlot(new ArchitectSlot(architect, 0, 135, 35));
+        this.addSlot(new SlotOutput(architect.getInventory(), 1, 194, 35));
 
         // Player inventory
         for (int l = 0; l < 3; l++) {
@@ -82,5 +84,26 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
     @Override
     public ItemStack quickMoveStack(@NotNull Player player, int index) {
         return transferStackInSlot(player, index);
+    }
+
+    static class ArchitectSlot extends SlotBase {
+        private ArchitectBlockEntity architect;
+        private Player player;
+        private int slot;
+        public ArchitectSlot(ArchitectBlockEntity architect, int index, int x, int y) {
+            super(architect.getInventory(), index, x, y);
+            this.architect = architect;
+            this.player = player;
+            this.slot = index;
+        }
+
+        @Override
+        public void setChanged() {
+            if (slot == 0) {
+                architect.currentAuthorName = player.getDisplayName().getString();
+            }
+
+            this.container.setChanged();
+        }
     }
 }
