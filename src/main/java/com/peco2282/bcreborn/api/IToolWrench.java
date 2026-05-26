@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.api;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -30,4 +31,12 @@ public interface IToolWrench {
    *            ,y,z - The coordinates of the block being wrenched
    */
   void wrenchUsed(Player player, int x, int y, int z);
+
+  default boolean canWrench(Player player, BlockPos pos) {
+    return canWrench(player, pos.getX(), pos.getY(), pos.getZ());
+  }
+
+  default void wrenchUsed(Player player, BlockPos pos) {
+    wrenchUsed(player, pos.getX(), pos.getY(), pos.getZ());
+  }
 }
