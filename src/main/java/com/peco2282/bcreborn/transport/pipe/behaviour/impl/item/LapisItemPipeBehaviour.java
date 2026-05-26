@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +37,7 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
     // アイテムにパイプの色タグを付与する（originalのReachedCenter eventHandler相当）
     if (!stack.isEmpty()) {
       var tag = stack.getOrCreateTag();
-      tag.putInt("BCPipeColor", pipe.getPipeColor());
+      tag.putInt("BCPipeColor", pipe.getPipeColor().getId());
     }
   }
 
@@ -64,14 +65,15 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
 
     if (!level.isClientSide) {
       // originalと同様: スニーク時は前の色、通常時は次の色
-      int current = pipe.getPipeColor();
+      int current = pipe.getPipeColor().getId();
       int next;
+      int len = DyeColor.values().length;
       if (player.isShiftKeyDown()) {
-        next = (current + 15) % 16; // 前の色（0〜15循環）
+        next = (current + len - 1) % len; // 前の色（0〜15循環）
       } else {
-        next = (current + 1) % 16;  // 次の色
+        next = (current + 1) % len;  // 次の色
       }
-      pipe.setPipeColor(next);
+      pipe.setPipeColor(DyeColor.byId(next));
       player.displayClientMessage(Component.literal("Pipe color: " + next), true);
       wrench.wrenchUsed(player, pos.getX(), pos.getY(), pos.getZ());
     }
