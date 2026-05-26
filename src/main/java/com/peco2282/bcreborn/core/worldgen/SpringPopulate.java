@@ -17,7 +17,8 @@ public class SpringPopulate {
     // A spring will be generated approximately every 40th chunk (0.025f chance).
     private static final float SPRING_CHANCE = 0.025f;
 
-    @SubscribeEvent
+    // TODO: Fix this
+//    @SubscribeEvent
     public void onChunkLoad(ChunkEvent.Load event) {
         LevelAccessor levelAccessor = event.getLevel();
 
