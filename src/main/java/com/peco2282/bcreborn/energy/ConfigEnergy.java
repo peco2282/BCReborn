@@ -2,7 +2,6 @@ package com.peco2282.bcreborn.energy;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigEnergy {
   // fuel
   private static ForgeConfigSpec.DoubleValue fuelFuelCombustion;
