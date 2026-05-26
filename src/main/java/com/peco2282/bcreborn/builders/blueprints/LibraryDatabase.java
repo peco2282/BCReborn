@@ -37,20 +37,20 @@ public class LibraryDatabase {
 			outputDir.mkdirs();
 		}
 
-		inputDirs = new ArrayList<File>();
+		inputDirs = new ArrayList<>();
 
-		for (int i = 0; i < inputPaths.length; ++i) {
-			File inputDir = new File(inputPaths[i]);
-			if (inputDir.exists()) {
-				inputDirs.add(inputDir);
-			}
-		}
+        for (String inputPath : inputPaths) {
+            File inputDir = new File(inputPath);
+            if (inputDir.exists()) {
+                inputDirs.add(inputDir);
+            }
+        }
 
 		refresh();
 	}
 
 	public void refresh() {
-		blueprintIds = new TreeSet<LibraryId>();
+		blueprintIds = new TreeSet<>();
 		for (File f : inputDirs) {
 			loadIndex(f);
 		}
@@ -169,8 +169,7 @@ public class LibraryDatabase {
 			return null;
 		}
 
-		CompoundTag compound = load(getBlueprintFile(id));
-		return compound;
+        return load(getBlueprintFile(id));
 	}
 
 	public static CompoundTag load(File blueprintFile) {
