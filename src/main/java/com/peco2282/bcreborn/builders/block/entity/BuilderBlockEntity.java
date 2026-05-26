@@ -14,6 +14,7 @@ import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
+import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -264,6 +265,14 @@ public class BuilderBlockEntity extends TileAbstractBuilder implements MenuProvi
     @Override
     public @NotNull Component getName() {
         return getDisplayName();
+    }
+
+    public void eraseTank(int tankId) {
+        List<Tank> tanks = getFluidTanks();
+        if (tankId >= 0 && tankId < tanks.size()) {
+            tanks.get(tankId).setFluid(null);
+            setChanged();
+        }
     }
 
     public List<RequirementItemStack> getNeededItems() {
