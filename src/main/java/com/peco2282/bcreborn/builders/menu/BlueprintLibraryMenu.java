@@ -2,6 +2,8 @@ package com.peco2282.bcreborn.builders.menu;
 
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
+import com.peco2282.bcreborn.common.gui.slots.SlotBase;
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.gui.widgets.ScrollbarWidget;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import net.minecraft.network.FriendlyByteBuf;
@@ -61,10 +63,10 @@ public class BlueprintLibraryMenu extends BuildCraftMenu<BlueprintLibraryMenu> {
         this.addWidget(scrollbarWidget);
 
         // Library slots (Adjusted positions for 244x220)
-        this.addSlot(new Slot(library.inv, 0, 174, 57));
-        this.addSlot(new Slot(library.inv, 1, 221, 57));
-        this.addSlot(new Slot(library.inv, 2, 174, 79));
-        this.addSlot(new Slot(library.inv, 3, 221, 79));
+        this.addSlot(new BlueprintLibrarySlot(library, 0, 219, 57, playerInventory.player));
+        this.addSlot(new SlotOutput(library.inv, 1, 175, 57));
+        this.addSlot(new BlueprintLibrarySlot(library, 2, 175, 79, playerInventory.player));
+        this.addSlot(new SlotOutput(library.inv, 3, 219, 79));
 
         // Player inventory
         for (int l = 0; l < 3; l++) {
@@ -103,5 +105,27 @@ public class BlueprintLibraryMenu extends BuildCraftMenu<BlueprintLibraryMenu> {
     @Override
     public ItemStack quickMoveStack(@NotNull Player player, int index) {
         return transferStackInSlot(player, index);
+    }
+
+    static class BlueprintLibrarySlot extends SlotBase {
+        private BlueprintLibraryBlockEntity library;
+        private Player player;
+        private int slot;
+        public BlueprintLibrarySlot(BlueprintLibraryBlockEntity entity, int slotIndex, int posX, int posY, Player player) {
+            super(entity, slotIndex, posX, posY);
+            this.library = entity;
+            this.player = player;
+            this.slot = slotIndex;
+        }
+
+        @Override
+        public void setChanged() {
+            if (slot == 0) {
+                library.uploadingPlayer = player;
+            } else if (slot == 2) {
+                library.downloadingPlayer = player;
+            }
+            this.container.setChanged();
+        }
     }
 }
