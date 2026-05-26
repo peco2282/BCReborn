@@ -5,6 +5,7 @@ import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.worldgen.OilPopulate;
 import com.peco2282.bcreborn.energy.fuel.CoolantManager;
 import com.peco2282.bcreborn.energy.fuel.FuelManager;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +48,7 @@ public class BCRebornEnergy implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
+//    MinecraftForge.EVENT_BUS.register(OilPopulate.INSTANCE);
     processor.initRegister();
 
     var ignoredFluids = FluidsEnergy.OIL_SOURCE;
