@@ -10,10 +10,13 @@ package com.peco2282.bcreborn.api.boards;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Random;
@@ -26,7 +29,7 @@ public abstract class RedstoneBoardNBT<T> {
 
     public abstract String getID();
 
-    public abstract void addInformation(ItemStack stack, Player player, List<?> list, boolean advanced);
+    public abstract void addInformation(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag);
 
     public abstract IRedstoneBoard<T> create(CompoundTag nbt, T object);
 

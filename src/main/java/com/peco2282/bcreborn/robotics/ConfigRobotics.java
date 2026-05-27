@@ -4,7 +4,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigRobotics {
   // items
   private static ForgeConfigSpec.BooleanValue robot;
