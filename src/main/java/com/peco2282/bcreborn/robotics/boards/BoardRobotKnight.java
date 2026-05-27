@@ -1,0 +1,66 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.robotics.boards;
+
+import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
+import com.peco2282.bcreborn.api.robots.AIRobot;
+import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.robotics.ai.AIRobotAttack;
+import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
+import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
+import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
+import com.peco2282.bcreborn.robotics.ai.AIRobotSearchEntity;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+
+public class BoardRobotKnight extends RedstoneBoardRobot {
+
+	public BoardRobotKnight(EntityRobotBase iRobot) {
+		super(iRobot);
+	}
+
+	@Override
+	public RedstoneBoardRobotNBT getNBTHandler() {
+		return BCBoardNBT.REGISTRY.get("knight");
+	}
+
+	@Override
+	public final void update() {
+		ItemStack held = robot.getMainHandItem();
+		if (held.isEmpty()) {
+			startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
+				return stack.getItem() instanceof SwordItem;
+			}));
+		} else if (held.getDamageValue() >= held.getMaxDamage()) {
+			startDelegateAI(new AIRobotGotoStationAndUnload(robot));
+		} else {
+			startDelegateAI(new AIRobotSearchEntity(robot, entity -> {
+				return (entity instanceof Enemy) || (entity instanceof Wolf wolf && wolf.isAngry());
+			}, 250, robot.getZoneToWork()));
+		}
+	}
+
+	@Override
+	public void delegateAIEnded(AIRobot ai) {
+		if (ai instanceof AIRobotFetchAndEquipItemStack) {
+			if (!ai.success()) {
+				startDelegateAI(new AIRobotGotoSleep(robot));
+			}
+		} else if (ai instanceof AIRobotSearchEntity searchAI) {
+			if (ai.success()) {
+				startDelegateAI(new AIRobotAttack(robot, searchAI.target));
+			} else {
+				startDelegateAI(new AIRobotGotoSleep(robot));
+			}
+		}
+	}
+}
