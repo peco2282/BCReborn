@@ -1,0 +1,57 @@
+package com.peco2282.bcreborn.silicon.block;
+
+import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
+import com.peco2282.bcreborn.silicon.block.entity.PackagerBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
+
+public class PackagerBlock extends BuildCraftBlock {
+    public PackagerBlock() {
+        super(Properties.of().strength(10F));
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+        BlockEntity tile = level.getBlockEntity(pos);
+        if (tile instanceof PackagerBlockEntity) {
+            // TODO: GUI opening logic
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PackagerBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, SiliconBlockEntityTypes.PACKAGER.get(), PackagerBlockEntity.ticker());
+    }
+
+    @Override
+    public void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+    }
+
+    @Override
+    public boolean isRotatable() {
+        return false;
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "bcrebornsilicon:block/laser_table_base",
+  "textures": {
+    "particle": "bcrebornsilicon:block/programming_table_top",
+    "top": "bcrebornsilicon:block/programming_table_top",
+    "side": "bcrebornsilicon:block/programming_table_side",
+    "bottom": "bcrebornsilicon:block/laser_table_bottom"
+  }
+}
