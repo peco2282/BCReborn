@@ -1,0 +1,53 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.silicon.screen;
+
+import com.peco2282.bcreborn.BCRebornSilicon;
+import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
+import com.peco2282.bcreborn.silicon.block.entity.PackagerBlockEntity;
+import com.peco2282.bcreborn.silicon.menu.PackagerMenu;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+public class GuiPackager extends BuildCraftScreen<PackagerMenu> {
+
+	public static final ResourceLocation TEXTURE = BCRebornSilicon.location("textures/gui/packager.png");
+	private final PackagerBlockEntity bench;
+
+	public GuiPackager(PackagerMenu container, Inventory inventory, Component title) {
+		super(container, inventory, title);
+		this.bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
+		this.imageWidth = 176;
+		this.imageHeight = 197;
+		this.inventoryLabelY = this.imageHeight - 94;
+	}
+
+	@Override
+	protected void initilaizeLedger(Inventory inventory) {
+		// ロジックなし
+	}
+
+	@Override
+	protected ResourceLocation getMenuTexture() {
+		return TEXTURE;
+	}
+
+	@Override
+	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+		
+		// 1.7.10 のベンチ固有の描画ロジック (patternSlotSet) を再現する場合
+		// ただし、現在の PackagerBlockEntity にはそのフラグがないため、今は描画のみ
+		// 本来は bench.isPatternSlotSet(i) で判定する
+	}
+}
