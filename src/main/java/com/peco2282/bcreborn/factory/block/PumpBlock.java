@@ -1,0 +1,71 @@
+package com.peco2282.bcreborn.factory.block;
+
+import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
+
+public class PumpBlock extends BuildCraftBlock {
+  public PumpBlock() {
+    super(Properties.of()
+        .mapColor(MapColor.METAL)
+        .sound(SoundType.METAL)
+        .strength(5.0F, 10.0F)
+        .lightLevel(state -> 1));
+  }
+
+  @Override
+  public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return null;
+  }
+
+  @Override
+  public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    InteractionResult result = super.use(state, level, pos, player, hand, hit);
+    if (result.consumesAction()) {
+      return result;
+    }
+    if (player.isShiftKeyDown()) {
+      return InteractionResult.PASS;
+    }
+    ItemStack held = player.getItemInHand(hand);
+    if (!held.isEmpty()) {
+      Item equipped = held.getItem();
+      if (equipped instanceof IToolWrench wrench && wrench.canWrench(player, pos)) {
+        wrench.wrenchUsed(player, pos);
+        return InteractionResult.sidedSuccess(level.isClientSide);
+      }
+    }
+    return InteractionResult.PASS;
+  }
+
+  @Override
+  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+  }
+
+  @Override
+  public boolean isRotatable() {
+    return false;
+  }
+}
