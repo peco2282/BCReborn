@@ -1,0 +1,179 @@
+/**
+ * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+ * http://www.mod-buildcraft.com
+ * <p/>
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
+package com.peco2282.bcreborn.robotics.block.entity;
+
+import com.peco2282.bcreborn.api.robots.IRequestProvider;
+import com.peco2282.bcreborn.common.SimpleInventory;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class RequesterBlockEntity extends BuildCraftBlockEntity implements Container, IRequestProvider {
+    public static final int NB_ITEMS = 20;
+
+    private final SimpleInventory inv = new SimpleInventory(NB_ITEMS, "items", 64);
+    private final SimpleInventory requests = new SimpleInventory(NB_ITEMS, "requests", 64);
+
+    public RequesterBlockEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityTypesRobotics.REQUESTER.get(), pos, state);
+    }
+
+    public void setRequest(int index, ItemStack stack) {
+        requests.setItem(index, stack);
+    }
+
+    public ItemStack getRequestTemplate(int index) {
+        return requests.getItem(index);
+    }
+
+    @Override
+    public int getContainerSize() {
+        return inv.getContainerSize();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return inv.isEmpty();
+    }
+
+    @Override
+    public ItemStack getItem(int slotId) {
+        return inv.getItem(slotId);
+    }
+
+    @Override
+    public ItemStack removeItem(int slotId, int count) {
+        return inv.removeItem(slotId, count);
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slotId) {
+        return inv.removeItemNoUpdate(slotId);
+    }
+
+    @Override
+    public void setItem(int slotId, ItemStack itemStack) {
+        inv.setItem(slotId, itemStack);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return inv.getMaxStackSize();
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return super.stillValid(player);
+    }
+
+    @Override
+    public void clearContent() {
+        inv.clearContent();
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        CompoundTag invNBT = new CompoundTag();
+        inv.write(invNBT);
+        nbt.put("inv", invNBT);
+        CompoundTag reqNBT = new CompoundTag();
+        requests.write(reqNBT);
+        nbt.put("req", reqNBT);
+    }
+
+    @Override
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        inv.read(nbt.getCompound("inv"));
+        requests.read(nbt.getCompound("req"));
+    }
+
+    public boolean isFulfilled(int i) {
+        ItemStack req = requests.getItem(i);
+        if (req.isEmpty()) {
+            return true;
+        }
+        ItemStack existing = inv.getItem(i);
+        if (existing.isEmpty()) {
+            return false;
+        }
+        return StackHelper.isMatchingItemOrList(req, existing) && existing.getCount() >= req.getCount();
+    }
+
+    @Override
+    public int getRequestsCount() {
+        return NB_ITEMS;
+    }
+
+    @Override
+    public ItemStack getRequest(int i) {
+        ItemStack req = requests.getItem(i);
+        if (req.isEmpty() || isFulfilled(i)) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack request = req.copy();
+        ItemStack existing = inv.getItem(i);
+        if (existing.isEmpty()) {
+            return request;
+        }
+        if (!StackHelper.isMatchingItemOrList(request, existing)) {
+            return ItemStack.EMPTY;
+        }
+        request.shrink(existing.getCount());
+        return request.isEmpty() ? ItemStack.EMPTY : request;
+    }
+
+    @Override
+    public ItemStack offerItem(int i, ItemStack stack) {
+        ItemStack req = requests.getItem(i);
+        if (req.isEmpty()) return stack;
+
+        ItemStack existing = inv.getItem(i);
+        if (existing.isEmpty()) {
+            if (!StackHelper.isMatchingItemOrList(stack, req)) return stack;
+            int maxQty = req.getCount();
+            if (stack.getCount() <= maxQty) {
+                inv.setItem(i, stack.copy());
+                stack.setCount(0);
+                return ItemStack.EMPTY;
+            } else {
+                ItemStack newStack = stack.copy();
+                newStack.setCount(maxQty);
+                stack.shrink(maxQty);
+                inv.setItem(i, newStack);
+                return stack;
+            }
+        } else {
+            if (!StackHelper.isMatchingItemOrList(stack, existing) || !StackHelper.isMatchingItemOrList(stack, req)) return stack;
+            int maxQty = req.getCount();
+            if (existing.getCount() + stack.getCount() <= maxQty) {
+                existing.grow(stack.getCount());
+                stack.setCount(0);
+                return ItemStack.EMPTY;
+            } else {
+                int toAdd = maxQty - existing.getCount();
+                existing.setCount(maxQty);
+                stack.shrink(toAdd);
+                return stack;
+            }
+        }
+    }
+
+    @Override
+    protected void tick(Level level, BlockPos pos, BlockState state) {
+    }
+}
