@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.api.tiles;
  * have non-redstone automation (for example, BuildCraft Gates, but also
  * other mods which implement it, e.g. OpenComputers).
  */
+@Deprecated(forRemoval = true)
 public interface IControllable {
 	public enum Mode {
 		Unknown, On, Off, Mode, Loop
