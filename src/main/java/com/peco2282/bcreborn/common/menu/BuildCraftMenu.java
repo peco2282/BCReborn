@@ -125,7 +125,7 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 //    return super.slotClick(slotNum, mouseButton, modifier, player);
 //  }
 
-  private ItemStack slotClickPhantom(Slot slot, int index, int mouseButton, ClickType clickType, Player player) {
+  protected ItemStack slotClickPhantom(Slot slot, int index, int mouseButton, ClickType clickType, Player player) {
     ItemStack stack = ItemStack.EMPTY;
 
     if (clickType == ClickType.CLONE) {

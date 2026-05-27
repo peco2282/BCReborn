@@ -115,6 +115,51 @@ public class PacketController {
         ListSetLabelPacket::handle
     );
 
+    // Robotics
+    registerC2S(
+        RequestRequesterListPacket.class,
+        RequestRequesterListPacket::encode,
+        RequestRequesterListPacket::decode,
+        RequestRequesterListPacket::handle
+    );
+    registerS2C(
+        SyncRequesterListPacket.class,
+        SyncRequesterListPacket::encode,
+        SyncRequesterListPacket::decode,
+        SyncRequesterListPacket::handle
+    );
+
+    registerC2S(
+        RequestZonePlanLoadAreaPacket.class,
+        RequestZonePlanLoadAreaPacket::encode,
+        RequestZonePlanLoadAreaPacket::decode,
+        RequestZonePlanLoadAreaPacket::handle
+    );
+    registerC2S(
+        RequestZonePlanSaveAreaPacket.class,
+        RequestZonePlanSaveAreaPacket::encode,
+        RequestZonePlanSaveAreaPacket::decode,
+        RequestZonePlanSaveAreaPacket::handle
+    );
+    registerS2C(
+        SyncZonePlanAreaLoadedPacket.class,
+        SyncZonePlanAreaLoadedPacket::encode,
+        SyncZonePlanAreaLoadedPacket::decode,
+        SyncZonePlanAreaLoadedPacket::handle
+    );
+    registerC2S(
+        RequestZonePlanComputeMapPacket.class,
+        RequestZonePlanComputeMapPacket::encode,
+        RequestZonePlanComputeMapPacket::decode,
+        RequestZonePlanComputeMapPacket::handle
+    );
+    registerS2C(
+        SyncZonePlanImagePacket.class,
+        SyncZonePlanImagePacket::encode,
+        SyncZonePlanImagePacket::decode,
+        SyncZonePlanImagePacket::handle
+    );
+
     registerS2C(
         SyncBuilderRequirementsPacket.class,
         SyncBuilderRequirementsPacket::encode,

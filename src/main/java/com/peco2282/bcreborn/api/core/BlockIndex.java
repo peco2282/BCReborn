@@ -113,4 +113,8 @@ public class BlockIndex implements Comparable<BlockIndex> {
 				|| (blockIndex.x == x && Math.abs(blockIndex.y - y) <= 1 && blockIndex.z == z)
 				|| (blockIndex.x == x && blockIndex.y == y && Math.abs(blockIndex.z - z) <= 1);
 	}
+
+	public BlockPos toBlockPos() {
+		return new BlockPos(x, y, z);
+	}
 }

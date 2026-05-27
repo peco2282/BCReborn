@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
+import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import net.minecraft.core.BlockPos;
@@ -25,9 +26,9 @@ public abstract class DockingStation {
     private long robotTakingId = NULL_ROBOT_ID;
     private Object robotTaking;
     private boolean linkIsMain = false;
-    private BlockPos index;
+    private BlockIndex index;
 
-    public DockingStation(BlockPos iIndex, Direction iSide) {
+    public DockingStation(BlockIndex iIndex, Direction iSide) {
         index = iIndex;
         side = iSide;
     }
@@ -40,15 +41,15 @@ public abstract class DockingStation {
     }
 
     public int x() {
-        return index.getX();
+        return index.x;
     }
 
     public int y() {
-        return index.getY();
+        return index.y;
     }
 
     public int z() {
-        return index.getZ();
+        return index.z;
     }
 
     public Direction side() {
@@ -75,15 +76,15 @@ public abstract class DockingStation {
         return robotTakingId;
     }
 
-    public BlockPos index() {
+    public BlockIndex index() {
         return index;
     }
 
     public void writeToNBT(CompoundTag nbt) {
         CompoundTag indexNBT = new CompoundTag();
-        indexNBT.putInt("x", index.getX());
-        indexNBT.putInt("y", index.getY());
-        indexNBT.putInt("z", index.getZ());
+        indexNBT.putInt("x", index.x);
+        indexNBT.putInt("y", index.y);
+        indexNBT.putInt("z", index.z);
         nbt.put("index", indexNBT);
         nbt.putByte("side", (byte) (side != null ? side.ordinal() : 0));
         nbt.putBoolean("isMain", linkIsMain);
@@ -92,7 +93,7 @@ public abstract class DockingStation {
 
     public void readFromNBT(CompoundTag nbt) {
         CompoundTag indexNBT = nbt.getCompound("index");
-        index = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
+        index = new BlockIndex(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
         side = Direction.values()[nbt.getByte("side")];
         linkIsMain = nbt.getBoolean("isMain");
         robotTakingId = nbt.getLong("robotId");
@@ -157,6 +158,6 @@ public abstract class DockingStation {
 
     @Override
     public String toString() {
-        return "{" + index.getX() + ", " + index.getY() + ", " + index.getZ() + ", " + side + " :" + robotTakingId + "}";
+        return "{" + index.x + ", " + index.y + ", " + index.z + ", " + side + " :" + robotTakingId + "}";
     }
 }

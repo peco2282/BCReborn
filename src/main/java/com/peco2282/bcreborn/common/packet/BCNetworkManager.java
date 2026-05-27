@@ -87,6 +87,53 @@ public class BCNetworkManager {
     sendToServer(new ListSetLabelPacket(label));
   }
 
+  // Robotics
+  public static void sendRequestRequesterList(BlockPos pos) {
+    sendToServer(new RequestRequesterListPacket(pos));
+  }
+
+  public static void sendSyncRequesterList(ServerPlayer player, BlockPos pos, ItemStack[] requests) {
+    sendToPlayer(player, new SyncRequesterListPacket(pos, requests));
+  }
+
+  // ZonePlan
+  public static void sendRequestZonePlanLoadArea(BlockPos pos, int index) {
+    sendToServer(new RequestZonePlanLoadAreaPacket(pos, index));
+  }
+
+  public static void sendRequestZonePlanSaveArea(BlockPos pos, int index, com.peco2282.bcreborn.robotics.ZonePlan plan) {
+    sendToServer(new RequestZonePlanSaveAreaPacket(pos, index, plan));
+  }
+
+  public static void sendSyncZonePlanAreaLoaded(ServerPlayer player, BlockPos pos, com.peco2282.bcreborn.robotics.ZonePlan plan) {
+    sendToPlayer(player, new SyncZonePlanAreaLoadedPacket(pos, plan));
+  }
+
+  public static void sendRequestZonePlanComputeMap(BlockPos pos, int cx, int cz, int width, int height, float blocksPerPixel) {
+    sendToServer(new RequestZonePlanComputeMapPacket(pos, cx, cz, width, height, blocksPerPixel));
+  }
+
+  public static void sendSyncZonePlanImage(ServerPlayer player, BlockPos pos, int totalSize, int offset, byte[] data) {
+    sendToPlayer(player, new SyncZonePlanImagePacket(pos, totalSize, offset, data));
+  }
+
+  public static void sendRequestZonePlanSetName(BlockPos pos, String name) {
+    // sendToServer(new RequestZonePlanSetNamePacket(pos, name)); // To be created
+  }
+
+  public static void computeMap(com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
+    final byte[] textureData = new byte[width * height];
+    // TODO: implement actual map computation or delegate to BE
+    // For now, let's assume we send it in chunks
+    int MAX_PACKET_LENGTH = 30000;
+    for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
+        int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
+        byte[] chunk = new byte[len];
+        System.arraycopy(textureData, i, chunk, 0, len);
+        sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
+    }
+  }
+
   // Server -> Client
   /// Blueprint
   public static void sendRequestBlueprint(ServerPlayer player, BlockPos pos, int blueprintId) {

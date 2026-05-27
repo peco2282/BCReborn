@@ -50,6 +50,8 @@ public class BCRebornRobotics implements BCReborn {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
         LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+
+        com.peco2282.bcreborn.robotics.statements.RoboticsStatements.init();
     }
 
     // You can use SubscribeEvent apply let the Event Bus discover methods to call
