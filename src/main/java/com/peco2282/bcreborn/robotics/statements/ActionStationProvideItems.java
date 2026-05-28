@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.*;
 import com.peco2282.bcreborn.common.inventory.filters.StatementParameterStackFilter;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 public class ActionStationProvideItems extends BCStatement implements IActionInternal {
 
 	public ActionStationProvideItems() {
-		super("buildcraft:station.provide_items");
+		super("station.provide_items");
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class ActionStationProvideItems extends BCStatement implements IActionInt
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_station_provide_items"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_provide_items"));
 	}
 
 	@Override

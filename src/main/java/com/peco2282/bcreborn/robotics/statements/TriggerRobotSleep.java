@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.robotics.statements;
 import java.util.List;
 import java.util.function.Function;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -19,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TriggerRobotSleep extends BCStatement implements ITriggerInternal {
 
 	public TriggerRobotSleep() {
-		super("buildcraft:robot.sleep");
+		super("robot.sleep");
 	}
 
 	@Override
@@ -30,7 +31,7 @@ public class TriggerRobotSleep extends BCStatement implements ITriggerInternal {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/trigger_robot_sleep"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/trigger_robot_sleep"));
 	}
 
 	@Override
