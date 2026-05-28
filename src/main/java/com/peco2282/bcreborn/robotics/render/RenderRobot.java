@@ -1,357 +1,260 @@
-/**
- * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
- * http://www.mod-buildcraft.com
- * <p/>
- * BuildCraft is distributed under the terms of the Minecraft Mod Public
- * License 1.0, or MMPL. Please check the contents of the license located in
- * http://www.mod-buildcraft.com/MMPL-1.0.txt
- */
 package com.peco2282.bcreborn.robotics.render;
 
-import java.util.Date;
+import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.api.robots.IRobotOverlayItem;
+import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraftforge.client.ForgeHooksClient;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mojang.authlib.GameProfile;
-import org.lwjgl.opengl.GL11;
+public class RenderRobot extends EntityRenderer<EntityRobot> {
+	private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
+	private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
+	private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
+	private final ModelPart box;
+	private final ModelPart helmetBox;
+	private final ModelPart skullOverlayBox;
+	private final ItemRenderer itemRenderer;
 
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.util.Constants.NBT;
+	private final Map<String, GameProfile> gameProfileCache = new HashMap<>();
 
-import buildcraft.BuildCraftRobotics;
-import buildcraft.api.robots.IRobotOverlayItem;
-import buildcraft.core.DefaultProps;
-import buildcraft.core.EntityLaser;
-import buildcraft.core.lib.render.RenderUtils;
-import buildcraft.core.render.RenderLaser;
-import buildcraft.robotics.EntityRobot;
-import buildcraft.robotics.ItemRobot;
-
-public class RenderRobot extends Render implements IItemRenderer {
-	private static final ResourceLocation overlay_red = new ResourceLocation(
-			DefaultProps.TEXTURE_PATH_ROBOTS + "/overlay_side.png");
-	private static final ResourceLocation overlay_cyan = new ResourceLocation(
-			DefaultProps.TEXTURE_PATH_ROBOTS + "/overlay_bottom.png");
-
-	private final EntityItem dummyEntityItem = new EntityItem(null);
-	private final RenderItem customRenderItem;
-
-	private ModelBase model = new ModelBase() {
-	};
-	private ModelBase modelHelmet = new ModelBase() {
-	};
-	private ModelBase modelSkullOverlay = new ModelBase() {
-	};
-	private ModelRenderer box, helmetBox, skullOverlayBox;
-
-	private Map<String, GameProfile> gameProfileCache = new HashMap<String, GameProfile>();
-
-	public RenderRobot() {
-		customRenderItem = new RenderItem() {
-			@Override
-			public boolean shouldBob() {
-				return false;
-			}
-
-			@Override
-			public boolean shouldSpreadItems() {
-				return false;
-			}
-		};
-		customRenderItem.setRenderManager(RenderManager.instance);
-
-		box = new ModelRenderer(model, 0, 0);
-		box.addBox(-4F, -4F, -4F, 8, 8, 8);
-		box.setRotationPoint(0.0F, 0.0F, 0.0F);
-		helmetBox = new ModelRenderer(modelHelmet, 0, 0);
-		helmetBox.addBox(-4F, -8F, -4F, 8, 8, 8);
-		helmetBox.setRotationPoint(0.0F, 0.0F, 0.0F);
-		skullOverlayBox = new ModelRenderer(modelSkullOverlay, 32, 0);
-		skullOverlayBox.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.5F);
-		skullOverlayBox.setRotationPoint(0.0F, 0.0F, 0.0F);
+	public RenderRobot(EntityRendererProvider.Context context) {
+		super(context);
+		this.itemRenderer = context.getItemRenderer();
+		
+		ModelPart root = context.bakeLayer(RobotModelLayers.ROBOT);
+		this.box = root.getChild("box");
+		this.helmetBox = root.getChild("helmetBox");
+		this.skullOverlayBox = root.getChild("skullOverlayBox");
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f, float f1) {
-		doRender((EntityRobot) entity, x, y, z, f1);
-	}
+	public void render(EntityRobot robot, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+		poseStack.pushPose();
 
-	private void doRender(EntityRobot robot, double x, double y, double z, float partialTicks) {
-		GL11.glPushMatrix();
-		GL11.glTranslated(x, y, z);
+		float robotYaw = Mth.lerp(partialTicks, robot.yRotO, robot.getYRot());
+		poseStack.mulPose(Axis.YP.rotationDegrees(-robotYaw));
 
-		float robotYaw = this.interpolateRotation(robot.prevRenderYawOffset, robot.renderYawOffset, partialTicks);
-		GL11.glRotatef(-robotYaw, 0.0f, 1.0f, 0.0f);
-
-		if (robot.getStackInSlot(0) != null) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef(-0.125F, 0, -0.125F);
-			doRenderItem(robot.getStackInSlot(0));
-			GL11.glColor3f(1, 1, 1);
-			GL11.glPopMatrix();
+		// Items in slots
+		for (int i = 0; i < 4; i++) {
+			ItemStack stack = robot.getItem(i);
+			if (!stack.isEmpty()) {
+				poseStack.pushPose();
+				float tx = (i == 1 || i == 2) ? 0.125F : -0.125F;
+				float tz = (i == 2 || i == 3) ? 0.125F : -0.125F;
+				poseStack.translate(tx, 0, tz);
+				doRenderItem(stack, poseStack, bufferSource, packedLight);
+				poseStack.popPose();
+			}
 		}
 
-		if (robot.getStackInSlot(1) != null) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef(+0.125F, 0, -0.125F);
-			doRenderItem(robot.getStackInSlot(1));
-			GL11.glColor3f(1, 1, 1);
-			GL11.glPopMatrix();
-		}
-
-		if (robot.getStackInSlot(2) != null) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef(+0.125F, 0, +0.125F);
-			doRenderItem(robot.getStackInSlot(2));
-			GL11.glColor3f(1, 1, 1);
-			GL11.glPopMatrix();
-		}
-
-		if (robot.getStackInSlot(3) != null) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef(-0.125F, 0, +0.125F);
-			doRenderItem(robot.getStackInSlot(3));
-			GL11.glColor3f(1, 1, 1);
-			GL11.glPopMatrix();
-		}
-
-		if (robot.itemInUse != null) {
-			GL11.glPushMatrix();
-
-			GL11.glRotatef(robot.itemAngle2, 0, 0, 1);
-
+		// Item in use
+		ItemStack itemInUse = robot.itemInUse;
+		if (itemInUse != null && !itemInUse.isEmpty()) {
+			poseStack.pushPose();
+			poseStack.mulPose(Axis.ZP.rotationDegrees(robot.itemAngle2));
 			if (robot.itemActive) {
-				long newDate = new Date().getTime();
-				robot.itemActiveStage = (robot.itemActiveStage + (newDate - robot.lastUpdateTime) / 10) % 45;
-				GL11.glRotatef(robot.itemActiveStage, 0, 0, 1);
-				robot.lastUpdateTime = newDate;
+				float stage = robot.itemActiveStage; // Updated in EntityRobot.tick
+				poseStack.mulPose(Axis.ZP.rotationDegrees(stage));
 			}
+			poseStack.translate(-0.4F, 0, 0);
+			poseStack.mulPose(Axis.YP.rotationDegrees(-45F + 180F));
+			poseStack.scale(0.8F, 0.8F, 0.8F);
 
-			GL11.glTranslatef(-0.4F, 0, 0);
-			GL11.glRotatef(-45F + 180F, 0, 1, 0);
-			GL11.glScalef(0.8F, 0.8F, 0.8F);
-
-			ItemStack itemstack1 = robot.itemInUse;
-
-			if (itemstack1.getItem().requiresMultipleRenderPasses()) {
-				for (int k = 0; k < itemstack1.getItem().getRenderPasses(itemstack1.getItemDamage()); ++k) {
-					RenderUtils.setGLColorFromInt(itemstack1.getItem().getColorFromItemStack(itemstack1, k));
-					this.renderManager.itemRenderer.renderItem(robot, itemstack1, k);
-				}
-			} else {
-				RenderUtils.setGLColorFromInt(itemstack1.getItem().getColorFromItemStack(itemstack1, 0));
-				this.renderManager.itemRenderer.renderItem(robot, itemstack1, 0);
-			}
-
-			GL11.glColor3f(1, 1, 1);
-			GL11.glPopMatrix();
+			itemRenderer.renderStatic(itemInUse, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, robot.level(), robot.getId());
+			poseStack.popPose();
 		}
 
-		if (robot.laser.isVisible) {
-			robot.laser.head.x = robot.posX;
-			robot.laser.head.y = robot.posY;
-			robot.laser.head.z = robot.posZ;
-
-			RenderLaser.doRenderLaser(renderManager.renderEngine, robot.laser, EntityLaser.LASER_TEXTURES[1]);
+		// Laser
+		LaserData laser = robot.laser;
+		if (laser != null && laser.isVisible) {
+			poseStack.pushPose();
+			// Laser is rendered relative to robot position
+			// EntityRobot sets laser head to its own pos, so we render at 0,0,0 relative to robot
+			laser.update();
+			poseStack.mulPose(Axis.YP.rotationDegrees((float) laser.angleZ));
+			poseStack.mulPose(Axis.ZP.rotationDegrees((float) laser.angleY));
+			VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(LASER_TEXTURE));
+			renderLaserLine(poseStack, vertexConsumer, laser.renderSize, laser.laserTexAnimation, packedLight);
+			poseStack.popPose();
 		}
 
-		if (robot.getTexture() != null) {
-			renderManager.renderEngine.bindTexture(robot.getTexture());
+		// Robot body
+		ResourceLocation texture = robot.getTexture();
+		if (texture != null) {
+			poseStack.pushPose();
 			float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
 			if (robot.hurtTime > 0) {
-				GL11.glColor3f(1.0f, 0.6f, 0.6f);
-				GL11.glRotatef(robot.hurtTime * 0.01f, 0, 0, 1);
+				poseStack.mulPose(Axis.ZP.rotationDegrees(robot.hurtTime * 0.01f));
 			}
-			doRenderRobot(1F / 16F, renderManager.renderEngine, storagePercent, robot.isActive());
-		}
+			
+			VertexConsumer bodyConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
+			int bodyRed = robot.hurtTime > 0 ? 255 : 255;
+			int bodyGreen = robot.hurtTime > 0 ? 153 : 255;
+			int bodyBlue = robot.hurtTime > 0 ? 153 : 255;
+			box.render(poseStack, bodyConsumer, packedLight, OverlayTexture.NO_OVERLAY, bodyRed, bodyGreen, bodyBlue, 255);
 
-		for (ItemStack s : robot.getWearables()) {
-			doRenderWearable(robot, renderManager.renderEngine, s);
-		}
+			if (robot.isActive()) {
+				// Overlay
+				VertexConsumer redConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(OVERLAY_RED));
+				int alpha = (int)(storagePercent * 255);
+				box.render(poseStack, redConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, alpha);
 
-		GL11.glPopMatrix();
-	}
-
-	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
-		return ((EntityRobot) entity).getTexture();
-	}
-
-	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return true;
-	}
-
-	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		return true;
-	}
-
-	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		if (RenderManager.instance == null || RenderManager.instance.renderEngine == null) {
-			return;
-		}
-
-		GL11.glPushMatrix();
-
-		if (item.getItem() == BuildCraftRobotics.robotItem) {
-			ItemRobot robot = (ItemRobot) item.getItem();
-			RenderManager.instance.renderEngine.bindTexture(robot.getTextureRobot(item));
-		}
-
-		if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
-			GL11.glTranslated(0.0, 1.0, 0.7);
-		} else if (type == ItemRenderType.ENTITY) {
-			GL11.glScaled(0.6, 0.6, 0.6);
-		} else if (type == ItemRenderType.INVENTORY) {
-			GL11.glScaled(1.5, 1.5, 1.5);
-		}
-
-		doRenderRobot(1F / 16F, RenderManager.instance.renderEngine, 0.9F, false);
-
-		GL11.glPopMatrix();
-	}
-
-	private void doRenderItem(ItemStack stack) {
-		float renderScale = 0.5f;
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0, 0.28F, 0);
-		GL11.glScalef(renderScale, renderScale, renderScale);
-		dummyEntityItem.setEntityItemStack(stack);
-		customRenderItem.doRender(dummyEntityItem, 0, 0, 0, 0, 0);
-
-		GL11.glPopMatrix();
-	}
-
-	private void doRenderWearable(EntityRobot entity, TextureManager textureManager, ItemStack wearable) {
-		if (wearable.getItem() instanceof IRobotOverlayItem) {
-			((IRobotOverlayItem) wearable.getItem()).renderRobotOverlay(wearable, textureManager);
-		} else if (wearable.getItem() instanceof ItemArmor) {
-			GL11.glPushMatrix();
-			GL11.glScalef(1.0125F, 1.0125F, 1.0125F);
-			GL11.glTranslatef(0.0f, -0.25f, 0.0f);
-			GL11.glRotatef(180F, 0, 0, 1);
-
-			int color = wearable.getItem().getColorFromItemStack(wearable, 0);
-			if (color != 16777215) {
-				GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT);
-				GL11.glColor3ub((byte) (color >> 16), (byte) ((color >> 8) & 255), (byte) (color & 255));
+				VertexConsumer cyanConsumer = bufferSource.getBuffer(RenderType.entityCutout(OVERLAY_CYAN));
+				box.render(poseStack, cyanConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, 255);
 			}
+			poseStack.popPose();
+		}
 
-			textureManager.bindTexture(RenderBiped.getArmorResource(entity, wearable, 0, null));
-			ModelBiped armorModel = ForgeHooksClient.getArmorModel(entity, wearable, 0, null);
-			if (armorModel != null) {
-				armorModel.render(entity, 0, 0, 0, -90f, 0, 1 / 16F);
+		// Wearables
+		for (ItemStack wearable : robot.getWearables()) {
+			doRenderWearable(robot, wearable, poseStack, bufferSource, packedLight);
+		}
 
-				if (color != 16777215) {
-					GL11.glPopAttrib();
-				}
-			} else {
-				GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-				helmetBox.render(1 / 16F);
+		poseStack.popPose();
+		super.render(robot, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
+	}
 
-				if (color != 16777215) {
-					this.bindTexture(RenderBiped.getArmorResource(entity, wearable, 0, "overlay"));
-					helmetBox.render(1 / 16F);
-					GL11.glPopAttrib();
-				}
-			}
+	private void doRenderItem(ItemStack stack, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+		poseStack.pushPose();
+		poseStack.translate(0, 0.28F, 0);
+		poseStack.scale(0.5f, 0.5f, 0.5f);
+		itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, null, 0);
+		poseStack.popPose();
+	}
 
-			GL11.glPopMatrix();
-		} else if (wearable.getItem() instanceof ItemSkull) {
-			doRenderSkull(wearable);
+	private void doRenderWearable(EntityRobot entity, ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+		Item item = wearable.getItem();
+		if (item instanceof IRobotOverlayItem) {
+			// IRobotOverlayItem still uses TextureManager, this is a limitation of not updating API
+			((IRobotOverlayItem) item).renderRobotOverlay(wearable, Minecraft.getInstance().getTextureManager());
+		} else if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
+			poseStack.pushPose();
+			poseStack.scale(1.0125F, 1.0125F, 1.0125F);
+			poseStack.translate(0.0f, -0.25f, 0.0f);
+			poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+
+			HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
+			ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
+			
+			VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));
+			armorModel.renderToBuffer(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+			
+			poseStack.popPose();
+		} else if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkullBlock) {
+			doRenderSkull(wearable, poseStack, bufferSource, packedLight);
 		}
 	}
 
-	private void doRenderSkull(ItemStack wearable) {
-		GL11.glPushMatrix();
-		GL11.glScalef(1.0125F, 1.0125F, 1.0125F);
+	private void doRenderSkull(ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+		poseStack.pushPose();
+		poseStack.scale(1.0125F, 1.0125F, 1.0125F);
 		GameProfile gameProfile = null;
-		if (wearable.hasTagCompound()) {
-			NBTTagCompound nbt = wearable.getTagCompound();
-			if (nbt.hasKey("Name")) {
-				gameProfile = gameProfileCache.get(nbt.getString("Name"));
-			} else if (nbt.hasKey("SkullOwner", NBT.TAG_COMPOUND)) {
-				gameProfile = NBTUtil.func_152459_a(nbt.getCompoundTag("SkullOwner"));
-				nbt.setString("Name", gameProfile.getName());
-				gameProfileCache.put(gameProfile.getName(), gameProfile);
+		CompoundTag nbt = wearable.getTag();
+		if (nbt != null) {
+			if (nbt.contains("SkullOwner", 10)) {
+				gameProfile = NbtUtils.readGameProfile(nbt.getCompound("SkullOwner"));
 			}
 		}
 
-		TileEntitySkullRenderer.field_147536_b.func_152674_a(-0.5F, -0.25F, -0.5F, 1, -90.0F,
-				wearable.getItemDamage(), gameProfile);
+		poseStack.translate(-0.5F, -0.25F, -0.5F);
+		SkullBlock.Type skullType = ((SkullBlock) ((BlockItem) wearable.getItem()).getBlock()).getType();
+		SkullBlockRenderer.renderSkull(null, 180.0F, 0.0F, poseStack, bufferSource, packedLight, SkullBlockRenderer.createSkullRenderers(Minecraft.getInstance().getEntityModels()).get(skullType), SkullBlockRenderer.getRenderType(skullType, gameProfile));
+		
 		if (gameProfile != null) {
-			GL11.glTranslatef(0.0f, -0.25f, 0.0f);
-			GL11.glRotatef(180F, 0, 0, 1);
-			GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-			skullOverlayBox.render(1 / 16f);
+			poseStack.pushPose();
+			poseStack.translate(0.5F, 0.25F, 0.5F);
+			poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+			poseStack.mulPose(Axis.YP.rotationDegrees(-90.0f));
+			VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SkullBlockRenderer.getRenderType(skullType, gameProfile).toString().contains("overlay") ? OVERLAY_RED : OVERLAY_CYAN)); // Dummy logic for skull overlay
+			skullOverlayBox.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+			poseStack.popPose();
 		}
-		GL11.glPopMatrix();
+		poseStack.popPose();
 	}
 
-	private void doRenderRobot(float factor, TextureManager texManager, float storagePercent, boolean isAsleep) {
-		box.render(factor);
+	private void renderLaserLine(PoseStack poseStack, VertexConsumer consumer, double length, int texIndex, int packedLight) {
+		Matrix4f matrix4f = poseStack.last().pose();
+		Matrix3f matrix3f = poseStack.last().normal();
 
-		if (!isAsleep) {
-			float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-			float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+		float size = 1.0f / 16.0f;
+		float v0 = texIndex / 40.0f;
+		float v1 = v0 + (1.0f / 40.0f);
 
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, storagePercent);
-			texManager.bindTexture(overlay_red);
-			box.render(factor);
-
-			GL11.glDisable(GL11.GL_BLEND);
-
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			texManager.bindTexture(overlay_cyan);
-			box.render(factor);
-
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
-
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
-		}
-
+		drawQuad(matrix4f, matrix3f, consumer, (float) length, size, v0, v1, packedLight);
 	}
 
-	private float interpolateRotation(float prevRot, float rot, float partialTicks) {
-		float angle;
+	private void drawQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float length, float size, float v0, float v1, int packedLight) {
+		vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v1, packedLight);
+		vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v1, packedLight);
 
-		for (angle = rot - prevRot; angle < -180.0F; angle += 360.0F) {
-		}
+		vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v1, packedLight);
+		vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v1, packedLight);
+		
+		vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v1, packedLight);
+		vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v1, packedLight);
+		
+		vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v0, packedLight);
+		vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v1, packedLight);
+		vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v1, packedLight);
+	}
 
-		while (angle >= 180.0F) {
-			angle -= 360.0F;
-		}
+	private void vertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float x, float y, float z, float u, float v, int packedLight) {
+		consumer.vertex(matrix4f, x, y, z)
+				.color(255, 255, 255, 255)
+				.uv(u, v)
+				.overlayCoords(OverlayTexture.NO_OVERLAY)
+				.uv2(packedLight)
+				.normal(matrix3f, 0, 1, 0)
+				.endVertex();
+	}
 
-		return prevRot + partialTicks * angle;
+	@Override
+	public ResourceLocation getTextureLocation(EntityRobot robot) {
+		return robot.getTexture();
+	}
+
+	public static LayerDefinition createLayer() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		root.addOrReplaceChild("box", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -4F, -4F, 8, 8, 8), PartPose.ZERO);
+		root.addOrReplaceChild("helmetBox", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -8F, -4F, 8, 8, 8), PartPose.ZERO);
+		root.addOrReplaceChild("skullOverlayBox", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, new CubeDeformation(0.5F)), PartPose.ZERO);
+		return LayerDefinition.create(mesh, 64, 32);
 	}
 }
