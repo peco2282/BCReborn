@@ -115,20 +115,27 @@ public class PacketController {
         ListSetLabelPacket::handle
     );
 
-    // Robotics
+    /// Builders
+    registerC2S(
+        RequestInitializationPacket.class,
+        RequestInitializationPacket::encode,
+        RequestInitializationPacket::decode,
+        RequestInitializationPacket::handle
+    );
+    registerC2S(
+        UploadBuildersInActionPacket.class,
+        UploadBuildersInActionPacket::encode,
+        UploadBuildersInActionPacket::decode,
+        UploadBuildersInActionPacket::handle
+    );
+
+    /// Robotics
     registerC2S(
         RequestRequesterListPacket.class,
         RequestRequesterListPacket::encode,
         RequestRequesterListPacket::decode,
         RequestRequesterListPacket::handle
     );
-    registerS2C(
-        SyncRequesterListPacket.class,
-        SyncRequesterListPacket::encode,
-        SyncRequesterListPacket::decode,
-        SyncRequesterListPacket::handle
-    );
-
     registerC2S(
         RequestZonePlanLoadAreaPacket.class,
         RequestZonePlanLoadAreaPacket::encode,
@@ -141,33 +148,16 @@ public class PacketController {
         RequestZonePlanSaveAreaPacket::decode,
         RequestZonePlanSaveAreaPacket::handle
     );
-    registerS2C(
-        SyncZonePlanAreaLoadedPacket.class,
-        SyncZonePlanAreaLoadedPacket::encode,
-        SyncZonePlanAreaLoadedPacket::decode,
-        SyncZonePlanAreaLoadedPacket::handle
-    );
     registerC2S(
         RequestZonePlanComputeMapPacket.class,
         RequestZonePlanComputeMapPacket::encode,
         RequestZonePlanComputeMapPacket::decode,
         RequestZonePlanComputeMapPacket::handle
     );
-    registerS2C(
-        SyncZonePlanImagePacket.class,
-        SyncZonePlanImagePacket::encode,
-        SyncZonePlanImagePacket::decode,
-        SyncZonePlanImagePacket::handle
-    );
-
-    registerS2C(
-        SyncBuilderRequirementsPacket.class,
-        SyncBuilderRequirementsPacket::encode,
-        SyncBuilderRequirementsPacket::decode,
-        SyncBuilderRequirementsPacket::handle
-    );
 
     // Server -> Client
+
+    /// Blueprint
     registerS2C(
         DownloadBlueprintPacket.class,
         DownloadBlueprintPacket::encode,
@@ -203,10 +193,84 @@ public class PacketController {
         ClearItemRequirementsPacket::handle
     );
     registerS2C(
+        SyncBuilderRequirementsPacket.class,
+        SyncBuilderRequirementsPacket::encode,
+        SyncBuilderRequirementsPacket::decode,
+        SyncBuilderRequirementsPacket::handle
+    );
+    registerS2C(
         PacketGuiWidget.class,
         PacketGuiWidget::encode,
         PacketGuiWidget::decode,
         PacketGuiWidget::handle
+    );
+    registerS2C(
+        LaunchItemPacket.class,
+        LaunchItemPacket::encode,
+        LaunchItemPacket::decode,
+        LaunchItemPacket::handle
+    );
+
+    /// Items / Wearables
+    registerS2C(
+        ClientSetInventoryPacket.class,
+        ClientSetInventoryPacket::encode,
+        ClientSetInventoryPacket::decode,
+        ClientSetInventoryPacket::handle
+    );
+    registerS2C(
+        ClientSetItemInUsePacket.class,
+        ClientSetItemInUsePacket::encode,
+        ClientSetItemInUsePacket::decode,
+        ClientSetItemInUsePacket::handle
+    );
+    registerS2C(
+        SetItemActivePacket.class,
+        SetItemActivePacket::encode,
+        SetItemActivePacket::decode,
+        SetItemActivePacket::handle
+    );
+    registerS2C(
+        SyncWearablesPacket.class,
+        SyncWearablesPacket::encode,
+        SyncWearablesPacket::decode,
+        SyncWearablesPacket::handle
+    );
+
+    /// Robotics
+    registerS2C(
+        SyncRequesterListPacket.class,
+        SyncRequesterListPacket::encode,
+        SyncRequesterListPacket::decode,
+        SyncRequesterListPacket::handle
+    );
+    registerS2C(
+        SyncZonePlanAreaLoadedPacket.class,
+        SyncZonePlanAreaLoadedPacket::encode,
+        SyncZonePlanAreaLoadedPacket::decode,
+        SyncZonePlanAreaLoadedPacket::handle
+    );
+    registerS2C(
+        SyncZonePlanImagePacket.class,
+        SyncZonePlanImagePacket::encode,
+        SyncZonePlanImagePacket::decode,
+        SyncZonePlanImagePacket::handle
+    );
+
+    /// Steam / Energy
+    registerS2C(
+        SetSteamDirectionPacket.class,
+        SetSteamDirectionPacket::encode,
+        SetSteamDirectionPacket::decode,
+        SetSteamDirectionPacket::handle
+    );
+
+    /// Initialization
+    registerS2C(
+        InitializePacket.class,
+        InitializePacket::encode,
+        InitializePacket::decode,
+        InitializePacket::handle
     );
   }
 
