@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
@@ -35,7 +36,7 @@ public abstract class BCStatement implements IStatement {
 	public BCStatement(String... uniqueTag) {
 		this.uniqueTag = uniqueTag[0];
 		for (String tag : uniqueTag) {
-			StatementManager.statements.put(tag, this);
+			StatementManager.statements.put(String.format("%s:%s", BCRebornRobotics.MODID, tag), this);
 		}
 	}
 

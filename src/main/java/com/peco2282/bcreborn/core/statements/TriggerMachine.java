@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerExternal;
@@ -55,6 +56,6 @@ public class TriggerMachine extends BCStatement implements ITriggerExternal {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_machine_" + (active ? "active" : "inactive")));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_machine_" + (active ? "active" : "inactive")));
 	}
 }

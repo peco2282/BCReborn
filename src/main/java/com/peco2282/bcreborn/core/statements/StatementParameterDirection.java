@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -105,12 +106,12 @@ public class StatementParameterDirection implements IStatementParameter {
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
 		icons = new TextureAtlasSprite[6];
-		icons[0] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_down"));
-		icons[1] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_up"));
-		icons[2] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_north"));
-		icons[3] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_south"));
-		icons[4] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_west"));
-		icons[5] = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_dir_east"));
+		icons[0] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_down"));
+		icons[1] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_up"));
+		icons[2] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_north"));
+		icons[3] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_south"));
+		icons[4] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_west"));
+		icons[5] = textureGetter.apply(BCRebornCore.location("triggers/trigger_dir_east"));
 	}
 
 	@Override

@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerExternal;
@@ -96,7 +97,7 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_liquidcontainer_" + state.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_liquidcontainer_" + state.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override

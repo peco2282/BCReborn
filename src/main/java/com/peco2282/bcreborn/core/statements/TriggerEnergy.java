@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -56,7 +57,7 @@ public class TriggerEnergy extends BCStatement implements ITriggerInternal {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/trigger_energy_storage_" + (high ? "high" : "low")));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_energy_storage_" + (high ? "high" : "low")));
 	}
 
 	@Override
