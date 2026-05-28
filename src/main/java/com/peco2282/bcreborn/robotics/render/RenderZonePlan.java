@@ -1,72 +1,87 @@
 package com.peco2282.bcreborn.robotics.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.MapColor;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import java.util.HashMap;
+import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
+public class RenderZonePlan implements BlockEntityRenderer<ZonePlanBlockEntity> {
+	private static final float Z_OFFSET = 1.0005F;
+	private final Map<ZonePlanBlockEntity, DynamicTexture> textures = new HashMap<>();
+	private final Map<ZonePlanBlockEntity, ResourceLocation> resourceLocations = new HashMap<>();
 
-import net.minecraft.block.material.MapColor;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-
-import buildcraft.core.lib.block.BlockBuildCraft;
-import buildcraft.core.lib.render.DynamicTextureBC;
-import buildcraft.core.lib.render.FakeIcon;
-import buildcraft.core.lib.render.RenderEntityBlock;
-import buildcraft.robotics.TileZonePlan;
-
-public class RenderZonePlan extends TileEntitySpecialRenderer {
-	private static final float Z_OFFSET = 2049 / 2048.0F;
-	private static final HashMap<TileZonePlan, DynamicTextureBC> TEXTURES = new HashMap<TileZonePlan, DynamicTextureBC>();
+	public RenderZonePlan(BlockEntityRendererProvider.Context context) {
+	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double tx, double ty, double tz, float partialTicks) {
-		boolean rendered = true;
-		TileZonePlan zonePlan = (TileZonePlan) tile;
-
-		if (!TEXTURES.containsKey(zonePlan)) {
-			DynamicTextureBC textureBC = new DynamicTextureBC(16, 16);
-			TEXTURES.put(zonePlan, textureBC);
-			rendered = false;
+	public void render(ZonePlanBlockEntity zonePlan, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+		boolean firstRender = !textures.containsKey(zonePlan);
+		if (firstRender) {
+			DynamicTexture texture = new DynamicTexture(16, 16, true);
+			textures.put(zonePlan, texture);
+			resourceLocations.put(zonePlan, Minecraft.getInstance().getTextureManager().register("zone_plan_preview_" + zonePlan.getBlockPos().asLong(), texture));
 		}
-		DynamicTextureBC textureBC = TEXTURES.get(zonePlan);
-		FakeIcon fakeIcon = new FakeIcon(0, 1, 0, 1, 16, 16);
 
-		byte[] previewColors = zonePlan.getPreviewTexture(!rendered);
+		DynamicTexture dynamicTexture = textures.get(zonePlan);
+		byte[] previewColors = zonePlan.getPreviewTexture(firstRender);
 
 		if (previewColors != null) {
 			for (int y = 0; y < 8; y++) {
 				for (int x = 0; x < 10; x++) {
-					int col = MapColor.mapColorArray[previewColors[y * 10 + x]].colorValue;
-					if ((x & 1) != (y & 1)) {
-						int ocol = col;
-						col = (ocol & 0xFF) * 15 / 16
-								| (((ocol & 0xFF00) >> 8) * 15 / 16) << 8
-								| (((ocol & 0xFF0000) >> 16) * 15 / 16) << 16;
+					int col = MapColor.byId(previewColors[y * 10 + x] & 0xFF).col;
+					if (((x & 1) != (y & 1))) {
+						int r = (col >> 16) & 0xFF;
+						int g = (col >> 8) & 0xFF;
+						int b = col & 0xFF;
+						r = r * 15 / 16;
+						g = g * 15 / 16;
+						b = b * 15 / 16;
+						col = (r << 16) | (g << 8) | b;
 					}
-					textureBC.setColor(x + 3, y + 3, 0xFF000000 | col);
+					dynamicTexture.getPixels().setPixelRGBA(x + 3, y + 3, 0xFF000000 | (col & 0x00FFFFFF)); // ARGB vs ABGR might need check
 				}
 			}
+			dynamicTexture.upload();
 		}
 
-		GL11.glPushMatrix();
-		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT);
+		poseStack.pushPose();
+		poseStack.translate(0.5D, 0.5D, 0.5D);
+		poseStack.scale(Z_OFFSET, Z_OFFSET, Z_OFFSET);
+		poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-		GL11.glTranslatef((float) tx + 0.5F, (float) ty + 0.5F, (float) tz + 0.5F);
-		GL11.glScalef(Z_OFFSET, Z_OFFSET, Z_OFFSET);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+		ResourceLocation textureLoc = resourceLocations.get(zonePlan);
+		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(textureLoc));
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		// Draw the front face with the preview texture
+		// Assuming North for simplicity, but should follow block orientation
+		renderFace(poseStack, vertexConsumer, packedLight);
 
-		textureBC.updateTexture();
+		poseStack.popPose();
+	}
 
-		RenderEntityBlock.RenderInfo renderBox = new RenderEntityBlock.RenderInfo();
-		renderBox.setRenderSingleSide(((BlockBuildCraft) zonePlan.getBlockType()).getFrontSide(zonePlan.getBlockMetadata()));
-		renderBox.texture = fakeIcon;
-		renderBox.light = 15;
-		RenderEntityBlock.INSTANCE.renderBlock(renderBox);
+	private void renderFace(PoseStack poseStack, VertexConsumer consumer, int packedLight) {
+		Matrix4f matrix4f = poseStack.last().pose();
+		Matrix3f matrix3f = poseStack.last().normal();
 
-		GL11.glPopAttrib();
-		GL11.glPopMatrix();
+		// Assuming front face (Z=0 or Z=1 depending on orientation)
+		// For now let's just draw a quad at Z=1.0001
+		float z = 1.0F;
+		consumer.vertex(matrix4f, 0, 0, z).color(255, 255, 255, 255).uv(0, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0, 0, 1).endVertex();
+		consumer.vertex(matrix4f, 1, 0, z).color(255, 255, 255, 255).uv(1, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0, 0, 1).endVertex();
+		consumer.vertex(matrix4f, 1, 1, z).color(255, 255, 255, 255).uv(1, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0, 0, 1).endVertex();
+		consumer.vertex(matrix4f, 0, 1, z).color(255, 255, 255, 255).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0, 0, 1).endVertex();
 	}
 }

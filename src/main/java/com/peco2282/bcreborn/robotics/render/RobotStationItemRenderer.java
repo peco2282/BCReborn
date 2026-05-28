@@ -1,85 +1,91 @@
-/**
- * Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
- * http://www.mod-buildcraft.com
- * <p/>
- * BuildCraft is distributed under the terms of the Minecraft Mod Public
- * License 1.0, or MMPL. Please check the contents of the license located in
- * http://www.mod-buildcraft.com/MMPL-1.0.txt
- */
 package com.peco2282.bcreborn.robotics.render;
 
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.peco2282.bcreborn.BCRebornRobotics;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+public class RobotStationItemRenderer extends BlockEntityWithoutLevelRenderer {
+    public static final RobotStationItemRenderer INSTANCE = new RobotStationItemRenderer();
+    private static final ResourceLocation TEXTURE = BCRebornRobotics.location("textures/block/pipes/pipe_robot_station.png");
 
-import net.minecraftforge.client.IItemRenderer;
+    public RobotStationItemRenderer() {
+        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+    }
 
-import buildcraft.BuildCraftTransport;
-import buildcraft.core.lib.render.FakeBlock;
-import buildcraft.core.lib.render.RenderUtils;
-import buildcraft.transport.PipeIconProvider;
+    @Override
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
+        renderPlug(poseStack, vertexConsumer, packedLight);
+    }
 
-public class RobotStationItemRenderer implements IItemRenderer {
-	private void renderPlugItem(RenderBlocks render, ItemStack item, float translateX, float translateY, float translateZ) {
-		FakeBlock block = FakeBlock.INSTANCE;
-		Tessellator tessellator = Tessellator.instance;
-		IIcon textureID = BuildCraftTransport.instance.pipeIconProvider.getIcon(PipeIconProvider.TYPE.PipeRobotStation.ordinal()); // Structure pipe
+    private void renderPlug(PoseStack poseStack, VertexConsumer consumer, int packedLight) {
+        // Equivalent to the original code's two boxes
+        // Box 1: 0.25, 0.1875, 0.25 to 0.75, 0.25, 0.75
+        renderBox(poseStack, consumer, 0.25F, 0.1875F, 0.25F, 0.75F, 0.25F, 0.75F, packedLight);
+        // Box 2: 0.4325, 0.25, 0.4325 to 0.5675, 0.4375, 0.5675
+        renderBox(poseStack, consumer, 0.4325F, 0.25F, 0.4325F, 0.5675F, 0.4375F, 0.5675F, packedLight);
+    }
 
-		GL11.glTranslatef(translateX, translateY, translateZ + 0.25F);
+    private void renderBox(PoseStack poseStack, VertexConsumer consumer, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int packedLight) {
+        Matrix4f matrix4f = poseStack.last().pose();
+        Matrix3f matrix3f = poseStack.last().normal();
 
-		block.setBlockBounds(0.25F, 0.1875F, 0.25F, 0.75F, 0.25F, 0.75F);
-		render.setRenderBoundsFromBlock(block);
-		RenderUtils.drawBlockItem(render, tessellator, block, textureID);
+        // Draw 6 faces
+        // Down
+        vertex(matrix4f, matrix3f, consumer, minX, minY, minZ, 0, 0, 0, -1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, minZ, 1, 0, 0, -1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, maxZ, 1, 1, 0, -1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, minY, maxZ, 0, 1, 0, -1, 0, packedLight);
 
-		block.setBlockBounds(0.4325F, 0.25F, 0.4325F, 0.5675F, 0.4375F, 0.5675F);
-		render.setRenderBoundsFromBlock(block);
-		RenderUtils.drawBlockItem(render, tessellator, block, textureID);
-	}
+        // Up
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, maxZ, 0, 0, 0, 1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, maxZ, 1, 0, 0, 1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, minZ, 1, 1, 0, 1, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, minZ, 0, 1, 0, 1, 0, packedLight);
 
-	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		switch (type) {
-			case ENTITY:
-				return true;
-			case EQUIPPED:
-				return true;
-			case EQUIPPED_FIRST_PERSON:
-				return true;
-			case INVENTORY:
-				return true;
-			default:
-				return false;
-		}
-	}
+        // North
+        vertex(matrix4f, matrix3f, consumer, minX, minY, minZ, 0, 0, 0, 0, -1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, minZ, 0, 1, 0, 0, -1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, minZ, 1, 1, 0, 0, -1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, minZ, 1, 0, 0, 0, -1, packedLight);
 
-	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		return helper != ItemRendererHelper.BLOCK_3D;
-	}
+        // South
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, maxZ, 0, 0, 0, 0, 1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, maxZ, 0, 1, 0, 0, 1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, maxZ, 1, 1, 0, 0, 1, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, minY, maxZ, 1, 0, 0, 0, 1, packedLight);
 
-	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		switch (type) {
-			case ENTITY:
-				GL11.glScalef(0.50F, 0.50F, 0.50F);
-				renderPlugItem((RenderBlocks) data[0], item, -0.6F, 0f, -0.6F);
-				break;
-			case EQUIPPED:
-			case EQUIPPED_FIRST_PERSON:
-				GL11.glRotatef(70, 0, 0, 1F);
-				GL11.glRotatef(-55, 1, 0, 0);
-				GL11.glScalef(2F, 2F, 2F);
-				GL11.glTranslatef(0, -0.6F, -0.4F);
-				renderPlugItem((RenderBlocks) data[0], item, 0F, 0F, 0f);
-				break;
-			case INVENTORY:
-				GL11.glScalef(1.1F, 1.1F, 1.1F);
-				renderPlugItem((RenderBlocks) data[0], item, -0.3f, -0.35f, -0.7f);
-				break;
-			default:
-		}
-	}
+        // West
+        vertex(matrix4f, matrix3f, consumer, minX, minY, maxZ, 0, 0, -1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, maxZ, 0, 1, -1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, maxY, minZ, 1, 1, -1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, minX, minY, minZ, 1, 0, -1, 0, 0, packedLight);
+
+        // East
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, minZ, 0, 0, 1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, minZ, 0, 1, 1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, maxY, maxZ, 1, 1, 1, 0, 0, packedLight);
+        vertex(matrix4f, matrix3f, consumer, maxX, minY, maxZ, 1, 0, 1, 0, 0, packedLight);
+    }
+
+    private void vertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float x, float y, float z, float u, float v, float nx, float ny, float nz, int packedLight) {
+        consumer.vertex(matrix4f, x, y, z)
+                .color(255, 255, 255, 255)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(packedLight)
+                .normal(matrix3f, nx, ny, nz)
+                .endVertex();
+    }
 }
