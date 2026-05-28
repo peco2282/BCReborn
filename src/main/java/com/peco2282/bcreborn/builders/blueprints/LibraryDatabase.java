@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 
 public class LibraryDatabase {
@@ -23,35 +24,31 @@ public class LibraryDatabase {
 	protected LibraryId[] pages = new LibraryId[0];
 
 	private File outputDir;
-	private List<File> inputDirs;
+	private File inputDir;
 
 	/**
 	 * Initialize the blueprint database.
 	 *
-	 * @param inputPaths directories to read the blueprints from.
+	 * @param inputPath directories to read the blueprints from.
 	 */
-	public void init(String[] inputPaths, String outputPath) {
-		outputDir = new File(outputPath);
+	public void init(Path inputPath, Path outputPath) {
+		outputDir = outputPath.toFile();
+		inputDir = inputPath.toFile();
 
 		if (!outputDir.exists()) {
 			outputDir.mkdirs();
 		}
 
-		inputDirs = new ArrayList<>();
-
-        for (String inputPath : inputPaths) {
-            File inputDir = new File(inputPath);
-            if (inputDir.exists()) {
-                inputDirs.add(inputDir);
-            }
-        }
+		if (!inputDir.exists()) {
+			inputDir.mkdirs();
+		}
 
 		refresh();
 	}
 
 	public void refresh() {
 		blueprintIds = new TreeSet<>();
-		for (File f : inputDirs) {
+		for (File f : inputDir.listFiles(File::isFile)) {
 			loadIndex(f);
 		}
 	}
@@ -70,7 +67,7 @@ public class LibraryDatabase {
 	protected File getBlueprintFile(LibraryId id) {
 		String name = String.format(Locale.ENGLISH, "%s." + id.extension, id.toString());
 
-		for (File dir : inputDirs) {
+		for (File dir : inputDir.listFiles(File::isFile)) {
 			File f = new File(dir, name);
 
 			if (f.exists()) {
