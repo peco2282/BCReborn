@@ -38,4 +38,24 @@ public class BCFakePlayer {
     }
     return playerCache;
   }
+
+  public static WeakReference<FakePlayer> getBuildCraftPlayer(ServerLevel world, BlockPos pos) {
+    FakePlayer fakePlayer = playerCache.get();
+    if (fakePlayer == null) {
+      fakePlayer = createBuildCraftPlayer(world, pos);
+
+      playerCache = new WeakReference<>(fakePlayer);
+    }
+    return playerCache;
+  }
+
+  public static WeakReference<FakePlayer> getBuildCraftPlayer(ServerLevel world, int x, int y, int z) {
+    FakePlayer fakePlayer = playerCache.get();
+    if (fakePlayer == null) {
+      fakePlayer = createBuildCraftPlayer(world, x, y, z);
+
+      playerCache = new WeakReference<>(fakePlayer);
+    }
+    return playerCache;
+  }
 }
