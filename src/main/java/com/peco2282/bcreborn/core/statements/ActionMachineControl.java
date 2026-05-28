@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -50,6 +51,6 @@ public class ActionMachineControl extends BCStatement implements IActionExternal
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/action_machinecontrol_" + mode.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/action_machinecontrol_" + mode.name().toLowerCase(Locale.ENGLISH)));
 	}
 }

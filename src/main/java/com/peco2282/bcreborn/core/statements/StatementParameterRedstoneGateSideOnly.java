@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -71,7 +72,7 @@ public class StatementParameterRedstoneGateSideOnly implements
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/redstone_gate_side_only"));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/redstone_gate_side_only"));
 	}
 
 	@Override

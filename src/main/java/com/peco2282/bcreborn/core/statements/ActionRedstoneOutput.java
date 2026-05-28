@@ -8,6 +8,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -81,6 +82,6 @@ public class ActionRedstoneOutput extends BCStatement implements IActionInternal
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore", "triggers/action_redstoneoutput"));
+		icon = textureGetter.apply(BCRebornCore.location("triggers/action_redstoneoutput"));
 	}
 }
