@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.builders;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.io.File;
 import java.util.List;
 
 @SuppressWarnings("NotNullFieldNotInitialized")
@@ -15,6 +16,7 @@ public class ConfigBuilders {
   private static ForgeConfigSpec.IntValue miningDepth;
 
   // blueprints
+  private static ForgeConfigSpec.ConfigValue<String> serverDatabaseDirectory;
   private static ForgeConfigSpec.ConfigValue<String> clientDatabaseDirectory;
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> excludedBlocks;
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> excludedMods;
@@ -23,7 +25,8 @@ public class ConfigBuilders {
   public static boolean isQuarryDoChunkLoading() { return quarryDoChunkLoading.get(); }
   public static boolean isQuarryOneTimeUse() { return quarryOneTimeUse.get(); }
   public static int getMiningDepth() { return miningDepth.get(); }
-  public static String getClientDatabaseDirectory() { return clientDatabaseDirectory.get(); }
+  public static String getServerDatabaseDirectory() { return serverDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());  }
+  public static String getClientDatabaseDirectory() { return clientDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());  }
   public static List<? extends String> getExcludedBlocks() { return excludedBlocks.get(); }
   public static List<? extends String> getExcludedMods() { return excludedMods.get(); }
 
@@ -43,8 +46,10 @@ public class ConfigBuilders {
     builder.pop();
 
     builder.comment("Blueprint settings").push("blueprints");
+    serverDatabaseDirectory = builder.comment("Location for the server blueprint database (used by the Electronic Library).")
+        .define("serverDatabaseDirectory", "$MINECRAFT/blueprints/server");
     clientDatabaseDirectory = builder.comment("Location for the client blueprint database (used by the Electronic Library).")
-        .define("clientDatabaseDirectory", "$MINECRAFT/blueprints");
+        .define("clientDatabaseDirectory", "$MINECRAFT/blueprints/client");
     excludedBlocks = builder.comment("Blocks that should be excluded from the builder.")
         .defineList("excludedBlocks", List.of(), e -> e instanceof String);
     excludedMods = builder.comment("Mods that should be excluded from the builder.")
