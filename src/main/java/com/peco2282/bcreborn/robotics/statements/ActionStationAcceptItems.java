@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 public class ActionStationAcceptItems extends ActionStationInputItems {
 
 	public ActionStationAcceptItems() {
-		super("buildcraft:station.accept_items");
+		super("station.accept_items");
 		StatementManager.statements.put("buildcraft:station.drop_in_pipe", this);
 	}
 
@@ -27,7 +28,7 @@ public class ActionStationAcceptItems extends ActionStationInputItems {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_station_accept_items"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_accept_items"));
 	}
 
 	@Override

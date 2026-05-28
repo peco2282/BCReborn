@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
@@ -29,7 +30,7 @@ public class ActionRobotWorkInArea extends BCStatement implements IActionInterna
 		}
 
 		public String getTag() {
-			return "buildcraft:robot." + name;
+			return "robot." + name;
 		}
 
 		public String getUnlocalizedName() {
@@ -57,7 +58,7 @@ public class ActionRobotWorkInArea extends BCStatement implements IActionInterna
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", areaType.getIcon()));
+		icon = textureGetter.apply(BCRebornRobotics.location(areaType.getIcon()));
 	}
 
 	public static IZone getArea(StatementSlot slot) {

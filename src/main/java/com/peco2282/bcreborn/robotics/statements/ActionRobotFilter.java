@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.*;
 import com.peco2282.bcreborn.common.inventory.filters.*;
@@ -22,7 +23,7 @@ import net.minecraftforge.fluids.FluidUtil;
 public class ActionRobotFilter extends BCStatement implements IActionInternal {
 
 	public ActionRobotFilter() {
-		super("buildcraft:robot.work_filter");
+		super("robot.work_filter");
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_robot_filter"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter"));
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
 	}
 
 	public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
-		ArrayList<ItemStack> result = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> result = new ArrayList<>();
 
 		for (StatementSlot slot : station.getActiveActions()) {
 			if (slot.statement instanceof ActionRobotFilter) {

@@ -15,7 +15,7 @@ public class StatementParameterMapLocation extends StatementParameterItemStack {
 
 	@Override
 	public String getUniqueTag() {
-		return "buildcraft:maplocation";
+		return "maplocation";
 	}
 
 	@Override

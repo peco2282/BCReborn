@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.robotics.statements;
 import java.util.List;
 import java.util.function.Function;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.robots.AIRobot;
@@ -28,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ActionRobotGotoStation extends BCStatement implements IActionInternal {
 
 	public ActionRobotGotoStation() {
-		super("buildcraft:robot.goto_station");
+		super("robot.goto_station");
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_robot_goto_station"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_goto_station"));
 	}
 
 	@Override

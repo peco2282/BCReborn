@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.*;
 import com.peco2282.bcreborn.common.inventory.filters.ArrayStackOrListFilter;
@@ -21,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ActionRobotFilterTool extends BCStatement implements IActionInternal {
 
 	public ActionRobotFilterTool() {
-		super("buildcraft:robot.work_filter_tool");
+		super("robot.work_filter_tool");
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_robot_filter_tool"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter_tool"));
 	}
 
 	@Override

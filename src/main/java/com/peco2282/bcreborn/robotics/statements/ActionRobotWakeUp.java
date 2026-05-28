@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 public class ActionRobotWakeUp extends BCStatement implements IActionInternal {
 
 	public ActionRobotWakeUp() {
-		super("buildcraft:robot.wakeup");
+		super("robot.wakeup");
 	}
 
 	@Override
@@ -26,7 +27,7 @@ public class ActionRobotWakeUp extends BCStatement implements IActionInternal {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_robot_wakeup"));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_wakeup"));
 	}
 
 	@Override

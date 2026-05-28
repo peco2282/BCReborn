@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
@@ -19,7 +20,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
 	private final boolean invert;
 
 	public ActionStationForbidRobot(boolean invert) {
-		super("buildcraft:station." + (invert ? "force" : "forbid") + "_robot");
+		super("station." + (invert ? "force" : "forbid") + "_robot");
 		this.invert = invert;
 	}
 
@@ -31,7 +32,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/action_station_robot_" + (invert ? "mandatory" : "forbidden")));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_robot_" + (invert ? "mandatory" : "forbidden")));
 	}
 
 	@Override

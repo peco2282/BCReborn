@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.robotics.statements;
 import java.util.List;
 import java.util.function.Function;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -19,7 +20,7 @@ public class TriggerRobotLinked extends BCStatement implements ITriggerInternal 
 	private final boolean reserved;
 
 	public TriggerRobotLinked(boolean reserved) {
-		super("buildcraft:robot." + (reserved ? "reserved" : "linked"));
+		super("robot." + (reserved ? "reserved" : "linked"));
 		this.reserved = reserved;
 	}
 
@@ -31,7 +32,7 @@ public class TriggerRobotLinked extends BCStatement implements ITriggerInternal 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "triggers/trigger_robot_" + (reserved ? "reserved" : "linked")));
+		icon = textureGetter.apply(BCRebornRobotics.location("triggers/trigger_robot_" + (reserved ? "reserved" : "linked")));
 	}
 
 	@Override
