@@ -8,13 +8,14 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.lib.utils.BlockUtils;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotPumpBlock extends AIRobot {
 
@@ -47,11 +48,10 @@ public class AIRobotPumpBlock extends AIRobot {
 		if (waited < 40) {
 			waited++;
 		} else {
-			FluidStack fluidStack = BlockUtils.drainBlock(robot.level(), blockToPump.x, blockToPump.y, blockToPump.z, false);
+			FluidStack fluidStack = BlockUtils.drainBlock(robot.level(), blockToPump.toBlockPos(), false);
 			if (fluidStack != null) {
-				if (robot.fill(ForgeDirection.UNKNOWN, fluidStack, true) > 0) {
-					BlockUtils.drainBlock(robot.level(), blockToPump.x, blockToPump.y,
-							blockToPump.z, true);
+				if (robot.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE) > 0) {
+					BlockUtils.drainBlock(robot.level(), blockToPump.toBlockPos(), true);
 				}
 			}
 			terminate();

@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
-import com.peco2282.bcreborn.common.lib.inventory.StackHelper;
-import com.peco2282.bcreborn.common.lib.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 import com.peco2282.bcreborn.robotics.IStationFilter;
 import com.peco2282.bcreborn.robotics.StackRequest;
+import net.minecraft.world.item.ItemStack;
 
 public class AIRobotSearchStackRequest extends AIRobot {
 

@@ -8,17 +8,16 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.lib.inventory.filters.SimpleFluidFilter;
+import com.peco2282.bcreborn.common.inventory.filters.SimpleFluidFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationAcceptFluids;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotUnloadFluids extends AIRobot {
 
@@ -48,7 +47,7 @@ public class AIRobotUnloadFluids extends AIRobot {
 		}
 
 		if (!ActionRobotFilter.canInteractWithFluid(station,
-				new SimpleFluidFilter(robot.getTankInfo(ForgeDirection.UNKNOWN)[0].fluid),
+				new SimpleFluidFilter(robot.getFluidInTank(100)),
 				ActionStationAcceptFluids.class)) {
 			return 0;
 		}
@@ -58,18 +57,17 @@ public class AIRobotUnloadFluids extends AIRobot {
 			return 0;
 		}
 
-		FluidStack drainable = robot.drain(ForgeDirection.UNKNOWN,
-				FluidContainerRegistry.BUCKET_VOLUME, false);
-		if (drainable == null) {
+		FluidStack drainable = robot.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+		if (drainable == FluidStack.EMPTY) {
 			return 0;
 		}
 
 		drainable = drainable.copy();
-		int filled = fluidHandler.fill(station.getFluidOutputSide(), drainable, doUnload);
+		int filled = fluidHandler.fill(drainable, doUnload ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
 
 		if (filled > 0 && doUnload) {
-			drainable.amount = filled;
-			robot.drain(ForgeDirection.UNKNOWN, drainable, true);
+			drainable.setAmount(filled);
+			robot.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
 		}
 		return filled;
 	}

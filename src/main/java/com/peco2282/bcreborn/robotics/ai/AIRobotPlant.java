@@ -1,16 +1,17 @@
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraft.entity.player.EntityPlayer;
+import com.peco2282.bcreborn.common.utils.BCFakePlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.WorldServer;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.lib.utils.BlockUtils;
-import com.peco2282.bcreborn.common.proxy.CoreProxy;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 public class AIRobotPlant extends AIRobot {
 	private BlockIndex blockFound;
@@ -40,17 +41,16 @@ public class AIRobotPlant extends AIRobot {
 		}
 
 		if (delay++ > 40) {
-			EntityPlayer player = CoreProxy.proxy.getBuildCraftPlayer((WorldServer) robot.level())
+			Player player = BCFakePlayer.getBuildCraftPlayer((ServerLevel) robot.level())
 					.get();
-			if (CropManager.plantCrop(robot.level(), player, robot.getHeldItem(), blockFound.x,
-					blockFound.y, blockFound.z)) {
+			if (CropManager.plantCrop(robot.level(), player, robot.getMainHandItem(), blockFound.toBlockPos())) {
 			} else {
 				setSuccess(false);
 			}
-			if (robot.getHeldItem().getCount() > 0) {
-				BlockUtils.dropItem((WorldServer) robot.level(),
-						MathHelper.floor_double(robot.getX()), MathHelper.floor_double(robot.getY()),
-						MathHelper.floor_double(robot.getZ()), 6000, robot.getHeldItem());
+			if (robot.getMainHandItem().getCount() > 0) {
+				BlockUtils.dropItem((ServerLevel) robot.level(),
+						new BlockPos(Mth.floor(robot.getX()), Mth.floor(robot.getY()),
+						Mth.floor(robot.getZ())), 6000, robot.getMainHandItem());
 			}
 			robot.setItemInUse(null);
 			terminate();
@@ -74,7 +74,7 @@ public class AIRobotPlant extends AIRobot {
 		if (blockFound != null) {
 			CompoundTag sub = new CompoundTag();
 			blockFound.writeTo(sub);
-			nbt.setTag("blockFound", sub);
+			nbt.put("blockFound", sub);
 		}
 	}
 

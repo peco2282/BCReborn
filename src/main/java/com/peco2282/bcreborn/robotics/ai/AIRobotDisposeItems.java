@@ -8,12 +8,12 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.world.entity.item.ItemEntity;
 
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.lib.inventory.InventoryIterator;
+import com.peco2282.bcreborn.common.inventory.InventoryIterator;
 
 public class AIRobotDisposeItems extends AIRobot {
 
@@ -38,14 +38,14 @@ public class AIRobotDisposeItems extends AIRobot {
 			} else {
 				for (IInvSlot slot : InventoryIterator.getIterable(robot)) {
 					if (slot.getStackInSlot() != null) {
-						final EntityItem entity = new EntityItem(
+						final ItemEntity entity = new ItemEntity(
 								robot.level(),
 								robot.getX(),
 								robot.getY(),
 								robot.getZ(),
 								slot.getStackInSlot());
 
-						robot.level().spawnEntityInWorld(entity);
+						robot.level().addFreshEntity(entity);
 
 						slot.setStackInSlot(null);
 					}
