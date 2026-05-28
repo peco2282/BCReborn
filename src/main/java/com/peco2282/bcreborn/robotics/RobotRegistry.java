@@ -51,7 +51,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 	}
 
 	@Override
-	public void registerRobot(Object robotObj) {
+	public void registerRobot(EntityRobotBase robotObj) {
 		if (!(robotObj instanceof EntityRobot robot)) return;
 		setDirty();
 
@@ -80,29 +80,25 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 	}
 
 	@Override
-	public void killRobot(Object robot) {
+	public void killRobot(EntityRobotBase robot) {
 		setDirty();
-		if (robot instanceof EntityRobotBase robotBase) {
-			releaseResources(robotBase);
-			if (robotBase instanceof EntityRobot) {
-				removeRobotLoaded((EntityRobot) robotBase);
-			}
-		}
-	}
+        releaseResources(robot);
+        if (robot instanceof EntityRobot entityRobot) {
+            removeRobotLoaded(entityRobot);
+        }
+    }
 
 	@Override
-	public void unloadRobot(Object robot) {
+	public void unloadRobot(EntityRobotBase robot) {
 		setDirty();
-		if (robot instanceof EntityRobotBase robotBase) {
-			releaseResources(robotBase);
-			if (robotBase instanceof EntityRobot) {
-				removeRobotLoaded((EntityRobot) robotBase);
-			}
-		}
-	}
+        releaseResources(robot);
+        if (robot instanceof EntityRobot entityRobot) {
+            removeRobotLoaded(entityRobot);
+        }
+    }
 
 	@Override
-	public Object getLoadedRobot(long id) {
+	public EntityRobotBase getLoadedRobot(long id) {
 		return robotsLoaded.get(id);
 	}
 
@@ -129,7 +125,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 	}
 
 	@Override
-	public synchronized Object robotTaking(ResourceId resourceId) {
+	public synchronized EntityRobotBase robotTaking(ResourceId resourceId) {
 		long robotId = robotIdTaking(resourceId);
 		if (robotId == EntityRobotBase.NULL_ROBOT_ID) {
 			return null;
