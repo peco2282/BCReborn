@@ -52,7 +52,7 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
         this.addDataSlots(data);
 
         // Architect slots
-        this.addSlot(new ArchitectSlot(architect, 0, 135, 35));
+        this.addSlot(new ArchitectSlot(architect, playerInventory.player, 0, 135, 35));
         this.addSlot(new SlotOutput(architect.getInventory(), 1, 194, 35));
 
         // Player inventory
@@ -90,7 +90,7 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
         private ArchitectBlockEntity architect;
         private Player player;
         private int slot;
-        public ArchitectSlot(ArchitectBlockEntity architect, int index, int x, int y) {
+        public ArchitectSlot(ArchitectBlockEntity architect, Player player, int index, int x, int y) {
             super(architect.getInventory(), index, x, y);
             this.architect = architect;
             this.player = player;
