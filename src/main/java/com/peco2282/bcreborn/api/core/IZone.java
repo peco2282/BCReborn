@@ -8,6 +8,8 @@
  */
 package com.peco2282.bcreborn.api.core;
 
+import net.minecraft.core.BlockPos;
+
 import java.util.Random;
 
 public interface IZone {
@@ -17,6 +19,10 @@ public interface IZone {
 	double distanceToSquared(BlockIndex index);
 
 	boolean contains(double x, double y, double z);
+
+	default boolean contains(BlockPos pos) {
+		return contains(pos.getX(), pos.getY(), pos.getZ());
+	}
 
 	BlockIndex getRandomBlockIndex(Random rand);
 

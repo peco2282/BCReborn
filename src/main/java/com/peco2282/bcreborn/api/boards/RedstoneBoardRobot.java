@@ -10,49 +10,26 @@ package com.peco2282.bcreborn.api.boards;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import net.minecraft.nbt.CompoundTag;
 
-public abstract class RedstoneBoardRobot implements IRedstoneBoard<Object> {
+public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoard<EntityRobotBase> {
 
 	protected final EntityRobotBase robot;
 
-	public RedstoneBoardRobot(Object robot) {
-		this.robot = (EntityRobotBase) robot;
+	public RedstoneBoardRobot(EntityRobotBase robot) {
+        super(robot);
+        this.robot = robot;
 	}
 
 	@Override
 	public abstract RedstoneBoardRobotNBT getNBTHandler();
 
 	@Override
-	public final void updateBoard(Object container) {
-		update();
-	}
-
-	public void update() {
+	public final void updateBoard(EntityRobotBase container) {
 
 	}
 
-	public void end() {
-
-	}
-
-	public void startDelegateAI(AIRobot ai) {
-		// This should be handled by EntityRobot
-	}
-
-	public void delegateAIEnded(AIRobot ai) {
-
-	}
-
+	@Override
 	public boolean canLoadFromNBT() {
 		return true;
-	}
-
-	public void writeSelfToNBT(CompoundTag nbt) {
-
-	}
-
-	public void loadSelfFromNBT(CompoundTag nbt) {
-
 	}
 }
