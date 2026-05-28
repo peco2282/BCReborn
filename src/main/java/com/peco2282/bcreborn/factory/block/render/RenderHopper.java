@@ -28,8 +28,8 @@ import org.joml.Matrix4f;
 
 public class RenderHopper implements BlockEntityRenderer<HopperBlockEntity> {
 
-	private static final ResourceLocation HOPPER_TEXTURE = BCRebornFactory.location("textures/blocks/hopperBlock/top.png");
-	private static final ResourceLocation HOPPER_MIDDLE_TEXTURE = BCRebornFactory.location("textures/blocks/hopperBlock/middle.png");
+	private static final ResourceLocation HOPPER_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/top.png");
+	private static final ResourceLocation HOPPER_MIDDLE_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/middle.png");
 
 	private final ModelPart top;
 	private final ModelPart bottom;
