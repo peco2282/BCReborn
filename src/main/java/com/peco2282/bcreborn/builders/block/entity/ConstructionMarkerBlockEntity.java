@@ -104,7 +104,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
         super.initialize();
         box.kind = Box.Kind.BLUE_STRIPES;
 
-        if (!level.isClientSide) {
+        if (level.isClientSide) {
            BCNetworkManager.sendUploadBuildersInAction(getBlockPos());
         }
     }
