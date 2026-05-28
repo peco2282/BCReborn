@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.robotics.boards;
 
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,7 +27,7 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 
 	@Override
 	public ResourceLocation getRobotTexture() {
-		return new ResourceLocation("bcreborn", "textures/entity/robot/robot_base.png");
+		return BCRebornRobotics.location("textures/entity/robot/robot_base.png");
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("bcrebornrobotics", "board/clean"));
+		icon = textureGetter.apply(BCRebornRobotics.location("board/clean"));
 	}
 
 	@Override

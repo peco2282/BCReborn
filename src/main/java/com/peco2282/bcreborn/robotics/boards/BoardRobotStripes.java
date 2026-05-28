@@ -40,9 +40,9 @@ public class BoardRobotStripes extends RedstoneBoardRobot {
 		if (robot.getMainHandItem().isEmpty()) {
 			startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> !stack.isEmpty()));
 		} else {
-			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, x, y, z) -> {
-				return world.isEmptyBlock(new BlockPos(x, y, z))
-						&& !robot.getRegistry().isTaken(new ResourceIdBlock(x, y, z));
+			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
+				return world.isEmptyBlock(pos)
+						&& !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
 			}));
 		}
 	}
@@ -67,7 +67,7 @@ public class BoardRobotStripes extends RedstoneBoardRobot {
 
 	private void releaseBlockFound() {
 		if (blockFound != null) {
-			robot.getRegistry().release(new ResourceIdBlock(blockFound));
+			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
 			blockFound = null;
 		}
 	}

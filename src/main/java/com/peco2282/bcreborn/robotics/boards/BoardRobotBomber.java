@@ -44,8 +44,8 @@ public class BoardRobotBomber extends RedstoneBoardRobot {
 		if (!containItems) {
 			startDelegateAI(new AIRobotGotoStationAndLoad(robot, stack -> stack.is(Items.TNT), AIRobotLoad.ANY_QUANTITY));
 		} else {
-			startDelegateAI(new AIRobotSearchRandomGroundBlock(robot, 100, (world, x, y, z) -> {
-				return y < world.getMaxBuildHeight() - flyingHeight && !world.isEmptyBlock(new BlockPos(x, y, z));
+			startDelegateAI(new AIRobotSearchRandomGroundBlock(robot, 100, (world, pos) -> {
+				return pos.getY() < world.getMaxBuildHeight() - flyingHeight && !world.isEmptyBlock(pos);
 			}, robot.getZoneToWork()));
 		}
 	}

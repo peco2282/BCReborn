@@ -10,30 +10,31 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import java.util.LinkedList;
 
-import net.minecraft.item.ItemStack;
+import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
+import com.peco2282.bcreborn.common.builder.BuildingItem;
+import com.peco2282.bcreborn.common.builder.BuildingSlot;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.WorldSettings;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import buildcraft.builders.TileConstructionMarker;
-import com.peco2282.bcreborn.common.builders.BuildingItem;
-import com.peco2282.bcreborn.common.builders.BuildingSlot;
-import com.peco2282.bcreborn.common.lib.inventory.filters.ArrayStackFilter;
+import com.peco2282.bcreborn.common.inventory.filters.ArrayStackFilter;
 import com.peco2282.bcreborn.robotics.ai.AIRobotDisposeItems;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndLoad;
 import com.peco2282.bcreborn.robotics.ai.AIRobotRecharge;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 
 public class BoardRobotBuilder extends RedstoneBoardRobot {
 
 	private static final int MAX_RANGE_SQ = 3 * 64 * 64;
 
-	private TileConstructionMarker markerToBuild;
+	private ConstructionMarkerBlockEntity markerToBuild;
 	private BuildingSlot currentBuildingSlot;
 	private LinkedList<ItemStack> requirementsToLookFor;
 	private int launchingDelay = 0;
@@ -88,8 +89,10 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
 			if (robot.containsItems()) {
 				startDelegateAI(new AIRobotDisposeItems(robot));
 			}
+			MinecraftServer server = robot.level().getServer();
+			GameType gameType = server.getForcedGameType() == null ? server.getDefaultGameType() : server.getForcedGameType();
 
-			if (robot.level().getWorldInfo().getGameType() != WorldSettings.GameType.CREATIVE) {
+			if (gameType.isCreative()) {
 				requirementsToLookFor = currentBuildingSlot.getRequirements(markerToBuild
 						.getContext());
 			} else {
@@ -159,8 +162,8 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
 			launchingDelay = currentBuildingSlot.getStacksToDisplay().size()
 					* BuildingItem.ITEMS_SPACE;
 			markerToBuild.bluePrintBuilder.buildSlot(robot.level(), markerToBuild,
-					currentBuildingSlot, robot.posX + 0.125F, robot.posY + 0.125F,
-					robot.posZ + 0.125F);
+					currentBuildingSlot, robot.getX() + 0.125F, robot.getY() + 0.125F,
+					robot.getZ() + 0.125F);
 			currentBuildingSlot = null;
 			requirementsToLookFor = null;
 		}
@@ -170,36 +173,36 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
 	public void writeSelfToNBT(CompoundTag nbt) {
 		super.writeSelfToNBT(nbt);
 
-		nbt.setInteger("launchingDelay", launchingDelay);
+		nbt.putInt("launchingDelay", launchingDelay);
 	}
 
 	@Override
 	public void loadSelfFromNBT(CompoundTag nbt) {
 		super.loadSelfFromNBT(nbt);
 
-		launchingDelay = nbt.getInteger("launchingDelay");
+		launchingDelay = nbt.getInt("launchingDelay");
 	}
 
-	private TileConstructionMarker findClosestMarker() {
+	private ConstructionMarkerBlockEntity findClosestMarker() {
 		double minDistance = Double.MAX_VALUE;
-		TileConstructionMarker minMarker = null;
+		ConstructionMarkerBlockEntity minMarker = null;
 
 		IZone zone = robot.getZoneToWork();
 
-		for (TileConstructionMarker marker : TileConstructionMarker.currentMarkers) {
-			if (marker.getWorldObj() != robot.level()) {
+		for (ConstructionMarkerBlockEntity marker : ConstructionMarkerBlockEntity.currentMarkers) {
+			if (marker.getLevel() != robot.level()) {
 				continue;
 			}
 			if (!marker.needsToBuild()) {
 				continue;
 			}
-			if (zone != null && !zone.contains(marker.xCoord, marker.yCoord, marker.zCoord)) {
+			if (zone != null && !zone.contains(marker.getBlockPos())) {
 				continue;
 			}
 
-			double dx = robot.posX - marker.xCoord;
-			double dy = robot.posY - marker.yCoord;
-			double dz = robot.posZ - marker.zCoord;
+			double dx = robot.getX() - marker.getBlockPos().getX();
+			double dy = robot.getY() - marker.getBlockPos().getY();
+			double dz = robot.getZ() - marker.getBlockPos().getZ();
 			double distance = dx * dx + dy * dy + dz * dz;
 
 			if (distance < minDistance) {
