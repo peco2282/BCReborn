@@ -46,10 +46,9 @@ public class BoardRobotFarmer extends RedstoneBoardRobot {
 				return !stack.isEmpty() && stack.is(ItemTags.HOES);
 			}));
 		} else {
-			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, x, y, z) -> {
-				BlockPos pos = new BlockPos(x, y, z);
+			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
 				return isDirt.get(world, pos)
-						&& !robot.getRegistry().isTaken(new ResourceIdBlock(x, y, z))
+						&& !robot.getRegistry().isTaken(new ResourceIdBlock(pos))
 						&& world.isEmptyBlock(pos.above());
 			}));
 		}
@@ -75,7 +74,7 @@ public class BoardRobotFarmer extends RedstoneBoardRobot {
 
 	private void releaseBlockFound() {
 		if (blockFound != null) {
-			robot.getRegistry().release(new ResourceIdBlock(blockFound));
+			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
 			blockFound = null;
 		}
 	}

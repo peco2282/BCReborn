@@ -46,11 +46,10 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 				return !stack.isEmpty();
 			}));
 		} else {
-			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, x, y, z) -> {
-				BlockPos pos = new BlockPos(x, y, z);
+			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
 				return !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
 						// && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
-						&& !robot.getRegistry().isTaken(new ResourceIdBlock(x, y, z));
+						&& !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
 			}, 1));
 		}
 	}
@@ -75,7 +74,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 
 	private void releaseBlockFound() {
 		if (blockFound != null) {
-			robot.getRegistry().release(new ResourceIdBlock(blockFound));
+			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
 			blockFound = null;
 		}
 	}
