@@ -3,6 +3,7 @@ package com.peco2282.bcreborn;
 import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.builders.blueprints.BlueprintServerDatabase;
 import com.peco2282.bcreborn.builders.blueprints.LibraryDatabase;
+import com.peco2282.bcreborn.builders.event.BCRebornBuildersEvent;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import net.minecraft.resources.ResourceLocation;
@@ -55,6 +56,7 @@ public class BCRebornBuilders implements BCReborn {
 
     // Register the commonSetup method for modloading
     modEventBus.addListener(this::commonSetup);
+    MinecraftForge.EVENT_BUS.addListener(BCRebornBuildersEvent::onServerSetup);
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
