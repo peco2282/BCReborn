@@ -8,11 +8,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.WorldServer;
-
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.Position;
@@ -22,8 +17,13 @@ import com.peco2282.bcreborn.api.transport.IStripesActivator;
 import com.peco2282.bcreborn.api.transport.IStripesHandler;
 import com.peco2282.bcreborn.api.transport.IStripesHandler.StripesHandlerType;
 import com.peco2282.bcreborn.api.transport.PipeManager;
-import com.peco2282.bcreborn.common.lib.inventory.InvUtils;
-import com.peco2282.bcreborn.common.proxy.CoreProxy;
+import com.peco2282.bcreborn.common.inventory.InvUtils;
+import com.peco2282.bcreborn.common.utils.BCFakePlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;;
 
 public class AIRobotStripesHandler extends AIRobot implements IStripesActivator {
 	private BlockIndex useToBlock;
@@ -56,23 +56,23 @@ public class AIRobotStripesHandler extends AIRobot implements IStripesActivator 
 		useCycles++;
 
 		if (useCycles > 60) {
-			ItemStack stack = robot.getHeldItem();
+			ItemStack stack = robot.getMainHandItem();
 
-			ForgeDirection direction = ForgeDirection.NORTH;
+			Direction direction = Direction.NORTH;
 
 			Position p = new Position(useToBlock.x, useToBlock.y, useToBlock.z);
 
-			EntityPlayer player = CoreProxy.proxy.getBuildCraftPlayer(
-					(WorldServer) robot.level(), (int) p.x, (int) p.y,
+			Player player = BCFakePlayer.getBuildCraftPlayer(
+					(ServerLevel) robot.level(), (int) p.x, (int) p.y,
 					(int) p.z).get();
-			player.rotationPitch = 0;
-			player.rotationYaw = 180;
+			player.setXRot(0);
+			player.setYRot(180);
 
 			for (IStripesHandler handler : PipeManager.stripesHandlers) {
 				if (handler.getType() == StripesHandlerType.ITEM_USE
 						&& handler.shouldHandle(stack)) {
-					if (handler.handle(robot.level(), (int) p.x, (int) p.y,
-							(int) p.z, direction, stack, player, this)) {
+					if (handler.handle(robot.level(), new BlockPos((int) p.x, (int) p.y,
+							(int) p.z), direction, stack, player, this)) {
 						robot.setItemInUse(null);
 						terminate();
 						return;
@@ -94,13 +94,13 @@ public class AIRobotStripesHandler extends AIRobot implements IStripesActivator 
 	}
 
 	@Override
-	public void sendItem(ItemStack stack, ForgeDirection direction) {
+	public void sendItem(ItemStack stack, Direction direction) {
 		InvUtils.dropItems(robot.level(), stack, (int) Math.floor(robot.getX()),
 				(int) Math.floor(robot.getY()), (int) Math.floor(robot.getZ()));
 	}
 
 	@Override
-	public void dropItem(ItemStack stack, ForgeDirection direction) {
+	public void dropItem(ItemStack stack, Direction direction) {
 		sendItem(stack, direction);
 	}
 }

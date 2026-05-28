@@ -9,16 +9,16 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationProvideFluids;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotLoadFluids extends AIRobot {
 
@@ -71,20 +71,20 @@ public class AIRobotLoadFluids extends AIRobot {
 			return 0;
 		}
 
-		ForgeDirection side = station.getFluidInputSide();
+		Direction side = station.getFluidInputSide();
 
-		FluidStack drainable = handler.drain(side, FluidContainerRegistry.BUCKET_VOLUME,
-				false);
-		if (drainable == null || !filter.matches(drainable.getFluid())) {
+		FluidStack drainable = handler.drain(FluidType.BUCKET_VOLUME,
+				IFluidHandler.FluidAction.SIMULATE);
+		if (drainable == FluidStack.EMPTY || !filter.matches(drainable.getFluid())) {
 			return 0;
 		}
 
 		drainable = drainable.copy();
-		int filled = robot.fill(ForgeDirection.UNKNOWN, drainable, doLoad);
+		int filled = robot.fill(drainable, doLoad ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
 
 		if (filled > 0 && doLoad) {
-			drainable.amount = filled;
-			handler.drain(side, drainable, true);
+			drainable.setAmount(filled);
+			handler.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
 		}
 		return filled;
 	}

@@ -8,16 +8,16 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
-import com.peco2282.bcreborn.common.lib.inventory.InvUtils;
-import com.peco2282.bcreborn.common.lib.inventory.filters.ArrayStackOrListFilter;
+import com.peco2282.bcreborn.common.inventory.InvUtils;
+import com.peco2282.bcreborn.common.inventory.filters.ArrayStackOrListFilter;
 import com.peco2282.bcreborn.robotics.StackRequest;
+import net.minecraft.world.item.ItemStack;
 
 public class AIRobotDeliverRequested extends AIRobot {
 
@@ -69,7 +69,7 @@ public class AIRobotDeliverRequested extends AIRobot {
 				ItemStack newStack = requester.offerItem(requested.getSlot(), slot.getStackInSlot().copy());
 
 				if (newStack == null) {
-					slot.setStackInSlot(newStack);
+					slot.setStackInSlot(ItemStack.EMPTY);
 				} else if (newStack.getCount() != slot.getStackInSlot().getCount()) {
 					slot.setStackInSlot(newStack);
 					difference = newStack.getCount() - difference;
@@ -100,7 +100,7 @@ public class AIRobotDeliverRequested extends AIRobot {
 		if (requested != null) {
 			CompoundTag requestNBT = new CompoundTag();
 			requested.writeToNBT(requestNBT);
-			nbt.setTag("currentRequest", requestNBT);
+			nbt.put("currentRequest", requestNBT);
 		}
 	}
 

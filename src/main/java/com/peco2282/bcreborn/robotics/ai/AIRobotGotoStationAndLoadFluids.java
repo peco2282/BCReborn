@@ -10,7 +10,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.lib.inventory.filters.IFluidFilter;
+import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
 
 public class AIRobotGotoStationAndLoadFluids extends AIRobot {
 
