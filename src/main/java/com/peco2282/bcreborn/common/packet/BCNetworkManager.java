@@ -6,9 +6,11 @@ import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
+import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -121,7 +123,7 @@ public class BCNetworkManager {
     // sendToServer(new RequestZonePlanSetNamePacket(pos, name)); // To be created
   }
 
-  public static void computeMap(com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
+  public static void computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
     final byte[] textureData = new byte[width * height];
     // TODO: implement actual map computation or delegate to BE
     // For now, let's assume we send it in chunks
@@ -132,6 +134,10 @@ public class BCNetworkManager {
         System.arraycopy(textureData, i, chunk, 0, len);
         sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
     }
+  }
+
+  public static void sendRequestInitialization(int entityId, ItemStack itemInUse, boolean itemActive) {
+    sendToServer(new RequestInitializationPacket(entityId, itemInUse, itemActive));
   }
 
   // Server -> Client
@@ -165,6 +171,37 @@ public class BCNetworkManager {
   public static void sendNearLaunchItem(Vec3 target, ResourceKey<Level> dimension, BlockPos pos, BuildingItem item) {
     sendToNear(target, dimension, new LaunchItemPacket(pos, item), 64);
   }
+
+  public static void sendInitialize(ServerPlayer player, int entityId, ItemStack itemInUse, boolean itemActive) {
+    sendToPlayer(player, new InitializePacket(entityId, itemInUse, itemActive));
+  }
+
+  public static void sendClientSetInventory(ServerPlayer player, int entityId, short slot, ItemStack stack) {
+    sendToPlayer(player, new ClientSetInventoryPacket(entityId, slot, stack));
+  }
+  public static void sendEntityClientSetInventory(Entity entity, int entityId, short slot, ItemStack stack) {
+    sendToEntity(entity, new ClientSetInventoryPacket(entityId, slot, stack));
+  }
+
+  public static void sendClientSetItemInUse(ServerPlayer player, int entityId, ItemStack itemInUse) {
+    sendToPlayer(player, new ClientSetItemInUsePacket(entityId, itemInUse));
+  }
+  public static void sendEntityClientSetItemInUse(Entity entity, int entityId, ItemStack itemInUse) {
+    sendToEntity(entity, new ClientSetItemInUsePacket(entityId, itemInUse));
+  }
+
+  public static void sendSetItemActive(Entity entity, int entityId, boolean active) {
+    sendToEntity(entity, new SetItemActivePacket(entityId, active));
+  }
+
+  public static void sendSetSteamDirection(Entity entity, int entityId, int x, int y, int z) {
+    sendToEntity(entity, new SetSteamDirectionPacket(entityId, x, y, z));
+  }
+
+  public static void sendSyncWearables(Entity entity, int entityId, List<ItemStack> wearables) {
+    sendToEntity(entity, new SyncWearablesPacket(entityId, wearables));
+  }
+
   // Helpers
   public static void sendToServer(CustomPacket packet) {
     channel.sendToServer(packet);
@@ -172,6 +209,10 @@ public class BCNetworkManager {
 
   public static void sendToPlayer(ServerPlayer player, CustomPacket packet) {
     channel.send(PacketDistributor.PLAYER.with(() -> player), packet);
+  }
+
+  public static void sendToEntity(Entity entity, CustomPacket packet) {
+    channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), packet);
   }
 
   public static void sendToNear(Vec3 vec3, ResourceKey<Level> dimension, CustomPacket packet, int distance) {
