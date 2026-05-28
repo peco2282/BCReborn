@@ -22,9 +22,11 @@ public class BCRebornEnergyEvent {
   private static final Logger logger = BCReborn.createLogger();
 
   @SubscribeEvent
-  public static void onInit(FMLClientSetupEvent event) {
-    MenuScreens.register(MenuTypesEnergy.STONE_ENGINE.get(), StoneEngineScreen::new);
-    MenuScreens.register(MenuTypesEnergy.IRON_ENGINE.get(), IronEngineScreen::new);
+  public static void onClientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> {
+      MenuScreens.register(MenuTypesEnergy.STONE_ENGINE.get(), StoneEngineScreen::new);
+      MenuScreens.register(MenuTypesEnergy.IRON_ENGINE.get(), IronEngineScreen::new);
+    });
   }
 
 
