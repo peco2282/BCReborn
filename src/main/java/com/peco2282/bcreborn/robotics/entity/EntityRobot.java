@@ -13,52 +13,78 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Predicate;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
-import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.api.robots.IRobotRegistry;
-import com.peco2282.bcreborn.api.robots.RobotManager;
+import com.peco2282.bcreborn.api.events.RobotEvent;
+import com.peco2282.bcreborn.api.robots.*;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
+import com.peco2282.bcreborn.common.utils.BCFakePlayer;
+import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.item.WrenchItem;
+import com.peco2282.bcreborn.robotics.EntityTypeRobotics;
 import com.peco2282.bcreborn.robotics.RobotRegistry;
-import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.robotics.ai.AIRobotMain;
 import com.peco2282.bcreborn.robotics.ai.AIRobotShutdown;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSleep;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 
+import com.peco2282.bcreborn.robotics.statements.ActionRobotWorkInArea;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.ParticleStatus;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -68,29 +94,41 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
-import buildcraft.core.DefaultProps;
-import buildcraft.core.ItemWrench;
-import buildcraft.core.lib.RFBattery;
-import buildcraft.core.lib.network.command.CommandWriter;
-import buildcraft.core.lib.network.command.ICommandReceiver;
-import buildcraft.core.lib.network.command.PacketCommand;
-import buildcraft.core.lib.utils.NetworkUtils;
-import buildcraft.core.proxy.CoreProxy;
-import buildcraft.robotics.statements.ActionRobotWorkInArea;
-import buildcraft.robotics.statements.ActionRobotWorkInArea.AreaType;
 
 public class EntityRobot extends EntityRobotBase implements
-        IEntityAdditionalSpawnData, Container, IFluidHandler, ICommandReceiver, IDebuggable {
+        IEntityAdditionalSpawnData, Container, IFluidHandler, IDebuggable {
 
-	public static final ResourceLocation ROBOT_BASE = new ResourceLocation(
-			"buildcraftrobotics", "textures/entities/robot_base.png");
+	private static final EntityDataAccessor<Float> DATA_LASER_X =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> DATA_LASER_Y =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> DATA_LASER_Z =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Byte> DATA_LASER_VISIBLE =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<String> DATA_BOARD_ID =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.STRING);
+	private static final EntityDataAccessor<Float> DATA_ITEM_ANGLE_1 =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> DATA_ITEM_ANGLE_2 =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Integer> DATA_ENERGY_SPEND_PER_CYCLE =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Byte> DATA_ACTIVE =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Integer> DATA_ENERGY =
+			SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.INT);
+
+	public static final ResourceLocation ROBOT_BASE = BCRebornRobotics.location("textures/entities/robot_base.png");
 	public static final int MAX_WEARABLES = 8;
 	public static final int TRANSFER_INV_SLOTS = 4;
 
 	private static Set<Integer> blacklistedItemsForUpdate = Sets.newHashSet();
 
-    public LaserData laser = new LaserData();
+	public LaserData laser = new LaserData();
 	public DockingStation linkedDockingStation;
 	public BlockIndex linkedDockingStationIndex;
 	public Direction linkedDockingStationSide;
@@ -103,7 +141,7 @@ public class EntityRobot extends EntityRobotBase implements
 	public RedstoneBoardRobot board;
 	public AIRobotMain mainAI;
 
-	public ItemStack itemInUse = ItemStack.EMPTY;
+	public ItemStack itemInUse;
 	public float itemAngle1 = 0;
 	public float itemAngle2 = 0;
 	public boolean itemActive = false;
@@ -111,15 +149,15 @@ public class EntityRobot extends EntityRobotBase implements
 	public long lastUpdateTime = 0;
 
 	private DockingStation currentDockingStation;
-	private List<ItemStack> wearables = new ArrayList<ItemStack>();
+	private List<ItemStack> wearables = new ArrayList<>();
 
 	private boolean needsUpdate = false;
 	private ItemStack[] inv = new ItemStack[TRANSFER_INV_SLOTS];
-	private FluidStack tank = FluidStack.EMPTY;
+	private FluidStack tank;
 	private int maxFluid = FluidType.BUCKET_VOLUME * 4;
 	private ResourceLocation texture;
 
-	private WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<Entity, Long>();
+	private WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<>();
 
 	private ListTag stackRequestNBT;
 
@@ -138,16 +176,11 @@ public class EntityRobot extends EntityRobotBase implements
 	private int steamDy = -1;
 	private int steamDz = 0;
 
-	public EntityRobot(EntityType<? extends EntityRobot> type, Level world) {
-		super(type, world);
-		init();
-	}
+	public EntityRobot(Level world, RedstoneBoardRobotNBT boardNBT) {
+		this(EntityTypeRobotics.ROBOT.get(), world);
 
-	public EntityRobot(EntityType<? extends EntityRobot> type, Level world, RedstoneBoardRobotNBT boardNBT) {
-		this(type, world);
-
-		board = boardNBT.createBoard(this);
-		// dataWatcher.updateObject(16, board.getNBTHandler().getID());
+		board = boardNBT.create(this);
+		entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID());
 
 		if (!world.isClientSide) {
 			mainAI = new AIRobotMain(this);
@@ -155,60 +188,70 @@ public class EntityRobot extends EntityRobotBase implements
 		}
 	}
 
-	@Override
-	protected void entityInit() {
-		super.entityInit();
+
+	public EntityRobot(EntityType<EntityRobot> type, Level world) {
+		super(type, world);
+		setDeltaMovement(0, 0, 0);
+
+		noCulling = true;
+		laser.isVisible = false;
+
 
 		setNullBoundingBox();
 
-		preventEntitySpawning = false;
-		noClip = true;
-		isImmuneToFire = true;
-		this.func_110163_bv(); // persistenceRequired = true
+		noPhysics = true;
+		this.setPersistenceRequired(); // persistenceRequired = true
+		this.setBoundingBox(
+				new AABB(getX() - 0.25F, getY() - 0.25F, getZ() - 0.25F, getX() + 0.25F, getY() + 0.25F, getZ() + 0.25F)
+		);
+	}
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
 
-		dataWatcher.addObject(12, (float) 0);
-		dataWatcher.addObject(13, (float) 0);
-		dataWatcher.addObject(14, (float) 0);
-		dataWatcher.addObject(15, (byte) 0);
-		dataWatcher.addObject(16, "");
-		dataWatcher.addObject(17, (float) 0);
-		dataWatcher.addObject(18, (float) 0);
-		dataWatcher.addObject(19, 0);
-		dataWatcher.addObject(20, (byte) 0);
-		dataWatcher.addObject(21, 0);
+		entityData.define(DATA_LASER_X, 0F); // 12
+		entityData.define(DATA_LASER_Y, 0F); // 13
+		entityData.define(DATA_LASER_Z, 0F); // 14
+		entityData.define(DATA_LASER_VISIBLE, (byte) 0); // 15
+		entityData.define(DATA_BOARD_ID, ""); // 16
+		entityData.define(DATA_ITEM_ANGLE_1, 0F); // 17
+		entityData.define(DATA_ITEM_ANGLE_2, 0F); // 18
+		entityData.define(DATA_ENERGY_SPEND_PER_CYCLE, 0); // 19
+		entityData.define(DATA_ACTIVE, (byte) 0); // 20
+		entityData.define(DATA_ENERGY, 0); // 21
 	}
 
 	protected void updateDataClient() {
-		laser.tail.x = dataWatcher.getWatchableObjectFloat(12);
-		laser.tail.y = dataWatcher.getWatchableObjectFloat(13);
-		laser.tail.z = dataWatcher.getWatchableObjectFloat(14);
-		laser.isVisible = dataWatcher.getWatchableObjectByte(15) == 1;
+		laser.tail.x = entityData.get(DATA_LASER_X);
+		laser.tail.y = entityData.get(DATA_LASER_Y);
+		laser.tail.z = entityData.get(DATA_LASER_Z);
+		laser.isVisible = entityData.get(DATA_LASER_VISIBLE) == 1;
 
-		RedstoneBoardNBT<?> boardNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(dataWatcher
-				.getWatchableObjectString(16));
+		RedstoneBoardNBT<?> boardNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(entityData
+				.get(DATA_BOARD_ID));
 
 		if (boardNBT != null) {
 			texture = ((RedstoneBoardRobotNBT) boardNBT).getRobotTexture();
 		}
 
-		itemAngle1 = dataWatcher.getWatchableObjectFloat(17);
-		itemAngle2 = dataWatcher.getWatchableObjectFloat(18);
-		energySpendPerCycle = dataWatcher.getWatchableObjectInt(19);
-		isActiveClient = dataWatcher.getWatchableObjectByte(20) == 1;
-		battery.setEnergy(dataWatcher.getWatchableObjectInt(21));
+		itemAngle1 = entityData.get(DATA_ITEM_ANGLE_1);
+		itemAngle2 = entityData.get(DATA_ITEM_ANGLE_2);
+		energySpendPerCycle = entityData.get(DATA_ENERGY_SPEND_PER_CYCLE);
+		isActiveClient = entityData.get(DATA_ACTIVE) == 1;
+		battery.setEnergy(entityData.get(DATA_ENERGY));
 	}
 
 	protected void updateDataServer() {
-		dataWatcher.updateObject(12, (float) laser.tail.x);
-		dataWatcher.updateObject(13, (float) laser.tail.y);
-		dataWatcher.updateObject(14, (float) laser.tail.z);
-		dataWatcher.updateObject(15, (byte) (laser.isVisible ? 1 : 0));
-		dataWatcher.updateObject(17, itemAngle1);
-		dataWatcher.updateObject(18, itemAngle2);
+		entityData.set(DATA_LASER_X, (float) laser.tail.x);
+		entityData.set(DATA_LASER_Y, (float) laser.tail.y);
+		entityData.set(DATA_LASER_Z, (float) laser.tail.z);
+		entityData.set(DATA_LASER_VISIBLE, (byte) (laser.isVisible ? 1 : 0));
+		entityData.set(DATA_ITEM_ANGLE_1, itemAngle1);
+		entityData.set(DATA_ITEM_ANGLE_2, itemAngle2);
 	}
 
 	public boolean isActive() {
-		if (worldObj.isRemote) {
+		if (level().isClientSide) {
 			return isActiveClient;
 		} else {
 			return mainAI.getActiveAI() instanceof AIRobotSleep || mainAI.getActiveAI() instanceof AIRobotShutdown;
@@ -216,8 +259,8 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	protected void init() {
-		if (worldObj.isRemote) {
-			BuildCraftCore.instance.sendToServer(new PacketCommand(this, "requestInitialization", null));
+		if (level().isClientSide) {
+			BCNetworkManager.sendRequestInitialization(getId(), itemInUse, itemActive);
 		}
 	}
 
@@ -250,19 +293,14 @@ public class EntityRobot extends EntityRobotBase implements
 
 		}
 
-		if (!worldObj.isRemote) {
+		if (!level().isClientSide) {
 			getRegistry().registerRobot(this);
 		}
 	}
 
 	@Override
-	public String getCommandSenderName() {
-		return StatCollector.translateToLocal("item.robot.name");
-	}
-
-	@Override
-	public void onEntityUpdate() {
-		this.worldObj.theProfiler.startSection("bcEntityRobot");
+	public void tick() {
+		this.level().getProfiler().push("bcEntityRobot");
 		if (!firstUpdateDone) {
 			firstUpdate();
 			firstUpdateDone = true;
@@ -272,11 +310,11 @@ public class EntityRobot extends EntityRobotBase implements
 			ticksCharging--;
 		}
 
-		if (!worldObj.isRemote) {
+		if (!level().isClientSide) {
 			// The client-side sleep indicator should also display if the robot is charging.
 			// To not break gates and other things checking for sleep, this is done here.
-			dataWatcher.updateObject(20, (byte) ((isActive() && ticksCharging == 0) ? 1 : 0));
-			dataWatcher.updateObject(21, getEnergy());
+			entityData.set(DATA_ACTIVE, (byte) (isActive() || ticksCharging > 0 ? 1 : 0));
+			entityData.set(DATA_ENERGY, getEnergy());
 
 			if (needsUpdate) {
 				updateDataServer();
@@ -284,26 +322,25 @@ public class EntityRobot extends EntityRobotBase implements
 			}
 		}
 
-		if (worldObj.isRemote) {
+		if (level().isClientSide) {
 			updateDataClient();
 			updateRotationYaw(60.0f);
 			updateEnergyFX();
 		}
 
 		if (currentDockingStation != null) {
-			motionX = 0;
-			motionY = 0;
-			motionZ = 0;
-			posX = currentDockingStation.x() + 0.5F + currentDockingStation.side().offsetX * 0.5F;
-			posY = currentDockingStation.y() + 0.5F + currentDockingStation.side().offsetY * 0.5F;
-			posZ = currentDockingStation.z() + 0.5F + currentDockingStation.side().offsetZ * 0.5F;
+			setDeltaMovement(0, 0, 0);
+			setPos(
+					currentDockingStation.x() + 0.5F + currentDockingStation.side().getStepX() * 0.5F,
+					currentDockingStation.y() + 0.5F + currentDockingStation.side().getStepY() * 0.5F,
+					currentDockingStation.z() + 0.5F + currentDockingStation.side().getStepZ() * 0.5F
+			);
 		}
 
-		if (!worldObj.isRemote) {
+		if (!level().isClientSide) {
 			if (linkedDockingStation == null) {
 				if (linkedDockingStationIndex != null) {
-					linkedDockingStation = getRegistry().getStation(linkedDockingStationIndex.x,
-							linkedDockingStationIndex.y, linkedDockingStationIndex.z,
+					linkedDockingStation = getRegistry().getStation(linkedDockingStationIndex.toBlockPos(),
 							linkedDockingStationSide);
 				}
 
@@ -324,27 +361,24 @@ public class EntityRobot extends EntityRobotBase implements
 
 			if (currentDockingStationIndex != null && currentDockingStation == null) {
 				currentDockingStation = getRegistry().getStation(
-						currentDockingStationIndex.x,
-						currentDockingStationIndex.y,
-						currentDockingStationIndex.z,
+						currentDockingStationIndex.toBlockPos(),
 						currentDockingStationSide);
 			}
 
-			if (posY < -128) {
-				isDead = true;
-
+			if (getY() < -128) {
+				remove(RemovalReason.DISCARDED);
 				BCLog.logger.info("Destroying robot " + this.toString() + " - Fallen into Void");
 				getRegistry().killRobot(this);
 			}
 
 			if (linkedDockingStation == null || linkedDockingStation.isInitialized()) {
-				this.worldObj.theProfiler.startSection("bcRobotAI");
+				this.level().getProfiler().push("bcRobotAI");
 				mainAI.cycle();
-				this.worldObj.theProfiler.endSection();
+				this.level().getProfiler().pop();
 
 				if (energySpendPerCycle != mainAI.getActiveAI().getEnergyCost()) {
 					energySpendPerCycle = mainAI.getActiveAI().getEnergyCost();
-					dataWatcher.updateObject(19, energySpendPerCycle);
+					entityData.set(DATA_ENERGY_SPEND_PER_CYCLE, energySpendPerCycle);
 				}
 			}
 		}
@@ -361,54 +395,38 @@ public class EntityRobot extends EntityRobotBase implements
 		// do not tick wearables or equipment from EntityLiving
 
 
-		super.onEntityUpdate();
-		this.worldObj.theProfiler.endSection();
+		super.tick();
+		this.level().getProfiler().pop();
 	}
 
-	@Override
-	protected void updateEntityActionState() {
-	}
-
-	@Override
-	public boolean handleWaterMovement() {
-		return false;
-	}
-
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private void updateEnergyFX() {
 		energyFX += energySpendPerCycle;
-
-		if (energyFX >= (100 << (2 * Minecraft.getMinecraft().gameSettings.particleSetting))) {
+		ParticleStatus status = Minecraft.getInstance().options.particles().get();
+		int particleLevel = switch (status) {
+			case ALL -> 0;
+			case DECREASED -> 1;
+			case MINIMAL -> 2;
+		};
+		if (energyFX >= (100 << (2 * particleLevel))) {
 			energyFX = 0;
 			spawnEnergyFX();
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private void spawnEnergyFX() {
-		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityRobotEnergyParticle(
-				worldObj,
-				posX + steamDx * 0.25, posY + steamDy * 0.25, posZ + steamDz * 0.25,
+		Minecraft.getInstance().particleEngine.add(new EntityRobotEnergyParticle(
+                (ClientLevel) level(),
+				getX() + steamDx * 0.25, getY() + steamDy * 0.25, getZ() + steamDz * 0.25,
 				steamDx * 0.05, steamDy * 0.05, steamDz * 0.05,
 				energySpendPerCycle * 0.075F < 1 ? 1 : energySpendPerCycle * 0.075F));
 	}
 
-	@Override
-	public AxisAlignedBB getBoundingBox() {
-		return AxisAlignedBB.getBoundingBox(posX - 0.25F, posY - 0.25F, posZ - 0.25F, posX + 0.25F, posY + 0.25F, posZ + 0.25F);
-	}
-
 	public void setNullBoundingBox() {
-		width = 0F;
-		height = 0F;
-
-		boundingBox.minX = posX;
-		boundingBox.minY = posY;
-		boundingBox.minZ = posZ;
-
-		boundingBox.maxX = posX;
-		boundingBox.maxY = posY;
-		boundingBox.maxZ = posZ;
+		setBoundingBox(
+			new AABB(getX(), getY(), getZ(), getX(), getY(), getZ())
+		);
 	}
 
 	private void shutdown(String reason) {
@@ -419,52 +437,47 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf data) {
+	public void writeSpawnData(FriendlyByteBuf data) {
 		data.writeByte(wearables.size());
 		for (ItemStack s : wearables) {
-			NetworkUtils.writeStack(data, s);
+			data.writeItem(s);
 		}
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf data) {
+	public void readSpawnData(FriendlyByteBuf data) {
 		int amount = data.readUnsignedByte();
 		while (amount > 0) {
-			wearables.add(NetworkUtils.readStack(data));
+			wearables.add(data.readItem());
 			amount--;
 		}
 		init();
 	}
 
 	@Override
-	public ItemStack getHeldItem() {
-		return itemInUse;
+	public void setItemSlot(EquipmentSlot slot, ItemStack itemstack) {
+		if (slot == EquipmentSlot.MAINHAND) {
+			itemInUse = itemstack;
+		}
 	}
 
 	@Override
-	public void setCurrentItemOrArmor(int i, ItemStack itemstack) {
+	public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
+		return false;
 	}
 
 	@Override
-	public ItemStack[] getLastActiveItems() {
-		return new ItemStack[0];
+	protected void checkFallDamage(double p_20990_, boolean p_20991_, BlockState p_20992_, BlockPos p_20993_) {
 	}
 
 	@Override
-	protected void fall(float par1) {
+	public void travel(Vec3 travelVector) {
+		Vec3 motion = getDeltaMovement();
+		this.setPos(getX() + motion.x, getY() + motion.y, getZ() + motion.z);
 	}
 
 	@Override
-	protected void updateFallState(double par1, boolean par3) {
-	}
-
-	@Override
-	public void moveEntityWithHeading(float par1, float par2) {
-		this.setPosition(posX + motionX, posY + motionY, posZ + motionZ);
-	}
-
-	@Override
-	public boolean isOnLadder() {
+	public boolean onClimbable() {
 		return false;
 	}
 
@@ -481,7 +494,7 @@ public class EntityRobot extends EntityRobotBase implements
 			CompoundTag linkedStationIndexNBT = new CompoundTag();
 			linkedDockingStationIndex.writeTo(linkedStationIndexNBT);
 			linkedStationNBT.put("index", linkedStationIndexNBT);
-			linkedStationNBT.putByte("side", (byte) linkedDockingStationSide.ordinal());
+			linkedStationNBT.putInt("side", linkedDockingStationSide.get3DDataValue());
 			nbt.put("linkedStation", linkedStationNBT);
 		}
 
@@ -490,7 +503,7 @@ public class EntityRobot extends EntityRobotBase implements
 			CompoundTag currentStationIndexNBT = new CompoundTag();
 			currentDockingStationIndex.writeTo(currentStationIndexNBT);
 			currentStationNBT.put("index", currentStationIndexNBT);
-			currentStationNBT.putByte("side", (byte) currentDockingStationSide.ordinal());
+			currentStationNBT.putInt("side", currentDockingStationSide.get3DDataValue());
 			nbt.put("currentStation", currentStationNBT);
 		}
 
@@ -499,10 +512,10 @@ public class EntityRobot extends EntityRobotBase implements
 		nbt.put("laser", nbtLaser);
 
 		CompoundTag batteryNBT = new CompoundTag();
-		battery.writeToNBT(batteryNBT);
+		battery.write(batteryNBT);
 		nbt.put("battery", batteryNBT);
 
-		if (!itemInUse.isEmpty()) {
+		if (itemInUse != null) {
 			CompoundTag itemNBT = new CompoundTag();
 			itemInUse.save(itemNBT);
 			nbt.put("itemInUse", itemNBT);
@@ -512,7 +525,7 @@ public class EntityRobot extends EntityRobotBase implements
 		for (int i = 0; i < inv.length; ++i) {
 			CompoundTag stackNbt = new CompoundTag();
 
-			if (inv[i] != null && !inv[i].isEmpty()) {
+			if (inv[i] != null) {
 				nbt.put("inv[" + i + "]", inv[i].save(stackNbt));
 			}
 		}
@@ -535,15 +548,17 @@ public class EntityRobot extends EntityRobotBase implements
 
 		if (mainAI.getDelegateAI() != board) {
 			CompoundTag boardNBT = new CompoundTag();
-			board.writeToNBT(boardNBT);
+			board.writeSelfToNBT(boardNBT);
 			nbt.put("board", boardNBT);
 		}
 
 		nbt.putLong("robotId", robotId);
 
-		if (tank != null && !tank.isEmpty()) {
+		if (tank != null) {
 			CompoundTag tankNBT = new CompoundTag();
+
 			tank.writeToNBT(tankNBT);
+
 			nbt.put("tank", tankNBT);
 		}
 	}
@@ -555,18 +570,19 @@ public class EntityRobot extends EntityRobotBase implements
 		if (nbt.contains("linkedStation")) {
 			CompoundTag linkedStationNBT = nbt.getCompound("linkedStation");
 			linkedDockingStationIndex = new BlockIndex(linkedStationNBT.getCompound("index"));
-			linkedDockingStationSide = Direction.values()[linkedStationNBT.getByte("side")];
+			linkedDockingStationSide = Direction.from3DDataValue(linkedStationNBT.getInt("side"));
 		}
 
 		if (nbt.contains("currentStation")) {
 			CompoundTag currentStationNBT = nbt.getCompound("currentStation");
 			currentDockingStationIndex = new BlockIndex(currentStationNBT.getCompound("index"));
-			currentDockingStationSide = Direction.values()[currentStationNBT.getByte("side")];
+			currentDockingStationSide = Direction.from3DDataValue(currentStationNBT.getInt("side"));
+
 		}
 
 		laser.readFromNBT(nbt.getCompound("laser"));
 
-		battery.readFromNBT(nbt.getCompound("battery"));
+		battery.read(nbt.getCompound("battery"));
 
 		wearables.clear();
 		if (nbt.contains("wearables")) {
@@ -582,38 +598,28 @@ public class EntityRobot extends EntityRobotBase implements
 		if (nbt.contains("itemInUse")) {
 			itemInUse = ItemStack.of(nbt.getCompound("itemInUse"));
 			itemActive = nbt.getBoolean("itemActive");
-		} else {
-			itemInUse = ItemStack.EMPTY;
 		}
 
 		for (int i = 0; i < inv.length; ++i) {
-			if (nbt.contains("inv[" + i + "]")) {
-				inv[i] = ItemStack.of(nbt.getCompound("inv[" + i + "]"));
-			} else {
-				inv[i] = ItemStack.EMPTY;
-			}
+			inv[i] = ItemStack.of(nbt.getCompound("inv[" + i + "]"));
 		}
 
-		CompoundTag aiTag = nbt.getCompound("mainAI");
-		// mainAI = (AIRobotMain) AIRobot.loadAI(aiTag, this);
-		// Note: AIRobot.loadAI needs to be ported or handled.
-		// For now, assume mainAI is already initialized and just read its data.
-		if (mainAI != null) {
-			mainAI.readFromNBT(aiTag);
-		}
+		CompoundTag ai = nbt.getCompound("mainAI");
+		mainAI = (AIRobotMain) AIRobot.loadAI(ai, this);
 
 		if (nbt.contains("board")) {
-			// board = (RedstoneBoardRobot) AIRobot.loadAI(nbt.getCompound("board"), this);
-			if (board != null) {
-				board.readFromNBT(nbt.getCompound("board"));
-			}
-		} else if (mainAI != null) {
+			board = (RedstoneBoardRobot) AIRobot.loadAI(nbt.getCompound("board"), this);
+		} else {
 			board = (RedstoneBoardRobot) mainAI.getDelegateAI();
 		}
 
-		// dataWatcher.updateObject(16, board.getNBTHandler().getID());
+		if (board == null) {
+			board = RedstoneBoardRegistry.instance.getEmptyRobotBoard().create(this);
+		}
 
-		stackRequestNBT = nbt.getList("stackRequests", 10);
+		entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID());
+
+		stackRequestNBT = nbt.getList("stackRequests", ListTag.TAG_COMPOUND);
 
 		if (nbt.contains("robotId")) {
 			robotId = nbt.getLong("robotId");
@@ -622,8 +628,11 @@ public class EntityRobot extends EntityRobotBase implements
 		if (nbt.contains("tank")) {
 			tank = FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank"));
 		} else {
-			tank = FluidStack.EMPTY;
+			tank = null;
 		}
+
+		// Restore robot persistence on pre-6.1.9 robotics
+		this.setPersistenceRequired();
 	}
 
 	@Override
@@ -631,9 +640,9 @@ public class EntityRobot extends EntityRobotBase implements
 		currentDockingStation = station;
 
 		setSteamDirection(
-				currentDockingStation.side.offsetX,
-				currentDockingStation.side.offsetY,
-				currentDockingStation.side.offsetZ);
+				currentDockingStation.side.getStepX(),
+				currentDockingStation.side.getStepY(),
+				currentDockingStation.side.getStepZ());
 
 		currentDockingStationIndex = currentDockingStation.index();
 		currentDockingStationSide = currentDockingStation.side();
@@ -669,30 +678,30 @@ public class EntityRobot extends EntityRobotBase implements
 			linkedDockingStationSide = linkedDockingStation.side();
 		} else {
 			linkedDockingStationIndex = null;
-			linkedDockingStationSide = ForgeDirection.UNKNOWN;
+			linkedDockingStationSide = Direction.UP;
 		}
 	}
 
 	@Override
-	public ItemStack getEquipmentInSlot(int var1) {
-		return null;
-	}
-
-	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return inv.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int var1) {
+	public boolean isEmpty() {
+		return inv.length == 0;
+	}
+
+	@Override
+	public ItemStack getItem(int var1) {
 		return inv[var1];
 	}
 
 	@Override
-	public ItemStack decrStackSize(int var1, int var2) {
-		ItemStack result = inv[var1].splitStack(var2);
+	public ItemStack removeItem(int var1, int var2) {
+		ItemStack result = inv[var1].split(var2);
 
-		if (inv[var1].stackSize == 0) {
+		if (inv[var1].getCount() == 0) {
 			inv[var1] = null;
 		}
 
@@ -702,160 +711,77 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int var1) {
+	public ItemStack removeItemNoUpdate(int var1) {
 		ItemStack stack = inv[var1];
 		inv[var1] = null;
 		return stack;
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2) {
+	public void setItem(int var1, ItemStack var2) {
 		inv[var1] = var2;
 
 		updateClientSlot(var1);
 	}
 
 	@Override
-	public String getInventoryName() {
-		return null;
+	public Component getDisplayName() {
+		return Component.empty();
 	}
-
 	@Override
-	public boolean hasCustomInventoryName() {
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
+	public int getMaxStackSize() {
 		return 64;
 	}
 
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 	}
 
 	public void updateClientSlot(final int slot) {
-		BuildCraftCore.instance.sendToEntity(new PacketCommand(this, "clientSetInventory", new CommandWriter() {
-			public void write(ByteBuf data) {
-				data.writeShort(slot);
-				NetworkUtils.writeStack(data, inv[slot]);
-			}
-		}), this);
+		BCNetworkManager.sendEntityClientSetInventory(this, this.getId(), (short) slot, inv[slot]);
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) {
-		return false;
+	public boolean stillValid(Player player) {
+		return true;
 	}
 
 	@Override
-	public void openInventory() {
+	public void startOpen(Player player) {
 	}
 
 	@Override
-	public void closeInventory() {
+	public void stopOpen(Player player) {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int var1, ItemStack var2) {
-		return inv[var1] == null
-				|| (inv[var1].isItemEqual(var2) && inv[var1].isStackable() && inv[var1].stackSize
-				+ var2.stackSize <= inv[var1].getItem().getItemStackLimit(inv[var1]));
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		return inv[slot].isEmpty()
+				|| (inv[slot].is(stack.getItem()) && inv[slot].isStackable() && inv[slot].getCount()
+				+ stack.getCount() <= inv[slot].getItem().getMaxStackSize(inv[slot]));
 	}
 
 	@Override
 	public boolean isMoving() {
-		return motionX != 0 || motionY != 0 || motionZ != 0;
+		return getDeltaMovement().x != 0 || getDeltaMovement().y != 0 || getDeltaMovement().z != 0;
 	}
 
 	@Override
 	public void setItemInUse(ItemStack stack) {
 		itemInUse = stack;
-		BuildCraftCore.instance.sendToEntity(new PacketCommand(this, "clientSetItemInUse", new CommandWriter() {
-			public void write(ByteBuf data) {
-				NetworkUtils.writeStack(data, itemInUse);
-			}
-		}), this);
+		BCNetworkManager.sendEntityClientSetItemInUse(this, this.getId(), stack);
 	}
 
-	private void setSteamDirection(final int x, final int y, final int z) {
-		if (!worldObj.isRemote) {
-			BuildCraftCore.instance.sendToEntity(new PacketCommand(this, "setSteamDirection", new CommandWriter() {
-				public void write(ByteBuf data) {
-					data.writeInt(x);
-					data.writeShort(y);
-					data.writeInt(z);
-				}
-			}), this);
+	public void setSteamDirection(final int x, final int y, final int z) {
+		if (!level().isClientSide) {
+			BCNetworkManager.sendSetSteamDirection(this, this.getId(), x, y, z);
 		} else {
-			Vec3 v = Vec3.createVectorHelper(x, y, z);
+			Vec3 v = new Vec3(x, y, z);
 			v = v.normalize();
 
-			steamDx = (int) v.xCoord;
-			steamDy = (int) v.yCoord;
-			steamDz = (int) v.zCoord;
-		}
-	}
-
-	@Override
-	public void receiveCommand(String command, Side side, Object sender, ByteBuf stream) {
-		if (side.isClient()) {
-			if ("clientSetItemInUse".equals(command)) {
-				itemInUse = NetworkUtils.readStack(stream);
-			} else if ("clientSetInventory".equals(command)) {
-				int slot = stream.readUnsignedShort();
-				inv[slot] = NetworkUtils.readStack(stream);
-			} else if ("initialize".equals(command)) {
-				itemInUse = NetworkUtils.readStack(stream);
-				itemActive = stream.readBoolean();
-			} else if ("setItemActive".equals(command)) {
-				itemActive = stream.readBoolean();
-				itemActiveStage = 0;
-				lastUpdateTime = new Date().getTime();
-
-				if (!itemActive) {
-					setSteamDirection(0, -1, 0);
-				}
-			} else if ("setSteamDirection".equals(command)) {
-				setSteamDirection(stream.readInt(), stream.readShort(), stream.readInt());
-			} else if ("syncWearables".equals(command)) {
-				wearables.clear();
-
-				int amount = stream.readUnsignedByte();
-				while (amount > 0) {
-					wearables.add(NetworkUtils.readStack(stream));
-					amount--;
-				}
-			}
-		} else if (side.isServer()) {
-			EntityPlayer p = (EntityPlayer) sender;
-			if ("requestInitialization".equals(command)) {
-				BuildCraftCore.instance.sendToPlayer(p, new PacketCommand(this, "initialize", new CommandWriter() {
-					public void write(ByteBuf data) {
-						NetworkUtils.writeStack(data, itemInUse);
-						data.writeBoolean(itemActive);
-					}
-				}));
-
-				for (int i = 0; i < inv.length; ++i) {
-					final int j = i;
-					BuildCraftCore.instance.sendToPlayer(p, new PacketCommand(this, "clientSetInventory", new CommandWriter() {
-						public void write(ByteBuf data) {
-							data.writeShort(j);
-							NetworkUtils.writeStack(data, inv[j]);
-						}
-					}));
-				}
-
-				if (currentDockingStation != null) {
-					setSteamDirection(
-							currentDockingStation.side.offsetX,
-							currentDockingStation.side.offsetY,
-							currentDockingStation.side.offsetZ);
-				} else {
-					setSteamDirection(0, -1, 0);
-				}
-			}
+			steamDx = (int) v.x;
+			steamDy = (int) v.y;
+			steamDz = (int) v.z;
 		}
 	}
 
@@ -865,21 +791,21 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float f) {
+	public boolean hurt(DamageSource source, float f) {
 		// Ignore hits from mobs or when docked.
-		Entity src = source.getSourceOfDamage();
-		if (src != null && !(src instanceof EntityFallingBlock) && !(src instanceof IMob) && currentDockingStation == null) {
+		Entity src = source.getEntity();
+		if (src != null && !(src instanceof Fallable) && !(src instanceof Mob) && currentDockingStation == null) {
 			if (ForgeHooks.onLivingAttack(this, source, f)) {
 				return false;
 			}
 
-			if (!worldObj.isRemote) {
-				hurtTime = maxHurtTime = 10;
+			if (!level().isClientSide) {
+				hurtTime = hurtDuration = 10;
 
 				int mul = 2600;
 				for (ItemStack s : wearables) {
-					if (s.getItem() instanceof ItemArmor) {
-						mul = mul * 2 / (2 + ((ItemArmor) s.getItem()).damageReduceAmount);
+					if (s.getItem() instanceof ArmorItem) {
+						mul = mul * 2 / (2 + ((ArmorItem) s.getItem()).getDefense()) / 2;
 					} else {
 						mul *= 0.7;
 					}
@@ -918,14 +844,14 @@ public class EntityRobot extends EntityRobotBase implements
 
 	@Override
 	public void aimItemAt(int x, int y, int z) {
-		int deltaX = x - (int) Math.floor(posX);
-		int deltaY = y - (int) Math.floor(posY);
-		int deltaZ = z - (int) Math.floor(posZ);
+		int deltaX = x - (int) Math.floor(getX());
+		int deltaY = y - (int) Math.floor(getY());
+		int deltaZ = z - (int) Math.floor(getZ());
 
 		if (deltaX != 0 || deltaZ != 0) {
 			itemAngle1 = (float) (Math.atan2(deltaZ, deltaX) * 180f / Math.PI) + 180f;
 		}
-		double d3 = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+		double d3 = Mth.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 		itemAngle2 = (float) (-(Math.atan2(deltaY, d3) * 180.0D / Math.PI));
 
 		setSteamDirection(deltaX, deltaY, deltaZ);
@@ -934,7 +860,7 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	private void updateRotationYaw(float maxStep) {
-		float step = MathHelper.wrapAngleTo180_float(itemAngle1 - rotationYaw);
+		float step = Mth.wrapDegrees(itemAngle1 - getYRot());
 
 		if (step > maxStep) {
 			step = maxStep;
@@ -944,42 +870,14 @@ public class EntityRobot extends EntityRobotBase implements
 			step = -maxStep;
 		}
 
-		rotationYaw = rotationYaw + step;
-	}
-
-	@Override
-	protected float func_110146_f(float targetYaw, float dist) {
-		if (worldObj.isRemote) {
-			float f2 = MathHelper.wrapAngleTo180_float(this.rotationYaw - this.renderYawOffset);
-			this.renderYawOffset += f2 * 0.5F;
-			float f3 = MathHelper.wrapAngleTo180_float(this.rotationYaw - this.renderYawOffset);
-			boolean flag = f3 < -90.0F || f3 >= 90.0F;
-
-			this.renderYawOffset = this.rotationYaw - f3;
-
-			if (f3 * f3 > 2500.0F) {
-				this.renderYawOffset += f3 * 0.2F;
-			}
-
-			float newDist = dist;
-			if (flag) {
-				newDist *= -1.0F;
-			}
-
-			return newDist;
-		}
-		return 0;
+		setYRot(getYRot() + step);
 	}
 
 	@Override
 	public void setItemActive(final boolean isActive) {
 		if (isActive != itemActive) {
 			itemActive = isActive;
-			BuildCraftCore.instance.sendToEntity(new PacketCommand(this, "setItemActive", new CommandWriter() {
-				public void write(ByteBuf data) {
-					data.writeBoolean(isActive);
-				}
-			}), this);
+			BCNetworkManager.sendSetItemActive(this, this.getId(), isActive);
 		}
 	}
 
@@ -993,9 +891,9 @@ public class EntityRobot extends EntityRobotBase implements
 		return linkedDockingStation;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double par1) {
+	public boolean shouldRenderAtSqrDistance(double par1) {
 		return true;
 	}
 
@@ -1005,87 +903,100 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public RFBattery getBattery() {
+	public EnergyStorage getBattery() {
 		return battery;
 	}
 
 	@Override
-	protected boolean canDespawn() {
+	public boolean removeWhenFarAway(double distance) {
 		return false;
 	}
 
 	public AIRobot getOverridingAI() {
 		return mainAI.getOverridingAI();
 	}
+	@Override
+	public ItemStack getMainHandItem() {
+		return itemInUse == null ? ItemStack.EMPTY : itemInUse;
+	}
+	@Override
+	public ItemStack getItemBySlot(EquipmentSlot slot) {
+		if (slot == EquipmentSlot.MAINHAND) {
+			return itemInUse == null ? ItemStack.EMPTY : itemInUse;
+		}
 
+		return ItemStack.EMPTY;
+	}
 	public void overrideAI(AIRobot ai) {
 		mainAI.setOverridingAI(ai);
 	}
 
 	public void attackTargetEntityWithCurrentItem(Entity par1Entity) {
 		if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(
-				CoreProxy.proxy.getBuildCraftPlayer((WorldServer) worldObj, (int) posX, (int) posY, (int) posZ).get(),
+				BCFakePlayer.getBuildCraftPlayer((ServerLevel) level(), (int) getX(), (int) getY(), (int) getZ()).get(),
 				par1Entity))) {
 			return;
 		}
 
-		if (par1Entity.canAttackWithItem()) {
-			if (!par1Entity.hitByEntity(this)) {
-				Multimap<String, AttributeModifier> attributes = itemInUse != null ? (Multimap<String, AttributeModifier>) itemInUse.getAttributeModifiers() : null;
+		if (par1Entity.isAttackable()) {
+			if (!par1Entity.skipAttackInteraction(this)) {
+				Multimap<Attribute, AttributeModifier> attributes = itemInUse != null ? (Multimap<Attribute, AttributeModifier>) itemInUse.getAttributeModifiers(EquipmentSlot.MAINHAND) : null;
 				float attackDamage = 2.0F;
 				int knockback = 0;
 
 				if (attributes != null) {
-					for (AttributeModifier modifier : attributes.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName())) {
+					for (AttributeModifier modifier : attributes.get(Attributes.ATTACK_DAMAGE)) {
 						switch (modifier.getOperation()) {
-							case 0:
+							case ADDITION:
 								attackDamage += modifier.getAmount();
 								break;
-							case 1:
+							case MULTIPLY_BASE:
 								attackDamage *= modifier.getAmount();
 								break;
-							case 2:
+							case MULTIPLY_TOTAL:
 								attackDamage *= 1.0F + modifier.getAmount();
 								break;
 						}
 					}
 				}
 
-				if (par1Entity instanceof EntityLivingBase) {
-					attackDamage += EnchantmentHelper.getEnchantmentModifierLiving(this, (EntityLivingBase) par1Entity);
-					knockback += EnchantmentHelper.getKnockbackModifier(this, (EntityLivingBase) par1Entity);
+				if (par1Entity instanceof LivingEntity le && !itemInUse.isEdible()) {
+					attackDamage += EnchantmentHelper.getDamageBonus(itemInUse, le.getMobType());
+					knockback += EnchantmentHelper.getKnockbackBonus(this);
 				}
 
 				if (attackDamage > 0.0F) {
-					int fireAspect = EnchantmentHelper.getFireAspectModifier(this);
+					int fireAspect = EnchantmentHelper.getFireAspect(this);
 
-					if (par1Entity instanceof EntityLivingBase && fireAspect > 0 && !par1Entity.isBurning()) {
-						par1Entity.setFire(fireAspect * 4);
+					if (par1Entity instanceof LivingEntity && fireAspect > 0 && !par1Entity.isOnFire()) {
+						par1Entity.setSecondsOnFire(fireAspect * 4);
 					}
 
-					if (par1Entity.attackEntityFrom(new EntityDamageSource("robot", this), attackDamage)) {
-						this.setLastAttacker(par1Entity);
+					if (par1Entity.hurt(damageSources().mobAttack(this), attackDamage)) {
+                        if (par1Entity instanceof LivingEntity) {
+                            this.setLastHurtByMob((LivingEntity) par1Entity);
+                        }
 
-						if (knockback > 0) {
-							par1Entity.addVelocity((double) (-MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F) * (float) knockback * 0.5F), 0.1D, (double) (MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F) * (float) knockback * 0.5F));
-							this.motionX *= 0.6D;
-							this.motionZ *= 0.6D;
+                        if (knockback > 0) {
+							par1Entity.addDeltaMovement(new Vec3((double) (-Mth.sin(this.getYRot() * (float) Math.PI / 180.0F) * (float) knockback * 0.5F), 0.1D, (double) (Mth.cos(this.getYRot() * (float) Math.PI / 180.0F) * (float) knockback * 0.5F)));
+							Vec3 motion = this.getDeltaMovement();
+							this.setDeltaMovement(motion.x * 0.6D, motion.y, motion.z * 0.6D);
 							this.setSprinting(false);
 						}
 
-						if (par1Entity instanceof EntityLivingBase) {
-							EnchantmentHelper.func_151384_a((EntityLivingBase) par1Entity, this);
+						if (par1Entity instanceof LivingEntity le) {
+							EnchantmentHelper.doPostHurtEffects(le, this);
 						}
 
-						EnchantmentHelper.func_151385_b(this, par1Entity);
+						EnchantmentHelper.doPostDamageEffects(this, par1Entity);
 
 						ItemStack itemstack = itemInUse;
 
-						if (itemstack != null && par1Entity instanceof EntityLivingBase) {
-							itemstack.getItem().hitEntity(itemstack, (EntityLivingBase) par1Entity, this);
+						if (itemstack != null && par1Entity instanceof LivingEntity le) {
+							itemstack.hurtEnemy(le, lastHurtByPlayer);
 						}
 
-						if (itemInUse.stackSize == 0) {
+						if (itemInUse.getCount() == 0) {
 							setItemInUse(null);
 						}
 					}
@@ -1108,7 +1019,7 @@ public class EntityRobot extends EntityRobotBase implements
 		return zone;
 	}
 
-	private IZone getZone(AreaType areaType) {
+	private IZone getZone(ActionRobotWorkInArea.AreaType areaType) {
 		if (linkedDockingStation != null) {
 			for (StatementSlot s : linkedDockingStation.getActiveActions()) {
 				if (s.statement instanceof ActionRobotWorkInArea
@@ -1149,13 +1060,13 @@ public class EntityRobot extends EntityRobotBase implements
 
 	@Override
 	public void unreachableEntityDetected(Entity entity) {
-		unreachableEntities.put(entity, worldObj.getTotalWorldTime() + 1200);
+		unreachableEntities.put(entity, level().getGameTime() + 1200);
 	}
 
 	@Override
 	public boolean isKnownUnreachable(Entity entity) {
 		if (unreachableEntities.containsKey(entity)) {
-			if (unreachableEntities.get(entity) >= worldObj.getTotalWorldTime()) {
+			if (unreachableEntities.get(entity) >= level().getGameTime()) {
 				return true;
 			} else {
 				unreachableEntities.remove(entity);
@@ -1167,16 +1078,16 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	protected void onRobotHit(boolean attacked) {
-		if (!worldObj.isRemote) {
+		if (!level().isClientSide) {
 			if (attacked) {
 				convertToItems();
 			} else {
-				if (wearables.size() > 0) {
-					entityDropItem(wearables.remove(wearables.size() - 1), 0);
+				if (!wearables.isEmpty()) {
+					spawnAtLocation(wearables.remove(wearables.size() - 1), 0);
 					syncWearablesToClient();
-				} else if (itemInUse != null) {
-					entityDropItem(itemInUse, 0);
-					itemInUse = null;
+				} else if (!itemInUse.isEmpty()) {
+					spawnAtLocation(itemInUse, 0);
+					itemInUse = ItemStack.EMPTY;
 				} else {
 					convertToItems();
 				}
@@ -1185,114 +1096,114 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	protected boolean interact(EntityPlayer player) {
-		ItemStack stack = player.getCurrentEquippedItem();
-		if (stack == null || stack.getItem() == null) {
-			return false;
+	public InteractionResult mobInteract(Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (stack.isEmpty() || stack.isEmpty()) {
+			return InteractionResult.FAIL;
 		}
 
 		RobotEvent.Interact robotInteractEvent = new RobotEvent.Interact(this, player, stack);
 		MinecraftForge.EVENT_BUS.post(robotInteractEvent);
 		if (robotInteractEvent.isCanceled()) {
-			return false;
+			return InteractionResult.FAIL;
 		}
 
-		if (player.isSneaking() && stack.getItem() == BuildCraftCore.wrenchItem) {
+		if (player.isShiftKeyDown() && stack.getItem() == ItemsCore.WRENCH.get()) {
 			RobotEvent.Dismantle robotDismantleEvent = new RobotEvent.Dismantle(this, player);
 			MinecraftForge.EVENT_BUS.post(robotDismantleEvent);
 			if (robotDismantleEvent.isCanceled()) {
-				return false;
+				return InteractionResult.FAIL;
 			}
 
 			onRobotHit(false);
 
-			if (worldObj.isRemote) {
-				((ItemWrench) stack.getItem()).wrenchUsed(player, 0, 0, 0);
+			if (level().isClientSide) {
+				((WrenchItem) stack.getItem()).wrenchUsed(player, 0, 0, 0);
 			}
-			return true;
-		} else if (wearables.size() < MAX_WEARABLES && stack.getItem().isValidArmor(stack, 0, this)) {
-			if (!worldObj.isRemote) {
-				wearables.add(stack.splitStack(1));
+			return InteractionResult.sidedSuccess(level().isClientSide);
+		} else if (wearables.size() < MAX_WEARABLES && stack.getItem().canEquip(stack, EquipmentSlot.HEAD, this)) {
+			if (!level().isClientSide) {
+				wearables.add(stack.split(1));
 				syncWearablesToClient();
 			} else {
-				player.swingItem();
+				player.swing(hand);
 			}
-			return true;
-		} else if (wearables.size() < MAX_WEARABLES && stack.getItem() instanceof IRobotOverlayItem && ((IRobotOverlayItem) stack.getItem()).isValidRobotOverlay(stack)) {
-			if (!worldObj.isRemote) {
-				wearables.add(stack.splitStack(1));
+			return InteractionResult.sidedSuccess(level().isClientSide);
+		} else if (wearables.size() < MAX_WEARABLES && stack.getItem() instanceof IRobotOverlayItem overlay && overlay.isValidRobotOverlay(stack)) {
+			if (!level().isClientSide) {
+				wearables.add(stack.split(1));
 				syncWearablesToClient();
 			} else {
-				player.swingItem();
+				player.swing(hand);
 			}
-			return true;
-		} else if (wearables.size() < MAX_WEARABLES && stack.getItem() instanceof ItemSkull) {
-			if (!worldObj.isRemote) {
-				ItemStack skullStack = stack.splitStack(1);
+			return InteractionResult.sidedSuccess(level().isClientSide);
+		} else if (wearables.size() < MAX_WEARABLES && (
+				stack.is(Items.SKELETON_SKULL) ||
+						stack.is(Items.ZOMBIE_HEAD) ||
+						stack.is(Items.CREEPER_HEAD) ||
+						stack.is(Items.PLAYER_HEAD) ||
+						stack.is(Items.DRAGON_HEAD) ||
+						stack.is(Items.WITHER_SKELETON_SKULL) ||
+						stack.is(Items.DRAGON_HEAD) ||
+						stack.is(Items.ARMOR_STAND))
+		) {
+			if (!level().isClientSide) {
+				ItemStack skullStack = stack.split(1);
 				initSkullItem(skullStack);
 				wearables.add(skullStack);
 				syncWearablesToClient();
 			} else {
-				player.swingItem();
+				player.swing(hand);
 			}
-			return true;
+			return InteractionResult.sidedSuccess(level().isClientSide);
 		} else {
-			return super.interact(player);
+			return super.interact(player, hand);
 		}
 	}
 
 	private void initSkullItem(ItemStack skullStack) {
-		if (skullStack.hasTagCompound()) {
-			NBTTagCompound nbttagcompound = skullStack.getTagCompound();
+		if (skullStack.hasTag()) {
+			CompoundTag nbttagcompound = skullStack.getTag();
 			GameProfile gameProfile = null;
 
-			if (nbttagcompound.hasKey("SkullOwner", NBT.TAG_COMPOUND)) {
-				gameProfile = NBTUtil.func_152459_a(nbttagcompound.getCompoundTag("SkullOwner"));
-			} else if (nbttagcompound.hasKey("SkullOwner", NBT.TAG_STRING)
-					&& !StringUtils.isNullOrEmpty(nbttagcompound.getString("SkullOwner"))) {
+			if (nbttagcompound.contains("SkullOwner", CompoundTag.TAG_COMPOUND)) {
+				gameProfile = NbtUtils.readGameProfile(nbttagcompound.getCompound("SkullOwner"));
+			} else if (nbttagcompound.contains("SkullOwner", CompoundTag.TAG_STRING)
+					&& !Strings.isNullOrEmpty(nbttagcompound.getString("SkullOwner"))) {
 				gameProfile = new GameProfile(null, nbttagcompound.getString("SkullOwner"));
 			}
-			if (gameProfile != null && !StringUtils.isNullOrEmpty(gameProfile.getName())) {
+			if (gameProfile != null && !Strings.isNullOrEmpty(gameProfile.getName())) {
 				if (!gameProfile.isComplete()
 						|| !gameProfile.getProperties().containsKey("textures")) {
-					gameProfile = MinecraftServer.getServer().func_152358_ax()
-							.func_152655_a(gameProfile.getName());
+					gameProfile = level().getServer().getProfileCache()
+							.get(gameProfile.getName()).orElse(gameProfile);
 
-					if (gameProfile != null) {
-						Property property = (Property) Iterables.getFirst(gameProfile
-								.getProperties().get("textures"), (Object) null);
+                    Property property = Iterables.getFirst(gameProfile
+                            .getProperties().get("textures"), null);
 
-						if (property == null) {
-							gameProfile = MinecraftServer.getServer().func_147130_as()
-									.fillProfileProperties(gameProfile, true);
-						}
-					}
-				}
+                    if (property == null) {
+                        gameProfile = level().getServer().getSessionService()
+                                .fillProfileProperties(gameProfile, true);
+                    }
+                }
 			}
 			if (gameProfile != null && gameProfile.isComplete()
 					&& gameProfile.getProperties().containsKey("textures")) {
-				NBTTagCompound profileNBT = new NBTTagCompound();
-				NBTUtil.func_152460_a(profileNBT, gameProfile);
-				nbttagcompound.setTag("SkullOwner", profileNBT);
+				CompoundTag profileNBT = new CompoundTag();
+				NbtUtils.writeGameProfile(profileNBT, gameProfile);
+				nbttagcompound.put("SkullOwner", profileNBT);
 			} else {
-				nbttagcompound.removeTag("SkullOwner");
+				nbttagcompound.remove("SkullOwner");
 			}
 		}
 	}
 
 	private void syncWearablesToClient() {
-		BuildCraftCore.instance.sendToEntity(new PacketCommand(this, "syncWearables", new CommandWriter() {
-			public void write(ByteBuf data) {
-				data.writeByte(wearables.size());
-				for (ItemStack s : wearables) {
-					NetworkUtils.writeStack(data, s);
-				}
-			}
-		}), this);
+		BCNetworkManager.sendSyncWearables(this, getId(), wearables);
 	}
 
 	private List<ItemStack> getDrops() {
-		List<ItemStack> drops = new ArrayList<ItemStack>();
+		List<ItemStack> drops = new ArrayList<>();
 		drops.add(RobotItem.createRobotStack(board.getNBTHandler(), battery.getEnergyStored()));
 		if (itemInUse != null) {
 			drops.add(itemInUse);
@@ -1307,24 +1218,24 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	private void convertToItems() {
-		if (!worldObj.isRemote && !isDead) {
+		if (!level().isClientSide && !isRemoved()) {
 			if (mainAI != null) {
 				mainAI.abort();
 			}
 			List<ItemStack> drops = getDrops();
 			for (ItemStack stack : drops) {
-				entityDropItem(stack, 0);
+				spawnAtLocation(stack, 0);
 			}
-			isDead = true;
+			remove(RemovalReason.DISCARDED);
 		}
 
 		getRegistry().killRobot(this);
 	}
 
 	@Override
-	public void setDead() {
-		if (worldObj.isRemote) {
-			super.setDead();
+	public void remove(RemovalReason reason) {
+		if (level().isClientSide) {
+			super.remove(reason);
 		}
 	}
 
@@ -1334,18 +1245,11 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public boolean canBePushed() {
-		return false;
+	public void push(Entity p_21294_) {
 	}
 
 	@Override
-	protected void collideWithEntity(Entity par1Entity) {
-
-	}
-
-	@Override
-	public void applyEntityCollision(Entity par1Entity) {
-
+	public void push(double p_20286_, double p_20287_, double p_20288_) {
 	}
 
 	public void setUniqueRobotId(long iRobotId) {
@@ -1359,7 +1263,7 @@ public class EntityRobot extends EntityRobotBase implements
 
 	@Override
 	public RobotRegistry getRegistry() {
-		return (RobotRegistry) RobotManager.registryProvider.getRegistry(worldObj);
+		return (RobotRegistry) RobotManager.registryProvider.getRegistry(level());
 	}
 
 	@Override
@@ -1372,7 +1276,7 @@ public class EntityRobot extends EntityRobotBase implements
 	 * the operation.
 	 */
 	@Override
-	public ItemStack receiveItem(TileEntity tile, ItemStack stack) {
+	public ItemStack receiveItem(BlockEntity tile, ItemStack stack) {
 		if (currentDockingStation != null
 				&& currentDockingStation.index().nextTo(new BlockIndex(tile))
 				&& mainAI != null) {
@@ -1384,7 +1288,28 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int getTanks() {
+		return 0;
+	}
+
+	@Override
+	public @NotNull FluidStack getFluidInTank(int tank) {
+		return null;
+	}
+
+	@Override
+	public int getTankCapacity(int tank) {
+		return 0;
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+		return false;
+	}
+
+	@Override
+	public int fill(FluidStack resource, FluidAction action) {
+		boolean doFill = action.execute();
 		int result;
 
 		if (tank != null && !tank.isFluidEqual(resource)) {
@@ -1395,21 +1320,21 @@ public class EntityRobot extends EntityRobotBase implements
 			tank = new FluidStack(resource.getFluid(), 0);
 		}
 
-		if (tank.amount + resource.amount <= maxFluid) {
-			result = resource.amount;
+		if (tank.getAmount() + resource.getAmount() <= maxFluid) {
+			result = resource.getAmount();
 
 			if (doFill) {
-				tank.amount += resource.amount;
+				tank.setAmount(tank.getAmount() + resource.getAmount());
 			}
 		} else {
-			result = maxFluid - tank.amount;
+			result = maxFluid - tank.getAmount();
 
 			if (doFill) {
-				tank.amount = maxFluid;
+				tank.setAmount(maxFluid);
 			}
 		}
 
-		if (tank != null && tank.amount == 0) {
+		if (tank != null && tank.getAmount() == 0) {
 			tank = null;
 		}
 
@@ -1417,21 +1342,22 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
 		if (tank != null && tank.isFluidEqual(resource)) {
-			return drain(from, resource.amount, doDrain);
+			return drain(resource.getAmount(), action);
 		} else {
-			return null;
+			return FluidStack.EMPTY;
 		}
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+		boolean doDrain = action.execute();
 		FluidStack result;
 
 		if (tank == null) {
-			result = null;
-		} else if (tank.amount <= maxDrain) {
+			result = FluidStack.EMPTY;
+		} else if (tank.getAmount() <= maxDrain) {
 			result = tank.copy();
 
 			if (doDrain) {
@@ -1439,55 +1365,50 @@ public class EntityRobot extends EntityRobotBase implements
 			}
 		} else {
 			result = tank.copy();
-			result.amount = maxDrain;
+			result.setAmount(maxDrain);
 
 			if (doDrain) {
-				tank.amount -= maxDrain;
+				tank.setAmount(tank.getAmount() - maxDrain);
 			}
 		}
 
-		if (tank != null && tank.amount == 0) {
+		if (tank != null && tank.getAmount() == 0) {
 			tank = null;
 		}
 
 		return result;
 	}
 
+//	@Override
+//	public boolean canFill(ForgeDirection from, Fluid fluid) {
+//		return tank == null
+//				|| tank.getAmount() == 0
+//				|| (tank.getAmount() < maxFluid
+//				&& tank.getFluid().getID() == fluid.getID());
+//	}
+//
+//	@Override
+//	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+//		return tank != null
+//				&& tank.getAmount() != 0
+//				&& tank.getFluid().getID() == fluid.getID();
+//	}
+
+
+//	@Override
+//	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+//		return new FluidTankInfo[]{new FluidTankInfo(tank, maxFluid)};
+//	}
+
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		return tank == null
-				|| tank.amount == 0
-				|| (tank.amount < maxFluid
-				&& tank.getFluid().getID() == fluid.getID());
+	public IFluidHandler getFluidHandler() {
+		return new FluidTank(maxFluid, Predicate.isEqual(tank));
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		return tank != null
-				&& tank.amount != 0
-				&& tank.getFluid().getID() == fluid.getID();
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-		return new FluidTankInfo[]{new FluidTankInfo(tank, maxFluid)};
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getItemIcon(ItemStack stack, int renderPass) {
-		IIcon iicon = super.getItemIcon(stack, renderPass);
-
-		if (iicon == null) {
-			iicon = stack.getItem().getIcon(stack, renderPass, null, itemInUse, 0);
-		}
-
-		return iicon;
-	}
-
-	@Override
-	public void getDebugInfo(List<String> info, ForgeDirection side, ItemStack debugger, EntityPlayer player) {
+	public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
 		info.add("Robot " + board.getNBTHandler().getID() + " (" + getBattery().getEnergyStored() + "/" + getBattery().getMaxEnergyStored() + " RF)");
-		info.add(String.format("Position: %.2f, %.2f, %.2f", posX, posY, posZ));
+		info.add(String.format("Position: %.2f, %.2f, %.2f", getX(), getY(), getZ()));
 		info.add("AI tree:");
 		AIRobot aiRobot = mainAI;
 		while (aiRobot != null) {
@@ -1515,12 +1436,13 @@ public class EntityRobot extends EntityRobotBase implements
 	}
 
 	private void updateItem(ItemStack stack, int i, boolean held) {
-		if (stack != null && stack.getItem() != null) {
-			int id = Item.getIdFromItem(stack.getItem());
+		if (stack != null && !stack.isEmpty()) {
+			int id = Item.getId(stack.getItem());
 			// did this item not throw an exception before?
 			if (!blacklistedItemsForUpdate.contains(id)) {
 				try {
-					stack.getItem().onUpdate(stack, worldObj, this, i, held);
+					stack.inventoryTick(level(), this, i, held);
+//					stack.getItem().onUpdate(stack, level(), this, i, held);
 				} catch (Exception e) {
 					// the item threw an exception, print it and do not let it update once more
 					e.printStackTrace();
@@ -1528,5 +1450,44 @@ public class EntityRobot extends EntityRobotBase implements
 				}
 			}
 		}
+	}
+
+	public void doInitialize(ServerPlayer p) {
+		for (int i = 0; i < inv.length; ++i) {
+			final int j = i;
+			BCNetworkManager.sendClientSetInventory(p, this.getId(), (short) j, inv[j]);
+		}
+
+		if (currentDockingStation != null) {
+			setSteamDirection(
+					currentDockingStation.side.getStepX(),
+					currentDockingStation.side.getStepY(),
+					currentDockingStation.side.getStepZ());
+		} else {
+			setSteamDirection(0, -1, 0);
+		}
+	}
+
+	public void clientSetInventory(int slot, ItemStack stack) {
+		inv[slot] = stack;
+	}
+
+	public void doItemActivate(boolean activate) {
+		itemActive = activate;
+		itemActiveStage = 0;
+		lastUpdateTime = new Date().getTime();
+
+		if (!itemActive) {
+			setSteamDirection(0, -1, 0);
+		}
+	}
+	public void doSyncWearables(List<ItemStack> data) {
+		wearables.clear();
+        wearables.addAll(data);
+	}
+
+	@Override
+	public void clearContent() {
+
 	}
 }
