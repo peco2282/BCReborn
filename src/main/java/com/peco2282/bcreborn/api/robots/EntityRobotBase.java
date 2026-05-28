@@ -10,6 +10,7 @@ package com.peco2282.bcreborn.api.robots;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.IZone;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public abstract class EntityRobotBase extends PathfinderMob {
+public abstract class EntityRobotBase extends PathfinderMob implements Container, IFluidHandler{
     public static final int MAX_ENERGY = 100000;
     public static final int SAFETY_ENERGY = MAX_ENERGY / 5;
     public static final int SHUTDOWN_ENERGY = 0;

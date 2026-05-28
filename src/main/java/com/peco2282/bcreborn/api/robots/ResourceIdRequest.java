@@ -23,7 +23,7 @@ public class ResourceIdRequest extends ResourceId {
     }
 
     public ResourceIdRequest(DockingStation station, int slot) {
-        index = station.index();
+        index = station.index().toBlockPos();
         side = station.side();
         this.slot = slot;
     }

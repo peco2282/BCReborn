@@ -17,19 +17,19 @@ import java.util.Collection;
 public interface IRobotRegistry {
     long getNextRobotId();
 
-    void registerRobot(Object robot);
+    void registerRobot(EntityRobotBase robot);
 
-    void killRobot(Object robot);
+    void killRobot(EntityRobotBase robot);
 
-    void unloadRobot(Object robot);
+    void unloadRobot(EntityRobotBase robot);
 
-    Object getLoadedRobot(long id);
+    EntityRobotBase getLoadedRobot(long id);
 
     boolean isTaken(ResourceId resourceId);
 
     long robotIdTaking(ResourceId resourceId);
 
-    Object robotTaking(ResourceId resourceId);
+    EntityRobotBase robotTaking(ResourceId resourceId);
 
     boolean take(ResourceId resourceId, Object robot);
 
