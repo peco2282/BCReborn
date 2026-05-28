@@ -17,6 +17,13 @@ public record LaunchItemPacket(
     buffer.writeBlockPos(pos);
     item.writeData(buffer);
   }
+  
+  public static LaunchItemPacket decode(FriendlyByteBuf buffer) {
+    BlockPos pos = buffer.readBlockPos();
+    BuildingItem item = new BuildingItem();
+    item.readData(buffer);
+    return new LaunchItemPacket(pos, item);
+  }
 
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
