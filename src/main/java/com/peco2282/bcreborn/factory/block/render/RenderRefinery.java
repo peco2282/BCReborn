@@ -37,7 +37,7 @@ import org.joml.Matrix4f;
 
 public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> {
 
-	private static final ResourceLocation TEXTURE = BCRebornFactory.location("textures/blocks/refineryBlock/refinery.png");
+	private static final ResourceLocation TEXTURE = BCRebornFactory.location("textures/block/refinery_block/refinery.png");
 	private final ModelPart tank;
 	private final ModelPart[] magnet = new ModelPart[4];
 
