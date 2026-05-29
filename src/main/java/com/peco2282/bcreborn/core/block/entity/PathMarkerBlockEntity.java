@@ -2,6 +2,8 @@ package com.peco2282.bcreborn.core.block.entity;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IPathProvider;
+import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.common.block.entity.MarkerBlockEntity;
 import com.peco2282.bcreborn.core.BlockEntityTypesCore;
 import net.minecraft.core.BlockPos;
@@ -9,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,6 +57,23 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
 
     if (isFullyConnected()) {
       availableMarkers.remove(this);
+    }
+    updateLasers();
+  }
+
+  private void updateLasers() {
+    lasers.clear();
+    for (int i = 0; i < 2; i++) {
+      if (links[i] != null) {
+        lasers.add(new LaserData(
+            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+            new Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
+            LaserKind.Red
+        ));
+      }
+    }
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
 
@@ -237,6 +257,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     }
 
     setChanged();
+    updateLasers();
   }
 
   @Override
@@ -268,6 +289,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     }
 
     setChanged();
+    updateLasers();
   }
 
   // -----------------------------------------------------------------------

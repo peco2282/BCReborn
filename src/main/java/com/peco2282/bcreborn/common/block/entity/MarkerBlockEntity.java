@@ -1,9 +1,13 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -104,6 +108,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   // -----------------------------------------------------------------------
   public Origin origin = new Origin();
   public boolean showSignals = false;
+  public List<LaserData> lasers = new ArrayList<>();
+  public List<LaserData> signals = new ArrayList<>();
 
   // Positions loaded from NBT, resolved in initialize()
   private BlockPos initVectO = null;
@@ -126,17 +132,23 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       origin = new Origin();
       origin.vectO = new TileWrapper(initVectO);
 
-      for (int i = 0; i < 3; ++i) {
-        if (initVect[i] != null) {
-          BlockEntity te = level.getBlockEntity(initVect[i]);
-          if (te instanceof MarkerBlockEntity other) {
-            linkTo(other, i);
+      if (initVect != null) {
+        for (int i = 0; i < 3; ++i) {
+          if (initVect[i] != null) {
+            BlockEntity te = level.getBlockEntity(initVect[i]);
+            if (te instanceof MarkerBlockEntity other) {
+              linkTo(other, i);
+            }
           }
         }
       }
 
       initVectO = null;
       initVect = null;
+    }
+
+    if (showSignals) {
+      createLasers();
     }
   }
 
@@ -150,8 +162,37 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   // -----------------------------------------------------------------------
   public void updateSignals() {
     if (level != null && !level.isClientSide) {
+      boolean oldSignals = showSignals;
       showSignals = level.hasNeighborSignal(worldPosition);
+      if (oldSignals != showSignals) {
+        switchSignals();
+      }
       setChanged();
+    }
+  }
+
+  public void switchSignals() {
+    if (origin.isSet()) {
+      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
+      if (originMarker != null) {
+        if (showSignals) {
+          originMarker.createLasers();
+        } else {
+          originMarker.destroyLasers();
+        }
+      }
+    }
+  }
+
+  public void createLasers() {
+  }
+
+  public void destroyLasers() {
+    if (lasers.isEmpty()) return;
+    lasers.clear();
+    setChanged();
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
 
@@ -229,6 +270,17 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     updateBounds();
     updateSignals();
     marker.updateSignals();
+
+    if (origin.isSet()) {
+      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
+      if (originMarker != null) {
+        if (originMarker.showSignals) {
+          originMarker.createLasers();
+        } else {
+          originMarker.destroyLasers();
+        }
+      }
+    }
 
     return true;
   }
@@ -363,13 +415,21 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   // -----------------------------------------------------------------------
   @Override
   public void setRemoved() {
-    destroy();
     super.setRemoved();
+    destroyLasers();
   }
 
   public void destroy() {
     if (level == null) {
       return;
+    }
+    destroyLasers();
+
+    if (origin.isSet()) {
+      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
+      if (originMarker != null) {
+        originMarker.destroyLasers();
+      }
     }
 
     if (origin.isSet()) {
@@ -415,6 +475,17 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
         }
       }
     }
+    saveLaserList(nbt, "lasers", lasers);
+    saveLaserList(nbt, "signals", signals);
+  }
+
+  private void saveLaserList(CompoundTag nbt, String key, List<LaserData> list) {
+    if (list.isEmpty()) return;
+    ListTag tagList = new ListTag();
+    for (LaserData ld : list) {
+      tagList.add(ld.toNBT());
+    }
+    nbt.put(key, tagList);
   }
 
   @Override
@@ -431,6 +502,19 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
         }
       }
     }
+    lasers = loadLaserList(nbt, "lasers");
+    signals = loadLaserList(nbt, "signals");
+  }
+
+  private List<LaserData> loadLaserList(CompoundTag nbt, String key) {
+    List<LaserData> list = new ArrayList<>();
+    if (nbt.contains(key, CompoundTag.TAG_LIST)) {
+      ListTag tagList = nbt.getList(key, CompoundTag.TAG_COMPOUND);
+      for (int i = 0; i < tagList.size(); i++) {
+        list.add(new LaserData(tagList.getCompound(i)));
+      }
+    }
+    return list;
   }
 
   // -----------------------------------------------------------------------
@@ -440,11 +524,31 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public void writeData(FriendlyByteBuf stream) {
     origin.writeData(stream);
     stream.writeBoolean(showSignals);
+    writeLaserList(stream, lasers);
+    writeLaserList(stream, signals);
+  }
+
+  private void writeLaserList(FriendlyByteBuf stream, List<LaserData> list) {
+    stream.writeInt(list.size());
+    for (LaserData ld : list) {
+      stream.writeNbt(ld.toNBT());
+    }
   }
 
   @Override
   public void readData(FriendlyByteBuf stream) {
     origin.readData(stream);
     showSignals = stream.readBoolean();
+    lasers = readLaserList(stream);
+    signals = readLaserList(stream);
+  }
+
+  private List<LaserData> readLaserList(FriendlyByteBuf stream) {
+    int size = stream.readInt();
+    List<LaserData> list = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) {
+      list.add(new LaserData(stream.readNbt()));
+    }
+    return list;
   }
 }
