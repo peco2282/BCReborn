@@ -18,6 +18,7 @@ public class CoreBlockStateProvider extends BlockStateProvider {
   @Override
   protected void registerStatesAndModels() {
     simpleEngine(BlocksCore.WOODEN_ENGINE.get());
+    simpleBlockWithItem(BlocksCore.BLUE_MARKER.get(), models().withExistingParent("blue_marker", mcLoc("block/template_torch")).texture("torch", "block/marker_block/default").renderType(mcLoc("cutout")));
   }
 
   private void simpleEngine(Block block) {
