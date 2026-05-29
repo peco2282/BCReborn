@@ -32,7 +32,7 @@ public abstract class MarkerBlock extends BuildCraftBlock {
   private static final VoxelShape SHAPE_WEST  = Shapes.create(new AABB(1.0 - H, 0.5 - W, 0.5 - W, 1.0,     0.5 + W, 0.5 + W));
 
   public MarkerBlock(Properties properties) {
-    super(properties.lightLevel(state -> 8).noCollission().instabreak().noOcclusion());
+    super(properties.lightLevel(state -> 8).noCollission().instabreak());
   }
 
   @Override
