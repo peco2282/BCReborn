@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class LaserData implements ISerializable {
+	public LaserKind kind = LaserKind.Red;
 	public Position head = new Position(0, 0, 0);
 	public Position tail = new Position(0, 0, 0);
 	public boolean isVisible = true;
@@ -35,6 +36,10 @@ public class LaserData implements ISerializable {
 	}
 
 	public LaserData(Position tail, Position head) {
+		this(tail, head, LaserKind.Red);
+	}
+
+	public LaserData(Position tail, Position head, LaserKind kind) {
 		this.tail.x = tail.x;
 		this.tail.y = tail.y;
 		this.tail.z = tail.z;
@@ -42,6 +47,16 @@ public class LaserData implements ISerializable {
 		this.head.x = head.x;
 		this.head.y = head.y;
 		this.head.z = head.z;
+
+		this.kind = kind;
+	}
+
+	public LaserData(net.minecraft.world.phys.Vec3 tail, net.minecraft.world.phys.Vec3 head, LaserKind kind) {
+		this(new Position(tail.x, tail.y, tail.z), new Position(head.x, head.y, head.z), kind);
+	}
+
+	public LaserData(CompoundTag nbt) {
+		readFromNBT(nbt);
 	}
 
 	public void update() {
@@ -69,12 +84,24 @@ public class LaserData implements ISerializable {
 		nbt.put("tail", tailNbt);
 
 		nbt.putBoolean("isVisible", isVisible);
+		nbt.putBoolean("isGlowing", isGlowing);
+		nbt.putInt("kind", kind.ordinal());
 	}
 
 	public void readFromNBT(CompoundTag nbt) {
 		head.readFromNBT(nbt.getCompound("head"));
 		tail.readFromNBT(nbt.getCompound("tail"));
 		isVisible = nbt.getBoolean("isVisible");
+		isGlowing = nbt.getBoolean("isGlowing");
+		if (nbt.contains("kind")) {
+			kind = LaserKind.values()[nbt.getInt("kind") % LaserKind.values().length];
+		}
+	}
+
+	public CompoundTag toNBT() {
+		CompoundTag nbt = new CompoundTag();
+		writeToNBT(nbt);
+		return nbt;
 	}
 
 	@Override
@@ -84,6 +111,7 @@ public class LaserData implements ISerializable {
 		int flags = stream.readUnsignedByte();
 		isVisible = (flags & 1) != 0;
 		isGlowing = (flags & 2) != 0;
+		kind = LaserKind.values()[stream.readUnsignedByte() % LaserKind.values().length];
 	}
 
 	@Override
@@ -92,5 +120,6 @@ public class LaserData implements ISerializable {
 		tail.writeData(stream);
 		int flags = (isVisible ? 1 : 0) | (isGlowing ? 2 : 0);
 		stream.writeByte(flags);
+		stream.writeByte(kind.ordinal());
 	}
 }

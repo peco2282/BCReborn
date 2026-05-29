@@ -85,31 +85,31 @@ public final class LaserUtils {
 		return lasers;
 	}
 
-	public static LaserData[] createLaserDataBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax) {
+	public static LaserData[] createLaserDataBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, LaserKind kind) {
 		LaserData[] lasers = new LaserData[12];
 		Position[] p = new Position[8];
 
-		p[0] = new Position(xMin, yMin, zMin);
-		p[1] = new Position(xMax, yMin, zMin);
-		p[2] = new Position(xMin, yMax, zMin);
-		p[3] = new Position(xMax, yMax, zMin);
-		p[4] = new Position(xMin, yMin, zMax);
-		p[5] = new Position(xMax, yMin, zMax);
-		p[6] = new Position(xMin, yMax, zMax);
-		p[7] = new Position(xMax, yMax, zMax);
+		p[0] = new Position(xMin + 0.5, yMin + 0.5, zMin + 0.5);
+		p[1] = new Position(xMax + 0.5, yMin + 0.5, zMin + 0.5);
+		p[2] = new Position(xMin + 0.5, yMax + 0.5, zMin + 0.5);
+		p[3] = new Position(xMax + 0.5, yMax + 0.5, zMin + 0.5);
+		p[4] = new Position(xMin + 0.5, yMin + 0.5, zMax + 0.5);
+		p[5] = new Position(xMax + 0.5, yMin + 0.5, zMax + 0.5);
+		p[6] = new Position(xMin + 0.5, yMax + 0.5, zMax + 0.5);
+		p[7] = new Position(xMax + 0.5, yMax + 0.5, zMax + 0.5);
 
-		lasers[0] = new LaserData(p[0], p[1]);
-		lasers[1] = new LaserData(p[0], p[2]);
-		lasers[2] = new LaserData(p[2], p[3]);
-		lasers[3] = new LaserData(p[1], p[3]);
-		lasers[4] = new LaserData(p[4], p[5]);
-		lasers[5] = new LaserData(p[4], p[6]);
-		lasers[6] = new LaserData(p[5], p[7]);
-		lasers[7] = new LaserData(p[6], p[7]);
-		lasers[8] = new LaserData(p[0], p[4]);
-		lasers[9] = new LaserData(p[1], p[5]);
-		lasers[10] = new LaserData(p[2], p[6]);
-		lasers[11] = new LaserData(p[3], p[7]);
+		lasers[0] = new LaserData(p[0], p[1], kind);
+		lasers[1] = new LaserData(p[0], p[2], kind);
+		lasers[2] = new LaserData(p[2], p[3], kind);
+		lasers[3] = new LaserData(p[1], p[3], kind);
+		lasers[4] = new LaserData(p[4], p[5], kind);
+		lasers[5] = new LaserData(p[4], p[6], kind);
+		lasers[6] = new LaserData(p[5], p[7], kind);
+		lasers[7] = new LaserData(p[6], p[7], kind);
+		lasers[8] = new LaserData(p[0], p[4], kind);
+		lasers[9] = new LaserData(p[1], p[5], kind);
+		lasers[10] = new LaserData(p[2], p[6], kind);
+		lasers[11] = new LaserData(p[3], p[7], kind);
 
 		return lasers;
 	}
