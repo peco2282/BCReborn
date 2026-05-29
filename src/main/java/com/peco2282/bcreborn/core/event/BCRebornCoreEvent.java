@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.core.event;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.render.EngineBlockRenderer;
+import com.peco2282.bcreborn.core.client.render.MarkerBlockEntityRenderer;
 import com.peco2282.bcreborn.core.BlockEntityTypesCore;
 import com.peco2282.bcreborn.core.MenuTypesCore;
 import com.peco2282.bcreborn.core.item.ListItem;
@@ -27,6 +28,8 @@ public class BCRebornCoreEvent {
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     logger.info("Registering `Core` renderers");
     event.registerBlockEntityRenderer(BlockEntityTypesCore.WOODEN_ENGINE.get(), EngineBlockRenderer::new);
+    event.registerBlockEntityRenderer(BlockEntityTypesCore.BLUE_MARKER.get(), MarkerBlockEntityRenderer::new);
+    event.registerBlockEntityRenderer(BlockEntityTypesCore.PATH_MARKER.get(), MarkerBlockEntityRenderer::new);
     logger.info("Registered `Core` renderers");
   }
 
