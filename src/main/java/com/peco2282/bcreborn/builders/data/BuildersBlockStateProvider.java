@@ -61,7 +61,6 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
         .texture("top", createTexture("library", "top"))
         .getLocation();
 
-    ResourceLocation marker = models().cross("construction_marker", createTexture("construction_marker", "default")).getLocation();
 
     ResourceLocation quarry = models()
         .getBuilder("quarry")
@@ -74,16 +73,13 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
         .texture("top", createTexture("quarry", "top"))
         .getLocation();
 
-    getVariantBuilder(BuildersBlock.CONSTRUCTION_MARKER.get())
-        .forAllStates(state -> ConfiguredModel.builder()
-            .modelFile(models().getExistingFile(marker))
-            .build()
-        );
     simpleBlockWithItem(BuildersBlock.ARCHITECT.get(), models().getExistingFile(architect));
     simpleBlockWithItem(BuildersBlock.BUILDER.get(), models().getExistingFile(builder));
     simpleBlockWithItem(BuildersBlock.FILLER.get(), models().getExistingFile(filler));
     simpleBlockWithItem(BuildersBlock.BLUEPRINT_LIBRARY.get(),models().getExistingFile(library));
     simpleBlockWithItem(BuildersBlock.QUARRY.get(),models().getExistingFile(quarry));
+
+    simpleBlockWithItem(BuildersBlock.CONSTRUCTION_MARKER.get(), models().withExistingParent("construction_marker", mcLoc("block/template_torch")).texture("torch", "block/construction_marker_block/default").renderType(mcLoc("cutout")));
   }
 
   private ModelFile.UncheckedModelFile unCheckedModel(String name) {
