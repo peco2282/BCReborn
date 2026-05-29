@@ -102,10 +102,6 @@ public class BlueprintLibraryMenu extends BuildCraftMenu<BlueprintLibraryMenu> {
         return library.stillValid(player);
     }
 
-    @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int index) {
-        return transferStackInSlot(player, index);
-    }
 
     static class BlueprintLibrarySlot extends SlotBase {
         private BlueprintLibraryBlockEntity library;

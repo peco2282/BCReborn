@@ -77,9 +77,4 @@ public class BuilderMenu extends BuildCraftMenu<BuilderMenu> {
     public boolean stillValid(@NotNull Player player) {
         return builder.stillValid(player);
     }
-
-    @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int index) {
-        return transferStackInSlot(player, index);
-    }
 }

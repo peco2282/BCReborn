@@ -81,11 +81,6 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
         return architect.stillValid(player);
     }
 
-    @Override
-    public ItemStack quickMoveStack(@NotNull Player player, int index) {
-        return transferStackInSlot(player, index);
-    }
-
     static class ArchitectSlot extends SlotBase {
         private ArchitectBlockEntity architect;
         private Player player;
