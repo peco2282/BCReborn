@@ -1,6 +1,7 @@
 package com.peco2282.bcreborn.common.data;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.builders.data.BuildersBlockStateProvider;
 import com.peco2282.bcreborn.core.data.CoreItemModelProvider;
 import com.peco2282.bcreborn.core.data.CoreRecipeProvider;
@@ -28,6 +29,7 @@ public class DataGatherEvent {
     CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
     generator.addProvider(true, new BCBlockTagsProvider(generator.getPackOutput(), lookup, "bcreborncore", helper));
     generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), "bcreborncore", "en_us"));
+    generator.addProvider(true, new BCBlockStateProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, helper));
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
 
     generator.addProvider(true, new CoreBlockStateProvider(generator.getPackOutput(), helper));
