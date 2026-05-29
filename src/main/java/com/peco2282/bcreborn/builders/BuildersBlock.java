@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.builders;
 
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.block.*;
+import com.peco2282.bcreborn.builders.item.ConstructionMarkerBlockItem;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +17,7 @@ public class BuildersBlock {
   public static final RegistryObject<ArchitectBlock> ARCHITECT = register("architect", ArchitectBlock::new);
   public static final RegistryObject<BuilderBlock> BUILDER = register("builder", BuilderBlock::new);
   public static final RegistryObject<FrameBlock> FRAME = register("frame", FrameBlock::new);
-  public static final RegistryObject<ConstructionMarkerBlock> CONSTRUCTION_MARKER = register("construction_marker", ConstructionMarkerBlock::new);
+  public static final RegistryObject<ConstructionMarkerBlock> CONSTRUCTION_MARKER = REGISTRY.registerBlockItem("construction_marker", ConstructionMarkerBlockItem::new, ConstructionMarkerBlock::new);
   public static final RegistryObject<BlueprintLibraryBlock> BLUEPRINT_LIBRARY = register("blueprint_library", BlueprintLibraryBlock::new);
   public static final RegistryObject<QuarryBlock> QUARRY = register("quarry", QuarryBlock::new);
   public static final RegistryObject<FillerBlock> FILLER = register("filler", FillerBlock::new);
