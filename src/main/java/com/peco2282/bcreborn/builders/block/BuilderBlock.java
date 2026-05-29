@@ -2,11 +2,13 @@ package com.peco2282.bcreborn.builders.block;
 
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
+import com.peco2282.bcreborn.builders.item.ConstructionMarkerBlockItem;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -60,6 +62,14 @@ public class BuilderBlock extends BuildCraftBlock {
 
   @Override
   public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    ItemStack equipped = player.getItemInHand(hand);
+    if (equipped.getItem() instanceof ConstructionMarkerBlockItem) {
+      if (ConstructionMarkerBlockItem.linkStarted(equipped)) {
+        ConstructionMarkerBlockItem.link(equipped, level, pos);
+      }
+
+      return InteractionResult.SUCCESS;
+    }
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
       if (entity instanceof BuilderBlockEntity builder) {
