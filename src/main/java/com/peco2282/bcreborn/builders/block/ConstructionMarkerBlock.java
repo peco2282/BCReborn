@@ -88,7 +88,7 @@ public class ConstructionMarkerBlock extends MarkerBlock {
 
     ItemStack heldItem = player.getItemInHand(hand);
 
-    if (heldItem.getItem() instanceof BlueprintItem bp) {
+    if (heldItem.getItem() instanceof BlueprintItem) {
       if (marker.blueprint.isEmpty()) {
         ItemStack stack = player.getItemInHand(hand).copy();
         stack.setCount(1);
