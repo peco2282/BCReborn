@@ -20,6 +20,10 @@ public interface BCReborn {
     return MOD_ID_BASE + type.modId;
   }
 
+  static ResourceLocation getBasedLocation(String path) {
+    return ResourceLocation.fromNamespaceAndPath(MOD_ID_BASE, path);
+  }
+
   static ResourceLocation getLocation(String path) {
     return ResourceLocation.fromNamespaceAndPath(getModId(Type.CORE), path);
   }
