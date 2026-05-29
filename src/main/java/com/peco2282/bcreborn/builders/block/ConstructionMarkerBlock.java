@@ -1,11 +1,16 @@
 package com.peco2282.bcreborn.builders.block;
 
+import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
+import com.peco2282.bcreborn.builders.item.BlueprintItem;
+import com.peco2282.bcreborn.builders.item.ConstructionMarkerBlockItem;
 import com.peco2282.bcreborn.common.block.MarkerBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,27 +88,42 @@ public class ConstructionMarkerBlock extends MarkerBlock {
 
     ItemStack heldItem = player.getItemInHand(hand);
 
-    // スニーク + 空手 or スニーク + レンチ: Blueprintを取り出す
-    if (player.isShiftKeyDown() && heldItem.isEmpty()) {
-      if (marker.hasBlueprint()) {
-        ItemStack blueprint = marker.removeBlueprint();
-        player.getInventory().add(blueprint);
+    if (heldItem.getItem() instanceof BlueprintItem bp) {
+      if (marker.blueprint.isEmpty()) {
+        ItemStack stack = player.getItemInHand(hand).copy();
+        stack.setCount(1);
+        marker.setBlueprint(stack);
+        stack = ItemStack.EMPTY;
+        if (player.getItemInHand(hand).getCount() > 1) {
+          stack = player.getItemInHand(hand).copy();
+          stack.setCount(player.getItemInHand(hand).getCount() - 1);
+        }
+        player.setItemInHand(hand, stack);
         return InteractionResult.SUCCESS;
       }
-      return InteractionResult.PASS;
+    } else if (heldItem.getItem() instanceof ConstructionMarkerBlockItem) {
+      if (ConstructionMarkerBlockItem.linkStarted(player.getItemInHand(hand))) {
+        ConstructionMarkerBlockItem.link(player.getItemInHand(hand), level, pos);
+        return InteractionResult.SUCCESS;
+      }
+    } else if ((heldItem.isEmpty() || heldItem.getItem() instanceof IToolWrench) && player.isShiftKeyDown()) {
+      return dropMarkerIfPresent(level, pos, false);
     }
+    return InteractionResult.PASS;
+  }
 
-    // 手にアイテムを持っている場合: Blueprintとして挿入
-    if (!heldItem.isEmpty() && !marker.hasBlueprint()) {
-      ItemStack toInsert = heldItem.copy();
-      toInsert.setCount(1);
-      marker.setBlueprint(toInsert);
-      if (!player.isCreative()) {
-        heldItem.shrink(1);
+  private InteractionResult dropMarkerIfPresent(Level level, BlockPos pos, boolean onBreak) {
+    ConstructionMarkerBlockEntity marker = (ConstructionMarkerBlockEntity) level.getBlockEntity(pos);
+    if (marker != null && marker.blueprint != ItemStack.EMPTY && !level.isClientSide) {
+      BlockUtils.dropItem((ServerLevel) level, pos, 6000, marker.blueprint);
+      marker.blueprint = ItemStack.EMPTY;
+      if (!onBreak) {
+        marker.bluePrintBuilder = null;
+        marker.bptContext = null;
+        marker.setChanged();
       }
       return InteractionResult.SUCCESS;
     }
-
     return InteractionResult.PASS;
   }
 

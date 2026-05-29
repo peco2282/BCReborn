@@ -42,7 +42,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
     public static Set<ConstructionMarkerBlockEntity> currentMarkers = new HashSet<>();
 
     public LaserData laser;
-
+    public ItemStack blueprint = ItemStack.EMPTY;
     public Box box = new Box();
     public BptBuilderBase bluePrintBuilder;
     public BptContext bptContext;
