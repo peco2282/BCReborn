@@ -55,7 +55,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   public static final float MAX_HEAT = 250;
   public boolean isRedstonePowered = false;
   public float progress;
-  public int energy;
   public float heat = MIN_HEAT;
   public EnergyStage energyStage = EnergyStage.BLUE;
   public Direction orientation = Direction.UP;
@@ -69,7 +68,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   // ピストンアニメーション用
   public float pistonProgress = 0.0f;
   public float prevPistonProgress = 0.0f;
-  private float pistonDirection = 1.0f;
 
   private boolean checkOrientation = false;
 
@@ -83,7 +81,14 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   protected abstract ResourceBuilder getEngineResource();
 
   public void setActive(boolean active) {
+    if (isActive == active) return;
     isActive = active;
+    if (level != null && !level.isClientSide) {
+      BlockState state = level.getBlockState(worldPosition);
+      if (state.hasProperty(ACTIVE)) {
+        level.setBlock(worldPosition, state.setValue(ACTIVE, active), 3);
+      }
+    }
     if (isActive) onActivated();
     else onDeactivated();
   }
@@ -97,12 +102,27 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
   public abstract void updateProgress();
 
-  public abstract void overheat();
   public boolean isOverheated() {
     return energyStage.isOverheated();
   }
 
-  public abstract void explode();
+
+  public void overheat() {
+    if (BCRebornCore.canEnginesExplode) {
+      explode();
+    } else {
+      // 爆発しない設定の場合はエネルギーを消費して冷却を待つような挙動
+      energyStorage.extractEnergy(50, false);
+    }
+  }
+
+  public void explode() {
+    if (level != null && !level.isClientSide) {
+      level.explode(null, worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, 3.0F, true, Level.ExplosionInteraction.BLOCK);
+      level.removeBlock(worldPosition, false);
+    }
+  }
+
   public abstract void burning();
 
   public void onActivated() {}
@@ -110,8 +130,27 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) {
+      if (progressPart != 0) {
+        progress += getPistonSpeed();
+
+        if (progress > 1) {
+          progressPart = 0;
+          progress = 0;
+        }
+      } else if (this.isPumping) {
+        progressPart = 1;
+      }
+      updatePistonProgress();
+      return;
+    }
+
     if (isOverheated()) {
-      explode();
+      if (energyStorage != null) {
+        energyStorage.extractEnergy(50, false);
+      }
+      updateHeatAndStage(false);
+      return;
     }
 
     // BlockState の FACING から orientation を同期
@@ -121,48 +160,94 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
     // 基本ループ
     checkRedstonePower();
+    engineUpdate();
+
     boolean burning = isBurning();
-    setActive(burning);
-    if (burning) burinig();
+    // setActive は BlockState の更新を伴うため、頻繁に呼びすぎないよう注意が必要だが
+    // ここでは元のロジックを尊重しつつ、isPumping と連動させる
+    // setActive(burning); // 基底クラスでは isBurning() に基づく
+
+    if (burning) {
+      burning();
+    }
+
     // 温度の更新と段階計算
     updateHeatAndStage(burning);
+
+    // ピストンロジック (TileEngineBase.updateEntity より)
+    if (progressPart != 0) {
+      progress += getPistonSpeed();
+
+      if (progress > 0.5 && progressPart == 1) {
+        progressPart = 2;
+      } else if (progress >= 1) {
+        progress = 0;
+        progressPart = 0;
+      }
+    } else if (isRedstonePowered && isActive()) {
+      // 実際には出力先があるかどうかのチェックが必要
+      if (canPushEnergy()) {
+        progressPart = 1;
+        setPumping(true);
+      } else {
+        setPumping(false);
+      }
+    } else {
+      setPumping(false);
+    }
+
     updateProgress();
 
     // ピストンアニメーション更新
     updatePistonProgress();
 
-    // 隣接へ送電（orientation 方向）
-    pushEnergyToNeighbor();
+    if (isRedstonePowered && isActive()) {
+      pushEnergyToNeighbor();
+    }
+  }
+
+  protected boolean canPushEnergy() {
+    BlockPos outPos = getBlockPos().relative(orientation);
+    BlockEntity be = level.getBlockEntity(outPos);
+    if (be == null) return false;
+    LazyOptional<IEnergyStorage> cap = be.getCapability(ForgeCapabilities.ENERGY, orientation.getOpposite());
+    return cap.isPresent();
+  }
+
+  protected final void setPumping(boolean active) {
+    if (this.isPumping == active) return;
+    this.isPumping = active;
+    setActive(active);
+    setChanged();
+  }
+
+  protected void engineUpdate() {
+    // デフォルトのエネルギー減少処理
+    if (!isRedstonePowered) {
+      if (energyStorage.getEnergyStored() > 0) {
+        energyStorage.extractEnergy(10, false);
+      }
+    }
   }
 
   protected float getPistonSpeed() {
-    return switch (energyStage) {
-      case BLUE -> 0.01f;
-      case GREEN -> 0.02f;
-      case YELLOW -> 0.04f;
-      case RED -> 0.05f;
-      default -> 0.0f; // OVERHEAT: 停止
+    if (level == null) return 0.0f;
+    if (!level.isClientSide) {
+      return Math.max(0.16f * getHeatLevel(), 0.01f);
+    }
+
+    return switch (getEnergyStage()) {
+      case BLUE -> 0.02f;
+      case GREEN -> 0.04f;
+      case YELLOW -> 0.08f;
+      case RED -> 0.16f;
+      default -> 0.0f;
     };
   }
 
   protected void updatePistonProgress() {
     prevPistonProgress = pistonProgress;
-    float speed = getPistonSpeed();
-    if (isActive && speed > 0.0f) {
-      pistonProgress += pistonDirection * speed;
-      if (pistonProgress >= 1.0f) {
-        pistonProgress = 1.0f;
-        pistonDirection = -1.0f;
-      } else if (pistonProgress <= 0.0f) {
-        pistonProgress = 0.0f;
-        pistonDirection = 1.0f;
-      }
-    } else {
-      // 非稼働時はゆっくり戻る
-      if (pistonProgress > 0.0f) {
-        pistonProgress = Math.max(0.0f, pistonProgress - 0.05f);
-      }
-    }
+    pistonProgress = progress;
   }
 
   public float getPistonProgress(float partialTick) {
@@ -181,36 +266,41 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected void updateHeatAndStage(boolean burning) {
-    // 発熱・冷却（暫定値）
-    float heatDelta = 0;
-    if (burning) {
-      // 稼働時は加熱（理想温度までは速く、その先はゆっくり）
-      heatDelta = heat < IDEAL_HEAT ? 0.6f : 0.25f;
-    } else {
-      // 非稼働時は自然冷却
-      heatDelta = -0.4f;
-    }
-    heat = Math.max(0, heat + heatDelta);
+    // TileEngineBase.updateHeat()
+    heat = (float) ((MAX_HEAT - MIN_HEAT) * getEnergyLevel()) + MIN_HEAT;
 
     // 段階更新
     EnergyStage newStage = computeStageFromHeat(heat);
     if (newStage != energyStage) {
       energyStage = newStage;
+      if (energyStage == EnergyStage.OVERHEAT) {
+        overheat();
+      }
       setChanged();
-    }
-
-    // 過熱チェック
-    if (heat > MAX_HEAT) {
-      energyStage = EnergyStage.OVERHEAT;
     }
   }
 
+  public float getHeatLevel() {
+    return (heat - MIN_HEAT) / (MAX_HEAT - MIN_HEAT);
+  }
+
+  public double getEnergyLevel() {
+    return (double) getEnergyStored() / getMaxEnergyStored();
+  }
+
   protected EnergyStage computeStageFromHeat(float h) {
-    if (h > MAX_HEAT) return EnergyStage.OVERHEAT;
-    if (h >= 180) return EnergyStage.RED;
-    if (h >= 120) return EnergyStage.YELLOW;
-    if (h >= 60) return EnergyStage.GREEN;
-    return EnergyStage.BLUE;
+    float energyLevel = getHeatLevel();
+    if (energyLevel < 0.25f) {
+      return EnergyStage.BLUE;
+    } else if (energyLevel < 0.5f) {
+      return EnergyStage.GREEN;
+    } else if (energyLevel < 0.75f) {
+      return EnergyStage.YELLOW;
+    } else if (energyLevel < 1f) {
+      return EnergyStage.RED;
+    } else {
+      return EnergyStage.OVERHEAT;
+    }
   }
 
   protected float getOutputMultiplier() {
@@ -268,7 +358,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
     orientation = Direction.values()[data.getByte("orientation")];
     progress = data.getFloat("progress");
-    energy = data.getInt("energy");
+    progressPart = data.getInt("progressPart");
     heat = data.getFloat("heat");
     if (data.contains("engineEnergy")) {
       energyStorage.read(data.getCompound("engineEnergy"));
@@ -281,7 +371,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
     data.putByte("orientation", (byte) orientation.ordinal());
     data.putFloat("progress", progress);
-    data.putInt("energy", energy);
+    data.putInt("progressPart", progressPart);
     data.putFloat("heat", heat);
     if (energyStorage != null) {
       CompoundTag tag = new CompoundTag();
@@ -296,12 +386,14 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     energyStage = EnergyStage.values()[flags & 0x07];
     isPumping = (flags & 0x08) != 0;
     orientation = Direction.values()[stream.readByte()];
+    progressPart = stream.readByte();
   }
 
   @Override
   public void writeData(FriendlyByteBuf stream) {
     stream.writeByte(energyStage.ordinal() | (isPumping ? 8 : 0));
     stream.writeByte(orientation.ordinal());
+    stream.writeByte(progressPart);
   }
 
   @Override
