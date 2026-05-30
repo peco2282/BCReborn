@@ -213,7 +213,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
           LaserData laser = new LaserData(
                   new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
                   new Vec3(origin.vect[i].pos.getX() + 0.5, origin.vect[i].pos.getY() + 0.5, origin.vect[i].pos.getZ() + 0.5),
-                  LaserKind.Yellow
+                  LaserKind.Blue
           );
           laser.isVisible = showSignals;
           signals.add(laser);
@@ -227,7 +227,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
           LaserData laser = new LaserData(
                   new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
                   new Vec3(originPos.getX() + 0.5, originPos.getY() + 0.5, originPos.getZ() + 0.5),
-                  LaserKind.Yellow
+                  LaserKind.Blue
           );
           laser.isVisible = showSignals;
           signals.add(laser);
