@@ -44,16 +44,11 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
     applyFacingRotation(poseStack, facing);
 
     // --- ピストンアニメーション（partialTick補間） ---
-    // 本家BuildCraft準拠: progress 0→0.5でstep 0→7.99、0.5→1でstep 7.99→0
+    // EngineBlockEntity.getPistonProgress は既に 0.0 -> 1.0 -> 0.0 の往復値を返す
     float progress = engine.getPistonProgress(partialTick);
-    float step;
-    if (progress > .5f) {
-      step = 7.99f - (progress - .5f) * 2f * 7.99f;
-    } else {
-      step = progress * 2f * 7.99f;
-    }
-    float offset = step;// 16f; // movingBoxのみ動く（trunkは固定）
+    float offset = progress * 7.99f;
     model.setMovingOffset(offset); // Y軸負方向（UP向き基準）
+    System.out.println("offset: " + offset + " Progresses: " + progress);
 
     // --- テクスチャ取得 ---
     ResourceLocation baseTex = EngineTextures.getBaseTexture(engine);
