@@ -1,4 +1,4 @@
-package com.peco2282.bcreborn.core.client.render;
+package com.peco2282.bcreborn.core.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
