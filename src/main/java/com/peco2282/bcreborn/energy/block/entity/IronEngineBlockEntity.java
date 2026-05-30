@@ -67,7 +67,7 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
   }
 
   @Override
-  public void burinig() {
+  public void burning() {
     if (burnTime > 0) {
       // 出力は段階倍率を反映
       if (this.energyStorage != null) {

@@ -103,7 +103,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public abstract void explode();
-  public abstract void burinig();
+  public abstract void burning();
 
   public void onActivated() {}
   public void onDeactivated() {}
