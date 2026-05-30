@@ -23,7 +23,12 @@ public class LaserRenderer {
       case Red -> LASER_RED;
       case Blue -> LASER_BLUE;
       case Stripes -> LASER_STRIPES;
+      case Yellow -> LASER_STRIPES; // Stripe texture is used for connection
+      case Green -> LASER_RED; // Fallback
     };
+
+    int alpha = laser.isGlowing ? 255 : 128;
+    int color = 255; // White tint
 
     poseStack.pushPose();
     
@@ -46,21 +51,21 @@ public class LaserRenderer {
 
     // Render 4 sides of the laser beam (rectangle along X axis)
     // 1 (Top)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, -size, size, -size, 0, 1, v1, v2, 0, 1, 0);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, -size, size, -size, 0, 1, v1, v2, 0, 1, 0, color, alpha);
     // 2 (Bottom)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, size, size, -size, size, 0, 1, v1, v2, 0, -1, 0);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, size, size, -size, size, 0, 1, v1, v2, 0, -1, 0, color, alpha);
     // 3 (Front)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, size, -size, -size, 0, 1, v1, v2, 0, 0, 1);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, size, -size, -size, 0, 1, v1, v2, 0, 0, 1, color, alpha);
     // 4 (Back)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, size, -size, size, size, 0, 1, v1, v2, 0, 0, -1);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, size, -size, size, size, 0, 1, v1, v2, 0, 0, -1, color, alpha);
 
     poseStack.popPose();
   }
 
-  private static void renderSide(Matrix4f m4, Matrix3f m3, VertexConsumer consumer, float x1, float x2, float y1, float y2, float z1, float z2, float u1, float u2, float v1, float v2, float nx, float ny, float nz) {
-    consumer.vertex(m4, x1, y1, z1).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x2, y1, z1).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x2, y2, z2).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x1, y2, z2).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+  private static void renderSide(Matrix4f m4, Matrix3f m3, VertexConsumer consumer, float x1, float x2, float y1, float y2, float z1, float z2, float u1, float u2, float v1, float v2, float nx, float ny, float nz, int color, int alpha) {
+    consumer.vertex(m4, x1, y1, z1).color(color, color, color, alpha).uv(u1, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x2, y1, z1).color(color, color, color, alpha).uv(u2, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x2, y2, z2).color(color, color, color, alpha).uv(u2, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x1, y2, z2).color(color, color, color, alpha).uv(u1, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
   }
 }
