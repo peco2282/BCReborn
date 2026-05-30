@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.common.LaserKind;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,8 @@ import org.joml.Matrix4f;
 public class LaserRenderer {
   public static final ResourceLocation LASER_RED = BCRebornCore.location("textures/laser_beams/red.png");
   public static final ResourceLocation LASER_BLUE = BCRebornCore.location("textures/laser_beams/blue.png");
+  public static final ResourceLocation LASER_GREEN = BCRebornCore.location("textures/laser_beams/green.png");
+  public static final ResourceLocation LASER_YELLOW = BCRebornCore.location("textures/laser_beams/yellow.png");
   public static final ResourceLocation LASER_STRIPES = BCRebornCore.location("textures/laser_beams/stripes.png");
 
   public static void renderLaser(PoseStack poseStack, MultiBufferSource buffer, LaserData laser, float partialTicks) {
@@ -23,12 +26,23 @@ public class LaserRenderer {
       case Red -> LASER_RED;
       case Blue -> LASER_BLUE;
       case Stripes -> LASER_STRIPES;
-      case Yellow -> LASER_STRIPES; // Stripe texture is used for connection
-      case Green -> LASER_RED; // Fallback
+      case Yellow -> LASER_YELLOW;
+      case Green -> LASER_GREEN;
     };
 
     int alpha = laser.isGlowing ? 255 : 128;
-    int color = 255; // White tint
+    int r = 255;
+    int g = 255;
+    int b = 255;
+
+    // If the texture itself looks purple, we may need to adjust the tint.
+    // Pure blue should have 0 red and 0 green if we want to force it,
+    // but the texture usually provides the base color.
+    if (laser.kind == LaserKind.Blue) {
+      r = 60;  // Reduce red component to fix purple tint
+      g = 60;  // Reduce green slightly
+      b = 255; // Keep blue full
+    }
 
     poseStack.pushPose();
     
@@ -52,21 +66,21 @@ public class LaserRenderer {
 
     // Render 4 sides of the laser beam (rectangle along X axis)
     // 1 (Top)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, -size, size, -size, 0, 1, v1, v2, 0, 1, 0, color, alpha);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, -size, size, -size, 0, 1, v1, v2, 0, 1, 0, r, g, b, alpha);
     // 2 (Bottom)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, size, size, -size, size, 0, 1, v1, v2, 0, -1, 0, color, alpha);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, size, size, -size, size, 0, 1, v1, v2, 0, -1, 0, r, g, b, alpha);
     // 3 (Front)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, size, -size, -size, 0, 1, v1, v2, 0, 0, 1, color, alpha);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, -size, size, -size, -size, 0, 1, v1, v2, 0, 0, 1, r, g, b, alpha);
     // 4 (Back)
-    renderSide(matrix4f, matrix3f, consumer, 0, length, size, -size, size, size, 0, 1, v1, v2, 0, 0, -1, color, alpha);
+    renderSide(matrix4f, matrix3f, consumer, 0, length, size, -size, size, size, 0, 1, v1, v2, 0, 0, -1, r, g, b, alpha);
 
     poseStack.popPose();
   }
 
-  private static void renderSide(Matrix4f m4, Matrix3f m3, VertexConsumer consumer, float x1, float x2, float y1, float y2, float z1, float z2, float u1, float u2, float v1, float v2, float nx, float ny, float nz, int color, int alpha) {
-    consumer.vertex(m4, x1, y1, z1).color(color, color, color, alpha).uv(u1, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x2, y1, z1).color(color, color, color, alpha).uv(u2, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x2, y2, z2).color(color, color, color, alpha).uv(u2, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
-    consumer.vertex(m4, x1, y2, z2).color(color, color, color, alpha).uv(u1, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+  private static void renderSide(Matrix4f m4, Matrix3f m3, VertexConsumer consumer, float x1, float x2, float y1, float y2, float z1, float z2, float u1, float u2, float v1, float v2, float nx, float ny, float nz, int r, int g, int b, int alpha) {
+    consumer.vertex(m4, x1, y1, z1).color(r, g, b, alpha).uv(u1, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x2, y1, z1).color(r, g, b, alpha).uv(u2, v1).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x2, y2, z2).color(r, g, b, alpha).uv(u2, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
+    consumer.vertex(m4, x1, y2, z2).color(r, g, b, alpha).uv(u1, v2).overlayCoords(0).uv2(15728880).normal(m3, nx, ny, nz).endVertex();
   }
 }
