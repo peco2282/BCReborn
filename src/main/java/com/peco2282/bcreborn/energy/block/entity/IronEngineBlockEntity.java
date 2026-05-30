@@ -77,9 +77,17 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
+      if (energyStorage.getEnergyStored() > 0 && canPushEnergy()) {
+        setPumping(true);
+      } else {
+        setPumping(false);
+      }
       if (burnTime <= 0) {
         setActive(false);
+        setPumping(false);
       }
+    } else {
+      setPumping(false);
     }
   }
 
