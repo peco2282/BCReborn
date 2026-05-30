@@ -14,7 +14,6 @@ public class MarkerBlockEntityRenderer<T extends MarkerBlockEntity> implements B
   @Override
   public void render(T blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
     poseStack.pushPose();
-    
     // BlockEntityの座標基準(0,0,0)から世界座標の差分を吸収するため、
     // LaserDataが世界座標系で保持されている場合は、blockEntity.getBlockPos()分を引く必要がある。
     // 今回、LaserDataにはマーカー座標(add(0.5, 0.5, 0.5))が設定されている。
