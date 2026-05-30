@@ -36,21 +36,75 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
 
   }
 
-  @Override
-  public void overheat() {
-
-  }
 
   @Override
-  public void explode() {
-
-  }
-
-  @Override
-  public void burinig() {
-    if (this.energyStorage != null) {
-      // 微量発電（5FE/t）
-      this.energyStorage.generateEnergy(5, false);
+  public void burning() {
+    if (this.energyStorage != null && isRedstonePowered) {
+      if (level.getGameTime() % 16 == 0) {
+        this.energyStorage.generateEnergy(10, false);
+      }
     }
+  }
+
+  private boolean hasSent = false;
+
+  @Override
+  protected void pushEnergyToNeighbor() {
+    if (level == null || level.isClientSide) return;
+    if (energyStorage == null) return;
+
+    if (progressPart == 2) {
+      if (!hasSent) {
+        hasSent = true;
+        BlockPos outPos = getBlockPos().relative(orientation);
+        net.minecraft.world.level.block.entity.BlockEntity be = level.getBlockEntity(outPos);
+        if (be != null) {
+          boolean canConnect = false;
+          if (be instanceof com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver receiver) {
+            canConnect = receiver.canConnectRedstoneEngine(orientation.getOpposite());
+          }
+
+          if (canConnect) {
+            be.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY, orientation.getOpposite()).ifPresent(target -> {
+              int available = energyStorage.getEnergyStored();
+              if (available > 0) {
+                int accepted = target.receiveEnergy(available, false);
+                if (accepted > 0) {
+                  energyStorage.extractEnergy(accepted, false);
+                }
+              }
+            });
+          } else {
+            // 接続先がない場合はエネルギーを捨てる
+            energyStorage.extractEnergy(energyStorage.getEnergyStored(), false);
+          }
+        }
+      }
+    } else {
+      hasSent = false;
+    }
+  }
+
+  @Override
+  protected EnergyStage computeStageFromHeat(float h) {
+    double energyLevel = getEnergyLevel();
+    if (energyLevel < 0.33f) { return EnergyStage.BLUE; }
+    else if (energyLevel < 0.66f) { return EnergyStage.GREEN; }
+    else if (energyLevel < 0.75f) { return EnergyStage.YELLOW; }
+    else { return EnergyStage.RED; }
+  }
+
+  @Override
+  protected float getPistonSpeed() {
+    if (level == null) return 0.0f;
+    if (level.isClientSide) {
+      return switch (getEnergyStage()) {
+        case GREEN -> 0.02F;
+        case YELLOW -> 0.04F;
+        case RED -> 0.08F;
+        default -> 0.01F;
+      };
+    }
+    return Math.max(0.08f * getHeatLevel(), 0.01f);
   }
 }
