@@ -122,4 +122,9 @@ public class LaserData implements ISerializable {
 		stream.writeByte(flags);
 		stream.writeByte(kind.ordinal());
 	}
+
+	@Override
+	public String toString() {
+		return "LaserData{" + "head=" + head.toBlockPos() + ", tail=" + tail.toBlockPos() + ", isVisible=" + isVisible + ", isGlowing=" + isGlowing + ", kind=" + kind + '}';
+	}
 }
