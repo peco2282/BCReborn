@@ -6,6 +6,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public class ResourceBuilder {
   private String namespace;
@@ -26,13 +27,13 @@ public class ResourceBuilder {
     this.path = location.getPath();
   }
 
-  public ResourceBuilder editNamespace(Consumer<String> consumer) {
-    consumer.accept(this.namespace);
+  public ResourceBuilder editNamespace(UnaryOperator<String> operator) {
+    this.namespace = operator.apply(this.namespace);
     return this;
   }
 
-  public ResourceBuilder editPath(Consumer<String> runnable) {
-    runnable.accept(this.path);
+  public ResourceBuilder editPath(UnaryOperator<String> operator) {
+    this.path = operator.apply(this.path);
     return this;
   }
 
