@@ -12,9 +12,9 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class LaserRenderer {
-  public static final ResourceLocation LASER_RED = BCRebornCore.location("textures/entity/laser_red.png");
-  public static final ResourceLocation LASER_BLUE = BCRebornCore.location("textures/entity/laser_blue.png");
-  public static final ResourceLocation LASER_STRIPES = BCRebornCore.location("textures/entity/laser_stripes.png");
+  public static final ResourceLocation LASER_RED = BCRebornCore.location("textures/laser_beams/red.png");
+  public static final ResourceLocation LASER_BLUE = BCRebornCore.location("textures/laser_beams/blue.png");
+  public static final ResourceLocation LASER_STRIPES = BCRebornCore.location("textures/laser_beams/stripes.png");
 
   public static void renderLaser(PoseStack poseStack, MultiBufferSource buffer, LaserData laser, float partialTicks) {
     if (!laser.isVisible) return;
