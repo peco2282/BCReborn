@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.common.packet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,9 +19,19 @@ public interface CustomPacket {
     if (ctx.getDirection().getReceptionSide().isServer()) {
         level = ctx.getSender().level();
     } else {
-        level = net.minecraft.client.Minecraft.getInstance().level;
+        level = Minecraft.getInstance().level;
     }
     if (level == null) return Optional.empty();
     return level.getBlockEntity(pos, clazz);
+  }
+  default Optional<BlockEntity> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos) {
+    net.minecraft.world.level.Level level;
+    if (ctx.getDirection().getReceptionSide().isServer()) {
+      level = ctx.getSender().level();
+    } else {
+      level = Minecraft.getInstance().level;
+    }
+    if (level == null) return Optional.empty();
+    return Optional.ofNullable(level.getBlockEntity(pos));
   }
 }

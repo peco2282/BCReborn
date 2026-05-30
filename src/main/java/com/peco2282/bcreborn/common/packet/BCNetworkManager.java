@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.common.packet;
 
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
@@ -7,7 +8,9 @@ import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +22,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BCNetworkManager {
   private static final SimpleChannel channel = PacketController.CHANNEL;
@@ -202,6 +206,16 @@ public class BCNetworkManager {
     sendToEntity(entity, new SyncWearablesPacket(entityId, wearables));
   }
 
+  public static void sendBlockEntityUpdate(BuildCraftBlockEntity entity, BlockPos pos, Consumer<FriendlyByteBuf> consumer) {
+    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+    consumer.accept(buf);
+    if (buf.readableBytes() > 0) {
+      byte[] data = new byte[buf.readableBytes()];
+      buf.getBytes(0, data);
+      sendToTargetChunk(entity, new BlockEntityUpdaterPacket(pos, data));
+    }
+  }
+
   // Helpers
   public static void sendToServer(CustomPacket packet) {
     channel.sendToServer(packet);
@@ -221,5 +235,9 @@ public class BCNetworkManager {
 
   public static void sendToWorld(ResourceKey<Level> dimension, CustomPacket packet) {
     channel.send(PacketDistributor.DIMENSION.with(() -> dimension), packet);
+  }
+
+  public static void sendToTargetChunk(BuildCraftBlockEntity entity, CustomPacket packet) {
+    channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> entity.getLevel().getChunkAt(entity.getBlockPos())), packet);
   }
 }
