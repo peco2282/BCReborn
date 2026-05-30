@@ -37,9 +37,7 @@ public class BlueMarkerBlock extends MarkerBlock {
 
     BlockEntity be = p_60504_.getBlockEntity(p_60505_);
     if (be instanceof BlueMarkerBlockEntity marker) {
-      if (!p_60504_.isClientSide) {
-        marker.tryConnection();
-      }
+      marker.tryConnection();
       return InteractionResult.SUCCESS;
     }
     return InteractionResult.PASS;
@@ -52,5 +50,16 @@ public class BlueMarkerBlock extends MarkerBlock {
       marker.updateSignals();
     }
     super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+  }
+
+  @Override
+  public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    if (!state.is(newState.getBlock())) {
+      BlockEntity be = level.getBlockEntity(pos);
+      if (be instanceof BlueMarkerBlockEntity marker) {
+        marker.destroy();
+      }
+      super.onRemove(state, level, pos, newState, isMoving);
+    }
   }
 }
