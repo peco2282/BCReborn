@@ -292,7 +292,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     BlockPos posMax = origin.posMax;
 
     if (posMin.equals(posMax)) {
-      System.out.println("Marker at " + posMin + " has no size, ignoring.");
       return;
     }
 
@@ -303,7 +302,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
 
     setChanged();
     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    System.out.println("Created lasers: " + lasers.size() + " at " + worldPosition);
   }
 
   public void destroyLasers() {
@@ -320,6 +318,16 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       return;
     }
 
+
+    // If the origin exists but its marker is missing/removed, clear it
+    if (origin.isSet()) {
+      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
+      if (originMarker == null || originMarker.isRemoved()) {
+        origin = new Origin();
+      }
+    }
+
+    // Always try to find connections if not fully connected
     for (int j = 0; j < 3; ++j) {
       if (!origin.isSet() || !origin.vect[j].isSet()) {
         setVect(j);
@@ -405,22 +413,43 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       return false;
     }
 
+    System.out.println("[DEBUG_LOG] linkTo: this=" + worldPosition + " (originSet=" + origin.isSet() + "), marker=" + marker.worldPosition + " (originSet=" + marker.origin.isSet() + "), axis=" + n);
 
-    if (origin.isSet() && marker.origin.isSet() && origin == marker.origin) {
-      return false;
-    }
-
-    if (!origin.isSet() && !marker.origin.isSet()) {
+    if (origin.isSet() && marker.origin.isSet()) {
+      if (origin == marker.origin) {
+        System.out.println("[DEBUG_LOG] linkTo: already same origin instance");
+        return false;
+      }
+      
+      // If both have origins but different, and one is not fully formed, we might want to merge.
+      // For now, prioritize the one that is already an origin.
+      if (origin.vectO.pos.equals(worldPosition)) {
+        System.out.println("[DEBUG_LOG] linkTo: marker " + marker.worldPosition + " joining this origin " + worldPosition);
+        marker.origin = origin;
+        origin.vect[n] = new TileWrapper(marker.getBlockPos());
+      } else if (marker.origin.vectO.pos.equals(marker.worldPosition)) {
+        System.out.println("[DEBUG_LOG] linkTo: this " + worldPosition + " joining marker's origin " + marker.worldPosition);
+        origin = marker.origin;
+        origin.vect[n] = new TileWrapper(getBlockPos());
+      } else {
+        System.out.println("[DEBUG_LOG] linkTo: both belong to different groups, force resetting this to join marker's origin");
+        origin = marker.origin;
+        origin.vect[n] = new TileWrapper(getBlockPos());
+      }
+    } else if (!origin.isSet() && !marker.origin.isSet()) {
       origin = new Origin();
       marker.origin = origin;
       origin.vectO = new TileWrapper(getBlockPos());
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
+      System.out.println("[DEBUG_LOG] linkTo: both no origin, created new origin " + getBlockPos());
     } else if (!origin.isSet()) {
       origin = marker.origin;
       origin.vect[n] = new TileWrapper(getBlockPos());
+      System.out.println("[DEBUG_LOG] linkTo: this had no origin, joined marker's origin " + origin.vectO.pos);
     } else {
       marker.origin = origin;
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
+      System.out.println("[DEBUG_LOG] linkTo: marker joined this origin " + origin.vectO.pos);
     }
 
     MarkerBlockEntity mO = origin.vectO.getMarker(level);
@@ -429,7 +458,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     }
     updateSignals();
     marker.updateSignals();
-    System.out.println("Linked to: " + marker.worldPosition + " (origin: " + origin.vectO.pos);
+    System.out.println("[DEBUG_LOG] Linked to: " + marker.worldPosition + " (origin: " + origin.vectO.pos + ")");
 
     return true;
   }
