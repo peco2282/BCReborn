@@ -2,8 +2,10 @@ package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAreaProvider {
   public static final int MARKER_RANGE = 64;
@@ -127,7 +130,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     super.initialize();
 
     updateSignals();
-
+    System.out.println("initVectO: " + initVectO);
+    System.out.println("initVect: " + Arrays.toString(initVect));
     if (initVectO != null) {
       origin = new Origin();
       origin.vectO = new TileWrapper(initVectO);
@@ -143,13 +147,13 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
         }
       }
 
-      initVectO = null;
-      initVect = null;
+//      initVectO = null;
+//      initVect = null;
     }
-
-    if (showSignals) {
-      createLasers();
-    }
+//
+//    if (showSignals) {
+//      createLasers();
+//    }
   }
 
   @Override
@@ -181,6 +185,57 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
           originMarker.destroyLasers();
         }
       }
+      // Also notify end markers to update their lasers
+      for (int i = 0; i < 3; i++) {
+        if (origin.vect[i].isSet()) {
+          MarkerBlockEntity endMarker = origin.vect[i].getMarker(level);
+          if (endMarker != null) {
+            endMarker.updateSignalsLasers();
+          }
+        }
+      }
+    }
+    updateSignalsLasers();
+  }
+
+  public void updateSignalsLasers() {
+    signals.clear();
+    if (level == null || level.isClientSide || !origin.isSet()) {
+      return;
+    }
+
+    BlockPos originPos = origin.vectO.pos;
+    if (originPos.equals(worldPosition)) {
+      for (int i = 0; i < 3; i++) {
+        if (origin.vect[i].isSet()) {
+          LaserData laser = new LaserData(
+                  new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+                  new Vec3(origin.vect[i].pos.getX() + 0.5, origin.vect[i].pos.getY() + 0.5, origin.vect[i].pos.getZ() + 0.5),
+                  LaserKind.Yellow
+          );
+          laser.isVisible = showSignals;
+          signals.add(laser);
+        }
+      }
+    } else {
+      // If we are one of the end markers, we also render the beam back to the origin
+      // to ensure visibility and multi-hop rendering consistency.
+      for (int i = 0; i < 3; i++) {
+        if (origin.vect[i].isSet() && origin.vect[i].pos.equals(worldPosition)) {
+          LaserData laser = new LaserData(
+                  new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+                  new Vec3(originPos.getX() + 0.5, originPos.getY() + 0.5, originPos.getZ() + 0.5),
+                  LaserKind.Yellow
+          );
+          laser.isVisible = showSignals;
+          signals.add(laser);
+        }
+      }
+    }
+
+    if (!level.isClientSide) {
+      setChanged();
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
 
@@ -250,7 +305,11 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       return false;
     }
 
-    if (origin.isSet() && marker.origin.isSet()) {
+    if (origin.isSet() && marker.origin.isSet() && origin == marker.origin) {
+      // If they already share the same origin, we don't need to do anything,
+      // but we might want to update the link if they are on the same axis.
+      // BuildCraft allows re-linking to change the box dimensions.
+    } else if (origin.isSet() && marker.origin.isSet()) {
       return false;
     }
 
@@ -261,6 +320,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       origin.vect[n] = new TileWrapper(marker.worldPosition);
     } else if (!origin.isSet()) {
       origin = marker.origin;
+      // If we are linking to a marker that already has an origin,
+      // and we don't have one, we link to the shared origin.
       origin.vect[n] = new TileWrapper(worldPosition);
     } else {
       marker.origin = origin;
@@ -270,6 +331,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     updateBounds();
     updateSignals();
     marker.updateSignals();
+    updateSignalsLasers();
+    marker.updateSignalsLasers();
 
     if (origin.isSet()) {
       MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
@@ -524,8 +587,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public void writeData(FriendlyByteBuf stream) {
     origin.writeData(stream);
     stream.writeBoolean(showSignals);
-//    writeLaserList(stream, lasers);
-//    writeLaserList(stream, signals);
+    writeLaserList(stream, lasers);
+    writeLaserList(stream, signals);
   }
 
   private void writeLaserList(FriendlyByteBuf stream, List<LaserData> list) {
@@ -539,6 +602,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public void readData(FriendlyByteBuf stream) {
     origin.readData(stream);
     showSignals = stream.readBoolean();
+    lasers = readLaserList(stream);
+    signals = readLaserList(stream);
     switchSignals();
     if (origin.vectO.isSet() && origin.vectO.getMarker(level) != null) {
       origin.vectO.getMarker(level).updateSignals();
@@ -550,9 +615,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
         }
       }
     }
-    createLasers();
-//    lasers = readLaserList(stream);
-//    signals = readLaserList(stream);
   }
 
   private List<LaserData> readLaserList(FriendlyByteBuf stream) {

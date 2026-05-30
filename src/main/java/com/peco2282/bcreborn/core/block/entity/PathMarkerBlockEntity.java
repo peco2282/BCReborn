@@ -66,11 +66,14 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     for (int i = 0; i < 2; i++) {
       if (links[i] != null) {
         lasers.add(new LaserData(
-            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-            new Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
+            new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+            new net.minecraft.world.phys.Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
             LaserKind.Red
         ));
       }
+    }
+    for (LaserData ld : lasers) {
+      ld.isGlowing = true;
     }
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
