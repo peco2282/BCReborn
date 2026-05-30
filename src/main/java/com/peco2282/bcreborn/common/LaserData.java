@@ -11,6 +11,7 @@ package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.core.Position;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -65,9 +66,18 @@ public class LaserData implements ISerializable {
 		double dz = head.z - tail.z;
 
 		renderSize = Math.sqrt(dx * dx + dy * dy + dz * dz);
-		angleZ = 360 - (Math.atan2(dz, dx) * 180.0 / Math.PI + 180.0);
-		dx = Math.sqrt(renderSize * renderSize - dy * dy);
-		angleY = -Math.atan2(dy, dx) * 180.0 / Math.PI;
+
+		if (renderSize > 0) {
+			// angleZ: Y軸周りの回転（XZ平面上での方位）
+			// atan2(dz, dx) はX軸正方向からZ軸正方向への角度を返す
+			// LaserRendererではX軸方向に伸びるモデルを回転させる
+			angleZ = -Math.toDegrees(Math.atan2(dz, dx));
+			
+			// angleY: Z軸（または傾いたX軸）周りの回転（仰角）
+			// dxz はXZ平面上での距離
+			double dxz = Math.sqrt(dx * dx + dz * dz);
+			angleY = Math.toDegrees(Math.atan2(dy, dxz));
+		}
 	}
 
 	public void iterateTexture() {
@@ -121,6 +131,12 @@ public class LaserData implements ISerializable {
 		int flags = (isVisible ? 1 : 0) | (isGlowing ? 2 : 0);
 		stream.writeByte(flags);
 		stream.writeByte(kind.ordinal());
+	}
+
+	public BlockPos getCenter() {
+		BlockPos head = this.head.toBlockPos();
+		BlockPos tail = this.tail.toBlockPos();
+		return new BlockPos((head.getX() + tail.getX()) / 2, (head.getY() + tail.getY()) / 2, (head.getZ() + tail.getZ()) / 2);
 	}
 
 	@Override
