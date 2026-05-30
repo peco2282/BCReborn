@@ -272,6 +272,14 @@ public class PacketController {
         InitializePacket::decode,
         InitializePacket::handle
     );
+
+    registerS2C(
+        BlockEntityUpdaterPacket.class,
+        BlockEntityUpdaterPacket::encode,
+        BlockEntityUpdaterPacket::decode,
+        BlockEntityUpdaterPacket::handle
+    );
+
   }
 
   private static <P> void registerS2C(
