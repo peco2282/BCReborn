@@ -3,16 +3,16 @@ package com.peco2282.bcreborn.common.utils;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
-import com.peco2282.bcreborn.common.block.EntityBlock;
-import com.peco2282.bcreborn.core.EntityTypesCore;
-import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class LaserUtils {
 	private LaserUtils() {
 
 	}
 
-	public static EntityBlock createLaser(Level world, Position p1, Position p2, LaserKind kind) {
+	public static LaserData createLaser(Position p1, Position p2, LaserKind kind) {
 		if (p1.equals(p2)) {
 			return null;
 		}
@@ -48,16 +48,16 @@ public final class LaserUtils {
 			jSize = 0.10;
 		}
 
-		EntityBlock block = new EntityBlock(EntityTypesCore.ENTITY_BLOCK.get(), world, i, j, k, iSize, jSize, kSize);
+//		EntityBlock block = new EntityBlock(EntityTypesCore.ENTITY_BLOCK.get(), world, i, j, k, iSize, jSize, kSize);
 		// block.setBrightness(210); // TODO: レンダリング側で対応
 
-		world.addFreshEntity(block);
+//		world.addFreshEntity(block);
 
-		return block;
+		return new LaserData(new Position(i, j, k), new Position(i + iSize, j + jSize, k + kSize), kind);
 	}
 
-	public static EntityBlock[] createLaserBox(Level world, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, LaserKind kind) {
-		EntityBlock[] lasers = new EntityBlock[12];
+	public static List<LaserData> createLaserBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, LaserKind kind) {
+		List<LaserData> lasers = new ArrayList<>(12);
 		Position[] p = new Position[8];
 
 		p[0] = new Position(xMin, yMin, zMin);
@@ -69,24 +69,24 @@ public final class LaserUtils {
 		p[6] = new Position(xMin, yMax, zMax);
 		p[7] = new Position(xMax, yMax, zMax);
 
-		lasers[0] = createLaser(world, p[0], p[1], kind);
-		lasers[1] = createLaser(world, p[0], p[2], kind);
-		lasers[2] = createLaser(world, p[2], p[3], kind);
-		lasers[3] = createLaser(world, p[1], p[3], kind);
-		lasers[4] = createLaser(world, p[4], p[5], kind);
-		lasers[5] = createLaser(world, p[4], p[6], kind);
-		lasers[6] = createLaser(world, p[5], p[7], kind);
-		lasers[7] = createLaser(world, p[6], p[7], kind);
-		lasers[8] = createLaser(world, p[0], p[4], kind);
-		lasers[9] = createLaser(world, p[1], p[5], kind);
-		lasers[10] = createLaser(world, p[2], p[6], kind);
-		lasers[11] = createLaser(world, p[3], p[7], kind);
+		lasers.add(createLaser(p[0], p[1], kind));
+		lasers.add(createLaser(p[0], p[2], kind));
+		lasers.add(createLaser(p[2], p[3], kind));
+		lasers.add(createLaser(p[1], p[3], kind));
+		lasers.add(createLaser(p[4], p[5], kind));
+		lasers.add(createLaser(p[4], p[6], kind));
+		lasers.add(createLaser(p[5], p[7], kind));
+		lasers.add(createLaser(p[6], p[7], kind));
+		lasers.add(createLaser(p[0], p[4], kind));
+		lasers.add(createLaser(p[1], p[5], kind));
+		lasers.add(createLaser(p[2], p[6], kind));
+		lasers.add(createLaser(p[3], p[7], kind));
 
 		return lasers;
 	}
 
-	public static LaserData[] createLaserDataBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, LaserKind kind) {
-		LaserData[] lasers = new LaserData[12];
+	public static List<LaserData> createLaserDataBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, LaserKind kind) {
+		List<LaserData> lasers = new ArrayList<>(12);
 		Position[] p = new Position[8];
 
 		p[0] = new Position(xMin + 0.5, yMin + 0.5, zMin + 0.5);
@@ -98,18 +98,18 @@ public final class LaserUtils {
 		p[6] = new Position(xMin + 0.5, yMax + 0.5, zMax + 0.5);
 		p[7] = new Position(xMax + 0.5, yMax + 0.5, zMax + 0.5);
 
-		lasers[0] = new LaserData(p[0], p[1], kind);
-		lasers[1] = new LaserData(p[0], p[2], kind);
-		lasers[2] = new LaserData(p[2], p[3], kind);
-		lasers[3] = new LaserData(p[1], p[3], kind);
-		lasers[4] = new LaserData(p[4], p[5], kind);
-		lasers[5] = new LaserData(p[4], p[6], kind);
-		lasers[6] = new LaserData(p[5], p[7], kind);
-		lasers[7] = new LaserData(p[6], p[7], kind);
-		lasers[8] = new LaserData(p[0], p[4], kind);
-		lasers[9] = new LaserData(p[1], p[5], kind);
-		lasers[10] = new LaserData(p[2], p[6], kind);
-		lasers[11] = new LaserData(p[3], p[7], kind);
+		lasers.add(new LaserData(p[0], p[1], kind));
+		lasers.add(new LaserData(p[0], p[2], kind));
+		lasers.add(new LaserData(p[2], p[3], kind));
+		lasers.add(new LaserData(p[1], p[3], kind));
+		lasers.add(new LaserData(p[4], p[5], kind));
+		lasers.add(new LaserData(p[4], p[6], kind));
+		lasers.add(new LaserData(p[5], p[7], kind));
+		lasers.add(new LaserData(p[6], p[7], kind));
+		lasers.add(new LaserData(p[0], p[4], kind));
+		lasers.add(new LaserData(p[1], p[5], kind));
+		lasers.add(new LaserData(p[2], p[6], kind));
+		lasers.add(new LaserData(p[3], p[7], kind));
 
 		return lasers;
 	}
