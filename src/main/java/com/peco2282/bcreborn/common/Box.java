@@ -12,6 +12,7 @@ import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -212,7 +213,7 @@ public class Box implements IBox {
 
     @Override
     public void createLaserData() {
-        // Laser rendering not implemented in this port
+        lasersData = LaserUtils.createLaserDataBox(xMin, yMin, zMin, xMax, yMax, zMax, LaserKind.Blue).toArray(new LaserData[0]);
     }
 
     public void writeToNBT(CompoundTag nbt) {
