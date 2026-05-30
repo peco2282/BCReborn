@@ -19,14 +19,17 @@ public class MarkerBlockEntityRenderer<T extends MarkerBlockEntity> implements B
     // LaserDataが世界座標系で保持されている場合は、blockEntity.getBlockPos()分を引く必要がある。
     // 今回、LaserDataにはマーカー座標(add(0.5, 0.5, 0.5))が設定されている。
     poseStack.translate(-blockEntity.getBlockPos().getX() + 0.001, -blockEntity.getBlockPos().getY() + 0.001, -blockEntity.getBlockPos().getZ() + 0.001);
-
+    System.out.println("Lasers");
     for (LaserData laser : blockEntity.lasers) {
+      System.out.println(laser);
       laser.iterateTexture();
       laser.update();
       LaserRenderer.renderLaser(poseStack, buffer, laser, partialTicks);
     }
 
+    System.out.println("Signals");
     for (LaserData laser : blockEntity.signals) {
+      System.out.println(laser);
       laser.iterateTexture();
       laser.update();
       LaserRenderer.renderLaser(poseStack, buffer, laser, partialTicks);
