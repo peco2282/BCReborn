@@ -77,7 +77,7 @@ public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngi
   }
 
   @Override
-  public void burinig() {
+  public void burning() {
     if (burnTime > 0) {
       // 発電（段階倍率を適用）
       if (this.energyStorage != null) {

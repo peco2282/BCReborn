@@ -43,7 +43,7 @@ public class CreativeEngineBlockEntity extends EngineBlockEntity<CreativeEngineB
   }
 
   @Override
-  public void burinig() {
+  public void burning() {
     if (this.energyStorage != null) {
       this.energyStorage.generateEnergy(this.energyStorage.getMaxEnergyStored(), false);
     }
