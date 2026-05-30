@@ -1,5 +1,6 @@
 package com.peco2282.bcreborn.core.block.entity;
 
+import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
 import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
@@ -44,6 +45,11 @@ public class BlueMarkerBlockEntity extends MarkerBlockEntity implements ITileAre
     double zMax = origin.posMax.getZ();
 
     if (xMin == xMax && yMin == yMax && zMin == zMax) {
+      lasers.clear();
+      // 同一座標でも、いずれかの軸がorigin.vect[i]と繋がっている場合はsignalsで描画されるため、
+      // ここではbox（lasers）が空であることを保証して終了する
+      setChanged();
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
       return;
     }
     Origin o = origin;
@@ -83,15 +89,10 @@ public class BlueMarkerBlockEntity extends MarkerBlockEntity implements ITileAre
       o.posMin.setZ(zCoord);
       o.posMax.setZ(origin.vect[2].pos.getZ());
     }
-    lasers = LaserUtils.createLaserBox(o.posMin.getX(), o.posMin.getY(), o.posMin.getZ(), o.posMax.getX(), o.posMax.getY(), o.posMax.getZ(), LaserKind.Red);
-
-//    LaserData[] box = LaserUtils.createLaserDataBox(xMin, yMin, zMin, xMax, yMax, zMax, LaserKind.Blue);
-//    System.out.println("creating laser");
-//    for (LaserData ld : box) {
-//      System.out.println(ld);
-//      ld.isGlowing = true;
-//      lasers.add(ld);
-//    }
+    lasers = LaserUtils.createLaserDataBox(o.posMin.getX(), o.posMin.getY(), o.posMin.getZ(), o.posMax.getX(), o.posMax.getY(), o.posMax.getZ(), LaserKind.Blue);
+    for (LaserData ld : lasers) {
+      ld.isGlowing = true;
+    }
 
     setChanged();
     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
