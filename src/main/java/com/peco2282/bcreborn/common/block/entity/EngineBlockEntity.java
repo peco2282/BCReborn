@@ -83,10 +83,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   public void setActive(boolean active) {
     if (isActive == active) return;
     isActive = active;
+    setChanged();
     if (level != null && !level.isClientSide) {
       BlockState state = level.getBlockState(worldPosition);
-      if (state.hasProperty(ACTIVE)) {
-        level.setBlock(worldPosition, state.setValue(ACTIVE, active), 3);
+      if (state.hasProperty(EngineBlock.ACTIVE)) {
+        level.setBlock(worldPosition, state.setValue(EngineBlock.ACTIVE, active), 3);
       }
     }
     if (isActive) onActivated();
@@ -134,15 +135,26 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       if (progressPart != 0) {
         progress += getPistonSpeed();
 
-        if (progress > 1) {
-          progressPart = 0;
-          progress = 0;
+        if (progress >= 1) {
+          progress -= 1;
+          prevPistonProgress -= 1; // 補間の連続性を維持するために prev も調整
+          if (!isActive() && !isPumping) {
+            progress = 0;
+            progressPart = 0;
+            prevPistonProgress = 0;
+            pistonProgress = 0;
+          }
         }
-      } else if (this.isPumping) {
+      } else if (this.isPumping || (isRedstonePowered && isActive())) {
         progressPart = 1;
       }
       updatePistonProgress();
       return;
+    }
+
+    // サーバーサイドのみ: BlockState の FACING から orientation を同期
+    if (state.hasProperty(EngineBlock.FACING)) {
+      orientation = state.getValue(EngineBlock.FACING);
     }
 
     if (isOverheated()) {
@@ -153,19 +165,15 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       return;
     }
 
-    // BlockState の FACING から orientation を同期
-    if (state.hasProperty(EngineBlock.FACING)) {
-      orientation = state.getValue(EngineBlock.FACING);
-    }
-
     // 基本ループ
     checkRedstonePower();
     engineUpdate();
 
     boolean burning = isBurning();
-    // setActive は BlockState の更新を伴うため、頻繁に呼びすぎないよう注意が必要だが
-    // ここでは元のロジックを尊重しつつ、isPumping と連動させる
-    // setActive(burning); // 基底クラスでは isBurning() に基づく
+    // サーバーサイドでの isActive 同期
+    if (burning != isActive) {
+      setActive(burning);
+    }
 
     if (burning) {
       burning();
@@ -178,11 +186,15 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     if (progressPart != 0) {
       progress += getPistonSpeed();
 
-      if (progress > 0.5 && progressPart == 1) {
-        progressPart = 2;
-      } else if (progress >= 1) {
-        progress = 0;
-        progressPart = 0;
+      if (progress >= 1) {
+        progress -= 1;
+        prevPistonProgress -= 1; // 補間の連続性を維持するために prev も調整
+        if (!isRedstonePowered || !isActive()) {
+          progress = 0;
+          progressPart = 0;
+          prevPistonProgress = 0;
+          pistonProgress = 0;
+        }
       }
     } else if (isRedstonePowered && isActive()) {
       // 実際には出力先があるかどうかのチェックが必要
@@ -201,7 +213,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     // ピストンアニメーション更新
     updatePistonProgress();
 
-    if (isRedstonePowered && isActive()) {
+    if (isRedstonePowered && (isActive() || this instanceof com.peco2282.bcreborn.api.IRedstoneEngine)) {
       pushEnergyToNeighbor();
     }
   }
@@ -217,7 +229,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   protected final void setPumping(boolean active) {
     if (this.isPumping == active) return;
     this.isPumping = active;
-    setActive(active);
     setChanged();
   }
 
@@ -251,7 +262,17 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public float getPistonProgress(float partialTick) {
-    return Mth.lerp(partialTick, prevPistonProgress, pistonProgress);
+    if (progressPart == 0) {
+      return 0;
+    }
+    float interpolated = Mth.lerp(partialTick, prevPistonProgress, pistonProgress);
+    // 0.0 -> 0.5 -> 1.0 -> 0.5 -> 0.0 の周期にするために 2倍して 1.0 で折り返す
+    // progress が 0.0 ~ 1.0 の範囲で動くとき、以下の式で 0.0 ~ 1.0 ~ 0.0 になる
+    if (interpolated > 0.5f) {
+      return (1.0f - interpolated) * 2f;
+    } else {
+      return interpolated * 2f;
+    }
   }
 
   protected static int getBurningTime(ItemStack stack) {
@@ -262,7 +283,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public void checkRedstonePower() {
-    isRedstonePowered = level.hasNeighborSignal(getBlockPos());
+    boolean powered = level.hasNeighborSignal(getBlockPos());
+    if (isRedstonePowered != powered) {
+      isRedstonePowered = powered;
+      setChanged();
+    }
   }
 
   protected void updateHeatAndStage(boolean burning) {
@@ -355,6 +380,12 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   @Override
   public void load(CompoundTag data) {
     super.load(data);
+    if (data.contains("isActive")) {
+      isActive = data.getBoolean("isActive");
+    }
+    if (data.contains("isPumping")) {
+      isPumping = data.getBoolean("isPumping");
+    }
 
     orientation = Direction.values()[data.getByte("orientation")];
     progress = data.getFloat("progress");
@@ -368,6 +399,8 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   @Override
   public void saveAdditional(CompoundTag data) {
     super.saveAdditional(data);
+    data.putBoolean("isActive", isActive);
+    data.putBoolean("isPumping", isPumping);
 
     data.putByte("orientation", (byte) orientation.ordinal());
     data.putFloat("progress", progress);
@@ -385,15 +418,26 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     int flags = stream.readUnsignedByte();
     energyStage = EnergyStage.values()[flags & 0x07];
     isPumping = (flags & 0x08) != 0;
+    isRedstonePowered = (flags & 0x10) != 0;
+    isActive = (flags & 0x20) != 0;
+
     orientation = Direction.values()[stream.readByte()];
     progressPart = stream.readByte();
+    progress = stream.readFloat();
+    updatePistonProgress();
   }
 
   @Override
   public void writeData(FriendlyByteBuf stream) {
-    stream.writeByte(energyStage.ordinal() | (isPumping ? 8 : 0));
+    int flags = energyStage.ordinal();
+    if (isPumping) flags |= 0x08;
+    if (isRedstonePowered) flags |= 0x10;
+    if (isActive) flags |= 0x20;
+    stream.writeByte(flags);
+
     stream.writeByte(orientation.ordinal());
     stream.writeByte(progressPart);
+    stream.writeFloat(progress);
   }
 
   @Override

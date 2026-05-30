@@ -87,11 +87,17 @@ public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngi
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
+      if (energyStorage.getEnergyStored() > 0 && canPushEnergy()) {
+        setPumping(true);
+      } else {
+        setPumping(false);
+      }
     } else {
       burnItem = null;
       burnTime = 0;
       esum = 0;
       setActive(false);
+      setPumping(false);
     }
   }
 

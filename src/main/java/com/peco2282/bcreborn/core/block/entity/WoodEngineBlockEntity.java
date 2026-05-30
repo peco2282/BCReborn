@@ -43,6 +43,13 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
       if (level.getGameTime() % 16 == 0) {
         this.energyStorage.generateEnergy(10, false);
       }
+      if (energyStorage.getEnergyStored() > 0 && canPushEnergy()) {
+        setPumping(true);
+      } else {
+        setPumping(false);
+      }
+    } else {
+      setPumping(false);
     }
   }
 
@@ -99,12 +106,13 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
     if (level == null) return 0.0f;
     if (level.isClientSide) {
       return switch (getEnergyStage()) {
-        case GREEN -> 0.02F;
-        case YELLOW -> 0.04F;
-        case RED -> 0.08F;
+        case BLUE -> 0.02F;
+        case GREEN -> 0.04F;
+        case YELLOW -> 0.08F;
+        case RED -> 0.16F;
         default -> 0.01F;
       };
     }
-    return Math.max(0.08f * getHeatLevel(), 0.01f);
+    return Math.max(0.16f * getHeatLevel(), 0.01f);
   }
 }
