@@ -6,9 +6,13 @@ import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.TileBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -131,10 +135,25 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   public void writeData(FriendlyByteBuf data) {
   }
 
+  @Override
+  public Packet<ClientGamePacketListener> getUpdatePacket() {
+    return ClientboundBlockEntityDataPacket.create(this);
+  }
+
+  @Override
+  public void setChanged() {
+    super.setChanged();
+    if (level != null) {
+      if (!level.isClientSide) {
+        BCNetworkManager.sendBlockEntityUpdate(this, getBlockPos(), this::writeData);
+      }
+      level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+    }
+  }
 
   public static <T extends BuildCraftBlockEntity> BlockEntityTicker<T> ticker() {
     return (level, blockPos, blockState, blockEntity) -> {
-      if (!blockEntity.init) {
+      if (!blockEntity.init && !blockEntity.isRemoved()) {
         blockEntity.initialize();
         blockEntity.init = true;
       }
