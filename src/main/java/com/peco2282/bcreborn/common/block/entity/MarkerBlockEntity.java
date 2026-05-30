@@ -75,8 +75,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public static class Origin implements ISerializable {
     public TileWrapper vectO = new TileWrapper();
     public TileWrapper[] vect = {new TileWrapper(), new TileWrapper(), new TileWrapper()};
-    public BlockPos posMin = BlockPos.ZERO;
-    public BlockPos posMax = BlockPos.ZERO;
+    public BlockPos.MutableBlockPos posMin = BlockPos.ZERO.mutable();
+    public BlockPos.MutableBlockPos posMax = BlockPos.ZERO.mutable();
 
     public boolean isSet() {
       return vectO.isSet();
@@ -98,8 +98,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       for (TileWrapper tw : vect) {
         tw.readData(stream);
       }
-      posMin = BlockPos.of(stream.readLong());
-      posMax = BlockPos.of(stream.readLong());
+      posMin = BlockPos.of(stream.readLong()).mutable();
+      posMax = BlockPos.of(stream.readLong()).mutable();
     }
   }
 
@@ -323,8 +323,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       zMax = Math.max(oz, vz);
     }
 
-    origin.posMin = new BlockPos(xMin, yMin, zMin);
-    origin.posMax = new BlockPos(xMax, yMax, zMax);
+    origin.posMin = new BlockPos(xMin, yMin, zMin).mutable();
+    origin.posMax = new BlockPos(xMax, yMax, zMax).mutable();
   }
 
   // -----------------------------------------------------------------------
@@ -524,8 +524,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public void writeData(FriendlyByteBuf stream) {
     origin.writeData(stream);
     stream.writeBoolean(showSignals);
-    writeLaserList(stream, lasers);
-    writeLaserList(stream, signals);
+//    writeLaserList(stream, lasers);
+//    writeLaserList(stream, signals);
   }
 
   private void writeLaserList(FriendlyByteBuf stream, List<LaserData> list) {
@@ -539,8 +539,20 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public void readData(FriendlyByteBuf stream) {
     origin.readData(stream);
     showSignals = stream.readBoolean();
-    lasers = readLaserList(stream);
-    signals = readLaserList(stream);
+    switchSignals();
+    if (origin.vectO.isSet() && origin.vectO.getMarker(level) != null) {
+      origin.vectO.getMarker(level).updateSignals();
+      for (TileWrapper w : origin.vect) {
+        MarkerBlockEntity m = w.getMarker(level);
+
+        if (m != null) {
+          m.updateSignals();
+        }
+      }
+    }
+    createLasers();
+//    lasers = readLaserList(stream);
+//    signals = readLaserList(stream);
   }
 
   private List<LaserData> readLaserList(FriendlyByteBuf stream) {
