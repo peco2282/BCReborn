@@ -14,9 +14,12 @@ package com.peco2282.bcreborn.transport.event;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
 import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import com.peco2282.bcreborn.transport.block.render.EnergyPipeRenderer;
 import com.peco2282.bcreborn.transport.block.render.FluidPipeRenderer;
 import com.peco2282.bcreborn.transport.block.render.ItemPipeRenderer;
+import com.peco2282.bcreborn.transport.screen.*;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,6 +39,13 @@ public class BCRebornTransportEvent {
         //noinspection removal
         ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
       }));
+
+      MenuScreens.register(TransportMenuTypes.DIAMOND_PIPE_MENU.get(), DiamondPipeScreen::new);
+      MenuScreens.register(TransportMenuTypes.EMERALD_PIPE_MENU.get(), EmeraldPipeScreen::new);
+      MenuScreens.register(TransportMenuTypes.EMERALD_FLUID_PIPE_MENU.get(), EmeraldFluidPipeScreen::new);
+      MenuScreens.register(TransportMenuTypes.EMZULI_PIPE_MENU.get(), EmzuliPipeScreen::new);
+      MenuScreens.register(TransportMenuTypes.FILTERED_BUFFER_MENU.get(), FilteredBufferScreen::new);
+      MenuScreens.register(TransportMenuTypes.GATE_INTERFACE_MENU.get(), GateInterfaceScreen::new);
     });
   }
 
