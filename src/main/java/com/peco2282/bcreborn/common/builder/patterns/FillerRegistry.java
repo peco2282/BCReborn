@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,18 +20,18 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class FillerRegistry {
-  private final TreeMap<String, IFillerPattern> patterns = new TreeMap<>();
+  private final TreeMap<ResourceLocation, IFillerPattern> patterns = new TreeMap<>();
 
   public void addPattern(IFillerPattern pattern) {
     patterns.put(pattern.getUniqueTag(), pattern);
   }
 
-  public IFillerPattern getPattern(String patternName) {
+  public IFillerPattern getPattern(ResourceLocation patternName) {
     return patterns.get(patternName);
   }
 
   public IFillerPattern getNextPattern(IFillerPattern currentPattern) {
-    Map.Entry<String, IFillerPattern> pattern = patterns.higherEntry(currentPattern.getUniqueTag());
+    Map.Entry<ResourceLocation, IFillerPattern> pattern = patterns.higherEntry(currentPattern.getUniqueTag());
     if (pattern == null) {
       pattern = patterns.firstEntry();
     }
@@ -38,7 +39,7 @@ public class FillerRegistry {
   }
 
   public IFillerPattern getPreviousPattern(IFillerPattern currentPattern) {
-    Map.Entry<String, IFillerPattern> pattern = patterns.lowerEntry(currentPattern.getUniqueTag());
+    Map.Entry<ResourceLocation, IFillerPattern> pattern = patterns.lowerEntry(currentPattern.getUniqueTag());
     if (pattern == null) {
       pattern = patterns.lastEntry();
     }

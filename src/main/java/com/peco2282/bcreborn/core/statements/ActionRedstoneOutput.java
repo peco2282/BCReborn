@@ -34,7 +34,7 @@ public class ActionRedstoneOutput extends BCStatement implements IActionInternal
   }
 
   public ActionRedstoneOutput() {
-    super("buildcraft:redstone.output", "buildcraft.redstone.output");
+    super("buildcraft:redstone.output");
   }
 
   @Override

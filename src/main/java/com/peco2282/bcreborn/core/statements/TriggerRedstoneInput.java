@@ -30,7 +30,7 @@ public class TriggerRedstoneInput extends BCStatement implements ITriggerInterna
   boolean active;
 
   public TriggerRedstoneInput(boolean active) {
-    super("buildcraft:redstone.input." + (active ? "active" : "inactive"), active ? "buildcraft.redtone.input.active" : "buildcraft.redtone.input.inactive");
+    super("buildcraft:redstone.input." + (active ? "active" : "inactive"));
     this.active = active;
   }
 

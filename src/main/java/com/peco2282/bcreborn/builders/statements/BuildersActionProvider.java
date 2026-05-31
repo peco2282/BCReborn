@@ -20,6 +20,7 @@ import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.builders.block.entity.FillerBlockEntity;
 import com.peco2282.bcreborn.common.builder.patterns.FillerPattern;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collection;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class BuildersActionProvider implements IActionProvider {
-  private final HashMap<String, ActionFiller> actionMap = new HashMap<>();
+  private final HashMap<ResourceLocation, ActionFiller> actionMap = new HashMap<>();
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {

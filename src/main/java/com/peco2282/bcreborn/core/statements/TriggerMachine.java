@@ -31,7 +31,7 @@ public class TriggerMachine extends BCStatement implements ITriggerExternal {
   boolean active;
 
   public TriggerMachine(boolean active) {
-    super("buildcraft:work." + (active ? "scheduled" : "done"), "buildcraft.work." + (active ? "scheduled" : "done"));
+    super("buildcraft:work." + (active ? "scheduled" : "done"));
 
     this.active = active;
   }

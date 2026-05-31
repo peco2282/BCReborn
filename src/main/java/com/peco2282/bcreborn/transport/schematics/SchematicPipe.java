@@ -22,6 +22,7 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -119,18 +120,18 @@ public class SchematicPipe extends SchematicTile {
   private void rotateGateLeft(CompoundTag gateNBT) {
     for (int i = 0; i < MAX_STATEMENTS; ++i) {
       if (gateNBT.contains("trigger[" + i + "]")) {
-        IStatement t = StatementManager.statements.get(gateNBT.getString("trigger[" + i + "]"));
+        IStatement t = StatementManager.statements.get(ResourceLocation.parse(gateNBT.getString("trigger[" + i + "]")));
         if (t != null) {
           t = t.rotateLeft();
-          gateNBT.putString("trigger[" + i + "]", t.getUniqueTag());
+          gateNBT.putString("trigger[" + i + "]", t.getUniqueTag().toString());
         }
       }
 
       if (gateNBT.contains("action[" + i + "]")) {
-        IStatement a = StatementManager.statements.get(gateNBT.getString("action[" + i + "]"));
+        IStatement a = StatementManager.statements.get(ResourceLocation.parse(gateNBT.getString("action[" + i + "]")));
         if (a != null) {
           a = a.rotateLeft();
-          gateNBT.putString("action[" + i + "]", a.getUniqueTag());
+          gateNBT.putString("action[" + i + "]", a.getUniqueTag().toString());
         }
       }
 

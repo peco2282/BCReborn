@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -148,17 +149,17 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 	public void writeStatementsToNBT(CompoundTag data) {
 		for (int i = 0; i < material.numSlots; ++i) {
 			if (triggers[i] != null) {
-				data.putString("trigger[" + i + "]", triggers[i].getUniqueTag());
+				data.putString("trigger[" + i + "]", triggers[i].getUniqueTag().toString());
 			}
 
 			if (actions[i] != null) {
-				data.putString("action[" + i + "]", actions[i].getUniqueTag());
+				data.putString("action[" + i + "]", actions[i].getUniqueTag().toString());
 			}
 
 			for (int j = 0; j < material.numTriggerParameters; ++j) {
 				if (triggerParameters[i][j] != null) {
 					CompoundTag cpt = new CompoundTag();
-					cpt.putString("kind", triggerParameters[i][j].getUniqueTag());
+					cpt.putString("kind", triggerParameters[i][j].getUniqueTag().toString());
 					triggerParameters[i][j].writeToNBT(cpt);
 					data.put("triggerParameters[" + i + "][" + j + "]", cpt);
 				}
@@ -167,7 +168,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 			for (int j = 0; j < material.numActionParameters; ++j) {
 				if (actionParameters[i][j] != null) {
 					CompoundTag cpt = new CompoundTag();
-					cpt.putString("kind", actionParameters[i][j].getUniqueTag());
+					cpt.putString("kind", actionParameters[i][j].getUniqueTag().toString());
 					actionParameters[i][j].writeToNBT(cpt);
 					data.put("actionParameters[" + i + "][" + j + "]", cpt);
 				}
@@ -214,11 +215,11 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 		// Read
 		for (int i = 0; i < material.numSlots; ++i) {
 			if (data.contains("trigger[" + i + "]")) {
-				triggers[i] = StatementManager.statements.get(data.getString("trigger[" + i + "]"));
+				triggers[i] = StatementManager.statements.get(ResourceLocation.parse(data.getString("trigger[" + i + "]")));
 			}
 
 			if (data.contains("action[" + i + "]")) {
-				actions[i] = StatementManager.statements.get(data.getString("action[" + i + "]"));
+				actions[i] = StatementManager.statements.get(ResourceLocation.parse(data.getString("action[" + i + "]")));
 			}
 
 			// This is for legacy trigger loading

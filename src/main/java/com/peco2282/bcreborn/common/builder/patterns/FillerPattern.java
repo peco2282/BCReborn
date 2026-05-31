@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.mojang.serialization.Codec;
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.blueprints.SchematicMask;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
@@ -34,8 +35,8 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 public abstract class FillerPattern implements IFillerPattern {
-  public static final Map<String, FillerPattern> patterns = new TreeMap<>();
-  public static final Codec<FillerPattern> CODEC = Codec.STRING.dispatch(FillerPattern::getUniqueTag, tag -> {
+  public static final Map<ResourceLocation, FillerPattern> patterns = new TreeMap<>();
+  public static final Codec<FillerPattern> CODEC = ResourceLocation.CODEC.dispatch(FillerPattern::getUniqueTag, tag -> {
     FillerPattern pattern = patterns.get(tag);
     return pattern != null ? pattern.getCodec() : null;
   });
@@ -115,8 +116,8 @@ public abstract class FillerPattern implements IFillerPattern {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:" + tag;
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation(tag);
   }
 
   @Override
