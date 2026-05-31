@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.api.crops.ICropHandler;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -26,11 +27,11 @@ public class BCRegistryKeys {
   public static final ResourceKey<Registry<IWorldProperty>> WORLD_PROPERTY = key("world_property");
   public static final ResourceKey<Registry<ICropHandler>> CROP_HANDLER = key("crop_handler");
   public static final ResourceKey<Registry<IFacadeItem>> FACADE_ITEM = key("facade_item");
-  public static final ResourceKey<Registry<IFillerPattern>> FILLER_PATTERNS = key("filler_patterns");
   public static final ResourceKey<Registry<IStatement>> STATEMENT = key("statement");
+  public static final ResourceKey<Registry<IStatementParameter>> STATEMENT_PARAMETER = key("statement_parameter");
 
 
   private static <T> ResourceKey<Registry<T>> key(String name) {
-    return ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("buildcraftcore", name));
+    return ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("bcreborn", name));
   }
 }

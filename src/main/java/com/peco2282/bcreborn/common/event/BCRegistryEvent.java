@@ -16,9 +16,9 @@ import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.crops.ICropHandler;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
-import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.NewRegistryEvent;
@@ -32,7 +32,7 @@ public class BCRegistryEvent {
     event.create(new RegistryBuilder<IWorldProperty>().setName(BCRegistryKeys.WORLD_PROPERTY.location()));
     event.create(new RegistryBuilder<ICropHandler>().setName(BCRegistryKeys.CROP_HANDLER.location()));
     event.create(new RegistryBuilder<IFacadeItem>().setName(BCRegistryKeys.FACADE_ITEM.location()));
-    event.create(new RegistryBuilder<IFillerPattern>().setName(BCRegistryKeys.FILLER_PATTERNS.location()));
     event.create(new RegistryBuilder<IStatement>().setName(BCRegistryKeys.STATEMENT.location()));
+    event.create(new RegistryBuilder<IStatementParameter>().setName(BCRegistryKeys.STATEMENT_PARAMETER.location()));
   }
 }

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.registry;
 
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.common.RegistryUtil;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.builder.patterns.*;
@@ -36,10 +37,10 @@ public class BCFillerPatterns {
   public static final RegistryObject<PatternStairs> STAIRS = register("stairs", PatternStairs::new);
 
   private static <P extends IFillerPattern> RegistryObject<P> register(String name, Supplier<P> supplier) {
-    return BCRebornCore.getRegistry().registerFillerPattern(name, supplier);
+    return BCRebornCore.getRegistry().registerStatement(name, supplier);
   }
 
-  public static List<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> collection() {
+  public static List<Map.Entry<ResourceKey<IStatement>, IFillerPattern>> collection() {
     return RegistryUtil.getFillerPatterns().stream().sorted(Map.Entry.comparingByKey()).toList();
   }
 
