@@ -23,7 +23,7 @@ public class AssemblyTableMenu extends BuildCraftMenu<AssemblyTableMenu> {
   private final AssemblyTableBlockEntity table;
 
   public AssemblyTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (AssemblyTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public AssemblyTableMenu(int windowId, Inventory playerInventory, AssemblyTableBlockEntity table) {

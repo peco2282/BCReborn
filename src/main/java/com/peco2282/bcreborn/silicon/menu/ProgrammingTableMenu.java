@@ -23,7 +23,7 @@ public class ProgrammingTableMenu extends BuildCraftMenu<ProgrammingTableMenu> {
   private final ProgrammingTableBlockEntity table;
 
   public ProgrammingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (ProgrammingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public ProgrammingTableMenu(int windowId, Inventory playerInventory, ProgrammingTableBlockEntity table) {

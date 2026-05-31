@@ -30,7 +30,7 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
 
   // Client constructor
   public ArchitectMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (ArchitectBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()), new SimpleContainerData(1));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data), new SimpleContainerData(1));
   }
 
   // Server constructor

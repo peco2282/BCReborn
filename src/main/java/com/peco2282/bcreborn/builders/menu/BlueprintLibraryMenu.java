@@ -32,7 +32,7 @@ public class BlueprintLibraryMenu extends BuildCraftMenu<BlueprintLibraryMenu> {
 
   // Client constructor
   public BlueprintLibraryMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (BlueprintLibraryBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()), new SimpleContainerData(2));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data), new SimpleContainerData(2));
   }
 
   // Server constructor

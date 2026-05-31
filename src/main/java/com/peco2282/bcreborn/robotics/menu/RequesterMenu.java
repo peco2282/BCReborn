@@ -58,7 +58,7 @@ public class RequesterMenu extends BuildCraftMenu<RequesterMenu> {
   }
 
   public RequesterMenu(int id, Inventory playerInv, FriendlyByteBuf extraData) {
-    this(id, playerInv, (RequesterBlockEntity) playerInv.player.level().getBlockEntity(extraData.readBlockPos()));
+    this(id, playerInv, getBlockEntity(playerInv, extraData));
   }
 
   @Override

@@ -27,7 +27,7 @@ public class BuilderMenu extends BuildCraftMenu<BuilderMenu> {
 
   // Client constructor
   public BuilderMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (BuilderBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   // Server constructor

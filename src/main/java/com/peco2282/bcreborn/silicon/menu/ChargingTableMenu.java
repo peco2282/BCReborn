@@ -24,7 +24,7 @@ public class ChargingTableMenu extends BuildCraftMenu<ChargingTableMenu> {
   private final ChargingTableBlockEntity table;
 
   public ChargingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (ChargingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public ChargingTableMenu(int windowId, Inventory playerInventory, ChargingTableBlockEntity table) {
