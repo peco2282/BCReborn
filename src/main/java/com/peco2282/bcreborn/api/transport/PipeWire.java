@@ -11,12 +11,13 @@
  */
 package com.peco2282.bcreborn.api.transport;
 
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
-public enum PipeWire {
+public enum PipeWire implements StringRepresentable {
   RED, BLUE, GREEN, YELLOW;
 
   public static final PipeWire[] VALUES = values();
@@ -67,5 +68,10 @@ public enum PipeWire {
     } else {
       return stack.getItem() == item;
     }
+  }
+
+  @Override
+  public String getSerializedName() {
+    return name().toLowerCase(Locale.ENGLISH);
   }
 }

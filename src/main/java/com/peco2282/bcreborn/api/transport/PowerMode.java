@@ -11,7 +11,9 @@
  */
 package com.peco2282.bcreborn.api.transport;
 
-public enum PowerMode {
+import net.minecraft.util.StringRepresentable;
+
+public enum PowerMode implements StringRepresentable {
     OFF(0),
     LOW(10),
     MEDIUM(100),
@@ -23,4 +25,9 @@ public enum PowerMode {
     PowerMode(int maxPower) {
         this.maxPower = maxPower;
     }
+
+  @Override
+  public String getSerializedName() {
+    return name().toLowerCase();
+  }
 }

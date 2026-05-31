@@ -19,13 +19,14 @@ import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 import java.util.function.Function;
 
 public class TriggerClockTimer extends BCStatement implements ITriggerInternal {
 
-	public enum Time {
+	public enum Time implements StringRepresentable {
 
 		SHORT(5), MEDIUM(10), LONG(15);
 		public static final Time[] VALUES = values();
@@ -34,7 +35,12 @@ public class TriggerClockTimer extends BCStatement implements ITriggerInternal {
 		Time(int delay) {
 			this.delay = delay;
 		}
-	}
+
+    @Override
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ENGLISH);
+    }
+  }
 
 	public final Time time;
 
