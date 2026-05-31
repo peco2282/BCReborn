@@ -24,6 +24,7 @@ import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,7 +34,7 @@ import java.util.function.Function;
 
 public class TriggerPipeContents extends BCStatement implements ITriggerInternal {
 
-	public enum PipeContents {
+	public enum PipeContents implements StringRepresentable {
 		empty,
 		containsItems,
 		containsFluids,
@@ -41,7 +42,12 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
 		requestsEnergy,
 		tooMuchEnergy;
 		public ITriggerInternal trigger;
-	}
+
+    @Override
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ENGLISH);
+    }
+  }
 
 	private PipeContents kind;
 

@@ -22,13 +22,14 @@ import com.peco2282.bcreborn.core.statements.StatementParameterDirection;
 import com.peco2282.bcreborn.transport.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 import java.util.function.Function;
 
 public class ActionValve extends BCStatement implements IActionInternal {
 
-	public enum ValveState {
+	public enum ValveState implements StringRepresentable {
 		OPEN(true, true),
 		INPUT_ONLY(true, false),
 		OUTPUT_ONLY(false, true),
@@ -42,7 +43,12 @@ public class ActionValve extends BCStatement implements IActionInternal {
 			inputOpen = in;
 			outputOpen = out;
 		}
-	}
+
+    @Override
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ENGLISH);
+    }
+  }
 
 	public final ValveState state;
 

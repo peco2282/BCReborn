@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public interface IStatement {
-  String getUniqueTag();
+  ResourceLocation getUniqueTag();
 
   @OnlyIn(Dist.CLIENT)
   TextureAtlasSprite getIcon();

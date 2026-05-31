@@ -11,9 +11,11 @@
  */
 package com.peco2282.bcreborn.api.core;
 
+import net.minecraft.util.StringRepresentable;
+
 import java.util.Locale;
 
-public enum EnumColor {
+public enum EnumColor implements StringRepresentable {
     WHITE,
     ORANGE,
     MAGENTA,
@@ -56,4 +58,9 @@ public enum EnumColor {
         }
         return VALUES[id];
     }
+
+  @Override
+  public String getSerializedName() {
+    return name().toLowerCase(Locale.ENGLISH);
+  }
 }
