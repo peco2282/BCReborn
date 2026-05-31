@@ -7,7 +7,6 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +25,7 @@ public class RobotIntegrationRecipe {
 		ArrayList<ItemStack> example = new ArrayList<ItemStack>();
 		for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
 			ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
-			nbt.createBoard(NBTUtils.getItemData(stack));
+			nbt.createBoard(stack.getOrCreateTag());
 			example.add(stack);
 		}
 		list.add(example);

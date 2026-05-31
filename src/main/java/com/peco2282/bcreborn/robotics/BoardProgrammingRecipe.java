@@ -3,7 +3,6 @@ package com.peco2282.bcreborn.robotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -33,7 +32,7 @@ public class BoardProgrammingRecipe implements IProgrammingRecipe {
 		List<ItemStack> options = new ArrayList<ItemStack>(width * height);
 		for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
 			ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
-			nbt.createBoard(NBTUtils.getItemData(stack));
+			nbt.createBoard(stack.getOrCreateTag());
 			options.add(stack);
 		}
 		Collections.sort(options, new BoardSorter(this));

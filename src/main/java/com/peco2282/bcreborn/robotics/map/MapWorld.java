@@ -1,16 +1,15 @@
 package com.peco2282.bcreborn.robotics.map;
 
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -51,12 +50,7 @@ public class MapWorld {
 			File target = new File(location, "r" + x + "," + z + ".nbt");
 			if (target.exists()) {
 				try {
-					FileInputStream f = new FileInputStream(target);
-					byte[] data = new byte[(int) target.length()];
-					f.read(data);
-					f.close();
-
-					CompoundTag nbt = NBTUtils.load(data);
+					CompoundTag nbt = NbtIo.readCompressed(target);
 					if (nbt != null) {
 						region.readFromNBT(nbt);
 					}
@@ -95,13 +89,10 @@ public class MapWorld {
 
 			CompoundTag output = new CompoundTag();
 			region.writeToNBT(output);
-			byte[] data = NBTUtils.save(output);
 			File file = new File(location, "r" + MapUtils.getXFromID(id) + "," + MapUtils.getZFromID(id) + ".nbt");
 
 			try {
-				FileOutputStream f = new FileOutputStream(file);
-				f.write(data);
-				f.close();
+				NbtIo.writeCompressed(output, file);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

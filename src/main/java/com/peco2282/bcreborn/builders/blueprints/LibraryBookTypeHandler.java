@@ -1,7 +1,6 @@
 package com.peco2282.bcreborn.builders.blueprints;
 
 import com.peco2282.bcreborn.api.library.LibraryTypeHandlerNBT;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +27,7 @@ public class LibraryBookTypeHandler extends LibraryTypeHandlerNBT {
 
 	@Override
 	public String getName(ItemStack stack) {
-		String s = NBTUtils.getItemData(stack).getString("title");
+		String s = stack.getOrCreateTag().getString("title");
 		return s.isEmpty() ? s : "";
 	}
 
@@ -45,7 +44,7 @@ public class LibraryBookTypeHandler extends LibraryTypeHandlerNBT {
 
 	@Override
 	public boolean store(ItemStack stack, CompoundTag compound) {
-		CompoundTag inNBT = NBTUtils.getItemData(stack);
+		CompoundTag inNBT = stack.getOrCreateTag();
 		compound.putString("title", inNBT.getString("title"));
 		compound.putString("author", inNBT.getString("author"));
 		compound.put("pages", inNBT.getList("pages", Tag.TAG_STRING));

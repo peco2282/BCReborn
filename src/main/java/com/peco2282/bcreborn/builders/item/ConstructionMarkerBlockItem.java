@@ -4,7 +4,6 @@ import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.builders.block.entity.ArchitectBlockEntity;
 import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -25,11 +24,11 @@ public class ConstructionMarkerBlockItem extends BlockItem {
 
 
     public static boolean linkStarted(ItemStack marker) {
-        return NBTUtils.getItemData(marker).contains("x");
+        return marker.getOrCreateTag().contains("x");
     }
 
     public static void link(ItemStack marker, Level world, BlockPos pos) {
-        CompoundTag nbt = NBTUtils.getItemData(marker);
+        CompoundTag nbt = marker.getOrCreateTag();
 
         if (nbt.contains("x")) {
             int ox = nbt.getInt("x");
@@ -69,7 +68,7 @@ public class ConstructionMarkerBlockItem extends BlockItem {
     @Override
     public InteractionResult useOn(UseOnContext p_40581_) {
         BlockEntity tile = p_40581_.getLevel().getBlockEntity(p_40581_.getClickedPos());
-        CompoundTag nbt = NBTUtils.getItemData(p_40581_.getItemInHand());
+        CompoundTag nbt = p_40581_.getItemInHand().getOrCreateTag();
 
         if (nbt.contains("x")
                 && !(tile instanceof BuilderBlockEntity
