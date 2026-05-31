@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
@@ -28,7 +29,7 @@ public class ActionStationAcceptItems extends ActionStationInputItems {
 
   public ActionStationAcceptItems() {
     super("station.accept_items");
-    StatementManager.statements.put("buildcraft:station.drop_in_pipe", this);
+    StatementManager.statements.put(BCRebornCore.location("station.drop_in_pipe"), this);
   }
 
   @Override

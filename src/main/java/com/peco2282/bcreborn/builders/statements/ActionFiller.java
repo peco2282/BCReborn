@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.statements;
 
+import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -34,8 +35,8 @@ public record ActionFiller(FillerPattern pattern) implements IActionExternal {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "filler:" + pattern.getUniqueTag();
+  public ResourceLocation getUniqueTag() {
+    return BCRebornBuilders.location("filler." + pattern.getUniqueTag());
   }
 
   @Override
