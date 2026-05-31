@@ -28,7 +28,7 @@ public abstract class StatementParameterSlot extends AdvancedSlot {
 
     this.slot = slot;
     this.statementSlot = iStatementSlot;
-    statementSlot.parameters.add(this);
+    // statementSlot.parameters.add(this);
   }
 
   @Override
