@@ -11,7 +11,6 @@ package com.peco2282.bcreborn.robotics.item;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -40,7 +39,7 @@ public class RedstoneBoardItem extends BuildCraftItem {
 
 	public static ItemStack createStack(RedstoneBoardNBT<?> boardNBT) {
 		ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
-		CompoundTag nbtData = NBTUtils.getItemData(stack);
+		CompoundTag nbtData = stack.getOrCreateTag();
 		boardNBT.createBoard(nbtData);
 		return stack;
 	}
@@ -50,7 +49,7 @@ public class RedstoneBoardItem extends BuildCraftItem {
 	}
 
 	private static CompoundTag getNBT(ItemStack stack) {
-		CompoundTag cpt = NBTUtils.getItemData(stack);
+		CompoundTag cpt = stack.getOrCreateTag();
 		if (!cpt.contains("id")) {
 			RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
 		}

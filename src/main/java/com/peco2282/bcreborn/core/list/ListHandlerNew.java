@@ -3,7 +3,6 @@ package com.peco2282.bcreborn.core.list;
 import com.peco2282.bcreborn.api.lists.ListMatchHandler;
 import com.peco2282.bcreborn.api.lists.ListRegistry;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -180,7 +179,7 @@ public final class ListHandlerNew {
 	}
 
 	public static Line[] getLines(ItemStack item) {
-		CompoundTag data = NBTUtils.getItemData(item);
+		CompoundTag data = item.getOrCreateTag();
 		if (data.contains("written") && data.contains("lines")) {
 			ListTag list = data.getList("lines", 10);
 			Line[] lines = new Line[list.size()];
@@ -198,7 +197,7 @@ public final class ListHandlerNew {
 	}
 
 	public static void saveLines(ItemStack stackList, Line[] lines) {
-		CompoundTag data = NBTUtils.getItemData(stackList);
+		CompoundTag data = stackList.getOrCreateTag();
 		data.putBoolean("written", true);
 		ListTag lineList = new ListTag();
 		for (Line l : lines) {
@@ -208,7 +207,7 @@ public final class ListHandlerNew {
 	}
 
 	public static boolean matches(ItemStack stackList, ItemStack item) {
-		CompoundTag data = NBTUtils.getItemData(stackList);
+		CompoundTag data = stackList.getOrCreateTag();
 		if (data.contains("written") && data.contains("lines")) {
 			ListTag list = data.getList("lines", 10);
 			for (int i = 0; i < list.size(); i++) {

@@ -1,7 +1,6 @@
 package com.peco2282.bcreborn.silicon.item;
 
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import com.peco2282.bcreborn.silicon.entity.PackageEntity;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -48,7 +47,7 @@ public class PackageItem extends BuildCraftItem {
 	}
 
 	public static ItemStack getStack(ItemStack stack, int slot) {
-		CompoundTag tag = NBTUtils.getItemData(stack);
+		CompoundTag tag = stack.getOrCreateTag();
 		if (tag != null && tag.contains("item" + slot)) {
 			return ItemStack.of(tag.getCompound("item" + slot));
 		} else {
@@ -74,7 +73,7 @@ public class PackageItem extends BuildCraftItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		CompoundTag tag = NBTUtils.getItemData(stack);
+		CompoundTag tag = stack.getOrCreateTag();
 		if (tag != null && !tag.isEmpty()) {
 			tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:0}}"));
 			tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:1}}"));

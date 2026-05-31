@@ -8,7 +8,6 @@ import com.peco2282.bcreborn.common.blueprint.BlueprintBase;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
 import com.peco2282.bcreborn.common.blueprint.Template;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -26,19 +25,20 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
 
     @Override
     public Component getName(ItemStack stack) {
-        return Component.literal(NBTUtils.getItemData(stack).getString("name"));
+        return Component.literal(stack.getOrCreateTag().getString("name"));
     }
 
     @Override
     public boolean setName(ItemStack stack, Component name) {
-        NBTUtils.getItemData(stack).putString("name", name.getString());
+        stack.getOrCreateTag().putString("name", name.getString());
         return true;
     }
 
     @Override
     public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
-        if (NBTUtils.getItemData(p_41421_).contains("name")) {
-            String name = NBTUtils.getItemData(p_41421_).getString("name");
+        CompoundTag s = p_41421_.getOrCreateTag();
+        if (s.contains("name")) {
+            String name = s.getString("name");
 
             if (name.isEmpty()) {
                 p_41423_.add(Component.translatable("item.blueprint.unnamed"));
@@ -50,14 +50,14 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
                     Component
                             .translatable("item.blueprint.author")
                             .append(Component.literal(" "))
-                            .append(NBTUtils.getItemData(p_41421_).getString("author"))
+                            .append(s.getString("author"))
             );
         } else {
             p_41423_.add(Component.translatable("item.blueprint.blank"));
         }
 
-        if (NBTUtils.getItemData(p_41421_).contains("permission")) {
-            BuildingPermission p = BuildingPermission.values()[NBTUtils.getItemData(p_41421_).getByte("permission")];
+        if (s.contains("permission")) {
+            BuildingPermission p = BuildingPermission.values()[s.getByte("permission")];
 
             if (p == BuildingPermission.CREATIVE_ONLY) {
                 p_41423_.add(Component.translatable("item.blueprint.creative_only"));
@@ -66,8 +66,8 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
             }
         }
 
-        if (NBTUtils.getItemData(p_41421_).contains("isComplete")) {
-            boolean isComplete = NBTUtils.getItemData(p_41421_).getBoolean("isComplete");
+        if (s.contains("isComplete")) {
+            boolean isComplete = s.getBoolean("isComplete");
 
             if (!isComplete) {
                 p_41423_.add(Component.translatable("item.blueprint.incomplete"));
@@ -77,7 +77,7 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
 
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        return NBTUtils.getItemData(stack).contains("name") ? 1 : 16;
+        return stack.getOrCreateTag().contains("name") ? 1 : 16;
     }
 
     public abstract String getIconType();
@@ -87,10 +87,7 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
     }
 
     public static LibraryId getId(ItemStack stack) {
-        CompoundTag nbt = NBTUtils.getItemData(stack);
-        if (nbt == null) {
-            return null;
-        }
+        CompoundTag nbt = stack.getOrCreateTag();
         LibraryId id = new LibraryId();
         id.read(nbt);
 

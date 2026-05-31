@@ -4,7 +4,6 @@ package com.peco2282.bcreborn.core.list;
 import com.peco2282.bcreborn.api.lists.ListMatchHandler;
 import com.peco2282.bcreborn.api.lists.ListRegistry;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -160,7 +159,7 @@ public final class ListHandlerOld {
 	}
 
 	public static void saveLine(ItemStack stack, StackLine line, int index) {
-		CompoundTag nbt = NBTUtils.getItemData(stack);
+		CompoundTag nbt = stack.getOrCreateTag();
 
 		nbt.putBoolean("written", true);
 
@@ -180,7 +179,7 @@ public final class ListHandlerOld {
 			result[i] = new StackLine();
 		}
 
-		CompoundTag nbt = NBTUtils.getItemData(stack);
+		CompoundTag nbt = stack.getOrCreateTag();
 
 		if (nbt.contains("written")) {
 			for (int i = 0; i < 6; ++i) {

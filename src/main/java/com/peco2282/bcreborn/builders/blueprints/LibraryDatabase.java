@@ -12,8 +12,8 @@ package com.peco2282.bcreborn.builders.blueprints;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.library.LibraryAPI;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
-import com.peco2282.bcreborn.common.utils.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -94,19 +94,17 @@ public class LibraryDatabase {
 	}
 
 	private void save(LibraryId base, CompoundTag compound) {
-		byte[] data = NBTUtils.save(compound);
-		base.generateUniqueId(data);
-		File blueprintFile = getBlueprintOutputFile(base);
+		byte[] data;
 
-		if (!blueprintFile.exists()) {
-			try {
-				FileOutputStream f = new FileOutputStream(blueprintFile);
-				f.write(data);
-				f.close();
-			} catch (IOException ex) {
-				BCLog.logger.error(String.format("Failed to save library file: %s %s", blueprintFile.getName(), ex.getMessage()));
-			}
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			NbtIo.writeCompressed(compound, baos);
+			data = baos.toByteArray();
+		} catch (IOException ex) {
+			BCLog.logger.error(String.format("Failed to serialize library compound: %s", ex.getMessage()));
+			data = new byte[0];
 		}
+
+		base.generateUniqueId(data);
 	}
 
 	private void loadIndex(File directory) {
@@ -172,14 +170,7 @@ public class LibraryDatabase {
 	public static CompoundTag load(File blueprintFile) {
 		if (blueprintFile != null && blueprintFile.exists()) {
 			try {
-				FileInputStream f = new FileInputStream(blueprintFile);
-				byte[] data = new byte[(int) blueprintFile.length()];
-				f.read(data);
-				f.close();
-
-				return NBTUtils.load(data);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				return NbtIo.readCompressed(blueprintFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
