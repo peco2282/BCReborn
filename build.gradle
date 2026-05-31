@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'com.diffplug.spotless:spotless-plugin-gradle:8.6.0'
     }
 }
 
@@ -16,6 +17,7 @@ plugins {
 }
 
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.diffplug.spotless'
 
 group = mod_group_id
 version = mod_version
@@ -304,4 +306,14 @@ static List<String> createIncludePath(String mod) {
 
 build {
     dependsOn(core, builders, energy, transport)
+}
+
+spotless {
+    java {
+        // 対象ファイルの指定
+        target 'src/*/java/**/*.java'
+
+        // 作成した license-header.txt を指定
+        licenseHeaderFile rootProject.file('HEADER.txt')
+    }
 }
