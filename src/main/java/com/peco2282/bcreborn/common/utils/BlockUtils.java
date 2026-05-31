@@ -35,6 +35,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,7 +248,7 @@ public final class BlockUtils {
 
   public static FluidStack drainBlock(Block block, Level world, BlockPos pos, boolean doDrain) {
     if (block instanceof IFluidBlock fluidBlock) {
-      return fluidBlock.drain(world, pos, doDrain ? net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE : net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE);
+      return fluidBlock.drain(world, pos, doDrain ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
     } else {
       FluidState fluidState = world.getFluidState(pos);
       if (fluidState.isSource()) {

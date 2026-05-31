@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -36,17 +37,17 @@ public class PackagerBlockEntity extends BuildCraftBlockEntity implements Worldl
   }
 
   @Override
-  public int[] getSlotsForFace(net.minecraft.core.Direction side) {
+  public int[] getSlotsForFace(Direction side) {
     return new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   }
 
   @Override
-  public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable net.minecraft.core.Direction side) {
+  public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
     return true;
   }
 
   @Override
-  public boolean canTakeItemThroughFace(int slot, ItemStack stack, net.minecraft.core.Direction side) {
+  public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
     return true;
   }
 

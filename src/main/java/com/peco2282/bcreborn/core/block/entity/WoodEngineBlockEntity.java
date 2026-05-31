@@ -12,12 +12,15 @@
 package com.peco2282.bcreborn.core.block.entity;
 
 import com.peco2282.bcreborn.api.IRedstoneEngine;
+import com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.core.BlockEntityTypesCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEntity> implements IRedstoneEngine {
   private boolean hasSent = false;
@@ -70,15 +73,15 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
       if (!hasSent) {
         hasSent = true;
         BlockPos outPos = getBlockPos().relative(orientation);
-        net.minecraft.world.level.block.entity.BlockEntity be = level.getBlockEntity(outPos);
+        BlockEntity be = level.getBlockEntity(outPos);
         if (be != null) {
           boolean canConnect = false;
-          if (be instanceof com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver receiver) {
+          if (be instanceof IRedstoneEngineReceiver receiver) {
             canConnect = receiver.canConnectRedstoneEngine(orientation.getOpposite());
           }
 
           if (canConnect) {
-            be.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY, orientation.getOpposite()).ifPresent(target -> {
+            be.getCapability(ForgeCapabilities.ENERGY, orientation.getOpposite()).ifPresent(target -> {
               int available = energyStorage.getEnergyStored();
               if (available > 0) {
                 int accepted = target.receiveEnergy(available, false);

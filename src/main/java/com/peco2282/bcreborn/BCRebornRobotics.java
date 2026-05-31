@@ -14,6 +14,7 @@ package com.peco2282.bcreborn;
 import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -61,7 +62,7 @@ public class BCRebornRobotics implements BCReborn {
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-    com.peco2282.bcreborn.robotics.statements.RoboticsStatements.init();
+    RoboticsStatements.init();
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

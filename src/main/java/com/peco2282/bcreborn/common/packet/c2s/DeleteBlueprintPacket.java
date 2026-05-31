@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

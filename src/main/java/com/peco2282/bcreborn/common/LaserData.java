@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 
 public class LaserData implements ISerializable {
   public LaserKind kind = LaserKind.Red;
@@ -55,7 +56,7 @@ public class LaserData implements ISerializable {
     this.kind = kind;
   }
 
-  public LaserData(net.minecraft.world.phys.Vec3 tail, net.minecraft.world.phys.Vec3 head, LaserKind kind) {
+  public LaserData(Vec3 tail, Vec3 head, LaserKind kind) {
     this(new Position(tail.x, tail.y, tail.z), new Position(head.x, head.y, head.z), kind);
   }
 

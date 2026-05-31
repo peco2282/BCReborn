@@ -23,12 +23,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
-public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, IFluidHandler, IRedstoneEngineReceiver, ILEDProvider, net.minecraftforge.energy.IEnergyStorage {
+public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, IFluidHandler, IRedstoneEngineReceiver, ILEDProvider, IEnergyStorage {
 
   public static final int REBUID_DELAY = 512;
   public static int MAX_LIQUID = 16000;

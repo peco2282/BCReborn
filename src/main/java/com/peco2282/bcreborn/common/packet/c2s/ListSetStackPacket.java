@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.core.list.ListNewMenu;
+import com.peco2282.bcreborn.core.list.ListOldMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -44,7 +45,7 @@ public record ListSetStackPacket(
       }
       // ListOldMenu の場合も同様に処理する必要があるかもしれない
       // しかし receiveCommand のロジックを見ると同じ setStack メソッドを持っている
-      else if (ctx.getSender().containerMenu instanceof com.peco2282.bcreborn.core.list.ListOldMenu menu) {
+      else if (ctx.getSender().containerMenu instanceof ListOldMenu menu) {
         menu.setStack(lineIndex, slotIndex, stack);
       }
     });

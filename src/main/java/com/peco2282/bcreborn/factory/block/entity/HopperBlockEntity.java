@@ -31,9 +31,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
-public class HopperBlockEntity extends BuildCraftBlockEntity implements Container, IRedstoneEngineReceiver, net.minecraftforge.energy.IEnergyStorage, MenuProvider {
+public class HopperBlockEntity extends BuildCraftBlockEntity implements Container, IRedstoneEngineReceiver, IEnergyStorage, MenuProvider {
 
   private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
   private boolean isEmpty = true;

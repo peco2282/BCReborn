@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class DiamondFluidPipeBehaviour implements FluidPipeBehaviour {
         if (!filterStack.isEmpty()) {
           filterEmpty = false;
           // FluidUtilでフィルタースタックから液体を取得し、現在の液体と比較
-          var contained = net.minecraftforge.fluids.FluidUtil.getFluidContained(filterStack);
+          var contained = FluidUtil.getFluidContained(filterStack);
           if (contained.isPresent() && contained.get().getFluid() == current.getFluid()) {
             hasMatch = true;
           }

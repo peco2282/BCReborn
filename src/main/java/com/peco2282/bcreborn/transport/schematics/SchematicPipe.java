@@ -22,6 +22,7 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
+import net.minecraft.world.item.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -73,7 +74,7 @@ public class SchematicPipe extends SchematicTile {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return net.minecraft.world.item.Items.AIR;
+    return Items.AIR;
   }
 
   @Override

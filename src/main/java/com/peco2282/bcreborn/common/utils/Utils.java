@@ -20,6 +20,7 @@ import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.inventory.Transactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -58,11 +59,11 @@ public final class Utils {
   }
 
   public static boolean isRegistered(Block block) {
-    return block != null && net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block) != null;
+    return block != null && BuiltInRegistries.BLOCK.getKey(block) != null;
   }
 
   public static boolean isRegistered(Item item) {
-    return item != null && net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item) != null;
+    return item != null && BuiltInRegistries.ITEM.getKey(item) != null;
   }
 
   public static boolean isRegistered(ItemStack stack) {

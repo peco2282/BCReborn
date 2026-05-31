@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -73,7 +74,7 @@ public class TriggerInventory extends BCStatement implements ITriggerExternal {
           }
         }
 
-        if (handler.insertItem(i, searchedStack.isEmpty() ? new ItemStack(net.minecraft.world.item.Items.STONE) : searchedStack, true).getCount() < (searchedStack.isEmpty() ? 1 : searchedStack.getCount())) {
+        if (handler.insertItem(i, searchedStack.isEmpty() ? new ItemStack(Items.STONE) : searchedStack, true).getCount() < (searchedStack.isEmpty() ? 1 : searchedStack.getCount())) {
           // This is a bit rough for "space" but it's a start
           foundSpace = true;
         } else if (stack.isEmpty()) {

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.core.list.ListNewMenu;
+import com.peco2282.bcreborn.core.list.ListOldMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -36,7 +37,7 @@ public record ListSetLabelPacket(
     ctx.enqueueWork(() -> {
       if (ctx.getSender().containerMenu instanceof ListNewMenu menu) {
         menu.setLabel(label);
-      } else if (ctx.getSender().containerMenu instanceof com.peco2282.bcreborn.core.list.ListOldMenu menu) {
+      } else if (ctx.getSender().containerMenu instanceof ListOldMenu menu) {
         menu.setLabel(label);
       }
     });

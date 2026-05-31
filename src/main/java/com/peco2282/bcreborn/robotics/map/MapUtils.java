@@ -10,6 +10,9 @@
  * See LICENSE for details.
  */
 package com.peco2282.bcreborn.robotics.map;
+    
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public final class MapUtils {
   private MapUtils() {
@@ -20,11 +23,11 @@ public final class MapUtils {
     return ((long) (x & 0xFFFFFF) << 24) | (z & 0xFFFFFF);
   }
 
-  public static long getIDFromCoords(net.minecraft.world.level.ChunkPos pos) {
+  public static long getIDFromCoords(ChunkPos pos) {
     return getIDFromCoords(pos.x, pos.z);
   }
 
-  public static long getIDFromCoords(net.minecraft.world.level.chunk.ChunkAccess chunk) {
+  public static long getIDFromCoords(ChunkAccess chunk) {
     return getIDFromCoords(chunk.getPos());
   }
 

@@ -26,13 +26,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluidHandler, IHasWork, net.minecraftforge.energy.IEnergyStorage, MenuProvider {
+public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluidHandler, IHasWork, IEnergyStorage, MenuProvider {
 
   public static int LIQUID_PER_SLOT = 4000;
 

@@ -16,6 +16,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,7 +176,7 @@ public class SchematicEntity extends Schematic {
       nbttaglist.getDouble(1), nbttaglist.getDouble(2));
 
     for (Entity e : context.world().getEntitiesOfClass(Entity.class,
-      new net.minecraft.world.phys.AABB(newPosition.x - 1, newPosition.y - 1, newPosition.z - 1,
+      new AABB(newPosition.x - 1, newPosition.y - 1, newPosition.z - 1,
         newPosition.x + 1, newPosition.y + 1, newPosition.z + 1))) {
       Position existingPosition = new Position(e.getX(), e.getY(), e.getZ());
 

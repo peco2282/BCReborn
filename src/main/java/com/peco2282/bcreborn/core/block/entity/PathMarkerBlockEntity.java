@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -84,8 +85,8 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     for (int i = 0; i < 2; i++) {
       if (links[i] != null) {
         lasers.add(new LaserData(
-          new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-          new net.minecraft.world.phys.Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
+          new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+          new Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
           LaserKind.Red
         ));
       }

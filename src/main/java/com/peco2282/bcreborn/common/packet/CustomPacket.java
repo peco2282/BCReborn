@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.network.NetworkEvent;
@@ -27,7 +28,7 @@ public interface CustomPacket {
   void handle(Supplier<NetworkEvent.Context> supplier);
 
   default <BE extends BlockEntity> Optional<BE> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos, BlockEntityType<BE> clazz) {
-    net.minecraft.world.level.Level level;
+    Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
       level = ctx.getSender().level();
     } else {
@@ -38,7 +39,7 @@ public interface CustomPacket {
   }
 
   default Optional<BlockEntity> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos) {
-    net.minecraft.world.level.Level level;
+    Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
       level = ctx.getSender().level();
     } else {

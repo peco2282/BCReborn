@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.transport.pipe.behaviour;
 
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -28,7 +29,7 @@ public interface FluidPipeBehaviour extends PipeBehaviour {
    * 指定方向への流体出力が許可されているか。
    * デフォルトは全方向許可。Iron Fluid Pipe などで方向制限に使用する。
    */
-  default boolean canOutputFluid(PipeBlockEntity pipe, net.minecraft.core.Direction dir) {
+  default boolean canOutputFluid(PipeBlockEntity pipe, Direction dir) {
     return true;
   }
 
