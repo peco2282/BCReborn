@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.builder.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -38,8 +39,8 @@ public class PatternParameterYDir implements IStatementParameter {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:fillerParameterYDir";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("filler_parameter_y_dir");
   }
 
   @Override

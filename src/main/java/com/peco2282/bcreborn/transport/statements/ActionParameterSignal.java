@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -100,8 +101,8 @@ public class ActionParameterSignal implements IStatementParameter {
 	}
 
 	@Override
-	public String getUniqueTag() {
-		return "pipeWireAction";
+	public ResourceLocation getUniqueTag() {
+		return BCRebornTransport.location("pipe_wire_action");
 	}
 
 	@Override

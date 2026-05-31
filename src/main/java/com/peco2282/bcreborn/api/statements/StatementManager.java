@@ -25,9 +25,9 @@ import java.util.function.Function;
 
 public final class StatementManager {
 
-  public static Map<String, IStatement> statements = new HashMap<>();
-  public static Map<String, Class<? extends IStatementParameter>> parameters = new HashMap<>();
-  public static Map<String, Codec<? extends IStatementParameter>> parameterCodecs = new HashMap<>();
+  public static Map<ResourceLocation, IStatement> statements = new HashMap<>();
+  public static Map<ResourceLocation, Class<? extends IStatementParameter>> parameters = new HashMap<>();
+  public static Map<ResourceLocation, Codec<? extends IStatementParameter>> parameterCodecs = new HashMap<>();
   private static final List<ITriggerProvider> triggerProviders = new LinkedList<>();
   private static final List<IActionProvider> actionProviders = new LinkedList<>();
 
@@ -51,7 +51,7 @@ public final class StatementManager {
   }
 
   public static void registerParameterClass(Class<? extends IStatementParameter> param) {
-    String tag = createParameter(param).getUniqueTag();
+    ResourceLocation tag = createParameter(param).getUniqueTag();
     parameters.put(tag, param);
     try {
       //noinspection unchecked
@@ -61,16 +61,11 @@ public final class StatementManager {
     }
   }
 
-  public static DataResult<? extends Codec<? extends IStatementParameter>> getParameterCodec(String tag) {
+  public static DataResult<? extends Codec<? extends IStatementParameter>> getParameterCodec(ResourceLocation tag) {
     if (parameterCodecs.containsKey(tag)) {
       return DataResult.success(parameterCodecs.get(tag));
     }
     return DataResult.error(() -> "Unknown parameter tag: " + tag);
-  }
-
-  @Deprecated
-  public static void registerParameterClass(String name, Class<? extends IStatementParameter> param) {
-    parameters.put(name, param);
   }
 
   public static List<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity entity) {

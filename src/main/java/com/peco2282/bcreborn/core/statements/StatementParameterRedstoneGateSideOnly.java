@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -76,8 +77,8 @@ public class StatementParameterRedstoneGateSideOnly implements
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:redstoneGateSideOnly";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("redstone_gate_side_only");
   }
 
   @Override
