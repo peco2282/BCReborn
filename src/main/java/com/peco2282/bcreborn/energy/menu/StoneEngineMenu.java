@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.energy.menu;
 
-import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.energy.MenuTypesEnergy;
 import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
@@ -20,16 +19,11 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
-  public StoneEngineMenu(int id, Inventory inventory) {
-    this(id, inventory, new SimpleContainer(1));
-  }
-
   private final Container container;
   private StoneEngineBlockEntity engine;
   private final ContainerData data = new ContainerData() {
@@ -56,6 +50,9 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
       return 5;
     }
   };
+  public StoneEngineMenu(int id, Inventory inventory) {
+    this(id, inventory, new SimpleContainer(1));
+  }
 
   public StoneEngineMenu(int id, Inventory inventory, Container engine) {
     super(MenuTypesEnergy.STONE_ENGINE.get(), id, inventory);
@@ -80,11 +77,25 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
   }
 
   // ---- client accessors (Screen から参照) ----
-  public int getScaledBurn() { return data.get(0); }
-  public int getEnergy() { return data.get(1); }
-  public int getHeat() { return data.get(2); }
-  public int getStageOrdinal() { return data.get(3); }
-  public int getMaxEnergy() { return data.get(4); }
+  public int getScaledBurn() {
+    return data.get(0);
+  }
+
+  public int getEnergy() {
+    return data.get(1);
+  }
+
+  public int getHeat() {
+    return data.get(2);
+  }
+
+  public int getStageOrdinal() {
+    return data.get(3);
+  }
+
+  public int getMaxEnergy() {
+    return data.get(4);
+  }
 
   @Override
   public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {

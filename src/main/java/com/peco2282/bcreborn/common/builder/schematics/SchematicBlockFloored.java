@@ -21,8 +21,8 @@ import net.minecraft.core.Direction;
 import java.util.Set;
 
 public class SchematicBlockFloored extends SchematicBlock {
-    @Override
-    public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-        return Sets.newHashSet(RELATIVE_INDEXES[Direction.DOWN.get3DDataValue()]);
-    }
+  @Override
+  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
+    return Sets.newHashSet(RELATIVE_INDEXES[Direction.DOWN.get3DDataValue()]);
+  }
 }

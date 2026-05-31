@@ -26,61 +26,61 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterHollow implements IStatementParameter {
-    public static final Codec<PatternParameterHollow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("filled").forGetter(p -> p.filled)
-    ).apply(instance, PatternParameterHollow::new));
-    private TextureAtlasSprite icon;
-    public boolean filled = false;
+  public static final Codec<PatternParameterHollow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    Codec.BOOL.fieldOf("filled").forGetter(p -> p.filled)
+  ).apply(instance, PatternParameterHollow::new));
+  public boolean filled = false;
+  private TextureAtlasSprite icon;
 
-    public PatternParameterHollow() {
-    }
+  public PatternParameterHollow() {
+  }
 
-    public PatternParameterHollow(boolean hollow) {
-        this.filled = !hollow;
-    }
+  public PatternParameterHollow(boolean hollow) {
+    this.filled = !hollow;
+  }
 
-    @Override
-    public String getUniqueTag() {
-        return "buildcraft:fillerParameterHollow";
-    }
+  @Override
+  public String getUniqueTag() {
+    return "buildcraft:fillerParameterHollow";
+  }
 
-    @Override
-    public TextureAtlasSprite getIcon() {
-        return this.icon;
-    }
+  @Override
+  public TextureAtlasSprite getIcon() {
+    return this.icon;
+  }
 
-    @Override
-    public ItemStack getItemStack() {
-        return null;
-    }
+  @Override
+  public ItemStack getItemStack() {
+    return null;
+  }
 
-    @Override
-    public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-        this.icon = textureGetter.apply(BCRebornCore.location("item/filler_parameter/hollow.png"));
-    }
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    this.icon = textureGetter.apply(BCRebornCore.location("item/filler_parameter/hollow.png"));
+  }
 
-    @Override
-    public String getDescription() {
-        return "fillerpattern.parameter." + (filled ? "filled" : "hollow");
-    }
+  @Override
+  public String getDescription() {
+    return "fillerpattern.parameter." + (filled ? "filled" : "hollow");
+  }
 
-    @Override
-    public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-        filled = !filled;
-    }
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    filled = !filled;
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag compound) {
-        filled = compound.getBoolean("filled");
-    }
+  @Override
+  public void readFromNBT(CompoundTag compound) {
+    filled = compound.getBoolean("filled");
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag compound) {
-        compound.putBoolean("filled", filled);
-    }
+  @Override
+  public void writeToNBT(CompoundTag compound) {
+    compound.putBoolean("filled", filled);
+  }
 
-    @Override
-    public IStatementParameter rotateLeft() {
-        return this;
-    }
+  @Override
+  public IStatementParameter rotateLeft() {
+    return this;
+  }
 }

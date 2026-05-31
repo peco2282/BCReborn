@@ -20,17 +20,17 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SetArchitectNamePacket(
-    BlockPos pos,
-    String name
+  BlockPos pos,
+  String name
 ) implements CustomPacket {
+  public static SetArchitectNamePacket decode(FriendlyByteBuf buffer) {
+    return new SetArchitectNamePacket(buffer.readBlockPos(), buffer.readUtf());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeUtf(name);
-  }
-
-  public static SetArchitectNamePacket decode(FriendlyByteBuf buffer) {
-    return new SetArchitectNamePacket(buffer.readBlockPos(), buffer.readUtf());
   }
 
   @Override
@@ -38,7 +38,7 @@ public record SetArchitectNamePacket(
     NetworkEvent.Context ctx = supplier.get();
 
     ctx.enqueueWork(() ->
-        getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
-            .ifPresent(be -> be.setName(name)));
+      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
+        .ifPresent(be -> be.setName(name)));
   }
 }

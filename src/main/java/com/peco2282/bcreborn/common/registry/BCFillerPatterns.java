@@ -34,6 +34,7 @@ public class BCFillerPatterns {
   public static final RegistryObject<PatternHorizon> HORIZON = register("horizon", PatternHorizon::new);
   public static final RegistryObject<PatternPyramid> PYRAMID = register("pyramid", PatternPyramid::new);
   public static final RegistryObject<PatternStairs> STAIRS = register("stairs", PatternStairs::new);
+
   private static <P extends IFillerPattern> RegistryObject<P> register(String name, Supplier<P> supplier) {
     return BCRebornCore.getRegistry().registerFillerPattern(name, supplier);
   }

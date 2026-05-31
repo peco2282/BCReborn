@@ -14,17 +14,17 @@ package com.peco2282.bcreborn.core.event;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.render.EngineBlockRenderer;
-import com.peco2282.bcreborn.core.block.render.MarkerBlockEntityRenderer;
 import com.peco2282.bcreborn.core.BlockEntityTypesCore;
+import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.MenuTypesCore;
+import com.peco2282.bcreborn.core.block.render.MarkerBlockEntityRenderer;
 import com.peco2282.bcreborn.core.item.ListItem;
-import com.peco2282.bcreborn.core.list.ListNewScreen;
-import com.peco2282.bcreborn.core.list.ListOldScreen;
 import com.peco2282.bcreborn.core.item.MapLocationItem;
 import com.peco2282.bcreborn.core.item.PaintbrushItem;
+import com.peco2282.bcreborn.core.list.ListNewScreen;
+import com.peco2282.bcreborn.core.list.ListOldScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
-import com.peco2282.bcreborn.core.ItemsCore;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -59,18 +59,18 @@ public class BCRebornCoreEvent {
       MenuScreens.register(MenuTypesCore.LIST_NEW.get(), ListNewScreen::new);
 
       ItemProperties.register(ItemsCore.LIST.get(), BCRebornCore.location(ListItem.TAG_WRITTEN),
-              (stack, level, entity, seed) -> stack.getOrCreateTag().getBoolean(ListItem.TAG_WRITTEN) ? 1.0F : 0.0F);
+        (stack, level, entity, seed) -> stack.getOrCreateTag().getBoolean(ListItem.TAG_WRITTEN) ? 1.0F : 0.0F);
 
       ItemProperties.register(ItemsCore.PAINTBRUSH.get(), BCRebornCore.location(PaintbrushItem.TAG_COLOR),
-              (stack, level, entity, seed) -> PaintbrushItem.getColor(stack) + 1);
+        (stack, level, entity, seed) -> PaintbrushItem.getColor(stack) + 1);
 
       ItemProperties.register(ItemsCore.MAP_LOCATION.get(), BCRebornCore.location(MapLocationItem.TAG_KIND),
-              (stack, level, entity, seed) -> {
-                  if (!stack.getOrCreateTag().contains(MapLocationItem.TAG_KIND)) {
-                      return 0.0F;
-                  }
-                  return stack.getOrCreateTag().getByte(MapLocationItem.TAG_KIND) + 1.0F;
-              });
+        (stack, level, entity, seed) -> {
+          if (!stack.getOrCreateTag().contains(MapLocationItem.TAG_KIND)) {
+            return 0.0F;
+          }
+          return stack.getOrCreateTag().getByte(MapLocationItem.TAG_KIND) + 1.0F;
+        });
     });
     logger.info("Client setup for `Core` layer complete");
   }

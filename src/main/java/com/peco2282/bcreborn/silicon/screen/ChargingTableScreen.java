@@ -20,24 +20,24 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ChargingTableScreen extends LaserTableScreen<ChargingTableMenu> {
 
-	public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/charging_table.png");
+  public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/charging_table.png");
 
-	public ChargingTableScreen(ChargingTableMenu container, Inventory playerInventory, Component title) {
-		super(container, playerInventory, title, (ChargingTableBlockEntity) container.getSlot(0).container);
-		this.imageWidth = 176;
-		this.imageHeight = 132;
-		this.inventoryLabelY = this.imageHeight - 94;
-	}
+  public ChargingTableScreen(ChargingTableMenu container, Inventory playerInventory, Component title) {
+    super(container, playerInventory, title, (ChargingTableBlockEntity) container.getSlot(0).container);
+    this.imageWidth = 176;
+    this.imageHeight = 132;
+    this.inventoryLabelY = this.imageHeight - 94;
+  }
 
-	@Override
-	protected ResourceLocation getMenuTexture() {
-		return TEXTURE;
-	}
+  @Override
+  protected ResourceLocation getMenuTexture() {
+    return TEXTURE;
+  }
 
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		int x = (width - imageWidth) / 2;
-		int y = (height - imageHeight) / 2;
-		guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-	}
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    int x = (width - imageWidth) / 2;
+    int y = (height - imageHeight) / 2;
+    guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+  }
 }

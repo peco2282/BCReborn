@@ -51,13 +51,14 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
 
   // エネルギーテクスチャ（白いプレーンテクスチャを流用）
   private static final ResourceLocation ENERGY_TEXTURE =
-      ResourceLocation.withDefaultNamespace("block/white_concrete");
+    ResourceLocation.withDefaultNamespace("block/white_concrete");
 
-  public EnergyPipeRenderer(BlockEntityRendererProvider.Context context) {}
+  public EnergyPipeRenderer(BlockEntityRendererProvider.Context context) {
+  }
 
   @Override
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                     MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     EnergyTransportModule module = blockEntity.getEnergyTransportModule();
     if (module == null) return;
 
@@ -76,8 +77,8 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
     float a = 1.0f;
 
     TextureAtlasSprite sprite = Minecraft.getInstance()
-        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-        .apply(ENERGY_TEXTURE);
+      .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+      .apply(ENERGY_TEXTURE);
 
     VertexConsumer consumer = bufferSource.getBuffer(RenderType.cutout());
     Matrix4f matrix = poseStack.last().pose();
@@ -86,9 +87,9 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
 
     // 中心部を描画（最大サイズ固定）
     renderCube(matrix, consumer, sprite,
-        CENTER_MIN, CENTER_MIN, CENTER_MIN,
-        CENTER_MAX, CENTER_MAX, CENTER_MAX,
-        r, g, b, a, packedLight);
+      CENTER_MIN, CENTER_MIN, CENTER_MIN,
+      CENTER_MAX, CENTER_MAX, CENTER_MAX,
+      r, g, b, a, packedLight);
 
     // 各方向の腕を描画（接続されている方向のみ）
     for (Direction dir : Direction.values()) {
@@ -116,51 +117,71 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
   }
 
   private void renderArm(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-      Direction dir, float half, float r, float g, float b, float a, int packedLight) {
+                         Direction dir, float half, float r, float g, float b, float a, int packedLight) {
     float minX, minY, minZ, maxX, maxY, maxZ;
     float lo = 0.5f - half;
     float hi = 0.5f + half;
 
     switch (dir) {
       case EAST -> {
-        minX = CENTER_MAX; maxX = 1.0f;
-        minY = lo; maxY = hi;
-        minZ = lo; maxZ = hi;
+        minX = CENTER_MAX;
+        maxX = 1.0f;
+        minY = lo;
+        maxY = hi;
+        minZ = lo;
+        maxZ = hi;
       }
       case WEST -> {
-        minX = 0.0f; maxX = CENTER_MIN;
-        minY = lo; maxY = hi;
-        minZ = lo; maxZ = hi;
+        minX = 0.0f;
+        maxX = CENTER_MIN;
+        minY = lo;
+        maxY = hi;
+        minZ = lo;
+        maxZ = hi;
       }
       case NORTH -> {
-        minX = lo; maxX = hi;
-        minY = lo; maxY = hi;
-        minZ = 0.0f; maxZ = CENTER_MIN;
+        minX = lo;
+        maxX = hi;
+        minY = lo;
+        maxY = hi;
+        minZ = 0.0f;
+        maxZ = CENTER_MIN;
       }
       case SOUTH -> {
-        minX = lo; maxX = hi;
-        minY = lo; maxY = hi;
-        minZ = CENTER_MAX; maxZ = 1.0f;
+        minX = lo;
+        maxX = hi;
+        minY = lo;
+        maxY = hi;
+        minZ = CENTER_MAX;
+        maxZ = 1.0f;
       }
       case UP -> {
-        minX = lo; maxX = hi;
-        minY = CENTER_MAX; maxY = 1.0f;
-        minZ = lo; maxZ = hi;
+        minX = lo;
+        maxX = hi;
+        minY = CENTER_MAX;
+        maxY = 1.0f;
+        minZ = lo;
+        maxZ = hi;
       }
       case DOWN -> {
-        minX = lo; maxX = hi;
-        minY = 0.0f; maxY = CENTER_MIN;
-        minZ = lo; maxZ = hi;
+        minX = lo;
+        maxX = hi;
+        minY = 0.0f;
+        maxY = CENTER_MIN;
+        minZ = lo;
+        maxZ = hi;
       }
-      default -> { return; }
+      default -> {
+        return;
+      }
     }
 
     renderCube(matrix, consumer, sprite, minX, minY, minZ, maxX, maxY, maxZ, r, g, b, a, packedLight);
   }
 
   private void renderCube(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-      float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
-      float r, float g, float b, float a, int packedLight) {
+                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
+                          float r, float g, float b, float a, int packedLight) {
     float u0 = sprite.getU0();
     float u1 = sprite.getU1();
     float v0 = sprite.getV0();

@@ -27,61 +27,61 @@ import java.util.LinkedList;
 
 public class SchematicDoor extends SchematicBlockFloored {
 
-	final ItemStack stack;
+  final ItemStack stack;
 
-	public SchematicDoor(ItemStack stack) {
-		this.stack = stack;
-	}
+  public SchematicDoor(ItemStack stack) {
+    this.stack = stack;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-			requirements.add(stack.copy());
-		}
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    if (state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+      requirements.add(stack.copy());
+    }
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 
-	@Override
-	public boolean doNotBuild() {
-		return state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
-	}
+  @Override
+  public boolean doNotBuild() {
+    return state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-		return state != null && state.getBlock() == worldState.getBlock() && state.getValue(DoorBlock.HALF) == worldState.getValue(DoorBlock.HALF);
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
+    return state != null && state.getBlock() == worldState.getBlock() && state.getValue(DoorBlock.HALF) == worldState.getValue(DoorBlock.HALF);
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		if (state != null) {
-			context.world().setBlock(new BlockPos(x, y, z), state, 3);
-		}
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    if (state != null) {
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
+    }
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
-	}
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
+  }
 
-	@Override
-	public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.writeSchematicToNBT(nbt, registry);
-	}
+  @Override
+  public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.writeSchematicToNBT(nbt, registry);
+  }
 
-	@Override
-	public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.readSchematicFromNBT(nbt, registry);
-	}
+  @Override
+  public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.readSchematicFromNBT(nbt, registry);
+  }
 }

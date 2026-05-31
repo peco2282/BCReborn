@@ -39,7 +39,7 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
   @Override
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                     MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     List<TravelingItem> items = blockEntity.getTravelingItems();
     if (items.isEmpty()) return;
 
@@ -51,7 +51,7 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   }
 
   private void renderTravelingItem(TravelingItem travelingItem, float partialTick,
-      PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                                   PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     ItemStack stack = travelingItem.getStack();
     if (stack.isEmpty()) return;
 
@@ -95,7 +95,7 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
     }
 
     itemRenderer.renderStatic(stack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
-        poseStack, bufferSource, null, 0);
+      poseStack, bufferSource, null, 0);
 
     poseStack.popPose();
   }

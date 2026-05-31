@@ -28,37 +28,36 @@ import java.util.function.Function;
 
 public class TriggerMachine extends BCStatement implements ITriggerExternal {
 
-	boolean active;
+  boolean active;
 
-	public TriggerMachine(boolean active) {
-		super("buildcraft:work." + (active ? "scheduled" : "done"), "buildcraft.work." + (active ? "scheduled" : "done"));
+  public TriggerMachine(boolean active) {
+    super("buildcraft:work." + (active ? "scheduled" : "done"), "buildcraft.work." + (active ? "scheduled" : "done"));
 
-		this.active = active;
-	}
+    this.active = active;
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.machine." + (active ? "scheduled" : "done"));
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.machine." + (active ? "scheduled" : "done"));
+  }
 
-	@Override
-	public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer container, IStatementParameter[] parameters) {
-		if (tile instanceof IHasWork) {
-			IHasWork machine = (IHasWork) tile;
+  @Override
+  public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer container, IStatementParameter[] parameters) {
+    if (tile instanceof IHasWork machine) {
 
-			if (active) {
-				return machine.hasWork();
-			} else {
-				return !machine.hasWork();
-			}
-		}
+      if (active) {
+        return machine.hasWork();
+      } else {
+        return !machine.hasWork();
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_machine_" + (active ? "active" : "inactive")));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_machine_" + (active ? "active" : "inactive")));
+  }
 }

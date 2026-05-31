@@ -19,41 +19,41 @@ import java.util.Random;
 
 public class BlockScannerZoneRandom implements Iterable<BlockIndex> {
 
-	private Random rand;
-	private IZone zone;
-	private int x;
-	private int y;
-	private int z;
+  private final Random rand;
+  private final IZone zone;
+  private final int x;
+  private final int y;
+  private final int z;
 
-	class BlockIt implements Iterator<BlockIndex> {
+  public BlockScannerZoneRandom(int iX, int iY, int iZ, Random iRand, IZone iZone) {
+    x = iX;
+    y = iY;
+    z = iZ;
+    rand = iRand;
+    zone = iZone;
+  }
 
-		@Override
-		public boolean hasNext() {
-			return true;
-		}
+  @Override
+  public Iterator<BlockIndex> iterator() {
+    return new BlockIt();
+  }
 
-		@Override
-		public BlockIndex next() {
-			BlockIndex block = zone.getRandomBlockIndex(rand);
-			return new BlockIndex(block.x - x, block.y - y, block.z - z);
-		}
+  class BlockIt implements Iterator<BlockIndex> {
 
-		@Override
-		public void remove() {
-		}
-	}
+    @Override
+    public boolean hasNext() {
+      return true;
+    }
 
-	public BlockScannerZoneRandom(int iX, int iY, int iZ, Random iRand, IZone iZone) {
-		x = iX;
-		y = iY;
-		z = iZ;
-		rand = iRand;
-		zone = iZone;
-	}
+    @Override
+    public BlockIndex next() {
+      BlockIndex block = zone.getRandomBlockIndex(rand);
+      return new BlockIndex(block.x - x, block.y - y, block.z - z);
+    }
 
-	@Override
-	public Iterator<BlockIndex> iterator() {
-		return new BlockIt();
-	}
+    @Override
+    public void remove() {
+    }
+  }
 
 }

@@ -12,5 +12,5 @@
 package com.peco2282.bcreborn.common.gui.buttons;
 
 public interface IButtonClickEventListener {
-	void handleButtonClick(IButtonClickEventTrigger button, int buttonId);
+  void handleButtonClick(IButtonClickEventTrigger button, int buttonId);
 }

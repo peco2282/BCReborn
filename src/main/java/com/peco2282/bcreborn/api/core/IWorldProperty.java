@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public interface IWorldProperty {
-	boolean get(Level world, BlockPos pos);
+  boolean get(Level world, BlockPos pos);
 
-	void clear();
+  void clear();
 }

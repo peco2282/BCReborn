@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.factory;
 
 
-
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
@@ -22,82 +21,78 @@ import java.util.Locale;
 
 public class PumpDimensionList {
 
-	private List<Entry> entries;
+  private List<Entry> entries;
 
-	public PumpDimensionList(String string) {
+  public PumpDimensionList(String string) {
 
-		entries = new LinkedList<>();
+    entries = new LinkedList<>();
 
-		for (String entryString : string.trim().split(",")) {
+    for (String entryString : string.trim().split(",")) {
 
-			Entry e = new Entry();
+      Entry e = new Entry();
 
-			if (entryString.startsWith("+/")) {
-				e.isWhitelist = true;
-			} else if (entryString.startsWith("-/")) {
-				e.isWhitelist = false;
-			} else {
-				throw new RuntimeException("Malformed pumping.controlList entry: " + entryString + " (must start with +/ or -/)");
-			}
+      if (entryString.startsWith("+/")) {
+        e.isWhitelist = true;
+      } else if (entryString.startsWith("-/")) {
+        e.isWhitelist = false;
+      } else {
+        throw new RuntimeException("Malformed pumping.controlList entry: " + entryString + " (must start with +/ or -/)");
+      }
 
-			String secondString = entryString.substring(2);
-			int i = secondString.indexOf('/');
+      String secondString = entryString.substring(2);
+      int i = secondString.indexOf('/');
 
-			if (i < 0) {
-				throw new RuntimeException("Malformed pumping.controlList entry: " + secondString
-						+ " (missing second /)");
-			}
+      if (i < 0) {
+        throw new RuntimeException("Malformed pumping.controlList entry: " + secondString
+          + " (missing second /)");
+      }
 
-			String dimIDString = secondString.substring(0, i);
+      String dimIDString = secondString.substring(0, i);
 
-			if ("*".equals(dimIDString)) {
-				e.matchAnyDim = true;
-			} else {
-				e.dimID = Integer.parseInt(dimIDString);
-			}
+      if ("*".equals(dimIDString)) {
+        e.matchAnyDim = true;
+      } else {
+        e.dimID = Integer.parseInt(dimIDString);
+      }
 
-			e.fluidName = secondString.substring(i + 1).toLowerCase(Locale.ENGLISH);
+      e.fluidName = secondString.substring(i + 1).toLowerCase(Locale.ENGLISH);
 
-			if (e.fluidName.equals("*")) {
-				e.matchAnyFluid = true;
-			}
+      if (e.fluidName.equals("*")) {
+        e.matchAnyFluid = true;
+      }
 
-			entries.add(0, e);
-		}
+      entries.add(0, e);
+    }
 
-		entries = new ArrayList<>(entries);
-	}
+    entries = new ArrayList<>(entries);
+  }
 
-	private static class Entry {
-		boolean isWhitelist;
-		String fluidName;
-		int dimID;
-		boolean matchAnyFluid;
-		boolean matchAnyDim;
+  public boolean isFluidAllowed(Fluid fluid, int dim) {
+    for (Entry e : entries) {
+      if (e.matches(fluid, dim)) {
+        return e.isWhitelist;
+      }
+    }
+    return false;
+  }
 
-		boolean matches(Fluid fluid, int dim) {
-			if (!matchAnyFluid) {
-				if (!fluid.getFluidType().getDescriptionId().equals(fluidName)) {
-					return false;
-				}
-			}
+  private static class Entry {
+    boolean isWhitelist;
+    String fluidName;
+    int dimID;
+    boolean matchAnyFluid;
+    boolean matchAnyDim;
 
-			if (!matchAnyDim && dimID != dim) {
-				return false;
-			}
+    boolean matches(Fluid fluid, int dim) {
+      if (!matchAnyFluid) {
+        if (!fluid.getFluidType().getDescriptionId().equals(fluidName)) {
+          return false;
+        }
+      }
 
-			return true;
-		}
-	}
-
-	public boolean isFluidAllowed(Fluid fluid, int dim) {
-		for (Entry e : entries) {
-			if (e.matches(fluid, dim)) {
-				return e.isWhitelist;
-			}
-		}
-		return false;
-	}
+      return matchAnyDim || dimID == dim;
+    }
+  }
 
 
 }

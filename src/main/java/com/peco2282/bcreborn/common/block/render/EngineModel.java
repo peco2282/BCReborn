@@ -41,32 +41,32 @@ public class EngineModel {
 
     // base部分（固定）
     root.addOrReplaceChild("base",
-        CubeListBuilder.create()
-            .texOffs(0, 1)
-            .addBox(-8.0F, -8.0F, -8.0F, 16, 4, 16),
-        PartPose.offset(8.0F, 8.0F, 8.0F)
+      CubeListBuilder.create()
+        .texOffs(0, 1)
+        .addBox(-8.0F, -8.0F, -8.0F, 16, 4, 16),
+      PartPose.offset(8.0F, 8.0F, 8.0F)
     );
 
     // trunk部分（上下に動くピストン）
     root.addOrReplaceChild("trunk",
-        CubeListBuilder.create()
-            .texOffs(1, 1)
-            .addBox(-4, -4, -4, 8, 12, 8),
-        PartPose.offset(8.0F, 8.0F, 8.0F));
+      CubeListBuilder.create()
+        .texOffs(1, 1)
+        .addBox(-4, -4, -4, 8, 12, 8),
+      PartPose.offset(8.0F, 8.0F, 8.0F));
 
 
     root.addOrReplaceChild("moving",
-        CubeListBuilder.create()
-            .texOffs(0, 1)
-            .addBox(-8F, -4, -8F, 16, 4, 16),
-        PartPose.offset(8.0F, 8.0F, 8.0F));
+      CubeListBuilder.create()
+        .texOffs(0, 1)
+        .addBox(-8F, -4, -8F, 16, 4, 16),
+      PartPose.offset(8.0F, 8.0F, 8.0F));
 
     // chamber部分（固定・中間層）
     root.addOrReplaceChild("chamber",
-        CubeListBuilder.create()
-            .texOffs(1, 1)
-            .addBox(-5F, -4, -5F, 10, 2, 10),
-        PartPose.offset(8.0F, 8.0F, 8.0F));
+      CubeListBuilder.create()
+        .texOffs(1, 1)
+        .addBox(-5F, -4, -5F, 10, 2, 10),
+      PartPose.offset(8.0F, 8.0F, 8.0F));
 
     return LayerDefinition.create(mesh, 64, 32);
   }

@@ -17,32 +17,32 @@ import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
 
 public class AIRobotGotoStationAndLoadFluids extends AIRobot {
 
-	private IFluidFilter filter;
+  private IFluidFilter filter;
 
-	public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
-		this(iRobot);
+  public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
+    this(iRobot);
 
-		filter = iFilter;
-	}
+    filter = iFilter;
+  }
 
-	@Override
-	public void start() {
-		startDelegateAI(new AIRobotGotoStationToLoadFluids(robot, filter));
-	}
+  @Override
+  public void start() {
+    startDelegateAI(new AIRobotGotoStationToLoadFluids(robot, filter));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoStationToLoadFluids) {
-			if (filter != null && ai.success()) {
-				startDelegateAI(new AIRobotLoadFluids(robot, filter));
-			} else {
-				setSuccess(false);
-				terminate();
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoStationToLoadFluids) {
+      if (filter != null && ai.success()) {
+        startDelegateAI(new AIRobotLoadFluids(robot, filter));
+      } else {
+        setSuccess(false);
+        terminate();
+      }
+    }
+  }
 }

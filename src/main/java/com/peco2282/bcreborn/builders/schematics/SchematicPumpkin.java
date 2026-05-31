@@ -21,30 +21,30 @@ import java.util.LinkedList;
 
 public class SchematicPumpkin extends SchematicBlock {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (state != null) {
-			requirements.add(new ItemStack(state.getBlock()));
-		} else if (block != null) {
-			requirements.add(new ItemStack(block));
-		}
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    if (state != null) {
+      requirements.add(new ItemStack(state.getBlock()));
+    } else if (block != null) {
+      requirements.add(new ItemStack(block));
+    }
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 
 }

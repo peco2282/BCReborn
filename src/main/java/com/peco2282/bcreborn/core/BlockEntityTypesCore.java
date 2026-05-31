@@ -30,16 +30,17 @@ import java.util.stream.Collectors;
 public class BlockEntityTypesCore {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
-  public static final RegistryObject<BlockEntityType<WoodEngineBlockEntity>> WOODEN_ENGINE = register("wood_engine", of(WoodEngineBlockEntity::new, BlocksCore.WOODEN_ENGINE));
-  public static final RegistryObject<BlockEntityType<PathMarkerBlockEntity>> PATH_MARKER = register("path_marker", of(PathMarkerBlockEntity::new, BlocksCore.PATH_MARKER));
-  public static final RegistryObject<BlockEntityType<BlueMarkerBlockEntity>> BLUE_MARKER = register("blue_marker", of(BlueMarkerBlockEntity::new, BlocksCore.BLUE_MARKER));
-
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
     return REGISTRY.registerBlockEntityType(name, type);
-  }
+  }  public static final RegistryObject<BlockEntityType<WoodEngineBlockEntity>> WOODEN_ENGINE = register("wood_engine", of(WoodEngineBlockEntity::new, BlocksCore.WOODEN_ENGINE));
 
   @SafeVarargs
   private static <T extends BlockEntity> Supplier<BlockEntityType<T>> of(BlockEntityType.BlockEntitySupplier<T> supplier, Supplier<? extends Block>... validBlocks) {
     return () -> new BlockEntityType<>(supplier, Arrays.stream(validBlocks).map(Supplier::get).collect(Collectors.toSet()), null);
-  }
+  }  public static final RegistryObject<BlockEntityType<PathMarkerBlockEntity>> PATH_MARKER = register("path_marker", of(PathMarkerBlockEntity::new, BlocksCore.PATH_MARKER));
+  public static final RegistryObject<BlockEntityType<BlueMarkerBlockEntity>> BLUE_MARKER = register("blue_marker", of(BlueMarkerBlockEntity::new, BlocksCore.BLUE_MARKER));
+
+
+
+
 }

@@ -17,16 +17,16 @@ import java.util.Random;
 
 public interface IZone {
 
-	double distanceTo(BlockIndex index);
+  double distanceTo(BlockIndex index);
 
-	double distanceToSquared(BlockIndex index);
+  double distanceToSquared(BlockIndex index);
 
-	boolean contains(double x, double y, double z);
+  boolean contains(double x, double y, double z);
 
-	default boolean contains(BlockPos pos) {
-		return contains(pos.getX(), pos.getY(), pos.getZ());
-	}
+  default boolean contains(BlockPos pos) {
+    return contains(pos.getX(), pos.getY(), pos.getZ());
+  }
 
-	BlockIndex getRandomBlockIndex(Random rand);
+  BlockIndex getRandomBlockIndex(Random rand);
 
 }

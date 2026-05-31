@@ -26,25 +26,25 @@ import java.util.function.Function;
 
 public class ActionRobotWakeUp extends BCStatement implements IActionInternal {
 
-	public ActionRobotWakeUp() {
-		super("robot.wakeup");
-	}
+  public ActionRobotWakeUp() {
+    super("robot.wakeup");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.robot.wakeup");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.robot.wakeup");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_wakeup"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_wakeup"));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
 
-	}
+  }
 }

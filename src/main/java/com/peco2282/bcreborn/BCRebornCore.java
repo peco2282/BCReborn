@@ -14,16 +14,14 @@ package com.peco2282.bcreborn;
 import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
 import com.peco2282.bcreborn.common.packet.PacketController;
 import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.common.data.DataGatherEvent;
-import com.peco2282.bcreborn.common.data.ResourceDataGenerator;
 import com.peco2282.bcreborn.core.worldgen.SpringPopulate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -46,15 +44,6 @@ public class BCRebornCore implements BCReborn {
 
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
-
-  public static BCRegistry getRegistry() {
-    return REGISTRY;
-  }
-
-  public static ResourceLocation location(String path) {
-    return BCReborn.getLocation(Type.CORE, path);
-  }
-
   public static boolean debugWorldgen = false;
   public static boolean modifyWorld = false;
   public static boolean colorBlindMode = false;
@@ -67,12 +56,6 @@ public class BCRebornCore implements BCReborn {
   public static int updateFactor = 10;
   public static int builderMaxPerItemFactor = 1024;
   public static long longUpdateFactor = 40;
-
-  public enum RenderMode {
-    Full, NoDynamic
-  }
-
-
   public BCRebornCore(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
 
@@ -99,6 +82,14 @@ public class BCRebornCore implements BCReborn {
     context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, fileName);
   }
 
+  public static BCRegistry getRegistry() {
+    return REGISTRY;
+  }
+
+  public static ResourceLocation location(String path) {
+    return BCReborn.getLocation(Type.CORE, path);
+  }
+
   private void commonSetup(final FMLCommonSetupEvent event) {
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
@@ -110,5 +101,9 @@ public class BCRebornCore implements BCReborn {
   public void onServerStarting(ServerStartingEvent event) {
     // Do something when the server starts
     LOGGER.info("HELLO from server starting");
+  }
+
+  public enum RenderMode {
+    Full, NoDynamic
   }
 }

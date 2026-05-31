@@ -23,17 +23,17 @@ import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
 public class BlockEntityTypesRobotics {
-    private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
+  private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-    private static <T extends net.minecraft.world.level.block.entity.BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
-        return REGISTRY.registerBlockEntityType(name, type);
-    }
+  private static <T extends net.minecraft.world.level.block.entity.BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
+    return REGISTRY.registerBlockEntityType(name, type);
+  }
 
-    public static final RegistryObject<BlockEntityType<RequesterBlockEntity>> REQUESTER = REGISTRY.registerBlockEntityType("requester", () ->
-            BlockEntityType.Builder.of(RequesterBlockEntity::new, RoboticsBlocks.REQUESTER.get()).build(null)
-    );
+  public static final RegistryObject<BlockEntityType<RequesterBlockEntity>> REQUESTER = REGISTRY.registerBlockEntityType("requester", () ->
+    BlockEntityType.Builder.of(RequesterBlockEntity::new, RoboticsBlocks.REQUESTER.get()).build(null)
+  );
 
-    public static final RegistryObject<BlockEntityType<ZonePlanBlockEntity>> ZONE_PLAN = REGISTRY.registerBlockEntityType("zone_plan", () ->
-            BlockEntityType.Builder.of(ZonePlanBlockEntity::new, RoboticsBlocks.ZONE_PLAN.get()).build(null)
-    );
+  public static final RegistryObject<BlockEntityType<ZonePlanBlockEntity>> ZONE_PLAN = REGISTRY.registerBlockEntityType("zone_plan", () ->
+    BlockEntityType.Builder.of(ZonePlanBlockEntity::new, RoboticsBlocks.ZONE_PLAN.get()).build(null)
+  );
 }

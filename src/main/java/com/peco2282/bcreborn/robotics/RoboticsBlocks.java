@@ -25,17 +25,15 @@ import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
 public class RoboticsBlocks {
-    private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
+  private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
+  public static final RegistryObject<RequesterBlock> REQUESTER = register("requester", () ->
+    new RequesterBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F))
+  );
+  public static final RegistryObject<ZonePlanBlock> ZONE_PLAN = register("zone_plan", () ->
+    new ZonePlanBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F))
+  );
 
-    private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> supplier) {
-        return REGISTRY.registerBlock(name, supplier);
-    }
-
-    public static final RegistryObject<RequesterBlock> REQUESTER = register("requester", () ->
-            new RequesterBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F))
-    );
-
-    public static final RegistryObject<ZonePlanBlock> ZONE_PLAN = register("zone_plan", () ->
-            new ZonePlanBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F))
-    );
+  private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> supplier) {
+    return REGISTRY.registerBlock(name, supplier);
+  }
 }

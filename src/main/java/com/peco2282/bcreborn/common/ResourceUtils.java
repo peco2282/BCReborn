@@ -18,11 +18,11 @@ import net.minecraft.server.packs.resources.Resource;
 import java.util.Optional;
 
 public interface ResourceUtils {
-  public static boolean resourceExists(String name) {
+  static boolean resourceExists(String name) {
     return resourceExists(ResourceLocation.parse(name));
   }
 
-  public static boolean resourceExists(ResourceLocation name) {
+  static boolean resourceExists(ResourceLocation name) {
     Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(name);
     return resource.isPresent();
   }

@@ -26,24 +26,24 @@ import java.util.function.Function;
 
 public class ActionStationRequestItemsMachine extends BCStatement implements IActionInternal {
 
-	public ActionStationRequestItemsMachine() {
-		super("station.provide_machine_request");
-	}
+  public ActionStationRequestItemsMachine() {
+    super("station.provide_machine_request");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.station.provide_machine_request");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.station.provide_machine_request");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_machine_request"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_machine_request"));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

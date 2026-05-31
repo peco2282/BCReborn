@@ -23,31 +23,31 @@ import java.util.List;
 
 public final class PatternFill extends FillerPattern {
 
-    public static final PatternFill INSTANCE = new PatternFill();
-    public static final Codec<PatternFill> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
-    ).apply(instance, PatternFill::new));
+  public static final PatternFill INSTANCE = new PatternFill();
+  public static final Codec<PatternFill> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
+  ).apply(instance, PatternFill::new));
 
-    private IStatementParameter[] parameters = new IStatementParameter[0];
+  private IStatementParameter[] parameters = new IStatementParameter[0];
 
-    public PatternFill(List<IStatementParameter> parameters) {
-        this();
-        this.parameters = parameters.toArray(new IStatementParameter[0]);
-    }
+  public PatternFill(List<IStatementParameter> parameters) {
+    this();
+    this.parameters = parameters.toArray(new IStatementParameter[0]);
+  }
 
-    public PatternFill() {
-        super("fill");
-    }
+  public PatternFill() {
+    super("fill");
+  }
 
-    @Override
-    public Codec<? extends FillerPattern> getCodec() {
-        return CODEC;
-    }
+  @Override
+  public Codec<? extends FillerPattern> getCodec() {
+    return CODEC;
+  }
 
-    @Override
-    public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-        Template bpt = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
-        fill(0, 0, 0, box.sizeX() - 1, box.sizeY() - 1, box.sizeZ() - 1, bpt);
-        return bpt;
-    }
+  @Override
+  public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
+    Template bpt = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
+    fill(0, 0, 0, box.sizeX() - 1, box.sizeY() - 1, box.sizeZ() - 1, bpt);
+    return bpt;
+  }
 }

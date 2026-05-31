@@ -28,10 +28,6 @@ public class SimpleInventory implements Container, INBT {
   private final int stackLimit;
   private final LinkedList<BlockEntity> listener = new LinkedList<>();
 
-  public static SimpleInventory sized(int size, String invName, int invStackLimit) {
-    return new SimpleInventory(size, invName, invStackLimit);
-  }
-
   public SimpleInventory(int size, String invName, int invStackLimit) {
     contents = CodingUtils.apply(new ItemStack[size], s -> {
       for (int i = 0; i < size; i++) {
@@ -41,6 +37,11 @@ public class SimpleInventory implements Container, INBT {
     name = invName;
     stackLimit = invStackLimit;
   }
+
+  public static SimpleInventory sized(int size, String invName, int invStackLimit) {
+    return new SimpleInventory(size, invName, invStackLimit);
+  }
+
   @Override
   public void read(CompoundTag nbt) {
     if (nbt.contains("items")) {
@@ -69,6 +70,7 @@ public class SimpleInventory implements Container, INBT {
       }
     }
   }
+
   @Override
   public void write(CompoundTag nbt) {
     writeToNBT(nbt, "items");
@@ -86,6 +88,7 @@ public class SimpleInventory implements Container, INBT {
     }
     data.put(tag, slots);
   }
+
   public void addListener(BlockEntity listner) {
     listener.add(listner);
   }

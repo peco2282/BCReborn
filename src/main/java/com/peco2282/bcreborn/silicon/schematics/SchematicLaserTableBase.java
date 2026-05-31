@@ -17,10 +17,10 @@ import com.peco2282.bcreborn.api.blueprints.SchematicTile;
 
 public class SchematicLaserTableBase extends SchematicTile {
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
 
-		tileNBT.remove("energy");
-	}
+    tileNBT.remove("energy");
+  }
 }

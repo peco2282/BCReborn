@@ -11,13 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
-import java.util.List;
-import java.util.function.Function;
-
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.items.IMapLocation;
-import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IRobotRegistry;
 import com.peco2282.bcreborn.api.robots.RobotManager;
@@ -37,80 +33,80 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+import java.util.function.Function;
+
 public class ActionRobotGotoStation extends BCStatement implements IActionInternal {
 
-	public ActionRobotGotoStation() {
-		super("robot.goto_station");
-	}
+  public ActionRobotGotoStation() {
+    super("robot.goto_station");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.robot.goto_station");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.robot.goto_station");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_goto_station"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_goto_station"));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
-		if (container.getTile() == null || container.getTile().getLevel() == null) return;
-		IRobotRegistry registry = RobotManager.registryProvider.getRegistry(container.getTile().getLevel());
+  @Override
+  public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
+    if (container.getTile() == null || container.getTile().getLevel() == null) return;
+    IRobotRegistry registry = RobotManager.registryProvider.getRegistry(container.getTile().getLevel());
 
-		List<DockingStation> stations = RobotUtils.getStations(container.getTile());
+    List<DockingStation> stations = RobotUtils.getStations(container.getTile());
 
-		for (DockingStation station : stations) {
-			if (station.robotTaking() != null) {
-				EntityRobot robot = (EntityRobot) station.robotTaking();
-				Object ai = robot.getOverridingAI();
+    for (DockingStation station : stations) {
+      if (station.robotTaking() != null) {
+        EntityRobot robot = (EntityRobot) station.robotTaking();
+        Object ai = robot.getOverridingAI();
 
-				if (ai != null) {
-					continue;
-				}
+        if (ai != null) {
+          continue;
+        }
 
-				DockingStation newStation = station;
+        DockingStation newStation = station;
 
-				if (parameters[0] instanceof StatementParameterItemStack) {
-					newStation = getStation((StatementParameterItemStack) parameters[0], registry);
-				}
+        if (parameters[0] instanceof StatementParameterItemStack) {
+          newStation = getStation((StatementParameterItemStack) parameters[0], registry);
+        }
 
-				if (newStation != null) {
-					robot.overrideAI(new AIRobotGoAndLinkToDock(robot, newStation));
-				}
-			}
-		}
-	}
+        if (newStation != null) {
+          robot.overrideAI(new AIRobotGoAndLinkToDock(robot, newStation));
+        }
+      }
+    }
+  }
 
-	private DockingStation getStation(StatementParameterItemStack stackParam,
-									  IRobotRegistry registry) {
-		ItemStack item = stackParam.getItemStack();
+  private DockingStation getStation(StatementParameterItemStack stackParam,
+                                    IRobotRegistry registry) {
+    ItemStack item = stackParam.getItemStack();
 
-		if (item != null && !item.isEmpty() && item.getItem() instanceof IMapLocation) {
-			IMapLocation map = (IMapLocation) item.getItem();
-			BlockIndex index = map.getPoint(item);
+    if (item != null && !item.isEmpty() && item.getItem() instanceof IMapLocation map) {
+      BlockIndex index = map.getPoint(item);
 
-			if (index != null) {
-				Direction side = map.getPointSide(item);
-				DockingStation paramStation = registry.getStation(index.toBlockPos(), side);
+      if (index != null) {
+        Direction side = map.getPointSide(item);
+        DockingStation paramStation = registry.getStation(index.toBlockPos(), side);
 
-				if (paramStation != null) {
-					return paramStation;
-				}
-			}
-		}
-		return null;
-	}
+        return paramStation;
+      }
+    }
+    return null;
+  }
 
-	@Override
-	public int maxParameters() {
-		return 1;
-	}
+  @Override
+  public int maxParameters() {
+    return 1;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
 }

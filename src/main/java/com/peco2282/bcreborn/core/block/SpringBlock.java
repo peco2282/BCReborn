@@ -32,100 +32,100 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public class SpringBlock extends Block {
-    public static final EnumProperty<EnumSpring> TYPE = EnumProperty.create("type", EnumSpring.class);
-    private static final XorShift128Random random = new XorShift128Random();
+  public static final EnumProperty<EnumSpring> TYPE = EnumProperty.create("type", EnumSpring.class);
+  private static final XorShift128Random random = new XorShift128Random();
 
-    public enum EnumSpring implements StringRepresentable {
-        WATER(5, -1, () -> Blocks.WATER),
-        OIL(6000, 8, () ->
-        {
-            if (ConfigEnergy.isSpawnOilSprings()) {
-                return FluidsEnergy.OIL_BLOCK.get();
-            }
-            return null;
-        }); // Set in BuildCraftEnergy
+  public SpringBlock() {
+    super(Properties.of()
+      .mapColor(MapColor.STONE)
+      .strength(-1.0F, 6000000.0F)
+      .sound(SoundType.STONE)
+      .randomTicks());
+    this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, EnumSpring.WATER));
+  }
 
-        private final int tickRate, chance;
-        private final Supplier<@Nullable Block> liquidBlock;
+  @Override
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(TYPE);
+  }
 
-        public int getTickRate() {
-            return tickRate;
-        }
+  @Override
+  public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    assertSpring(level, pos, state);
+  }
 
-        public int getChance() {
-            return chance;
-        }
+  @Override
+  public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    assertSpring(level, pos, state);
+  }
 
-        public Block getLiquidBlock() {
-            return liquidBlock.get();
-        }
+  @Override
+  public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+    super.onPlace(state, level, pos, oldState, isMoving);
+    if (!level.isClientSide) {
+      level.scheduleTick(pos, this, state.getValue(TYPE).tickRate);
+    }
+  }
 
-        public boolean canGen() {
-            return this != OIL || ConfigEnergy.isSpawnOilSprings();
-        }
+  private void assertSpring(Level level, BlockPos pos, BlockState state) {
+    EnumSpring spring = state.getValue(TYPE);
+    level.scheduleTick(pos, this, spring.tickRate);
+    Block fluid = spring.liquidBlock.get();
 
-        EnumSpring(int tickRate, int chance, Supplier<Block> liquidBlock) {
-            this.tickRate = tickRate;
-            this.chance = chance;
-            this.liquidBlock = liquidBlock;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return name().toLowerCase(Locale.ROOT);
-        }
+    if (!spring.canGen() || fluid == null) {
+      return;
     }
 
-    public SpringBlock() {
-        super(Properties.of()
-                .mapColor(MapColor.STONE)
-                .strength(-1.0F, 6000000.0F)
-                .sound(SoundType.STONE)
-                .randomTicks());
-        this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, EnumSpring.WATER));
+    BlockPos upPos = pos.above();
+    if (!level.isEmptyBlock(upPos)) {
+      return;
+    }
+
+    if (spring.chance != -1 && random.nextInt(spring.chance) != 0) {
+      return;
+    }
+
+    level.setBlock(upPos, fluid.defaultBlockState(), 3);
+  }
+
+  public enum EnumSpring implements StringRepresentable {
+    WATER(5, -1, () -> Blocks.WATER),
+    OIL(6000, 8, () ->
+    {
+      if (ConfigEnergy.isSpawnOilSprings()) {
+        return FluidsEnergy.OIL_BLOCK.get();
+      }
+      return null;
+    }); // Set in BuildCraftEnergy
+
+    private final int tickRate, chance;
+    private final Supplier<@Nullable Block> liquidBlock;
+
+    EnumSpring(int tickRate, int chance, Supplier<Block> liquidBlock) {
+      this.tickRate = tickRate;
+      this.chance = chance;
+      this.liquidBlock = liquidBlock;
+    }
+
+    public int getTickRate() {
+      return tickRate;
+    }
+
+    public int getChance() {
+      return chance;
+    }
+
+    public Block getLiquidBlock() {
+      return liquidBlock.get();
+    }
+
+    public boolean canGen() {
+      return this != OIL || ConfigEnergy.isSpawnOilSprings();
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TYPE);
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ROOT);
     }
-
-    @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        assertSpring(level, pos, state);
-    }
-
-    @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        assertSpring(level, pos, state);
-    }
-
-    @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onPlace(state, level, pos, oldState, isMoving);
-        if (!level.isClientSide) {
-            level.scheduleTick(pos, this, state.getValue(TYPE).tickRate);
-        }
-    }
-
-    private void assertSpring(Level level, BlockPos pos, BlockState state) {
-        EnumSpring spring = state.getValue(TYPE);
-        level.scheduleTick(pos, this, spring.tickRate);
-        Block fluid = spring.liquidBlock.get();
-
-        if (!spring.canGen() || fluid == null) {
-            return;
-        }
-
-        BlockPos upPos = pos.above();
-        if (!level.isEmptyBlock(upPos)) {
-            return;
-        }
-
-        if (spring.chance != -1 && random.nextInt(spring.chance) != 0) {
-            return;
-        }
-
-        level.setBlock(upPos, fluid.defaultBlockState(), 3);
-    }
+  }
 }

@@ -21,45 +21,45 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.List;
 
 public abstract class GateExpansionController {
-    public final IGateExpansion type;
-    public final BlockEntity pipeTile;
+  public final IGateExpansion type;
+  public final BlockEntity pipeTile;
 
-    public GateExpansionController(IGateExpansion type, BlockEntity pipeTile) {
-        this.pipeTile = pipeTile;
-        this.type = type;
-    }
+  public GateExpansionController(IGateExpansion type, BlockEntity pipeTile) {
+    this.pipeTile = pipeTile;
+    this.type = type;
+  }
 
-    public IGateExpansion getType() {
-        return type;
-    }
+  public IGateExpansion getType() {
+    return type;
+  }
 
-    public boolean isActive() {
-        return false;
-    }
+  public boolean isActive() {
+    return false;
+  }
 
-    public void tick(IGate gate) {
-    }
+  public void tick(IGate gate) {
+  }
 
-    public void startResolution() {
-    }
+  public void startResolution() {
+  }
 
-    public boolean resolveAction(IStatement action, int count) {
-        return false;
-    }
+  public boolean resolveAction(IStatement action, int count) {
+    return false;
+  }
 
-    public boolean isTriggerActive(IStatement trigger, IStatementParameter[] parameters) {
-        return false;
-    }
+  public boolean isTriggerActive(IStatement trigger, IStatementParameter[] parameters) {
+    return false;
+  }
 
-    public void addTriggers(List<ITriggerInternal> list) {
-    }
+  public void addTriggers(List<ITriggerInternal> list) {
+  }
 
-    public void addActions(List<IActionInternal> list) {
-    }
+  public void addActions(List<IActionInternal> list) {
+  }
 
-    public void writeToNBT(CompoundTag nbt) {
-    }
+  public void writeToNBT(CompoundTag nbt) {
+  }
 
-    public void readFromNBT(CompoundTag nbt) {
-    }
+  public void readFromNBT(CompoundTag nbt) {
+  }
 }

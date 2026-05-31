@@ -27,18 +27,18 @@ public class ConfiguredFeaturesEnergy {
 
   public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
     context.register(
-        OIL_LAKE,
-        new ConfiguredFeature<>(
-            Feature.LAKE,
-            new LakeFeature.Configuration(
-                BlockStateProvider.simple(
-                    FluidsEnergy.OIL_BLOCK.get()
-                ),
-                BlockStateProvider.simple(
-                    Blocks.SAND
-                )
-            )
+      OIL_LAKE,
+      new ConfiguredFeature<>(
+        Feature.LAKE,
+        new LakeFeature.Configuration(
+          BlockStateProvider.simple(
+            FluidsEnergy.OIL_BLOCK.get()
+          ),
+          BlockStateProvider.simple(
+            Blocks.SAND
+          )
         )
+      )
     );
   }
 }

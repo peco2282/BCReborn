@@ -24,49 +24,49 @@ import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 
 public class BoardRobotMiner extends BoardRobotGenericBreakBlock {
-	private static final int MAX_HARVEST_LEVEL = 3;
-	private int harvestLevel = 0;
+  private static final int MAX_HARVEST_LEVEL = 3;
+  private int harvestLevel = 0;
 
-	public BoardRobotMiner(EntityRobotBase iRobot) {
-		super(iRobot);
-		detectHarvestLevel();
-	}
+  public BoardRobotMiner(EntityRobotBase iRobot) {
+    super(iRobot);
+    detectHarvestLevel();
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		super.delegateAIEnded(ai);
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    super.delegateAIEnded(ai);
 
-		if (ai instanceof AIRobotFetchAndEquipItemStack) {
-			if (ai.success()) {
-				detectHarvestLevel();
-			}
-		}
-	}
+    if (ai instanceof AIRobotFetchAndEquipItemStack) {
+      if (ai.success()) {
+        detectHarvestLevel();
+      }
+    }
+  }
 
-	private void detectHarvestLevel() {
-		ItemStack stack = robot.getMainHandItem();
+  private void detectHarvestLevel() {
+    ItemStack stack = robot.getMainHandItem();
 
-		if (!stack.isEmpty() && stack.is(ItemTags.PICKAXES)) {
-			if (stack.getItem() instanceof TieredItem tieredItem) {
-				Tier tier = tieredItem.getTier();
-				harvestLevel = tier.getLevel();
-			}
-		}
-	}
+    if (!stack.isEmpty() && stack.is(ItemTags.PICKAXES)) {
+      if (stack.getItem() instanceof TieredItem tieredItem) {
+        Tier tier = tieredItem.getTier();
+        harvestLevel = tier.getLevel();
+      }
+    }
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("miner");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("miner");
+  }
 
-	@Override
-	public boolean isExpectedTool(ItemStack stack) {
-		return !stack.isEmpty() && stack.is(ItemTags.PICKAXES);
-	}
+  @Override
+  public boolean isExpectedTool(ItemStack stack) {
+    return !stack.isEmpty() && stack.is(ItemTags.PICKAXES);
+  }
 
-	@Override
-	public boolean isExpectedBlock(Level world, int x, int y, int z) {
-		return BuildCraftAPI.getWorldProperty("ore@hardness=" + Math.min(MAX_HARVEST_LEVEL, harvestLevel))
-				.get(world, new BlockPos(x, y, z));
-	}
+  @Override
+  public boolean isExpectedBlock(Level world, int x, int y, int z) {
+    return BuildCraftAPI.getWorldProperty("ore@hardness=" + Math.min(MAX_HARVEST_LEVEL, harvestLevel))
+      .get(world, new BlockPos(x, y, z));
+  }
 }

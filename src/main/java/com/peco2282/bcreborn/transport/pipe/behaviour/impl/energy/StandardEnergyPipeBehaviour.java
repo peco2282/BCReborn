@@ -40,7 +40,7 @@ public abstract class StandardEnergyPipeBehaviour implements EnergyPipeBehaviour
       PipeMaterial otherMat = otherPipe.getPipeMaterial();
       // 石パイプと丸石パイプは互いに接続しない
       return (thisMat != PipeMaterial.STONE || otherMat != PipeMaterial.COBBLESTONE) &&
-          (thisMat != PipeMaterial.COBBLESTONE || otherMat != PipeMaterial.STONE);
+        (thisMat != PipeMaterial.COBBLESTONE || otherMat != PipeMaterial.STONE);
     }
     return true;
   }

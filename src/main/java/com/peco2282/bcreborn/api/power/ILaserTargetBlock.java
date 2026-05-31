@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.api.power;
 /**
  * This is a marker interface for laser targets. Implement it on
  * your Block.
- *
+ * <p>
  * It is used by BuildCraft Lasers for optimization purposes.
  */
 public interface ILaserTargetBlock {

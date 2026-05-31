@@ -26,78 +26,78 @@ import java.util.LinkedList;
 
 public class DefaultTriggerProvider implements ITriggerProvider {
 
-	public static ITriggerExternal triggerEmptyInventory = new TriggerInventory(TriggerInventory.State.Empty);
-	public static ITriggerExternal triggerContainsInventory = new TriggerInventory(TriggerInventory.State.Contains);
-	public static ITriggerExternal triggerSpaceInventory = new TriggerInventory(TriggerInventory.State.Space);
-	public static ITriggerExternal triggerFullInventory = new TriggerInventory(TriggerInventory.State.Full);
-	public static ITriggerExternal triggerInventoryBelow25 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW25);
-	public static ITriggerExternal triggerInventoryBelow50 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW50);
-	public static ITriggerExternal triggerInventoryBelow75 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW75);
+  public static ITriggerExternal triggerEmptyInventory = new TriggerInventory(TriggerInventory.State.Empty);
+  public static ITriggerExternal triggerContainsInventory = new TriggerInventory(TriggerInventory.State.Contains);
+  public static ITriggerExternal triggerSpaceInventory = new TriggerInventory(TriggerInventory.State.Space);
+  public static ITriggerExternal triggerFullInventory = new TriggerInventory(TriggerInventory.State.Full);
+  public static ITriggerExternal triggerInventoryBelow25 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW25);
+  public static ITriggerExternal triggerInventoryBelow50 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW50);
+  public static ITriggerExternal triggerInventoryBelow75 = new TriggerInventoryLevel(TriggerInventoryLevel.TriggerType.BELOW75);
 
-	public static ITriggerExternal triggerEmptyFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Empty);
-	public static ITriggerExternal triggerContainsFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Contains);
-	public static ITriggerExternal triggerSpaceFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Space);
-	public static ITriggerExternal triggerFullFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Full);
-	public static ITriggerExternal triggerFluidContainerBelow25 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW25);
-	public static ITriggerExternal triggerFluidContainerBelow50 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW50);
-	public static ITriggerExternal triggerFluidContainerBelow75 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW75);
+  public static ITriggerExternal triggerEmptyFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Empty);
+  public static ITriggerExternal triggerContainsFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Contains);
+  public static ITriggerExternal triggerSpaceFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Space);
+  public static ITriggerExternal triggerFullFluid = new TriggerFluidContainer(TriggerFluidContainer.State.Full);
+  public static ITriggerExternal triggerFluidContainerBelow25 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW25);
+  public static ITriggerExternal triggerFluidContainerBelow50 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW50);
+  public static ITriggerExternal triggerFluidContainerBelow75 = new TriggerFluidContainerLevel(TriggerFluidContainerLevel.TriggerType.BELOW75);
 
-	public static ITriggerExternal triggerMachineActive = new TriggerMachine(true);
-	public static ITriggerExternal triggerMachineInactive = new TriggerMachine(false);
+  public static ITriggerExternal triggerMachineActive = new TriggerMachine(true);
+  public static ITriggerExternal triggerMachineInactive = new TriggerMachine(false);
 
-	public static ITriggerInternal triggerRedstoneActive = new TriggerRedstoneInput(true);
-	public static ITriggerInternal triggerRedstoneInactive = new TriggerRedstoneInput(false);
+  public static ITriggerInternal triggerRedstoneActive = new TriggerRedstoneInput(true);
+  public static ITriggerInternal triggerRedstoneInactive = new TriggerRedstoneInput(false);
 
-	@Override
-	public Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile) {
-		LinkedList<ITriggerExternal> res = new LinkedList<ITriggerExternal>();
+  @Override
+  public Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile) {
+    LinkedList<ITriggerExternal> res = new LinkedList<ITriggerExternal>();
 
-		boolean blockInventoryTriggers = false;
-		boolean blockFluidHandlerTriggers = false;
+    boolean blockInventoryTriggers = false;
+    boolean blockFluidHandlerTriggers = false;
 
-		if (tile instanceof IBlockDefaultTriggers) {
-			blockInventoryTriggers = ((IBlockDefaultTriggers) tile).blockInventoryTriggers(side);
-			blockFluidHandlerTriggers = ((IBlockDefaultTriggers) tile).blockFluidHandlerTriggers(side);
-		}
+    if (tile instanceof IBlockDefaultTriggers) {
+      blockInventoryTriggers = ((IBlockDefaultTriggers) tile).blockInventoryTriggers(side);
+      blockFluidHandlerTriggers = ((IBlockDefaultTriggers) tile).blockFluidHandlerTriggers(side);
+    }
 
-		if (!blockInventoryTriggers && tile != null && tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent()) {
-			res.add(triggerEmptyInventory);
-			res.add(triggerContainsInventory);
-			res.add(triggerSpaceInventory);
-			res.add(triggerFullInventory);
-			res.add(triggerInventoryBelow25);
-			res.add(triggerInventoryBelow50);
-			res.add(triggerInventoryBelow75);
-		}
+    if (!blockInventoryTriggers && tile != null && tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent()) {
+      res.add(triggerEmptyInventory);
+      res.add(triggerContainsInventory);
+      res.add(triggerSpaceInventory);
+      res.add(triggerFullInventory);
+      res.add(triggerInventoryBelow25);
+      res.add(triggerInventoryBelow50);
+      res.add(triggerInventoryBelow75);
+    }
 
-		if (!blockFluidHandlerTriggers && tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
-			res.add(triggerEmptyFluid);
-			res.add(triggerContainsFluid);
-			res.add(triggerSpaceFluid);
-			res.add(triggerFullFluid);
-			res.add(triggerFluidContainerBelow25);
-			res.add(triggerFluidContainerBelow50);
-			res.add(triggerFluidContainerBelow75);
-		}
+    if (!blockFluidHandlerTriggers && tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
+      res.add(triggerEmptyFluid);
+      res.add(triggerContainsFluid);
+      res.add(triggerSpaceFluid);
+      res.add(triggerFullFluid);
+      res.add(triggerFluidContainerBelow25);
+      res.add(triggerFluidContainerBelow50);
+      res.add(triggerFluidContainerBelow75);
+    }
 
-		if (tile instanceof IHasWork) {
-			res.add(triggerMachineActive);
-			res.add(triggerMachineInactive);
-		}
+    if (tile instanceof IHasWork) {
+      res.add(triggerMachineActive);
+      res.add(triggerMachineInactive);
+    }
 
-		return res;
-	}
+    return res;
+  }
 
-	@Override
-	public Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
-		LinkedList<ITriggerInternal> res = new LinkedList<ITriggerInternal>();
+  @Override
+  public Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
+    LinkedList<ITriggerInternal> res = new LinkedList<ITriggerInternal>();
 
-		if (container instanceof IRedstoneStatementContainer) {
-			res.add(triggerRedstoneActive);
-			res.add(triggerRedstoneInactive);
-		}
+    if (container instanceof IRedstoneStatementContainer) {
+      res.add(triggerRedstoneActive);
+      res.add(triggerRedstoneInactive);
+    }
 
-		// TriggerEnergy is still problematic, skipping for now as it depends on complex pipe logic
+    // TriggerEnergy is still problematic, skipping for now as it depends on complex pipe logic
 		/*
 		if (TriggerEnergy.isTriggeringPipe(container.getTile()) || TriggerEnergy.getTriggeringNeighbor(container.getTile()) != null) {
 			res.add((ITriggerInternal) BuildCraftCore.triggerEnergyHigh);
@@ -105,6 +105,6 @@ public class DefaultTriggerProvider implements ITriggerProvider {
 		}
 		*/
 
-		return res;
-	}
+    return res;
+  }
 }

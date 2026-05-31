@@ -16,17 +16,17 @@ import net.minecraft.world.entity.player.Player;
 
 public class SlotPhantom extends SlotBase implements IPhantomSlot {
 
-	public SlotPhantom(Container iinventory, int slotIndex, int posX, int posY) {
-		super(iinventory, slotIndex, posX, posY);
-	}
+  public SlotPhantom(Container iinventory, int slotIndex, int posX, int posY) {
+    super(iinventory, slotIndex, posX, posY);
+  }
 
-	@Override
-	public boolean canAdjust() {
-		return true;
-	}
+  @Override
+  public boolean canAdjust() {
+    return true;
+  }
 
-	@Override
-	public boolean mayPickup(Player par1EntityPlayer) {
-		return false;
-	}
+  @Override
+  public boolean mayPickup(Player par1EntityPlayer) {
+    return false;
+  }
 }

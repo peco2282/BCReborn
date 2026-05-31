@@ -20,21 +20,21 @@ import net.minecraft.world.item.ItemStack;
 
 public class StatementParameterMapLocation extends StatementParameterItemStack {
 
-	public StatementParameterMapLocation() {
-		super(ItemStack.EMPTY);
-	}
+  public StatementParameterMapLocation() {
+    super(ItemStack.EMPTY);
+  }
 
-	@Override
-	public String getUniqueTag() {
-		return "maplocation";
-	}
+  @Override
+  public String getUniqueTag() {
+    return "maplocation";
+  }
 
-	@Override
-	public void onClick(IStatementContainer source, IStatement stmt, ItemStack stackIn, StatementMouseClick mouse) {
-		ItemStack stack = stackIn;
-		if (stack != null && !stack.isEmpty() && !(stack.getItem() instanceof IMapLocation)) {
-			stack = ItemStack.EMPTY;
-		}
-		super.onClick(source, stmt, stack, mouse);
-	}
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stackIn, StatementMouseClick mouse) {
+    ItemStack stack = stackIn;
+    if (stack != null && !stack.isEmpty() && !(stack.getItem() instanceof IMapLocation)) {
+      stack = ItemStack.EMPTY;
+    }
+    super.onClick(source, stmt, stack, mouse);
+  }
 }

@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.common;
 
 public enum LaserKind {
-	Red,
-	Blue,
-	Stripes,
-	Yellow,
-	Green
+  Red,
+  Blue,
+  Stripes,
+  Yellow,
+  Green
 }

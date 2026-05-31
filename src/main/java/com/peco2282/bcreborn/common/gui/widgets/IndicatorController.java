@@ -17,24 +17,23 @@ import com.peco2282.bcreborn.common.gui.tooltips.ToolTipLine;
 
 public abstract class IndicatorController implements IIndicatorController {
 
-	protected ToolTipLine tip = new ToolTipLine();
+  private final ToolTip tips = new ToolTip() {
+    @Override
+    public void refresh() {
+      refreshToolTip();
+    }
+  };
+  protected ToolTipLine tip = new ToolTipLine();
 
-	private final ToolTip tips = new ToolTip() {
-		@Override
-		public void refresh() {
-			refreshToolTip();
-		}
-	};
+  public IndicatorController() {
+    tips.add(tip);
+  }
 
-	public IndicatorController() {
-		tips.add(tip);
-	}
+  protected void refreshToolTip() {
+  }
 
-	protected void refreshToolTip() {
-	}
-
-	@Override
-	public final ToolTip getToolTip() {
-		return tips;
-	}
+  @Override
+  public final ToolTip getToolTip() {
+    return tips;
+  }
 }

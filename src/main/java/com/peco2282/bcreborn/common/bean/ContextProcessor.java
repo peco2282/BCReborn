@@ -41,18 +41,18 @@ public class ContextProcessor {
     return new ContextProcessor(ModList.get().getModContainerById(modId).orElseThrow());
   }
 
+  private static <T> ProcessExaminator<T> examine(
+    Stream<T> values
+  ) {
+    return new ProcessExaminator<>(values);
+  }
+
   public String getModId() {
     return modId;
   }
 
   private ModFileScanData getScanData() {
     return container.getModInfo().getOwningFile().getFile().getScanResult();
-  }
-
-  private static <T> ProcessExaminator<T> examine(
-      Stream<T> values
-  ) {
-    return new ProcessExaminator<>(values);
   }
 
   /**

@@ -35,44 +35,30 @@ public abstract class MarkerBlock extends BuildCraftBlock {
   private static final double W = 0.15;
   private static final double H = 0.65;
 
-  private static final VoxelShape SHAPE_DOWN  = Shapes.create(new AABB(0.5 - W, 1.0 - H, 0.5 - W, 0.5 + W, 1.0,     0.5 + W));
-  private static final VoxelShape SHAPE_UP    = Shapes.create(new AABB(0.5 - W, 0.0,     0.5 - W, 0.5 + W, H,        0.5 + W));
-  private static final VoxelShape SHAPE_SOUTH = Shapes.create(new AABB(0.5 - W, 0.5 - W, 0.0,     0.5 + W, 0.5 + W, H      ));
-  private static final VoxelShape SHAPE_NORTH = Shapes.create(new AABB(0.5 - W, 0.5 - W, 1.0 - H, 0.5 + W, 0.5 + W, 1.0    ));
-  private static final VoxelShape SHAPE_EAST  = Shapes.create(new AABB(0.0,     0.5 - W, 0.5 - W, H,       0.5 + W, 0.5 + W));
-  private static final VoxelShape SHAPE_WEST  = Shapes.create(new AABB(1.0 - H, 0.5 - W, 0.5 - W, 1.0,     0.5 + W, 0.5 + W));
+  private static final VoxelShape SHAPE_DOWN = Shapes.create(new AABB(0.5 - W, 1.0 - H, 0.5 - W, 0.5 + W, 1.0, 0.5 + W));
+  private static final VoxelShape SHAPE_UP = Shapes.create(new AABB(0.5 - W, 0.0, 0.5 - W, 0.5 + W, H, 0.5 + W));
+  private static final VoxelShape SHAPE_SOUTH = Shapes.create(new AABB(0.5 - W, 0.5 - W, 0.0, 0.5 + W, 0.5 + W, H));
+  private static final VoxelShape SHAPE_NORTH = Shapes.create(new AABB(0.5 - W, 0.5 - W, 1.0 - H, 0.5 + W, 0.5 + W, 1.0));
+  private static final VoxelShape SHAPE_EAST = Shapes.create(new AABB(0.0, 0.5 - W, 0.5 - W, H, 0.5 + W, 0.5 + W));
+  private static final VoxelShape SHAPE_WEST = Shapes.create(new AABB(1.0 - H, 0.5 - W, 0.5 - W, 1.0, 0.5 + W, 0.5 + W));
 
   public MarkerBlock(Properties properties) {
     super(properties.lightLevel(state -> 8).noCollission().instabreak());
   }
 
-  @Override
-  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
-  }
-
-  // -----------------------------------------------------------------------
-  // Shape
-  // -----------------------------------------------------------------------
-
-  @Override
-  public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return getShapeForDirection(state.getValue(FACING));
-  }
-
   private static VoxelShape getShapeForDirection(Direction dir) {
     return switch (dir) {
-      case DOWN  -> SHAPE_DOWN;
-      case UP    -> SHAPE_UP;
+      case DOWN -> SHAPE_DOWN;
+      case UP -> SHAPE_UP;
       case SOUTH -> SHAPE_SOUTH;
       case NORTH -> SHAPE_NORTH;
-      case EAST  -> SHAPE_EAST;
-      case WEST  -> SHAPE_WEST;
+      case EAST -> SHAPE_EAST;
+      case WEST -> SHAPE_WEST;
     };
   }
 
   // -----------------------------------------------------------------------
-  // Placement
+  // Shape
   // -----------------------------------------------------------------------
 
   /**
@@ -82,6 +68,20 @@ public abstract class MarkerBlock extends BuildCraftBlock {
   public static boolean canPlaceMarker(LevelReader level, BlockPos pos, Direction side) {
     BlockState state = level.getBlockState(pos);
     return state.isFaceSturdy(level, pos, side);
+  }
+
+  @Override
+  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(FACING);
+  }
+
+  // -----------------------------------------------------------------------
+  // Placement
+  // -----------------------------------------------------------------------
+
+  @Override
+  public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return getShapeForDirection(state.getValue(FACING));
   }
 
   @Override

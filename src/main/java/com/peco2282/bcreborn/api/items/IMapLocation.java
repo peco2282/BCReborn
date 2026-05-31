@@ -20,19 +20,19 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface IMapLocation extends INamedItem {
-    enum MapLocationType {
-        CLEAN, SPOT, AREA, PATH, ZONE
-    }
+  MapLocationType getType(ItemStack stack);
 
-    MapLocationType getType(ItemStack stack);
+  BlockIndex getPoint(ItemStack stack);
 
-    BlockIndex getPoint(ItemStack stack);
+  IBox getBox(ItemStack stack);
 
-    IBox getBox(ItemStack stack);
+  IZone getZone(ItemStack stack);
 
-    IZone getZone(ItemStack stack);
+  List<BlockIndex> getPath(ItemStack stack);
 
-    List<BlockIndex> getPath(ItemStack stack);
+  Direction getPointSide(ItemStack stack);
 
-    Direction getPointSide(ItemStack stack);
+  enum MapLocationType {
+    CLEAN, SPOT, AREA, PATH, ZONE
+  }
 }

@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.api.robots;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -22,208 +21,208 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public abstract class DockingStation {
-    public Direction side;
-    public Level world;
+  public Direction side;
+  public Level world;
 
-    private long robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
-    private EntityRobotBase robotTaking;
+  private long robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
+  private EntityRobotBase robotTaking;
 
-    private boolean linkIsMain = false;
+  private boolean linkIsMain = false;
 
-    private BlockIndex index;
+  private BlockIndex index;
 
-    public DockingStation(BlockIndex iIndex, Direction iSide) {
-        index = iIndex;
-        side = iSide;
+  public DockingStation(BlockIndex iIndex, Direction iSide) {
+    index = iIndex;
+    side = iSide;
+  }
+
+  public DockingStation() {
+  }
+
+  public boolean isMainStation() {
+    return linkIsMain;
+  }
+
+  public int x() {
+    return index.x;
+  }
+
+  public int y() {
+    return index.y;
+  }
+
+  public int z() {
+    return index.z;
+  }
+
+  public Direction side() {
+    return side;
+  }
+
+  public EntityRobotBase robotTaking() {
+    if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
+      return null;
+    } else if (robotTaking == null) {
+      robotTaking = RobotManager.registryProvider.getRegistry(world).getLoadedRobot(
+        robotTakingId);
     }
 
-    public DockingStation() {
+    return robotTaking;
+  }
+
+  public void invalidateRobotTakingEntity() {
+    robotTaking = null;
+  }
+
+  public long linkedId() {
+    return robotTakingId;
+  }
+
+  public boolean takeAsMain(EntityRobotBase robot) {
+    if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
+      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      linkIsMain = true;
+      robotTaking = robot;
+      robotTakingId = robot.getRobotId();
+      registry.registryMarkDirty();
+      robot.setMainStation(this);
+      registry.take(this, robot.getRobotId());
+
+      return true;
+    } else {
+      return robotTakingId == robot.getRobotId();
     }
+  }
 
-    public boolean isMainStation() {
-        return linkIsMain;
+  public boolean take(EntityRobotBase robot) {
+    if (robotTaking == null) {
+      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      linkIsMain = false;
+      robotTaking = robot;
+      robotTakingId = robot.getRobotId();
+      registry.registryMarkDirty();
+      registry.take(this, robot.getRobotId());
+
+      return true;
+    } else {
+      return robot.getRobotId() == robotTakingId;
     }
+  }
 
-    public int x() {
-        return index.x;
+  public void release(EntityRobotBase robot) {
+    if (robotTaking == robot && !linkIsMain) {
+      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      unsafeRelease(robot);
+      registry.registryMarkDirty();
+      registry.release(this, robot.getRobotId());
     }
+  }
 
-    public int y() {
-        return index.y;
+  /**
+   * Same a release but doesn't clear the registry (presumably called from the
+   * registry).
+   */
+  public void unsafeRelease(EntityRobotBase robot) {
+    if (robotTaking == robot) {
+      linkIsMain = false;
+      robotTaking = null;
+      robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
     }
+  }
 
-    public int z() {
-        return index.z;
+  public void writeToNBT(CompoundTag nbt) {
+    CompoundTag indexNBT = new CompoundTag();
+    index.writeTo(indexNBT);
+    nbt.put("index", indexNBT);
+    nbt.putByte("side", (byte) side.ordinal());
+    nbt.putBoolean("isMain", linkIsMain);
+    nbt.putLong("robotId", robotTakingId);
+  }
+
+  public void readFromNBT(CompoundTag nbt) {
+    index = new BlockIndex(nbt.getCompound("index"));
+    side = Direction.values()[nbt.getByte("side")];
+    linkIsMain = nbt.getBoolean("isMain");
+    robotTakingId = nbt.getLong("robotId");
+  }
+
+  public boolean isTaken() {
+    return robotTakingId != EntityRobotBase.NULL_ROBOT_ID;
+  }
+
+  public long robotIdTaking() {
+    return robotTakingId;
+  }
+
+  public BlockIndex index() {
+    return index;
+  }
+
+  @Override
+  public String toString() {
+    return "{" + index.x + ", " + index.y + ", " + index.z + ", " + side + " :" + robotTakingId
+      + "}";
+  }
+
+  public boolean linkIsDocked() {
+    if (robotTaking() != null) {
+      return robotTaking().getDockingStation() == this;
+    } else {
+      return false;
     }
+  }
 
-    public Direction side() {
-        return side;
-    }
+  public boolean canRelease() {
+    return !isMainStation() && !linkIsDocked();
+  }
 
-    public EntityRobotBase robotTaking() {
-        if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
-            return null;
-        } else if (robotTaking == null) {
-            robotTaking = RobotManager.registryProvider.getRegistry(world).getLoadedRobot(
-                    robotTakingId);
-        }
+  public boolean isInitialized() {
+    return true;
+  }
 
-        return robotTaking;
-    }
+  public abstract Iterable<StatementSlot> getActiveActions();
 
-    public void invalidateRobotTakingEntity() {
-        robotTaking = null;
-    }
+  public IInjectable getItemOutput() {
+    return null;
+  }
 
-    public long linkedId() {
-        return robotTakingId;
-    }
+  public Direction getItemOutputSide() {
+    return Direction.UP;
+  }
 
-    public boolean takeAsMain(EntityRobotBase robot) {
-        if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
-            IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
-            linkIsMain = true;
-            robotTaking = robot;
-            robotTakingId = robot.getRobotId();
-            registry.registryMarkDirty();
-            robot.setMainStation(this);
-            registry.take(this, robot.getRobotId());
+  public Container getItemInput() {
+    return null;
+  }
 
-            return true;
-        } else {
-            return robotTakingId == robot.getRobotId();
-        }
-    }
+  public Direction getItemInputSide() {
+    return Direction.UP;
+  }
 
-    public boolean take(EntityRobotBase robot) {
-        if (robotTaking == null) {
-            IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
-            linkIsMain = false;
-            robotTaking = robot;
-            robotTakingId = robot.getRobotId();
-            registry.registryMarkDirty();
-            registry.take(this, robot.getRobotId());
+  public IFluidHandler getFluidOutput() {
+    return null;
+  }
 
-            return true;
-        } else {
-            return robot.getRobotId() == robotTakingId;
-        }
-    }
+  public Direction getFluidOutputSide() {
+    return Direction.UP;
+  }
 
-    public void release(EntityRobotBase robot) {
-        if (robotTaking == robot && !linkIsMain) {
-            IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
-            unsafeRelease(robot);
-            registry.registryMarkDirty();
-            registry.release(this, robot.getRobotId());
-        }
-    }
+  public IFluidHandler getFluidInput() {
+    return null;
+  }
 
-    /**
-     * Same a release but doesn't clear the registry (presumably called from the
-     * registry).
-     */
-    public void unsafeRelease(EntityRobotBase robot) {
-        if (robotTaking == robot) {
-            linkIsMain = false;
-            robotTaking = null;
-            robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
-        }
-    }
+  public Direction getFluidInputSide() {
+    return Direction.UP;
+  }
 
-    public void writeToNBT(CompoundTag nbt) {
-        CompoundTag indexNBT = new CompoundTag();
-        index.writeTo(indexNBT);
-        nbt.put("index", indexNBT);
-        nbt.putByte("side", (byte) side.ordinal());
-        nbt.putBoolean("isMain", linkIsMain);
-        nbt.putLong("robotId", robotTakingId);
-    }
+  public boolean providesPower() {
+    return false;
+  }
 
-    public void readFromNBT(CompoundTag nbt) {
-        index = new BlockIndex(nbt.getCompound("index"));
-        side = Direction.values()[nbt.getByte("side")];
-        linkIsMain = nbt.getBoolean("isMain");
-        robotTakingId = nbt.getLong("robotId");
-    }
+  public IRequestProvider getRequestProvider() {
+    return null;
+  }
 
-    public boolean isTaken() {
-        return robotTakingId != EntityRobotBase.NULL_ROBOT_ID;
-    }
+  public void onChunkUnload() {
 
-    public long robotIdTaking() {
-        return robotTakingId;
-    }
-
-    public BlockIndex index() {
-        return index;
-    }
-
-    @Override
-    public String toString() {
-        return "{" + index.x + ", " + index.y + ", " + index.z + ", " + side + " :" + robotTakingId
-                + "}";
-    }
-
-    public boolean linkIsDocked() {
-        if (robotTaking() != null) {
-            return robotTaking().getDockingStation() == this;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean canRelease() {
-        return !isMainStation() && !linkIsDocked();
-    }
-
-    public boolean isInitialized() {
-        return true;
-    }
-
-    public abstract Iterable<StatementSlot> getActiveActions();
-
-    public IInjectable getItemOutput() {
-        return null;
-    }
-
-    public Direction getItemOutputSide() {
-        return Direction.UP;
-    }
-
-    public Container getItemInput() {
-        return null;
-    }
-
-    public Direction getItemInputSide() {
-        return Direction.UP;
-    }
-
-    public IFluidHandler getFluidOutput() {
-        return null;
-    }
-
-    public Direction getFluidOutputSide() {
-        return Direction.UP;
-    }
-
-    public IFluidHandler getFluidInput() {
-        return null;
-    }
-
-    public Direction getFluidInputSide() {
-        return Direction.UP;
-    }
-
-    public boolean providesPower() {
-        return false;
-    }
-
-    public IRequestProvider getRequestProvider() {
-        return null;
-    }
-
-    public void onChunkUnload() {
-
-    }
+  }
 }

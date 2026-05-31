@@ -23,71 +23,71 @@ import net.minecraft.util.Mth;
 
 public class AIRobotSearchRandomGroundBlock extends AIRobot {
 
-	private static final int MAX_ATTEMPTS = 4096;
+  private static final int MAX_ATTEMPTS = 4096;
 
-	public BlockIndex blockFound;
+  public BlockIndex blockFound;
 
-	private int range;
-	private IBlockFilter filter;
-	private IZone zone;
-	private int attempts = 0;
+  private int range;
+  private IBlockFilter filter;
+  private IZone zone;
+  private int attempts = 0;
 
-	public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot, int iRange, IBlockFilter iFilter, IZone iZone) {
-		this(iRobot);
+  public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot, int iRange, IBlockFilter iFilter, IZone iZone) {
+    this(iRobot);
 
-		range = iRange;
-		filter = iFilter;
-		zone = iZone;
-	}
+    range = iRange;
+    filter = iFilter;
+    zone = iZone;
+  }
 
-	@Override
-	public void update() {
-		if (filter == null) {
-			terminate();
-		}
+  @Override
+  public void update() {
+    if (filter == null) {
+      terminate();
+    }
 
-		attempts++;
+    attempts++;
 
-		if (attempts > MAX_ATTEMPTS) {
-			terminate();
-		}
+    if (attempts > MAX_ATTEMPTS) {
+      terminate();
+    }
 
-		int x, z;
+    int x, z;
 
-		if (zone == null) {
-			double r = robot.level().random.nextFloat() * range;
-			float a = robot.level().random.nextFloat() * 2.0F * (float) Math.PI;
+    if (zone == null) {
+      double r = robot.level().random.nextFloat() * range;
+      float a = robot.level().random.nextFloat() * 2.0F * (float) Math.PI;
 
-			x = (int) (Mth.cos(a) * r + Math.floor(robot.getX()));
-			z = (int) (Mth.sin(a) * r + Math.floor(robot.getZ()));
-		} else {
-			BlockIndex b = zone.getRandomBlockIndex(new WrapRandomSource(robot.level().random));
-			x = b.x;
-			z = b.z;
-		}
+      x = (int) (Mth.cos(a) * r + Math.floor(robot.getX()));
+      z = (int) (Mth.sin(a) * r + Math.floor(robot.getZ()));
+    } else {
+      BlockIndex b = zone.getRandomBlockIndex(new WrapRandomSource(robot.level().random));
+      x = b.x;
+      z = b.z;
+    }
 
-		for (int y = robot.level().getHeight(); y >= 0; --y) {
-			if (filter.matches(robot.level(), new BlockPos(x, y, z))) {
-				blockFound = new BlockIndex(x, y, z);
-				terminate();
-				return;
-			} else if (!robot.level().getBlockState(new BlockPos(x, y, z)).isAir()) {
-				return;
-			}
-		}
-	}
+    for (int y = robot.level().getHeight(); y >= 0; --y) {
+      if (filter.matches(robot.level(), new BlockPos(x, y, z))) {
+        blockFound = new BlockIndex(x, y, z);
+        terminate();
+        return;
+      } else if (!robot.level().getBlockState(new BlockPos(x, y, z)).isAir()) {
+        return;
+      }
+    }
+  }
 
-	@Override
-	public boolean success() {
-		return blockFound != null;
-	}
+  @Override
+  public boolean success() {
+    return blockFound != null;
+  }
 
-	@Override
-	public int getEnergyCost() {
-		return 2;
-	}
+  @Override
+  public int getEnergyCost() {
+    return 2;
+  }
 }

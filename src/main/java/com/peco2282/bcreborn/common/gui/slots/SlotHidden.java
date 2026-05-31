@@ -17,23 +17,23 @@ import net.minecraft.world.inventory.Slot;
 
 public class SlotHidden extends Slot {
 
-	private int saveX;
-	private int saveY;
+  private final int saveX;
+  private final int saveY;
 
-	public SlotHidden(Container inv, int index, int x, int y) {
-		super(inv, index, x, y);
+  public SlotHidden(Container inv, int index, int x, int y) {
+    super(inv, index, x, y);
 
-		saveX = x;
-		saveY = y;
-	}
+    saveX = x;
+    saveY = y;
+  }
 
-	public void show() {
-		x = saveX;
-		y = saveY;
-	}
+  public void show() {
+    x = saveX;
+    y = saveY;
+  }
 
-	public void hide() {
-		x = 9999;
-		y = 9999;
-	}
+  public void hide() {
+    x = 9999;
+    y = 9999;
+  }
 }

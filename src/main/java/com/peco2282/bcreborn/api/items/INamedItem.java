@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public interface INamedItem {
-    Component getName(ItemStack stack);
+  Component getName(ItemStack stack);
 
-    boolean setName(ItemStack stack, Component name);
+  boolean setName(ItemStack stack, Component name);
 }

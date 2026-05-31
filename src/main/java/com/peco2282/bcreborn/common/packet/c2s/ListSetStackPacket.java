@@ -20,19 +20,19 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ListSetStackPacket(
-    int lineIndex,
-    int slotIndex,
-    ItemStack stack
+  int lineIndex,
+  int slotIndex,
+  ItemStack stack
 ) implements CustomPacket {
+  public static ListSetStackPacket decode(FriendlyByteBuf buffer) {
+    return new ListSetStackPacket(buffer.readUnsignedByte(), buffer.readUnsignedByte(), buffer.readItem());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeByte(lineIndex);
     buffer.writeByte(slotIndex);
     buffer.writeItem(stack);
-  }
-
-  public static ListSetStackPacket decode(FriendlyByteBuf buffer) {
-    return new ListSetStackPacket(buffer.readUnsignedByte(), buffer.readUnsignedByte(), buffer.readItem());
   }
 
   @Override

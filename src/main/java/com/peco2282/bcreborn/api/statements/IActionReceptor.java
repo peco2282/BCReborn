@@ -12,5 +12,5 @@
 package com.peco2282.bcreborn.api.statements;
 
 public interface IActionReceptor {
-	void actionActivated(IStatement statement, IStatementParameter[] parameters);
+  void actionActivated(IStatement statement, IStatementParameter[] parameters);
 }

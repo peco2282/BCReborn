@@ -95,7 +95,7 @@ public class ObsidianItemPipeBehaviour implements ItemPipeBehaviour {
    * originalの suckItem(int distance) に相当。
    */
   private boolean suckItem(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state,
-                            Direction openDir, int distance, int availableEnergy) {
+                           Direction openDir, int distance, int availableEnergy) {
     AABB box = getSuckingBox(pos, openDir, distance);
     if (box == null) return false;
 
@@ -174,7 +174,7 @@ public class ObsidianItemPipeBehaviour implements ItemPipeBehaviour {
     }
 
     return new AABB(Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
-        Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
+      Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
   }
 
   /**

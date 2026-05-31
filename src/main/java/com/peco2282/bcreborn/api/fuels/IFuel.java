@@ -14,9 +14,9 @@ package com.peco2282.bcreborn.api.fuels;
 import net.minecraftforge.fluids.FluidType;
 
 public interface IFuel {
-    FluidType getFluid();
+  FluidType getFluid();
 
-    int getTotalBurningTime();
+  int getTotalBurningTime();
 
-    int getPowerPerCycle();
+  int getPowerPerCycle();
 }

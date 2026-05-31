@@ -22,11 +22,11 @@ import net.minecraft.world.level.Level;
  */
 public interface IBuilderContext {
 
-	Position rotatePositionLeft(Position pos);
+  Position rotatePositionLeft(Position pos);
 
-	IBox surroundingBox();
+  IBox surroundingBox();
 
-	Level world();
+  Level world();
 
-	MappingRegistry getMappingRegistry();
+  MappingRegistry getMappingRegistry();
 }

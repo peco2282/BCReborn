@@ -22,49 +22,49 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PatternBox extends FillerPattern {
-    public static final PatternBox INSTANCE = new PatternBox();
-    public static final Codec<PatternBox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
-    ).apply(instance, PatternBox::new));
+  public static final PatternBox INSTANCE = new PatternBox();
+  public static final Codec<PatternBox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
+  ).apply(instance, PatternBox::new));
 
-    private IStatementParameter[] parameters = new IStatementParameter[0];
+  private IStatementParameter[] parameters = new IStatementParameter[0];
 
-    public PatternBox(List<IStatementParameter> parameters) {
-        this();
-        this.parameters = parameters.toArray(new IStatementParameter[0]);
+  public PatternBox(List<IStatementParameter> parameters) {
+    this();
+    this.parameters = parameters.toArray(new IStatementParameter[0]);
+  }
+
+  public PatternBox() {
+    super("box");
+  }
+
+  @Override
+  public Codec<? extends FillerPattern> getCodec() {
+    return CODEC;
+  }
+
+  @Override
+  public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
+    if (parameters == null || parameters.length == 0) {
+      parameters = this.parameters;
     }
+    Template result = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
 
-    public PatternBox() {
-        super("box");
-    }
+    int xMin = 0;
+    int yMin = 0;
+    int zMin = 0;
 
-    @Override
-    public Codec<? extends FillerPattern> getCodec() {
-        return CODEC;
-    }
+    int xMax = box.sizeX() - 1;
+    int yMax = box.sizeY() - 1;
+    int zMax = box.sizeZ() - 1;
 
-    @Override
-    public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-        if (parameters == null || parameters.length == 0) {
-            parameters = this.parameters;
-        }
-        Template result = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
+    fill(xMin, yMin, zMin, xMax, yMin, zMax, result);
+    fill(xMin, yMin, zMin, xMin, yMax, zMax, result);
+    fill(xMin, yMin, zMin, xMax, yMax, zMin, result);
+    fill(xMax, yMin, zMin, xMax, yMax, zMax, result);
+    fill(xMin, yMin, zMax, xMax, yMax, zMax, result);
+    fill(xMin, yMax, zMin, xMax, yMax, zMax, result);
 
-        int xMin = 0;
-        int yMin = 0;
-        int zMin = 0;
-
-        int xMax = box.sizeX() - 1;
-        int yMax = box.sizeY() - 1;
-        int zMax = box.sizeZ() - 1;
-
-        fill(xMin, yMin, zMin, xMax, yMin, zMax, result);
-        fill(xMin, yMin, zMin, xMin, yMax, zMax, result);
-        fill(xMin, yMin, zMin, xMax, yMax, zMin, result);
-        fill(xMax, yMin, zMin, xMax, yMax, zMax, result);
-        fill(xMin, yMin, zMax, xMax, yMax, zMax, result);
-        fill(xMin, yMax, zMin, xMax, yMax, zMax, result);
-
-        return result;
-    }
+    return result;
+  }
 }

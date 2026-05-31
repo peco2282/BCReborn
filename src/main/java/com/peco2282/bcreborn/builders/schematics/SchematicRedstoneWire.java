@@ -19,29 +19,29 @@ import net.minecraft.world.item.ItemStack;
 import java.util.LinkedList;
 
 public class SchematicRedstoneWire extends SchematicBlockFloored {
-	final ItemStack customStack;
+  final ItemStack customStack;
 
-	public SchematicRedstoneWire(ItemStack customStack) {
-		this.customStack = customStack;
-	}
+  public SchematicRedstoneWire(ItemStack customStack) {
+    this.customStack = customStack;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(customStack.copy());
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(customStack.copy());
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
+  }
 }

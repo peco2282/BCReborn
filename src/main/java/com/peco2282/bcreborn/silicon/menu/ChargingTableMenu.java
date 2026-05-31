@@ -21,31 +21,31 @@ import net.minecraft.world.inventory.Slot;
 
 public class ChargingTableMenu extends BuildCraftMenu<ChargingTableMenu> {
 
-	private final ChargingTableBlockEntity table;
+  private final ChargingTableBlockEntity table;
 
-	public ChargingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-		this(windowId, playerInventory, (ChargingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
-	}
+  public ChargingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, (ChargingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+  }
 
-	public ChargingTableMenu(int windowId, Inventory playerInventory, ChargingTableBlockEntity table) {
-		super(SiliconMenuTypes.CHARGING_TABLE.get(), windowId, playerInventory);
-		this.table = table;
+  public ChargingTableMenu(int windowId, Inventory playerInventory, ChargingTableBlockEntity table) {
+    super(SiliconMenuTypes.CHARGING_TABLE.get(), windowId, playerInventory);
+    this.table = table;
 
-		addSlot(new Slot(table, 0, 80, 18));
+    addSlot(new Slot(table, 0, 80, 18));
 
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 9; x++) {
-				addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 50 + y * 18));
-			}
-		}
+    for (int y = 0; y < 3; y++) {
+      for (int x = 0; x < 9; x++) {
+        addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 50 + y * 18));
+      }
+    }
 
-		for (int x = 0; x < 9; x++) {
-			addSlot(new Slot(playerInventory, x, 8 + x * 18, 108));
-		}
-	}
+    for (int x = 0; x < 9; x++) {
+      addSlot(new Slot(playerInventory, x, 8 + x * 18, 108));
+    }
+  }
 
-	@Override
-	public boolean stillValid(Player var1) {
-		return table.stillValid(var1);
-	}
+  @Override
+  public boolean stillValid(Player var1) {
+    return table.stillValid(var1);
+  }
 }

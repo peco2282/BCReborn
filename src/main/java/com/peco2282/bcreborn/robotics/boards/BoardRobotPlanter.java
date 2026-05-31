@@ -22,83 +22,81 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotPlant;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 public class BoardRobotPlanter extends RedstoneBoardRobot {
 
-	private BlockIndex blockFound;
+  private BlockIndex blockFound;
 
-	public BoardRobotPlanter(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotPlanter(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("planter");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("planter");
+  }
 
-	@Override
-	public void update() {
-		ItemStack held = robot.getMainHandItem();
-		if (held.isEmpty()) {
-			startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
-				// return CropManager.isSeed(stack); // TODO: Implement CropManager or similar
-				return !stack.isEmpty();
-			}));
-		} else {
-			startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
-				return !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
-						// && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
-						&& !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
-			}, 1));
-		}
-	}
+  @Override
+  public void update() {
+    ItemStack held = robot.getMainHandItem();
+    if (held.isEmpty()) {
+      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
+        // return CropManager.isSeed(stack); // TODO: Implement CropManager or similar
+        return !stack.isEmpty();
+      }));
+    } else {
+      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
+        return !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
+          // && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
+          && !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
+      }, 1));
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
-			if (ai.success()) {
-				blockFound = searchAI.getBlockFound();
-				startDelegateAI(new AIRobotPlant(robot, blockFound));
-			} else {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		} else if (ai instanceof AIRobotPlant) {
-			releaseBlockFound();
-		} else if (ai instanceof AIRobotFetchAndEquipItemStack) {
-			if (!ai.success()) {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
+      if (ai.success()) {
+        blockFound = searchAI.getBlockFound();
+        startDelegateAI(new AIRobotPlant(robot, blockFound));
+      } else {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    } else if (ai instanceof AIRobotPlant) {
+      releaseBlockFound();
+    } else if (ai instanceof AIRobotFetchAndEquipItemStack) {
+      if (!ai.success()) {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    }
+  }
 
-	private void releaseBlockFound() {
-		if (blockFound != null) {
-			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
-			blockFound = null;
-		}
-	}
+  private void releaseBlockFound() {
+    if (blockFound != null) {
+      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      blockFound = null;
+    }
+  }
 
-	@Override
-	public void writeSelfToNBT(CompoundTag nbt) {
-		super.writeSelfToNBT(nbt);
+  @Override
+  public void writeSelfToNBT(CompoundTag nbt) {
+    super.writeSelfToNBT(nbt);
 
-		if (blockFound != null) {
-			CompoundTag sub = new CompoundTag();
-			blockFound.writeTo(sub);
-			nbt.put("blockFound", sub);
-		}
-	}
+    if (blockFound != null) {
+      CompoundTag sub = new CompoundTag();
+      blockFound.writeTo(sub);
+      nbt.put("blockFound", sub);
+    }
+  }
 
-	@Override
-	public void loadSelfFromNBT(CompoundTag nbt) {
-		super.loadSelfFromNBT(nbt);
+  @Override
+  public void loadSelfFromNBT(CompoundTag nbt) {
+    super.loadSelfFromNBT(nbt);
 
-		if (nbt.contains("blockFound")) {
-			blockFound = new BlockIndex(nbt.getCompound("blockFound"));
-		}
-	}
+    if (nbt.contains("blockFound")) {
+      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+    }
+  }
 }

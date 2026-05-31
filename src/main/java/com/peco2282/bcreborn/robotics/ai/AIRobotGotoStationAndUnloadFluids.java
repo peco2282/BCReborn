@@ -16,24 +16,24 @@ import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 
 public class AIRobotGotoStationAndUnloadFluids extends AIRobot {
 
-	public AIRobotGotoStationAndUnloadFluids(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotGotoStationAndUnloadFluids(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public void start() {
-		startDelegateAI(new AIRobotGotoStationToUnloadFluids(robot));
-	}
+  @Override
+  public void start() {
+    startDelegateAI(new AIRobotGotoStationToUnloadFluids(robot));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoStationToUnloadFluids) {
-			if (ai.success()) {
-				startDelegateAI(new AIRobotUnloadFluids(robot));
-			} else {
-				setSuccess(false);
-				terminate();
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoStationToUnloadFluids) {
+      if (ai.success()) {
+        startDelegateAI(new AIRobotUnloadFluids(robot));
+      } else {
+        setSuccess(false);
+        terminate();
+      }
+    }
+  }
 }

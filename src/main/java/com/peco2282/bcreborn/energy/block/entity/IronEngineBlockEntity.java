@@ -26,12 +26,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngineBlockEntity> implements IFluidHandler {
 
+  // --- 暫定・内部状態 ---
+  private int burnTime = 0;
+  private int totalBurnTime = 0;
+
   public IronEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesEnergy.IRON_ENGINE.get(), p_155229_, p_155230_, 1);
     // 大容量・高出力（暫定・旧BC基準寄り）
     configureEnergy(80000, 120);
   }
-
 
   @Override
   protected ResourceBuilder getEngineResource() {
@@ -88,11 +91,7 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
-      if (energyStorage.getEnergyStored() > 0 && canPushEnergy()) {
-        setPumping(true);
-      } else {
-        setPumping(false);
-      }
+      setPumping(energyStorage.getEnergyStored() > 0 && canPushEnergy());
       if (burnTime <= 0) {
         setActive(false);
         setPumping(false);
@@ -121,12 +120,13 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
     return new IronEngineMenu(p_58627_, p_58628_, this);
   }
 
-  // --- 暫定・内部状態 ---
-  private int burnTime = 0;
-  private int totalBurnTime = 0;
+  public int getBurnTime() {
+    return burnTime;
+  }
 
-  public int getBurnTime() { return burnTime; }
-  public int getTotalBurnTime() { return totalBurnTime; }
+  public int getTotalBurnTime() {
+    return totalBurnTime;
+  }
 
   /**
    * Returns the number of fluid storage units ("tanks") available

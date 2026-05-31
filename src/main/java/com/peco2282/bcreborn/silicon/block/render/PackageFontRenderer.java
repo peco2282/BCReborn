@@ -15,64 +15,63 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PackageFontRenderer extends Font {
-    private final CompoundTag pkgTag;
-    private final Pattern stringPattern = Pattern.compile("^\\{\\{BC_PACKAGE_SPECIAL:([0-2])}}$");
+  private final CompoundTag pkgTag;
+  private final Pattern stringPattern = Pattern.compile("^\\{\\{BC_PACKAGE_SPECIAL:([0-2])}}$");
 
-    public PackageFontRenderer(ItemStack packageStack) {
-        super(text -> {
-            try {
-                var field = Font.class.getDeclaredField("fontSetByLocation");
-                field.setAccessible(true);
-                java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet> func = (java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet>) field.get(Minecraft.getInstance().font);
-                return func.apply(text);
-            } catch (Exception e) {
-                return null;
-            }
-        }, false);
-        this.pkgTag = packageStack.getOrCreateTag();
+  public PackageFontRenderer(ItemStack packageStack) {
+    super(text -> {
+      try {
+        var field = Font.class.getDeclaredField("fontSetByLocation");
+        field.setAccessible(true);
+        java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet> func = (java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet>) field.get(Minecraft.getInstance().font);
+        return func.apply(text);
+      } catch (Exception e) {
+        return null;
+      }
+    }, false);
+    this.pkgTag = packageStack.getOrCreateTag();
+  }
+
+  @Override
+  public int width(String text) {
+    Matcher m = stringPattern.matcher(text);
+    if (!m.find()) {
+      return super.width(text);
+    }
+    return 21;
+  }
+
+  // 1.20.1では drawString ではなく GuiGraphics を通じて描画されることが多いが、
+  // Fontクラスをオーバーライドして特殊な描画を行う場合は、内部のレンダリングメソッドをフックする。
+  // ここでは簡易化のため、widthのみを調整し、実際の描画はScreen側で行うか、
+  // あるいは特定の描画コンテキストでこのFontが使われた際に特殊処理を行う。
+
+  public void drawPackageItems(GuiGraphics guiGraphics, String text, int x, int y) {
+    Matcher m = stringPattern.matcher(text);
+    if (!m.find()) {
+      guiGraphics.drawString(this, text, x, y, 0xFFFFFFFF);
+      return;
     }
 
-    @Override
-    public int width(String text) {
-        Matcher m = stringPattern.matcher(text);
-        if (!m.find()) {
-            return super.width(text);
+    int index = Integer.parseInt(m.group(1)) * 3;
+    for (int i = 0; i < 3; i++) {
+      int slot = index + i;
+      if (pkgTag.contains("item" + slot)) {
+        ItemStack stack = ItemStack.of(pkgTag.getCompound("item" + slot));
+        if (!stack.isEmpty()) {
+          guiGraphics.pose().pushPose();
+          guiGraphics.pose().translate(x + i * 7, y, 0);
+          guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
+          guiGraphics.renderItem(stack, 0, 0);
+          guiGraphics.pose().popPose();
         }
-        return 21;
+      }
     }
-
-    // 1.20.1では drawString ではなく GuiGraphics を通じて描画されることが多いが、
-    // Fontクラスをオーバーライドして特殊な描画を行う場合は、内部のレンダリングメソッドをフックする。
-    // ここでは簡易化のため、widthのみを調整し、実際の描画はScreen側で行うか、
-    // あるいは特定の描画コンテキストでこのFontが使われた際に特殊処理を行う。
-    
-    public void drawPackageItems(GuiGraphics guiGraphics, String text, int x, int y) {
-        Matcher m = stringPattern.matcher(text);
-        if (!m.find()) {
-            guiGraphics.drawString(this, text, x, y, 0xFFFFFFFF);
-            return;
-        }
-
-        int index = Integer.parseInt(m.group(1)) * 3;
-        for (int i = 0; i < 3; i++) {
-            int slot = index + i;
-            if (pkgTag.contains("item" + slot)) {
-                ItemStack stack = ItemStack.of(pkgTag.getCompound("item" + slot));
-                if (!stack.isEmpty()) {
-                    guiGraphics.pose().pushPose();
-                    guiGraphics.pose().translate(x + i * 7, y, 0);
-                    guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
-                    guiGraphics.renderItem(stack, 0, 0);
-                    guiGraphics.pose().popPose();
-                }
-            }
-        }
-    }
+  }
 }

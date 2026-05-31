@@ -40,24 +40,11 @@ public class FluidTransportModule {
   public static final short OUTPUT_TTL = 80;
   // 出力失敗後のクールダウン (tick)
   public static final short OUTPUT_COOLDOWN = 30;
-
-  /**
-   * 各方向の転送状態。
-   * Input: この方向から流体が流入中（逆流防止のため出力禁止）
-   * Output: この方向へ流体を出力中
-   * None: 未使用
-   */
-  public enum TransferState {
-    None, Input, Output
-  }
-
   private final PipeBlockEntity pipe;
-
   private final TransferState[] transferState = new TransferState[6];
   private final short[] inputTTL = new short[6];
   private final short[] outputTTL = new short[6];
   private final short[] outputCooldown = new short[6];
-
   public FluidTransportModule(PipeBlockEntity pipe) {
     this.pipe = pipe;
     for (int i = 0; i < 6; i++) {
@@ -221,8 +208,6 @@ public class FluidTransportModule {
     return transferState[dir.ordinal()];
   }
 
-  // ---- NBT ----
-
   public void save(CompoundTag tag) {
     CompoundTag fluidModuleTag = new CompoundTag();
     for (int i = 0; i < 6; i++) {
@@ -233,6 +218,8 @@ public class FluidTransportModule {
     }
     tag.put("FluidModule", fluidModuleTag);
   }
+
+  // ---- NBT ----
 
   public void load(CompoundTag tag) {
     if (!tag.contains("FluidModule")) return;
@@ -252,5 +239,15 @@ public class FluidTransportModule {
         outputCooldown[i] = fluidModuleTag.getShort("outputCooldown[" + i + "]");
       }
     }
+  }
+
+  /**
+   * 各方向の転送状態。
+   * Input: この方向から流体が流入中（逆流防止のため出力禁止）
+   * Output: この方向へ流体を出力中
+   * None: 未使用
+   */
+  public enum TransferState {
+    None, Input, Output
   }
 }

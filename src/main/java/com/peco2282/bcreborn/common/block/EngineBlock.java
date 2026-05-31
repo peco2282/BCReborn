@@ -29,17 +29,17 @@ public abstract class EngineBlock extends BuildCraftBlock {
   public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
 
   public static final VoxelShape SHAPE_UP =
-      Shapes.or(box(0, 0, 0, 16, 4, 16), box(4, 4, 4, 12, 16, 12));
+    Shapes.or(box(0, 0, 0, 16, 4, 16), box(4, 4, 4, 12, 16, 12));
   public static final VoxelShape SHAPE_DOWN =
-      Shapes.or(box(0, 12, 0, 16, 16, 16), box(4, 0, 4, 12, 12, 12));
+    Shapes.or(box(0, 12, 0, 16, 16, 16), box(4, 0, 4, 12, 12, 12));
   public static final VoxelShape SHAPE_SOUTH =
-      Shapes.or(box(0, 0, 0, 16, 16, 4), box(4, 4, 4, 12, 12, 16));
+    Shapes.or(box(0, 0, 0, 16, 16, 4), box(4, 4, 4, 12, 12, 16));
   public static final VoxelShape SHAPE_NORTH =
-      Shapes.or(box(4, 4, 0, 12, 12, 12), box(0, 0, 12, 16, 16, 16));
+    Shapes.or(box(4, 4, 0, 12, 12, 12), box(0, 0, 12, 16, 16, 16));
   public static final VoxelShape SHAPE_EAST =
-      Shapes.or(box(0, 0, 0, 4, 16, 16), box(4, 4, 4, 16, 12, 12));
+    Shapes.or(box(0, 0, 0, 4, 16, 16), box(4, 4, 4, 16, 12, 12));
   public static final VoxelShape SHAPE_WEST =
-      Shapes.or(box(0, 4, 4, 12, 12, 12), box(12, 0, 0, 16, 16, 16));
+    Shapes.or(box(0, 4, 4, 12, 12, 12), box(12, 0, 0, 16, 16, 16));
 
   public EngineBlock(Properties p_49795_) {
     super(p_49795_);

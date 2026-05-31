@@ -20,35 +20,35 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
 public class AssemblyTableMenu extends BuildCraftMenu<AssemblyTableMenu> {
-	private final AssemblyTableBlockEntity table;
+  private final AssemblyTableBlockEntity table;
 
-	public AssemblyTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-		this(windowId, playerInventory, (AssemblyTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
-	}
+  public AssemblyTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, (AssemblyTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+  }
 
-	public AssemblyTableMenu(int windowId, Inventory playerInventory, AssemblyTableBlockEntity table) {
-		super(SiliconMenuTypes.ASSEMBLY_TABLE.get(), windowId, playerInventory);
-		this.table = table;
+  public AssemblyTableMenu(int windowId, Inventory playerInventory, AssemblyTableBlockEntity table) {
+    super(SiliconMenuTypes.ASSEMBLY_TABLE.get(), windowId, playerInventory);
+    this.table = table;
 
-		for (int l = 0; l < 4; l++) {
-			for (int k1 = 0; k1 < 3; k1++) {
-				addSlot(new Slot(table, k1 + l * 3, 8 + k1 * 18, 36 + l * 18));
-			}
-		}
+    for (int l = 0; l < 4; l++) {
+      for (int k1 = 0; k1 < 3; k1++) {
+        addSlot(new Slot(table, k1 + l * 3, 8 + k1 * 18, 36 + l * 18));
+      }
+    }
 
-		for (int l = 0; l < 3; l++) {
-			for (int k1 = 0; k1 < 9; k1++) {
-				addSlot(new Slot(playerInventory, k1 + l * 9 + 9, 8 + k1 * 18, 123 + l * 18));
-			}
-		}
+    for (int l = 0; l < 3; l++) {
+      for (int k1 = 0; k1 < 9; k1++) {
+        addSlot(new Slot(playerInventory, k1 + l * 9 + 9, 8 + k1 * 18, 123 + l * 18));
+      }
+    }
 
-		for (int i1 = 0; i1 < 9; i1++) {
-			addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 181));
-		}
-	}
+    for (int i1 = 0; i1 < 9; i1++) {
+      addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 181));
+    }
+  }
 
-	@Override
-	public boolean stillValid(Player entityplayer) {
-		return table.stillValid(entityplayer);
-	}
+  @Override
+  public boolean stillValid(Player entityplayer) {
+    return table.stillValid(entityplayer);
+  }
 }

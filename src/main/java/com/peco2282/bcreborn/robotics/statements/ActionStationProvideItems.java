@@ -27,54 +27,54 @@ import java.util.function.Function;
 
 public class ActionStationProvideItems extends BCStatement implements IActionInternal {
 
-	public ActionStationProvideItems() {
-		super("station.provide_items");
-	}
+  public ActionStationProvideItems() {
+    super("station.provide_items");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.station.provide_items");
-	}
+  public static boolean canExtractItem(DockingStation station, ItemStack stack) {
+    boolean hasFilter = false;
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_provide_items"));
-	}
+    for (StatementSlot s : station.getActiveActions()) {
+      if (s.statement instanceof ActionStationProvideItems) {
+        StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+        if (param.hasFilter()) {
+          hasFilter = true;
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+          if (param.matches(stack)) {
+            return true;
+          }
+        }
+      }
+    }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+    return !hasFilter;
+  }
 
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.station.provide_items");
+  }
 
-	public static boolean canExtractItem(DockingStation station, ItemStack stack) {
-		boolean hasFilter = false;
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_provide_items"));
+  }
 
-		for (StatementSlot s : station.getActiveActions()) {
-			if (s.statement instanceof ActionStationProvideItems) {
-				StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-				if (param.hasFilter()) {
-					hasFilter = true;
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-					if (param.matches(stack)) {
-						return true;
-					}
-				}
-			}
-		}
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-		return !hasFilter;
-	}
+  }
 }

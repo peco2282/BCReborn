@@ -26,61 +26,58 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Container {
 
-    public static final int RESOLUTION = 2048;
-    public static final int CRAFT_TIME = 120;
-    private static final int PREVIEW_BLOCKS_PER_PIXEL = 10;
-    private static int RESOLUTION_CHUNKS = RESOLUTION >> 4;
+  public static final int RESOLUTION = 2048;
+  public static final int CRAFT_TIME = 120;
+  private static final int PREVIEW_BLOCKS_PER_PIXEL = 10;
+  private static final int RESOLUTION_CHUNKS = RESOLUTION >> 4;
+  private final byte[] previewColors = new byte[80];
+  private final SimpleInventory inv = new SimpleInventory(3, "inv", 64);
+  private final SafeTimeTracker previewRecalcTimer = new SafeTimeTracker(100);
+  public int chunkStartX, chunkStartZ;
+  public short progress = 0;
+  public String mapName = "";
+  private boolean previewColorsPushed = false;
+  private final ZonePlan[] selectedAreas = new ZonePlan[16];
+  private int currentSelectedArea = 0;
 
-    public int chunkStartX, chunkStartZ;
-    public short progress = 0;
-    public String mapName = "";
+  public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
+    super(BlockEntityTypesRobotics.ZONE_PLAN.get(), pos, state);
+  }
 
-    private final byte[] previewColors = new byte[80];
-    private final SimpleInventory inv = new SimpleInventory(3, "inv", 64);
-    private final SafeTimeTracker previewRecalcTimer = new SafeTimeTracker(100);
+  public byte[] getPreviewTexture(boolean force) {
+    if (!previewColorsPushed || force) {
+      previewColorsPushed = true;
+      return previewColors;
+    }
+    return null;
+  }
 
-    private boolean previewColorsPushed = false;
-    private ZonePlan[] selectedAreas = new ZonePlan[16];
-    private int currentSelectedArea = 0;
+  @Override
+  public void initialize() {
+    super.initialize();
 
-    public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityTypesRobotics.ZONE_PLAN.get(), pos, state);
+    int cx = getBlockPos().getX() >> 4;
+    int cz = getBlockPos().getZ() >> 4;
+
+    chunkStartX = cx - RESOLUTION_CHUNKS / 2;
+    chunkStartZ = cz - RESOLUTION_CHUNKS / 2;
+  }
+
+  @Override
+  protected void tick(Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) {
+      return;
     }
 
-    public byte[] getPreviewTexture(boolean force) {
-        if (!previewColorsPushed || force) {
-            previewColorsPushed = true;
-            return previewColors;
-        }
-        return null;
+    if (previewRecalcTimer.markTimeIfDelay(level)) {
+      recalculatePreview();
     }
 
-    @Override
-    public void initialize() {
-        super.initialize();
+    // 1.7.10 logic for crafting MapLocation
+    ItemStack stack0 = inv.getItem(0);
+    ItemStack stack1 = inv.getItem(1);
 
-        int cx = getBlockPos().getX() >> 4;
-        int cz = getBlockPos().getZ() >> 4;
-
-        chunkStartX = cx - RESOLUTION_CHUNKS / 2;
-        chunkStartZ = cz - RESOLUTION_CHUNKS / 2;
-    }
-
-    @Override
-    protected void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) {
-            return;
-        }
-
-        if (previewRecalcTimer.markTimeIfDelay(level)) {
-            recalculatePreview();
-        }
-
-        // 1.7.10 logic for crafting MapLocation
-        ItemStack stack0 = inv.getItem(0);
-        ItemStack stack1 = inv.getItem(1);
-
-        // TODO: ItemMapLocation check and crafting logic porting
+    // TODO: ItemMapLocation check and crafting logic porting
         /*
         if (!stack0.isEmpty() && stack1.isEmpty() && stack0.getItem() instanceof ItemMapLocation) {
             if (progress < CRAFT_TIME) {
@@ -101,11 +98,11 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Contai
             // sendNetworkUpdate();
         }
         */
-    }
+  }
 
-    private void recalculatePreview() {
-        byte[] newPreviewColors = new byte[80];
-        // TODO: BuildCraftRobotics.manager integration
+  private void recalculatePreview() {
+    byte[] newPreviewColors = new byte[80];
+    // TODO: BuildCraftRobotics.manager integration
         /*
         MapWorld mw = BCRebornRobotics.getManager().getWorld(level);
         BlockPos pos = getBlockPos();
@@ -123,100 +120,100 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Contai
             // sendNetworkUpdate();
         }
         */
+  }
+
+  @Override
+  public void saveAdditional(CompoundTag nbt) {
+    super.saveAdditional(nbt);
+    nbt.putString("name", mapName);
+
+    CompoundTag invNBT = new CompoundTag();
+    inv.write(invNBT);
+    nbt.put("inv", invNBT);
+
+    for (int i = 0; i < selectedAreas.length; ++i) {
+      if (selectedAreas[i] != null) {
+        CompoundTag subNBT = new CompoundTag();
+        selectedAreas[i].writeToNBT(subNBT);
+        nbt.put("selectedArea[" + i + "]", subNBT);
+      }
+    }
+  }
+
+  @Override
+  public void load(CompoundTag nbt) {
+    super.load(nbt);
+
+    mapName = nbt.getString("name");
+    if (mapName == null) {
+      mapName = "";
     }
 
-    @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.putString("name", mapName);
+    inv.read(nbt.getCompound("inv"));
 
-        CompoundTag invNBT = new CompoundTag();
-        inv.write(invNBT);
-        nbt.put("inv", invNBT);
-
-        for (int i = 0; i < selectedAreas.length; ++i) {
-            if (selectedAreas[i] != null) {
-                CompoundTag subNBT = new CompoundTag();
-                selectedAreas[i].writeToNBT(subNBT);
-                nbt.put("selectedArea[" + i + "]", subNBT);
-            }
-        }
+    for (int i = 0; i < selectedAreas.length; ++i) {
+      if (nbt.contains("selectedArea[" + i + "]")) {
+        selectedAreas[i] = new ZonePlan();
+        selectedAreas[i].readFromNBT(nbt.getCompound("selectedArea[" + i + "]"));
+      }
     }
+  }
 
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-
-        mapName = nbt.getString("name");
-        if (mapName == null) {
-            mapName = "";
-        }
-
-        inv.read(nbt.getCompound("inv"));
-
-        for (int i = 0; i < selectedAreas.length; ++i) {
-            if (nbt.contains("selectedArea[" + i + "]")) {
-                selectedAreas[i] = new ZonePlan();
-                selectedAreas[i].readFromNBT(nbt.getCompound("selectedArea[" + i + "]"));
-            }
-        }
+  public ZonePlan selectArea(int index) {
+    if (selectedAreas[index] == null) {
+      selectedAreas[index] = new ZonePlan();
     }
+    currentSelectedArea = index;
+    return selectedAreas[index];
+  }
 
-    public ZonePlan selectArea(int index) {
-        if (selectedAreas[index] == null) {
-            selectedAreas[index] = new ZonePlan();
-        }
-        currentSelectedArea = index;
-        return selectedAreas[index];
-    }
+  public void setArea(int index, ZonePlan area) {
+    selectedAreas[index] = area;
+  }
 
-    public void setArea(int index, ZonePlan area) {
-        selectedAreas[index] = area;
-    }
+  @Override
+  public int getContainerSize() {
+    return inv.getContainerSize();
+  }
 
-    @Override
-    public int getContainerSize() {
-        return inv.getContainerSize();
-    }
+  @Override
+  public boolean isEmpty() {
+    return inv.isEmpty();
+  }
 
-    @Override
-    public boolean isEmpty() {
-        return inv.isEmpty();
-    }
+  @Override
+  public ItemStack getItem(int slotId) {
+    return inv.getItem(slotId);
+  }
 
-    @Override
-    public ItemStack getItem(int slotId) {
-        return inv.getItem(slotId);
-    }
+  @Override
+  public ItemStack removeItem(int slotId, int count) {
+    return inv.removeItem(slotId, count);
+  }
 
-    @Override
-    public ItemStack removeItem(int slotId, int count) {
-        return inv.removeItem(slotId, count);
-    }
+  @Override
+  public ItemStack removeItemNoUpdate(int slotId) {
+    return inv.removeItemNoUpdate(slotId);
+  }
 
-    @Override
-    public ItemStack removeItemNoUpdate(int slotId) {
-        return inv.removeItemNoUpdate(slotId);
-    }
+  @Override
+  public void setItem(int slotId, ItemStack itemstack) {
+    inv.setItem(slotId, itemstack);
+    // TODO: importMap logic
+  }
 
-    @Override
-    public void setItem(int slotId, ItemStack itemstack) {
-        inv.setItem(slotId, itemstack);
-        // TODO: importMap logic
-    }
+  @Override
+  public int getMaxStackSize() {
+    return inv.getMaxStackSize();
+  }
 
-    @Override
-    public int getMaxStackSize() {
-        return inv.getMaxStackSize();
-    }
+  @Override
+  public boolean stillValid(Player player) {
+    return super.stillValid(player);
+  }
 
-    @Override
-    public boolean stillValid(Player player) {
-        return super.stillValid(player);
-    }
-
-    @Override
-    public void clearContent() {
-        inv.clearContent();
-    }
+  @Override
+  public void clearContent() {
+    inv.clearContent();
+  }
 }

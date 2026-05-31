@@ -28,7 +28,6 @@ public class StackAtPosition implements ISerializable {
   @Override
   public void readData(FriendlyByteBuf data) {
     stack = data.readItem();
-    ;
   }
 
   @Override
@@ -38,10 +37,9 @@ public class StackAtPosition implements ISerializable {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof StackAtPosition)) {
+    if (!(o instanceof StackAtPosition other)) {
       return false;
     }
-    StackAtPosition other = (StackAtPosition) o;
     return other.stack.equals(stack) && other.pos.equals(pos) && other.display == display;
   }
 

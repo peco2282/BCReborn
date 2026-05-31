@@ -15,33 +15,33 @@ import net.minecraft.nbt.CompoundTag;
 
 public abstract class ResourceId {
 
-    protected ResourceId() {
+  protected ResourceId() {
+  }
+
+  public static ResourceId load(CompoundTag nbt) {
+    try {
+      Class<?> cls;
+      if (nbt.contains("class")) {
+        cls = RobotManager.getResourceIdByLegacyClassName(nbt.getString("class"));
+      } else {
+        cls = RobotManager.getResourceIdByName(nbt.getString("resourceName"));
+      }
+
+      ResourceId id = (ResourceId) cls.getDeclaredConstructor().newInstance();
+      id.readFromNBT(nbt);
+
+      return id;
+    } catch (Throwable e) {
+      e.printStackTrace();
     }
 
-    public void writeToNBT(CompoundTag nbt) {
-        nbt.putString("resourceName", RobotManager.getResourceIdName(getClass()));
-    }
+    return null;
+  }
 
-    protected void readFromNBT(CompoundTag nbt) {
-    }
+  public void writeToNBT(CompoundTag nbt) {
+    nbt.putString("resourceName", RobotManager.getResourceIdName(getClass()));
+  }
 
-    public static ResourceId load(CompoundTag nbt) {
-        try {
-            Class<?> cls;
-            if (nbt.contains("class")) {
-                cls = RobotManager.getResourceIdByLegacyClassName(nbt.getString("class"));
-            } else {
-                cls = RobotManager.getResourceIdByName(nbt.getString("resourceName"));
-            }
-
-            ResourceId id = (ResourceId) cls.getDeclaredConstructor().newInstance();
-            id.readFromNBT(nbt);
-
-            return id;
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
+  protected void readFromNBT(CompoundTag nbt) {
+  }
 }

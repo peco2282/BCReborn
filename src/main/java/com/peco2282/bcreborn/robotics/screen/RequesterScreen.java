@@ -21,34 +21,34 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class RequesterScreen extends BuildCraftScreen<RequesterMenu> {
 
-	private static final ResourceLocation TEXTURE = BCReborn.getLocation("textures/gui/requester_gui.png");
+  private static final ResourceLocation TEXTURE = BCReborn.getLocation("textures/gui/requester_gui.png");
 
-	public RequesterScreen(RequesterMenu menu, Inventory inventory, Component title) {
-		super(menu, inventory, title);
-		this.imageWidth = 196;
-		this.imageHeight = 181;
-		menu.gui = this;
-		menu.getRequestList();
-	}
+  public RequesterScreen(RequesterMenu menu, Inventory inventory, Component title) {
+    super(menu, inventory, title);
+    this.imageWidth = 196;
+    this.imageHeight = 181;
+    menu.gui = this;
+    menu.getRequestList();
+  }
 
-	@Override
-	protected ResourceLocation getMenuTexture() {
-		return TEXTURE;
-	}
+  @Override
+  protected ResourceLocation getMenuTexture() {
+    return TEXTURE;
+  }
 
-	@Override
-	protected void initilaizeLedger(Inventory p_97742_) {
-	}
+  @Override
+  protected void initilaizeLedger(Inventory p_97742_) {
+  }
 
-	@Override
-	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-	}
+  @Override
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+  }
 
-	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(graphics);
-		super.render(graphics, mouseX, mouseY, partialTicks);
-		this.renderTooltip(graphics, mouseX, mouseY);
-	}
+  @Override
+  public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    this.renderBackground(graphics);
+    super.render(graphics, mouseX, mouseY, partialTicks);
+    this.renderTooltip(graphics, mouseX, mouseY);
+  }
 }

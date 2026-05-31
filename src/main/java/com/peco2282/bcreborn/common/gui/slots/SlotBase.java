@@ -19,38 +19,38 @@ import net.minecraft.world.inventory.Slot;
 
 public class SlotBase extends Slot implements IToolTipProvider {
 
-	private ToolTip toolTips;
+  private ToolTip toolTips;
 
-	public SlotBase(Container iinventory, int slotIndex, int posX, int posY) {
-		super(iinventory, slotIndex, posX, posY);
-	}
+  public SlotBase(Container iinventory, int slotIndex, int posX, int posY) {
+    super(iinventory, slotIndex, posX, posY);
+  }
 
-	public boolean canShift() {
-		return true;
-	}
+  public boolean canShift() {
+    return true;
+  }
 
-	/**
-	 * @return the toolTips
-	 */
-	@Override
-	public ToolTip getToolTip() {
-		return toolTips;
-	}
+  /**
+   * @return the toolTips
+   */
+  @Override
+  public ToolTip getToolTip() {
+    return toolTips;
+  }
 
-	/**
-	 * @param toolTips the tooltips to set
-	 */
-	public void setToolTips(ToolTip toolTips) {
-		this.toolTips = toolTips;
-	}
+  /**
+   * @param toolTips the tooltips to set
+   */
+  public void setToolTips(ToolTip toolTips) {
+    this.toolTips = toolTips;
+  }
 
-	@Override
-	public boolean isToolTipVisible() {
-		return getItem().isEmpty();
-	}
+  @Override
+  public boolean isToolTipVisible() {
+    return getItem().isEmpty();
+  }
 
-	@Override
-	public boolean isMouseOver(int mouseX, int mouseY) {
-		return mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16;
-	}
+  @Override
+  public boolean isMouseOver(int mouseX, int mouseY) {
+    return mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16;
+  }
 }

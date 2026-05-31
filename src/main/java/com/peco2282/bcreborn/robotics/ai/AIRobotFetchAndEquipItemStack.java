@@ -20,76 +20,76 @@ import net.minecraft.world.item.ItemStack;
 
 public class AIRobotFetchAndEquipItemStack extends AIRobot {
 
-	private IStackFilter filter;
-	private int delay = 0;
+  private IStackFilter filter;
+  private int delay = 0;
 
-	public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot, IStackFilter iFilter) {
-		this(iRobot);
+  public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot, IStackFilter iFilter) {
+    this(iRobot);
 
-		this.filter = iFilter;
-		if (iRobot.getLinkedStation() != null) {
-			IStackFilter gateFilter = ActionRobotFilterTool.getGateFilter(iRobot.getLinkedStation());
-			this.filter = stack -> gateFilter.matches(stack) && iFilter.matches(stack);
-		}
-	}
+    this.filter = iFilter;
+    if (iRobot.getLinkedStation() != null) {
+      IStackFilter gateFilter = ActionRobotFilterTool.getGateFilter(iRobot.getLinkedStation());
+      this.filter = stack -> gateFilter.matches(stack) && iFilter.matches(stack);
+    }
+  }
 
-	@Override
-	public void start() {
-		startDelegateAI(new AIRobotGotoStationToLoad(robot, filter, 1));
-	}
+  @Override
+  public void start() {
+    startDelegateAI(new AIRobotGotoStationToLoad(robot, filter, 1));
+  }
 
-	@Override
-	public void update() {
-		if (robot.getDockingStation() == null) {
-			setSuccess(false);
-			terminate();
-		}
+  @Override
+  public void update() {
+    if (robot.getDockingStation() == null) {
+      setSuccess(false);
+      terminate();
+    }
 
-		if (delay++ > 40) {
-			if (equipItemStack()) {
-				terminate();
-			} else {
-				delay = 0;
-				startDelegateAI(new AIRobotGotoStationToLoad(robot, filter, 1));
-			}
-		}
-	}
+    if (delay++ > 40) {
+      if (equipItemStack()) {
+        terminate();
+      } else {
+        delay = 0;
+        startDelegateAI(new AIRobotGotoStationToLoad(robot, filter, 1));
+      }
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoStationToLoad) {
-			if (filter == null) {
-				// filter can't be retreived, usually because of a load operation.
-				// Force a hard abort, preventing parent AI to continue normal
-				// sequence of actions and possibly re-starting this.
-				abort();
-				return;
-			}
-			if (!ai.success()) {
-				setSuccess(false);
-				terminate();
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoStationToLoad) {
+      if (filter == null) {
+        // filter can't be retreived, usually because of a load operation.
+        // Force a hard abort, preventing parent AI to continue normal
+        // sequence of actions and possibly re-starting this.
+        abort();
+        return;
+      }
+      if (!ai.success()) {
+        setSuccess(false);
+        terminate();
+      }
+    }
+  }
 
-	private boolean equipItemStack() {
-		if (robot.getDockingStation() == null) {
-			return false;
-		}
-		Container tileInventory = robot.getDockingStation().getItemInput();
-		if (tileInventory == null) {
-			return false;
-		}
+  private boolean equipItemStack() {
+    if (robot.getDockingStation() == null) {
+      return false;
+    }
+    Container tileInventory = robot.getDockingStation().getItemInput();
+    if (tileInventory == null) {
+      return false;
+    }
 
-		ItemStack possible = AIRobotLoad.takeSingle(robot.getDockingStation(), filter, true);
-		if (possible.isEmpty()) {
-		    return false;
-		}
-		robot.setItemInUse(possible);
-		return true;
-	}
+    ItemStack possible = AIRobotLoad.takeSingle(robot.getDockingStation(), filter, true);
+    if (possible.isEmpty()) {
+      return false;
+    }
+    robot.setItemInUse(possible);
+    return true;
+  }
 }

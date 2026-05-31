@@ -32,14 +32,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ContainerEngineBlockEntity<E extends ContainerEngineBlockEntity<E>> extends EngineBlockEntity<E>
-    implements WorldlyContainer, Container, ContainerBlockEntity, MenuProvider {
+  implements WorldlyContainer, Container, ContainerBlockEntity, MenuProvider {
   protected final SimpleInventory inv;
   protected final int[] defaultSlotArray;
+
   public ContainerEngineBlockEntity(
-      BlockEntityType<E> p_155228_,
-      BlockPos p_155229_,
-      BlockState p_155230_,
-      int invSize
+    BlockEntityType<E> p_155228_,
+    BlockPos p_155229_,
+    BlockState p_155230_,
+    int invSize
   ) {
     super(p_155228_, p_155229_, p_155230_);
     inv = new SimpleInventory(invSize, "Engine", 64);

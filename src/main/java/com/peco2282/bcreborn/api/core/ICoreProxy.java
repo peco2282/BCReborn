@@ -17,5 +17,5 @@ import net.minecraft.world.entity.player.Player;
 import java.lang.ref.WeakReference;
 
 public interface ICoreProxy {
-	WeakReference<Player> getBuildCraftPlayer(ServerLevel world);
+  WeakReference<Player> getBuildCraftPlayer(ServerLevel world);
 }

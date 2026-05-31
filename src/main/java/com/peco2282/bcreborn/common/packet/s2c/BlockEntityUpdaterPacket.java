@@ -21,17 +21,17 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record BlockEntityUpdaterPacket(
-    BlockPos pos,
-    byte[] data
+  BlockPos pos,
+  byte[] data
 ) implements CustomPacket {
+  public static BlockEntityUpdaterPacket decode(FriendlyByteBuf buffer) {
+    return new BlockEntityUpdaterPacket(buffer.readBlockPos(), buffer.readByteArray());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeByteArray(data);
-  }
-
-  public static BlockEntityUpdaterPacket decode(FriendlyByteBuf buffer) {
-    return new BlockEntityUpdaterPacket(buffer.readBlockPos(), buffer.readByteArray());
   }
 
   @Override

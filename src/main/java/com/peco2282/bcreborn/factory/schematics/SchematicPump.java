@@ -22,31 +22,31 @@ import java.util.LinkedList;
 
 public class SchematicPump extends SchematicTile {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(FactoryBlocks.PUMP.get()));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(FactoryBlocks.PUMP.get()));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
 
-		tileNBT.remove("tank");
-		tileNBT.remove("mjStored");
-	}
+    tileNBT.remove("tank");
+    tileNBT.remove("mjStored");
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 0, 3);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 0, 3);
+  }
 
-	@Override
-	public BuildingStage getBuildStage() {
-		return BuildingStage.STANDALONE;
-	}
+  @Override
+  public BuildingStage getBuildStage() {
+    return BuildingStage.STANDALONE;
+  }
 }

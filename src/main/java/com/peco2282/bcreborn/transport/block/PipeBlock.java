@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
-import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviourManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -91,14 +90,26 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     this.transportType = transportType;
     this.material = material;
     this.registerDefaultState(this.stateDefinition.any()
-        .setValue(NORTH, false)
-        .setValue(SOUTH, false)
-        .setValue(EAST, false)
-        .setValue(WEST, false)
-        .setValue(UP, false)
-        .setValue(DOWN, false)
-        .setValue(WATERLOGGED, false)
-        .setValue(EXTRACTION_SIDE, EXTRACTION_SIDE_NONE));
+      .setValue(NORTH, false)
+      .setValue(SOUTH, false)
+      .setValue(EAST, false)
+      .setValue(WEST, false)
+      .setValue(UP, false)
+      .setValue(DOWN, false)
+      .setValue(WATERLOGGED, false)
+      .setValue(EXTRACTION_SIDE, EXTRACTION_SIDE_NONE));
+  }
+
+  public static PipeBlockEntity getPipe(Level level, BlockPos pos) {
+    BlockEntity tile = level.getBlockEntity(pos);
+    if (tile instanceof PipeBlockEntity) {
+      return (PipeBlockEntity) tile;
+    }
+    return null;
+  }
+
+  public static boolean isValid(PipeBlockEntity pipe) {
+    return pipe != null && !pipe.isRemoved();
   }
 
   @Override
@@ -252,18 +263,6 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   @Override
   public boolean isRotatable() {
     return false;
-  }
-
-  public static PipeBlockEntity getPipe(Level level, BlockPos pos) {
-    BlockEntity tile = level.getBlockEntity(pos);
-    if (tile instanceof PipeBlockEntity) {
-      return (PipeBlockEntity) tile;
-    }
-    return null;
-  }
-
-  public static boolean isValid(PipeBlockEntity pipe) {
-    return pipe != null && !pipe.isRemoved();
   }
 
   public PipeType getTransportType() {

@@ -33,6 +33,54 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
   public LibraryId() {
   }
 
+  private static char toHex(int i) {
+    if (i < 10) {
+      return (char) ('0' + i);
+    } else {
+      return (char) ('a' - 10 + i);
+    }
+  }
+
+  private static int fromHex(char c) {
+    if (c >= '0' && c <= '9') {
+      return c - '0';
+    } else {
+      return c - ('a' - 10);
+    }
+  }
+
+  public static String toString(byte[] bytes) {
+    char[] ret = new char[bytes.length * 2];
+
+    for (int i = 0; i < bytes.length; i++) {
+      int val = bytes[i] + 128;
+
+      ret[i * 2] = toHex(val >> 4);
+      ret[i * 2 + 1] = toHex(val & 0xf);
+    }
+
+    return new String(ret);
+  }
+
+  public static byte[] toBytes(String suffix) {
+    byte[] result = new byte[suffix.length() / 2];
+
+    for (int i = 0; i < result.length; ++i) {
+      result[i] = (byte) ((byte) (fromHex(suffix.charAt(i * 2 + 1)))
+        + (byte) (fromHex(suffix.charAt(i * 2)) << 4));
+
+      result[i] -= 128;
+    }
+
+    return result;
+  }
+
+  public static LibraryId decode(FriendlyByteBuf stream) {
+    LibraryId libraryId = new LibraryId();
+    libraryId.readData(stream);
+    return libraryId;
+  }
+
   public void generateUniqueId(byte[] data) {
     try {
       MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -80,7 +128,7 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
     if (completeId == null) {
       if (uniqueId.length > 0) {
         completeId = name + BPT_SEP_CHARACTER
-            + toString(uniqueId);
+          + toString(uniqueId);
       } else {
         completeId = name;
       }
@@ -94,51 +142,9 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
     return getCompleteId();
   }
 
-  private static char toHex(int i) {
-    if (i < 10) {
-      return (char) ('0' + i);
-    } else {
-      return (char) ('a' - 10 + i);
-    }
-  }
-
-  private static int fromHex(char c) {
-    if (c >= '0' && c <= '9') {
-      return c - '0';
-    } else {
-      return c - ('a' - 10);
-    }
-  }
-
   @Override
   public int compareTo(LibraryId o) {
     return getCompleteId().compareTo(o.getCompleteId());
-  }
-
-  public static String toString(byte[] bytes) {
-    char[] ret = new char[bytes.length * 2];
-
-    for (int i = 0; i < bytes.length; i++) {
-      int val = bytes[i] + 128;
-
-      ret[i * 2] = toHex(val >> 4);
-      ret[i * 2 + 1] = toHex(val & 0xf);
-    }
-
-    return new String(ret);
-  }
-
-  public static byte[] toBytes(String suffix) {
-    byte[] result = new byte[suffix.length() / 2];
-
-    for (int i = 0; i < result.length; ++i) {
-      result[i] = (byte) ((byte) (fromHex(suffix.charAt(i * 2 + 1)))
-          + (byte) (fromHex(suffix.charAt(i * 2)) << 4));
-
-      result[i] -= 128;
-    }
-
-    return result;
   }
 
   @Override
@@ -146,12 +152,6 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
     uniqueId = stream.readByteArray();
     name = stream.readUtf();
     extension = stream.readUtf();
-  }
-
-  public static LibraryId decode(FriendlyByteBuf stream) {
-    LibraryId libraryId = new LibraryId();
-    libraryId.readData(stream);
-    return libraryId;
   }
 
   @Override

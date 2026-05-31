@@ -15,11 +15,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 public interface IFacadeItem {
-    FacadeType getFacadeType(ItemStack facade);
+  FacadeType getFacadeType(ItemStack facade);
 
-    ItemStack getFacadeForBlock(Block block, int meta);
+  ItemStack getFacadeForBlock(Block block, int meta);
 
-    Block[] getBlocksForFacade(ItemStack facade);
+  Block[] getBlocksForFacade(ItemStack facade);
 
-    int[] getMetaValuesForFacade(ItemStack facade);
+  int[] getMetaValuesForFacade(ItemStack facade);
 }

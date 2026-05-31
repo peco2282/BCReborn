@@ -12,9 +12,7 @@
 package com.peco2282.bcreborn.common.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.common.block.entity.EngineTextures;
@@ -35,7 +33,7 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
   private final EngineModel model;
 
   public EngineBlockRenderer(
-      BlockEntityRendererProvider.Context p_173962_1_
+    BlockEntityRendererProvider.Context p_173962_1_
   ) {
     EntityModelSet modelSet = p_173962_1_.getModelSet();
     this.model = new EngineModel(modelSet.bakeLayer(LAYER_LOCATION));

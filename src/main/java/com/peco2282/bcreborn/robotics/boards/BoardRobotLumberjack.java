@@ -21,26 +21,26 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotLumberjack extends BoardRobotGenericBreakBlock {
 
-	public BoardRobotLumberjack(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotLumberjack(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public BoardRobotLumberjack(EntityRobotBase iRobot, CompoundTag nbt) {
-		super(iRobot);
-	}
+  public BoardRobotLumberjack(EntityRobotBase iRobot, CompoundTag nbt) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("lumberjack");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("lumberjack");
+  }
 
-	@Override
-	public boolean isExpectedTool(ItemStack stack) {
-		return !stack.isEmpty() && stack.is(ItemTags.AXES);
-	}
+  @Override
+  public boolean isExpectedTool(ItemStack stack) {
+    return !stack.isEmpty() && stack.is(ItemTags.AXES);
+  }
 
-	@Override
-	public boolean isExpectedBlock(Level world, int x, int y, int z) {
-		return BuildCraftAPI.getWorldProperty("wood").get(world, new net.minecraft.core.BlockPos(x, y, z));
-	}
+  @Override
+  public boolean isExpectedBlock(Level world, int x, int y, int z) {
+    return BuildCraftAPI.getWorldProperty("wood").get(world, new net.minecraft.core.BlockPos(x, y, z));
+  }
 }

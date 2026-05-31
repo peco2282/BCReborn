@@ -25,59 +25,59 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterYDir implements IStatementParameter {
-    public static final Codec<PatternParameterYDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("up").forGetter(p -> p.up)
-    ).apply(instance, PatternParameterYDir::new));
-    public boolean up = false;
+  public static final Codec<PatternParameterYDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    Codec.BOOL.fieldOf("up").forGetter(p -> p.up)
+  ).apply(instance, PatternParameterYDir::new));
+  public boolean up = false;
 
-    public PatternParameterYDir() {
-    }
+  public PatternParameterYDir() {
+  }
 
-    public PatternParameterYDir(boolean up) {
-        this.up = up;
-    }
+  public PatternParameterYDir(boolean up) {
+    this.up = up;
+  }
 
-    @Override
-    public String getUniqueTag() {
-        return "buildcraft:fillerParameterYDir";
-    }
+  @Override
+  public String getUniqueTag() {
+    return "buildcraft:fillerParameterYDir";
+  }
 
-    @Override
-    public TextureAtlasSprite getIcon() {
-        return null;
-    }
+  @Override
+  public TextureAtlasSprite getIcon() {
+    return null;
+  }
 
-    @Override
-    public ItemStack getItemStack() {
-        return null;
-    }
+  @Override
+  public ItemStack getItemStack() {
+    return null;
+  }
 
-    @Override
-    public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    }
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+  }
 
-    @Override
-    public String getDescription() {
-        return "direction." + (up ? "up" : "down");
-    }
+  @Override
+  public String getDescription() {
+    return "direction." + (up ? "up" : "down");
+  }
 
-    @Override
-    public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-        up = !up;
-    }
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    up = !up;
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag compound) {
-        up = compound.getBoolean("up");
-    }
+  @Override
+  public void readFromNBT(CompoundTag compound) {
+    up = compound.getBoolean("up");
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag compound) {
-        compound.putBoolean("up", up);
-    }
+  @Override
+  public void writeToNBT(CompoundTag compound) {
+    compound.putBoolean("up", up);
+  }
 
-    @Override
-    public IStatementParameter rotateLeft() {
-        return this;
-    }
+  @Override
+  public IStatementParameter rotateLeft() {
+    return this;
+  }
 }

@@ -23,10 +23,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
-  public IronEngineMenu(int p_38852_, Inventory p_38853_) {
-    this(p_38852_, p_38853_, new SimpleContainer(1));
-  }
-
   private final Container container;
   private IronEngineBlockEntity engine;
   private final ContainerData data = new ContainerData() {
@@ -44,11 +40,17 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
     }
 
     @Override
-    public void set(int index, int value) { }
+    public void set(int index, int value) {
+    }
 
     @Override
-    public int getCount() { return 5; }
+    public int getCount() {
+      return 5;
+    }
   };
+  public IronEngineMenu(int p_38852_, Inventory p_38853_) {
+    this(p_38852_, p_38853_, new SimpleContainer(1));
+  }
 
   public IronEngineMenu(int p_38852_, Inventory p_38853_, Container engine) {
     super(MenuTypesEnergy.IRON_ENGINE.get(), p_38852_, p_38853_);
@@ -72,11 +74,25 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
   }
 
   // ---- client accessors (Screen から参照) ----
-  public int getScaledBurn() { return data.get(0); }
-  public int getEnergy() { return data.get(1); }
-  public int getHeat() { return data.get(2); }
-  public int getStageOrdinal() { return data.get(3); }
-  public int getMaxEnergy() { return data.get(4); }
+  public int getScaledBurn() {
+    return data.get(0);
+  }
+
+  public int getEnergy() {
+    return data.get(1);
+  }
+
+  public int getHeat() {
+    return data.get(2);
+  }
+
+  public int getStageOrdinal() {
+    return data.get(3);
+  }
+
+  public int getMaxEnergy() {
+    return data.get(4);
+  }
 
   @Override
   public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {

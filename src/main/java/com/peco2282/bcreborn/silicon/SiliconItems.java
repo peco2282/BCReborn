@@ -23,20 +23,20 @@ import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornSilicon.MODID)
 public class SiliconItems {
-    private static final BCRegistry REGISTRY = BCRebornSilicon.getRegistry();
+  private static final BCRegistry REGISTRY = BCRebornSilicon.getRegistry();
 
-    public static final RegistryObject<RedstoneChipsetItem> REDSTONE_CHIPSET = register("redstone_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.RED));
-    public static final RegistryObject<RedstoneChipsetItem> IRON_CHIPSET = register("iron_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.IRON));
-    public static final RegistryObject<RedstoneChipsetItem> GOLD_CHIPSET = register("gold_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.GOLD));
-    public static final RegistryObject<RedstoneChipsetItem> DIAMOND_CHIPSET = register("diamond_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.DIAMOND));
-    public static final RegistryObject<RedstoneChipsetItem> PULSATING_CHIPSET = register("pulsating_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.PULSATING));
-    public static final RegistryObject<RedstoneChipsetItem> QUARTZ_CHIPSET = register("quartz_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.QUARTZ));
-    public static final RegistryObject<RedstoneChipsetItem> COMP_CHIPSET = register("comp_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.COMP));
-    public static final RegistryObject<RedstoneChipsetItem> EMERALD_CHIPSET = register("emerald_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.EMERALD));
+  public static final RegistryObject<RedstoneChipsetItem> REDSTONE_CHIPSET = register("redstone_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.RED));
+  public static final RegistryObject<RedstoneChipsetItem> IRON_CHIPSET = register("iron_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.IRON));
+  public static final RegistryObject<RedstoneChipsetItem> GOLD_CHIPSET = register("gold_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.GOLD));
+  public static final RegistryObject<RedstoneChipsetItem> DIAMOND_CHIPSET = register("diamond_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.DIAMOND));
+  public static final RegistryObject<RedstoneChipsetItem> PULSATING_CHIPSET = register("pulsating_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.PULSATING));
+  public static final RegistryObject<RedstoneChipsetItem> QUARTZ_CHIPSET = register("quartz_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.QUARTZ));
+  public static final RegistryObject<RedstoneChipsetItem> COMP_CHIPSET = register("comp_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.COMP));
+  public static final RegistryObject<RedstoneChipsetItem> EMERALD_CHIPSET = register("emerald_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.EMERALD));
 
-    public static final RegistryObject<PackageItem> PACKAGE_ITEM = register("package", PackageItem::new);
+  public static final RegistryObject<PackageItem> PACKAGE_ITEM = register("package", PackageItem::new);
 
-    private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
-        return REGISTRY.registerItem(name, item);
-    }
+  private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
+    return REGISTRY.registerItem(name, item);
+  }
 }

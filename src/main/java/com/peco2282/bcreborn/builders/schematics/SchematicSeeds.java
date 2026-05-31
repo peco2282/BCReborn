@@ -20,29 +20,29 @@ import net.minecraft.world.item.ItemStack;
 import java.util.LinkedList;
 
 public class SchematicSeeds extends SchematicBlockFloored {
-	public Item seeds;
+  public Item seeds;
 
-	public SchematicSeeds(Item seeds) {
-		this.seeds = seeds;
-	}
+  public SchematicSeeds(Item seeds) {
+    this.seeds = seeds;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(seeds));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(seeds));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		return context.world().getBlockState(new BlockPos(x, y, z)).getBlock() == block;
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    return context.world().getBlockState(new BlockPos(x, y, z)).getBlock() == block;
+  }
 }

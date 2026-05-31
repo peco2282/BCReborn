@@ -34,9 +34,9 @@ import org.jetbrains.annotations.Nullable;
 public class HopperBlock extends BuildCraftBlock {
   public HopperBlock() {
     super(Properties.of()
-        .mapColor(MapColor.METAL)
-        .sound(SoundType.METAL)
-        .strength(3.0F));
+      .mapColor(MapColor.METAL)
+      .sound(SoundType.METAL)
+      .strength(3.0F));
   }
 
   @Override

@@ -28,32 +28,31 @@ import java.util.Locale;
 import java.util.function.Function;
 
 
-
 public class ActionMachineControl extends BCStatement implements IActionExternal {
-	public final IControllable.Mode mode;
+  public final IControllable.Mode mode;
 
-	public ActionMachineControl(IControllable.Mode mode) {
-		super("buildcraft:machine." + mode.name().toLowerCase(Locale.ENGLISH), "buildcraft.machine." + mode.name().toLowerCase(Locale.ENGLISH));
+  public ActionMachineControl(IControllable.Mode mode) {
+    super("buildcraft:machine." + mode.name().toLowerCase(Locale.ENGLISH), "buildcraft.machine." + mode.name().toLowerCase(Locale.ENGLISH));
 
-		this.mode = mode;
-	}
+    this.mode = mode;
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.machine." + mode.name().toLowerCase(Locale.ENGLISH));
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.machine." + mode.name().toLowerCase(Locale.ENGLISH));
+  }
 
-	@Override
-	public void actionActivate(BlockEntity target, Direction side,
-	                           IStatementContainer source, IStatementParameter[] parameters) {
-		if (target instanceof IControllable) {
-			((IControllable) target).setControlMode(mode);
-		}
-	}
+  @Override
+  public void actionActivate(BlockEntity target, Direction side,
+                             IStatementContainer source, IStatementParameter[] parameters) {
+    if (target instanceof IControllable) {
+      ((IControllable) target).setControlMode(mode);
+    }
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/action_machinecontrol_" + mode.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/action_machinecontrol_" + mode.name().toLowerCase(Locale.ENGLISH)));
+  }
 }

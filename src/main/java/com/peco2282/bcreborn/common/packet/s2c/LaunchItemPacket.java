@@ -20,20 +20,20 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record LaunchItemPacket(
-    BlockPos pos,
-    BuildingItem item
+  BlockPos pos,
+  BuildingItem item
 ) implements CustomPacket {
-  @Override
-  public void encode(FriendlyByteBuf buffer) {
-    buffer.writeBlockPos(pos);
-    item.writeData(buffer);
-  }
-  
   public static LaunchItemPacket decode(FriendlyByteBuf buffer) {
     BlockPos pos = buffer.readBlockPos();
     BuildingItem item = new BuildingItem();
     item.readData(buffer);
     return new LaunchItemPacket(pos, item);
+  }
+
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+    item.writeData(buffer);
   }
 
   @Override

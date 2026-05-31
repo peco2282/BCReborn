@@ -19,95 +19,95 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class StackRequest {
-	private IRequestProvider requester;
+  private IRequestProvider requester;
 
-	private int slot;
+  private final int slot;
 
-	private ItemStack stack;
+  private final ItemStack stack;
 
-	private DockingStation station;
-	private BlockIndex stationIndex;
-	private Direction stationSide;
+  private DockingStation station;
+  private BlockIndex stationIndex;
+  private Direction stationSide;
 
-	public StackRequest(IRequestProvider requester, int slot, ItemStack stack) {
-		this.requester = requester;
-		this.slot = slot;
-		this.stack = stack;
-		this.station = null;
-	}
+  public StackRequest(IRequestProvider requester, int slot, ItemStack stack) {
+    this.requester = requester;
+    this.slot = slot;
+    this.stack = stack;
+    this.station = null;
+  }
 
-	private StackRequest(int slot, ItemStack stack, BlockIndex stationIndex, Direction stationSide) {
-		requester = null;
-		this.slot = slot;
-		this.stack = stack;
-		station = null;
-		this.stationIndex = stationIndex;
-		this.stationSide = stationSide;
-	}
+  private StackRequest(int slot, ItemStack stack, BlockIndex stationIndex, Direction stationSide) {
+    requester = null;
+    this.slot = slot;
+    this.stack = stack;
+    station = null;
+    this.stationIndex = stationIndex;
+    this.stationSide = stationSide;
+  }
 
-	public IRequestProvider getRequester(Level world) {
-		if (requester == null) {
-			DockingStation dockingStation = getStation(world);
-			if (dockingStation != null) {
-				requester = dockingStation.getRequestProvider();
-			}
-		}
-		return requester;
-	}
+  public static StackRequest loadFromNBT(CompoundTag nbt) {
+    if (nbt.contains("stationIndex")) {
+      int slot = nbt.getInt("slot");
 
-	public int getSlot() {
-		return slot;
-	}
+      ItemStack stack = ItemStack.of(nbt.getCompound("stack"));
 
-	public ItemStack getStack() {
-		return stack;
-	}
+      BlockIndex stationIndex = new BlockIndex(nbt.getCompound("stationIndex"));
+      Direction stationSide = Direction.from3DDataValue(nbt.getByte("stationSide"));
 
-	public DockingStation getStation(Level world) {
-		if (station == null) {
-			IRobotRegistry robotRegistry = RobotManager.registryProvider.getRegistry(world);
-			station = robotRegistry.getStation(stationIndex.toBlockPos(), stationSide);
-		}
-		return station;
-	}
+      return new StackRequest(slot, stack, stationIndex, stationSide);
+    } else {
+      return null;
+    }
+  }
 
-	public void setStation(DockingStation station) {
-		this.station = station;
-		this.stationIndex = station.index();
-		this.stationSide = station.side();
-	}
+  public IRequestProvider getRequester(Level world) {
+    if (requester == null) {
+      DockingStation dockingStation = getStation(world);
+      if (dockingStation != null) {
+        requester = dockingStation.getRequestProvider();
+      }
+    }
+    return requester;
+  }
 
-	public void writeToNBT(CompoundTag nbt) {
-		nbt.putInt("slot", slot);
+  public int getSlot() {
+    return slot;
+  }
 
-		CompoundTag stackNBT = new CompoundTag();
-		stack.save(stackNBT);
-		nbt.put("stack", stackNBT);
+  public ItemStack getStack() {
+    return stack;
+  }
 
-		if (station != null) {
-			CompoundTag stationIndexNBT = new CompoundTag();
-			station.index().writeTo(stationIndexNBT);
-			nbt.put("stationIndex", stationIndexNBT);
-			nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
-		}
-	}
+  public DockingStation getStation(Level world) {
+    if (station == null) {
+      IRobotRegistry robotRegistry = RobotManager.registryProvider.getRegistry(world);
+      station = robotRegistry.getStation(stationIndex.toBlockPos(), stationSide);
+    }
+    return station;
+  }
 
-	public static StackRequest loadFromNBT(CompoundTag nbt) {
-		if (nbt.contains("stationIndex")) {
-			int slot = nbt.getInt("slot");
+  public void setStation(DockingStation station) {
+    this.station = station;
+    this.stationIndex = station.index();
+    this.stationSide = station.side();
+  }
 
-			ItemStack stack = ItemStack.of(nbt.getCompound("stack"));
+  public void writeToNBT(CompoundTag nbt) {
+    nbt.putInt("slot", slot);
 
-			BlockIndex stationIndex = new BlockIndex(nbt.getCompound("stationIndex"));
-			Direction stationSide = Direction.from3DDataValue(nbt.getByte("stationSide"));
+    CompoundTag stackNBT = new CompoundTag();
+    stack.save(stackNBT);
+    nbt.put("stack", stackNBT);
 
-			return new StackRequest(slot, stack, stationIndex, stationSide);
-		} else {
-			return null;
-		}
-	}
+    if (station != null) {
+      CompoundTag stationIndexNBT = new CompoundTag();
+      station.index().writeTo(stationIndexNBT);
+      nbt.put("stationIndex", stationIndexNBT);
+      nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
+    }
+  }
 
-	public ResourceId getResourceId(Level world) {
-		return getStation(world) != null ? new ResourceIdRequest(getStation(world), slot) : null;
-	}
+  public ResourceId getResourceId(Level world) {
+    return getStation(world) != null ? new ResourceIdRequest(getStation(world), slot) : null;
+  }
 }

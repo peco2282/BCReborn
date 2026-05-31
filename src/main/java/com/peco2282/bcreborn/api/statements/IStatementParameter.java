@@ -22,28 +22,28 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public interface IStatementParameter {
-    Codec<IStatementParameter> CODEC = Codec.STRING.dispatch(
-            IStatementParameter::getUniqueTag,
-            s -> StatementManager.getParameterCodec(s).get().orThrow()
-    );
+  Codec<IStatementParameter> CODEC = Codec.STRING.dispatch(
+    IStatementParameter::getUniqueTag,
+    s -> StatementManager.getParameterCodec(s).get().orThrow()
+  );
 
-    String getUniqueTag();
+  String getUniqueTag();
 
-    @OnlyIn(Dist.CLIENT)
-    TextureAtlasSprite getIcon();
+  @OnlyIn(Dist.CLIENT)
+  TextureAtlasSprite getIcon();
 
-    ItemStack getItemStack();
+  ItemStack getItemStack();
 
-    @OnlyIn(Dist.CLIENT)
-    void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  @OnlyIn(Dist.CLIENT)
+  void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
-    String getDescription();
+  String getDescription();
 
-    void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse);
+  void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse);
 
-    void readFromNBT(CompoundTag compound);
+  void readFromNBT(CompoundTag compound);
 
-    void writeToNBT(CompoundTag compound);
+  void writeToNBT(CompoundTag compound);
 
-    IStatementParameter rotateLeft();
+  IStatementParameter rotateLeft();
 }

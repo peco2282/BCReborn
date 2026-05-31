@@ -15,33 +15,32 @@ import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicTile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 
 import java.util.LinkedList;
 
 public class SchematicSign extends SchematicTile {
 
-	boolean isWall;
+  boolean isWall;
 
-	public SchematicSign(boolean isWall) {
-		this.isWall = isWall;
-	}
+  public SchematicSign(boolean isWall) {
+    this.isWall = isWall;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(Items.OAK_SIGN));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(Items.OAK_SIGN));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 }

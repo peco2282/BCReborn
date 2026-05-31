@@ -21,15 +21,15 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public record ClearItemRequirementsPacket(
-    BlockPos pos
+  BlockPos pos
 ) implements CustomPacket {
+  public static ClearItemRequirementsPacket decode(FriendlyByteBuf buffer) {
+    return new ClearItemRequirementsPacket(buffer.readBlockPos());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
-  }
-
-  public static ClearItemRequirementsPacket decode(FriendlyByteBuf buffer) {
-    return new ClearItemRequirementsPacket(buffer.readBlockPos());
   }
 
   @Override

@@ -25,10 +25,10 @@ import net.minecraftforge.registries.RegistryObject;
 public class MenuTypesEnergy {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 
-  public static final RegistryObject<MenuType<StoneEngineMenu>> STONE_ENGINE = register("stone_engine", StoneEngineMenu::new);
-  public static final RegistryObject<MenuType<IronEngineMenu>> IRON_ENGINE = register("iron_engine", IronEngineMenu::new);
-
   private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String name, MenuType.MenuSupplier<T> type) {
     return REGISTRY.registerMenuType(name, () -> new MenuType<>(type, FeatureFlagSet.of()));
-  }
+  }  public static final RegistryObject<MenuType<StoneEngineMenu>> STONE_ENGINE = register("stone_engine", StoneEngineMenu::new);
+  public static final RegistryObject<MenuType<IronEngineMenu>> IRON_ENGINE = register("iron_engine", IronEngineMenu::new);
+
+
 }

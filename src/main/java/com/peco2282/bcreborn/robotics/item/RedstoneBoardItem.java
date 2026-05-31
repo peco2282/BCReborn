@@ -25,41 +25,41 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class RedstoneBoardItem extends BuildCraftItem {
-	public RedstoneBoardItem() {
-		super(new Properties());
-	}
+  public RedstoneBoardItem() {
+    super(new Properties());
+  }
 
-	@Override
-	public int getMaxStackSize(ItemStack stack) {
-		return getBoardNBT(stack) != RedstoneBoardRegistry.instance.getEmptyRobotBoard() ? 1 : 16;
-	}
+  public static ItemStack createStack(RedstoneBoardNBT<?> boardNBT) {
+    ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
+    CompoundTag nbtData = stack.getOrCreateTag();
+    boardNBT.createBoard(nbtData);
+    return stack;
+  }
 
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		RedstoneBoardNBT<?> board = getBoardNBT(stack);
-		board.addInformation(stack, level, tooltip, flag);
-	}
+  public static RedstoneBoardNBT<?> getBoardNBT(ItemStack stack) {
+    return getBoardNBT(getNBT(stack));
+  }
 
-	public static ItemStack createStack(RedstoneBoardNBT<?> boardNBT) {
-		ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
-		CompoundTag nbtData = stack.getOrCreateTag();
-		boardNBT.createBoard(nbtData);
-		return stack;
-	}
+  private static CompoundTag getNBT(ItemStack stack) {
+    CompoundTag cpt = stack.getOrCreateTag();
+    if (!cpt.contains("id")) {
+      RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
+    }
+    return cpt;
+  }
 
-	public static RedstoneBoardNBT<?> getBoardNBT(ItemStack stack) {
-		return getBoardNBT(getNBT(stack));
-	}
+  private static RedstoneBoardNBT<?> getBoardNBT(CompoundTag cpt) {
+    return RedstoneBoardRegistry.instance.getRedstoneBoard(cpt);
+  }
 
-	private static CompoundTag getNBT(ItemStack stack) {
-		CompoundTag cpt = stack.getOrCreateTag();
-		if (!cpt.contains("id")) {
-			RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
-		}
-		return cpt;
-	}
+  @Override
+  public int getMaxStackSize(ItemStack stack) {
+    return getBoardNBT(stack) != RedstoneBoardRegistry.instance.getEmptyRobotBoard() ? 1 : 16;
+  }
 
-	private static RedstoneBoardNBT<?> getBoardNBT(CompoundTag cpt) {
-		return RedstoneBoardRegistry.instance.getRedstoneBoard(cpt);
-	}
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    RedstoneBoardNBT<?> board = getBoardNBT(stack);
+    board.addInformation(stack, level, tooltip, flag);
+  }
 }

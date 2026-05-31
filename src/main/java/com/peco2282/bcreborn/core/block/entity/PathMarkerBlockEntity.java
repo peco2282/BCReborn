@@ -22,26 +22,21 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathProvider {
 
   // パスマーカーのうち、まだ完全に接続されていないもののリスト（ロード済みチャンク内のみ）
   private static final ArrayList<PathMarkerBlockEntity> availableMarkers = new ArrayList<>();
-
+  public PathMarkerBlockEntity[] links = new PathMarkerBlockEntity[2];
+  public boolean tryingToConnect = false;
   // NBTロード時に接続先を復元するための一時座標
   private BlockPos loadLink0Pos = BlockPos.ZERO;
   private BlockPos loadLink1Pos = BlockPos.ZERO;
-
-  public PathMarkerBlockEntity[] links = new PathMarkerBlockEntity[2];
-
-  public boolean tryingToConnect = false;
 
   public PathMarkerBlockEntity(BlockPos pos, BlockState state) {
     super(BlockEntityTypesCore.PATH_MARKER.get(), pos, state);
@@ -50,6 +45,14 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   // -----------------------------------------------------------------------
   // 接続状態
   // -----------------------------------------------------------------------
+
+  public static void clearAvailableMarkers() {
+    availableMarkers.clear();
+  }
+
+  public static void clearAvailableMarkers(Level world) {
+    availableMarkers.removeIf(t -> t.level != null && t.level.dimension().equals(world.dimension()));
+  }
 
   public boolean isFullyConnected() {
     return links[0] != null && links[1] != null;
@@ -72,14 +75,18 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     updateLasers();
   }
 
+  // -----------------------------------------------------------------------
+  // 最近傍の利用可能マーカーを探す
+  // -----------------------------------------------------------------------
+
   private void updateLasers() {
     lasers.clear();
     for (int i = 0; i < 2; i++) {
       if (links[i] != null) {
         lasers.add(new LaserData(
-            new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-            new net.minecraft.world.phys.Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
-            LaserKind.Red
+          new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+          new net.minecraft.world.phys.Vec3(links[i].worldPosition.getX() + 0.5, links[i].worldPosition.getY() + 0.5, links[i].worldPosition.getZ() + 0.5),
+          LaserKind.Red
         ));
       }
     }
@@ -91,6 +98,10 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     }
   }
 
+  // -----------------------------------------------------------------------
+  // tryConnection — 接続試行トグル（MarkerBlockEntityのものをオーバーライド）
+  // -----------------------------------------------------------------------
+
   public void createAndConnect(PathMarkerBlockEntity other) {
     if (level == null || level.isClientSide) {
       return;
@@ -101,7 +112,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   }
 
   // -----------------------------------------------------------------------
-  // 最近傍の利用可能マーカーを探す
+  // Tick
   // -----------------------------------------------------------------------
 
   private @Nullable PathMarkerBlockEntity findNearestAvailable() {
@@ -139,7 +150,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   }
 
   // -----------------------------------------------------------------------
-  // tryConnection — 接続試行トグル（MarkerBlockEntityのものをオーバーライド）
+  // IPathProvider
   // -----------------------------------------------------------------------
 
   @Override
@@ -151,10 +162,6 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     tryingToConnect = !tryingToConnect;
     setChanged();
   }
-
-  // -----------------------------------------------------------------------
-  // Tick
-  // -----------------------------------------------------------------------
 
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
@@ -174,7 +181,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   }
 
   // -----------------------------------------------------------------------
-  // IPathProvider
+  // Lifecycle
   // -----------------------------------------------------------------------
 
   @Override
@@ -186,9 +193,9 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
 
     while (current != null) {
       BlockIndex b = new BlockIndex(
-          current.worldPosition.getX(),
-          current.worldPosition.getY(),
-          current.worldPosition.getZ()
+        current.worldPosition.getX(),
+        current.worldPosition.getY(),
+        current.worldPosition.getZ()
       );
 
       visited.add(b);
@@ -198,9 +205,9 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
 
       if (current.links[0] != null) {
         BlockIndex b0 = new BlockIndex(
-            current.links[0].worldPosition.getX(),
-            current.links[0].worldPosition.getY(),
-            current.links[0].worldPosition.getZ()
+          current.links[0].worldPosition.getX(),
+          current.links[0].worldPosition.getY(),
+          current.links[0].worldPosition.getZ()
         );
         if (!visited.contains(b0)) {
           next = current.links[0];
@@ -209,9 +216,9 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
 
       if (next == null && current.links[1] != null) {
         BlockIndex b1 = new BlockIndex(
-            current.links[1].worldPosition.getX(),
-            current.links[1].worldPosition.getY(),
-            current.links[1].worldPosition.getZ()
+          current.links[1].worldPosition.getX(),
+          current.links[1].worldPosition.getY(),
+          current.links[1].worldPosition.getZ()
         );
         if (!visited.contains(b1)) {
           next = current.links[1];
@@ -236,10 +243,6 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
       level.removeBlock(p, false);
     }
   }
-
-  // -----------------------------------------------------------------------
-  // Lifecycle
-  // -----------------------------------------------------------------------
 
   @Override
   public void initialize() {
@@ -274,6 +277,10 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     updateLasers();
   }
 
+  // -----------------------------------------------------------------------
+  // チャンクアンロード
+  // -----------------------------------------------------------------------
+
   @Override
   public void setRemoved() {
     if (links[0] != null) {
@@ -289,6 +296,10 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     // MarkerBlockEntityのsetRemoved()を呼ぶ（destroy()はorigin系なので不要だがsuper呼び出しは必要）
     super.setRemoved();
   }
+
+  // -----------------------------------------------------------------------
+  // NBT
+  // -----------------------------------------------------------------------
 
   private void unlink(PathMarkerBlockEntity tile) {
     if (links[0] == tile) {
@@ -306,10 +317,6 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     updateLasers();
   }
 
-  // -----------------------------------------------------------------------
-  // チャンクアンロード
-  // -----------------------------------------------------------------------
-
   @Override
   public void onChunkUnloaded() {
     super.onChunkUnloaded();
@@ -317,7 +324,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   }
 
   // -----------------------------------------------------------------------
-  // NBT
+  // 静的ユーティリティ
   // -----------------------------------------------------------------------
 
   @Override
@@ -350,17 +357,5 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
     }
 
     tryingToConnect = nbt.getBoolean("tryingToConnect");
-  }
-
-  // -----------------------------------------------------------------------
-  // 静的ユーティリティ
-  // -----------------------------------------------------------------------
-
-  public static void clearAvailableMarkers() {
-    availableMarkers.clear();
-  }
-
-  public static void clearAvailableMarkers(Level world) {
-    availableMarkers.removeIf(t -> t.level != null && t.level.dimension().equals(world.dimension()));
   }
 }

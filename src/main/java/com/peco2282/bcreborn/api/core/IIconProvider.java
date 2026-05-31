@@ -12,25 +12,26 @@
 package com.peco2282.bcreborn.api.core;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
-import net.minecraft.resources.ResourceLocation;
 
 public interface IIconProvider {
 
-	/**
-	 * @param iconIndex
-	 */
-	@OnlyIn(Dist.CLIENT)
-	TextureAtlasSprite getIcon(int iconIndex);
+  /**
+   * @param iconIndex
+   */
+  @OnlyIn(Dist.CLIENT)
+  TextureAtlasSprite getIcon(int iconIndex);
 
-	/**
-	 * A call for the provider to register its Icons. This may be called multiple times but should only be executed once per provider
-	 * @param textureGetter
-	 */
-	@OnlyIn(Dist.CLIENT)
-	void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  /**
+   * A call for the provider to register its Icons. This may be called multiple times but should only be executed once per provider
+   *
+   * @param textureGetter
+   */
+  @OnlyIn(Dist.CLIENT)
+  void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
 }

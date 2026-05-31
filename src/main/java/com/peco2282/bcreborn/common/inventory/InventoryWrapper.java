@@ -18,86 +18,86 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class InventoryWrapper implements WorldlyContainer {
 
-	Container inventory;
+  Container inventory;
 
-	public InventoryWrapper(Container inventory) {
-		this.inventory = inventory;
-	}
+  public InventoryWrapper(Container inventory) {
+    this.inventory = inventory;
+  }
 
-	/* DIRECT MAPPING */
-	@Override
-	public int getContainerSize() {
-		return inventory.getContainerSize();
-	}
+  /* STATIC HELPER */
+  public static WorldlyContainer getWrappedInventory(Object inventory) {
+    if (inventory instanceof WorldlyContainer) {
+      return (WorldlyContainer) inventory;
+    } else if (inventory instanceof Container) {
+      return new InventoryWrapperSimple((Container) inventory);
+    } else {
+      return null;
+    }
+  }
 
-	@Override
-	public boolean isEmpty() {
-		return inventory.isEmpty();
-	}
+  /* DIRECT MAPPING */
+  @Override
+  public int getContainerSize() {
+    return inventory.getContainerSize();
+  }
 
-	@Override
-	public ItemStack getItem(int slotIndex) {
-		return inventory.getItem(slotIndex);
-	}
+  @Override
+  public boolean isEmpty() {
+    return inventory.isEmpty();
+  }
 
-	@Override
-	public ItemStack removeItem(int slotIndex, int amount) {
-		return inventory.removeItem(slotIndex, amount);
-	}
+  @Override
+  public ItemStack getItem(int slotIndex) {
+    return inventory.getItem(slotIndex);
+  }
 
-	@Override
-	public ItemStack removeItemNoUpdate(int slotIndex) {
-		return inventory.removeItemNoUpdate(slotIndex);
-	}
+  @Override
+  public ItemStack removeItem(int slotIndex, int amount) {
+    return inventory.removeItem(slotIndex, amount);
+  }
 
-	@Override
-	public void setItem(int slotIndex, ItemStack itemstack) {
-		inventory.setItem(slotIndex, itemstack);
-	}
+  @Override
+  public ItemStack removeItemNoUpdate(int slotIndex) {
+    return inventory.removeItemNoUpdate(slotIndex);
+  }
 
-	@Override
-	public int getMaxStackSize() {
-		return inventory.getMaxStackSize();
-	}
+  @Override
+  public void setItem(int slotIndex, ItemStack itemstack) {
+    inventory.setItem(slotIndex, itemstack);
+  }
 
-	@Override
-	public void setChanged() {
-		inventory.setChanged();
-	}
+  @Override
+  public int getMaxStackSize() {
+    return inventory.getMaxStackSize();
+  }
 
-	@Override
-	public boolean stillValid(Player entityplayer) {
-		return inventory.stillValid(entityplayer);
-	}
+  @Override
+  public void setChanged() {
+    inventory.setChanged();
+  }
 
-	@Override
-	public void startOpen(Player player) {
-		inventory.startOpen(player);
-	}
+  @Override
+  public boolean stillValid(Player entityplayer) {
+    return inventory.stillValid(entityplayer);
+  }
 
-	@Override
-	public void stopOpen(Player player) {
-		inventory.stopOpen(player);
-	}
+  @Override
+  public void startOpen(Player player) {
+    inventory.startOpen(player);
+  }
 
-	@Override
-	public boolean canPlaceItem(int slotIndex, ItemStack itemstack) {
-		return inventory.canPlaceItem(slotIndex, itemstack);
-	}
+  @Override
+  public void stopOpen(Player player) {
+    inventory.stopOpen(player);
+  }
 
-	/* STATIC HELPER */
-	public static WorldlyContainer getWrappedInventory(Object inventory) {
-		if (inventory instanceof WorldlyContainer) {
-			return (WorldlyContainer) inventory;
-		} else if (inventory instanceof Container) {
-			return new InventoryWrapperSimple((Container) inventory);
-		} else {
-			return null;
-		}
-	}
+  @Override
+  public boolean canPlaceItem(int slotIndex, ItemStack itemstack) {
+    return inventory.canPlaceItem(slotIndex, itemstack);
+  }
 
-	@Override
-	public void clearContent() {
-		inventory.clearContent();
-	}
+  @Override
+  public void clearContent() {
+    inventory.clearContent();
+  }
 }

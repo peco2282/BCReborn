@@ -14,9 +14,9 @@ package com.peco2282.bcreborn.api.transport;
 import net.minecraft.core.Direction;
 
 public interface IPipeConnection {
-    enum ConnectOverride {
-        CONNECT, DISCONNECT, DEFAULT
-    }
+  ConnectOverride overridePipeConnection(IPipeTile.PipeType type, Direction with);
 
-    ConnectOverride overridePipeConnection(IPipeTile.PipeType type, Direction with);
+  enum ConnectOverride {
+    CONNECT, DISCONNECT, DEFAULT
+  }
 }

@@ -11,11 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Function;
-
-
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.*;
@@ -30,128 +25,132 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Function;
+
 
 public class ActionRobotFilter extends BCStatement implements IActionInternal {
 
-	public ActionRobotFilter() {
-		super("robot.work_filter");
-	}
+  public ActionRobotFilter() {
+    super("robot.work_filter");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.robot.filter");
-	}
+  public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
+    ArrayList<ItemStack> result = new ArrayList<>();
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter"));
-	}
+    for (StatementSlot slot : station.getActiveActions()) {
+      if (slot.statement instanceof ActionRobotFilter) {
+        for (IStatementParameter p : slot.parameters) {
+          if (p instanceof StatementParameterItemStack param) {
+            ItemStack stack = param.getItemStack();
 
-	@Override
-	public int minParameters() {
-		return 1;
-	}
+            if (!stack.isEmpty()) {
+              result.add(stack);
+            }
+          }
+        }
+      }
+    }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+    return result;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+  public static IStackFilter getGateFilter(DockingStation station) {
+    Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-	public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
-		ArrayList<ItemStack> result = new ArrayList<>();
+    if (stacks.size() == 0) {
+      return new PassThroughStackFilter();
+    } else {
+      return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
+    }
+  }
 
-		for (StatementSlot slot : station.getActiveActions()) {
-			if (slot.statement instanceof ActionRobotFilter) {
-				for (IStatementParameter p : slot.parameters) {
-					if (p instanceof StatementParameterItemStack param) {
-                        ItemStack stack = param.getItemStack();
+  public static IFluidFilter getGateFluidFilter(DockingStation station) {
+    Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-						if (!stack.isEmpty()) {
-							result.add(stack);
-						}
-					}
-				}
-			}
-		}
+    if (stacks.size() == 0) {
+      return new PassThroughFluidFilter();
+    } else {
+      return new ArrayFluidFilter(stacks.toArray(new ItemStack[stacks.size()]));
+    }
+  }
 
-		return result;
-	}
+  public static boolean canInteractWithItem(DockingStation station, IStackFilter filter, Class<?> actionClass) {
+    boolean actionFound = false;
 
-	public static IStackFilter getGateFilter(DockingStation station) {
-		Collection<ItemStack> stacks = getGateFilterStacks(station);
+    for (StatementSlot s : station.getActiveActions()) {
+      if (actionClass.isAssignableFrom(s.statement.getClass())) {
+        StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
 
-		if (stacks.size() == 0) {
-			return new PassThroughStackFilter();
-		} else {
-			return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
-		}
-	}
+        if (!param.hasFilter() || param.matches(filter)) {
+          actionFound = true;
+          break;
+        }
+      }
+    }
 
-	public static IFluidFilter getGateFluidFilter(DockingStation station) {
-		Collection<ItemStack> stacks = getGateFilterStacks(station);
+    return actionFound;
+  }
 
-		if (stacks.size() == 0) {
-			return new PassThroughFluidFilter();
-		} else {
-			return new ArrayFluidFilter(stacks.toArray(new ItemStack[stacks.size()]));
-		}
-	}
+  public static boolean canInteractWithFluid(DockingStation station, IFluidFilter filter, Class<?> actionClass) {
+    boolean actionFound = false;
 
-	public static boolean canInteractWithItem(DockingStation station, IStackFilter filter, Class<?> actionClass) {
-		boolean actionFound = false;
+    for (StatementSlot s : station.getActiveActions()) {
+      if (actionClass.isAssignableFrom(s.statement.getClass())) {
+        StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
 
-		for (StatementSlot s : station.getActiveActions()) {
-			if (actionClass.isAssignableFrom(s.statement.getClass())) {
-				StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
+        if (!param.hasFilter()) {
+          actionFound = true;
+          break;
+        } else {
+          for (ItemStack stack : param.getStacks()) {
+            if (!stack.isEmpty()) {
+              FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 
-				if (!param.hasFilter() || param.matches(filter)) {
-					actionFound = true;
-					break;
-				}
-			}
-		}
+              if (!fluid.isEmpty() && filter.matches(fluid.getFluid())) {
+                actionFound = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
 
-		return actionFound;
-	}
+    return actionFound;
 
-	public static boolean canInteractWithFluid(DockingStation station, IFluidFilter filter, Class<?> actionClass) {
-		boolean actionFound = false;
+  }
 
-		for (StatementSlot s : station.getActiveActions()) {
-			if (actionClass.isAssignableFrom(s.statement.getClass())) {
-				StatementParameterStackFilter param = new StatementParameterStackFilter(s.parameters);
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.robot.filter");
+  }
 
-				if (!param.hasFilter()) {
-					actionFound = true;
-					break;
-				} else {
-					for (ItemStack stack : param.getStacks()) {
-						if (!stack.isEmpty()) {
-							FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter"));
+  }
 
-							if (!fluid.isEmpty() && filter.matches(fluid.getFluid())) {
-								actionFound = true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+  @Override
+  public int minParameters() {
+    return 1;
+  }
 
-		return actionFound;
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-                               IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

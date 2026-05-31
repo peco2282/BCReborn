@@ -27,9 +27,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class ResourceDataGenerator extends DatapackBuiltinEntriesProvider {
   private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-      .add(Registries.CONFIGURED_FEATURE, ConfiguredFeaturesEnergy::bootstrap)
-      .add(Registries.PLACED_FEATURE, PlacedFeaturesEnergy::bootstrap)
-      .add(ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiersEnergy::bootstrap);
+    .add(Registries.CONFIGURED_FEATURE, ConfiguredFeaturesEnergy::bootstrap)
+    .add(Registries.PLACED_FEATURE, PlacedFeaturesEnergy::bootstrap)
+    .add(ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiersEnergy::bootstrap);
 
   /**
    * Constructs a new datapack provider which generates all registry objects
@@ -40,13 +40,13 @@ public class ResourceDataGenerator extends DatapackBuiltinEntriesProvider {
    */
   public ResourceDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
     super(output, registries, BUILDER, Set.of(
-        BCRebornCore.MODID,
-        BCRebornBuilders.MODID,
-        BCRebornEnergy.MODID,
-        BCRebornTransport.MODID,
-        BCRebornFactory.MODID,
-        BCRebornSilicon.MODID,
-        BCRebornRobotics.MODID
+      BCRebornCore.MODID,
+      BCRebornBuilders.MODID,
+      BCRebornEnergy.MODID,
+      BCRebornTransport.MODID,
+      BCRebornFactory.MODID,
+      BCRebornSilicon.MODID,
+      BCRebornRobotics.MODID
     ));
   }
 }

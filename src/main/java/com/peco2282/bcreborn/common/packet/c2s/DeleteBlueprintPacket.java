@@ -20,24 +20,24 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record DeleteBlueprintPacket(BlockPos pos) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-    }
+  public static DeleteBlueprintPacket decode(FriendlyByteBuf buffer) {
+    return new DeleteBlueprintPacket(buffer.readBlockPos());
+  }
 
-    public static DeleteBlueprintPacket decode(FriendlyByteBuf buffer) {
-        return new DeleteBlueprintPacket(buffer.readBlockPos());
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
-                .ifPresent(be -> {
-                    be.deleteSelectedBpt();
-                });
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
+        .ifPresent(be -> {
+          be.deleteSelectedBpt();
         });
-        ctx.setPacketHandled(true);
-    }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

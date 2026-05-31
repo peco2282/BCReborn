@@ -19,16 +19,16 @@ import net.minecraft.world.item.Item;
 
 public class BptPipeRotatable extends BptPipeExtension {
 
-	public BptPipeRotatable(Item i) {
-		super(i);
-	}
+  public BptPipeRotatable(Item i) {
+    super(i);
+  }
 
-	@Override
-	public void rotateLeft(SchematicTile slot, IBuilderContext context) {
-		int orientation = (int) slot.meta & 7;
-		int others = (int) (slot.meta - orientation);
+  @Override
+  public void rotateLeft(SchematicTile slot, IBuilderContext context) {
+    int orientation = slot.meta & 7;
+    int others = slot.meta - orientation;
 
-		slot.meta = (byte) (Direction.values()[orientation].getClockWise(Direction.Axis.Y).ordinal() + others);
-	}
+    slot.meta = (byte) (Direction.values()[orientation].getClockWise(Direction.Axis.Y).ordinal() + others);
+  }
 
 }

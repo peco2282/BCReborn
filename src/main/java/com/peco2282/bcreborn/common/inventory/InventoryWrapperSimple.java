@@ -19,26 +19,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryWrapperSimple extends InventoryWrapper {
 
-	private final int[] slots;
+  private final int[] slots;
 
-	public InventoryWrapperSimple(Container inventory) {
-		super(inventory);
-		slots = Utils.createSlotArray(0, inventory.getContainerSize());
-	}
+  public InventoryWrapperSimple(Container inventory) {
+    super(inventory);
+    slots = Utils.createSlotArray(0, inventory.getContainerSize());
+  }
 
-	@Override
-	public int[] getSlotsForFace(Direction var1) {
-		return slots;
-	}
+  @Override
+  public int[] getSlotsForFace(Direction var1) {
+    return slots;
+  }
 
-	@Override
-	public boolean canPlaceItemThroughFace(int slotIndex, ItemStack itemstack, @Nullable Direction side) {
-		return canPlaceItem(slotIndex, itemstack);
-	}
+  @Override
+  public boolean canPlaceItemThroughFace(int slotIndex, ItemStack itemstack, @Nullable Direction side) {
+    return canPlaceItem(slotIndex, itemstack);
+  }
 
-	@Override
-	public boolean canTakeItemThroughFace(int slotIndex, ItemStack itemstack, Direction side) {
-		return true;
-	}
+  @Override
+  public boolean canTakeItemThroughFace(int slotIndex, ItemStack itemstack, Direction side) {
+    return true;
+  }
 
 }

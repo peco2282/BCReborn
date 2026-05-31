@@ -63,9 +63,9 @@ final class MovementHelper {
       LazyOptional<IItemHandler> capability = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
       if (capability.isPresent()) {
         ItemStack remaining = ItemHandlerHelper.insertItemStacked(
-            capability.orElseThrow(IllegalStateException::new),
-            item.getStack(),
-            false
+          capability.orElseThrow(IllegalStateException::new),
+          item.getStack(),
+          false
         );
         if (remaining.isEmpty()) {
           return MovementResult.SUCCESS;

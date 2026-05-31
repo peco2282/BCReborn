@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.api.power;
 import net.minecraft.core.Direction;
 
 public interface IEngine {
-    boolean canReceiveFromEngine(Direction side);
+  boolean canReceiveFromEngine(Direction side);
 
-    int receiveEnergyFromEngine(Direction side, int energy, boolean simulate);
+  int receiveEnergyFromEngine(Direction side, int energy, boolean simulate);
 }

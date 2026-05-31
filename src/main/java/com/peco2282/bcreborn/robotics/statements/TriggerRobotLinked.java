@@ -11,9 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
-import java.util.List;
-import java.util.function.Function;
-
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -27,35 +24,38 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+import java.util.function.Function;
+
 public class TriggerRobotLinked extends BCStatement implements ITriggerInternal {
-	private final boolean reserved;
+  private final boolean reserved;
 
-	public TriggerRobotLinked(boolean reserved) {
-		super("robot." + (reserved ? "reserved" : "linked"));
-		this.reserved = reserved;
-	}
+  public TriggerRobotLinked(boolean reserved) {
+    super("robot." + (reserved ? "reserved" : "linked"));
+    this.reserved = reserved;
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.robot." + (reserved ? "reserved" : "linked"));
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.robot." + (reserved ? "reserved" : "linked"));
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/trigger_robot_" + (reserved ? "reserved" : "linked")));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/trigger_robot_" + (reserved ? "reserved" : "linked")));
+  }
 
-	@Override
-	public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-		List<DockingStation> stations = RobotUtils.getStations(container.getTile());
+  @Override
+  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+    List<DockingStation> stations = RobotUtils.getStations(container.getTile());
 
-		for (DockingStation station : stations) {
-			if (station.isTaken() && (reserved || station.isMainStation())) {
-				return true;
-			}
-		}
+    for (DockingStation station : stations) {
+      if (station.isTaken() && (reserved || station.isMainStation())) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

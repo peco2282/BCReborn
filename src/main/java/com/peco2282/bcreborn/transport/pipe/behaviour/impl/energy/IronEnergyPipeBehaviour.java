@@ -74,7 +74,7 @@ public class IronEnergyPipeBehaviour extends StandardEnergyPipeBehaviour {
       module.setMaxPower(next);
     }
     player.displayClientMessage(
-        Component.translatable("bcreborn.pipe.iron_energy.limit", next), true);
+      Component.translatable("bcreborn.pipe.iron_energy.limit", next), true);
     return InteractionResult.SUCCESS;
   }
 }

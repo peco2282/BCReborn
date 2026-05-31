@@ -15,8 +15,10 @@ import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,21 +34,18 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 
 public class RefineryBlock extends BuildCraftBlock {
   public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
 
   public RefineryBlock() {
     super(Properties.of()
-        .mapColor(MapColor.METAL)
-        .sound(SoundType.METAL)
-        .strength(5.0F, 10.0F)
-        .noOcclusion());
+      .mapColor(MapColor.METAL)
+      .sound(SoundType.METAL)
+      .strength(5.0F, 10.0F)
+      .noOcclusion());
     this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 

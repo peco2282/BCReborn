@@ -16,6 +16,6 @@ import net.minecraft.world.level.Level;
 
 public interface IBlockFilter {
 
-	boolean matches(Level world, BlockPos pos);
+  boolean matches(Level world, BlockPos pos);
 
 }

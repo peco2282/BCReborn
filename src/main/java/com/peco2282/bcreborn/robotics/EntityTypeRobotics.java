@@ -21,7 +21,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
 public class EntityTypeRobotics {
-    private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
+  private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-    public static final RegistryObject<EntityType<EntityRobot>> ROBOT = REGISTRY.registerEntityType("robot", () -> EntityType.Builder.<EntityRobot>of(EntityRobot::new, MobCategory.MISC).fireImmune().sized(.25F, .25F).build("robot"));
+  public static final RegistryObject<EntityType<EntityRobot>> ROBOT = REGISTRY.registerEntityType("robot", () -> EntityType.Builder.<EntityRobot>of(EntityRobot::new, MobCategory.MISC).fireImmune().sized(.25F, .25F).build("robot"));
 }

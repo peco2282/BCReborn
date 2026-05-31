@@ -11,9 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
@@ -22,53 +19,56 @@ import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class RobotIntegrationRecipe {
 
-	public List<ItemStack> generateExampleInput() {
-		ArrayList<ItemStack> example = new ArrayList<ItemStack>();
-		example.add(RobotItem.createRobotStack(RedstoneBoardRegistry.instance.getEmptyRobotBoard(), 0));
-		return example;
-	}
+  public List<ItemStack> generateExampleInput() {
+    ArrayList<ItemStack> example = new ArrayList<ItemStack>();
+    example.add(RobotItem.createRobotStack(RedstoneBoardRegistry.instance.getEmptyRobotBoard(), 0));
+    return example;
+  }
 
-	public List<List<ItemStack>> generateExampleExpansions() {
-		ArrayList<List<ItemStack>> list = new ArrayList<List<ItemStack>>();
-		ArrayList<ItemStack> example = new ArrayList<ItemStack>();
-		for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
-			ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
-			nbt.createBoard(stack.getOrCreateTag());
-			example.add(stack);
-		}
-		list.add(example);
-		return list;
-	}
+  public List<List<ItemStack>> generateExampleExpansions() {
+    ArrayList<List<ItemStack>> list = new ArrayList<List<ItemStack>>();
+    ArrayList<ItemStack> example = new ArrayList<ItemStack>();
+    for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
+      ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
+      nbt.createBoard(stack.getOrCreateTag());
+      example.add(stack);
+    }
+    list.add(example);
+    return list;
+  }
 
-	public List<ItemStack> generateExampleOutput() {
-		ArrayList<ItemStack> example = new ArrayList<ItemStack>();
-		for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
-			example.add(RobotItem.createRobotStack((RedstoneBoardRobotNBT) nbt, 0));
-		}
-		return example;
-	}
+  public List<ItemStack> generateExampleOutput() {
+    ArrayList<ItemStack> example = new ArrayList<ItemStack>();
+    for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
+      example.add(RobotItem.createRobotStack((RedstoneBoardRobotNBT) nbt, 0));
+    }
+    return example;
+  }
 
-	public boolean isValidInput(ItemStack input) {
-		return input.getItem() instanceof RobotItem;
-	}
+  public boolean isValidInput(ItemStack input) {
+    return input.getItem() instanceof RobotItem;
+  }
 
-	public boolean isValidExpansion(ItemStack input, ItemStack expansion) {
-		return expansion.getItem() instanceof RedstoneBoardItem;
-	}
+  public boolean isValidExpansion(ItemStack input, ItemStack expansion) {
+    return expansion.getItem() instanceof RedstoneBoardItem;
+  }
 
-	public ItemStack craft(ItemStack input, List<ItemStack> expansions, boolean preview) {
-		if (!preview) {
-			expansions.get(0).shrink(1);
-		}
-		RedstoneBoardRobotNBT boardNBT = (RedstoneBoardRobotNBT) RedstoneBoardItem.getBoardNBT(expansions.get(0));
+  public ItemStack craft(ItemStack input, List<ItemStack> expansions, boolean preview) {
+    if (!preview) {
+      expansions.get(0).shrink(1);
+    }
+    RedstoneBoardRobotNBT boardNBT = (RedstoneBoardRobotNBT) RedstoneBoardItem.getBoardNBT(expansions.get(0));
 
-		int energy = RobotItem.getEnergy(input);
-		if (energy == 0) {
-			energy = EntityRobotBase.SAFETY_ENERGY;
-		}
-		return RobotItem.createRobotStack(boardNBT, energy);
-	}
+    int energy = RobotItem.getEnergy(input);
+    if (energy == 0) {
+      energy = EntityRobotBase.SAFETY_ENERGY;
+    }
+    return RobotItem.createRobotStack(boardNBT, energy);
+  }
 }

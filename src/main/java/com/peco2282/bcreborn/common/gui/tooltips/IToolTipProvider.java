@@ -15,13 +15,13 @@ import net.minecraft.network.chat.Component;
 
 public interface IToolTipProvider {
 
-	ToolTip getToolTip();
+  ToolTip getToolTip();
 
-	boolean isToolTipVisible();
+  boolean isToolTipVisible();
 
-	boolean isMouseOver(int mouseX, int mouseY);
+  boolean isMouseOver(int mouseX, int mouseY);
 
-	default Component getTooltipComponent() {
-		return getToolTip().getTooltipComponent();
-	}
+  default Component getTooltipComponent() {
+    return getToolTip().getTooltipComponent();
+  }
 }

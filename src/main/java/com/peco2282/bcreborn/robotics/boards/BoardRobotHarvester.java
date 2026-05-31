@@ -22,38 +22,38 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotHarvester extends BoardRobotGenericSearchBlock {
 
-	public BoardRobotHarvester(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotHarvester(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public BoardRobotHarvester(EntityRobotBase iRobot, CompoundTag nbt) {
-		super(iRobot);
-	}
+  public BoardRobotHarvester(EntityRobotBase iRobot, CompoundTag nbt) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("harvester");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("harvester");
+  }
 
-	@Override
-	public boolean isExpectedBlock(Level world, int x, int y, int z) {
-		return BuildCraftAPI.getWorldProperty("harvestable").get(world, new BlockPos(x, y, z));
-	}
+  @Override
+  public boolean isExpectedBlock(Level world, int x, int y, int z) {
+    return BuildCraftAPI.getWorldProperty("harvestable").get(world, new BlockPos(x, y, z));
+  }
 
-	@Override
-	public void update() {
-		if (blockFound() != null) {
-			startDelegateAI(new AIRobotHarvest(robot, blockFound()));
-		} else {
-			super.update();
-		}
-	}
+  @Override
+  public void update() {
+    if (blockFound() != null) {
+      startDelegateAI(new AIRobotHarvest(robot, blockFound()));
+    } else {
+      super.update();
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotHarvest) {
-			releaseBlockFound(ai.success());
-		}
-		super.delegateAIEnded(ai);
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotHarvest) {
+      releaseBlockFound(ai.success());
+    }
+    super.delegateAIEnded(ai);
+  }
 }

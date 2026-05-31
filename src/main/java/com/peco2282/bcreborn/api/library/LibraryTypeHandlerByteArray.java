@@ -14,11 +14,11 @@ package com.peco2282.bcreborn.api.library;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class LibraryTypeHandlerByteArray extends LibraryTypeHandler {
-    public LibraryTypeHandlerByteArray(String extension) {
-        super(extension);
-    }
+  public LibraryTypeHandlerByteArray(String extension) {
+    super(extension);
+  }
 
-    public abstract ItemStack load(ItemStack stack, byte[] data);
+  public abstract ItemStack load(ItemStack stack, byte[] data);
 
-    public abstract byte[] store(ItemStack stack);
+  public abstract byte[] store(ItemStack stack);
 }

@@ -18,18 +18,16 @@ package com.peco2282.bcreborn.api;
  * other mods which implement it, e.g. OpenComputers).
  */
 public interface IControllable {
-  public enum Mode {
-    Unknown, On, Off, Mode, Loop
-  }
-
   /**
    * Get the current control mode of the Tile Entity.
+   *
    * @return
    */
   Mode getControlMode();
 
   /**
    * Set the mode of the Tile Entity.
+   *
    * @param mode
    */
   void setControlMode(Mode mode);
@@ -38,8 +36,13 @@ public interface IControllable {
    * Check if a given control mode is accepted.
    * If you query IControllable tiles, you MUST check with
    * acceptsControlMode first.
+   *
    * @param mode
    * @return True if this control mode is accepted.
    */
   boolean acceptsControlMode(Mode mode);
+
+  enum Mode {
+    Unknown, On, Off, Mode, Loop
+  }
 }

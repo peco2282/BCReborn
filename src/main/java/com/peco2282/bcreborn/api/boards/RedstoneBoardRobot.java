@@ -16,23 +16,23 @@ import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 
 public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoard<EntityRobotBase> {
 
-	protected final EntityRobotBase robot;
+  protected final EntityRobotBase robot;
 
-	public RedstoneBoardRobot(EntityRobotBase robot) {
-        super(robot);
-        this.robot = robot;
-	}
+  public RedstoneBoardRobot(EntityRobotBase robot) {
+    super(robot);
+    this.robot = robot;
+  }
 
-	@Override
-	public abstract RedstoneBoardRobotNBT getNBTHandler();
+  @Override
+  public abstract RedstoneBoardRobotNBT getNBTHandler();
 
-	@Override
-	public final void updateBoard(EntityRobotBase container) {
+  @Override
+  public final void updateBoard(EntityRobotBase container) {
 
-	}
+  }
 
-	@Override
-	public boolean canLoadFromNBT() {
-		return true;
-	}
+  @Override
+  public boolean canLoadFromNBT() {
+    return true;
+  }
 }

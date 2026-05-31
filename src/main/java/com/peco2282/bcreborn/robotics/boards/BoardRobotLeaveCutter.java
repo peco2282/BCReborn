@@ -21,22 +21,22 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotLeaveCutter extends BoardRobotGenericBreakBlock {
 
-	public BoardRobotLeaveCutter(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotLeaveCutter(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("leaveCutter");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("leaveCutter");
+  }
 
-	@Override
-	public boolean isExpectedTool(ItemStack stack) {
-		return !stack.isEmpty() && stack.getItem() instanceof ShearsItem;
-	}
+  @Override
+  public boolean isExpectedTool(ItemStack stack) {
+    return !stack.isEmpty() && stack.getItem() instanceof ShearsItem;
+  }
 
-	@Override
-	public boolean isExpectedBlock(Level world, int x, int y, int z) {
-		return BuildCraftAPI.getWorldProperty("leaves").get(world, new BlockPos(x, y, z));
-	}
+  @Override
+  public boolean isExpectedBlock(Level world, int x, int y, int z) {
+    return BuildCraftAPI.getWorldProperty("leaves").get(world, new BlockPos(x, y, z));
+  }
 }

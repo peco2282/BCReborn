@@ -17,9 +17,7 @@ import com.peco2282.bcreborn.common.gui.widgets.Widget;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.PacketGuiWidget;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,7 +34,7 @@ import java.util.List;
 
 public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends AbstractContainerMenu {
   private final List<Widget> widgets = new ArrayList<>();
-  private int inventorySize;
+  private final int inventorySize;
 
   public BuildCraftMenu(@Nullable MenuType<M> p_38851_, int p_38852_, Inventory p_38853_) {
     super(p_38851_, p_38852_);
@@ -56,10 +54,10 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
     widgets.add(widget);
   }
 
- 	public void sendWidgetDataToClient(Widget widget, ContainerListener player, byte[] data) {
+  public void sendWidgetDataToClient(Widget widget, ContainerListener player, byte[] data) {
     if (player instanceof ServerPlayer serverPlayer) {
-        PacketGuiWidget pkt = new PacketGuiWidget(containerId, widgets.indexOf(widget), data);
-        BCNetworkManager.sendToPlayer(serverPlayer, pkt);
+      PacketGuiWidget pkt = new PacketGuiWidget(containerId, widgets.indexOf(widget), data);
+      BCNetworkManager.sendToPlayer(serverPlayer, pkt);
     }
   }
 
@@ -115,8 +113,8 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
   @Override
   public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
     if (p_150400_ < 0 || p_150400_ >= this.slots.size()) {
-        super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
-        return;
+      super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
+      return;
     }
     Slot slot = this.slots.get(p_150400_);
     if (slot instanceof IPhantomSlot) {
@@ -214,7 +212,7 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
       for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
         Slot slot = slots.get(slotIndex);
         ItemStack stackInSlot = slot.getItem();
-        if (stackInSlot != null && StackHelper.canStacksMerge(stackInSlot, stackToShift)) {
+        if (StackHelper.canStacksMerge(stackInSlot, stackToShift)) {
           int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
           int max = Math.min(stackToShift.getMaxStackSize(), slot.getMaxStackSize());
           if (resultingStackSize <= max) {

@@ -21,16 +21,16 @@ import java.util.LinkedList;
 
 public class SchematicPiston extends SchematicRotateMeta {
 
-	public SchematicPiston() {
-	}
+  public SchematicPiston() {
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		if (state != null) {
-			context.world().setBlock(new BlockPos(x, y, z), state, 3);
-		} else {
-			super.placeInWorld(context, x, y, z, stacks);
-		}
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    if (state != null) {
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
+    } else {
+      super.placeInWorld(context, x, y, z, stacks);
+    }
+  }
 
 }

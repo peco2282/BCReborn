@@ -13,11 +13,11 @@ package com.peco2282.bcreborn.api.recipes;
 
 public final class BuildcraftRecipeRegistry {
 
-	public static IAssemblyRecipeManager assemblyTable;
-	public static IIntegrationRecipeManager integrationTable;
-	public static IRefineryRecipeManager refinery;
-	public static IProgrammingRecipeManager programmingTable;
+  public static IAssemblyRecipeManager assemblyTable;
+  public static IIntegrationRecipeManager integrationTable;
+  public static IRefineryRecipeManager refinery;
+  public static IProgrammingRecipeManager programmingTable;
 
-	private BuildcraftRecipeRegistry() {
-	}
+  private BuildcraftRecipeRegistry() {
+  }
 }

@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEntity> implements IRedstoneEngine {
+  private boolean hasSent = false;
+
   public WoodEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesCore.WOODEN_ENGINE.get(), p_155229_, p_155230_);
     // 小容量・小出力
@@ -47,24 +49,17 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
 
   }
 
-
   @Override
   public void burning() {
     if (this.energyStorage != null && isRedstonePowered) {
       if (level.getGameTime() % 16 == 0) {
         this.energyStorage.generateEnergy(10, false);
       }
-      if (energyStorage.getEnergyStored() > 0 && canPushEnergy()) {
-        setPumping(true);
-      } else {
-        setPumping(false);
-      }
+      setPumping(energyStorage.getEnergyStored() > 0 && canPushEnergy());
     } else {
       setPumping(false);
     }
   }
-
-  private boolean hasSent = false;
 
   @Override
   protected void pushEnergyToNeighbor() {
@@ -106,10 +101,15 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
   @Override
   protected EnergyStage computeStageFromHeat(float h) {
     double energyLevel = getEnergyLevel();
-    if (energyLevel < 0.33f) { return EnergyStage.BLUE; }
-    else if (energyLevel < 0.66f) { return EnergyStage.GREEN; }
-    else if (energyLevel < 0.75f) { return EnergyStage.YELLOW; }
-    else { return EnergyStage.RED; }
+    if (energyLevel < 0.33f) {
+      return EnergyStage.BLUE;
+    } else if (energyLevel < 0.66f) {
+      return EnergyStage.GREEN;
+    } else if (energyLevel < 0.75f) {
+      return EnergyStage.YELLOW;
+    } else {
+      return EnergyStage.RED;
+    }
   }
 
   @Override

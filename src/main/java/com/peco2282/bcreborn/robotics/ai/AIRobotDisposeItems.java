@@ -11,50 +11,49 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraft.world.entity.item.ItemEntity;
-
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
+import net.minecraft.world.entity.item.ItemEntity;
 
 public class AIRobotDisposeItems extends AIRobot {
 
-	public AIRobotDisposeItems(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotDisposeItems(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public void start() {
-		startDelegateAI(new AIRobotGotoStationAndUnload(robot));
-	}
+  @Override
+  public void start() {
+    startDelegateAI(new AIRobotGotoStationAndUnload(robot));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoStationAndUnload) {
-			if (ai.success()) {
-				if (robot.containsItems()) {
-					startDelegateAI(new AIRobotGotoStationAndUnload(robot));
-				} else {
-					terminate();
-				}
-			} else {
-				for (IInvSlot slot : InventoryIterator.getIterable(robot)) {
-					if (slot.getStackInSlot() != null) {
-						final ItemEntity entity = new ItemEntity(
-								robot.level(),
-								robot.getX(),
-								robot.getY(),
-								robot.getZ(),
-								slot.getStackInSlot());
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoStationAndUnload) {
+      if (ai.success()) {
+        if (robot.containsItems()) {
+          startDelegateAI(new AIRobotGotoStationAndUnload(robot));
+        } else {
+          terminate();
+        }
+      } else {
+        for (IInvSlot slot : InventoryIterator.getIterable(robot)) {
+          if (slot.getStackInSlot() != null) {
+            final ItemEntity entity = new ItemEntity(
+              robot.level(),
+              robot.getX(),
+              robot.getY(),
+              robot.getZ(),
+              slot.getStackInSlot());
 
-						robot.level().addFreshEntity(entity);
+            robot.level().addFreshEntity(entity);
 
-						slot.setStackInSlot(null);
-					}
-				}
-				terminate();
-			}
-		}
-	}
+            slot.setStackInSlot(null);
+          }
+        }
+        terminate();
+      }
+    }
+  }
 }

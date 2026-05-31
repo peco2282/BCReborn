@@ -15,5 +15,5 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public interface IRedstoneEngineReceiver extends IEnergyStorage {
-    boolean canConnectRedstoneEngine(Direction side);
+  boolean canConnectRedstoneEngine(Direction side);
 }

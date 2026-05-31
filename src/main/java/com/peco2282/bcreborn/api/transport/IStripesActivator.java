@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
 public interface IStripesActivator {
-    void sendItem(ItemStack itemStack, Direction direction);
+  void sendItem(ItemStack itemStack, Direction direction);
 
-    void dropItem(ItemStack itemStack, Direction direction);
+  void dropItem(ItemStack itemStack, Direction direction);
 }

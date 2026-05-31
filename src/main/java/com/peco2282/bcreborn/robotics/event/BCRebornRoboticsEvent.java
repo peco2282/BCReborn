@@ -27,17 +27,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = BCRebornRobotics.MODID)
 public class BCRebornRoboticsEvent {
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(MenuTypesRobotics.REQUESTER.get(), RequesterScreen::new);
-            MenuScreens.register(MenuTypesRobotics.ZONE_PLAN.get(), ZonePlanScreen::new);
-        });
-    }
+  @SubscribeEvent
+  public static void onClientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> {
+      MenuScreens.register(MenuTypesRobotics.REQUESTER.get(), RequesterScreen::new);
+      MenuScreens.register(MenuTypesRobotics.ZONE_PLAN.get(), ZonePlanScreen::new);
+    });
+  }
 
-    @SubscribeEvent
-    public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EntityTypeRobotics.ROBOT.get(), RenderRobot::new);
-        event.registerBlockEntityRenderer(BlockEntityTypesRobotics.ZONE_PLAN.get(), RenderZonePlan::new);
-    }
+  @SubscribeEvent
+  public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(EntityTypeRobotics.ROBOT.get(), RenderRobot::new);
+    event.registerBlockEntityRenderer(BlockEntityTypesRobotics.ZONE_PLAN.get(), RenderZonePlan::new);
+  }
 }

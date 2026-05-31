@@ -22,100 +22,100 @@ import java.util.Iterator;
 
 public class BlockScanner implements Iterable<BlockIndex> {
 
-	Box box = new Box();
-	Level world;
+  Box box = new Box();
+  Level world;
 
-	int x, y, z;
-	int iterationsPerCycle;
-	int blocksDone = 0;
+  int x, y, z;
+  int iterationsPerCycle;
+  int blocksDone = 0;
 
-	class BlockIt implements Iterator<BlockIndex> {
+  public BlockScanner(Box box, Level world, int iterationsPreCycle) {
+    this.box = box;
+    this.world = world;
+    this.iterationsPerCycle = iterationsPreCycle;
 
-		int it = 0;
+    x = box.xMin;
+    y = box.yMin;
+    z = box.zMin;
+  }
 
-		@Override
-		public boolean hasNext() {
-			return z <= box.zMax && it <= iterationsPerCycle;
-		}
+  public BlockScanner() {
+  }
 
-		@Override
-		public BlockIndex next() {
-			BlockIndex index = new BlockIndex(x, y, z);
-			it++;
-			blocksDone++;
+  @Override
+  public Iterator<BlockIndex> iterator() {
+    return new BlockIt();
+  }
 
-			if (x < box.xMax) {
-				x++;
-			} else {
-				x = box.xMin;
+  public int totalBlocks() {
+    return box.sizeX() * box.sizeY() * box.sizeZ();
+  }
 
-				if (y < box.yMax) {
-					y++;
-				} else {
-					y = box.yMin;
+  public int blocksLeft() {
+    return totalBlocks() - blocksDone;
+  }
 
-					z++;
-				}
-			}
+  public void writeToNBT(CompoundTag nbt) {
+    nbt.putInt("x", x);
+    nbt.putInt("y", y);
+    nbt.putInt("z", z);
+    nbt.putInt("blocksDone", blocksDone);
+    nbt.putInt("iterationsPerCycle", iterationsPerCycle);
+    CompoundTag boxNBT = new CompoundTag();
+    box.writeToNBT(boxNBT);
+    nbt.put("box", boxNBT);
+  }
 
-			return index;
-		}
+  public void readFromNBT(CompoundTag nbt) {
+    x = nbt.getInt("x");
+    y = nbt.getInt("y");
+    z = nbt.getInt("z");
+    blocksDone = nbt.getInt("blocksDone");
+    iterationsPerCycle = nbt.getInt("iterationsPerCycle");
+    box.initialize(nbt.getCompound("box"));
+  }
 
-		@Override
-		public void remove() {
+  public BlockPos nextBlockPos() {
+    BlockIndex index = iterator().next();
+    return new BlockPos(index.x, index.y, index.z);
+  }
 
-		}
-	}
+  class BlockIt implements Iterator<BlockIndex> {
 
-	public BlockScanner(Box box, Level world, int iterationsPreCycle) {
-		this.box = box;
-		this.world = world;
-		this.iterationsPerCycle = iterationsPreCycle;
+    int it = 0;
 
-		x = box.xMin;
-		y = box.yMin;
-		z = box.zMin;
-	}
+    @Override
+    public boolean hasNext() {
+      return z <= box.zMax && it <= iterationsPerCycle;
+    }
 
-	public BlockScanner() {
-	}
+    @Override
+    public BlockIndex next() {
+      BlockIndex index = new BlockIndex(x, y, z);
+      it++;
+      blocksDone++;
 
-	@Override
-	public Iterator<BlockIndex> iterator() {
-		return new BlockIt();
-	}
+      if (x < box.xMax) {
+        x++;
+      } else {
+        x = box.xMin;
 
-	public int totalBlocks() {
-		return box.sizeX() * box.sizeY() * box.sizeZ();
-	}
+        if (y < box.yMax) {
+          y++;
+        } else {
+          y = box.yMin;
 
-	public int blocksLeft() {
-		return totalBlocks() - blocksDone;
-	}
+          z++;
+        }
+      }
 
-	public void writeToNBT(CompoundTag nbt) {
-		nbt.putInt("x", x);
-		nbt.putInt("y", y);
-		nbt.putInt("z", z);
-		nbt.putInt("blocksDone", blocksDone);
-		nbt.putInt("iterationsPerCycle", iterationsPerCycle);
-		CompoundTag boxNBT = new CompoundTag();
-		box.writeToNBT(boxNBT);
-		nbt.put("box", boxNBT);
-	}
+      return index;
+    }
 
-	public void readFromNBT(CompoundTag nbt) {
-		x = nbt.getInt("x");
-		y = nbt.getInt("y");
-		z = nbt.getInt("z");
-		blocksDone = nbt.getInt("blocksDone");
-		iterationsPerCycle = nbt.getInt("iterationsPerCycle");
-		box.initialize(nbt.getCompound("box"));
-	}
+    @Override
+    public void remove() {
 
-	public BlockPos nextBlockPos() {
-		BlockIndex index = iterator().next();
-		return new BlockPos(index.x, index.y, index.z);
-	}
+    }
+  }
 
 }

@@ -12,5 +12,5 @@
 package com.peco2282.bcreborn.common.builder;
 
 public interface IBuildingItem {
-	boolean isDone();
+  boolean isDone();
 }

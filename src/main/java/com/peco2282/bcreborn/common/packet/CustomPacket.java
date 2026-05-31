@@ -23,18 +23,20 @@ import java.util.function.Supplier;
 
 public interface CustomPacket {
   void encode(FriendlyByteBuf buffer);
+
   void handle(Supplier<NetworkEvent.Context> supplier);
 
   default <BE extends BlockEntity> Optional<BE> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos, BlockEntityType<BE> clazz) {
     net.minecraft.world.level.Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
-        level = ctx.getSender().level();
+      level = ctx.getSender().level();
     } else {
-        level = Minecraft.getInstance().level;
+      level = Minecraft.getInstance().level;
     }
     if (level == null) return Optional.empty();
     return level.getBlockEntity(pos, clazz);
   }
+
   default Optional<BlockEntity> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos) {
     net.minecraft.world.level.Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {

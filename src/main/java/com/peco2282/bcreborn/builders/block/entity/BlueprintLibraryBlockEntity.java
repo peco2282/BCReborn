@@ -32,198 +32,195 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implements ContainerBlockEntity {
-    private static final int PROGRESS_TIME = 100;
-    public static final int CHUNK_SIZE = 16384;
+  public static final int CHUNK_SIZE = 16384;
+  private static final int PROGRESS_TIME = 100;
+  public SimpleInventory inv = new SimpleInventory(4, "Electronic Library", 1);
+  public int progressIn = 0;
+  public int progressOut = 0;
 
-    public SimpleInventory inv = new SimpleInventory(4, "Electronic Library", 1);
-    public int progressIn = 0;
-    public int progressOut = 0;
+  public List<LibraryId> entries = new ArrayList<>();
+  public Player uploadingPlayer = null;
+  public Player downloadingPlayer = null;
+  private int selected = -1;
+  private LibraryId blueprintDownloadId;
+  private byte[] blueprintDownload;
 
-    public List<LibraryId> entries = new ArrayList<>();
-    private int selected = -1;
+  public BlueprintLibraryBlockEntity(BlockPos pos, BlockState state) {
+    super(BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get(), pos, state);
+  }
 
-    public Player uploadingPlayer = null;
-    public Player downloadingPlayer = null;
+  public void refresh() {
+    // TODO: implement when BlueprintDatabase is available
+  }
 
-    private LibraryId blueprintDownloadId;
-    private byte[] blueprintDownload;
+  @Override
+  public void initialize() {
+    super.initialize();
+  }
 
-    public BlueprintLibraryBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get(), pos, state);
+  public void deleteSelectedBpt() {
+    // TODO: implement when BlueprintDatabase is available
+  }
+
+  @Override
+  public void load(CompoundTag nbt) {
+    super.load(nbt);
+    inv.readFromNBT(nbt, "Items");
+    if (nbt.contains("selected")) {
+      selected = nbt.getInt("selected");
     }
+  }
 
-    public void refresh() {
-        // TODO: implement when BlueprintDatabase is available
-    }
+  @Override
+  protected void saveAdditional(CompoundTag nbt) {
+    super.saveAdditional(nbt);
+    inv.writeToNBT(nbt, "Items");
+    nbt.putInt("selected", selected);
+  }
 
-    @Override
-    public void initialize() {
-        super.initialize();
-    }
+  @Override
+  protected void tick(Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) {
+      if (progressIn > 0 && progressIn < PROGRESS_TIME) {
+        progressIn++;
+      }
 
-    public void deleteSelectedBpt() {
-        // TODO: implement when BlueprintDatabase is available
-    }
-
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        inv.readFromNBT(nbt, "Items");
-        if (nbt.contains("selected")) {
-            selected = nbt.getInt("selected");
+      if (progressOut > 0 && progressOut < PROGRESS_TIME) {
+        if (selected != -1) {
+          progressOut++;
+        } else {
+          progressOut = 1;
         }
+      }
     }
+  }
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        inv.writeToNBT(nbt, "Items");
-        nbt.putInt("selected", selected);
-    }
+  @Override
+  public Component getName() {
+    return getDisplayName();
+  }
 
-    @Override
-    protected void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) {
-            if (progressIn > 0 && progressIn < PROGRESS_TIME) {
-                progressIn++;
-            }
-
-            if (progressOut > 0 && progressOut < PROGRESS_TIME) {
-                if (selected != -1) {
-                    progressOut++;
-                } else {
-                    progressOut = 1;
-                }
-            }
-        }
-    }
-
-    @Override
-    public Component getName() {
-        return getDisplayName();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return Component.literal(inv.getName());
-    }
+  @Override
+  public Component getDisplayName() {
+    return Component.literal(inv.getName());
+  }
 
   @Override
   public AbstractContainerMenu createMenu(int windowId, Inventory inventory) {
     return new BlueprintLibraryMenu(windowId, inventory, this);
   }
 
-    @Override
-    public int getContainerSize() {
-        return inv.getContainerSize();
-    }
+  @Override
+  public int getContainerSize() {
+    return inv.getContainerSize();
+  }
 
-    @Override
-    public boolean isEmpty() {
-        return inv.isEmpty();
-    }
+  @Override
+  public boolean isEmpty() {
+    return inv.isEmpty();
+  }
 
-    @Override
-    public ItemStack getItem(int p_18941_) {
-        return inv.getItem(p_18941_);
-    }
+  @Override
+  public ItemStack getItem(int p_18941_) {
+    return inv.getItem(p_18941_);
+  }
 
-    @Override
-    public ItemStack removeItem(int p_18942_, int p_18943_) {
-        ItemStack stack = inv.removeItem(p_18942_, p_18943_);
-        if (p_18942_ == 0) {
-            if (getItem(0).isEmpty()) {
-                progressIn = 0;
-            }
-        }
-        if (p_18942_ == 2) {
-            if (getItem(2).isEmpty()) {
-                progressOut = 0;
-            }
-        }
-        return stack;
+  @Override
+  public ItemStack removeItem(int p_18942_, int p_18943_) {
+    ItemStack stack = inv.removeItem(p_18942_, p_18943_);
+    if (p_18942_ == 0) {
+      if (getItem(0).isEmpty()) {
+        progressIn = 0;
+      }
     }
+    if (p_18942_ == 2) {
+      if (getItem(2).isEmpty()) {
+        progressOut = 0;
+      }
+    }
+    return stack;
+  }
 
-    @Override
-    public ItemStack removeItemNoUpdate(int p_18951_) {
-        return inv.removeItemNoUpdate(p_18951_);
-    }
+  @Override
+  public ItemStack removeItemNoUpdate(int p_18951_) {
+    return inv.removeItemNoUpdate(p_18951_);
+  }
 
-    @Override
-    public void setItem(int p_18944_, ItemStack p_18945_) {
-        inv.setItem(p_18944_, p_18945_);
-        if (p_18944_ == 0) {
-            if (!getItem(0).isEmpty() && findHandler(0, LibraryTypeHandler.HandlerType.STORE) != null) {
-                progressIn = 1;
-            } else {
-                progressIn = 0;
-            }
-        }
-        if (p_18944_ == 2) {
-            if (!getItem(2).isEmpty() && findHandler(2, LibraryTypeHandler.HandlerType.LOAD) != null) {
-                progressOut = 1;
-            } else {
-                progressOut = 0;
-            }
-        }
+  @Override
+  public void setItem(int p_18944_, ItemStack p_18945_) {
+    inv.setItem(p_18944_, p_18945_);
+    if (p_18944_ == 0) {
+      if (!getItem(0).isEmpty() && findHandler(0, LibraryTypeHandler.HandlerType.STORE) != null) {
+        progressIn = 1;
+      } else {
+        progressIn = 0;
+      }
     }
+    if (p_18944_ == 2) {
+      if (!getItem(2).isEmpty() && findHandler(2, LibraryTypeHandler.HandlerType.LOAD) != null) {
+        progressOut = 1;
+      } else {
+        progressOut = 0;
+      }
+    }
+  }
 
-    @Override
-    public boolean stillValid(Player p_18946_) {
-        return level.getBlockEntity(worldPosition).getClass().equals(getClass());
-    }
+  @Override
+  public boolean stillValid(Player p_18946_) {
+    return level.getBlockEntity(worldPosition).getClass().equals(getClass());
+  }
 
-    @Override
-    public void clearContent() {
-        inv.clearContent();
-    }
+  @Override
+  public void clearContent() {
+    inv.clearContent();
+  }
 
-    private LibraryTypeHandler findHandler(int slot, LibraryTypeHandler.HandlerType type) {
-        // TODO: implement when LibraryAPI is available
-        return null;
-    }
+  private LibraryTypeHandler findHandler(int slot, LibraryTypeHandler.HandlerType type) {
+    // TODO: implement when LibraryAPI is available
+    return null;
+  }
 
-    public boolean isOutputConsistent() {
-        return false;
-    }
+  public boolean isOutputConsistent() {
+    return false;
+  }
 
-    public int getSelectedBlueprint() {
-        return selected;
-    }
+  public int getSelectedBlueprint() {
+    return selected;
+  }
 
-    public void setSelectedBlueprint(int blueprintId) {
-        selected = blueprintId;
-    }
+  public void setSelectedBlueprint(int blueprintId) {
+    selected = blueprintId;
+  }
 
-    public void setBlueprintDownloadAndId(LibraryId id, byte[] data) {
-        blueprintDownloadId = id;
-        blueprintDownload = data;
-    }
+  public void setBlueprintDownloadAndId(LibraryId id, byte[] data) {
+    blueprintDownloadId = id;
+    blueprintDownload = data;
+  }
 
-    public void setBlueprintDownload(int start, byte[] data) {
-        for (int i = 0; i < data.length; i++) {
-            if (start + i >= blueprintDownload.length) {
-                return;
-            }
-            blueprintDownload[start + i] = data[i];
-        }
+  public void setBlueprintDownload(int start, byte[] data) {
+    for (int i = 0; i < data.length; i++) {
+      if (start + i >= blueprintDownload.length) {
+        return;
+      }
+      blueprintDownload[start + i] = data[i];
     }
+  }
 
-    public byte[] getBlueprintDownload() {
-        return blueprintDownload;
-    }
+  public byte[] getBlueprintDownload() {
+    return blueprintDownload;
+  }
 
-    public LibraryId getBlueprintDownloadId() {
-        return blueprintDownloadId;
-    }
+  public LibraryId getBlueprintDownloadId() {
+    return blueprintDownloadId;
+  }
 
-    public void setDownloadingPlayer(Player player) {
-        downloadingPlayer = player;
-    }
+  public void setDownloadingPlayer(Player player) {
+    downloadingPlayer = player;
+  }
 
-    public void completeDownload() {
-        blueprintDownloadId = null;
-        blueprintDownload = null;
-        downloadingPlayer = null;
-    }
+  public void completeDownload() {
+    blueprintDownloadId = null;
+    blueprintDownload = null;
+    downloadingPlayer = null;
+  }
 }

@@ -41,17 +41,17 @@ public final class PipeDebugLogger {
    * @param direction 決定された次の方向
    */
   public static void logRouting(
-      PipeBlockEntity pipe,
-      TravelingItem item,
-      Direction direction
+    PipeBlockEntity pipe,
+    TravelingItem item,
+    Direction direction
   ) {
     if (!DEBUG_ROUTING) return;
 
     LOGGER.info(
-        "[PipeRouting] {} -> {} item={}",
-        pipe.getBlockPos(),
-        direction,
-        item.getStack()
+      "[PipeRouting] {} -> {} item={}",
+      pipe.getBlockPos(),
+      direction,
+      item.getStack()
     );
   }
 }

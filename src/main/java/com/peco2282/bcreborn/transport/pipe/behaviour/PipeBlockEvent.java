@@ -31,6 +31,7 @@ public interface PipeBlockEvent {
     }
     return InteractionResult.PASS;
   }
+
   default void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
   }
 

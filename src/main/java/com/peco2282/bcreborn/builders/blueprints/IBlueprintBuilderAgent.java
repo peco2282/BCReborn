@@ -16,10 +16,10 @@ import net.minecraft.world.Container;
 
 public interface IBlueprintBuilderAgent {
 
-	boolean breakBlock(int x, int y, int z);
+  boolean breakBlock(int x, int y, int z);
 
-	Container getInventory();
+  Container getInventory();
 
-	boolean buildBlock(int x, int y, int z);
+  boolean buildBlock(int x, int y, int z);
 
 }

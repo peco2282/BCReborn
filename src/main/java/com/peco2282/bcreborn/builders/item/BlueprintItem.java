@@ -29,105 +29,104 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public abstract class BlueprintItem extends BuildCraftItem implements IBlueprintItem {
-    protected BlueprintItem(Properties properties) {
-        super(properties);
+  protected BlueprintItem(Properties properties) {
+    super(properties);
+  }
+
+  public static boolean isContentReadable(ItemStack stack) {
+    return getId(stack) != null;
+  }
+
+  public static LibraryId getId(ItemStack stack) {
+    CompoundTag nbt = stack.getOrCreateTag();
+    LibraryId id = new LibraryId();
+    id.read(nbt);
+
+    if (BCRebornBuilders.getServerDB().exists(id)) {
+      return id;
+    } else {
+      return null;
+    }
+  }
+
+  public static BlueprintBase loadBlueprint(ItemStack stack) {
+    if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof IBlueprintItem)) {
+      return null;
     }
 
-
-    @Override
-    public Component getName(ItemStack stack) {
-        return Component.literal(stack.getOrCreateTag().getString("name"));
+    LibraryId id = getId(stack);
+    if (id == null) {
+      return null;
     }
 
-    @Override
-    public boolean setName(ItemStack stack, Component name) {
-        stack.getOrCreateTag().putString("name", name.getString());
-        return true;
+    CompoundTag nbt = BCRebornBuilders.getServerDB().load(id);
+    BlueprintBase base;
+    if (((IBlueprintItem) stack.getItem()).getType(stack) == IBlueprintItem.Type.TEMPLATE) {
+      base = new Template();
+    } else {
+      base = new Blueprint();
+    }
+    base.readFromNBT(nbt);
+    base.id = id;
+    return base;
+  }
+
+  @Override
+  public Component getName(ItemStack stack) {
+    return Component.literal(stack.getOrCreateTag().getString("name"));
+  }
+
+  @Override
+  public boolean setName(ItemStack stack, Component name) {
+    stack.getOrCreateTag().putString("name", name.getString());
+    return true;
+  }
+
+  @Override
+  public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
+    CompoundTag s = p_41421_.getOrCreateTag();
+    if (s.contains("name")) {
+      String name = s.getString("name");
+
+      if (name.isEmpty()) {
+        p_41423_.add(Component.translatable("item.blueprint.unnamed"));
+      } else {
+        p_41423_.add(Component.literal(name));
+      }
+
+      p_41423_.add(
+        Component
+          .translatable("item.blueprint.author")
+          .append(Component.literal(" "))
+          .append(s.getString("author"))
+      );
+    } else {
+      p_41423_.add(Component.translatable("item.blueprint.blank"));
     }
 
-    @Override
-    public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
-        CompoundTag s = p_41421_.getOrCreateTag();
-        if (s.contains("name")) {
-            String name = s.getString("name");
+    if (s.contains("permission")) {
+      BuildingPermission p = BuildingPermission.values()[s.getByte("permission")];
 
-            if (name.isEmpty()) {
-                p_41423_.add(Component.translatable("item.blueprint.unnamed"));
-            } else {
-                p_41423_.add(Component.literal(name));
-            }
-
-            p_41423_.add(
-                    Component
-                            .translatable("item.blueprint.author")
-                            .append(Component.literal(" "))
-                            .append(s.getString("author"))
-            );
-        } else {
-            p_41423_.add(Component.translatable("item.blueprint.blank"));
-        }
-
-        if (s.contains("permission")) {
-            BuildingPermission p = BuildingPermission.values()[s.getByte("permission")];
-
-            if (p == BuildingPermission.CREATIVE_ONLY) {
-                p_41423_.add(Component.translatable("item.blueprint.creative_only"));
-            } else if (p == BuildingPermission.NONE) {
-                p_41423_.add(Component.translatable("item.blueprint.no_build"));
-            }
-        }
-
-        if (s.contains("isComplete")) {
-            boolean isComplete = s.getBoolean("isComplete");
-
-            if (!isComplete) {
-                p_41423_.add(Component.translatable("item.blueprint.incomplete"));
-            }
-        }
+      if (p == BuildingPermission.CREATIVE_ONLY) {
+        p_41423_.add(Component.translatable("item.blueprint.creative_only"));
+      } else if (p == BuildingPermission.NONE) {
+        p_41423_.add(Component.translatable("item.blueprint.no_build"));
+      }
     }
 
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return stack.getOrCreateTag().contains("name") ? 1 : 16;
+    if (s.contains("isComplete")) {
+      boolean isComplete = s.getBoolean("isComplete");
+
+      if (!isComplete) {
+        p_41423_.add(Component.translatable("item.blueprint.incomplete"));
+      }
     }
+  }
 
-    public abstract String getIconType();
+  @Override
+  public int getMaxStackSize(ItemStack stack) {
+    return stack.getOrCreateTag().contains("name") ? 1 : 16;
+  }
 
-    public static boolean isContentReadable(ItemStack stack) {
-        return getId(stack) != null;
-    }
-
-    public static LibraryId getId(ItemStack stack) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        LibraryId id = new LibraryId();
-        id.read(nbt);
-
-        if (BCRebornBuilders.getServerDB().exists(id)) {
-            return id;
-        } else {
-            return null;
-        }
-    }
-
-    public static BlueprintBase loadBlueprint(ItemStack stack) {
-        if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof IBlueprintItem)) {
-            return null;
-        }
-
-        LibraryId id = getId(stack);
-        if (id == null) {
-            return null;
-        }
-
-        CompoundTag nbt = BCRebornBuilders.getServerDB().load(id);
-        BlueprintBase base;
-        if (((IBlueprintItem) stack.getItem()).getType(stack) == IBlueprintItem.Type.TEMPLATE) {
-            base = new Template();
-        } else {
-            base = new Blueprint();
-        }
-        base.readFromNBT(nbt);
-        base.id = id;
-        return base;
-    }
+  public abstract String getIconType();
 }

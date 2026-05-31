@@ -29,8 +29,8 @@ public class EnergyItemModelProvider extends ItemModelProvider {
     basicItem(FluidsEnergy.FUEL_BUCKET.get());
 
     getBuilder("creative_engine")
-        .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")))
-        ;
+      .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")))
+    ;
     getBuilder("iron_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
     getBuilder("stone_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }

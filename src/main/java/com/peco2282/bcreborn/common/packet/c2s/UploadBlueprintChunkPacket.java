@@ -22,12 +22,20 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 public record UploadBlueprintChunkPacket(
-    BlockPos pos,
-    int chunk,
-    byte[] data
+  BlockPos pos,
+  int chunk,
+  byte[] data
 ) implements CustomPacket {
   public UploadBlueprintChunkPacket(BlockPos pos, int chunk, byte[] data, int start) {
     this(pos, chunk, Arrays.copyOfRange(data, start, start + data.length));
+  }
+
+  public static UploadBlueprintChunkPacket decode(FriendlyByteBuf buffer) {
+    return new UploadBlueprintChunkPacket(
+      buffer.readBlockPos(),
+      buffer.readInt(),
+      buffer.readByteArray()
+    );
   }
 
   @Override
@@ -35,14 +43,6 @@ public record UploadBlueprintChunkPacket(
     buffer.writeBlockPos(pos);
     buffer.writeInt(chunk);
     buffer.writeByteArray(data);
-  }
-
-  public static UploadBlueprintChunkPacket decode(FriendlyByteBuf buffer) {
-    return new UploadBlueprintChunkPacket(
-        buffer.readBlockPos(),
-        buffer.readInt(),
-        buffer.readByteArray()
-    );
   }
 
   @Override

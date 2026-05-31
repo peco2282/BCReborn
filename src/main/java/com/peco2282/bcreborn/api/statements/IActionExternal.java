@@ -15,5 +15,5 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IActionExternal extends IStatement {
-    void actionActivate(BlockEntity target, Direction side, IStatementContainer source, IStatementParameter[] parameters);
+  void actionActivate(BlockEntity target, Direction side, IStatementContainer source, IStatementParameter[] parameters);
 }

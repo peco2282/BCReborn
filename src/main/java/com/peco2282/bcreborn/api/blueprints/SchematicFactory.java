@@ -17,43 +17,43 @@ import java.util.HashMap;
 
 public abstract class SchematicFactory<S extends Schematic> {
 
-	private static final HashMap<String, SchematicFactory<?>> factories = new HashMap<String, SchematicFactory<?>>();
+  private static final HashMap<String, SchematicFactory<?>> factories = new HashMap<String, SchematicFactory<?>>();
 
-	private static final HashMap<Class<? extends Schematic>, SchematicFactory<?>> schematicToFactory = new HashMap<Class<? extends Schematic>, SchematicFactory<?>>();
+  private static final HashMap<Class<? extends Schematic>, SchematicFactory<?>> schematicToFactory = new HashMap<Class<? extends Schematic>, SchematicFactory<?>>();
 
-	protected abstract S loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
-			throws MappingNotFoundException;
+  public static Schematic createSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
+    throws MappingNotFoundException {
+    String factoryName = nbt.getString("factoryID");
 
-	public void saveSchematicToWorldNBT(CompoundTag nbt, S object, MappingRegistry registry) {
-		nbt.putString("factoryID", getClass().getCanonicalName());
-	}
+    if (factories.containsKey(factoryName)) {
+      return factories.get(factoryName).loadSchematicFromWorldNBT(nbt, registry);
+    } else {
+      return null;
+    }
+  }
 
-	public static Schematic createSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
-			throws MappingNotFoundException {
-		String factoryName = nbt.getString("factoryID");
+  public static void registerSchematicFactory(Class<? extends Schematic> clas, SchematicFactory<?> factory) {
+    schematicToFactory.put(clas, factory);
+    factories.put(factory.getClass().getCanonicalName(), factory);
+  }
 
-		if (factories.containsKey(factoryName)) {
-			return factories.get(factoryName).loadSchematicFromWorldNBT(nbt, registry);
-		} else {
-			return null;
-		}
-	}
+  public static SchematicFactory getFactory(Class<? extends Schematic> clas) {
+    Class superClass = clas.getSuperclass();
 
-	public static void registerSchematicFactory(Class<? extends Schematic> clas, SchematicFactory<?> factory) {
-		schematicToFactory.put(clas, factory);
-		factories.put(factory.getClass().getCanonicalName(), factory);
-	}
+    if (schematicToFactory.containsKey(clas)) {
+      return schematicToFactory.get(clas);
+    } else if (superClass != null) {
+      return getFactory(superClass);
+    } else {
+      return null;
+    }
+  }
 
-	public static SchematicFactory getFactory(Class<? extends Schematic> clas) {
-		Class superClass = clas.getSuperclass();
+  protected abstract S loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
+    throws MappingNotFoundException;
 
-		if (schematicToFactory.containsKey(clas)) {
-			return schematicToFactory.get(clas);
-		} else if (superClass != null) {
-			return getFactory(superClass);
-		} else {
-			return null;
-		}
-	}
+  public void saveSchematicToWorldNBT(CompoundTag nbt, S object, MappingRegistry registry) {
+    nbt.putString("factoryID", getClass().getCanonicalName());
+  }
 
 }

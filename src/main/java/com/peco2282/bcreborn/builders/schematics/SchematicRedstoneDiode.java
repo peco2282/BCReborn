@@ -20,26 +20,26 @@ import net.minecraft.world.level.block.Rotation;
 import java.util.LinkedList;
 
 public class SchematicRedstoneDiode extends SchematicBlockFloored {
-	private Item baseItem;
+  private final Item baseItem;
 
-	public SchematicRedstoneDiode(Item baseItem) {
-		this.baseItem = baseItem;
-	}
+  public SchematicRedstoneDiode(Item baseItem) {
+    this.baseItem = baseItem;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(baseItem));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(baseItem));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 }

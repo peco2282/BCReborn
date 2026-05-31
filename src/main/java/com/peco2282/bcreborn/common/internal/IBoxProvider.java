@@ -14,5 +14,5 @@ package com.peco2282.bcreborn.common.internal;
 import com.peco2282.bcreborn.common.Box;
 
 public interface IBoxProvider {
-	Box getBox();
+  Box getBox();
 }

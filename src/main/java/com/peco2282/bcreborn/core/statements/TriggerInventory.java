@@ -25,94 +25,92 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
 
 import java.util.Locale;
 import java.util.function.Function;
 
 public class TriggerInventory extends BCStatement implements ITriggerExternal {
 
-	public enum State {
+  public State state;
 
-		Empty, Contains, Space, Full
-	}
+  public TriggerInventory(State state) {
+    super("buildcraft:inventory." + state.name().toLowerCase(Locale.ENGLISH), "buildcraft.inventory." + state.name().toLowerCase(Locale.ENGLISH));
 
-	public State state;
+    this.state = state;
+  }
 
-	public TriggerInventory(State state) {
-		super("buildcraft:inventory." + state.name().toLowerCase(Locale.ENGLISH), "buildcraft.inventory." + state.name().toLowerCase(Locale.ENGLISH));
+  @Override
+  public int maxParameters() {
+    return state == State.Contains || state == State.Space ? 1 : 0;
+  }
 
-		this.state = state;
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.inventory." + state.name().toLowerCase(Locale.ENGLISH));
+  }
 
-	@Override
-	public int maxParameters() {
-		return state == State.Contains || state == State.Space ? 1 : 0;
-	}
+  @Override
+  public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer container, IStatementParameter[] parameters) {
+    if (tile == null) return false;
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.inventory." + state.name().toLowerCase(Locale.ENGLISH));
-	}
+    return tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).map(handler -> {
+      ItemStack searchedStack = ItemStack.EMPTY;
 
-	@Override
-	public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer container, IStatementParameter[] parameters) {
-		if (tile == null) return false;
+      if (parameters != null && parameters.length >= 1 && parameters[0] != null) {
+        searchedStack = parameters[0].getItemStack();
+      }
 
-		return tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).map(handler -> {
-			ItemStack searchedStack = ItemStack.EMPTY;
+      boolean foundItems = false;
+      boolean foundSpace = false;
+      boolean hasSlots = handler.getSlots() > 0;
 
-			if (parameters != null && parameters.length >= 1 && parameters[0] != null) {
-				searchedStack = parameters[0].getItemStack();
-			}
+      for (int i = 0; i < handler.getSlots(); i++) {
+        ItemStack stack = handler.getStackInSlot(i);
 
-			boolean foundItems = false;
-			boolean foundSpace = false;
-			boolean hasSlots = handler.getSlots() > 0;
+        if (!stack.isEmpty()) {
+          if (searchedStack.isEmpty() || (ItemStack.isSameItemSameTags(stack, searchedStack))) {
+            foundItems = true;
+          }
+        }
 
-			for (int i = 0; i < handler.getSlots(); i++) {
-				ItemStack stack = handler.getStackInSlot(i);
+        if (handler.insertItem(i, searchedStack.isEmpty() ? new ItemStack(net.minecraft.world.item.Items.STONE) : searchedStack, true).getCount() < (searchedStack.isEmpty() ? 1 : searchedStack.getCount())) {
+          // This is a bit rough for "space" but it's a start
+          foundSpace = true;
+        } else if (stack.isEmpty()) {
+          foundSpace = true;
+        }
+      }
 
-				if (!stack.isEmpty()) {
-					if (searchedStack.isEmpty() || (ItemStack.isSameItemSameTags(stack, searchedStack))) {
-						foundItems = true;
-					}
-				}
+      if (!hasSlots) {
+        return false;
+      }
 
-				if (handler.insertItem(i, searchedStack.isEmpty() ? new ItemStack(net.minecraft.world.item.Items.STONE) : searchedStack, true).getCount() < (searchedStack.isEmpty() ? 1 : searchedStack.getCount())) {
-					// This is a bit rough for "space" but it's a start
-					foundSpace = true;
-				} else if (stack.isEmpty()) {
-					foundSpace = true;
-				}
-			}
+      switch (state) {
+        case Empty:
+          return !foundItems;
+        case Contains:
+          return foundItems;
+        case Space:
+          return foundSpace;
+        default:
+          return !foundSpace;
+      }
+    }).orElse(false);
+  }
 
-			if (!hasSlots) {
-				return false;
-			}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_inventory_" + state.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-			switch (state) {
-				case Empty:
-					return !foundItems;
-				case Contains:
-					return foundItems;
-				case Space:
-					return foundSpace;
-				default:
-					return !foundSpace;
-			}
-		}).orElse(false);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
+  public enum State {
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_inventory_" + state.name().toLowerCase(Locale.ENGLISH)));
-	}
-
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+    Empty, Contains, Space, Full
+  }
 }

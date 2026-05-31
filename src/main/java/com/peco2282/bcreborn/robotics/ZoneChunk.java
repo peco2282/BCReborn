@@ -11,122 +11,122 @@
  */
 package com.peco2282.bcreborn.robotics;
 
-import java.util.BitSet;
-import java.util.Random;
-
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.BitSet;
+import java.util.Random;
+
 public class ZoneChunk implements ISerializable {
 
-	public BitSet property;
-	private boolean fullSet = false;
+  public BitSet property;
+  private boolean fullSet = false;
 
-	public ZoneChunk() {
-	}
+  public ZoneChunk() {
+  }
 
-	public boolean get(int xChunk, int zChunk) {
-		if (fullSet) {
-			return true;
-		} else if (property == null) {
-			return false;
-		} else {
-			return property.get(xChunk + zChunk * 16);
-		}
-	}
+  public boolean get(int xChunk, int zChunk) {
+    if (fullSet) {
+      return true;
+    } else if (property == null) {
+      return false;
+    } else {
+      return property.get(xChunk + zChunk * 16);
+    }
+  }
 
-	public void set(int xChunk, int zChunk, boolean value) {
-		if (value) {
-			if (fullSet) {
-				return;
-			}
+  public void set(int xChunk, int zChunk, boolean value) {
+    if (value) {
+      if (fullSet) {
+        return;
+      }
 
-			if (property == null) {
-				property = new BitSet(16 * 16);
-			}
+      if (property == null) {
+        property = new BitSet(16 * 16);
+      }
 
-			property.set(xChunk + zChunk * 16, value);
+      property.set(xChunk + zChunk * 16, value);
 
-			if (property.cardinality() >= 16 * 16) {
-				property = null;
-				fullSet = true;
-			}
-		} else {
-			if (fullSet) {
-				property = new BitSet(16 * 16);
-				property.flip(0, 16 * 16 - 1);
-				fullSet = false;
-			} else if (property == null) {
-				// Note - ZonePlan should usually destroy such chunks
-				property = new BitSet(16 * 16);
-			}
+      if (property.cardinality() >= 16 * 16) {
+        property = null;
+        fullSet = true;
+      }
+    } else {
+      if (fullSet) {
+        property = new BitSet(16 * 16);
+        property.flip(0, 16 * 16 - 1);
+        fullSet = false;
+      } else if (property == null) {
+        // Note - ZonePlan should usually destroy such chunks
+        property = new BitSet(16 * 16);
+      }
 
-			property.set(xChunk + zChunk * 16, value);
-		}
-	}
+      property.set(xChunk + zChunk * 16, value);
+    }
+  }
 
-	public void writeToNBT(CompoundTag nbt) {
-		nbt.putBoolean("fullSet", fullSet);
+  public void writeToNBT(CompoundTag nbt) {
+    nbt.putBoolean("fullSet", fullSet);
 
-		if (property != null) {
-			nbt.putByteArray("bits", BitSetUtils.toByteArray(property));
-		}
-	}
+    if (property != null) {
+      nbt.putByteArray("bits", BitSetUtils.toByteArray(property));
+    }
+  }
 
-	public void readFromNBT(CompoundTag nbt) {
-		fullSet = nbt.getBoolean("fullSet");
+  public void readFromNBT(CompoundTag nbt) {
+    fullSet = nbt.getBoolean("fullSet");
 
-		if (nbt.contains("bits")) {
-			property = BitSetUtils.fromByteArray(nbt.getByteArray("bits"));
-		}
-	}
+    if (nbt.contains("bits")) {
+      property = BitSetUtils.fromByteArray(nbt.getByteArray("bits"));
+    }
+  }
 
-	public BlockIndex getRandomBlockIndex(Random rand) {
-		int x, z;
+  public BlockIndex getRandomBlockIndex(Random rand) {
+    int x, z;
 
-		if (fullSet) {
-			x = rand.nextInt(16);
-			z = rand.nextInt(16);
-		} else {
-			int bitId = rand.nextInt(property.cardinality());
-			int bitPosition = property.nextSetBit(0);
+    if (fullSet) {
+      x = rand.nextInt(16);
+      z = rand.nextInt(16);
+    } else {
+      int bitId = rand.nextInt(property.cardinality());
+      int bitPosition = property.nextSetBit(0);
 
-			while (bitId > 0) {
-				bitId--;
+      while (bitId > 0) {
+        bitId--;
 
-				bitPosition = property.nextSetBit(bitPosition + 1);
-			}
+        bitPosition = property.nextSetBit(bitPosition + 1);
+      }
 
-			z = bitPosition / 16;
-			x = bitPosition - 16 * z;
-		}
-		int y = rand.nextInt(255);
+      z = bitPosition / 16;
+      x = bitPosition - 16 * z;
+    }
+    int y = rand.nextInt(255);
 
-		return new BlockIndex(x, y, z);
-	}
+    return new BlockIndex(x, y, z);
+  }
 
-	public boolean isEmpty() {
-		return !fullSet && (property == null || property.isEmpty());
-	}
+  public boolean isEmpty() {
+    return !fullSet && (property == null || property.isEmpty());
+  }
 
-	@Override
-	public void readData(FriendlyByteBuf stream) {
-		int flags = stream.readUnsignedByte();
-		if ((flags & 1) != 0) {
-			property = BitSetUtils.fromByteArray(stream.readByteArray());
-		}
-		fullSet = (flags & 2) != 0;
-	}
+  @Override
+  public void readData(FriendlyByteBuf stream) {
+    int flags = stream.readUnsignedByte();
+    if ((flags & 1) != 0) {
+      property = BitSetUtils.fromByteArray(stream.readByteArray());
+    }
+    fullSet = (flags & 2) != 0;
+  }
 
-	@Override
-	public void writeData(FriendlyByteBuf stream) {
-		int flags = (fullSet ? 2 : 0) | (property != null ? 1 : 0);
-		stream.writeByte(flags);
-		if (property != null) {
-			stream.writeByteArray(BitSetUtils.toByteArray(property));
-		}
-	}
+  @Override
+  public void writeData(FriendlyByteBuf stream) {
+    int flags = (fullSet ? 2 : 0) | (property != null ? 1 : 0);
+    stream.writeByte(flags);
+    if (property != null) {
+      stream.writeByteArray(BitSetUtils.toByteArray(property));
+    }
+  }
 }

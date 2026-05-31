@@ -29,10 +29,9 @@ import org.slf4j.Logger;
 // Demonstrates how to use Forge's config APIs
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
+  public static final ForgeConfigSpec SPEC;
   private static final Logger LOGGER = BCReborn.createLogger();
-
   private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-
   private static final ForgeConfigSpec.Builder GENERAL;
   private static final ForgeConfigSpec.Builder CORE;
   private static final ForgeConfigSpec.Builder ENERGY;
@@ -41,8 +40,6 @@ public class Config {
   private static final ForgeConfigSpec.Builder FACTORY;
   private static final ForgeConfigSpec.Builder SILICON;
   private static final ForgeConfigSpec.Builder ROBOTICS;
-
-  public static final ForgeConfigSpec SPEC;
 
   static {
     GENERAL = ConfigGeneral.load(BUILDER);

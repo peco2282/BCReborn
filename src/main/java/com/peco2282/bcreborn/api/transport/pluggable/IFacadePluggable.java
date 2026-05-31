@@ -14,11 +14,11 @@ package com.peco2282.bcreborn.api.transport.pluggable;
 import net.minecraft.world.level.block.Block;
 
 public interface IFacadePluggable {
-    Block getCurrentBlock();
+  Block getCurrentBlock();
 
-    int getCurrentMetadata();
+  int getCurrentMetadata();
 
-    boolean isTransparent();
+  boolean isTransparent();
 
-    boolean isHollow();
+  boolean isHollow();
 }

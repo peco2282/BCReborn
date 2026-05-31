@@ -19,45 +19,45 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ArrayStackFilter implements IStackFilter {
 
-	protected ItemStack[] stacks;
+  protected ItemStack[] stacks;
 
-	public ArrayStackFilter(ItemStack... stacks) {
-		this.stacks = stacks;
-	}
+  public ArrayStackFilter(ItemStack... stacks) {
+    this.stacks = stacks;
+  }
 
-	@Override
-	public boolean matches(ItemStack stack) {
-		if (stacks.length == 0 || !hasFilter()) {
-			return true;
-		}
-		for (ItemStack s : stacks) {
-			if (StackHelper.isMatchingItem(s, stack)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean matches(ItemStack stack) {
+    if (stacks.length == 0 || !hasFilter()) {
+      return true;
+    }
+    for (ItemStack s : stacks) {
+      if (StackHelper.isMatchingItem(s, stack)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public boolean matches(IStackFilter filter2) {
-		for (ItemStack s : stacks) {
-			if (filter2.matches(s)) {
-				return true;
-			}
-		}
+  public boolean matches(IStackFilter filter2) {
+    for (ItemStack s : stacks) {
+      if (filter2.matches(s)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	public ItemStack[] getStacks() {
-		return stacks;
-	}
+  public ItemStack[] getStacks() {
+    return stacks;
+  }
 
-	public boolean hasFilter() {
-		for (ItemStack filter : stacks) {
-			if (filter != null) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean hasFilter() {
+    for (ItemStack filter : stacks) {
+      if (filter != null) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

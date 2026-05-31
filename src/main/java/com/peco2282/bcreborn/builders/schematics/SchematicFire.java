@@ -21,13 +21,13 @@ import java.util.LinkedList;
 
 public class SchematicFire extends SchematicBlock {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(Items.FLINT_AND_STEEL));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(Items.FLINT_AND_STEEL));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 }

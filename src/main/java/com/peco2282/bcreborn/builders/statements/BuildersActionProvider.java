@@ -27,26 +27,26 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class BuildersActionProvider implements IActionProvider {
-	private final HashMap<String, ActionFiller> actionMap = new HashMap<String, ActionFiller>();
+  private final HashMap<String, ActionFiller> actionMap = new HashMap<String, ActionFiller>();
 
-	@Override
-	public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
-		return null;
-	}
+  @Override
+  public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
+    return null;
+  }
 
-	@Override
-	public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
-		LinkedList<IActionExternal> actions = new LinkedList<IActionExternal>();
-		if (tile instanceof FillerBlockEntity) {
-			for (IFillerPattern p : FillerManager.registry.getPatterns()) {
-				if (p instanceof FillerPattern) {
-					if (!actionMap.containsKey(p.getUniqueTag())) {
-						actionMap.put(p.getUniqueTag(), new ActionFiller((FillerPattern) p));
-					}
-					actions.add(actionMap.get(p.getUniqueTag()));
-				}
-			}
-		}
-		return actions;
-	}
+  @Override
+  public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
+    LinkedList<IActionExternal> actions = new LinkedList<IActionExternal>();
+    if (tile instanceof FillerBlockEntity) {
+      for (IFillerPattern p : FillerManager.registry.getPatterns()) {
+        if (p instanceof FillerPattern) {
+          if (!actionMap.containsKey(p.getUniqueTag())) {
+            actionMap.put(p.getUniqueTag(), new ActionFiller((FillerPattern) p));
+          }
+          actions.add(actionMap.get(p.getUniqueTag()));
+        }
+      }
+    }
+    return actions;
+  }
 }

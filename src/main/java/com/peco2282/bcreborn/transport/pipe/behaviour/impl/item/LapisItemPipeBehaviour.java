@@ -24,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
@@ -112,7 +111,7 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
         if (!filterStack.isEmpty() && filterStack.hasTag()) {
           var filterTag = filterStack.getTag();
           if (filterTag != null && filterTag.contains("BCPipeColor")
-              && filterTag.getInt("BCPipeColor") == color) {
+            && filterTag.getInt("BCPipeColor") == color) {
             return dir;
           }
         }

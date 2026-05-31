@@ -18,14 +18,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public interface IStripesHandler {
-    enum StripesHandlerType {
-        ITEM_USE,
-        BLOCK_BREAK
-    }
+  StripesHandlerType getType();
 
-    StripesHandlerType getType();
+  boolean shouldHandle(ItemStack stack);
 
-    boolean shouldHandle(ItemStack stack);
+  boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator);
 
-    boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator);
+  enum StripesHandlerType {
+    ITEM_USE,
+    BLOCK_BREAK
+  }
 }

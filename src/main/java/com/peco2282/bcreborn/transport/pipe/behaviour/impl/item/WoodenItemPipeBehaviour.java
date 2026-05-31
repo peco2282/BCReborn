@@ -69,7 +69,7 @@ public class WoodenItemPipeBehaviour implements ItemPipeBehaviour {
       BlockState newState = state;
       for (Direction dir : Direction.values()) {
         newState = newState.setValue(PipeBlock.PROPERTY_MAP.get(dir),
-            state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
+          state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
       }
       newState = newState.setValue(PipeBlock.EXTRACTION_SIDE, next.get3DDataValue());
       level.setBlock(pos, newState, 3);

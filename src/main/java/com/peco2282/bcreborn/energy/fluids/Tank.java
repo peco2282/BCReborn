@@ -22,11 +22,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import java.util.Locale;
 
 public class Tank extends FluidTank {
-  public int colorRenderCache = 0xFFFFFF;
-
-  protected Component toolTip;
-
   private final String name;
+  public int colorRenderCache = 0xFFFFFF;
+  protected Component toolTip;
 
   public Tank(String name, int capacity) {
     super(capacity);
@@ -83,9 +81,9 @@ public class Tank extends FluidTank {
     MutableComponent tip = Component.literal("");
     if (getFluid().getAmount() > 0) {
       tip
-          .append(getFluid().getFluid().getFluidType().getDescription(getFluid()))
-          .append(CommonComponents.space())
-          .append(CommonComponents.space());
+        .append(getFluid().getFluid().getFluidType().getDescription(getFluid()))
+        .append(CommonComponents.space())
+        .append(CommonComponents.space());
       amount = getFluid().getAmount();
     }
     tip.append(String.format(Locale.ENGLISH, "%,d / %,d", amount, getCapacity()));

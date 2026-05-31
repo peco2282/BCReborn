@@ -23,48 +23,49 @@ import java.util.LinkedList;
 
 public class BuildingSlotEntity extends BuildingSlot {
 
-    public int sequenceNumber;public Schematic schematic;
+  public int sequenceNumber;
+  public Schematic schematic;
 
-    @Override
-    public boolean writeToWorld(IBuilderContext context) {
-        return false;
-    }
+  @Override
+  public boolean writeToWorld(IBuilderContext context) {
+    return false;
+  }
 
-    @Override
-    public Position getDestination() {
-        return new Position();
-    }
+  @Override
+  public Position getDestination() {
+    return new Position();
+  }
 
-    @Override
-    public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
-        return new LinkedList<>();
-    }
+  @Override
+  public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
+    return new LinkedList<>();
+  }
 
-    @Override
-    public Schematic getSchematic() {
-        return null;
-    }
+  @Override
+  public Schematic getSchematic() {
+    return null;
+  }
 
-    @Override
-    public boolean isAlreadyBuilt(IBuilderContext context) {
-        return false;
-    }
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context) {
+    return false;
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag nbt, MappingRegistry registry) {
-    }
+  @Override
+  public void writeToNBT(CompoundTag nbt, MappingRegistry registry) {
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag nbt, MappingRegistry registry) throws MappingNotFoundException {
-    }
+  @Override
+  public void readFromNBT(CompoundTag nbt, MappingRegistry registry) throws MappingNotFoundException {
+  }
 
-    @Override
-    public int getEnergyRequirement() {
-        return 0;
-    }
+  @Override
+  public int getEnergyRequirement() {
+    return 0;
+  }
 
-    @Override
-    public int buildTime() {
-        return 1;
-    }
+  @Override
+  public int buildTime() {
+    return 1;
+  }
 }

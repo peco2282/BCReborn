@@ -14,5 +14,5 @@ package com.peco2282.bcreborn.api.statements;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IStatementContainer {
-    BlockEntity getTile();
+  BlockEntity getTile();
 }

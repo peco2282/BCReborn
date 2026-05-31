@@ -13,14 +13,14 @@ package com.peco2282.bcreborn.api.core;
 
 public interface IBox extends IZone {
 
-	IBox expand(int amount);
+  IBox expand(int amount);
 
-	IBox contract(int amount);
+  IBox contract(int amount);
 
-	Position pMin();
+  Position pMin();
 
-	Position pMax();
+  Position pMax();
 
-	void createLaserData();
+  void createLaserData();
 
 }

@@ -16,5 +16,5 @@ import com.peco2282.bcreborn.api.robots.DockingStation;
 
 public interface IStationFilter {
 
-	boolean matches(DockingStation station);
+  boolean matches(DockingStation station);
 }

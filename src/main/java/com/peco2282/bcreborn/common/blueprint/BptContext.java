@@ -20,38 +20,38 @@ import net.minecraft.world.level.Level;
 
 public class BptContext implements IBuilderContext {
 
-    public BlueprintReadConfiguration readConfiguration;
-    public Box box;
-    public Level world;
-    private final MappingRegistry mappingRegistry;
+  private final MappingRegistry mappingRegistry;
+  public BlueprintReadConfiguration readConfiguration;
+  public Box box;
+  public Level world;
 
-    public BptContext(Level world, Box box, MappingRegistry registry) {
-        this.world = world;
-        this.box = box;
-        this.mappingRegistry = registry;
-    }
+  public BptContext(Level world, Box box, MappingRegistry registry) {
+    this.world = world;
+    this.box = box;
+    this.mappingRegistry = registry;
+  }
 
-    @Override
-    public Position rotatePositionLeft(Position pos) {
-        return new Position((box.sizeZ() - 1) - pos.z, pos.y, pos.x);
-    }
+  @Override
+  public Position rotatePositionLeft(Position pos) {
+    return new Position((box.sizeZ() - 1) - pos.z, pos.y, pos.x);
+  }
 
-    @Override
-    public IBox surroundingBox() {
-        return box;
-    }
+  @Override
+  public IBox surroundingBox() {
+    return box;
+  }
 
-    @Override
-    public Level world() {
-        return world;
-    }
+  @Override
+  public Level world() {
+    return world;
+  }
 
-    public void rotateLeft() {
-        box = box.rotateLeft();
-    }
+  public void rotateLeft() {
+    box = box.rotateLeft();
+  }
 
-    @Override
-    public MappingRegistry getMappingRegistry() {
-        return mappingRegistry;
-    }
+  @Override
+  public MappingRegistry getMappingRegistry() {
+    return mappingRegistry;
+  }
 }

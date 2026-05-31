@@ -18,17 +18,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.function.Function;
 
 public interface IGateExpansion {
-    String getUniqueIdentifier();
+  String getUniqueIdentifier();
 
-    String getDisplayName();
+  String getDisplayName();
 
-    GateExpansionController makeController(BlockEntity pipeTile);
+  GateExpansionController makeController(BlockEntity pipeTile);
 
-    void registerBlockOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  void registerBlockOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
-    void registerItemOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  void registerItemOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
-    TextureAtlasSprite getOverlayBlock();
+  TextureAtlasSprite getOverlayBlock();
 
-    TextureAtlasSprite getOverlayItem();
+  TextureAtlasSprite getOverlayItem();
 }

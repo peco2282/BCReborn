@@ -17,41 +17,41 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 public abstract class RobotEvent extends Event {
-    public final Object robot;
+  public final Object robot;
 
-    public RobotEvent(Object robot) {
-        this.robot = robot;
+  public RobotEvent(Object robot) {
+    this.robot = robot;
+  }
+
+  @Cancelable
+  public static class Place extends RobotEvent {
+    public final Player player;
+
+    public Place(Object robot, Player player) {
+      super(robot);
+      this.player = player;
     }
+  }
 
-    @Cancelable
-    public static class Place extends RobotEvent {
-        public final Player player;
+  @Cancelable
+  public static class Interact extends RobotEvent {
+    public final Player player;
+    public final ItemStack item;
 
-        public Place(Object robot, Player player) {
-            super(robot);
-            this.player = player;
-        }
+    public Interact(Object robot, Player player, ItemStack item) {
+      super(robot);
+      this.player = player;
+      this.item = item;
     }
+  }
 
-    @Cancelable
-    public static class Interact extends RobotEvent {
-        public final Player player;
-        public final ItemStack item;
+  @Cancelable
+  public static class Dismantle extends RobotEvent {
+    public final Player player;
 
-        public Interact(Object robot, Player player, ItemStack item) {
-            super(robot);
-            this.player = player;
-            this.item = item;
-        }
+    public Dismantle(Object robot, Player player) {
+      super(robot);
+      this.player = player;
     }
-
-    @Cancelable
-    public static class Dismantle extends RobotEvent {
-        public final Player player;
-
-        public Dismantle(Object robot, Player player) {
-            super(robot);
-            this.player = player;
-        }
-    }
+  }
 }

@@ -21,58 +21,58 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class RefineryMenu extends BuildCraftMenu<RefineryMenu> {
-    private final RefineryBlockEntity tile;
+  private final RefineryBlockEntity tile;
 
-    public RefineryMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
-        this(id, playerInv, (RefineryBlockEntity) playerInv.player.level().getBlockEntity(buf.readBlockPos()));
+  public RefineryMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
+    this(id, playerInv, (RefineryBlockEntity) playerInv.player.level().getBlockEntity(buf.readBlockPos()));
+  }
+
+  public RefineryMenu(int id, Inventory playerInv, RefineryBlockEntity tile) {
+    super(FactoryMenuTypes.REFINERY.get(), id, playerInv);
+    this.tile = tile;
+
+    // Player inventory
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 9; j++) {
+        this.addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 123 + i * 18));
+      }
     }
 
-    public RefineryMenu(int id, Inventory playerInv, RefineryBlockEntity tile) {
-        super(FactoryMenuTypes.REFINERY.get(), id, playerInv);
-        this.tile = tile;
+    // Player hotbar
+    for (int i = 0; i < 9; i++) {
+      this.addSlot(new Slot(playerInv, i, 8 + i * 18, 181));
+    }
+  }
 
-        // Player inventory
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 123 + i * 18));
-            }
+  @Override
+  public boolean stillValid(Player player) {
+    return tile.stillValid(player);
+  }
+
+  @Override
+  public ItemStack quickMoveStack(Player player, int index) {
+    ItemStack itemstack = ItemStack.EMPTY;
+    Slot slot = this.slots.get(index);
+    if (slot != null && slot.hasItem()) {
+      ItemStack itemstack1 = slot.getItem();
+      itemstack = itemstack1.copy();
+      if (index < 27) {
+        if (!this.moveItemStackTo(itemstack1, 27, 36, false)) {
+          return ItemStack.EMPTY;
         }
-
-        // Player hotbar
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(playerInv, i, 8 + i * 18, 181));
+      } else {
+        if (!this.moveItemStackTo(itemstack1, 0, 27, false)) {
+          return ItemStack.EMPTY;
         }
+      }
+
+      if (itemstack1.isEmpty()) {
+        slot.setByPlayer(ItemStack.EMPTY);
+      } else {
+        slot.setChanged();
+      }
     }
 
-    @Override
-    public boolean stillValid(Player player) {
-        return tile.stillValid(player);
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack itemstack1 = slot.getItem();
-            itemstack = itemstack1.copy();
-            if (index < 27) {
-                if (!this.moveItemStackTo(itemstack1, 27, 36, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                if (!this.moveItemStackTo(itemstack1, 0, 27, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            if (itemstack1.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-        }
-
-        return itemstack;
-    }
+    return itemstack;
+  }
 }

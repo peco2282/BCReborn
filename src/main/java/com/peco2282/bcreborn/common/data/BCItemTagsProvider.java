@@ -38,29 +38,29 @@ public class BCItemTagsProvider extends ItemTagsProvider {
 
     tag(CommonItemTags.BUILDERS);
     tag(CommonItemTags.CORE)
-        .addTag(CommonItemTags.GEAR).add(ItemsCore.LIST.get(), ItemsCore.MAP_LOCATION.get(), ItemsCore.PAINTBRUSH.get(), ItemsCore.WRENCH.get());
+      .addTag(CommonItemTags.GEAR).add(ItemsCore.LIST.get(), ItemsCore.MAP_LOCATION.get(), ItemsCore.PAINTBRUSH.get(), ItemsCore.WRENCH.get());
     tag(CommonItemTags.ENERGY)
-        .addTag(CommonItemTags.FUEL_BUCKET);
+      .addTag(CommonItemTags.FUEL_BUCKET);
     tag(CommonItemTags.FACTORY);
     tag(CommonItemTags.ROBOTICS)
-        .add(RoboticsItems.REDSTONE_BOARD.get(), RoboticsItems.ROBOT.get(), RoboticsItems.ROBOT_STATION.get());;
+      .add(RoboticsItems.REDSTONE_BOARD.get(), RoboticsItems.ROBOT.get(), RoboticsItems.ROBOT_STATION.get());
     tag(CommonItemTags.SILICON)
-        .addTag(CommonItemTags.CHIPSET).add(SiliconItems.PACKAGE_ITEM.get());
+      .addTag(CommonItemTags.CHIPSET).add(SiliconItems.PACKAGE_ITEM.get());
     tag(CommonItemTags.TRANSPORT);
   }
 
   private void fuelBucketTag() {
     tag(CommonItemTags.FUEL_BUCKET)
-        .add(FluidsEnergy.OIL_BUCKET.get(), FluidsEnergy.FUEL_BUCKET.get());
+      .add(FluidsEnergy.OIL_BUCKET.get(), FluidsEnergy.FUEL_BUCKET.get());
   }
 
   private void chipsetTag() {
     tag(CommonItemTags.CHIPSET)
-        .add(SiliconItems.REDSTONE_CHIPSET.get(), SiliconItems.IRON_CHIPSET.get(), SiliconItems.GOLD_CHIPSET.get(), SiliconItems.DIAMOND_CHIPSET.get(), SiliconItems.PULSATING_CHIPSET.get(), SiliconItems.QUARTZ_CHIPSET.get(), SiliconItems.COMP_CHIPSET.get(), SiliconItems.EMERALD_CHIPSET.get());
+      .add(SiliconItems.REDSTONE_CHIPSET.get(), SiliconItems.IRON_CHIPSET.get(), SiliconItems.GOLD_CHIPSET.get(), SiliconItems.DIAMOND_CHIPSET.get(), SiliconItems.PULSATING_CHIPSET.get(), SiliconItems.QUARTZ_CHIPSET.get(), SiliconItems.COMP_CHIPSET.get(), SiliconItems.EMERALD_CHIPSET.get());
   }
 
   private void gearTag() {
     tag(CommonItemTags.GEAR)
-        .add(ItemsCore.WOODEN_GEAR.get(), ItemsCore.IRON_GEAR.get(), ItemsCore.GOLD_GEAR.get(), ItemsCore.DIAMOND_GEAR.get());
+      .add(ItemsCore.WOODEN_GEAR.get(), ItemsCore.IRON_GEAR.get(), ItemsCore.GOLD_GEAR.get(), ItemsCore.DIAMOND_GEAR.get());
   }
 }

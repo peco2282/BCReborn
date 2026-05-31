@@ -20,24 +20,24 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record DownloadBlueprintPacket(
-    BlockPos pos,
-    LibraryId libraryId,
-    byte[] data
+  BlockPos pos,
+  LibraryId libraryId,
+  byte[] data
 ) implements CustomPacket {
+  public static DownloadBlueprintPacket decode(FriendlyByteBuf buffer) {
+    return new DownloadBlueprintPacket(
+      buffer.readBlockPos(),
+      LibraryId.decode(buffer),
+      buffer.readByteArray()
+    );
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     libraryId.generateUniqueId(data);
     libraryId.writeData(buffer);
     buffer.writeByteArray(data);
-  }
-
-  public static DownloadBlueprintPacket decode(FriendlyByteBuf buffer) {
-    return new DownloadBlueprintPacket(
-        buffer.readBlockPos(),
-        LibraryId.decode(buffer),
-        buffer.readByteArray()
-    );
   }
 
   @Override

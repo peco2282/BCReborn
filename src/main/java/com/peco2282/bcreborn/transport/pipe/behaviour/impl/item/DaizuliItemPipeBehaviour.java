@@ -53,7 +53,7 @@ public class DaizuliItemPipeBehaviour implements ItemPipeBehaviour {
         if (!filterStack.isEmpty() && filterStack.hasTag()) {
           var filterTag = filterStack.getTag();
           if (filterTag != null && filterTag.contains("BCPipeColor")
-              && filterTag.getInt("BCPipeColor") == color) {
+            && filterTag.getInt("BCPipeColor") == color) {
             return dir;
           }
         }

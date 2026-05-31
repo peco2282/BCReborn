@@ -18,9 +18,9 @@ import net.minecraft.world.level.material.Fluid;
  */
 public class PassThroughFluidFilter implements IFluidFilter {
 
-	@Override
-	public boolean matches(Fluid fluid) {
-		return fluid != null;
-	}
+  @Override
+  public boolean matches(Fluid fluid) {
+    return fluid != null;
+  }
 
 }

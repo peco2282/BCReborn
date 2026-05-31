@@ -21,27 +21,27 @@ import net.minecraft.nbt.CompoundTag;
 
 public class SchematicFactoryEntity extends SchematicFactory<SchematicEntity> {
 
-	@Override
-	protected SchematicEntity loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
-			throws MappingNotFoundException {
-		int entityId = nbt.getInt("entityId");
-		SchematicEntity s = SchematicRegistry.INSTANCE.createSchematicEntity(registry.getEntityForId(entityId));
+  @Override
+  protected SchematicEntity loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
+    throws MappingNotFoundException {
+    int entityId = nbt.getInt("entityId");
+    SchematicEntity s = SchematicRegistry.INSTANCE.createSchematicEntity(registry.getEntityForId(entityId));
 
-		if (s != null) {
-			s.readSchematicFromNBT(nbt, registry);
-		} else {
-			return null;
-		}
+    if (s != null) {
+      s.readSchematicFromNBT(nbt, registry);
+    } else {
+      return null;
+    }
 
-		return s;
-	}
+    return s;
+  }
 
-	@Override
-	public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicEntity object, MappingRegistry registry) {
-		super.saveSchematicToWorldNBT(nbt, object, registry);
+  @Override
+  public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicEntity object, MappingRegistry registry) {
+    super.saveSchematicToWorldNBT(nbt, object, registry);
 
-		nbt.putInt("entityId", registry.getIdForEntity(object.entity));
-		object.writeSchematicToNBT(nbt, registry);
-	}
+    nbt.putInt("entityId", registry.getIdForEntity(object.entity));
+    object.writeSchematicToNBT(nbt, registry);
+  }
 
 }

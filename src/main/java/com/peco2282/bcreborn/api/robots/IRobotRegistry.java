@@ -18,45 +18,45 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.Collection;
 
 public interface IRobotRegistry {
-    long getNextRobotId();
+  long getNextRobotId();
 
-    void registerRobot(EntityRobotBase robot);
+  void registerRobot(EntityRobotBase robot);
 
-    void killRobot(EntityRobotBase robot);
+  void killRobot(EntityRobotBase robot);
 
-    void unloadRobot(EntityRobotBase robot);
+  void unloadRobot(EntityRobotBase robot);
 
-    EntityRobotBase getLoadedRobot(long id);
+  EntityRobotBase getLoadedRobot(long id);
 
-    boolean isTaken(ResourceId resourceId);
+  boolean isTaken(ResourceId resourceId);
 
-    long robotIdTaking(ResourceId resourceId);
+  long robotIdTaking(ResourceId resourceId);
 
-    EntityRobotBase robotTaking(ResourceId resourceId);
+  EntityRobotBase robotTaking(ResourceId resourceId);
 
-    boolean take(ResourceId resourceId, Object robot);
+  boolean take(ResourceId resourceId, Object robot);
 
-    boolean take(ResourceId resourceId, long robotId);
+  boolean take(ResourceId resourceId, long robotId);
 
-    void release(ResourceId resourceId);
+  void release(ResourceId resourceId);
 
-    void releaseResources(Object robot);
+  void releaseResources(Object robot);
 
-    DockingStation getStation(BlockPos pos, Direction side);
+  DockingStation getStation(BlockPos pos, Direction side);
 
-    Collection<DockingStation> getStations();
+  Collection<DockingStation> getStations();
 
-    void registerStation(DockingStation station);
+  void registerStation(DockingStation station);
 
-    void removeStation(DockingStation station);
+  void removeStation(DockingStation station);
 
-    void take(DockingStation station, long robotId);
+  void take(DockingStation station, long robotId);
 
-    void release(DockingStation station, long robotId);
+  void release(DockingStation station, long robotId);
 
-    void writeToNBT(CompoundTag nbt);
+  void writeToNBT(CompoundTag nbt);
 
-    void readFromNBT(CompoundTag nbt);
+  void readFromNBT(CompoundTag nbt);
 
-    void registryMarkDirty();
+  void registryMarkDirty();
 }

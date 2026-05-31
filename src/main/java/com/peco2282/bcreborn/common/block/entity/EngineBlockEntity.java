@@ -12,19 +12,17 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.api.IEngine;
 import com.peco2282.bcreborn.api.IHeatable;
 import com.peco2282.bcreborn.api.IPipeConnection;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.common.ResourceBuilder;
-import com.peco2282.bcreborn.common.ResourceUtils;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import com.peco2282.bcreborn.common.block.EngineBlock;
+import com.peco2282.bcreborn.common.energy.EngineEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -33,34 +31,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.common.ForgeHooks;
-import org.jetbrains.annotations.NotNull;
-import com.peco2282.bcreborn.common.energy.EngineEnergyStorage;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public abstract class EngineBlockEntity<T extends BlockEntity>
-    extends BuildCraftBlockEntity
-    implements IEngine, IHeatable, IEnergyHandler, IPipeConnection {
+  extends BuildCraftBlockEntity
+  implements IEngine, IHeatable, IEnergyHandler, IPipeConnection {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-
-  public EngineBlockEntity(BlockEntityType<T> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
-    super(p_155228_, p_155229_, p_155230_);
-    // デフォルト（サブクラスで上書き推奨）
-    this.energyStorage = new EngineEnergyStorage<>(this).setMaxEnergy(20000).setMaxExtract(80);
-    this.energyCap = LazyOptional.of(() -> this.energyStorage);
-  }
-
-  public enum EnergyStage {
-    BLUE, GREEN, YELLOW, RED, OVERHEAT;
-    public static final EnergyStage[] VALUES = values();
-
-    public boolean isOverheated() {
-      return this == OVERHEAT;
-    }
-  }
-
   public static final float MIN_HEAT = 20;
   public static final float IDEAL_HEAT = 100;
   public static final float MAX_HEAT = 250;
@@ -69,27 +48,41 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   public float heat = MIN_HEAT;
   public EnergyStage energyStage = EnergyStage.BLUE;
   public Direction orientation = Direction.UP;
-
+  // ピストンアニメーション用
+  public float pistonProgress = 0.0f;
+  public float prevPistonProgress = 0.0f;
   // Forge Energy capability
   protected EngineEnergyStorage<?> energyStorage;
   protected LazyOptional<IEnergyStorage> energyCap;
 
   protected int progressPart = 0;
-
-  // ピストンアニメーション用
-  public float pistonProgress = 0.0f;
-  public float prevPistonProgress = 0.0f;
-
-  private boolean checkOrientation = false;
-
-  private boolean isPumping = false; // Used for SMP synch
   protected boolean isActive = false;
+  private final boolean checkOrientation = false;
+  private boolean isPumping = false; // Used for SMP synch
+
+  public EngineBlockEntity(BlockEntityType<T> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
+    super(p_155228_, p_155229_, p_155230_);
+    // デフォルト（サブクラスで上書き推奨）
+    this.energyStorage = new EngineEnergyStorage<>(this).setMaxEnergy(20000).setMaxExtract(80);
+    this.energyCap = LazyOptional.of(() -> this.energyStorage);
+  }
+
+  protected static int getBurningTime(ItemStack stack) {
+    if (stack == null || stack.isEmpty()) {
+      return 0;
+    }
+    return ForgeHooks.getBurnTime(stack, null);
+  }
 
   public EnergyStage getEnergyStage() {
     return energyStage;
   }
 
   protected abstract ResourceBuilder getEngineResource();
+
+  public boolean isActive() {
+    return isActive;
+  }
 
   public void setActive(boolean active) {
     if (isActive == active) return;
@@ -105,11 +98,8 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     else onDeactivated();
   }
 
-  public boolean isActive() {
-    return isActive;
-  }
-
   public abstract boolean isFuelable(ItemStack stack);
+
   public abstract boolean isBurning();
 
   public abstract void updateProgress();
@@ -137,8 +127,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
   public abstract void burning();
 
-  public void onActivated() {}
-  public void onDeactivated() {}
+  public void onActivated() {
+  }
+
+  public void onDeactivated() {
+  }
 
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
@@ -286,13 +279,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     }
   }
 
-  protected static int getBurningTime(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
-      return 0;
-    }
-    return ForgeHooks.getBurnTime(stack, null);
-  }
-
   public void checkRedstonePower() {
     boolean powered = level.hasNeighborSignal(getBlockPos());
     if (isRedstonePowered != powered) {
@@ -386,8 +372,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     }
   }
 
-
-
   @Override
   public void load(CompoundTag data) {
     super.load(data);
@@ -457,5 +441,14 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       return energyCap.cast();
     }
     return super.getCapability(cap, side);
+  }
+
+  public enum EnergyStage {
+    BLUE, GREEN, YELLOW, RED, OVERHEAT;
+    public static final EnergyStage[] VALUES = values();
+
+    public boolean isOverheated() {
+      return this == OVERHEAT;
+    }
   }
 }

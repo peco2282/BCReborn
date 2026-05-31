@@ -15,11 +15,11 @@ import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 
 public interface IMultiButtonState {
 
-	String getLabel();
+  String getLabel();
 
-	String name();
+  String name();
 
-	IButtonTextureSet getTextureSet();
+  IButtonTextureSet getTextureSet();
 
-	ToolTip getToolTip();
+  ToolTip getToolTip();
 }

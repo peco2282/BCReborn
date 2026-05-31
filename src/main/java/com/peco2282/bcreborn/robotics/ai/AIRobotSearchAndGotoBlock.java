@@ -16,104 +16,103 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotSearchAndGotoBlock extends AIRobot {
 
-	private BlockIndex blockFound;
+  private BlockIndex blockFound;
 
-	private IBlockFilter filter;
-	private boolean random;
-	private double maxDistanceToEnd;
+  private IBlockFilter filter;
+  private boolean random;
+  private double maxDistanceToEnd;
 
-	public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot) {
-		super(iRobot);
+  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot) {
+    super(iRobot);
 
-		blockFound = null;
+    blockFound = null;
 
-		random = false;
-		filter = null;
-	}
+    random = false;
+    filter = null;
+  }
 
-	public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
-									 IBlockFilter iFilter) {
-		this(iRobot, iRandom, iFilter, 0);
-	}
+  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
+                                   IBlockFilter iFilter) {
+    this(iRobot, iRandom, iFilter, 0);
+  }
 
-	public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
-									 IBlockFilter iFilter, double iMaxDistanceToEnd) {
-		this(iRobot);
+  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
+                                   IBlockFilter iFilter, double iMaxDistanceToEnd) {
+    this(iRobot);
 
-		random = iRandom;
-		filter = iFilter;
-		maxDistanceToEnd = iMaxDistanceToEnd;
-	}
+    random = iRandom;
+    filter = iFilter;
+    maxDistanceToEnd = iMaxDistanceToEnd;
+  }
 
-	@Override
-	public void start() {
-		startDelegateAI(new AIRobotSearchBlock(robot, random, filter, maxDistanceToEnd));
-	}
+  @Override
+  public void start() {
+    startDelegateAI(new AIRobotSearchBlock(robot, random, filter, maxDistanceToEnd));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotSearchBlock searchAI) {
-			if (ai.success()) {
-				if (searchAI.takeResource()) {
-					blockFound = searchAI.blockFound;
-					startDelegateAI(new AIRobotGotoBlock(robot, searchAI.path));
-				} else {
-					terminate();
-				}
-			} else {
-				terminate();
-			}
-		} else if (ai instanceof AIRobotGotoBlock) {
-			if (!ai.success()) {
-				releaseBlockFound();
-			}
-			terminate();
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotSearchBlock searchAI) {
+      if (ai.success()) {
+        if (searchAI.takeResource()) {
+          blockFound = searchAI.blockFound;
+          startDelegateAI(new AIRobotGotoBlock(robot, searchAI.path));
+        } else {
+          terminate();
+        }
+      } else {
+        terminate();
+      }
+    } else if (ai instanceof AIRobotGotoBlock) {
+      if (!ai.success()) {
+        releaseBlockFound();
+      }
+      terminate();
+    }
+  }
 
-	@Override
-	public boolean success() {
-		return blockFound != null;
-	}
+  @Override
+  public boolean success() {
+    return blockFound != null;
+  }
 
-	private void releaseBlockFound() {
-		if (blockFound != null) {
-			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
-			blockFound = null;
-		}
-	}
+  private void releaseBlockFound() {
+    if (blockFound != null) {
+      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      blockFound = null;
+    }
+  }
 
-	public BlockIndex getBlockFound() {
-		return blockFound;
-	}
+  public BlockIndex getBlockFound() {
+    return blockFound;
+  }
 
-	@Override
-	public boolean canLoadFromNBT() {
-		return true;
-	}
+  @Override
+  public boolean canLoadFromNBT() {
+    return true;
+  }
 
-	@Override
-	public void writeSelfToNBT(CompoundTag nbt) {
-		super.writeSelfToNBT(nbt);
+  @Override
+  public void writeSelfToNBT(CompoundTag nbt) {
+    super.writeSelfToNBT(nbt);
 
-		if (blockFound != null) {
-			CompoundTag sub = new CompoundTag();
-			blockFound.writeTo(sub);
-			nbt.put("indexStored", sub);
-		}
-	}
+    if (blockFound != null) {
+      CompoundTag sub = new CompoundTag();
+      blockFound.writeTo(sub);
+      nbt.put("indexStored", sub);
+    }
+  }
 
-	@Override
-	public void loadSelfFromNBT(CompoundTag nbt) {
-		super.loadSelfFromNBT(nbt);
+  @Override
+  public void loadSelfFromNBT(CompoundTag nbt) {
+    super.loadSelfFromNBT(nbt);
 
-		if (nbt.contains("indexStored")) {
-			blockFound = new BlockIndex(nbt.getCompound("indexStored"));
-		}
-	}
+    if (nbt.contains("indexStored")) {
+      blockFound = new BlockIndex(nbt.getCompound("indexStored"));
+    }
+  }
 }

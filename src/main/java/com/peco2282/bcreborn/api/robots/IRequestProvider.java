@@ -14,9 +14,9 @@ package com.peco2282.bcreborn.api.robots;
 import net.minecraft.world.item.ItemStack;
 
 public interface IRequestProvider {
-    int getRequestsCount();
+  int getRequestsCount();
 
-    ItemStack getRequest(int slot);
+  ItemStack getRequest(int slot);
 
-    ItemStack offerItem(int slot, ItemStack stack);
+  ItemStack offerItem(int slot, ItemStack stack);
 }

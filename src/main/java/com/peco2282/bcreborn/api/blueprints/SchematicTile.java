@@ -20,74 +20,74 @@ import java.util.LinkedList;
 
 public class SchematicTile extends SchematicBlock {
 
-	/**
-	 * This tree contains additional data to be stored in the blueprint. By
-	 * default, it will be initialized from Schematic.readFromWord with the
-	 * standard readNBT function of the corresponding tile (if any) and will be
-	 * loaded from BptBlock.writeToWorld using the standard writeNBT function.
-	 */
-	public CompoundTag tileNBT = new CompoundTag();
+  /**
+   * This tree contains additional data to be stored in the blueprint. By
+   * default, it will be initialized from Schematic.readFromWord with the
+   * standard readNBT function of the corresponding tile (if any) and will be
+   * loaded from BptBlock.writeToWorld using the standard writeNBT function.
+   */
+  public CompoundTag tileNBT = new CompoundTag();
 
-	@Override
-	public void idsToBlueprint(MappingRegistry registry) {
-		registry.scanAndTranslateStacksToRegistry(tileNBT);
-	}
+  @Override
+  public void idsToBlueprint(MappingRegistry registry) {
+    registry.scanAndTranslateStacksToRegistry(tileNBT);
+  }
 
-	@Override
-	public void idsToWorld(MappingRegistry registry) {
-		try {
-			registry.scanAndTranslateStacksToWorld(tileNBT);
-		} catch (MappingNotFoundException e) {
-			tileNBT = new CompoundTag();
-		}
-	}
+  @Override
+  public void idsToWorld(MappingRegistry registry) {
+    try {
+      registry.scanAndTranslateStacksToWorld(tileNBT);
+    } catch (MappingNotFoundException e) {
+      tileNBT = new CompoundTag();
+    }
+  }
 
-	public void onNBTLoaded() {
+  public void onNBTLoaded() {
 
-	}
+  }
 
-	/**
-	 * Places the block in the world, at the location specified in the slot.
-	 */
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		super.placeInWorld(context, x, y, z, stacks);
+  /**
+   * Places the block in the world, at the location specified in the slot.
+   */
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    super.placeInWorld(context, x, y, z, stacks);
 
-		BlockPos pos = new BlockPos(x, y, z);
-		BlockEntity be = context.world().getBlockEntity(pos);
-		if (be != null) {
-			be.load(tileNBT);
-		}
-	}
+    BlockPos pos = new BlockPos(x, y, z);
+    BlockEntity be = context.world().getBlockEntity(pos);
+    if (be != null) {
+      be.load(tileNBT);
+    }
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
 
-		BlockEntity tile = context.world().getBlockEntity(new BlockPos(x, y, z));
-		if (tile != null) {
-			tileNBT = tile.saveWithFullMetadata();
-			onNBTLoaded();
-		}
-	}
+    BlockEntity tile = context.world().getBlockEntity(new BlockPos(x, y, z));
+    if (tile != null) {
+      tileNBT = tile.saveWithFullMetadata();
+      onNBTLoaded();
+    }
+  }
 
-	@Override
-	public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.writeSchematicToNBT(nbt, registry);
+  @Override
+  public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.writeSchematicToNBT(nbt, registry);
 
-		nbt.put("blockCpt", tileNBT);
-	}
+    nbt.put("blockCpt", tileNBT);
+  }
 
-	@Override
-	public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.readSchematicFromNBT(nbt, registry);
+  @Override
+  public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.readSchematicFromNBT(nbt, registry);
 
-		tileNBT = nbt.getCompound("blockCpt");
-		onNBTLoaded();
-	}
+    tileNBT = nbt.getCompound("blockCpt");
+    onNBTLoaded();
+  }
 
-	@Override
-	public int buildTime() {
-		return 5;
-	}
+  @Override
+  public int buildTime() {
+    return 5;
+  }
 }

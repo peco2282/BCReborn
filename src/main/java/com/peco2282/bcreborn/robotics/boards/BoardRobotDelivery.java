@@ -11,68 +11,64 @@
  */
 package com.peco2282.bcreborn.robotics.boards;
 
-import java.util.ArrayList;
-
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.robotics.ai.AIRobotDeliverRequested;
 import com.peco2282.bcreborn.robotics.ai.AIRobotDisposeItems;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
-import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndLoad;
-import com.peco2282.bcreborn.robotics.ai.AIRobotSearchStackRequest;
-import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+
 public class BoardRobotDelivery extends RedstoneBoardRobot {
 
-	private ArrayList<ItemStack> deliveryBlacklist = new ArrayList<ItemStack>();
+  private final ArrayList<ItemStack> deliveryBlacklist = new ArrayList<ItemStack>();
 
-	// private StackRequest currentRequest = null; // TODO: Implement StackRequest
+  // private StackRequest currentRequest = null; // TODO: Implement StackRequest
 
-	public BoardRobotDelivery(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotDelivery(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("delivery");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("delivery");
+  }
 
-	@Override
-	public void update() {
-		if (robot.containsItems()) {
-			startDelegateAI(new AIRobotDisposeItems(robot));
-			return;
-		}
+  @Override
+  public void update() {
+    if (robot.containsItems()) {
+      startDelegateAI(new AIRobotDisposeItems(robot));
+      return;
+    }
 
-		// Simplified for now without StackRequest
-		startDelegateAI(new AIRobotGotoSleep(robot));
-	}
+    // Simplified for now without StackRequest
+    startDelegateAI(new AIRobotGotoSleep(robot));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotDisposeItems) {
-			update();
-		} else {
-			startDelegateAI(new AIRobotGotoSleep(robot));
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotDisposeItems) {
+      update();
+    } else {
+      startDelegateAI(new AIRobotGotoSleep(robot));
+    }
+  }
 
-	@Override
-	public boolean canLoadFromNBT() {
-		return true;
-	}
+  @Override
+  public boolean canLoadFromNBT() {
+    return true;
+  }
 
-	@Override
-	public void writeSelfToNBT(CompoundTag nbt) {
-		super.writeSelfToNBT(nbt);
-	}
+  @Override
+  public void writeSelfToNBT(CompoundTag nbt) {
+    super.writeSelfToNBT(nbt);
+  }
 
-	@Override
-	public void loadSelfFromNBT(CompoundTag nbt) {
-		super.loadSelfFromNBT(nbt);
-	}
+  @Override
+  public void loadSelfFromNBT(CompoundTag nbt) {
+    super.loadSelfFromNBT(nbt);
+  }
 }

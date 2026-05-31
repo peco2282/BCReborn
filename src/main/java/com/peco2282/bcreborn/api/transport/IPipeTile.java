@@ -21,38 +21,38 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IPipeTile extends IInjectable {
-    enum PipeType {
-        ITEM, FLUID, POWER, STRUCTURE
-    }
+  PipeType getPipeType();
 
-    PipeType getPipeType();
+  Level getWorld();
 
-    Level getWorld();
+  BlockPos getPos();
 
-    BlockPos getPos();
+  boolean isPipeConnected(Direction with);
 
-    boolean isPipeConnected(Direction with);
+  Block getNeighborBlock(Direction dir);
 
-    Block getNeighborBlock(Direction dir);
+  BlockEntity getNeighborTile(Direction dir);
 
-    BlockEntity getNeighborTile(Direction dir);
+  IPipe getNeighborPipe(Direction dir);
 
-    IPipe getNeighborPipe(Direction dir);
+  IPipe getPipe();
 
-    IPipe getPipe();
+  DyeColor getPipeColor();
 
-    DyeColor getPipeColor();
+  PipePluggable getPipePluggable(Direction direction);
 
-    PipePluggable getPipePluggable(Direction direction);
+  boolean hasPipePluggable(Direction direction);
 
-    boolean hasPipePluggable(Direction direction);
+  boolean hasBlockingPluggable(Direction direction);
 
-    boolean hasBlockingPluggable(Direction direction);
+  void scheduleNeighborChange();
 
-    void scheduleNeighborChange();
+  void scheduleRenderUpdate();
 
-    void scheduleRenderUpdate();
+  @Deprecated
+  int injectItem(ItemStack stack, boolean doAdd, Direction from);
 
-    @Deprecated
-    int injectItem(ItemStack stack, boolean doAdd, Direction from);
+  enum PipeType {
+    ITEM, FLUID, POWER, STRUCTURE
+  }
 }

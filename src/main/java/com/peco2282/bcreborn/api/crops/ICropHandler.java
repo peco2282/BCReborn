@@ -21,13 +21,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public interface ICropHandler {
-    boolean isSeed(ItemStack stack);
+  boolean isSeed(ItemStack stack);
 
-    boolean canSustainPlant(Level world, ItemStack seed, BlockPos pos);
+  boolean canSustainPlant(Level world, ItemStack seed, BlockPos pos);
 
-    boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos);
+  boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos);
 
-    boolean isMature(BlockGetter blockAccess, BlockState state, BlockPos pos);
+  boolean isMature(BlockGetter blockAccess, BlockState state, BlockPos pos);
 
-    boolean harvestCrop(Level world, BlockPos pos, List<ItemStack> drops);
+  boolean harvestCrop(Level world, BlockPos pos, List<ItemStack> drops);
 }

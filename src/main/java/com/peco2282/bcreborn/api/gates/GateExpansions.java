@@ -17,44 +17,44 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 public final class GateExpansions {
-    private static final Map<String, IGateExpansion> expansions = new HashMap<>();
-    private static final ArrayList<IGateExpansion> expansionIDs = new ArrayList<>();
-    private static final Map<IGateExpansion, ItemStack> recipes = HashBiMap.create();
+  private static final Map<String, IGateExpansion> expansions = new HashMap<>();
+  private static final ArrayList<IGateExpansion> expansionIDs = new ArrayList<>();
+  private static final Map<IGateExpansion, ItemStack> recipes = HashBiMap.create();
 
-    private GateExpansions() {
-    }
+  private GateExpansions() {
+  }
 
-    public static void registerExpansion(IGateExpansion expansion) {
-        registerExpansion(expansion.getUniqueIdentifier(), expansion);
-    }
+  public static void registerExpansion(IGateExpansion expansion) {
+    registerExpansion(expansion.getUniqueIdentifier(), expansion);
+  }
 
-    public static void registerExpansion(String identifier, IGateExpansion expansion) {
-        expansions.put(identifier, expansion);
-        expansionIDs.add(expansion);
-    }
+  public static void registerExpansion(String identifier, IGateExpansion expansion) {
+    expansions.put(identifier, expansion);
+    expansionIDs.add(expansion);
+  }
 
-    public static void registerExpansion(IGateExpansion expansion, ItemStack addedRecipe) {
-        registerExpansion(expansion.getUniqueIdentifier(), expansion);
-        recipes.put(expansion, addedRecipe);
-    }
+  public static void registerExpansion(IGateExpansion expansion, ItemStack addedRecipe) {
+    registerExpansion(expansion.getUniqueIdentifier(), expansion);
+    recipes.put(expansion, addedRecipe);
+  }
 
-    public static IGateExpansion getExpansion(String identifier) {
-        return expansions.get(identifier);
-    }
+  public static IGateExpansion getExpansion(String identifier) {
+    return expansions.get(identifier);
+  }
 
-    public static Set<IGateExpansion> getExpansions() {
-        return new HashSet<>(expansionIDs);
-    }
+  public static Set<IGateExpansion> getExpansions() {
+    return new HashSet<>(expansionIDs);
+  }
 
-    public static Map<IGateExpansion, ItemStack> getRecipesForPostInit() {
-        return recipes;
-    }
+  public static Map<IGateExpansion, ItemStack> getRecipesForPostInit() {
+    return recipes;
+  }
 
-    public static IGateExpansion getExpansionByID(int id) {
-        return expansionIDs.get(id);
-    }
+  public static IGateExpansion getExpansionByID(int id) {
+    return expansionIDs.get(id);
+  }
 
-    public static int getExpansionID(IGateExpansion expansion) {
-        return expansionIDs.indexOf(expansion);
-    }
+  public static int getExpansionID(IGateExpansion expansion) {
+    return expansionIDs.indexOf(expansion);
+  }
 }

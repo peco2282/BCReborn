@@ -11,72 +11,71 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import net.minecraftforge.fluids.FluidStack;
-
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
 import com.peco2282.bcreborn.common.inventory.filters.SimpleFluidFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationAcceptFluids;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotUnloadFluids extends AIRobot {
 
-	private int waitedCycles = 0;
+  private int waitedCycles = 0;
 
-	public AIRobotUnloadFluids(EntityRobotBase iRobot) {
-		super(iRobot);
-		setSuccess(false);
-	}
+  public AIRobotUnloadFluids(EntityRobotBase iRobot) {
+    super(iRobot);
+    setSuccess(false);
+  }
 
-	@Override
-	public void update() {
-		waitedCycles++;
+  public static int unload(EntityRobotBase robot, DockingStation station, boolean doUnload) {
+    if (station == null) {
+      return 0;
+    }
 
-		if (waitedCycles > 40) {
-			if (unload(robot, robot.getDockingStation(), true) == 0) {
-				terminate();
-			} else {
-				setSuccess(true);
-			}
-		}
-	}
+    if (!ActionRobotFilter.canInteractWithFluid(station,
+      new SimpleFluidFilter(robot.getFluidInTank(100)),
+      ActionStationAcceptFluids.class)) {
+      return 0;
+    }
 
-	public static int unload(EntityRobotBase robot, DockingStation station, boolean doUnload) {
-		if (station == null) {
-			return 0;
-		}
+    IFluidHandler fluidHandler = station.getFluidOutput();
+    if (fluidHandler == null) {
+      return 0;
+    }
 
-		if (!ActionRobotFilter.canInteractWithFluid(station,
-				new SimpleFluidFilter(robot.getFluidInTank(100)),
-				ActionStationAcceptFluids.class)) {
-			return 0;
-		}
+    FluidStack drainable = robot.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+    if (drainable == FluidStack.EMPTY) {
+      return 0;
+    }
 
-		IFluidHandler fluidHandler = station.getFluidOutput();
-		if (fluidHandler == null) {
-			return 0;
-		}
+    drainable = drainable.copy();
+    int filled = fluidHandler.fill(drainable, doUnload ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
 
-		FluidStack drainable = robot.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
-		if (drainable == FluidStack.EMPTY) {
-			return 0;
-		}
+    if (filled > 0 && doUnload) {
+      drainable.setAmount(filled);
+      robot.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
+    }
+    return filled;
+  }
 
-		drainable = drainable.copy();
-		int filled = fluidHandler.fill(drainable, doUnload ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
+  @Override
+  public void update() {
+    waitedCycles++;
 
-		if (filled > 0 && doUnload) {
-			drainable.setAmount(filled);
-			robot.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
-		}
-		return filled;
-	}
+    if (waitedCycles > 40) {
+      if (unload(robot, robot.getDockingStation(), true) == 0) {
+        terminate();
+      } else {
+        setSuccess(true);
+      }
+    }
+  }
 
-	@Override
-	public int getEnergyCost() {
-		return 10;
-	}
+  @Override
+  public int getEnergyCost() {
+    return 10;
+  }
 }

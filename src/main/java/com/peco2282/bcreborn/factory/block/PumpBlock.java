@@ -34,10 +34,10 @@ import org.jetbrains.annotations.Nullable;
 public class PumpBlock extends BuildCraftBlock {
   public PumpBlock() {
     super(Properties.of()
-        .mapColor(MapColor.METAL)
-        .sound(SoundType.METAL)
-        .strength(5.0F, 10.0F)
-        .lightLevel(state -> 1));
+      .mapColor(MapColor.METAL)
+      .sound(SoundType.METAL)
+      .strength(5.0F, 10.0F)
+      .lightLevel(state -> 1));
   }
 
   @Override

@@ -32,7 +32,7 @@ public abstract class StandardFluidPipeBehaviour implements FluidPipeBehaviour {
     if (neighbor.getBlock() instanceof PipeBlock otherPipe) {
       PipeMaterial otherMat = otherPipe.getPipeMaterial();
       if ((thisMat == PipeMaterial.STONE && otherMat == PipeMaterial.COBBLESTONE) ||
-          (thisMat == PipeMaterial.COBBLESTONE && otherMat == PipeMaterial.STONE)) {
+        (thisMat == PipeMaterial.COBBLESTONE && otherMat == PipeMaterial.STONE)) {
         return false;
       }
       if (thisMat == PipeMaterial.SANDSTONE && otherMat != PipeMaterial.SANDSTONE) {
