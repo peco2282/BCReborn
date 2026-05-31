@@ -145,7 +145,7 @@ public class SchematicBlock extends SchematicBlockBase {
    * this block can be placed.
    */
   public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-    Set<BlockIndex> indexes = new HashSet<BlockIndex>();
+    Set<BlockIndex> indexes = new HashSet<>();
     if (block instanceof FallingBlock) {
       indexes.add(RELATIVE_INDEXES[1]); // DOWN index
     }
@@ -192,7 +192,7 @@ public class SchematicBlock extends SchematicBlockBase {
     if (nbt.contains("rq")) {
       ListTag rq = nbt.getList("rq", Tag.TAG_COMPOUND);
 
-      ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
+      ArrayList<ItemStack> rqs = new ArrayList<>();
       for (int i = 0; i < rq.size(); ++i) {
         try {
           CompoundTag sub = rq.getCompound(i);

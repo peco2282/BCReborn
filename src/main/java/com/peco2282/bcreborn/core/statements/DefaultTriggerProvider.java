@@ -50,7 +50,7 @@ public class DefaultTriggerProvider implements ITriggerProvider {
 
   @Override
   public Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile) {
-    LinkedList<ITriggerExternal> res = new LinkedList<ITriggerExternal>();
+    LinkedList<ITriggerExternal> res = new LinkedList<>();
 
     boolean blockInventoryTriggers = false;
     boolean blockFluidHandlerTriggers = false;
@@ -90,7 +90,7 @@ public class DefaultTriggerProvider implements ITriggerProvider {
 
   @Override
   public Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
-    LinkedList<ITriggerInternal> res = new LinkedList<ITriggerInternal>();
+    LinkedList<ITriggerInternal> res = new LinkedList<>();
 
     if (container instanceof IRedstoneStatementContainer) {
       res.add(triggerRedstoneActive);

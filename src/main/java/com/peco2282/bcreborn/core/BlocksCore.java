@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornCore.MODID, priority = 0)
+@InitRegister(modId = BCRebornCore.MODID)
 public class BlocksCore {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 

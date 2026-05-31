@@ -26,9 +26,9 @@ import java.util.function.Supplier;
 public class RoboticsItems {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-  public static final RegistryObject<RedstoneBoardItem> REDSTONE_BOARD = register("redstone_board", () -> new RedstoneBoardItem());
-  public static final RegistryObject<RobotItem> ROBOT = register("robot", () -> new RobotItem());
-  public static final RegistryObject<RobotStationItem> ROBOT_STATION = register("robot_station", () -> new RobotStationItem());
+  public static final RegistryObject<RedstoneBoardItem> REDSTONE_BOARD = register("redstone_board", RedstoneBoardItem::new);
+  public static final RegistryObject<RobotItem> ROBOT = register("robot", RobotItem::new);
+  public static final RegistryObject<RobotStationItem> ROBOT_STATION = register("robot_station", RobotStationItem::new);
 
 
   private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> supplier) {

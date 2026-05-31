@@ -21,7 +21,6 @@ import com.peco2282.bcreborn.transport.gates.GateDefinition.GateMaterial;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -43,7 +42,6 @@ public final class GateFactory {
 		}
 
 		// TODO: ItemGate
-		Gate gate = makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction);
 
 		/*
 		for (IGateExpansion expansion : ItemGate.getInstalledExpansions(stack)) {
@@ -51,7 +49,7 @@ public final class GateFactory {
 		}
 		*/
 
-		return gate;
+		return makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction);
 	}
 
 	public static Gate makeGate(IPipe pipe, CompoundTag nbt) {

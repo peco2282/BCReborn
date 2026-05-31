@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public abstract class GuiAdvancedInterface<M extends BuildCraftMenu<M>> extends BuildCraftScreen<M> {
 
-  public ArrayList<AdvancedSlot> slots = new ArrayList<AdvancedSlot>();
+  public ArrayList<AdvancedSlot> slots = new ArrayList<>();
 
   public GuiAdvancedInterface(M container, Inventory inventory, Component texture) {
     super(container, inventory, texture);
@@ -87,7 +87,7 @@ public abstract class GuiAdvancedInterface<M extends BuildCraftMenu<M>> extends 
   }
 
   public void drawTooltip(GuiGraphics guiGraphics, String caption, int mouseX, int mouseY) {
-    if (caption != null && caption.length() > 0) {
+    if (caption != null && !caption.isEmpty()) {
       guiGraphics.renderTooltip(this.font, Component.literal(caption), mouseX, mouseY);
     }
   }

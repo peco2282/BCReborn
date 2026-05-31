@@ -64,7 +64,7 @@ public final class BlockUtils {
     // In 1.20.1, harvest check logic is different. Defaulting to 1.0f for now.
     float dropChance = 1.0f;
 
-    ArrayList<ItemStack> returnList = new ArrayList<ItemStack>();
+    ArrayList<ItemStack> returnList = new ArrayList<>();
     for (ItemStack s : dropsList) {
       if (world.random.nextFloat() <= dropChance) {
         returnList.add(s);
@@ -79,7 +79,7 @@ public final class BlockUtils {
   }
 
   public static boolean breakBlock(ServerLevel world, BlockPos pos, int forcedLifespan) {
-    List<ItemStack> items = new ArrayList<ItemStack>();
+    List<ItemStack> items = new ArrayList<>();
 
     if (breakBlock(world, pos, items)) {
       for (ItemStack item : items) {

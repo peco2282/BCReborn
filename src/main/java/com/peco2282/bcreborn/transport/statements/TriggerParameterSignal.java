@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -62,7 +63,7 @@ public class TriggerParameterSignal implements IStatementParameter {
 			maxColor = gate.material.maxWireColor;
 		}
 
-		if (mouse.getButton() == 0) {
+		if (mouse.button() == 0) {
 			if (color == null) {
 				active = true;
 				color = PipeWire.RED;
@@ -129,14 +130,14 @@ public class TriggerParameterSignal implements IStatementParameter {
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
 		icons = new TextureAtlasSprite[]{
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_red_inactive")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_blue_inactive")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_green_inactive")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_yellow_inactive")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_red_active")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_blue_active")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_green_active")),
-				textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_yellow_active"))
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_red_inactive")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_blue_inactive")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_green_inactive")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_yellow_inactive")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_red_active")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_blue_active")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_green_active")),
+				textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_yellow_active"))
 		};
 	}
 

@@ -38,11 +38,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
 
   @Override
   protected void registerStatesAndModels() {
-    BlocksTransport.PIPES_BY_MAT.forEach((material, typeMap) -> {
-      typeMap.forEach((type, block) -> {
-        generatePipeBlockState(material, type, block);
-      });
-    });
+    BlocksTransport.PIPES_BY_MAT.forEach((material, typeMap) -> typeMap.forEach((type, block) -> generatePipeBlockState(material, type, block)));
   }
 
   private void generatePipeBlockState(PipeMaterial material, PipeType type, RegistryObject<PipeBlock> block) {
@@ -182,7 +178,6 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       case GOLD -> "block/pipes/pipe_power_gold";
       case DIAMOND -> "block/pipes/pipe_power_diamond";
       case COBBLESTONE -> "block/pipes/pipe_power_cobblestone";
-      case STONE -> "block/pipes/pipe_power_stone";
       default -> "block/pipes/pipe_power_stone";
     };
   }
@@ -262,50 +257,29 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       case NORTH -> switch (face) {
         case NORTH -> new float[]{4, 4, 12, 12}; // 先端面
         case SOUTH -> new float[]{4, 4, 12, 12}; // 根元面（センターと接する）
-        case WEST -> new float[]{0, 4, 4, 12};
-        case EAST -> new float[]{0, 4, 4, 12};
-        case UP -> new float[]{4, 0, 12, 4};
-        case DOWN -> new float[]{4, 0, 12, 4};
+        case WEST, EAST -> new float[]{0, 4, 4, 12};
+        case UP, DOWN -> new float[]{4, 0, 12, 4};
       };
       case SOUTH -> switch (face) {
-        case SOUTH -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{4, 4, 12, 12};
-        case WEST -> new float[]{12, 4, 16, 12};
-        case EAST -> new float[]{12, 4, 16, 12};
-        case UP -> new float[]{4, 12, 12, 16};
-        case DOWN -> new float[]{4, 12, 12, 16};
+        case SOUTH, NORTH -> new float[]{4, 4, 12, 12};
+        case WEST, EAST -> new float[]{12, 4, 16, 12};
+        case UP, DOWN -> new float[]{4, 12, 12, 16};
       };
       case WEST -> switch (face) {
-        case WEST -> new float[]{4, 4, 12, 12};
-        case EAST -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{0, 4, 4, 12};
-        case SOUTH -> new float[]{0, 4, 4, 12};
-        case UP -> new float[]{0, 4, 4, 12};
-        case DOWN -> new float[]{0, 4, 4, 12};
+        case WEST, EAST -> new float[]{4, 4, 12, 12};
+        case NORTH, DOWN, UP, SOUTH -> new float[]{0, 4, 4, 12};
       };
       case EAST -> switch (face) {
-        case EAST -> new float[]{4, 4, 12, 12};
-        case WEST -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{12, 4, 16, 12};
-        case SOUTH -> new float[]{12, 4, 16, 12};
-        case UP -> new float[]{12, 4, 16, 12};
-        case DOWN -> new float[]{12, 4, 16, 12};
+        case EAST, WEST -> new float[]{4, 4, 12, 12};
+        case NORTH, DOWN, UP, SOUTH -> new float[]{12, 4, 16, 12};
       };
       case DOWN -> switch (face) {
-        case DOWN -> new float[]{4, 4, 12, 12};
-        case UP -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{4, 0, 12, 4};
-        case SOUTH -> new float[]{4, 0, 12, 4};
-        case WEST -> new float[]{4, 0, 12, 4};
-        case EAST -> new float[]{4, 0, 12, 4};
+        case DOWN, UP -> new float[]{4, 4, 12, 12};
+        case NORTH, EAST, WEST, SOUTH -> new float[]{4, 0, 12, 4};
       };
       case UP -> switch (face) {
-        case UP -> new float[]{4, 4, 12, 12};
-        case DOWN -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{4, 12, 12, 16};
-        case SOUTH -> new float[]{4, 12, 12, 16};
-        case WEST -> new float[]{4, 12, 12, 16};
-        case EAST -> new float[]{4, 12, 12, 16};
+        case UP, DOWN -> new float[]{4, 4, 12, 12};
+        case NORTH, EAST, WEST, SOUTH -> new float[]{4, 12, 12, 16};
       };
     };
   }

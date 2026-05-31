@@ -31,16 +31,12 @@ public enum PipeWire {
   }
 
   public PipeWire reverse() {
-    switch (this) {
-      case RED:
-        return YELLOW;
-      case BLUE:
-        return GREEN;
-      case GREEN:
-        return BLUE;
-      default:
-        return RED;
-    }
+    return switch (this) {
+      case RED -> YELLOW;
+      case BLUE -> GREEN;
+      case GREEN -> BLUE;
+      default -> RED;
+    };
   }
 
   public String getTag() {

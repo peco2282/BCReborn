@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
 
   private BlockIndex blockFound;
-  private final ArrayList<Block> blockFilter = new ArrayList<Block>();
+  private final ArrayList<Block> blockFilter = new ArrayList<>();
 
   public BoardRobotGenericSearchBlock(EntityRobotBase iRobot) {
     super(iRobot);
@@ -99,7 +99,7 @@ public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
     for (StatementSlot slot : robot.getLinkedStation().getActiveActions()) {
       if (slot.statement instanceof ActionRobotFilter) {
         for (IStatementParameter p : slot.parameters) {
-          if (p != null && p instanceof StatementParameterItemStack param) {
+          if (p instanceof StatementParameterItemStack param) {
             ItemStack stack = param.getItemStack();
 
             if (stack != null && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
@@ -112,14 +112,14 @@ public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
   }
 
   protected boolean matchesGateFilter(Level world, int x, int y, int z) {
-    if (blockFilter.size() == 0) {
+    if (blockFilter.isEmpty()) {
       return true;
     }
 
     Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 
-    for (int i = 0; i < blockFilter.size(); ++i) {
-      if (blockFilter.get(i) == block) {
+    for (Block value : blockFilter) {
+      if (value == block) {
         return true;
       }
     }

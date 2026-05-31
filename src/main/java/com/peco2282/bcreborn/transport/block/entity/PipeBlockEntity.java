@@ -223,9 +223,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         if (engine.orientation == dir.getOpposite() && engine.isActive()) {
           int stored = engine.getEnergyStored();
           int toConsume = Math.min(remaining, stored);
-          engine.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).ifPresent(e -> {
-            e.extractEnergy(toConsume, false);
-          });
+          engine.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).ifPresent(e -> e.extractEnergy(toConsume, false));
           remaining -= toConsume;
         }
       }

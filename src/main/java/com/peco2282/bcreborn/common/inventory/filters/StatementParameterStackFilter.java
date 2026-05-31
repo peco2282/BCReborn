@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class StatementParameterStackFilter extends ArrayStackOrListFilter {
 
   public StatementParameterStackFilter(IStatementParameter... parameters) {
-    ArrayList<ItemStack> tmp = new ArrayList<ItemStack>();
+    ArrayList<ItemStack> tmp = new ArrayList<>();
 
     for (IStatementParameter s : parameters) {
       if (s != null) {
@@ -33,6 +33,6 @@ public class StatementParameterStackFilter extends ArrayStackOrListFilter {
       }
     }
 
-    stacks = tmp.toArray(new ItemStack[tmp.size()]);
+    stacks = tmp.toArray(ItemStack[]::new);
   }
 }

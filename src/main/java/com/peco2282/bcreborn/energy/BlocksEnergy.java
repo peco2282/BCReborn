@@ -22,7 +22,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornEnergy.MODID, priority = 0)
+@InitRegister(modId = BCRebornEnergy.MODID)
 public class BlocksEnergy {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 

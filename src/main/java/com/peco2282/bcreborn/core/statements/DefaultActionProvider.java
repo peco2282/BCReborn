@@ -40,7 +40,7 @@ public class DefaultActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
-    LinkedList<IActionInternal> res = new LinkedList<IActionInternal>();
+    LinkedList<IActionInternal> res = new LinkedList<>();
 
     if (container instanceof IRedstoneStatementContainer) {
       res.add(actionRedstone);
@@ -51,7 +51,7 @@ public class DefaultActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
-    LinkedList<IActionExternal> res = new LinkedList<IActionExternal>();
+    LinkedList<IActionExternal> res = new LinkedList<>();
 
     if (tile instanceof IControllable) {
       for (IControllable.Mode mode : IControllable.Mode.values()) {

@@ -24,7 +24,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornBuilders.MODID, priority = 0)
+@InitRegister(modId = BCRebornBuilders.MODID)
 public class BlockEntityTypesBuilders {
   private static final BCRegistry REGISTRY = BCRebornBuilders.getRegistry();
 

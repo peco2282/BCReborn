@@ -57,12 +57,12 @@ public class ActionParameterSignal implements IStatementParameter {
 		}
 
 		if (color == null) {
-			color = mouse.getButton() == 0 ? PipeWire.RED : PipeWire.VALUES[maxColor - 1];
-		} else if (color == (mouse.getButton() == 0 ? PipeWire.VALUES[maxColor - 1] : PipeWire.RED)) {
+			color = mouse.button() == 0 ? PipeWire.RED : PipeWire.VALUES[maxColor - 1];
+		} else if (color == (mouse.button() == 0 ? PipeWire.VALUES[maxColor - 1] : PipeWire.RED)) {
 			color = null;
 		} else {
 			do {
-				color = PipeWire.VALUES[(mouse.getButton() == 0 ? color.ordinal() + 1 : color.ordinal() - 1) & 3];
+				color = PipeWire.VALUES[(mouse.button() == 0 ? color.ordinal() + 1 : color.ordinal() - 1) & 3];
 			} while (color.ordinal() >= maxColor);
 		}
 	}
@@ -83,10 +83,9 @@ public class ActionParameterSignal implements IStatementParameter {
 
 	@Override
 	public boolean equals(Object object) {
-		if (object instanceof ActionParameterSignal) {
-			ActionParameterSignal param = (ActionParameterSignal) object;
+		if (object instanceof ActionParameterSignal param) {
 
-			return param.color == color;
+      return param.color == color;
 		} else {
 			return false;
 		}

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -52,13 +53,10 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
 
 	@Override
 	public int maxParameters() {
-		switch (kind) {
-			case containsItems:
-			case containsFluids:
-				return 1;
-			default:
-				return 0;
-		}
+    return switch (kind) {
+      case containsItems, containsFluids -> 1;
+      default -> 0;
+    };
 	}
 
 	@Override
@@ -113,6 +111,6 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipecontents_" + kind.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipecontents_" + kind.name().toLowerCase(Locale.ENGLISH)));
 	}
 }

@@ -51,15 +51,15 @@ public class StatementParameterItemStackExact implements IStatementParameter {
   public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
     if (!stack.isEmpty()) {
       if (ItemStack.isSameItemSameTags(this.stack, stack)) {
-        if (mouse.getButton() == 0) {
-          this.stack.grow((mouse.isShift()) ? 16 : 1);
+        if (mouse.button() == 0) {
+          this.stack.grow((mouse.shift()) ? 16 : 1);
 
           int maxSize = availableSlots < 0 ? 64 : Math.min(64, this.stack.getMaxStackSize() * availableSlots);
           if (this.stack.getCount() > maxSize) {
             this.stack.setCount(maxSize);
           }
         } else {
-          this.stack.shrink((mouse.isShift()) ? 16 : 1);
+          this.stack.shrink((mouse.shift()) ? 16 : 1);
           if (this.stack.getCount() <= 0) {
             this.stack = ItemStack.EMPTY;
           }
@@ -69,15 +69,15 @@ public class StatementParameterItemStackExact implements IStatementParameter {
       }
     } else {
       if (!this.stack.isEmpty()) {
-        if (mouse.getButton() == 0) {
-          this.stack.grow((mouse.isShift()) ? 16 : 1);
+        if (mouse.button() == 0) {
+          this.stack.grow((mouse.shift()) ? 16 : 1);
 
           int maxSize = availableSlots < 0 ? 64 : Math.min(64, this.stack.getMaxStackSize() * availableSlots);
           if (this.stack.getCount() > maxSize) {
             this.stack.setCount(maxSize);
           }
         } else {
-          this.stack.shrink((mouse.isShift()) ? 16 : 1);
+          this.stack.shrink((mouse.shift()) ? 16 : 1);
           if (this.stack.getCount() <= 0) {
             this.stack = ItemStack.EMPTY;
           }

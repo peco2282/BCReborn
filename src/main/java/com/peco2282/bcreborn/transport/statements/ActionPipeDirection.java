@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -35,12 +36,12 @@ public class ActionPipeDirection extends BCStatement implements IActionInternal 
 
 	@Override
 	public String getDescription() {
-		return direction.name().substring(0, 1) + direction.name().substring(1).toLowerCase(Locale.ENGLISH) + " Pipe Direction";
+		return direction.name().charAt(0) + direction.name().substring(1).toLowerCase(Locale.ENGLISH) + " Pipe Direction";
 	}
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcraftcore:triggers/trigger_dir_" + direction.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_dir_" + direction.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override

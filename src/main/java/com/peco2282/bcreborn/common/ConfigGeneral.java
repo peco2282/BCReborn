@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.common;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigGeneral {
   // display
   private static ForgeConfigSpec.BooleanValue colorBlindMode;

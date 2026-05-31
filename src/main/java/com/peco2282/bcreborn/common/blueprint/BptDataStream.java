@@ -105,12 +105,10 @@ public class BptDataStream implements DataInput, DataOutput {
 
       char c = (char) i;
 
-      switch (c) {
-        case ',':
-          exit = true;
-          break;
-        default:
-          builder.append(c);
+      if (c == ',') {
+        exit = true;
+      } else {
+        builder.append(c);
       }
     }
 
@@ -136,12 +134,10 @@ public class BptDataStream implements DataInput, DataOutput {
 
       char c = (char) i;
 
-      switch (c) {
-        case ',':
-          exit = true;
-          break;
-        default:
-          builder.append(c);
+      if (c == ',') {
+        exit = true;
+      } else {
+        builder.append(c);
       }
     }
 

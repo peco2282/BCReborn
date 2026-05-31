@@ -35,15 +35,11 @@ public class BoardRobotButcher extends RedstoneBoardRobot {
   public final void update() {
     ItemStack held = robot.getMainHandItem();
     if (held.isEmpty()) {
-      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
-        return stack.getItem() instanceof SwordItem;
-      }));
+      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> stack.getItem() instanceof SwordItem));
     } else if (held.getDamageValue() >= held.getMaxDamage()) {
       startDelegateAI(new AIRobotGotoStationAndUnload(robot));
     } else {
-      startDelegateAI(new AIRobotSearchEntity(robot, entity -> {
-        return entity instanceof Animal;
-      }, 250, robot.getZoneToWork()));
+      startDelegateAI(new AIRobotSearchEntity(robot, entity -> entity instanceof Animal, 250, robot.getZoneToWork()));
     }
   }
 

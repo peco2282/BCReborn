@@ -34,11 +34,7 @@ public record UploadBuildersInActionPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get()).ifPresent(be -> {
-        be.sendBuildersInAction(ctx.getSender(), pos);
-      });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get()).ifPresent(be -> be.sendBuildersInAction(ctx.getSender(), pos)));
     ctx.setPacketHandled(true);
   }
 }

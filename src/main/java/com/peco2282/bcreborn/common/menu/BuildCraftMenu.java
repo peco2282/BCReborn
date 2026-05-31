@@ -19,7 +19,6 @@ import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.PacketGuiWidget;
 import io.netty.buffer.ByteBufInputStream;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
@@ -138,7 +136,7 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 //    return super.slotClick(slotNum, mouseButton, modifier, player);
 //  }
 
-  protected ItemStack slotClickPhantom(Slot slot, int index, int mouseButton, ClickType clickType, Player player) {
+  protected void slotClickPhantom(Slot slot, int index, int mouseButton, ClickType clickType, Player player) {
     ItemStack stack = ItemStack.EMPTY;
 
     if (clickType == ClickType.CLONE) {
@@ -170,7 +168,6 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
         }
       }
     }
-    return stack;
   }
 
   protected void adjustPhantomSlot(Slot slot, int mouseButton, int modifier) {

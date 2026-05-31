@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class BoardRobotDelivery extends RedstoneBoardRobot {
 
-  private final ArrayList<ItemStack> deliveryBlacklist = new ArrayList<ItemStack>();
+  private final ArrayList<ItemStack> deliveryBlacklist = new ArrayList<>();
 
   // private StackRequest currentRequest = null; // TODO: Implement StackRequest
 

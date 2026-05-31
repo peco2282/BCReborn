@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.transport.stripes;
 
 import com.peco2282.bcreborn.api.transport.IStripesActivator;
 import com.peco2282.bcreborn.api.transport.IStripesHandler;
-import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -44,9 +43,6 @@ public class StripesHandlerPipes implements IStripesHandler {
 		BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, false);
 		UseOnContext context = new UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hitResult);
 
-		if (stack.useOn(context).consumesAction()) {
-			return true;
-		}
-		return false;
-	}
+    return stack.useOn(context).consumesAction();
+  }
 }

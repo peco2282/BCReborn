@@ -49,7 +49,7 @@ public class ConstructionMarkerBlockItem extends BlockItem {
         return;
       }
 
-      if (tile1 != null && (tile1 instanceof ArchitectBlockEntity architect)) {
+      if ((tile1 instanceof ArchitectBlockEntity architect)) {
         BlockEntity tile2 = world.getBlockEntity(pos);
 
         if (tile1 != tile2 && tile2 != null) {

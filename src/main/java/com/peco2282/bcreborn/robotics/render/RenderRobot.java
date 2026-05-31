@@ -51,7 +51,6 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
   private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
 
   private final ModelPart box;
-  private final ModelPart helmetBox;
   private final ModelPart skullOverlayBox;
   private final ItemRenderer itemRenderer;
 
@@ -63,7 +62,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
 
     ModelPart root = context.bakeLayer(RobotModelLayers.ROBOT);
     this.box = root.getChild("box");
-    this.helmetBox = root.getChild("helmetBox");
+    ModelPart helmetBox = root.getChild("helmetBox");
     this.skullOverlayBox = root.getChild("skullOverlayBox");
   }
 
@@ -182,7 +181,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
       poseStack.translate(0.0f, -0.25f, 0.0f);
       poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-      HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
+      @SuppressWarnings("unchecked") HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
       ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
 
       VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));

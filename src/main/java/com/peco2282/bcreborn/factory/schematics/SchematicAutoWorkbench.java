@@ -33,7 +33,7 @@ public class SchematicAutoWorkbench extends SchematicTile {
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
     AutoWorkbenchBlockEntity autoWb = getTile(context, new BlockPos(x, y, z));
     if (autoWb != null) {
-      ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
+      ArrayList<ItemStack> rqs = new ArrayList<>();
       rqs.add(new ItemStack(FactoryBlocks.AUTO_WORKBENCH.get()));
 
       for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
@@ -46,7 +46,7 @@ public class SchematicAutoWorkbench extends SchematicTile {
       }
 
       storedRequirements = JavaTools.concat(storedRequirements, rqs
-        .toArray(new ItemStack[rqs.size()]));
+        .toArray(ItemStack[]::new));
     }
   }
 
@@ -79,7 +79,7 @@ public class SchematicAutoWorkbench extends SchematicTile {
 
   private AutoWorkbenchBlockEntity getTile(IBuilderContext context, BlockPos pos) {
     BlockEntity tile = context.world().getBlockEntity(pos);
-    if (tile != null && tile instanceof AutoWorkbenchBlockEntity autoWork) {
+    if (tile instanceof AutoWorkbenchBlockEntity autoWork) {
       return autoWork;
     }
     return null;

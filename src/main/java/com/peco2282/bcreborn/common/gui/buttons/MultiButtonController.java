@@ -21,30 +21,31 @@ public final class MultiButtonController<T extends IMultiButtonState> {
   private final T[] validStates;
   private int currentState;
 
+  @SafeVarargs
   private MultiButtonController(int startState, T... validStates) {
     this.currentState = startState;
     this.validStates = validStates;
   }
 
+  @SafeVarargs
   public static <T extends IMultiButtonState> MultiButtonController<T> getController(int startState, T... validStates) {
-    return new MultiButtonController<T>(startState, validStates);
+    return new MultiButtonController<>(startState, validStates);
   }
 
   public MultiButtonController<?> copy() {
-    return new MultiButtonController<T>(currentState, validStates.clone());
+    return new MultiButtonController<>(currentState, validStates.clone());
   }
 
   public T[] getValidStates() {
     return validStates;
   }
 
-  public int incrementState() {
+  public void incrementState() {
     int newState = currentState + 1;
     if (newState >= validStates.length) {
       newState = 0;
     }
     currentState = newState;
-    return currentState;
   }
 
   public int getCurrentState() {

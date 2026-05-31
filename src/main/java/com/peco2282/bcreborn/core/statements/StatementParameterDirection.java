@@ -57,7 +57,7 @@ public class StatementParameterDirection implements IStatementParameter {
   public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
     // Direction parameter logic usually depends on pipe connection, but we can cycle directions
     int dirIdx = direction == null ? -1 : direction.ordinal();
-    dirIdx = (dirIdx + (mouse.getButton() > 0 ? -1 : 1)) % 7;
+    dirIdx = (dirIdx + (mouse.button() > 0 ? -1 : 1)) % 7;
     if (dirIdx < -1) dirIdx = 5;
     if (dirIdx == -1 || dirIdx == 6) {
       direction = null;

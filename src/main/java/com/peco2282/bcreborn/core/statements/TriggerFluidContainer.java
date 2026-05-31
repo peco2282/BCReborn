@@ -81,16 +81,12 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
         }
       }
 
-      switch (state) {
-        case Empty:
-          return !foundItems;
-        case Contains:
-          return foundItems;
-        case Space:
-          return foundSpace;
-        default:
-          return !foundSpace;
-      }
+      return switch (state) {
+        case Empty -> !foundItems;
+        case Contains -> foundItems;
+        case Space -> foundSpace;
+        default -> !foundSpace;
+      };
     }).orElse(false);
   }
 

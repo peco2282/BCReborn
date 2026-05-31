@@ -167,7 +167,7 @@ public class LibraryDatabase {
         }
       }
 
-      pages = blueprintIds.toArray(new LibraryId[blueprintIds.size()]);
+      pages = blueprintIds.toArray(LibraryId[]::new);
     }
   }
 
@@ -184,6 +184,6 @@ public class LibraryDatabase {
   }
 
   public List<LibraryId> getBlueprintIds() {
-    return Collections.unmodifiableList(new ArrayList<>(blueprintIds));
+    return List.copyOf(blueprintIds);
   }
 }

@@ -38,7 +38,6 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Contai
   public String mapName = "";
   private boolean previewColorsPushed = false;
   private final ZonePlan[] selectedAreas = new ZonePlan[16];
-  private int currentSelectedArea = 0;
 
   public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
     super(BlockEntityTypesRobotics.ZONE_PLAN.get(), pos, state);
@@ -163,7 +162,6 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Contai
     if (selectedAreas[index] == null) {
       selectedAreas[index] = new ZonePlan();
     }
-    currentSelectedArea = index;
     return selectedAreas[index];
   }
 

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.ActionRedstoneOutput;
@@ -39,7 +40,7 @@ public class ActionRedstoneFaderOutput extends ActionRedstoneOutput implements I
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation(String.format("buildcrafttransport:triggers/redstone_%02d", level)));
+		icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
 	}
 
 	@Override

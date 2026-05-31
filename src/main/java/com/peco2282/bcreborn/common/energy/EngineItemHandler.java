@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class EngineItemHandler implements IItemHandler {
   private final ItemStackHandler inventory;
-  private final Direction outputDirection;
   private final EngineBlockEntity<?> engine;
 
   public EngineItemHandler(
@@ -32,7 +31,6 @@ public class EngineItemHandler implements IItemHandler {
     EngineBlockEntity<?> engine
   ) {
     this.inventory = inventory;
-    this.outputDirection = outputDirection;
     this.engine = engine;
   }
 

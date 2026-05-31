@@ -31,13 +31,13 @@ public class BoardProgrammingRecipe implements IProgrammingRecipe {
 
   @Override
   public List<ItemStack> getOptions(int width, int height) {
-    List<ItemStack> options = new ArrayList<ItemStack>(width * height);
+    List<ItemStack> options = new ArrayList<>(width * height);
     for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
       ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
       nbt.createBoard(stack.getOrCreateTag());
       options.add(stack);
     }
-    Collections.sort(options, new BoardSorter(this));
+    options.sort(new BoardSorter(this));
     return options;
   }
 

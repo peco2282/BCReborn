@@ -26,11 +26,7 @@ public class AIRobotSearchBlock extends AIRobot {
 
   public BlockIndex blockFound;
   public LinkedList<BlockIndex> path;
-  // private PathFindingSearch blockScanner = null; // TODO: Implement
-  private IBlockFilter pathFound;
   private Iterator<BlockIndex> blockIter;
-  private double maxDistanceToEnd;
-  private IZone zone;
 
   public AIRobotSearchBlock(EntityRobotBase iRobot) {
     super(iRobot);
@@ -40,11 +36,10 @@ public class AIRobotSearchBlock extends AIRobot {
                             double iMaxDistanceToEnd) {
     super(iRobot);
 
-    pathFound = iFilter;
-    zone = iRobot.getZoneToWork();
+    // private PathFindingSearch blockScanner = null; // TODO: Implement
+    IZone zone = iRobot.getZoneToWork();
     blockFound = null;
     path = null;
-    maxDistanceToEnd = iMaxDistanceToEnd;
   }
 
   @Override

@@ -26,7 +26,7 @@ public abstract class AdvancedSlot {
   public BuildCraftScreen<?> gui;
   public boolean drawBackround = false;
 
-  public AdvancedSlot(GuiAdvancedInterface gui, int x, int y) {
+  public AdvancedSlot(GuiAdvancedInterface<?> gui, int x, int y) {
     this.x = x;
     this.y = y;
     this.gui = gui;
@@ -36,7 +36,7 @@ public abstract class AdvancedSlot {
     return null;
   }
 
-  public final void drawTooltip(GuiAdvancedInterface gui, GuiGraphics guiGraphics, int x, int y) {
+  public final void drawTooltip(GuiAdvancedInterface<?> gui, GuiGraphics guiGraphics, int x, int y) {
     String desc = getDescription();
     if (desc != null) {
       gui.drawTooltip(guiGraphics, desc, x, y);

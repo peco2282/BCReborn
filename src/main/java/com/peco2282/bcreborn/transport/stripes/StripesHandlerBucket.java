@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.api.transport.IStripesHandler;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class StripesHandlerBucket implements IStripesHandler {
 	private static final ItemStack emptyBucket = new ItemStack(Items.BUCKET, 1);

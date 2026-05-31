@@ -59,8 +59,7 @@ public class InventoryCopy implements Container {
   @Override
   public ItemStack removeItem(int i, int j) {
     if (contents[i] != null && !contents[i].isEmpty()) {
-      ItemStack itemstack = contents[i].split(j);
-      return itemstack;
+      return contents[i].split(j);
     } else {
       return ItemStack.EMPTY;
     }

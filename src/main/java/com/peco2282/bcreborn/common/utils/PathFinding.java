@@ -32,7 +32,6 @@ public class PathFinding implements IIterableAlgorithm {
   public static int PATH_ITERATIONS = 1000;
 
   private final Level world;
-  private final BlockIndex start;
   private final BlockIndex end;
   private double maxDistanceToEndSq = 0;
   private float maxTotalDistanceSq = 0;
@@ -48,16 +47,15 @@ public class PathFinding implements IIterableAlgorithm {
 
   public PathFinding(Level iWorld, BlockIndex iStart, BlockIndex iEnd) {
     world = iWorld;
-    start = iStart;
     end = iEnd;
 
     Node startNode = new Node();
     startNode.parent = null;
     startNode.movementCost = 0;
-    startNode.destinationCost = distanceSq(start, end);
+    startNode.destinationCost = distanceSq(iStart, end);
     startNode.totalWeight = startNode.movementCost + startNode.destinationCost;
     startNode.index = iStart;
-    openList.put(start, startNode);
+    openList.put(iStart, startNode);
     nextIteration = startNode;
   }
 
@@ -94,7 +92,7 @@ public class PathFinding implements IIterableAlgorithm {
       }
 
       if (endReached) {
-        result = new LinkedList<BlockIndex>();
+        result = new LinkedList<>();
 
         while (nextIteration != null) {
           result.addFirst(nextIteration.index);
@@ -117,7 +115,7 @@ public class PathFinding implements IIterableAlgorithm {
     if (result != null) {
       return result;
     } else {
-      return new LinkedList<BlockIndex>();
+      return new LinkedList<>();
     }
   }
 
@@ -129,7 +127,7 @@ public class PathFinding implements IIterableAlgorithm {
     openList.remove(from.index);
     closedList.put(from.index, from);
 
-    ArrayList<Node> nodes = new ArrayList<Node>();
+    ArrayList<Node> nodes = new ArrayList<>();
     byte[][][] resultMoves = movements(from);
 
     for (int dx = -1; dx <= +1; ++dx) {

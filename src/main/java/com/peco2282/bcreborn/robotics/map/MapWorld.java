@@ -30,7 +30,7 @@ import java.util.Set;
 
 public class MapWorld {
   private final Long2ObjectOpenHashMap<MapRegion> regionMap;
-  private final HashMap<ChunkAccess, Integer> timeToUpdate = new HashMap<ChunkAccess, Integer>();
+  private final HashMap<ChunkAccess, Integer> timeToUpdate = new HashMap<>();
   private final Long2LongOpenHashMap regionUpdateTime;
   private final LongOpenHashSet updatedChunks;
   private final File location;
@@ -115,7 +115,7 @@ public class MapWorld {
   }
 
   public void tick() {
-    if (timeToUpdate.size() > 0) {
+    if (!timeToUpdate.isEmpty()) {
       synchronized (timeToUpdate) {
         Set<ChunkAccess> chunks = new HashSet<>(timeToUpdate.keySet());
         for (ChunkAccess c : chunks) {

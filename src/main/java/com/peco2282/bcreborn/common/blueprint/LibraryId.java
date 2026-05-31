@@ -84,9 +84,8 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
   public void generateUniqueId(byte[] data) {
     try {
       MessageDigest digest = MessageDigest.getInstance("SHA-256");
-      byte[] id = digest.digest(data);
 
-      uniqueId = id;
+      uniqueId = digest.digest(data);
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }

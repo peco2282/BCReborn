@@ -87,7 +87,7 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
   }
 
   public void drawTooltip(GuiGraphics guiGraphics, String caption, int mouseX, int mouseY) {
-    if (caption != null && caption.length() > 0) {
+    if (caption != null && !caption.isEmpty()) {
       guiGraphics.renderTooltip(this.font, Component.literal(caption), mouseX, mouseY);
     }
   }

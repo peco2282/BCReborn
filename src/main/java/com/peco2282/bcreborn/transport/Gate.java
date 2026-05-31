@@ -21,11 +21,8 @@ import com.peco2282.bcreborn.api.statements.*;
 import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContainer;
 import com.peco2282.bcreborn.api.statements.containers.ISidedStatementContainer;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.transport.gates.GateDefinition;
-import com.peco2282.bcreborn.transport.menu.GateInterfaceMenu;
-import com.peco2282.bcreborn.transport.statements.ActionValve;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -64,7 +61,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 	public IStatementParameter[][] actionParameters = new IStatementParameter[MAX_STATEMENTS][MAX_PARAMETERS];
 
 	public ActionActiveState[] actionsState = new ActionActiveState[MAX_STATEMENTS];
-	public ArrayList<StatementSlot> activeActions = new ArrayList<StatementSlot>();
+	public ArrayList<StatementSlot> activeActions = new ArrayList<>();
 
 	public byte broadcastSignal, prevBroadcastSignal;
 	public int redstoneOutput = 0;
@@ -88,16 +85,12 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 		this.logic = logic;
 		this.direction = direction;
 
-		for (int i = 0; i < actionsState.length; ++i) {
-			actionsState[i] = ActionActiveState.Deactivated;
-		}
+    Arrays.fill(actionsState, ActionActiveState.Deactivated);
 	}
 
 	public void setTrigger(int position, IStatement trigger) {
 		if (trigger != triggers[position]) {
-			for (int i = 0; i < triggerParameters[position].length; i++) {
-				triggerParameters[position][i] = null;
-			}
+      Arrays.fill(triggerParameters[position], null);
 		}
 		triggers[position] = trigger;
 	}
@@ -108,9 +101,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
 	public void setAction(int position, IStatement action) {
 		if (action != actions[position]) {
-			for (int i = 0; i < actionParameters[position].length; i++) {
-				actionParameters[position][i] = null;
-			}
+      Arrays.fill(actionParameters[position], null);
 		}
 
 		actions[position] = action;
@@ -395,7 +386,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 		int oldRedstoneOutputSide = redstoneOutputSide;
 		redstoneOutputSide = 0;
 
-		boolean wasActive = activeActions.size() > 0;
+		boolean wasActive = !activeActions.isEmpty();
 
 		prevBroadcastSignal = broadcastSignal;
 		broadcastSignal = 0;
@@ -488,9 +479,8 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
 			for (Direction side : Direction.values()) {
 				BlockEntity tile = pipe.getTile().getNeighborTile(side);
-				if (tile instanceof IActionReceptor) {
-					IActionReceptor recept = (IActionReceptor) tile;
-					recept.actionActivated(action, slot.parameters);
+				if (tile instanceof IActionReceptor recept) {
+          recept.actionActivated(action, slot.parameters);
 				}
 			}
 		}
@@ -505,7 +495,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 			// pipe.scheduleWireUpdate();
 		}
 
-		boolean isActive = activeActions.size() > 0;
+		boolean isActive = !activeActions.isEmpty();
 
 		if (wasActive != isActive) {
 			pipe.getTile().scheduleRenderUpdate();
@@ -575,7 +565,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 	}
 
 	public List<IStatement> getAllValidTriggers() {
-		ArrayList<IStatement> allTriggers = new ArrayList<IStatement>(64);
+		ArrayList<IStatement> allTriggers = new ArrayList<>(64);
 		allTriggers.addAll(StatementManager.getInternalTriggers(this));
 
 		for (Direction o : Direction.values()) {
@@ -600,7 +590,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 	}
 
 	public List<IStatement> getAllValidActions() {
-		ArrayList<IStatement> allActions = new ArrayList<IStatement>(64);
+		ArrayList<IStatement> allActions = new ArrayList<>(64);
 		allActions.addAll(StatementManager.getInternalActions(this));
 
 		for (Direction o : Direction.values()) {
@@ -703,12 +693,11 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 	}
 
 	@Override
-	public boolean setRedstoneOutput(Direction side, int value) {
+	public void setRedstoneOutput(Direction side, int value) {
 		if (side != this.getSide() && side != null) {
-			return false;
+			return;
 		}
 
 		setRedstoneOutput(side != null, value);
-		return true;
-	}
+  }
 }

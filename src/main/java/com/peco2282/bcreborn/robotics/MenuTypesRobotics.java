@@ -25,8 +25,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class MenuTypesRobotics {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-  public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register("requester", IForgeMenuType.create((windowId, inv, data) -> new RequesterMenu(windowId, inv, data)));
-  public static final RegistryObject<MenuType<ZonePlanMenu>> ZONE_PLAN = register("zone_plan", IForgeMenuType.create((windowId, inv, data) -> new ZonePlanMenu(windowId, inv, data)));
+  public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register("requester", IForgeMenuType.create(RequesterMenu::new));
+  public static final RegistryObject<MenuType<ZonePlanMenu>> ZONE_PLAN = register("zone_plan", IForgeMenuType.create(ZonePlanMenu::new));
 
   private static <M extends AbstractContainerMenu> RegistryObject<MenuType<M>> register(String name, MenuType<M> menuType) {
     return REGISTRY.registerMenuType(name, () -> menuType);

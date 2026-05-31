@@ -23,11 +23,10 @@ import net.minecraft.world.entity.player.Inventory;
 public class GuiPackager extends BuildCraftScreen<PackagerMenu> {
 
   public static final ResourceLocation TEXTURE = BCRebornSilicon.location("textures/gui/packager.png");
-  private final PackagerBlockEntity bench;
 
   public GuiPackager(PackagerMenu container, Inventory inventory, Component title) {
     super(container, inventory, title);
-    this.bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
+    PackagerBlockEntity bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
     this.imageWidth = 176;
     this.imageHeight = 197;
     this.inventoryLabelY = this.imageHeight - 94;

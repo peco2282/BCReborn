@@ -32,8 +32,8 @@ import java.util.LinkedList;
 
 public class BptBuilderTemplate extends BptBuilderBase {
 
-  private final LinkedList<BuildingSlotBlock> clearList = new LinkedList<BuildingSlotBlock>();
-  private final LinkedList<BuildingSlotBlock> buildList = new LinkedList<BuildingSlotBlock>();
+  private final LinkedList<BuildingSlotBlock> clearList = new LinkedList<>();
+  private final LinkedList<BuildingSlotBlock> buildList = new LinkedList<>();
   private BuildingSlotIterator iteratorBuild, iteratorClear;
 
   public BptBuilderTemplate(BlueprintBase bluePrint, Level world, int x, int y, int z) {
@@ -112,7 +112,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
   }
 
   private void checkDone() {
-    done = buildList.size() == 0 && clearList.size() == 0;
+    done = buildList.isEmpty() && clearList.isEmpty();
   }
 
   @Override
@@ -122,7 +122,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
 
   @Override
   public BuildingSlot getNextBlock(Level world, TileAbstractBuilder inv) {
-    if (buildList.size() != 0 || clearList.size() != 0) {
+    if (!buildList.isEmpty() || !clearList.isEmpty()) {
       BuildingSlotBlock slot = internalGetNextBlock(world, inv);
       checkDone();
 

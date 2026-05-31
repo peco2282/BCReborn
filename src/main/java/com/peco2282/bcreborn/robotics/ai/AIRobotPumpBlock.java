@@ -22,7 +22,6 @@ public class AIRobotPumpBlock extends AIRobot {
 
   private BlockIndex blockToPump;
   private long waited = 0;
-  private final int pumped = 0;
 
   public AIRobotPumpBlock(EntityRobotBase iRobot) {
     super(iRobot);
@@ -67,6 +66,7 @@ public class AIRobotPumpBlock extends AIRobot {
 
   @Override
   public boolean success() {
+    int pumped = 0;
     return pumped > 0;
   }
 }

@@ -51,9 +51,7 @@ public record RequestZonePlanComputeMapPacket(BlockPos pos, int cx, int cz, int 
       ServerPlayer player = ctx.getSender();
       if (player == null) return;
       getBlockEntity(ctx, pos, BlockEntityTypesRobotics.ZONE_PLAN.get())
-        .ifPresent(be -> {
-          BCNetworkManager.computeMap(be, cx, cz, width, height, blocksPerPixel, player);
-        });
+        .ifPresent(be -> BCNetworkManager.computeMap(be, cx, cz, width, height, blocksPerPixel, player));
     });
     ctx.setPacketHandled(true);
   }

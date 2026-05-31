@@ -47,11 +47,9 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
         return !stack.isEmpty();
       }));
     } else {
-      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
-        return !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
-          // && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
-          && !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
-      }, 1));
+      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
+        // && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
+        && !robot.getRegistry().isTaken(new ResourceIdBlock(pos)), 1));
     }
   }
 

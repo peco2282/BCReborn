@@ -36,11 +36,7 @@ public record ArchitectNameSyncPacket(
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
 
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get()).ifPresent(be -> {
-        be.setName(name);
-      });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get()).ifPresent(be -> be.setName(name)));
     ctx.setPacketHandled(true);
   }
 }

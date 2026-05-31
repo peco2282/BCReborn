@@ -29,7 +29,7 @@ public class RobotsActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
-    LinkedList<IActionInternal> result = new LinkedList<IActionInternal>();
+    LinkedList<IActionInternal> result = new LinkedList<>();
     BlockEntity tile = container.getTile();
 
     if (!(tile instanceof IPipeTile pipeTile)) {
@@ -38,7 +38,7 @@ public class RobotsActionProvider implements IActionProvider {
 
     List<DockingStation> stations = RobotUtils.getStations(pipeTile);
 
-    if (stations.size() == 0) {
+    if (stations.isEmpty()) {
       return result;
     }
 

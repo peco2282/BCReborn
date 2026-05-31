@@ -40,7 +40,6 @@ public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements 
 
   private final Map<Integer, Map<ListMatchHandler.Type, List<ItemStack>>> exampleCache = new HashMap<>();
   private EditBox textField;
-  private final Player player;
 
   public ListNewScreen(ListNewMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -48,7 +47,7 @@ public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements 
     width = 176;
     height = 191;
 
-    player = inventory.player;
+    Player player = inventory.player;
   }
 
   private void clearExamplesCache(int lineId) {
@@ -61,7 +60,7 @@ public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements 
   private List<ItemStack> getExamplesList(int lineId, ListMatchHandler.Type type) {
     Map<ListMatchHandler.Type, List<ItemStack>> exampleList = exampleCache.get(lineId);
     if (exampleList == null) {
-      exampleList = new EnumMap<ListMatchHandler.Type, List<ItemStack>>(ListMatchHandler.Type.class);
+      exampleList = new EnumMap<>(ListMatchHandler.Type.class);
       exampleCache.put(lineId, exampleList);
     }
 
@@ -71,7 +70,7 @@ public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements 
       List<ItemStack> examples = container.lines[lineId].getExamples();
       ItemStack input = container.lines[lineId].stacks.get(0);
       if (!input.isEmpty()) {
-        List<ItemStack> repetitions = new ArrayList<ItemStack>();
+        List<ItemStack> repetitions = new ArrayList<>();
         for (ItemStack is : examples) {
           if (StackHelper.isMatchingItem(input, is, true, false)) {
             repetitions.add(is);

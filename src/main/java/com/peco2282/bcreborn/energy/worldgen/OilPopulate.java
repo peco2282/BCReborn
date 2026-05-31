@@ -120,8 +120,6 @@ public final class OilPopulate {
     }
 
     if (type == GenType.LARGE || type == GenType.MEDIUM) {
-      int wellX = x;
-      int wellZ = z;
 
       int wellHeight = MEDIUM_WELL_HEIGHT;
       if (type == GenType.LARGE) {
@@ -151,7 +149,7 @@ public final class OilPopulate {
           for (int poolZ = -radius; poolZ <= radius; poolZ++) {
             int distance = poolX * poolX + poolY * poolY + poolZ * poolZ;
             if (distance <= radiusSq) {
-              BlockPos oilPos = new BlockPos(poolX + wellX, poolY + wellY, poolZ + wellZ);
+              BlockPos oilPos = new BlockPos(poolX + x, poolY + wellY, poolZ + z);
               int flags = distance == radiusSq ? 3 : 2;
               level.setBlock(oilPos, getOilBlockState(), flags);
             }
@@ -165,35 +163,32 @@ public final class OilPopulate {
       } else {
         lakeRadius = 5 + rand.nextInt(10);
       }
-      generateSurfaceDeposit(level, rand, wellX, groundLevel, wellZ, lakeRadius);
+      generateSurfaceDeposit(level, rand, x, groundLevel, z, lakeRadius);
 
       boolean makeSpring = type == GenType.LARGE && ConfigEnergy.isSpawnOilSprings();
 
       int baseY = makeSpring ? level.getMinBuildHeight() : wellY;
 
       for (int y = baseY + 1; y <= maxHeight; ++y) {
-        level.setBlock(new BlockPos(wellX, y, wellZ), getOilBlockState(), 3);
+        level.setBlock(new BlockPos(x, y, z), getOilBlockState(), 3);
       }
 
       if (type == GenType.LARGE) {
         for (int y = wellY; y <= maxHeight - wellHeight / 2; ++y) {
-          level.setBlock(new BlockPos(wellX + 1, y, wellZ), getOilBlockState(), 3);
-          level.setBlock(new BlockPos(wellX - 1, y, wellZ), getOilBlockState(), 3);
-          level.setBlock(new BlockPos(wellX, y, wellZ + 1), getOilBlockState(), 3);
-          level.setBlock(new BlockPos(wellX, y, wellZ - 1), getOilBlockState(), 3);
+          level.setBlock(new BlockPos(x + 1, y, z), getOilBlockState(), 3);
+          level.setBlock(new BlockPos(x - 1, y, z), getOilBlockState(), 3);
+          level.setBlock(new BlockPos(x, y, z + 1), getOilBlockState(), 3);
+          level.setBlock(new BlockPos(x, y, z - 1), getOilBlockState(), 3);
         }
       }
 
     } else if (type == GenType.LAKE) {
-      int lakeX = x;
-      int lakeZ = z;
-      int lakeY = groundLevel;
 
-      BlockPos lakePos = new BlockPos(lakeX, lakeY, lakeZ);
+      BlockPos lakePos = new BlockPos(x, groundLevel, z);
       BlockState blockState = level.getBlockState(lakePos);
       // Place lake if on solid ground
       if (!blockState.isAir()) {
-        generateSurfaceDeposit(level, rand, lakeX, lakeY, lakeZ, 5 + rand.nextInt(10));
+        generateSurfaceDeposit(level, rand, x, groundLevel, z, 5 + rand.nextInt(10));
       }
     }
   }
@@ -355,14 +350,13 @@ public final class OilPopulate {
 
   private double surfaceDeviation(Level level, int x, int y, int z, int radius) {
     int diameter = radius * 2;
-    double centralTendency = y;
     double deviation = 0;
     for (int i = 0; i < diameter; i++) {
       for (int k = 0; k < diameter; k++) {
-        deviation += getTopBlock(level, x - radius + i, z - radius + k) - centralTendency;
+        deviation += getTopBlock(level, x - radius + i, z - radius + k) - (double) y;
       }
     }
-    return Math.abs(deviation / centralTendency);
+    return Math.abs(deviation / (double) y);
   }
 
   private enum GenType {

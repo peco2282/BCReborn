@@ -27,10 +27,10 @@ import java.util.List;
 public class RobotsTriggerProvider implements ITriggerProvider {
   @Override
   public Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
-    LinkedList<ITriggerInternal> result = new LinkedList<ITriggerInternal>();
+    LinkedList<ITriggerInternal> result = new LinkedList<>();
     List<DockingStation> stations = RobotUtils.getStations(container.getTile());
 
-    if (stations.size() > 0) {
+    if (!stations.isEmpty()) {
       result.add(RoboticsStatements.triggerRobotSleep);
       result.add(RoboticsStatements.triggerRobotInStation);
       result.add(RoboticsStatements.triggerRobotLinked);

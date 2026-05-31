@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornTransport.MODID, priority = 0)
+@InitRegister(modId = BCRebornTransport.MODID)
 public class BlocksTransport {
   public static final Map<PipeMaterial, Map<PipeType, RegistryObject<PipeBlock>>> PIPES_BY_MAT = new HashMap<>();
   public static final Map<PipeType, Map<PipeMaterial, RegistryObject<PipeBlock>>> PIPES_BY_TYPE = new HashMap<>();

@@ -91,9 +91,8 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
 
       if (index != null) {
         Direction side = map.getPointSide(item);
-        DockingStation paramStation = registry.getStation(index.toBlockPos(), side);
 
-        return paramStation;
+        return registry.getStation(index.toBlockPos(), side);
       }
     }
     return null;

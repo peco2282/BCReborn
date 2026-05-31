@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.factory;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigFactory {
   // blocks
   private static ForgeConfigSpec.BooleanValue autoWorkbenchBlock;

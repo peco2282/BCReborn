@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornFactory.MODID, priority = 0)
+@InitRegister(modId = BCRebornFactory.MODID)
 public class FactoryBlocks {
   private static final BCRegistry REGISTRY = BCRebornFactory.getRegistry();
 

@@ -36,7 +36,7 @@ public final class GateExpansionTimer extends GateExpansionBuildcraft implements
 
 	private class GateExpansionControllerTimer extends GateExpansionController {
 
-		private class Timer {
+		private static class Timer {
 
 			private static final int ACTIVE_TIME = 5;
 			private final int delay;

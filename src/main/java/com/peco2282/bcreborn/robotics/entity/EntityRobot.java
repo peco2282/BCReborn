@@ -526,7 +526,7 @@ public class EntityRobot extends EntityRobotBase implements
       }
     }
 
-    if (wearables.size() > 0) {
+    if (!wearables.isEmpty()) {
       ListTag wearableList = new ListTag();
 
       for (ItemStack wearable : wearables) {
@@ -1454,8 +1454,7 @@ public class EntityRobot extends EntityRobotBase implements
 
   public void doInitialize(ServerPlayer p) {
     for (int i = 0; i < inv.length; ++i) {
-      final int j = i;
-      BCNetworkManager.sendClientSetInventory(p, this.getId(), (short) j, inv[j]);
+      BCNetworkManager.sendClientSetInventory(p, this.getId(), (short) i, inv[i]);
     }
 
     if (currentDockingStation != null) {

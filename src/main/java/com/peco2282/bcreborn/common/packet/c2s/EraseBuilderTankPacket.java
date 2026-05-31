@@ -33,10 +33,8 @@ public record EraseBuilderTankPacket(BlockPos pos, int tankId) implements Custom
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BUILDER.get())
-        .ifPresent(be -> be.eraseTank(tankId));
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BUILDER.get())
+      .ifPresent(be -> be.eraseTank(tankId)));
     ctx.setPacketHandled(true);
   }
 }

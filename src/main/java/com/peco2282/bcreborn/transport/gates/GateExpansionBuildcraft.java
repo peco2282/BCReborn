@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -40,12 +41,12 @@ public abstract class GateExpansionBuildcraft implements IGateExpansion {
 
 	@Override
 	public void registerBlockOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		iconBlock = textureGetter.apply(new ResourceLocation("bcreborntransport", "gates/gate_expansion_" + tag));
+		iconBlock = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
 	}
 
 	@Override
 	public void registerItemOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		iconItem = textureGetter.apply(new ResourceLocation("bcreborntransport", "gates/gate_expansion_" + tag));
+		iconItem = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
 	}
 
 	@Override

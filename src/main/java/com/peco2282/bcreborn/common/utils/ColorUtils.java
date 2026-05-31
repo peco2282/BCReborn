@@ -92,11 +92,11 @@ public final class ColorUtils {
   }
 
   public static String getFormatting(int wool) {
-    return "\u00a7" + WOOL_TO_CHAT[wool & 15];
+    return "§" + WOOL_TO_CHAT[wool & 15];
   }
 
   public static String getFormattingTooltip(int wool) {
-    return "\u00a7" + (WOOL_TO_CHAT[wool & 15] == '0' ? '8' : WOOL_TO_CHAT[wool & 15]);
+    return "§" + (WOOL_TO_CHAT[wool & 15] == '0' ? '8' : WOOL_TO_CHAT[wool & 15]);
   }
 
 }

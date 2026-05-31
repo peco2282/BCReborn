@@ -26,7 +26,7 @@ public class StateStationProvideItems extends ActionState {
   }
 
   public boolean matches(IStackFilter filter) {
-    if (items.size() == 0) {
+    if (items.isEmpty()) {
       return true;
     } else {
       for (ItemStack stack : items) {

@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
-import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -63,6 +63,6 @@ public class TriggerLightSensor extends BCStatement implements ITriggerInternal 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_light_" + (bright ? "bright" : "dark")));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_light_" + (bright ? "bright" : "dark")));
 	}
 }

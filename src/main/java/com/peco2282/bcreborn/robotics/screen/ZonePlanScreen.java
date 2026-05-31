@@ -40,15 +40,6 @@ public class ZonePlanScreen extends GuiAdvancedInterface<ZonePlanMenu> {
   private DynamicTexture selectionTexture;
   private NativeImage selectionImage;
   private ResourceLocation selectionTextureLocation;
-  private final int selX1 = 0;
-  private final int selX2 = 0;
-  private final int selY1 = 0;
-  private final int selY2 = 0;
-
-  private final boolean inSelection = false;
-
-  private int mapXMin = 0;
-  private int mapYMin = 0;
 
   private final float blocksPerPixel = 1.0f;
   private final int cx;
@@ -138,12 +129,14 @@ public class ZonePlanScreen extends GuiAdvancedInterface<ZonePlanMenu> {
       graphics.blit(TMP_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
+    int mapXMin = 0;
     if (mapWidth <= WINDOWED_MAP_WIDTH) {
       mapXMin = leftPos + 8 + (WINDOWED_MAP_WIDTH - mapWidth) / 2;
     } else {
       mapXMin = (width - mapWidth) / 2;
     }
 
+    int mapYMin = 0;
     if (mapHeight <= WINDOWED_MAP_HEIGHT) {
       mapYMin = topPos + 9 + (WINDOWED_MAP_HEIGHT - mapHeight) / 2;
     } else {
@@ -158,9 +151,14 @@ public class ZonePlanScreen extends GuiAdvancedInterface<ZonePlanMenu> {
       graphics.blit(selectionTextureLocation, mapXMin, mapYMin, 0, 0, mapWidth, mapHeight, mapWidth, mapHeight);
     }
 
+    boolean inSelection = false;
+    int selX2 = 0;
     if (inSelection && selX2 != 0) {
+      int selX1 = 0;
       int x1 = Math.min(selX1, selX2);
       int x2 = Math.max(selX1, selX2);
+      int selY2 = 0;
+      int selY1 = 0;
       int y1 = Math.min(selY1, selY2);
       int y2 = Math.max(selY1, selY2);
 
