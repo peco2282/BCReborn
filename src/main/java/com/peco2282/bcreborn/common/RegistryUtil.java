@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
+import com.peco2282.bcreborn.api.statements.IStatement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Contract;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface RegistryUtil {
   /**
@@ -75,8 +77,12 @@ public interface RegistryUtil {
     return getRegistry(BCRegistryKeys.SCHEMATIC).getEntries();
   }
 
-  static Set<Map.Entry<ResourceKey<IFillerPattern>, IFillerPattern>> getFillerPatterns() {
-    return getRegistry(BCRegistryKeys.FILLER_PATTERNS).getEntries();
+  static Set<Map.Entry<ResourceKey<IStatement>, IFillerPattern>> getFillerPatterns() {
+    return getRegistry(BCRegistryKeys.STATEMENT).getEntries()
+      .stream()
+      .filter(it -> it.getValue() instanceof IFillerPattern)
+      .map(it -> Map.entry(it.getKey(), (IFillerPattern) it.getValue()))
+      .collect(Collectors.toUnmodifiableSet());
   }
 
   @Contract(value = "null->fail; _->!null", pure = true)

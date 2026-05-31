@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
+import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -51,7 +53,8 @@ public final class BCRegistry {
   private final DeferredRegister<CreativeModeTab> CREATIVE_TABS;
 
   private final DeferredRegister<Schematic> SCHEMATIC;
-  private final DeferredRegister<IFillerPattern> FILLER_PATTERN;
+  private final DeferredRegister<IStatement> STATEMENT;
+  private final DeferredRegister<IStatementParameter> STATEMENT_PARAMETER;
 
   private BCRegistry(@NotNull String modid) {
     this.modid = modid;
@@ -65,7 +68,8 @@ public final class BCRegistry {
     CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modid);
 
     SCHEMATIC = DeferredRegister.create(BCRegistryKeys.SCHEMATIC, modid);
-    FILLER_PATTERN = DeferredRegister.create(BCRegistryKeys.FILLER_PATTERNS, modid);
+    STATEMENT = DeferredRegister.create(BCRegistryKeys.STATEMENT, modid);
+    STATEMENT_PARAMETER = DeferredRegister.create(BCRegistryKeys.STATEMENT_PARAMETER, modid);
   }
 
   public static BCRegistry getRegistry(String modid) {
@@ -118,8 +122,12 @@ public final class BCRegistry {
     return SCHEMATIC.register(name, schematic);
   }
 
-  public <P extends IFillerPattern> RegistryObject<P> registerFillerPattern(@NotNull String name, @NotNull Supplier<P> pattern) {
-    return FILLER_PATTERN.register(name, pattern);
+  public <S extends IStatement> RegistryObject<S> registerStatement(@NotNull String name, @NotNull Supplier<S> statement) {
+    return STATEMENT.register(name, statement);
+  }
+
+  public <P extends IStatementParameter> RegistryObject<P> registerStatementParameter(@NotNull String name, @NotNull Supplier<P> parameter) {
+    return STATEMENT_PARAMETER.register(name, parameter);
   }
 
   public void register(IEventBus bus) {
@@ -132,7 +140,8 @@ public final class BCRegistry {
     CREATIVE_TABS.register(bus);
 
     SCHEMATIC.register(bus);
-    FILLER_PATTERN.register(bus);
+    STATEMENT.register(bus);
+    STATEMENT_PARAMETER.register(bus);
   }
 
   @Contract(pure = true)
