@@ -1,405 +1,145 @@
-# BCReborn — 実装ロードマップ
+# BCReborn — 実装ロードマップ (Original BuildCraft 準拠)
 
-> 最終更新: 2026-05-19
+> 最終更新: 2026-05-31
 > 対象バージョン: Minecraft 1.20.1 / Forge 47.x
 
 ---
 
+## 🎯 開発方針: 「オリジナルの BuildCraft へ」
+BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1 で再現することを最優先します。
+単なる機能追加ではなく、**「パイプを流れるアイテムのワクワク感」「エンジンのピストン運動」「クァーリーが大地を削る高揚感」**を重視します。
+
+---
+
 ## 凡例
-
-| 記号 | 意味          |
+| 記号 | 意味 |
 |----|-------------|
-| ✅  | 実装済み・動作確認済み |
+| ✅ | 実装済み・動作確認済み |
 | 🔧 | 部分実装・作業中    |
-| ⬜  | 未着手         |
+| ⬜ | 未着手 |
 
 ---
 
-## 1. パイプシステム (transport モジュール)
-
-### 1-1. 基盤
-
-| 項目                               | 状態 | 備考                                        |
-|----------------------------------|----|-------------------------------------------|
-| `PipeBlock` / `PipeBlockEntity`  | ✅  | NBT・Capability・tick委譲                     |
-| `TravelingItem`                  | ✅  | entryDirection・progress・speed・bounceCount |
-| `ItemTransportModule`            | ✅  | TravelingItem ライフサイクル管理                   |
-| `FluidTransportModule`           | ✅  | クラス存在・中身確認要                               |
-| `EnergyTransportModule`          | ✅  | クラス存在・中身確認要                               |
-| `MovementHelper` / `SpeedHelper` | ✅  | stateless utility                         |
-| `RoutingHelper`                  | ✅  | 方向解決ロジック                                  |
-| `MovementResult` enum            | ✅  | SUCCESS / NO_TARGET / BLOCKED             |
-| `PipeBehaviourManager`           | ✅  |                                           |
-| `ExtractionModule` (Item)        | ✅  | Standard / Filtered                       |
-| `FluidExtractionModule`          | ✅  | クラス存在                                     |
-
-### 1-2. アイテムパイプ Behaviour (全種)
-
-| 種類          | 状態 | 特殊挙動         |
-|-------------|----|--------------|
-| Wood        | ✅  | 隣接インベントリから抽出 |
-| Stone       | ✅  | ランダムルーティング   |
-| Cobblestone | ✅  |              |
-| Iron        | ✅  | 強制出力方向       |
-| Golden      | ✅  | 高速           |
-| Diamond     | ✅  | フィルタールーティング  |
-| Emerald     | ✅  |              |
-| Obsidian    | ✅  | 地面アイテム吸引     |
-| Sandstone   | ✅  |              |
-| Clay        | ✅  |              |
-| Quartz      | ✅  |              |
-| Lapis       | ✅  |              |
-| Void        | ✅  | アイテム消去       |
-| Stripes     | ✅  |              |
-| Daizuli     | ✅  |              |
-| Emzuli      | ✅  |              |
-
-### 1-3. 液体パイプ Behaviour (全種)
-
-| 種類                                                   | 状態 |
-|------------------------------------------------------|----|
-| Wood / Stone / Cobblestone / Iron / Golden           | ✅  |
-| Diamond / Emerald / Quartz / Sandstone / Clay / Void | ✅  |
-
-### 1-4. エネルギーパイプ Behaviour (全種)
-
-| 種類                                         | 状態 |
-|--------------------------------------------|----|
-| Wood / Stone / Cobblestone / Iron / Golden | ✅  |
-| Diamond / Quartz / Standard                | ✅  |
-
-### 1-5. 特殊パイプ機能 (未実装)
-
-| 項目                     | 状態 | 備考                        |
-|------------------------|----|---------------------------|
-| Iron Pipe 強制方向 UI      | ⬜  | `ironPipeOutput` フィールドは存在 |
-| Diamond Pipe フィルター UI  | ⬜  | Behaviour は存在             |
-| Obsidian Pipe 地面吸引ロジック | ⬜  |                           |
-| Void Pipe アイテム消去ロジック   | ⬜  |                           |
-| 渋滞検知 (bounceCount 閾値)  | ⬜  | フィールドは存在                  |
-
-### 1-6. パイプ拡張機能 (original 参照)
-
-| 項目                         | 状態 | 備考                     |
-|----------------------------|----|------------------------|
-| パイプワイヤー (PipeWire 4色)      | ⬜  | 信号伝播・WireMatrix        |
-| Gate (ゲート)                 | ⬜  | Statements/Triggers 連動 |
-| Facade (外装)                | ⬜  | FacadePluggable・見た目変更  |
-| Plug / Lens / PowerAdapter | ⬜  | Pluggable 系            |
-| Stripes Pipe ハンドラー群        | ⬜  | ブロック設置・農業・バケツ等         |
-| FilteredBuffer ブロック        | ⬜  |                        |
-| Gate Copier アイテム           | ⬜  |                        |
-
-### 1-7. レンダリング
-
-| 項目             | 状態 |
-|----------------|----|
-| パイプ動的形状モデル     | ⬜  |
-| パイプ内アイテムレンダリング | ⬜  |
-| パイプ内液体レンダリング   | ⬜  |
+## 🛠 短期重点タスク (Priority HIGH)
+1.  **Transport UI の完成**: Diamond Pipe のフィルター設定、Iron Pipe の方向指定を GUI で可能にする。
+2.  **Transport ロジックの完遂**: Obsidian Pipe (吸引), Void Pipe (消去), 渋滞 (Bounce) システムの実装。
+3.  **エネルギー基盤の安定化**: エンジンのオーバーヒート、爆発、ピストンアニメーションの同期。
+4.  **建築マシンの着手**: Quarry (クァーリー) の基本掘削ロジックと Landmark (ランドマーク) による範囲指定。
 
 ---
 
-## 2. エンジンシステム (energy モジュール)
+## 1. パイプシステム (Transport)
+アイテム、液体、エネルギーの物流を司る BC の心臓部。
 
-### 2-1. 実装済みエンジン
+### 1-1. アイテムパイプ (Item Pipes)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| 基本輸送ロジック | ✅ | TravelingItem, MovementHelper, SpeedHelper |
+| Wood / Emerald | ✅ | 抽出ロジック実装済み |
+| Stone / Cobblestone | ✅ | 基本輸送・摩擦の違い |
+| Iron | 🔧 | 輸送は可能だが、GUI による出力方向固定が未実装 |
+| Golden | ✅ | 加速ロジック |
+| Diamond | 🔧 | ルーティング Behaviour はあるが、GUI によるフィルター設定が未実装 |
+| Obsidian | ⬜ | 地面のアイテムを吸引するロジック |
+| Void | ⬜ | アイテムを消去するロジック |
+| Daizuli / Emzuli | ⬜ | 高度な色分けルーティング |
+| 渋滞・逆流システム | ⬜ | bounceCount によるアイテムドロップ/消失 |
 
-| エンジン            | Block | BlockEntity | Menu | Screen | 状態               |
-|-----------------|-------|-------------|------|--------|------------------|
-| Wood Engine     | ✅     | ✅           | ⬜    | ⬜      | 基本動作のみ           |
-| Stone Engine    | ✅     | ✅           | ✅    | ✅      | 燃料・PI制御・過熱・冷却・爆発 |
-| Iron Engine     | ✅     | ✅           | ✅    | ✅      | 液体燃料対応           |
-| Creative Engine | ✅     | ✅           | ⬜    | ⬜      | 無限出力             |
+### 1-2. 液体・エネルギーパイプ (Fluid & Energy Pipes)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| 液体パイプ基盤 | ✅ | FluidTransportModule, 各種 Behaviour |
+| エネルギーパイプ基盤 | ✅ | EnergyTransportModule (Forge Energy 互換) |
+| パイプ内レンダリング | ⬜ | 液体が流れるアニメーション |
 
-### 2-2. 未実装エンジン
-
-| エンジン              | 状態 | 備考                      |
-|-------------------|----|-------------------------|
-| Combustion Engine | ⬜  | 液体燃料・液体冷却・高出力           |
-| Stirling Engine   | ⬜  | BC2系 (Stone Engine の前身) |
-| Quartz Engine     | ⬜  | BCReborn 独自拡張 (仮)       |
-
-### 2-3. エンジン共通基盤
-
-| 項目                            | 状態 | 備考                                       |
-|-------------------------------|----|------------------------------------------|
-| `IEngine` インターフェース整備          | 🔧 | 現在空インターフェース                              |
-| Wood Engine Menu / Screen     | ⬜  |                                          |
-| Creative Engine Menu / Screen | ⬜  |                                          |
-| エンジンレンダリング (ピストン動作)           | 🔧 | `EngineBlockRenderer` / `EngineModel` 存在 |
-| エンジン → パイプへの FE 出力            | ⬜  | Capability 接続                            |
-| 過熱・爆発バランス調整                   | 🔧 | Stone/Iron は実装済み                         |
-| Oil / Fuel 液体                 | ✅  | `OilFluid` / `FuelFluid` 存在              |
-| FuelManager / CoolantManager  | ⬜  | original 参照                              |
-
----
-
-## 3. 液体システム (common/fluids)
-
-| 項目                                  | 状態 | 備考                                 |
-|-------------------------------------|----|------------------------------------|
-| `Tank` / `TankManager`              | ✅  | 基底クラス存在                            |
-| 液体パイプ一貫 (`FluidTransportModule`)    | ⬜  | 最優先                                |
-| 液体抽出モジュール (`FluidExtractionModule`) | 🔧 | クラス存在・中身確認要                        |
-| 液体タンクブロック                           | ⬜  | original: `TileTank` / `BlockTank` |
+### 1-3. 拡張機能 (Gates & Logistics)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| パイプワイヤー (4色) | ⬜ | 赤・青・黄・緑の信号伝播 |
+| ゲート (Gate) | ⬜ | 条件(Trigger)とアクション(Action)による制御。BC の真骨頂 |
+| 外装 (Facade) | ⬜ | パイプを隠すブロック装飾 |
+| プラグ (Plug/Lens) | ⬜ | 信号遮断や特殊機能 |
 
 ---
 
-## 4. Builders モジュール
+## 2. エネルギーシステム (Energy / MJ)
+※ 内部的には Forge Energy (FE) を使用しつつ、MJ のような挙動 (蓄積・爆発) を再現。
 
-### 4-1. ブロック・BlockEntity (存在確認済み)
-
-| ブロック                | Block | BlockEntity | Menu/Screen | ロジック | 状態 |
-|---------------------|-------|-------------|-------------|------|----|
-| Construction Marker | ✅     | ✅           | ⬜           | ⬜    | 🔧 |
-| Architect Table     | ✅     | ✅           | ⬜           | ⬜    | 🔧 |
-| Builder             | ✅     | ✅           | ⬜           | ⬜    | 🔧 |
-| Filler              | ✅     | ⬜           | ⬜           | ⬜    | ⬜  |
-| Quarry              | ✅     | ⬜           | ⬜           | ⬜    | ⬜  |
-| Frame               | ✅     | —           | —           | —    | ✅  |
-| Blueprint Library   | ✅     | ✅           | ⬜           | ⬜    | 🔧 |
-
-### 4-2. Blueprint / Schematic 基盤
-
-| 項目                                           | 状態 | 備考                                        |
-|----------------------------------------------|----|-------------------------------------------|
-| `Blueprint` / `Template`                     | ✅  |                                           |
-| `BptBuilderBlueprint` / `BptBuilderTemplate` | ✅  |                                           |
-| `SchematicRegistry`                          | ✅  |                                           |
-| 各種 Schematic 実装                              | ✅  | BlockCreative / Floored / Free / Ignore 等 |
-| Blueprint ネットワークパケット                         | ✅  | Upload/Download/Sync 系                    |
-
-### 4-3. Filler パターン
-
-| 項目                                                                                  | 状態 |
-|-------------------------------------------------------------------------------------|----|
-| PatternBox / Clear / Cylinder / Fill / Flatten / Frame / Horizon / Pyramid / Stairs | ✅  |
-| FillerRegistry / FillerPattern                                                      | ✅  |
-| Filler BlockEntity + Menu + Screen                                                  | ⬜  |
-| Filler 実行ロジック                                                                       | ⬜  |
-
-### 4-4. Quarry
-
-| 項目                              | 状態 | 備考               |
-|---------------------------------|----|------------------|
-| Quarry BlockEntity              | ⬜  | BuildCraft 最重要機能 |
-| 掘削ロジック (EntityMechanicalArm 相当) | ⬜  |                  |
-| Land Mark (範囲指定)                | ⬜  |                  |
-| Mining Well                     | ⬜  |                  |
+### 2-1. エンジン (Engines)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| Wood Engine | ✅ | 低出力、ピストン連動 |
+| Stone Engine | ✅ | 燃料燃焼、冷却ロジック |
+| Iron Engine | ✅ | 液体燃料対応 |
+| Creative Engine | ✅ | テスト用無限出力 |
+| ピストンアニメーション | 🔧 | クライアント側での滑らかなピストン運動 (Renderer) |
+| エンジン GUI | 🔧 | 燃料ゲージ、温度計表示 |
 
 ---
 
-## 5. Factory モジュール (original: `buildcraft.factory`) — 未着手
+## 3. 採掘と建築 (Builders)
+BC を象徴する大型マシン。
 
-| ブロック           | 状態 | 備考            |
-|----------------|----|---------------|
-| Pump           | ⬜  | 液体汲み上げ        |
-| Refinery       | ⬜  | Oil → Fuel 精製 |
-| Auto Workbench | ⬜  | 自動クラフト        |
-| Tank (Factory) | ⬜  | 大容量液体貯蔵       |
-| Flood Gate     | ⬜  | 液体放流          |
-| Hopper (BC版)   | ⬜  |               |
+### 3-1. ランドマーク (Landmarks)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| ランドマーク配置 | ⬜ | 3点設置による青いレーザー枠の形成 |
+| 範囲計算ロジック | ⬜ | クァーリーやフィラーへの範囲受け渡し |
 
----
-
-## 6. Silicon モジュール (original: `buildcraft.silicon`) — 未着手
-
-| ブロック/アイテム               | 状態 | 備考            |
-|-------------------------|----|---------------|
-| Laser                   | ⬜  | テーブルへのエネルギー供給 |
-| Assembly Table          | ⬜  | レーザー駆動クラフト    |
-| Advanced Crafting Table | ⬜  |               |
-| Integration Table       | ⬜  |               |
-| Charging Table          | ⬜  |               |
-| Programming Table       | ⬜  | Gate プログラム    |
-| Stamping Table          | ⬜  |               |
-| Packager                | ⬜  |               |
-| Redstone Chipset (アイテム) | ⬜  | Gate 素材       |
-| ItemPackage             | ⬜  |               |
+### 3-2. マシン (Machines)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| Quarry (クァーリー) | 🔧 | ブロックは存在するが、掘削・フレーム設置ロジックが未実装 |
+| Mining Well | ⬜ | 1ブロック直下掘削 |
+| Filler (フィラー) | ⬜ | 範囲内のブロック埋め・撤去 (パターン指定) |
+| Builder (ビルダー) | ⬜ | 設計図 (Blueprint) に基づく自動建築 |
+| Architect Table | ⬜ | 範囲内を設計図として記録 |
 
 ---
 
-## 7. Core / 共通
+## 4. シリコンとロボット (Silicon & Robotics)
+高度な自動化、エンドゲームコンテンツ。
 
-| 項目                       | 状態 | 備考                                  |
-|--------------------------|----|-------------------------------------|
-| Wrench Item              | ✅  |                                     |
-| `IWrench` インターフェース       | ✅  |                                     |
-| Wood Engine Block (core) | ✅  |                                     |
-| レシピ・データ生成                | 🔧 | DataGatherEvent 存在                  |
-| 言語ファイル (en_us / ja_jp)   | 🔧 | BCLanguageProvider 存在               |
-| タグ (Block / Item)        | 🔧 | CommonBlockTags / CommonItemTags 存在 |
-| Oil 世界生成                 | ⬜  | original: `OilPopulate` / Oil Biome |
-| Statements / Triggers 基盤 | ⬜  | Gate 連動                             |
-| GameTest 整備              | 🔧 | `TransportGameTests` 存在             |
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| Assembly Table | ⬜ | レーザーによるチップ製造 |
+| Integration Table | ⬜ | ゲートやチップの合成 |
+| Charging Station | ⬜ | ロボットの充電 |
+| ロボット (Robots) | ⬜ | 収穫、運搬、戦闘など多目的な自動化 |
 
 ---
 
-## 8. 優先実装順序（詳細版）
-
-> 凡例: ✅ 完了 / 🔧 部分実装 / ⬜ 未着手
-
----
-
-### Phase 1 — パイプ: 特殊 Behaviour の完成
-
-Behaviour クラスは全種存在するが、特殊ロジックが未完成のものを優先的に仕上げる。
-
-#### 1-A. アイテムパイプ Behaviour 修正・追加実装
-
-| # | 対象 Behaviour | 作業内容 | 状態 |
-|---|--------------|---------|------|
-| 1 | `ObsidianItemPipeBehaviour` | `tick()` で周囲の `ItemEntity` を吸引してパイプに注入するロジック実装 (`getEntitiesOfClass` → `injectItem`) | 🔧 クラス存在・吸引ロジック要確認 |
-| 2 | `VoidItemPipeBehaviour` | `onReachedCenter()` でアイテムを消去 (ItemStack を drop せず破棄) するロジック確認・完成 | 🔧 クラス存在・消去ロジック要確認 |
-| 3 | `IronItemPipeBehaviour` | `ironPipeOutput` フィールドを使った強制出力方向 UI (Menu + Screen) 実装。レンチ右クリックで方向切替は実装済み | 🔧 Behaviour 完成・UI 未実装 |
-| 4 | `DiamondItemPipeBehaviour` | フィルタースロット UI (Menu + Screen) 実装。`chooseNextDirection()` / `usedFilters` bitmask ロジックは実装済み | 🔧 Behaviour 完成・UI 未実装 |
-| 5 | `EmzuliItemPipeBehaviour` | 送信先アドレス指定ロジック確認・完成 (original: `PipeItemsEmzuli` の destination 管理) | 🔧 クラス存在・ロジック要確認 |
-| 6 | `DaizuliItemPipeBehaviour` | Emzuli 派生の分配ロジック確認・完成 | 🔧 クラス存在・ロジック要確認 |
-| 7 | `StripesItemPipeBehaviour` | ブロック設置・農業・バケツ操作ハンドラー群の実装 (original: `IStripesHandler` 各実装) | 🔧 基本クラス存在・ハンドラー群未実装 |
-| 8 | `EmeraldItemPipeBehaviour` | 抽出フィルター付き Wood 相当ロジック確認・完成 | 🔧 クラス存在・要確認 |
-
-#### 1-B. 液体パイプ Behaviour 修正・追加実装
-
-| # | 対象 Behaviour | 作業内容 | 状態 |
-|---|--------------|---------|------|
-| 9 | `WoodenFluidPipeBehaviour` | `FluidExtractionModule.extract()` の動作確認・完成 | 🔧 tick 呼び出しは実装済み |
-| 10 | `IronFluidPipeBehaviour` | 強制出力方向 UI (Menu + Screen) 実装。`canConnectTo()` / レンチ切替は実装済み | 🔧 Behaviour 完成・UI 未実装 |
-| 11 | `DiamondFluidPipeBehaviour` | フィルタースロット UI (Menu + Screen) 実装。`transferFluid()` フィルターロジックは実装済み | 🔧 Behaviour 完成・UI 未実装 |
-| 12 | `VoidFluidPipeBehaviour` | `tick()` でタンク内液体を全消去するロジック確認 (実装済みに見えるが動作確認) | 🔧 実装済み・動作確認要 |
-| 13 | `EmeraldFluidPipeBehaviour` | 抽出フィルター付き Wood 相当ロジック確認・完成 | 🔧 クラス存在・要確認 |
-
-#### 1-C. エネルギーパイプ Behaviour 修正・追加実装
-
-| # | 対象 Behaviour | 作業内容 | 状態 |
-|---|--------------|---------|------|
-| 14 | `WoodenEnergyPipeBehaviour` | `extractEnergy()` で隣接エンジン/機械から FE を吸い出し `EnergyTransportModule` へ注入するロジック確認・完成 | 🔧 クラス存在・要確認 |
-| 15 | `IronEnergyPipeBehaviour` | 転送レート上限 UI (Menu + Screen) 実装。`TRANSFER_STEPS` / レンチ切替は実装済み | 🔧 Behaviour 完成・UI 未実装 |
-| 16 | `StandardEnergyPipeBehaviour` | 基底クラスの `transferEnergy()` ロジック確認・完成 | 🔧 クラス存在・要確認 |
-
-#### 1-D. Transport Module 完成
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 17 | `FluidTransportModule` | tick ごとの液体移送ロジック (タンク間転送・方向決定) 確認・完成 | 🔧 クラス存在・中身確認要 |
-| 18 | `EnergyTransportModule` | tick ごとの FE 分配ロジック確認・完成 | 🔧 クラス存在・中身確認要 |
-| 19 | `FluidExtractionModule` | 隣接 `IFluidHandler` からの液体抽出ロジック確認・完成 | 🔧 クラス存在・中身確認要 |
-
-#### 1-E. パイプレンダリング
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 20 | パイプ動的形状モデル | 接続方向に応じた BakedModel / OBJ 動的生成 | ⬜ |
-| 21 | パイプ内アイテムレンダリング | `TravelingItem` の progress に応じた TESR 描画 | ⬜ |
-| 22 | パイプ内液体レンダリング | 液体テクスチャの TESR 描画 | ⬜ |
+## 5. レンダリング・演出 (Visuals)
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| パイプ動的モデル | ⬜ | 接続状況に応じた形状変化 (OBJ または動的生成) |
+| アイテム輸送描画 | ⬜ | パイプの中を移動するアイテムのレンダリング |
+| レーザー描画 | ⬜ | ランドマークやレーザーテーブルの光線 |
 
 ---
 
-### Phase 2 — エンジン: 未完成エンジンの完成
+## 🚀 ROADMAP: 今後のリリース計画
 
-#### 2-A. ブロック・アイテム実装
+### Phase 1: 輸送と基盤の完成 (Transport & Core)
+*   [ ] Diamond/Iron Pipe GUI の実装
+*   [ ] パイプ内アイテムレンダリングの実装 (ワクワク感の向上)
+*   [ ] Obsidian/Void/Sandstone などの特殊パイプ完成
+*   [ ] パイプの動的接続モデル (見た目の改善)
 
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 23 | Wood Engine Menu + Screen | インベントリ・燃料スロット UI | ⬜ |
-| 24 | Creative Engine Menu + Screen | 無限出力設定 UI | ⬜ |
-| 25 | Combustion Engine Block + BlockEntity | 液体燃料・液体冷却・高出力エンジン全実装 | ⬜ |
-| 26 | Combustion Engine Menu + Screen | 液体タンク表示 UI | ⬜ |
+### Phase 2: ゲートと論理制御 (Logistics)
+*   [ ] パイプワイヤーの実装
+*   [ ] ゲート (Gate) の基本システム (Trigger/Action)
+*   [ ] 基本的なチップ製造 (Assembly Table)
 
-#### 2-B. 共通基盤
+### Phase 3: 自動採掘と建築 (Heavy Machines)
+*   [ ] ランドマーク (Landmark) とレーザー表示
+*   [ ] クァーリー (Quarry) の動作開始 (フレーム設置、掘削、アイテム排出)
+*   [ ] フィラー (Filler) による整地
 
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 27 | `FuelManager` | 燃料液体 → 発熱量マッピング (original 参照) | ⬜ |
-| 28 | `CoolantManager` | 冷却液体 → 冷却量マッピング | ⬜ |
-| 29 | `IEngine` インターフェース整備 | 出力・過熱・爆発の共通 API 定義 | 🔧 空インターフェース |
-| 30 | エンジン → パイプ FE 出力 | `IEnergyStorage` Capability 経由で隣接 Energy Pipe へ出力 | ⬜ |
-| 31 | エンジンレンダリング (ピストン動作) | `EngineBlockRenderer` / `EngineModel` 完成 | 🔧 クラス存在 |
-
----
-
-### Phase 3 — Builders: ロジック実装
-
-#### 3-A. ブロック・アイテム実装順序
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 32 | Construction Marker BlockEntity 完成 | 範囲指定ロジック・Land Mark 連動 | 🔧 BlockEntity 存在 |
-| 33 | Land Mark Block + BlockEntity | 3 軸マーカー・範囲確定ロジック | ⬜ |
-| 34 | Quarry Block + BlockEntity | 掘削ロジック・アーム Entity・アイテム排出 | ⬜ |
-| 35 | Quarry Menu + Screen | 進捗表示・フィルター UI | ⬜ |
-| 36 | Filler BlockEntity | パターン実行ロジック・ブロック設置 | ⬜ |
-| 37 | Filler Menu + Screen | パターン選択・インベントリ UI | ⬜ |
-| 38 | Builder Menu + Screen | Blueprint 読み込み・建築ロジック UI | 🔧 BlockEntity 存在 |
-| 39 | Architect Table Menu + Screen | Blueprint 作成 UI | 🔧 BlockEntity 存在 |
-| 40 | Blueprint Library Menu + Screen | Blueprint 保存・読み込み UI | 🔧 BlockEntity 存在 |
-| 41 | Mining Well Block + BlockEntity | 単穴掘削 (Quarry 簡易版) | ⬜ |
-
----
-
-### Phase 4 — Factory モジュール: 新規実装
-
-#### 4-A. ブロック・アイテム実装順序
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 42 | Pump Block + BlockEntity | 液体汲み上げ・`IFluidHandler` 出力 | ⬜ |
-| 43 | Pump Menu + Screen | 汲み上げ状態表示 UI | ⬜ |
-| 44 | Refinery Block + BlockEntity | Oil → Fuel 精製・液体 IO | ⬜ |
-| 45 | Refinery Menu + Screen | 精製進捗 UI | ⬜ |
-| 46 | Tank Block + BlockEntity | 大容量液体貯蔵 (original: `TileTank`) | ⬜ |
-| 47 | Auto Workbench Block + BlockEntity | 自動クラフトロジック | ⬜ |
-| 48 | Auto Workbench Menu + Screen | レシピ設定 UI | ⬜ |
-| 49 | Flood Gate Block + BlockEntity | 液体放流ロジック | ⬜ |
-
----
-
-### Phase 5 — Silicon モジュール: 新規実装
-
-#### 5-A. ブロック・アイテム実装順序
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 50 | Laser Block + BlockEntity | テーブルへのエネルギービーム供給 | ⬜ |
-| 51 | Assembly Table Block + BlockEntity | Laser 駆動クラフトロジック | ⬜ |
-| 52 | Assembly Table Menu + Screen | レシピ・進捗 UI | ⬜ |
-| 53 | Advanced Crafting Table Block + BlockEntity | 高度クラフト | ⬜ |
-| 54 | Integration Table Block + BlockEntity | Chipset 統合 | ⬜ |
-| 55 | Charging Table Block + BlockEntity | アイテム充電 | ⬜ |
-| 56 | Programming Table Block + BlockEntity | Gate プログラム書き込み | ⬜ |
-| 57 | Redstone Chipset アイテム群 | Iron / Gold / Diamond / Emerald Chipset | ⬜ |
-| 58 | ItemPackage アイテム | パッケージ化アイテム | ⬜ |
-
----
-
-### Phase 6 — パイプ拡張機能
-
-#### 6-A. 実装順序
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 59 | パイプワイヤー (4色) | `PipeWire` 信号伝播・`WireMatrix` | ⬜ |
-| 60 | Statements / Triggers 基盤 | Gate 連動の条件・アクション API | ⬜ |
-| 61 | Gate Block + BlockEntity | Statements/Triggers 評価ロジック | ⬜ |
-| 62 | Gate Menu + Screen | 条件・アクション設定 UI | ⬜ |
-| 63 | Gate Copier アイテム | Gate 設定コピー | ⬜ |
-| 64 | Facade (外装) | `FacadePluggable`・見た目変更 | ⬜ |
-| 65 | Plug / Lens / PowerAdapter | Pluggable 系アイテム | ⬜ |
-| 66 | Stripes Pipe ハンドラー群 | `IStripesHandler` 各実装 (ブロック設置・農業・バケツ等) | ⬜ |
-| 67 | FilteredBuffer Block + BlockEntity | バッファー付きフィルター | ⬜ |
-
----
-
-### Phase 7 — 仕上げ
-
-| # | 対象 | 作業内容 | 状態 |
-|---|------|---------|------|
-| 68 | Oil 世界生成 | `OilPopulate` / Oil Biome | ⬜ |
-| 69 | レシピ整備 | 全ブロック・アイテムのクラフトレシピ | 🔧 |
-| 70 | タグ整備 | Block / Item タグ全種 | 🔧 |
-| 71 | 言語ファイル整備 | en_us / ja_jp 全キー | 🔧 |
-| 72 | 渋滞検知 | `bounceCount` 閾値・ジャム検出・アイテムドロップ | ⬜ |
-| 73 | GameTest 拡充 | 全パイプ種・エンジン・Builders の自動テスト | 🔧 |
-| 74 | バランス調整 | 速度・容量・燃費の数値調整 | ⬜ |
+### Phase 4: 高度な自動化と装飾 (Final Polish)
+*   [ ] ロボット (Robotics) システム
+*   [ ] 外装 (Facade) システム
+*   [ ] 各種互換性向上 (他の工業 MOD との連携)
 
 ---
 
