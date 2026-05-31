@@ -24,7 +24,7 @@ public class RefineryMenu extends BuildCraftMenu<RefineryMenu> {
   private final RefineryBlockEntity tile;
 
   public RefineryMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
-    this(id, playerInv, (RefineryBlockEntity) playerInv.player.level().getBlockEntity(buf.readBlockPos()));
+    this(id, playerInv, getBlockEntity(playerInv, buf));
   }
 
   public RefineryMenu(int id, Inventory playerInv, RefineryBlockEntity tile) {

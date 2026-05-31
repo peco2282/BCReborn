@@ -24,7 +24,7 @@ public class StampingTableMenu extends BuildCraftMenu<StampingTableMenu> {
   private final StampingTableBlockEntity table;
 
   public StampingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (StampingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public StampingTableMenu(int windowId, Inventory playerInventory, StampingTableBlockEntity table) {

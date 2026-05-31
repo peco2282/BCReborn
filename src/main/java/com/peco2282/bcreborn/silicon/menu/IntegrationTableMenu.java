@@ -31,7 +31,7 @@ public class IntegrationTableMenu extends BuildCraftMenu<IntegrationTableMenu> {
   private final IntegrationTableBlockEntity table;
 
   public IntegrationTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (IntegrationTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public IntegrationTableMenu(int windowId, Inventory playerInventory, IntegrationTableBlockEntity table) {

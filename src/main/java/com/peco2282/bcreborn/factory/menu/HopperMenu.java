@@ -24,7 +24,7 @@ public class HopperMenu extends BuildCraftMenu<HopperMenu> {
   private final HopperBlockEntity tile;
 
   public HopperMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
-    this(id, playerInv, (HopperBlockEntity) playerInv.player.level().getBlockEntity(buf.readBlockPos()));
+    this(id, playerInv, getBlockEntity(playerInv, buf));
   }
 
   public HopperMenu(int id, Inventory playerInv, HopperBlockEntity tile) {

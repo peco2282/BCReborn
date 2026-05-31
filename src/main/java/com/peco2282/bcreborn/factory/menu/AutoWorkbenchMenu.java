@@ -35,7 +35,7 @@ public class AutoWorkbenchMenu extends BuildCraftMenu<AutoWorkbenchMenu> {
 
 
   public AutoWorkbenchMenu(int p_38852_, Inventory p_38853_, FriendlyByteBuf buf) {
-    this(p_38852_, p_38853_, (AutoWorkbenchBlockEntity) p_38853_.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(1));
+    this(p_38852_, p_38853_, getBlockEntity(p_38853_, buf), new SimpleContainerData(1));
   }
 
   public AutoWorkbenchMenu(int id, Inventory playerInv, AutoWorkbenchBlockEntity tile, ContainerData data) {

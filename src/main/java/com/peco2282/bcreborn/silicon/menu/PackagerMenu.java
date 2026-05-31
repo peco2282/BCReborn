@@ -27,7 +27,7 @@ public class PackagerMenu extends BuildCraftMenu<PackagerMenu> {
   private final PackagerBlockEntity tile;
 
   public PackagerMenu(int windowId, Inventory inventory, FriendlyByteBuf data) {
-    this(windowId, inventory, (PackagerBlockEntity) inventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, inventory, getBlockEntity(inventory, data));
   }
 
   public PackagerMenu(int windowId, Inventory inventory, PackagerBlockEntity t) {

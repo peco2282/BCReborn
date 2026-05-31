@@ -26,7 +26,7 @@ public class AdvancedCraftingTableMenu extends BuildCraftMenu<AdvancedCraftingTa
   private final AdvancedCraftingTableBlockEntity workbench;
 
   public AdvancedCraftingTableMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (AdvancedCraftingTableBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data));
   }
 
   public AdvancedCraftingTableMenu(int windowId, Inventory playerInventory, AdvancedCraftingTableBlockEntity table) {

@@ -35,7 +35,7 @@ public class FillerMenu extends BuildCraftMenu<FillerMenu> {
 
   // Client constructor
   public FillerMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, (FillerBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos()), new SimpleContainerData(1));
+    this(windowId, playerInventory, getBlockEntity(playerInventory, data), new SimpleContainerData(1));
   }
 
   // Server constructor
