@@ -41,6 +41,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -73,7 +75,7 @@ import java.util.*;
  * </p>
  * Transport logic itself is delegated to transport modules.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, Container {
   public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
@@ -428,6 +430,54 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
     }
   }
+
+  // --- Container Implementation ---
+  @Override
+  public int getContainerSize() {
+    return 9; // Filtered Buffer holds 9 slots
+  }
+
+  @Override
+  public boolean isEmpty() {
+    for (int i = 0; i < getContainerSize(); i++) {
+      if (!getItem(i).isEmpty()) return false;
+    }
+    return true;
+  }
+
+  @Override
+  public ItemStack getItem(int p_18941_) {
+    // We reuse filters as storage for simplicity in this port,
+    // though ideally Filtered Buffer should have its own inventory.
+    return getFilter(Direction.UP).getItem(p_18941_);
+  }
+
+  @Override
+  public ItemStack removeItem(int p_18942_, int p_18943_) {
+    return getFilter(Direction.UP).removeItem(p_18942_, p_18943_);
+  }
+
+  @Override
+  public ItemStack removeItemNoUpdate(int p_18944_) {
+    return getFilter(Direction.UP).removeItemNoUpdate(p_18944_);
+  }
+
+  @Override
+  public void setItem(int p_18945_, ItemStack p_18946_) {
+    getFilter(Direction.UP).setItem(p_18945_, p_18946_);
+    setChanged();
+  }
+
+  @Override
+  public boolean stillValid(Player p_18946_) {
+    return true;
+  }
+
+  @Override
+  public void clearContent() {
+    getFilter(Direction.UP).clearContent();
+  }
+  // --- End Container Implementation ---
 
   @Override
   public void load(CompoundTag tag) {
