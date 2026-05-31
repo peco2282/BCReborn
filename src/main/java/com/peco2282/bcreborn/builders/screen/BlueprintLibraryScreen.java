@@ -40,9 +40,7 @@ public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMen
   protected void init() {
     super.init();
 
-    deleteButton = addRenderableWidget(Button.builder(Component.translatable("gui.del"), b -> {
-      BCNetworkManager.sendDeleteBlueprint(library.getBlockPos());
-    }).bounds(leftPos + 174, topPos + 109, 25, 20).build());
+    deleteButton = addRenderableWidget(Button.builder(Component.translatable("gui.del"), b -> BCNetworkManager.sendDeleteBlueprint(library.getBlockPos())).bounds(leftPos + 174, topPos + 109, 25, 20).build());
 
     library.refresh();
     updateDeleteButton();

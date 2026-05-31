@@ -118,9 +118,7 @@ public class AIRobotFetchItem extends AIRobot {
         double maxDistance = maxRange * maxRange;
 
         if (sqrDistance >= maxDistance) {
-          continue;
         } else if (stackFilter != null && !stackFilter.matches(e.getItem())) {
-          continue;
         } else {
           if (robot.hasFreeSlot()) {
             if (target == null) {

@@ -71,13 +71,7 @@ public class BlockIndex implements Comparable<BlockIndex> {
       return 1;
     } else if (o.z > z) {
       return -1;
-    } else if (o.y < y) {
-      return 1;
-    } else if (o.y > y) {
-      return -1;
-    } else {
-      return 0;
-    }
+    } else return Integer.compare(y, o.y);
   }
 
   public void writeTo(CompoundTag c) {

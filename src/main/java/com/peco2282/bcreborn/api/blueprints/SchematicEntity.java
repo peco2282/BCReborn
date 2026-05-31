@@ -131,7 +131,7 @@ public class SchematicEntity extends Schematic {
 
     ListTag rq = nbt.getList("rq", Tag.TAG_COMPOUND);
 
-    ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
+    ArrayList<ItemStack> rqs = new ArrayList<>();
 
     for (int i = 0; i < rq.size(); ++i) {
       try {

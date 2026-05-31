@@ -19,7 +19,7 @@ import java.util.Collection;
 public interface IFuelManager {
   IFuel addFuel(IFuel fuel);
 
-  IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
+  void addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
 
   IFuel addFuel(FluidType fluid, int powerPerCycle, int totalBurningTime);
 

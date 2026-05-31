@@ -26,8 +26,7 @@ public class BuildingSlotMapIterator {
   public static int MAX_PER_ITEM = 512;
   private final BptBuilderBlueprint builderBlueprint;
   private final Map<BuilderItemMetaPair, List<BuildingSlotBlock>> slotMap;
-  private final Set<BuilderItemMetaPair> availablePairs = new HashSet<BuilderItemMetaPair>();
-  private final int[] buildStageOccurences;
+  private final Set<BuilderItemMetaPair> availablePairs = new HashSet<>();
   private final boolean isCreative;
   private Iterator<BuilderItemMetaPair> keyIterator;
   private BuilderItemMetaPair currentKey;
@@ -37,7 +36,7 @@ public class BuildingSlotMapIterator {
   public BuildingSlotMapIterator(BptBuilderBlueprint builderBlueprint, TileAbstractBuilder builder) {
     this.builderBlueprint = builderBlueprint;
     this.slotMap = builderBlueprint.buildList;
-    this.buildStageOccurences = builderBlueprint.buildStageOccurences;
+    int[] buildStageOccurences = builderBlueprint.buildStageOccurences;
     this.isCreative = builder == null
       || builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
 

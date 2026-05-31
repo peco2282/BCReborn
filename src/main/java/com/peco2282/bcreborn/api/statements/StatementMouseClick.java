@@ -11,20 +11,5 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
-public final class StatementMouseClick {
-  private final int button;
-  private final boolean shift;
-
-  public StatementMouseClick(int button, boolean shift) {
-    this.button = button;
-    this.shift = shift;
-  }
-
-  public boolean isShift() {
-    return shift;
-  }
-
-  public int getButton() {
-    return button;
-  }
+public record StatementMouseClick(int button, boolean shift) {
 }

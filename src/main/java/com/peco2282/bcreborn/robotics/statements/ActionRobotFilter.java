@@ -59,20 +59,20 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
   public static IStackFilter getGateFilter(DockingStation station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-    if (stacks.size() == 0) {
+    if (stacks.isEmpty()) {
       return new PassThroughStackFilter();
     } else {
-      return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
+      return new ArrayStackOrListFilter(stacks.toArray(ItemStack[]::new));
     }
   }
 
   public static IFluidFilter getGateFluidFilter(DockingStation station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-    if (stacks.size() == 0) {
+    if (stacks.isEmpty()) {
       return new PassThroughFluidFilter();
     } else {
-      return new ArrayFluidFilter(stacks.toArray(new ItemStack[stacks.size()]));
+      return new ArrayFluidFilter(stacks.toArray(ItemStack[]::new));
     }
   }
 

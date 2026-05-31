@@ -40,7 +40,7 @@ public class BuilderItemMetaPair {
 
   private static ItemStack findStack(IBuilderContext context, BuildingSlotBlock block) {
     List<ItemStack> s = block.getRequirements(context);
-    return s.size() > 0 ? s.get(0) : null;
+    return !s.isEmpty() ? s.get(0) : null;
   }
 
   @Override

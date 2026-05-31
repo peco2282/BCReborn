@@ -34,7 +34,6 @@ public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngi
   private int burnTime = 0;
   private int totalBurnTime = 0;
   private ItemStack burnItem;
-  private double esum = 0;
 
   public StoneEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesEnergy.STONE_ENGINE.get(), p_155229_, p_155230_, 1);
@@ -102,7 +101,7 @@ public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngi
     } else {
       burnItem = null;
       burnTime = 0;
-      esum = 0;
+      double esum = 0;
       setActive(false);
       setPumping(false);
     }

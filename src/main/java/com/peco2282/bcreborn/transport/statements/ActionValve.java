@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -20,7 +21,6 @@ import com.peco2282.bcreborn.core.statements.BCStatement;
 import com.peco2282.bcreborn.core.statements.StatementParameterDirection;
 import com.peco2282.bcreborn.transport.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Locale;
@@ -74,7 +74,7 @@ public class ActionValve extends BCStatement implements IActionInternal {
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/action_valve_" + state.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_valve_" + state.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override

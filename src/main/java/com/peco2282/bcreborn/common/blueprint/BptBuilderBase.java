@@ -183,7 +183,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
   }
 
   public boolean isDone(IBuildingItemsProvider builder) {
-    return done && builder.getBuilders().size() == 0;
+    return done && builder.getBuilders().isEmpty();
   }
 
   private int getBlockBreakEnergy(BuildingSlotBlock slot) {

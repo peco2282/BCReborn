@@ -62,13 +62,12 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
     return 0;
   }
 
-  public int generateEnergy(int maxGenerate, boolean simulate) {
+  public void generateEnergy(int maxGenerate, boolean simulate) {
     maxGenerate = Math.min(maxGenerate, this.maxEnergy - this.energy);
     if (!simulate) {
       this.energy += maxGenerate;
       this.engine.setChanged();
     }
-    return maxGenerate;
   }
 
   /**

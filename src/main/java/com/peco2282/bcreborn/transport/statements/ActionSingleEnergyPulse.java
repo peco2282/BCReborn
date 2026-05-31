@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -34,7 +35,7 @@ public class ActionSingleEnergyPulse extends BCStatement implements IActionInter
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/action_single_pulsar"));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_single_pulsar"));
 	}
 
 	@Override

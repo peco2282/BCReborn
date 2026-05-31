@@ -22,10 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SchematicMetadataMask extends SchematicBlock {
-  private final int mask;
 
   public SchematicMetadataMask(int mask) {
-    this.mask = mask;
   }
 
   @Override

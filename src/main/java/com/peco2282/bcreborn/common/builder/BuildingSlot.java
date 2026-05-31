@@ -44,7 +44,7 @@ public abstract class BuildingSlot {
   }
 
   public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
-    return new LinkedList<ItemStack>();
+    return new LinkedList<>();
   }
 
   public abstract Position getDestination();

@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
-  private final Container container;
   private IronEngineBlockEntity engine;
   private final ContainerData data = new ContainerData() {
     @Override
@@ -54,7 +53,6 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
 
   public IronEngineMenu(int p_38852_, Inventory p_38853_, Container engine) {
     super(MenuTypesEnergy.IRON_ENGINE.get(), p_38852_, p_38853_);
-    this.container = engine;
     if (engine instanceof IronEngineBlockEntity) {
       this.engine = (IronEngineBlockEntity) engine;
     }

@@ -15,7 +15,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigTransport {
   // pipes - general
   private static ForgeConfigSpec.IntValue baseFluidRate;

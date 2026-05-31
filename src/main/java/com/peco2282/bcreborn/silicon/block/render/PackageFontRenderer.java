@@ -19,6 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,9 +30,9 @@ public class PackageFontRenderer extends Font {
   public PackageFontRenderer(ItemStack packageStack) {
     super(text -> {
       try {
-        var field = Font.class.getDeclaredField("fontSetByLocation");
+        var field = Font.class.getDeclaredField("fonts");
         field.setAccessible(true);
-        java.util.function.Function<ResourceLocation, FontSet> func = (java.util.function.Function<ResourceLocation, FontSet>) field.get(Minecraft.getInstance().font);
+        @SuppressWarnings("unchecked") Function<ResourceLocation, FontSet> func = (Function<ResourceLocation, FontSet>) field.get(Minecraft.getInstance().font);
         return func.apply(text);
       } catch (Exception e) {
         return null;

@@ -13,7 +13,10 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.BCLog;
 
+import java.io.Serial;
+
 public class BptError extends Exception {
+  @Serial
   private static final long serialVersionUID = 3579188081467555542L;
 
   public BptError(String str) {

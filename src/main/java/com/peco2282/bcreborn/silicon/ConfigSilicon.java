@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.silicon;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigSilicon {
   // items
   private static ForgeConfigSpec.BooleanValue redstoneChipset;

@@ -17,7 +17,7 @@ public class StatementSlot {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || !(o instanceof StatementSlot s)) {
+    if (!(o instanceof StatementSlot s)) {
       return false;
     }
     if (s.statement != statement || parameters.length != s.parameters.length) {

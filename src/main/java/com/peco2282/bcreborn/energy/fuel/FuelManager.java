@@ -38,8 +38,8 @@ public class FuelManager implements IFuelManager {
   }
 
   @Override
-  public IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime) {
-    return addFuel(new Fuel(fluid, powerPerCycle, totalBurningTime));
+  public void addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime) {
+    addFuel(new Fuel(fluid, powerPerCycle, totalBurningTime));
   }
 
   @Override

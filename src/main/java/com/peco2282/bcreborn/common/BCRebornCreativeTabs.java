@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-@InitRegister(modId = BCRebornCore.MODID, priority = 0)
+@InitRegister(modId = BCRebornCore.MODID)
 public class BCRebornCreativeTabs {
   public static final ResourceKey<CreativeModeTab> CORE_ID = create(BCRebornCore.location("core"));
   public static final ResourceKey<CreativeModeTab> ENERGY_ID = create(BCRebornCore.location("energy"));

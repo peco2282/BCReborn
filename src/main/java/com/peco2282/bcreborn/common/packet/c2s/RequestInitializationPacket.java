@@ -37,9 +37,7 @@ public record RequestInitializationPacket(
 
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
-    supplier.get().enqueueWork(() -> {
-      BCNetworkManager.sendInitialize(supplier.get().getSender(), entityId, itemInUse, itemActive);
-    });
+    supplier.get().enqueueWork(() -> BCNetworkManager.sendInitialize(supplier.get().getSender(), entityId, itemInUse, itemActive));
     supplier.get().setPacketHandled(true);
   }
 }

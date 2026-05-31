@@ -94,7 +94,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
         requirementsToLookFor = currentBuildingSlot.getRequirements(markerToBuild
           .getContext());
       } else {
-        requirementsToLookFor = new LinkedList<ItemStack>();
+        requirementsToLookFor = new LinkedList<>();
       }
 
       if (requirementsToLookFor == null) {
@@ -110,13 +110,13 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
       }
     }
 
-    if (requirementsToLookFor.size() > 0) {
+    if (!requirementsToLookFor.isEmpty()) {
       startDelegateAI(new AIRobotGotoStationAndLoad(robot, new ArrayStackFilter(
         requirementsToLookFor.getFirst()), requirementsToLookFor.getFirst().getCount()));
       return;
     }
 
-    if (requirementsToLookFor.size() == 0) {
+    if (requirementsToLookFor.isEmpty()) {
       if (currentBuildingSlot.stackConsumed == null) {
         // Once all the element are in, if not already, use them to
         // prepare the slot.

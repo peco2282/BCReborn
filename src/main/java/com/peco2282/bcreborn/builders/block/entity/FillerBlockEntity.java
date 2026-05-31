@@ -328,13 +328,11 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
     return BCFillerPatterns.collection().get(currentPattern).getValue();
   }
 
-  public int nextPattern() {
+  public void nextPattern() {
     currentPattern = (currentPattern + 1) % BCFillerPatterns.collection().size();
-    return currentPattern;
   }
 
-  public int previousPattern() {
+  public void previousPattern() {
     currentPattern = (currentPattern - 1 + BCFillerPatterns.collection().size()) % BCFillerPatterns.collection().size();
-    return currentPattern;
   }
 }

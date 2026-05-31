@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -49,7 +50,7 @@ public final class GateDefinition {
 
 		GateMaterial(String guiFile, int guiHeight, int numSlots, int triggerParameterSlots,
 					 int actionParameterSlots, int maxWireColor) {
-			this.guiFile = new ResourceLocation("bcreborntransport", "textures/gui/" + guiFile);
+			this.guiFile = BCRebornTransport.location("textures/gui/" + guiFile);
 			this.guiHeight = guiHeight;
 			this.numSlots = numSlots;
 			this.numTriggerParameters = triggerParameterSlots;

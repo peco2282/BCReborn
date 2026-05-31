@@ -74,7 +74,7 @@ public class GatePluggable extends PipePluggable {
 		this.logic = gate.logic;
 
 		Set<IGateExpansion> gateExpansions = gate.expansions.keySet();
-		this.expansions = gateExpansions.toArray(new IGateExpansion[gateExpansions.size()]);
+		this.expansions = gateExpansions.toArray(IGateExpansion[]::new);
 	}
 
 	@Override
@@ -106,8 +106,8 @@ public class GatePluggable extends PipePluggable {
 	public void writeData(FriendlyByteBuf buf) {
 		buf.writeByte(material.ordinal());
 		buf.writeByte(logic.ordinal());
-		buf.writeBoolean(realGate != null ? realGate.isGateActive() : false);
-		buf.writeBoolean(realGate != null ? realGate.isGatePulsing() : false);
+		buf.writeBoolean(realGate != null && realGate.isGateActive());
+		buf.writeBoolean(realGate != null && realGate.isGatePulsing());
 
 		final int expansionsSize = expansions.length;
 		buf.writeShort(expansionsSize);
@@ -179,11 +179,10 @@ public class GatePluggable extends PipePluggable {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof GatePluggable)) {
+		if (!(obj instanceof GatePluggable o)) {
 			return false;
 		}
-		GatePluggable o = (GatePluggable) obj;
-		if (o.material == null || material == null || o.material.ordinal() != material.ordinal()) {
+    if (o.material == null || material == null || o.material.ordinal() != material.ordinal()) {
 			return false;
 		}
 		if (o.logic == null || logic == null || o.logic.ordinal() != logic.ordinal()) {

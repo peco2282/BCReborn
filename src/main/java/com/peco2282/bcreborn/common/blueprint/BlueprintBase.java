@@ -140,10 +140,9 @@ public abstract class BlueprintBase {
       int px = sub.getInt("x");
       int pz = sub.getInt("z");
       int newPx = (context.box.sizeZ() - 1) - pz;
-      int newPz = px;
 
       sub.putInt("x", newPx);
-      sub.putInt("z", newPz);
+      sub.putInt("z", px);
       sub.putByte("dir", (byte) dir.ordinal());
     }
 
@@ -186,9 +185,7 @@ public abstract class BlueprintBase {
     saveContents(nbt);
 
     ListTag subBptList = new ListTag();
-    for (CompoundTag subBpt : subBlueprintsNBT) {
-      subBptList.add(subBpt);
-    }
+    subBptList.addAll(subBlueprintsNBT);
     nbt.put("subBpt", subBptList);
   }
 

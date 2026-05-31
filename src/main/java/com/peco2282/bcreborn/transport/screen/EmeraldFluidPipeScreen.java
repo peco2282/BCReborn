@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport.screen;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import com.peco2282.bcreborn.transport.menu.EmeraldFluidPipeMenu;
 import net.minecraft.client.gui.GuiGraphics;

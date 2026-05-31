@@ -41,10 +41,8 @@ public class BoardRobotStripes extends RedstoneBoardRobot {
     if (robot.getMainHandItem().isEmpty()) {
       startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> !stack.isEmpty()));
     } else {
-      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> {
-        return world.isEmptyBlock(pos)
-          && !robot.getRegistry().isTaken(new ResourceIdBlock(pos));
-      }));
+      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> world.isEmptyBlock(pos)
+        && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))));
     }
   }
 

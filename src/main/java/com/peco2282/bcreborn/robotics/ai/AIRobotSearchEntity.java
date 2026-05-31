@@ -60,7 +60,6 @@ public class AIRobotSearchEntity extends AIRobot {
         double maxDistance = maxRange * maxRange;
 
         if (sqrDistance >= maxDistance) {
-          continue;
         } else {
           if (target == null) {
             previousDistance = sqrDistance;

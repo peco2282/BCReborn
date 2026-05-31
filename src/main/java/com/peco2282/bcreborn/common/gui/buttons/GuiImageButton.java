@@ -30,7 +30,7 @@ public class GuiImageButton extends Button implements IButtonClickEventTrigger, 
   public final int id;
   private final int size, u, v, baseU, baseV;
   private final ResourceLocation texture;
-  private final ArrayList<IButtonClickEventListener> listeners = new ArrayList<IButtonClickEventListener>();
+  private final ArrayList<IButtonClickEventListener> listeners = new ArrayList<>();
   private boolean active = false;
   private ToolTip toolTip;
 

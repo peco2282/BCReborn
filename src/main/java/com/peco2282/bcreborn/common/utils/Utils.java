@@ -100,8 +100,8 @@ public final class Utils {
   }
 
   public static int addToRandomInjectableAround(Level world, BlockPos pos, Direction from, ItemStack stack) {
-    List<IInjectable> possiblePipes = new ArrayList<IInjectable>();
-    List<Direction> pipeDirections = new ArrayList<Direction>();
+    List<IInjectable> possiblePipes = new ArrayList<>();
+    List<Direction> pipeDirections = new ArrayList<>();
 
     for (Direction side : Direction.values()) {
       if (from.getOpposite() == side) {

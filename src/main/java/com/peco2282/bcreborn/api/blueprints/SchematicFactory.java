@@ -17,9 +17,9 @@ import java.util.HashMap;
 
 public abstract class SchematicFactory<S extends Schematic> {
 
-  private static final HashMap<String, SchematicFactory<?>> factories = new HashMap<String, SchematicFactory<?>>();
+  private static final HashMap<String, SchematicFactory<?>> factories = new HashMap<>();
 
-  private static final HashMap<Class<? extends Schematic>, SchematicFactory<?>> schematicToFactory = new HashMap<Class<? extends Schematic>, SchematicFactory<?>>();
+  private static final HashMap<Class<? extends Schematic>, SchematicFactory<?>> schematicToFactory = new HashMap<>();
 
   public static Schematic createSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
     throws MappingNotFoundException {
@@ -37,8 +37,8 @@ public abstract class SchematicFactory<S extends Schematic> {
     factories.put(factory.getClass().getCanonicalName(), factory);
   }
 
-  public static SchematicFactory getFactory(Class<? extends Schematic> clas) {
-    Class superClass = clas.getSuperclass();
+  public static SchematicFactory<?> getFactory(Class<?> clas) {
+    Class<?> superClass = clas.getSuperclass();
 
     if (schematicToFactory.containsKey(clas)) {
       return schematicToFactory.get(clas);

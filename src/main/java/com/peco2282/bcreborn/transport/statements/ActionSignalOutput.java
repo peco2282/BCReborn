@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -41,7 +42,7 @@ public class ActionSignalOutput extends BCStatement implements IActionInternal {
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/action_signal_" + color.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_signal_" + color.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class ActionSignalOutput extends BCStatement implements IActionInternal {
 		gate.broadcastSignal(color);
 
 		for (IStatementParameter param : parameters) {
-			if (param != null && param instanceof ActionParameterSignal signal) {
+			if (param instanceof ActionParameterSignal signal) {
 				if (signal.color != null) {
 					gate.broadcastSignal(signal.color);
 				}

@@ -31,7 +31,7 @@ public class BlockMiner {
   protected final int x, y, z, minerId;
 
   private boolean hasMined, hasFailed;
-  private int energyRequired, energyAccepted;
+  private int energyAccepted;
 
   public BlockMiner(Level world, BlockEntity owner, int x, int y, int z) {
     this.world = world;
@@ -89,7 +89,7 @@ public class BlockMiner {
       return 0;
     }
 
-    energyRequired = BlockUtils.computeBlockBreakEnergy(world, pos);
+    int energyRequired = BlockUtils.computeBlockBreakEnergy(world, pos);
 
     int usedAmount = MathUtils.clamp(offeredAmount, 0, Math.max(0, energyRequired - energyAccepted));
     energyAccepted += usedAmount;

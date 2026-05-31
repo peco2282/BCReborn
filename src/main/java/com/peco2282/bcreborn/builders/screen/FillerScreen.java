@@ -39,13 +39,9 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
   protected void init() {
     super.init();
 
-    addRenderableWidget(new FillerButton(leftPos + 20, topPos + 30, 10, 16, SpriteSheat.BUTTON_LEFT_NORMAL, SpriteSheat.BUTTON_LEFT_SELECTED, b -> {
-      changePattern(-1);
-    }));
+    addRenderableWidget(new FillerButton(leftPos + 20, topPos + 30, 10, 16, SpriteSheat.BUTTON_LEFT_NORMAL, SpriteSheat.BUTTON_LEFT_SELECTED, b -> changePattern(-1)));
 
-    addRenderableWidget(new FillerButton(leftPos + 62, topPos + 30, 10, 16, SpriteSheat.BUTTON_RIGHT_NORMAL, SpriteSheat.BUTTON_RIGHT_SELECTED, b -> {
-      changePattern(1);
-    }));
+    addRenderableWidget(new FillerButton(leftPos + 62, topPos + 30, 10, 16, SpriteSheat.BUTTON_RIGHT_NORMAL, SpriteSheat.BUTTON_RIGHT_SELECTED, b -> changePattern(1)));
   }
 
   private void changePattern(int delta) {

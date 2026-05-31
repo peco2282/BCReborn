@@ -56,11 +56,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
   @Override
   public List<ItemStack> getClientExamples(Type type, ItemStack stack) {
     List<ItemStack> stacks = new ArrayList<>();
-    stack.getTags().forEach(tag -> {
-      BuiltInRegistries.ITEM.getTag(tag).ifPresent(t -> {
-        t.forEach(holder -> stacks.add(new ItemStack(holder.value())));
-      });
-    });
+    stack.getTags().forEach(tag -> BuiltInRegistries.ITEM.getTag(tag).ifPresent(t -> t.forEach(holder -> stacks.add(new ItemStack(holder.value())))));
 
     return stacks;
   }

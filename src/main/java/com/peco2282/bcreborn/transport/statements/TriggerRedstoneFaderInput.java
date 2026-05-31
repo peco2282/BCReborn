@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -43,12 +44,11 @@ public class TriggerRedstoneFaderInput extends BCStatement implements ITriggerIn
 
 	@Override
 	public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-		if (!(container instanceof IRedstoneStatementContainer)) {
+		if (!(container instanceof IRedstoneStatementContainer redstoneContainer)) {
 			return false;
 		}
 
-		IRedstoneStatementContainer redstoneContainer = (IRedstoneStatementContainer) container;
-		int inputLevel;
+    int inputLevel;
 		if (parameters.length > 0 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly sideOnly && sideOnly.isOn) {
             if (container instanceof Gate gate) {
                 inputLevel = redstoneContainer.getRedstoneInput(gate.getSide());
@@ -65,7 +65,7 @@ public class TriggerRedstoneFaderInput extends BCStatement implements ITriggerIn
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation(String.format("buildcrafttransport:triggers/redstone_%02d", level)));
+		icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
 	}
 
 	@Override

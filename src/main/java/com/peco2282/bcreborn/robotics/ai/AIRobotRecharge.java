@@ -27,12 +27,7 @@ public class AIRobotRecharge extends AIRobot {
     robot.getRegistry().releaseResources(robot);
     robot.setDeltaMovement(0, 0, 0);
 
-    startDelegateAI(new AIRobotSearchAndGotoStation(robot, new IStationFilter() {
-      @Override
-      public boolean matches(DockingStation station) {
-        return station.providesPower();
-      }
-    }, null));
+    startDelegateAI(new AIRobotSearchAndGotoStation(robot, DockingStation::providesPower, null));
   }
 
   @Override

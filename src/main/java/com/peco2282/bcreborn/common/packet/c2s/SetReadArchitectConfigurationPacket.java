@@ -40,13 +40,11 @@ public record SetReadArchitectConfigurationPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
-        .ifPresent(be -> {
-          be.setReadConfiguration(config);
-          be.getUpdatePacket();
-        });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
+      .ifPresent(be -> {
+        be.setReadConfiguration(config);
+        be.getUpdatePacket();
+      }));
     ctx.setPacketHandled(true);
   }
 }

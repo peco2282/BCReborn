@@ -37,7 +37,7 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
   }
 
   public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
-    ArrayList<ItemStack> result = new ArrayList<ItemStack>();
+    ArrayList<ItemStack> result = new ArrayList<>();
 
     for (StatementSlot slot : station.getActiveActions()) {
       if (slot.statement instanceof ActionRobotFilterTool) {
@@ -59,10 +59,10 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
   public static IStackFilter getGateFilter(DockingStation station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-    if (stacks.size() == 0) {
+    if (stacks.isEmpty()) {
       return new PassThroughStackFilter();
     } else {
-      return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
+      return new ArrayStackOrListFilter(stacks.toArray(ItemStack[]::new));
     }
   }
 

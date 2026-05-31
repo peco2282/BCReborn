@@ -32,7 +32,6 @@ public class MapManager implements Runnable {
   private final HashBiMap<Level, MapWorld> worldMap = HashBiMap.create();
   private final File location;
   private boolean stop = false;
-  private long lastSaveTime;
 
   public MapManager(File location) {
     this.location = location;
@@ -146,7 +145,7 @@ public class MapManager implements Runnable {
 
   @Override
   public void run() {
-    lastSaveTime = (new Date()).getTime();
+    long lastSaveTime = (new Date()).getTime();
 
     while (!stop) {
       long now = (new Date()).getTime();

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -70,7 +71,7 @@ public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
 		}
 
 		for (IStatementParameter param : parameters) {
-			if (param != null && param instanceof TriggerParameterSignal signal) {
+			if (param instanceof TriggerParameterSignal signal) {
 				if (signal.color != null) {
 					if (signal.active) {
 						if (!pipe.isWireActive(signal.color)) {
@@ -90,7 +91,7 @@ public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_pipesignal_" + color.name().toLowerCase(Locale.ENGLISH) + "_" + (active ? "active" : "inactive")));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_" + color.name().toLowerCase(Locale.ENGLISH) + "_" + (active ? "active" : "inactive")));
 	}
 
 	@Override

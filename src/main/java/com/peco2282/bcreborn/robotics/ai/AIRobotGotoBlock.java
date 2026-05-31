@@ -84,7 +84,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
       double distance = robot.distanceToSqr(nextX, nextY, nextZ);
 
       if (!robot.isMoving() || distance > prevDistance) {
-        if (path.size() > 0) {
+        if (!path.isEmpty()) {
           path.removeFirst();
         }
 
@@ -96,7 +96,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
       if (pathSearchJob.isDone()) {
         path = pathSearch.getResult();
 
-        if (path.size() == 0) {
+        if (path.isEmpty()) {
           setSuccess(false);
           terminate();
           return;
@@ -108,7 +108,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
       }
     }
 
-    if (path != null && path.size() == 0) {
+    if (path != null && path.isEmpty()) {
       robot.setDeltaMovement(0, 0, 0);
 
       if (lastBlockInPath != null) {
@@ -119,7 +119,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
   }
 
   private void setNextInPath() {
-    if (path.size() > 0) {
+    if (!path.isEmpty()) {
       boolean isFirst = prevDistance == Double.MAX_VALUE;
 
       BlockIndex next = path.getFirst();
@@ -187,7 +187,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
     if (nbt.contains("path")) {
       ListTag pathList = nbt.getList("path", Tag.TAG_COMPOUND);
 
-      path = new LinkedList<BlockIndex>();
+      path = new LinkedList<>();
 
       for (int i = 0; i < pathList.size(); ++i) {
         path.add(new BlockIndex(pathList.getCompound(i)));

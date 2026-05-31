@@ -48,14 +48,12 @@ public record UploadBlueprintChunkPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get()).ifPresent(be -> {
-        int start = chunk * BlueprintLibraryBlockEntity.CHUNK_SIZE;
-        if (be.getBlueprintDownload() == null) {
-          be.setBlueprintDownload(start, data);
-        }
-      });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get()).ifPresent(be -> {
+      int start = chunk * BlueprintLibraryBlockEntity.CHUNK_SIZE;
+      if (be.getBlueprintDownload() == null) {
+        be.setBlueprintDownload(start, data);
+      }
+    }));
     ctx.setPacketHandled(true);
   }
 }

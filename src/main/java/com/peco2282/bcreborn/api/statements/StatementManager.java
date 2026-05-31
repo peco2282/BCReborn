@@ -54,6 +54,7 @@ public final class StatementManager {
     String tag = createParameter(param).getUniqueTag();
     parameters.put(tag, param);
     try {
+      //noinspection unchecked
       parameterCodecs.put(tag, (Codec<? extends IStatementParameter>) param.getField("CODEC").get(null));
     } catch (Exception e) {
       // No codec

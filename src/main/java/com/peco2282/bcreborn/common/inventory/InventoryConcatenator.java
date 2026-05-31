@@ -23,8 +23,8 @@ import java.util.List;
  */
 public final class InventoryConcatenator implements Container {
 
-  private final List<Integer> slotMap = new ArrayList<Integer>();
-  private final List<Container> invMap = new ArrayList<Container>();
+  private final List<Integer> slotMap = new ArrayList<>();
+  private final List<Container> invMap = new ArrayList<>();
 
   private InventoryConcatenator() {
   }

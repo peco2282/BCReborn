@@ -32,7 +32,6 @@ public class ArchitectScreen extends BuildCraftScreen<ArchitectMenu> {
   private Button optionRotate;
   private Button optionExcavate;
   private Button optionAllowCreative;
-  private EditBox nameField;
 
   public ArchitectScreen(ArchitectMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -60,7 +59,7 @@ public class ArchitectScreen extends BuildCraftScreen<ArchitectMenu> {
       updateConfiguration();
     }).bounds(leftPos + 5, topPos + 80, 79, 20).build());
 
-    nameField = addRenderableWidget(new EditBox(this.font, leftPos + 90, topPos + 62, 156, 12, Component.empty()));
+    EditBox nameField = addRenderableWidget(new EditBox(this.font, leftPos + 90, topPos + 62, 156, 12, Component.empty()));
     nameField.setMaxLength(32);
     nameField.setValue(architect.getName().getString());
     nameField.setResponder(this::onNameChanged);

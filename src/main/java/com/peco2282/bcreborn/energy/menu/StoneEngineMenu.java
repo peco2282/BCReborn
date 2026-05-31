@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
-  private final Container container;
   private StoneEngineBlockEntity engine;
   private final ContainerData data = new ContainerData() {
     @Override
@@ -56,7 +55,6 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
 
   public StoneEngineMenu(int id, Inventory inventory, Container engine) {
     super(MenuTypesEnergy.STONE_ENGINE.get(), id, inventory);
-    this.container = engine;
     if (engine instanceof StoneEngineBlockEntity) {
       this.engine = (StoneEngineBlockEntity) engine;
     }

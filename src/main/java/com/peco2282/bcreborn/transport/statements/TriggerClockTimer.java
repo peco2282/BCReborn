@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -50,7 +51,7 @@ public class TriggerClockTimer extends BCStatement implements ITriggerInternal {
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/trigger_timer_" + time.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_timer_" + time.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override

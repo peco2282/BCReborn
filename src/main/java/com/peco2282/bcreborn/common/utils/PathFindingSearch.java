@@ -47,7 +47,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
     zone = iZone;
     blockIter = iBlockIter;
 
-    pathFinders = new LinkedList<PathFinding>();
+    pathFinders = new LinkedList<>();
   }
 
   @Override
@@ -66,7 +66,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
 
       BlockIndex delta = blockIter.next();
       BlockIndex block = new BlockIndex(start.x + delta.x,
-        ((start.y + delta.y) > 0) ? start.y + delta.y : 0,
+        Math.max((start.y + delta.y), 0),
         start.z + delta.z);
       if (isLoadedChunk(block.x, block.z)) {
         if (isTarget(block)) {
@@ -109,11 +109,11 @@ public class PathFindingSearch implements IIterableAlgorithm {
   }
 
   public void iteratePathFind(int itNumber) {
-    for (PathFinding pathFinding : new ArrayList<PathFinding>(pathFinders)) {
+    for (PathFinding pathFinding : new ArrayList<>(pathFinders)) {
       pathFinding.iterate(itNumber / pathFinders.size());
       if (pathFinding.isDone()) {
         LinkedList<BlockIndex> path = pathFinding.getResult();
-        if (path != null && path.size() > 0) {
+        if (path != null && !path.isEmpty()) {
           if (reserve(pathFinding.end())) {
             return;
           }
@@ -139,7 +139,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
         return pathFinding.getResult();
       }
     }
-    return new LinkedList<BlockIndex>();
+    return new LinkedList<>();
   }
 
   public BlockIndex getResultTarget() {
@@ -155,7 +155,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
     synchronized (reservations) {
       if (!reservations.containsKey(world.dimension())) {
         reservations.put(world.dimension(),
-          new HashSet<BlockIndex>());
+          new HashSet<>());
       }
       HashSet<BlockIndex> dimReservations = reservations
         .get(world.dimension());

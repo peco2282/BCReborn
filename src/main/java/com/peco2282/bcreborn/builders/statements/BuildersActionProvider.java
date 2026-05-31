@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class BuildersActionProvider implements IActionProvider {
-  private final HashMap<String, ActionFiller> actionMap = new HashMap<String, ActionFiller>();
+  private final HashMap<String, ActionFiller> actionMap = new HashMap<>();
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
@@ -36,7 +36,7 @@ public class BuildersActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
-    LinkedList<IActionExternal> actions = new LinkedList<IActionExternal>();
+    LinkedList<IActionExternal> actions = new LinkedList<>();
     if (tile instanceof FillerBlockEntity) {
       for (IFillerPattern p : FillerManager.registry.getPatterns()) {
         if (p instanceof FillerPattern) {

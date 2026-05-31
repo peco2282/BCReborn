@@ -25,7 +25,7 @@ import java.util.Random;
 
 
 public class ZonePlan implements IZone, ISerializable {
-  private final HashMap<ChunkIndex, ZoneChunk> chunkMapping = new HashMap<ChunkIndex, ZoneChunk>();
+  private final HashMap<ChunkIndex, ZoneChunk> chunkMapping = new HashMap<>();
 
   public boolean get(int x, int z) {
     int xChunk = x >> 4;
@@ -127,7 +127,7 @@ public class ZonePlan implements IZone, ISerializable {
 
   @Override
   public BlockIndex getRandomBlockIndex(Random rand) {
-    if (chunkMapping.size() == 0) {
+    if (chunkMapping.isEmpty()) {
       return null;
     }
 

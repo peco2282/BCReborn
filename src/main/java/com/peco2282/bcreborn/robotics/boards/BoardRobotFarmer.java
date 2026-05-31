@@ -43,15 +43,11 @@ public class BoardRobotFarmer extends RedstoneBoardRobot {
   public void update() {
     final IWorldProperty isDirt = BuildCraftAPI.getWorldProperty("dirt");
     if (robot.getMainHandItem().isEmpty()) {
-      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
-        return !stack.isEmpty() && stack.is(ItemTags.HOES);
-      }));
+      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> !stack.isEmpty() && stack.is(ItemTags.HOES)));
     } else {
-      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
-        return isDirt.get(world, pos)
-          && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))
-          && world.isEmptyBlock(pos.above());
-      }));
+      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> isDirt.get(world, pos)
+        && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))
+        && world.isEmptyBlock(pos.above())));
     }
   }
 

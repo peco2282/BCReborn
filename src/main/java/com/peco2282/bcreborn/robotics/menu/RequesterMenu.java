@@ -22,6 +22,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
+
 public class RequesterMenu extends BuildCraftMenu<RequesterMenu> {
 
   private final RequesterBlockEntity requester;
@@ -52,9 +54,7 @@ public class RequesterMenu extends BuildCraftMenu<RequesterMenu> {
       addSlot(new Slot(playerInventory, i1, 19 + i1 * 18, 159));
     }
 
-    for (int i = 0; i < requests.length; i++) {
-      requests[i] = ItemStack.EMPTY;
-    }
+    Arrays.fill(requests, ItemStack.EMPTY);
   }
 
   public RequesterMenu(int id, Inventory playerInv, FriendlyByteBuf extraData) {

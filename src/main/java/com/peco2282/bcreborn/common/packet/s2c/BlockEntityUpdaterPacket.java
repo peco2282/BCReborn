@@ -37,14 +37,12 @@ public record BlockEntityUpdaterPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos).ifPresent(be -> {
-        if (be instanceof BuildCraftBlockEntity bcbe) {
-          FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-          bcbe.readData(buf);
-        }
-      });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos).ifPresent(be -> {
+      if (be instanceof BuildCraftBlockEntity bcbe) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+        bcbe.readData(buf);
+      }
+    }));
     ctx.setPacketHandled(true);
   }
 }

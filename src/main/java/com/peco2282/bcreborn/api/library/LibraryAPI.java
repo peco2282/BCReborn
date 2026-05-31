@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class LibraryAPI {
-  private static final Set<LibraryTypeHandler> handlers = new HashSet<LibraryTypeHandler>();
+  private static final Set<LibraryTypeHandler> handlers = new HashSet<>();
 
   private LibraryAPI() {
 

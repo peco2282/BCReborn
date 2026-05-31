@@ -16,7 +16,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.io.File;
 import java.util.List;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigBuilders {
   // builders
   private static ForgeConfigSpec.BooleanValue dropBrokenBlocks;

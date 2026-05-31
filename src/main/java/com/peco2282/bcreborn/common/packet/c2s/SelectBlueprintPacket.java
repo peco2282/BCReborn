@@ -36,12 +36,8 @@ public record SelectBlueprintPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
-        .ifPresent(be -> {
-          be.setSelectedBlueprint(blueprintId);
-        });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
+      .ifPresent(be -> be.setSelectedBlueprint(blueprintId)));
     ctx.setPacketHandled(true);
   }
 }

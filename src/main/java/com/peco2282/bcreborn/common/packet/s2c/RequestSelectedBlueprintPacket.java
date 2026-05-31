@@ -37,13 +37,11 @@ public record RequestSelectedBlueprintPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> context) {
     NetworkEvent.Context ctx = context.get();
-    ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
-        .ifPresent(library -> {
-          // TODO: implement when BlueprintDatabase is available
-          BCNetworkManager.sendUploadNothing(pos);
-        });
-    });
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
+      .ifPresent(library -> {
+        // TODO: implement when BlueprintDatabase is available
+        BCNetworkManager.sendUploadNothing(pos);
+      }));
     ctx.setPacketHandled(true);
   }
 }

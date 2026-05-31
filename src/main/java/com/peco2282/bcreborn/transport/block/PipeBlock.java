@@ -159,9 +159,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     }
 
     // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
-    level.getBlockEntity(currentPos, BlockEntityTypesTransport.PIPE.get()).ifPresent(be -> {
-      be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos);
-    });
+    level.getBlockEntity(currentPos, BlockEntityTypesTransport.PIPE.get()).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
 
     BlockState newState = state;
     for (Direction dir : Direction.values()) {

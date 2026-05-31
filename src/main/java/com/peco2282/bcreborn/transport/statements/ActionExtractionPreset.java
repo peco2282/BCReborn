@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.core.EnumColor;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -40,7 +41,7 @@ public class ActionExtractionPreset extends BCStatement implements IActionIntern
 
 	@Override
 	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(new ResourceLocation("buildcrafttransport:triggers/extraction_preset_" + color.name().toLowerCase(Locale.ENGLISH)));
+		icon = textureGetter.apply(BCRebornTransport.location("triggers/extraction_preset_" + color.name().toLowerCase(Locale.ENGLISH)));
 	}
 
 	@Override

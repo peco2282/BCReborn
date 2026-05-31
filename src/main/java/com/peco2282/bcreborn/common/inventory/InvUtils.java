@@ -242,10 +242,10 @@ public final class InvUtils {
   }
 
   public static Iterable<IInvSlot> getItems(final Container inv, final IStackFilter filter) {
-    return new Iterable<IInvSlot>() {
+    return new Iterable<>() {
       @Override
       public Iterator<IInvSlot> iterator() {
-        return new Iterator<IInvSlot>() {
+        return new Iterator<>() {
           private final Iterator<IInvSlot> parent = InventoryIterator.getIterable(inv).iterator();
           private boolean searched = false;
           private IInvSlot next;
