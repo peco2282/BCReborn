@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -100,8 +101,8 @@ public class StatementParameterDirection implements IStatementParameter {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:pipeActionDirection";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("pipe_action_direction");
   }
 
   @Override

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -125,8 +126,8 @@ public class StatementParameterItemStackExact implements IStatementParameter {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:stackExact";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("stack_exact");
   }
 
   @Override

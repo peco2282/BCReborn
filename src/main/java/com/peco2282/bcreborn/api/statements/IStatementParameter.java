@@ -22,12 +22,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public interface IStatementParameter {
-  Codec<IStatementParameter> CODEC = Codec.STRING.dispatch(
+  Codec<IStatementParameter> CODEC = ResourceLocation.CODEC.dispatch(
     IStatementParameter::getUniqueTag,
     s -> StatementManager.getParameterCodec(s).get().orThrow()
   );
 
-  String getUniqueTag();
+  ResourceLocation getUniqueTag();
 
   @OnlyIn(Dist.CLIENT)
   TextureAtlasSprite getIcon();

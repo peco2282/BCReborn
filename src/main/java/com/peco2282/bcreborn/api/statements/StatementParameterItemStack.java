@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.api.statements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.peco2282.bcreborn.BCReborn;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,15 @@ public class StatementParameterItemStack implements IStatementParameter {
   ).apply(instance, StatementParameterItemStack::new));
 
   protected ItemStack stack;
+  private ResourceLocation tag = BCReborn.getBasedLocation("stack");
+
+  public StatementParameterItemStack() {
+    this(ItemStack.EMPTY);
+  }
+
+  public StatementParameterItemStack(ResourceLocation tag) {
+    this.tag = tag;
+  }
 
   public StatementParameterItemStack(ItemStack stack) {
     this.stack = stack;
@@ -85,8 +95,8 @@ public class StatementParameterItemStack implements IStatementParameter {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:stack";
+  public ResourceLocation getUniqueTag() {
+    return tag;
   }
 
   @Override

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.items.IList;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
@@ -19,6 +20,7 @@ import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.robotics.RobotUtils;
 import com.peco2282.bcreborn.robotics.entity.EntityRobot;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class StatementParameterRobot extends StatementParameterItemStack {
@@ -68,7 +70,7 @@ public class StatementParameterRobot extends StatementParameterItemStack {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "buildcraft:robot";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("robot");
   }
 }

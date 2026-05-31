@@ -11,11 +11,13 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.StatementMouseClick;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class StatementParameterMapLocation extends StatementParameterItemStack {
@@ -25,8 +27,8 @@ public class StatementParameterMapLocation extends StatementParameterItemStack {
   }
 
   @Override
-  public String getUniqueTag() {
-    return "maplocation";
+  public ResourceLocation getUniqueTag() {
+    return BCReborn.getBasedLocation("maplocation");
   }
 
   @Override

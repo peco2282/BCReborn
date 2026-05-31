@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.statements;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -122,8 +123,8 @@ public class TriggerParameterSignal implements IStatementParameter {
 	}
 
 	@Override
-	public String getUniqueTag() {
-		return "buildcraft:pipeWireTrigger";
+	public ResourceLocation getUniqueTag() {
+		return BCReborn.getBasedLocation("pipe_wire_trigger");
 	}
 
 	@Override
