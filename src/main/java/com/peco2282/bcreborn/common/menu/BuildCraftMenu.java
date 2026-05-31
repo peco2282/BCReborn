@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.menu;
 
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.gui.slots.IPhantomSlot;
 import com.peco2282.bcreborn.common.gui.slots.SlotBase;
 import com.peco2282.bcreborn.common.gui.widgets.Widget;
@@ -18,12 +19,15 @@ import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.PacketGuiWidget;
 import io.netty.buffer.ByteBufInputStream;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
@@ -306,5 +310,11 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 
   public int getInventorySize() {
     return inventorySize;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected static <BE extends BuildCraftBlockEntity> BE getBlockEntity(Inventory inventory, FriendlyByteBuf buf) {
+    Level level = inventory.player.level();
+    return (BE) level.getBlockEntity(buf.readBlockPos());
   }
 }
