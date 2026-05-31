@@ -125,4 +125,10 @@ com.peco2282.bcreborn
 
 ## ライセンス
 
-GNU Lesser General Public License v3.0 — 詳細は [LICENSE](LICENSE) を参照してください。
+BC Reborn is a modernization and continuation of concepts and code
+derived from BuildCraft.
+
+Copyright (c) 2011-2017, SpaceToad and the BuildCraft Team
+Copyright (c) 2025-2026 peco2282
+
+Show details [LICENSE](LICENSE)
