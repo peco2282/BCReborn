@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
-import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
@@ -24,7 +23,7 @@ import java.util.function.Function;
 
 public abstract class BCStatement implements IStatement {
 
-  protected final String uniqueTag;
+  protected final ResourceLocation uniqueTag;
 
   @OnlyIn(Dist.CLIENT)
   protected TextureAtlasSprite icon;
@@ -36,15 +35,13 @@ public abstract class BCStatement implements IStatement {
    *
    * @param uniqueTag
    */
-  public BCStatement(String... uniqueTag) {
-    this.uniqueTag = uniqueTag[0];
-    for (String tag : uniqueTag) {
-      StatementManager.statements.put(String.format("%s:%s", BCRebornRobotics.MODID, tag), this);
-    }
+  public BCStatement(String uniqueTag) {
+    this.uniqueTag = ResourceLocation.parse(uniqueTag);
+    StatementManager.statements.put(this.uniqueTag, this);
   }
 
   @Override
-  public String getUniqueTag() {
+  public ResourceLocation getUniqueTag() {
     return uniqueTag;
   }
 

@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class ActionSingleEnergyPulse extends BCStatement implements IActionInternal {
 
 	public ActionSingleEnergyPulse() {
-		super("buildcraft:pulsar.single", "buildcraft.pulser.single");
+		super("buildcraft:pulsar.single");
 	}
 
 	@Override
