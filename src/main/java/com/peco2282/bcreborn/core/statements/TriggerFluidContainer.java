@@ -22,11 +22,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -72,7 +74,7 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
           }
         }
 
-        if (handler.fill(searchedFluid.isEmpty() ? new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1) : searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
+        if (handler.fill(searchedFluid.isEmpty() ? new FluidStack(Fluids.WATER, 1) : searchedFluid, IFluidHandler.FluidAction.SIMULATE) > 0) {
           foundSpace = true;
         } else if (stack.isEmpty() || stack.getAmount() < handler.getTankCapacity(i)) {
           foundSpace = true;

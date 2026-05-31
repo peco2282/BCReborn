@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -238,8 +239,8 @@ public final class OilPopulate {
   private boolean isReplaceableFluid(Level level, int x, int y, int z) {
     BlockState state = level.getBlockState(new BlockPos(x, y, z));
     FluidState fluidState = state.getFluidState();
-    if (!fluidState.isEmpty() && !fluidState.getType().isSame(net.minecraft.world.level.material.Fluids.LAVA)
-      && !fluidState.getType().isSame(net.minecraft.world.level.material.Fluids.FLOWING_LAVA)) {
+    if (!fluidState.isEmpty() && !fluidState.getType().isSame(Fluids.LAVA)
+      && !fluidState.getType().isSame(Fluids.FLOWING_LAVA)) {
       return true;
     }
     Block block = state.getBlock();

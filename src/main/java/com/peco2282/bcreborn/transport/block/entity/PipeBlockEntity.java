@@ -11,7 +11,9 @@
  */
 package com.peco2282.bcreborn.transport.block.entity;
 
+import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
+import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -42,6 +44,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -183,7 +186,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       }
     } else if (transportType == PipeType.ENERGY) {
       // エネルギー吸い出し（Wood パイプ等）を先に実行してからモジュールをtick
-      if (behaviour instanceof com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour eb) {
+      if (behaviour instanceof EnergyPipeBehaviour eb) {
         eb.extractEnergy(this);
       }
       if (energyTransportModule != null) {
@@ -610,7 +613,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
           }
 
           @Override
-          public net.minecraft.world.level.block.Block getNeighborBlock(Direction dir) {
+          public Block getNeighborBlock(Direction dir) {
             return level.getBlockState(worldPosition.relative(dir)).getBlock();
           }
 
@@ -620,12 +623,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
           }
 
           @Override
-          public com.peco2282.bcreborn.api.transport.IPipe getNeighborPipe(Direction dir) {
+          public IPipe getNeighborPipe(Direction dir) {
             return null;
           }
 
           @Override
-          public com.peco2282.bcreborn.api.transport.IPipe getPipe() {
+          public IPipe getPipe() {
             return null;
           }
 

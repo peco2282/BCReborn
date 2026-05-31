@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +45,7 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
   @Override
   public boolean isFuelable(ItemStack stack) {
     // 暫定：固体燃料対応（タグ or バニラ燃焼可能）
-    return stack.is(CommonItemTags.ENGINE_ENERGY) || net.minecraftforge.common.ForgeHooks.getBurnTime(stack, null) > 0;
+    return stack.is(CommonItemTags.ENGINE_ENERGY) || ForgeHooks.getBurnTime(stack, null) > 0;
   }
 
   @Override
@@ -58,7 +59,7 @@ public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngine
     if (burnTime <= 0 && !isOverheated()) {
       ItemStack stack = getItem(0);
       if (!stack.isEmpty() && isFuelable(stack)) {
-        int time = net.minecraftforge.common.ForgeHooks.getBurnTime(stack, null);
+        int time = ForgeHooks.getBurnTime(stack, null);
         if (time > 0) {
           totalBurnTime = burnTime = time;
           // 1個消費

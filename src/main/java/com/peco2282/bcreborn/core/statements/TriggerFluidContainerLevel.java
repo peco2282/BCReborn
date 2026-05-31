@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -67,7 +68,7 @@ public class TriggerFluidContainerLevel extends BCStatement implements ITriggerE
           if (searchedFluid.isEmpty()) {
             return true;
           }
-          if (handler.fill(searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
+          if (handler.fill(searchedFluid, IFluidHandler.FluidAction.SIMULATE) > 0) {
             return true;
           }
           continue;

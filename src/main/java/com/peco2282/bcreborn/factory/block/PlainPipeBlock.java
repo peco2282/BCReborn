@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.factory.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +38,7 @@ public class PlainPipeBlock extends Block {
   }
 
   @Override
-  public boolean isLadder(BlockState state, net.minecraft.world.level.LevelReader level, BlockPos pos, LivingEntity entity) {
+  public boolean isLadder(BlockState state, LevelReader level, BlockPos pos, LivingEntity entity) {
     return true;
   }
 }

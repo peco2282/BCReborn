@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.utils;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 
@@ -203,7 +204,7 @@ public class PathFinding implements IIterableAlgorithm {
     if (maxDistanceToEndSq == 0) {
       return end.x == x && end.y == y && end.z == z;
     } else {
-      return BuildCraftAPI.isSoftBlock(world, new net.minecraft.core.BlockPos(x, y, z))
+      return BuildCraftAPI.isSoftBlock(world, new BlockPos(x, y, z))
         && distanceSq(new BlockIndex(x, y, z), end) <= maxDistanceToEndSq;
     }
   }
@@ -222,7 +223,7 @@ public class PathFinding implements IIterableAlgorithm {
             resultMoves[dx + 1][dy + 1][dz + 1] = 0;
           } else if (endReached(x, y, z)) {
             resultMoves[dx + 1][dy + 1][dz + 1] = 2;
-          } else if (!BuildCraftAPI.isSoftBlock(world, new net.minecraft.core.BlockPos(x, y, z))) {
+          } else if (!BuildCraftAPI.isSoftBlock(world, new BlockPos(x, y, z))) {
             resultMoves[dx + 1][dy + 1][dz + 1] = 0;
           } else {
             resultMoves[dx + 1][dy + 1][dz + 1] = 1;

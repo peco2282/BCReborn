@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
+import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -247,7 +248,7 @@ public class ObsidianItemPipeBehaviour implements ItemPipeBehaviour {
   }
 
   @Override
-  public Direction chooseNextDirection(PipeBlockEntity pipe, com.peco2282.bcreborn.transport.pipe.TravelingItem item) {
+  public Direction chooseNextDirection(PipeBlockEntity pipe, TravelingItem item) {
     return null;
   }
 }

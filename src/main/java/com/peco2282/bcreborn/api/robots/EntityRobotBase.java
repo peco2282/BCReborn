@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.IZone;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,7 +29,7 @@ public abstract class EntityRobotBase extends PathfinderMob implements Container
   public static final int SHUTDOWN_ENERGY = 0;
   public static final long NULL_ROBOT_ID = Long.MAX_VALUE;
 
-  public EntityRobotBase(net.minecraft.world.entity.EntityType<? extends PathfinderMob> type, Level world) {
+  public EntityRobotBase(EntityType<? extends PathfinderMob> type, Level world) {
     super(type, world);
   }
 

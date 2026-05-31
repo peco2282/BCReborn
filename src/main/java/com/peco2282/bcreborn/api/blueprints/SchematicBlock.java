@@ -17,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
@@ -112,7 +113,7 @@ public class SchematicBlock extends SchematicBlockBase {
     BlockState worldState = context.world().getBlockState(pos);
     List<ItemStack> req = Block.getDrops(
       worldState,
-      (net.minecraft.server.level.ServerLevel) context.world(),
+      (ServerLevel) context.world(),
       pos,
       context.world().getBlockEntity(pos));
 

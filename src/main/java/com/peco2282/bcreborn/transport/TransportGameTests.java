@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +47,7 @@ public class TransportGameTests {
     helper.runAtTickTime(10, () -> {
       BlockEntity be = helper.getBlockEntity(pos1);
       if (be instanceof PipeBlockEntity pipeBE) {
-        pipeBE.injectItem(new ItemStack(Items.DIAMOND), net.minecraft.core.Direction.WEST);
+        pipeBE.injectItem(new ItemStack(Items.DIAMOND), Direction.WEST);
       }
     });
 

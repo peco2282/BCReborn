@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 
 public class EntityBlock extends Entity {
@@ -49,7 +50,7 @@ public class EntityBlock extends Entity {
   @Override
   public void setPos(double d, double d1, double d2) {
     super.setPos(d, d1, d2);
-    setBoundingBox(new net.minecraft.world.phys.AABB(getX(), getY(), getZ(), getX() + iSize, getY() + jSize, getZ() + kSize));
+    setBoundingBox(new AABB(getX(), getY(), getZ(), getX() + iSize, getY() + jSize, getZ() + kSize));
   }
 
   public void moveEntity(double d, double d1, double d2) {

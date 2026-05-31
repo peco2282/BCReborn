@@ -11,7 +11,9 @@
  */
 package com.peco2282.bcreborn.common.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -43,13 +45,13 @@ public class FluidSlot extends AdvancedSlot {
     }
     IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid);
     ResourceLocation stillTexture = extensions.getStillTexture();
-    return net.minecraft.client.Minecraft.getInstance()
-      .getTextureAtlas(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS)
+    return Minecraft.getInstance()
+      .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
       .apply(stillTexture);
   }
 
   @Override
   public ResourceLocation getTexture() {
-    return net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_BLOCKS;
+    return TextureAtlas.LOCATION_BLOCKS;
   }
 }

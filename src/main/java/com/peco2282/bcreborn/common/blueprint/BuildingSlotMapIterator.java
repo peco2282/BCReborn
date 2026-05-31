@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
 import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 
 import java.util.*;
@@ -56,7 +57,7 @@ public class BuildingSlotMapIterator {
         }
         for (Tank t : builder.getFluidTanks()) {
           if (t.getFluid() != null && t.getFluid().getFluid() != null) {
-            availablePairs.add(new BuilderItemMetaPair(new ItemStack(net.minecraft.world.item.Items.BUCKET)));
+            availablePairs.add(new BuilderItemMetaPair(new ItemStack(Items.BUCKET)));
           }
         }
       }

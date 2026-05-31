@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.IEngine;
 import com.peco2282.bcreborn.api.IHeatable;
 import com.peco2282.bcreborn.api.IPipeConnection;
+import com.peco2282.bcreborn.api.IRedstoneEngine;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.EngineBlock;
@@ -217,7 +218,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     // ピストンアニメーション更新
     updatePistonProgress();
 
-    if (isRedstonePowered && (isActive() || this instanceof com.peco2282.bcreborn.api.IRedstoneEngine)) {
+    if (isRedstonePowered && (isActive() || this instanceof IRedstoneEngine)) {
       pushEnergyToNeighbor();
     }
   }

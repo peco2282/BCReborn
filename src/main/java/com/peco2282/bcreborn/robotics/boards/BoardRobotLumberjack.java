@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +42,6 @@ public class BoardRobotLumberjack extends BoardRobotGenericBreakBlock {
 
   @Override
   public boolean isExpectedBlock(Level world, int x, int y, int z) {
-    return BuildCraftAPI.getWorldProperty("wood").get(world, new net.minecraft.core.BlockPos(x, y, z));
+    return BuildCraftAPI.getWorldProperty("wood").get(world, new BlockPos(x, y, z));
   }
 }

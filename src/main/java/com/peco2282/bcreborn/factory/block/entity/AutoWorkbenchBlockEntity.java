@@ -43,12 +43,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements WorldlyContainer, IHasWork, IRedstoneEngineReceiver, IDebuggable, net.minecraftforge.energy.IEnergyStorage, MenuProvider {
+public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements WorldlyContainer, IHasWork, IRedstoneEngineReceiver, IDebuggable, IEnergyStorage, MenuProvider {
 
   public static final int SLOT_RESULT = 9;
   public static final int CRAFT_TIME = 256;

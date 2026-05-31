@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
+import com.peco2282.bcreborn.robotics.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -120,11 +121,11 @@ public class BCNetworkManager {
     sendToServer(new RequestZonePlanLoadAreaPacket(pos, index));
   }
 
-  public static void sendRequestZonePlanSaveArea(BlockPos pos, int index, com.peco2282.bcreborn.robotics.ZonePlan plan) {
+  public static void sendRequestZonePlanSaveArea(BlockPos pos, int index, ZonePlan plan) {
     sendToServer(new RequestZonePlanSaveAreaPacket(pos, index, plan));
   }
 
-  public static void sendSyncZonePlanAreaLoaded(ServerPlayer player, BlockPos pos, com.peco2282.bcreborn.robotics.ZonePlan plan) {
+  public static void sendSyncZonePlanAreaLoaded(ServerPlayer player, BlockPos pos, ZonePlan plan) {
     sendToPlayer(player, new SyncZonePlanAreaLoadedPacket(pos, plan));
   }
 

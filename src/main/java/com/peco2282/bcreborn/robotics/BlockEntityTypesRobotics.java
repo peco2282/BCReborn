@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.robotics.block.entity.RequesterBlockEntity;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 public class BlockEntityTypesRobotics {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-  private static <T extends net.minecraft.world.level.block.entity.BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
+  private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
     return REGISTRY.registerBlockEntityType(name, type);
   }
 

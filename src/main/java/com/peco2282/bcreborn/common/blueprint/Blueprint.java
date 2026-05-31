@@ -19,7 +19,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -125,7 +127,7 @@ public class Blueprint extends BlueprintBase {
 
     List<Entity> entitiesInBox = context.world().getEntitiesOfClass(
       Entity.class,
-      new net.minecraft.world.phys.AABB(
+      new AABB(
         context.surroundingBox().pMin().x,
         context.surroundingBox().pMin().y,
         context.surroundingBox().pMin().z,
@@ -207,7 +209,7 @@ public class Blueprint extends BlueprintBase {
           index++;
 
           if (cpt.contains("blockId")) {
-            net.minecraft.world.level.block.Block block;
+            Block block;
             try {
               block = mapping.getBlockForId(cpt.getInt("blockId"));
             } catch (MappingNotFoundException e) {

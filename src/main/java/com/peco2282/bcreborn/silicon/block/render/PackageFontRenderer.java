@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.silicon.block.render;
 
+import net.minecraft.client.gui.font.FontSet;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,7 +31,7 @@ public class PackageFontRenderer extends Font {
       try {
         var field = Font.class.getDeclaredField("fontSetByLocation");
         field.setAccessible(true);
-        java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet> func = (java.util.function.Function<net.minecraft.resources.ResourceLocation, net.minecraft.client.gui.font.FontSet>) field.get(Minecraft.getInstance().font);
+        java.util.function.Function<ResourceLocation, FontSet> func = (java.util.function.Function<ResourceLocation, FontSet>) field.get(Minecraft.getInstance().font);
         return func.apply(text);
       } catch (Exception e) {
         return null;

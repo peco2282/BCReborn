@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.common.gui.widgets;
 
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import com.peco2282.bcreborn.common.utils.MathUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,7 +29,7 @@ public class ScrollbarWidget extends Widget {
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void draw(net.minecraft.client.gui.GuiGraphics graphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
+  public void draw(GuiGraphics graphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
     gui.drawTexturedModalRect(graphics, guiX + x, guiY + y, u, v, w, h);
     int posPx = pos * (h - HEIGHT + 2) / len;
     gui.drawTexturedModalRect(graphics, guiX + x, guiY + y + posPx, u + 6, v, w, HEIGHT);

@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 import com.peco2282.bcreborn.common.gui.tooltips.ToolTipLine;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import com.peco2282.bcreborn.energy.fluids.Tank;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidGaugeWidget extends Widget {
@@ -33,7 +34,7 @@ public class FluidGaugeWidget extends Widget {
   }
 
   @Override
-  public void draw(net.minecraft.client.gui.GuiGraphics guiGraphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
+  public void draw(GuiGraphics guiGraphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
     if (tank == null) {
       return;
     }
