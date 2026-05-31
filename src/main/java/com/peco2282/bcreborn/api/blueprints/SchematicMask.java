@@ -21,51 +21,51 @@ import java.util.LinkedList;
 
 public class SchematicMask extends SchematicBlockBase {
 
-	public boolean isConcrete = true;
+  public boolean isConcrete = true;
 
-	public SchematicMask() {
+  public SchematicMask() {
 
-	}
+  }
 
-	public SchematicMask(boolean isConcrete) {
-		this.isConcrete = isConcrete;
-	}
+  public SchematicMask(boolean isConcrete) {
+    this.isConcrete = isConcrete;
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		BlockPos pos = new BlockPos(x, y, z);
-		if (isConcrete) {
-			if (stacks.isEmpty() || !isReplaceable(context, pos)) {
-				return;
-			}
-			context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-		} else {
-			context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-		}
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    BlockPos pos = new BlockPos(x, y, z);
+    if (isConcrete) {
+      if (stacks.isEmpty() || !isReplaceable(context, pos)) {
+        return;
+      }
+      context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    } else {
+      context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    }
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		BlockPos pos = new BlockPos(x, y, z);
-		if (isConcrete) {
-			return !isReplaceable(context, pos);
-		} else {
-			return isReplaceable(context, pos);
-		}
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    BlockPos pos = new BlockPos(x, y, z);
+    if (isConcrete) {
+      return !isReplaceable(context, pos);
+    } else {
+      return isReplaceable(context, pos);
+    }
+  }
 
-	private boolean isReplaceable(IBuilderContext context, BlockPos pos) {
-		BlockState state = context.world().getBlockState(pos);
-		return state.isAir() || state.canBeReplaced();
-	}
+  private boolean isReplaceable(IBuilderContext context, BlockPos pos) {
+    BlockState state = context.world().getBlockState(pos);
+    return state.isAir() || state.canBeReplaced();
+  }
 
-	@Override
-	public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
-		nbt.putBoolean("isConcrete", isConcrete);
-	}
+  @Override
+  public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
+    nbt.putBoolean("isConcrete", isConcrete);
+  }
 
-	@Override
-	public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		isConcrete = nbt.getBoolean("isConcrete");
-	}
+  @Override
+  public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    isConcrete = nbt.getBoolean("isConcrete");
+  }
 }

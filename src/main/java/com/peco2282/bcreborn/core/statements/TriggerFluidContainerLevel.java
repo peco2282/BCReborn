@@ -33,75 +33,74 @@ import java.util.function.Function;
 
 public class TriggerFluidContainerLevel extends BCStatement implements ITriggerExternal {
 
-	public enum TriggerType {
+  public TriggerType type;
 
-		BELOW25(0.25F), BELOW50(0.5F), BELOW75(0.75F);
+  public TriggerFluidContainerLevel(TriggerType type) {
+    super("buildcraft:fluid." + type.name().toLowerCase(Locale.ENGLISH), "buildcraft.fluid." + type.name().toLowerCase(Locale.ENGLISH));
+    this.type = type;
+  }
 
-		public final float level;
+  @Override
+  public int maxParameters() {
+    return 1;
+  }
 
-		TriggerType(float level) {
-			this.level = level;
-		}
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.trigger.fluidlevel.below"), (int) (type.level * 100));
+  }
 
-	public TriggerType type;
+  @Override
+  public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer statementContainer, IStatementParameter[] parameters) {
+    if (tile == null) return false;
 
-	public TriggerFluidContainerLevel(TriggerType type) {
-		super("buildcraft:fluid." + type.name().toLowerCase(Locale.ENGLISH), "buildcraft.fluid." + type.name().toLowerCase(Locale.ENGLISH));
-		this.type = type;
-	}
+    return tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).map(handler -> {
+      FluidStack searchedFluid = FluidStack.EMPTY;
 
-	@Override
-	public int maxParameters() {
-		return 1;
-	}
+      if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
+        searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(FluidStack.EMPTY);
+      }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.trigger.fluidlevel.below"), (int) (type.level * 100));
-	}
+      for (int i = 0; i < handler.getTanks(); i++) {
+        FluidStack stack = handler.getFluidInTank(i);
+        if (stack.isEmpty()) {
+          if (searchedFluid.isEmpty()) {
+            return true;
+          }
+          if (handler.fill(searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
+            return true;
+          }
+          continue;
+        }
 
-	@Override
-	public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer statementContainer, IStatementParameter[] parameters) {
-		if (tile == null) return false;
+        if (searchedFluid.isEmpty() || searchedFluid.isFluidEqual(stack)) {
+          float percentage = (float) stack.getAmount() / (float) handler.getTankCapacity(i);
+          return percentage < type.level;
+        }
+      }
+      return false;
+    }).orElse(false);
+  }
 
-		return tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).map(handler -> {
-			FluidStack searchedFluid = FluidStack.EMPTY;
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_liquidcontainer_" + type.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-			if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
-				searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(FluidStack.EMPTY);
-			}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-			for (int i = 0; i < handler.getTanks(); i++) {
-				FluidStack stack = handler.getFluidInTank(i);
-				if (stack.isEmpty()) {
-					if (searchedFluid.isEmpty()) {
-						return true;
-					}
-					if (handler.fill(searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
-						return true;
-					}
-					continue;
-				}
+  public enum TriggerType {
 
-				if (searchedFluid.isEmpty() || searchedFluid.isFluidEqual(stack)) {
-					float percentage = (float) stack.getAmount() / (float) handler.getTankCapacity(i);
-					return percentage < type.level;
-				}
-			}
-			return false;
-		}).orElse(false);
-	}
+    BELOW25(0.25F), BELOW50(0.5F), BELOW75(0.75F);
 
+    public final float level;
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_liquidcontainer_" + type.name().toLowerCase(Locale.ENGLISH)));
-	}
-
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+    TriggerType(float level) {
+      this.level = level;
+    }
+  }
 }

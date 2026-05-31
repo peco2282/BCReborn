@@ -26,72 +26,72 @@ import java.util.List;
 
 public class RobotItem extends BuildCraftItem {
 
-	public RobotItem() {
-		super(new Properties().stacksTo(1));
-	}
+  public RobotItem() {
+    super(new Properties().stacksTo(1));
+  }
 
-	@Override
-	public int getMaxStackSize(ItemStack stack) {
-		CompoundTag cpt = getNBT(stack);
-		RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
+  public static RedstoneBoardRobotNBT getRobotNBT(ItemStack stack) {
+    return getRobotNBT(getNBT(stack));
+  }
 
-		if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
-			return 1;
-		} else {
-			return 16;
-		}
-	}
+  public static int getEnergy(ItemStack stack) {
+    return getEnergy(getNBT(stack));
+  }
 
-	public static RedstoneBoardRobotNBT getRobotNBT(ItemStack stack) {
-		return getRobotNBT(getNBT(stack));
-	}
+  public static ItemStack createRobotStack(RedstoneBoardRobotNBT board, int energy) {
+    ItemStack robot = new ItemStack(RoboticsItems.ROBOT.get());
+    CompoundTag boardCpt = new CompoundTag();
+    board.createBoard(boardCpt);
+    CompoundTag itemData = robot.getOrCreateTag();
+    itemData.put("board", boardCpt);
+    itemData.putInt("energy", energy);
+    return robot;
+  }
 
-	public static int getEnergy(ItemStack stack) {
-		return getEnergy(getNBT(stack));
-	}
+  private static CompoundTag getNBT(ItemStack stack) {
+    CompoundTag cpt = stack.getOrCreateTag();
+    if (!cpt.contains("board")) {
+      RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
+    }
+    return cpt;
+  }
 
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		CompoundTag cpt = getNBT(stack);
-		RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
+  private static RedstoneBoardRobotNBT getRobotNBT(CompoundTag cpt) {
+    CompoundTag boardCpt = cpt.getCompound("board");
+    return (RedstoneBoardRobotNBT) RedstoneBoardRegistry.instance.getRedstoneBoard(boardCpt);
+  }
 
-		if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
-			boardNBT.addInformation(stack, level, tooltip, flag);
+  private static int getEnergy(CompoundTag cpt) {
+    return cpt.getInt("energy");
+  }
 
-			int energy = getEnergy(cpt);
-			// TODO: Add energy information when MAX_ENERGY is available
-			tooltip.add(Component.literal("Energy: " + energy));
-		}
-	}
+  private static void setEnergy(CompoundTag cpt, int energy) {
+    cpt.putInt("energy", energy);
+  }
 
-	public static ItemStack createRobotStack(RedstoneBoardRobotNBT board, int energy) {
-		ItemStack robot = new ItemStack(RoboticsItems.ROBOT.get());
-		CompoundTag boardCpt = new CompoundTag();
-		board.createBoard(boardCpt);
-		CompoundTag itemData = robot.getOrCreateTag();
-		itemData.put("board", boardCpt);
-		itemData.putInt("energy", energy);
-		return robot;
-	}
+  @Override
+  public int getMaxStackSize(ItemStack stack) {
+    CompoundTag cpt = getNBT(stack);
+    RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
 
-	private static CompoundTag getNBT(ItemStack stack) {
-		CompoundTag cpt = stack.getOrCreateTag();
-		if (!cpt.contains("board")) {
-			RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
-		}
-		return cpt;
-	}
+    if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
+      return 1;
+    } else {
+      return 16;
+    }
+  }
 
-	private static RedstoneBoardRobotNBT getRobotNBT(CompoundTag cpt) {
-		CompoundTag boardCpt = cpt.getCompound("board");
-		return (RedstoneBoardRobotNBT) RedstoneBoardRegistry.instance.getRedstoneBoard(boardCpt);
-	}
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    CompoundTag cpt = getNBT(stack);
+    RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
 
-	private static int getEnergy(CompoundTag cpt) {
-		return cpt.getInt("energy");
-	}
+    if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
+      boardNBT.addInformation(stack, level, tooltip, flag);
 
-	private static void setEnergy(CompoundTag cpt, int energy) {
-		cpt.putInt("energy", energy);
-	}
+      int energy = getEnergy(cpt);
+      // TODO: Add energy information when MAX_ENERGY is available
+      tooltip.add(Component.literal("Energy: " + energy));
+    }
+  }
 }

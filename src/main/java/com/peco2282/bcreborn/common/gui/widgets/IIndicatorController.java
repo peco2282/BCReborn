@@ -16,8 +16,8 @@ import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 
 public interface IIndicatorController {
 
-	ToolTip getToolTip();
+  ToolTip getToolTip();
 
-	int getScaledLevel(int size);
+  int getScaledLevel(int size);
 
 }

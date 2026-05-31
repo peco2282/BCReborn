@@ -18,18 +18,18 @@ import net.minecraft.world.item.ItemStack;
 import java.util.LinkedList;
 
 public class SchematicFree extends SchematicBlock {
-    @Override
-    public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    }
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+  }
 
-    @Override
-    public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-    }
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  }
 
-    @Override
-    public LinkedList<ItemStack> getStacksToDisplay(LinkedList<ItemStack> stackConsumed) {
-        LinkedList<ItemStack> disp = new LinkedList<>();
-        disp.add(new ItemStack(block, 1));
-        return disp;
-    }
+  @Override
+  public LinkedList<ItemStack> getStacksToDisplay(LinkedList<ItemStack> stackConsumed) {
+    LinkedList<ItemStack> disp = new LinkedList<>();
+    disp.add(new ItemStack(block, 1));
+    return disp;
+  }
 }

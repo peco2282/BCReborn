@@ -16,5 +16,5 @@ package com.peco2282.bcreborn.common.gui.slots;
  */
 public interface IPhantomSlot {
 
-	boolean canAdjust();
+  boolean canAdjust();
 }

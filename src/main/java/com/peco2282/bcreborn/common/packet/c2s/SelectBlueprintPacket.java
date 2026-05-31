@@ -20,17 +20,17 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SelectBlueprintPacket(
-    BlockPos pos,
-    int blueprintId
+  BlockPos pos,
+  int blueprintId
 ) implements CustomPacket {
+  public static SelectBlueprintPacket decode(FriendlyByteBuf buffer) {
+    return new SelectBlueprintPacket(buffer.readBlockPos(), buffer.readInt());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeInt(blueprintId);
-  }
-
-  public static SelectBlueprintPacket decode(FriendlyByteBuf buffer) {
-    return new SelectBlueprintPacket(buffer.readBlockPos(), buffer.readInt());
   }
 
   @Override
@@ -38,9 +38,9 @@ public record SelectBlueprintPacket(
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
       getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get())
-          .ifPresent(be -> {
-            be.setSelectedBlueprint(blueprintId);
-          });
+        .ifPresent(be -> {
+          be.setSelectedBlueprint(blueprintId);
+        });
     });
     ctx.setPacketHandled(true);
   }

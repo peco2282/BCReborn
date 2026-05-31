@@ -12,44 +12,43 @@
 package com.peco2282.bcreborn.silicon.item;
 
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
 public class RedstoneChipsetItem extends BuildCraftItem {
 
-	public enum Chipset {
+  private final Chipset chipset;
 
-		RED,
-		IRON,
-		GOLD,
-		DIAMOND,
-		PULSATING,
-		QUARTZ,
-		COMP,
-		EMERALD;
-		public static final Chipset[] VALUES = values();
+  public RedstoneChipsetItem(Chipset chipset) {
+    super(new Properties());
+    this.chipset = chipset;
+  }
 
-		public String getChipsetName() {
-			return "redstone_" + name().toLowerCase(Locale.ENGLISH) + "_chipset";
-		}
+  public Chipset getChipset() {
+    return chipset;
+  }
 
-		public static Chipset fromOrdinal(int ordinal) {
-			if (ordinal < 0 || ordinal >= VALUES.length) {
-				return RED;
-			}
-			return VALUES[ordinal];
-		}
-	}
+  public enum Chipset {
 
-	private final Chipset chipset;
+    RED,
+    IRON,
+    GOLD,
+    DIAMOND,
+    PULSATING,
+    QUARTZ,
+    COMP,
+    EMERALD;
+    public static final Chipset[] VALUES = values();
 
-	public RedstoneChipsetItem(Chipset chipset) {
-		super(new Properties());
-		this.chipset = chipset;
-	}
+    public static Chipset fromOrdinal(int ordinal) {
+      if (ordinal < 0 || ordinal >= VALUES.length) {
+        return RED;
+      }
+      return VALUES[ordinal];
+    }
 
-	public Chipset getChipset() {
-		return chipset;
-	}
+    public String getChipsetName() {
+      return "redstone_" + name().toLowerCase(Locale.ENGLISH) + "_chipset";
+    }
+  }
 }

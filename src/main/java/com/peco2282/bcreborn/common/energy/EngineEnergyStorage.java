@@ -37,13 +37,13 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
     return this;
   }
 
+  public int getMaxExtract() {
+    return this.maxExtract;
+  }
+
   public EngineEnergyStorage<E> setMaxExtract(int maxExtract) {
     this.maxExtract = Math.max(0, maxExtract);
     return this;
-  }
-
-  public int getMaxExtract() {
-    return this.maxExtract;
   }
 
   /*

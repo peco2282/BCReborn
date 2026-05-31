@@ -27,19 +27,19 @@ import net.minecraftforge.registries.RegistryObject;
 public class BuildersMenuTypes {
   private static final BCRegistry REGISTRY = BCRebornBuilders.getRegistry();
 
-  public static final RegistryObject<MenuType<BuilderMenu>> BUILDER =
-          register("builder", IForgeMenuType.create(BuilderMenu::new));
-
-  public static final RegistryObject<MenuType<ArchitectMenu>> ARCHITECT =
-          register("architect", IForgeMenuType.create(ArchitectMenu::new));
-
-  public static final RegistryObject<MenuType<FillerMenu>> FILLER =
-          register("filler", IForgeMenuType.create(FillerMenu::new));
-
-  public static final RegistryObject<MenuType<BlueprintLibraryMenu>> BLUEPRINT_LIBRARY =
-          register("blueprint_library", IForgeMenuType.create(BlueprintLibraryMenu::new));
-
   private static <M extends AbstractContainerMenu> RegistryObject<MenuType<M>> register(String name, MenuType<M> menuType) {
     return REGISTRY.registerMenuType(name, () -> menuType);
-  }
+  }  public static final RegistryObject<MenuType<BuilderMenu>> BUILDER =
+    register("builder", IForgeMenuType.create(BuilderMenu::new));
+
+  public static final RegistryObject<MenuType<ArchitectMenu>> ARCHITECT =
+    register("architect", IForgeMenuType.create(ArchitectMenu::new));
+
+  public static final RegistryObject<MenuType<FillerMenu>> FILLER =
+    register("filler", IForgeMenuType.create(FillerMenu::new));
+
+  public static final RegistryObject<MenuType<BlueprintLibraryMenu>> BLUEPRINT_LIBRARY =
+    register("blueprint_library", IForgeMenuType.create(BlueprintLibraryMenu::new));
+
+
 }

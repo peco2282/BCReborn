@@ -21,28 +21,28 @@ import java.util.LinkedList;
 
 public class SchematicTileIgnoreState extends SchematicTile {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(block));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(block));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+  }
 
-	@Override
-	public BuildingStage getBuildStage() {
-		return BuildingStage.STANDALONE;
-	}
+  @Override
+  public BuildingStage getBuildStage() {
+    return BuildingStage.STANDALONE;
+  }
 }

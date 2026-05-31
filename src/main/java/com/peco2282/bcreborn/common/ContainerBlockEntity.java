@@ -28,8 +28,8 @@ public interface ContainerBlockEntity extends Container, MenuProvider, Nameable 
   @Override
   default AbstractContainerMenu createMenu(int p_58641_, Inventory p_58642_, Player p_58643_) {
     return BaseContainerBlockEntity.canUnlock(p_58643_, LockCode.NO_LOCK, getDisplayName())
-        ? this.createMenu(p_58641_, p_58642_)
-        : null;
+      ? this.createMenu(p_58641_, p_58642_)
+      : null;
   }
 
   @Override

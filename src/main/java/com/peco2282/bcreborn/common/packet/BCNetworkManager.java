@@ -38,10 +38,12 @@ import java.util.function.Consumer;
 public class BCNetworkManager {
   private static final SimpleChannel channel = PacketController.CHANNEL;
   // Client -> Server
+
   /// Blueprint
   public static void sendSelectBlueprint(BlockPos pos, int blueprintId) {
     sendToServer(new RequestSelectedBlueprintPacket(pos, blueprintId));
   }
+
   public static void sendUploadBlueprintBegin(BlockPos pos, LibraryId libraryId, int count) {
     sendToServer(new UploadBlueprintBeginPacket(pos, libraryId, count));
   }
@@ -144,10 +146,10 @@ public class BCNetworkManager {
     // For now, let's assume we send it in chunks
     int MAX_PACKET_LENGTH = 30000;
     for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
-        int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
-        byte[] chunk = new byte[len];
-        System.arraycopy(textureData, i, chunk, 0, len);
-        sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
+      int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
+      byte[] chunk = new byte[len];
+      System.arraycopy(textureData, i, chunk, 0, len);
+      sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
     }
   }
 
@@ -156,6 +158,7 @@ public class BCNetworkManager {
   }
 
   // Server -> Client
+
   /// Blueprint
   public static void sendRequestBlueprint(ServerPlayer player, BlockPos pos, int blueprintId) {
     sendToPlayer(player, new RequestSelectedBlueprintPacket(pos, blueprintId));
@@ -179,7 +182,7 @@ public class BCNetworkManager {
     sendToWorld(blockEntity.getLevel().dimension(), new ClearItemRequirementsPacket(pos));
   }
 
-  public static void sendLaunchItem(ServerPlayer player,BlockPos pos, BuildingItem item) {
+  public static void sendLaunchItem(ServerPlayer player, BlockPos pos, BuildingItem item) {
     sendToPlayer(player, new LaunchItemPacket(pos, item));
   }
 
@@ -194,6 +197,7 @@ public class BCNetworkManager {
   public static void sendClientSetInventory(ServerPlayer player, int entityId, short slot, ItemStack stack) {
     sendToPlayer(player, new ClientSetInventoryPacket(entityId, slot, stack));
   }
+
   public static void sendEntityClientSetInventory(Entity entity, int entityId, short slot, ItemStack stack) {
     sendToEntity(entity, new ClientSetInventoryPacket(entityId, slot, stack));
   }
@@ -201,6 +205,7 @@ public class BCNetworkManager {
   public static void sendClientSetItemInUse(ServerPlayer player, int entityId, ItemStack itemInUse) {
     sendToPlayer(player, new ClientSetItemInUsePacket(entityId, itemInUse));
   }
+
   public static void sendEntityClientSetItemInUse(Entity entity, int entityId, ItemStack itemInUse) {
     sendToEntity(entity, new ClientSetItemInUsePacket(entityId, itemInUse));
   }

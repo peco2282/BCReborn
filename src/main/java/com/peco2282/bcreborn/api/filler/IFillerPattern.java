@@ -15,5 +15,5 @@ import com.peco2282.bcreborn.api.statements.IStatement;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public interface IFillerPattern extends IStatement {
-    TextureAtlasSprite getBlockOverlay();
+  TextureAtlasSprite getBlockOverlay();
 }

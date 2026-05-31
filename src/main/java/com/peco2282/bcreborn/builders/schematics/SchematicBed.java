@@ -25,34 +25,34 @@ import java.util.LinkedList;
 
 public class SchematicBed extends SchematicBlock {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (state != null && state.getValue(BedBlock.PART) == BedPart.FOOT) {
-			requirements.add(new ItemStack(Items.WHITE_BED));
-		}
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    if (state != null && state.getValue(BedBlock.PART) == BedPart.FOOT) {
+      requirements.add(new ItemStack(Items.WHITE_BED));
+    }
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		if (state != null) {
-			context.world().setBlock(new BlockPos(x, y, z), state, 3);
-		}
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    if (state != null) {
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
+    }
+  }
 
-	@Override
-	public boolean doNotBuild() {
-		return state != null && state.getValue(BedBlock.PART) == BedPart.HEAD;
-	}
+  @Override
+  public boolean doNotBuild() {
+    return state != null && state.getValue(BedBlock.PART) == BedPart.HEAD;
+  }
 }

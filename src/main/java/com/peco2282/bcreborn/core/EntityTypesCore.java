@@ -21,12 +21,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 @InitRegister(modId = BCRebornCore.MODID, priority = 1)
 public class EntityTypesCore {
-    private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
+  private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
-    public static final RegistryObject<EntityType<EntityBlock>> ENTITY_BLOCK = REGISTRY.registerEntityType("entity_block",
-            () -> EntityType.Builder.<EntityBlock>of(EntityBlock::new, MobCategory.MISC)
-                    .sized(1.0F, 1.0F)
-                    .noSummon()
-                    .fireImmune()
-                    .build("entity_block"));
+  public static final RegistryObject<EntityType<EntityBlock>> ENTITY_BLOCK = REGISTRY.registerEntityType("entity_block",
+    () -> EntityType.Builder.<EntityBlock>of(EntityBlock::new, MobCategory.MISC)
+      .sized(1.0F, 1.0F)
+      .noSummon()
+      .fireImmune()
+      .build("entity_block"));
 }

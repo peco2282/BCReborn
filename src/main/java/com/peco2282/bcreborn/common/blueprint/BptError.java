@@ -14,10 +14,10 @@ package com.peco2282.bcreborn.common.blueprint;
 import com.peco2282.bcreborn.api.core.BCLog;
 
 public class BptError extends Exception {
-    private static final long serialVersionUID = 3579188081467555542L;
+  private static final long serialVersionUID = 3579188081467555542L;
 
-    public BptError(String str) {
-        super(str);
-        BCLog.logger.debug("BLUEPRINT ERROR: " + str);
-    }
+  public BptError(String str) {
+    super(str);
+    BCLog.logger.debug("BLUEPRINT ERROR: " + str);
+  }
 }

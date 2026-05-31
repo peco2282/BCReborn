@@ -60,8 +60,8 @@ public class StripesItemPipeBehaviour implements ItemPipeBehaviour {
     // 突端チェック：接続されているパイプ方向が2方向以上の場合は動作しない
     BlockState state = level.getBlockState(pipe.getBlockPos());
     long connectedCount = PipeBlock.PROPERTY_MAP.values().stream()
-        .filter(state::getValue)
-        .count();
+      .filter(state::getValue)
+      .count();
     if (connectedCount >= 2) return;
 
     // 来た方向の逆（出口方向）にブロックを設置しようとする

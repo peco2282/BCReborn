@@ -18,11 +18,11 @@ import net.minecraftforge.eventbus.api.Event;
 
 @Cancelable
 public class BlockInteractionEvent extends Event {
-    public Player player;
-    public BlockState blockState;
+  public Player player;
+  public BlockState blockState;
 
-    public BlockInteractionEvent(Player player, BlockState blockState) {
-        this.player = player;
-        this.blockState = blockState;
-    }
+  public BlockInteractionEvent(Player player, BlockState blockState) {
+    this.player = player;
+    this.blockState = blockState;
+  }
 }

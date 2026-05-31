@@ -28,41 +28,41 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class PackagerBlock extends BuildCraftBlock {
-    public PackagerBlock() {
-        super(Properties.of().strength(10F));
-    }
+  public PackagerBlock() {
+    super(Properties.of().strength(10F));
+  }
 
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) {
-            return InteractionResult.SUCCESS;
-        }
-        BlockEntity tile = level.getBlockEntity(pos);
-        if (tile instanceof PackagerBlockEntity) {
-            // TODO: GUI opening logic
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
+  @Override
+  public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (level.isClientSide) {
+      return InteractionResult.SUCCESS;
     }
+    BlockEntity tile = level.getBlockEntity(pos);
+    if (tile instanceof PackagerBlockEntity) {
+      // TODO: GUI opening logic
+      return InteractionResult.CONSUME;
+    }
+    return InteractionResult.PASS;
+  }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new PackagerBlockEntity(pos, state);
-    }
+  @Nullable
+  @Override
+  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    return new PackagerBlockEntity(pos, state);
+  }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, SiliconBlockEntityTypes.PACKAGER.get(), PackagerBlockEntity.ticker());
-    }
+  @Nullable
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return createTickerHelper(type, SiliconBlockEntityTypes.PACKAGER.get(), PackagerBlockEntity.ticker());
+  }
 
-    @Override
-    public void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
-    }
+  @Override
+  public void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+  }
 
-    @Override
-    public boolean isRotatable() {
-        return false;
-    }
+  @Override
+  public boolean isRotatable() {
+    return false;
+  }
 }

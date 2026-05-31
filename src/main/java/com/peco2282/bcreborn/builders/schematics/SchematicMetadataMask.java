@@ -22,36 +22,36 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SchematicMetadataMask extends SchematicBlock {
-	private final int mask;
+  private final int mask;
 
-	public SchematicMetadataMask(int mask) {
-		this.mask = mask;
-	}
+  public SchematicMetadataMask(int mask) {
+    this.mask = mask;
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
-	}
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
+  }
 
-	@Override
-	public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.readSchematicFromNBT(nbt, registry);
-	}
+  @Override
+  public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.readSchematicFromNBT(nbt, registry);
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		if (state != null) {
-			storedRequirements = new ItemStack[1];
-			storedRequirements[0] = new ItemStack(state.getBlock());
-		}
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    if (state != null) {
+      storedRequirements = new ItemStack[1];
+      storedRequirements[0] = new ItemStack(state.getBlock());
+    }
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		if (state != null) {
-			BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-			return state.getBlock() == worldState.getBlock();
-		}
-		return false;
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    if (state != null) {
+      BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
+      return state.getBlock() == worldState.getBlock();
+    }
+    return false;
+  }
 }

@@ -14,9 +14,9 @@ package com.peco2282.bcreborn.common.data;
 import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.builders.data.BuildersBlockStateProvider;
+import com.peco2282.bcreborn.core.data.CoreBlockStateProvider;
 import com.peco2282.bcreborn.core.data.CoreItemModelProvider;
 import com.peco2282.bcreborn.core.data.CoreRecipeProvider;
-import com.peco2282.bcreborn.core.data.CoreBlockStateProvider;
 import com.peco2282.bcreborn.energy.data.EnergyBlockStateProvider;
 import com.peco2282.bcreborn.energy.data.EnergyItemModelProvider;
 import com.peco2282.bcreborn.transport.data.TransportBlockStateProvider;
@@ -51,7 +51,7 @@ public class DataGatherEvent {
 
     generator.addProvider(true, new BuildersBlockStateProvider(generator.getPackOutput(), helper));
 
-    generator.addProvider(true, new EnergyBlockStateProvider(generator.getPackOutput(), helper));;
+    generator.addProvider(true, new EnergyBlockStateProvider(generator.getPackOutput(), helper));
     generator.addProvider(true, new EnergyItemModelProvider(generator.getPackOutput(), helper));
 
     generator.addProvider(true, new TransportBlockStateProvider(generator.getPackOutput(), helper));

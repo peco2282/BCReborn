@@ -19,15 +19,15 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ListSetLabelPacket(
-    String label
+  String label
 ) implements CustomPacket {
+  public static ListSetLabelPacket decode(FriendlyByteBuf buffer) {
+    return new ListSetLabelPacket(buffer.readUtf());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeUtf(label);
-  }
-
-  public static ListSetLabelPacket decode(FriendlyByteBuf buffer) {
-    return new ListSetLabelPacket(buffer.readUtf());
   }
 
   @Override

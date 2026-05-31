@@ -16,5 +16,5 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
 public interface IPipePluggableItem {
-    PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack);
+  PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack);
 }

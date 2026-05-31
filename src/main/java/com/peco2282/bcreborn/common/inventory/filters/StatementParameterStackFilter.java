@@ -22,17 +22,17 @@ import java.util.ArrayList;
  */
 public class StatementParameterStackFilter extends ArrayStackOrListFilter {
 
-	public StatementParameterStackFilter(IStatementParameter... parameters) {
-		ArrayList<ItemStack> tmp = new ArrayList<ItemStack>();
+  public StatementParameterStackFilter(IStatementParameter... parameters) {
+    ArrayList<ItemStack> tmp = new ArrayList<ItemStack>();
 
-		for (IStatementParameter s : parameters) {
-			if (s != null) {
-				if (s instanceof StatementParameterItemStack) {
-					tmp.add(s.getItemStack());
-				}
-			}
-		}
+    for (IStatementParameter s : parameters) {
+      if (s != null) {
+        if (s instanceof StatementParameterItemStack) {
+          tmp.add(s.getItemStack());
+        }
+      }
+    }
 
-		stacks = tmp.toArray(new ItemStack[tmp.size()]);
-	}
+    stacks = tmp.toArray(new ItemStack[tmp.size()]);
+  }
 }

@@ -16,14 +16,14 @@ import com.peco2282.bcreborn.common.inventory.StackHelper;
 import net.minecraft.world.item.ItemStack;
 
 public final class SchematicHelper implements ISchematicHelper {
-	public static final SchematicHelper INSTANCE = new SchematicHelper();
+  public static final SchematicHelper INSTANCE = new SchematicHelper();
 
-	private SchematicHelper() {
+  private SchematicHelper() {
 
-	}
+  }
 
-	@Override
-	public boolean isEqualItem(ItemStack a, ItemStack b) {
-		return StackHelper.isEqualItem(a, b);
-	}
+  @Override
+  public boolean isEqualItem(ItemStack a, ItemStack b) {
+    return StackHelper.isEqualItem(a, b);
+  }
 }

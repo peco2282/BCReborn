@@ -22,13 +22,13 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket {
+  public static UploadNothingToServerPacket decode(FriendlyByteBuf buffer) {
+    return new UploadNothingToServerPacket(buffer.readBlockPos());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
-  }
-
-  public static UploadNothingToServerPacket decode(FriendlyByteBuf buffer) {
-    return new UploadNothingToServerPacket(buffer.readBlockPos());
   }
 
   @Override
@@ -37,12 +37,12 @@ public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket 
 
     ctx.enqueueWork(() -> {
       BlockEntity entity = ctx.getSender().level().getBlockEntity(pos);
-      if (!(entity instanceof BlueprintLibraryBlockEntity library)) return ;
+      if (!(entity instanceof BlueprintLibraryBlockEntity library)) return;
 
       library.setItem(3, library.getItem(2));
       library.setItem(4, ItemStack.EMPTY);
     });
-    
+
     ctx.setPacketHandled(true);
   }
 }

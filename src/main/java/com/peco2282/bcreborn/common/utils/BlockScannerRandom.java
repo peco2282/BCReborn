@@ -20,42 +20,42 @@ import java.util.Iterator;
 
 public class BlockScannerRandom implements Iterable<BlockIndex> {
 
-	private RandomSource rand;
-	private int maxDistance;
+  private final RandomSource rand;
+  private final int maxDistance;
 
-	class BlockIt implements Iterator<BlockIndex> {
+  public BlockScannerRandom(RandomSource iRand, int iMaxDistance) {
+    this.rand = iRand;
+    this.maxDistance = iMaxDistance;
+  }
 
-		@Override
-		public boolean hasNext() {
-			return true;
-		}
+  @Override
+  public Iterator<BlockIndex> iterator() {
+    return new BlockIt();
+  }
 
-		@Override
-		public BlockIndex next() {
-			double radius = rand.nextFloat() * maxDistance;
-			float polarAngle = rand.nextFloat() * 2.0F * (float) Math.PI;
-			float azimuthAngle = rand.nextFloat() * (float) Math.PI;
+  class BlockIt implements Iterator<BlockIndex> {
 
-			int searchX = (int) (radius * Mth.cos(polarAngle) * Mth.sin(azimuthAngle));
-			int searchY = (int) (radius * Mth.cos(azimuthAngle));
-			int searchZ = (int) (radius * Mth.sin(polarAngle) * Mth.sin(azimuthAngle));
+    @Override
+    public boolean hasNext() {
+      return true;
+    }
 
-			return new BlockIndex(searchX, searchY, searchZ);
-		}
+    @Override
+    public BlockIndex next() {
+      double radius = rand.nextFloat() * maxDistance;
+      float polarAngle = rand.nextFloat() * 2.0F * (float) Math.PI;
+      float azimuthAngle = rand.nextFloat() * (float) Math.PI;
 
-		@Override
-		public void remove() {
-		}
-	}
+      int searchX = (int) (radius * Mth.cos(polarAngle) * Mth.sin(azimuthAngle));
+      int searchY = (int) (radius * Mth.cos(azimuthAngle));
+      int searchZ = (int) (radius * Mth.sin(polarAngle) * Mth.sin(azimuthAngle));
 
-	public BlockScannerRandom(RandomSource iRand, int iMaxDistance) {
-		this.rand = iRand;
-		this.maxDistance = iMaxDistance;
-	}
+      return new BlockIndex(searchX, searchY, searchZ);
+    }
 
-	@Override
-	public Iterator<BlockIndex> iterator() {
-		return new BlockIt();
-	}
+    @Override
+    public void remove() {
+    }
+  }
 
 }

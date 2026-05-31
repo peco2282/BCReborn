@@ -25,10 +25,10 @@ public class PlainPipeBlock extends Block {
 
   public PlainPipeBlock() {
     super(Properties.of()
-        .sound(SoundType.GLASS)
-        .strength(0.3F)
-        .noOcclusion()
-        .noCollission());
+      .sound(SoundType.GLASS)
+      .strength(0.3F)
+      .noOcclusion()
+      .noCollission());
   }
 
   @Override

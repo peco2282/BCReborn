@@ -17,8 +17,8 @@ import com.peco2282.bcreborn.api.blueprints.SchematicTile;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.core.JavaTools;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
-import com.peco2282.bcreborn.factory.block.entity.AutoWorkbenchBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.factory.block.entity.AutoWorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -29,59 +29,59 @@ import java.util.LinkedList;
 
 public class SchematicAutoWorkbench extends SchematicTile {
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		AutoWorkbenchBlockEntity autoWb = getTile(context, new BlockPos(x, y, z));
-		if (autoWb != null) {
-			ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
-			rqs.add(new ItemStack(FactoryBlocks.AUTO_WORKBENCH.get()));
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    AutoWorkbenchBlockEntity autoWb = getTile(context, new BlockPos(x, y, z));
+    if (autoWb != null) {
+      ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
+      rqs.add(new ItemStack(FactoryBlocks.AUTO_WORKBENCH.get()));
 
-			for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
-				ItemStack stack = slot.getStackInSlot();
-				if (stack != null) {
-					stack = stack.copy();
-					stack.setCount(1);
-					rqs.add(stack);
-				}
-			}
+      for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
+        ItemStack stack = slot.getStackInSlot();
+        if (stack != null) {
+          stack = stack.copy();
+          stack.setCount(1);
+          rqs.add(stack);
+        }
+      }
 
-			storedRequirements = JavaTools.concat(storedRequirements, rqs
-					.toArray(new ItemStack[rqs.size()]));
-		}
-	}
+      storedRequirements = JavaTools.concat(storedRequirements, rqs
+        .toArray(new ItemStack[rqs.size()]));
+    }
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
 
-		tileNBT.remove("Items");
-	}
+    tileNBT.remove("Items");
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		super.placeInWorld(context, x, y, z, stacks);
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    super.placeInWorld(context, x, y, z, stacks);
 
-		AutoWorkbenchBlockEntity autoWb = getTile(context, new BlockPos(x, y, z));
-		if (autoWb != null) {
-			for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
-				ItemStack stack = slot.getStackInSlot();
-				if (stack != null) {
-					stack.setCount(1);
-				}
-			}
-		}
-	}
+    AutoWorkbenchBlockEntity autoWb = getTile(context, new BlockPos(x, y, z));
+    if (autoWb != null) {
+      for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
+        ItemStack stack = slot.getStackInSlot();
+        if (stack != null) {
+          stack.setCount(1);
+        }
+      }
+    }
+  }
 
-	@Override
-	public BuildingStage getBuildStage() {
-		return BuildingStage.STANDALONE;
-	}
+  @Override
+  public BuildingStage getBuildStage() {
+    return BuildingStage.STANDALONE;
+  }
 
-	private AutoWorkbenchBlockEntity getTile(IBuilderContext context, BlockPos pos) {
-		BlockEntity tile = context.world().getBlockEntity(pos);
-		if (tile != null && tile instanceof AutoWorkbenchBlockEntity autoWork) {
-			return autoWork;
-		}
-		return null;
-	}
+  private AutoWorkbenchBlockEntity getTile(IBuilderContext context, BlockPos pos) {
+    BlockEntity tile = context.world().getBlockEntity(pos);
+    if (tile != null && tile instanceof AutoWorkbenchBlockEntity autoWork) {
+      return autoWork;
+    }
+    return null;
+  }
 }

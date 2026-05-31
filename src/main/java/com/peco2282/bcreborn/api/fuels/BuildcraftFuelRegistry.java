@@ -13,32 +13,32 @@ package com.peco2282.bcreborn.api.fuels;
 
 
 public final class BuildcraftFuelRegistry {
-	private static IFuelManager fuel;
+  private static IFuelManager fuel;
 
-	private static ICoolantManager coolant;
+  private static ICoolantManager coolant;
 
-	public static IFuelManager getFuelManager() {
-		return fuel;
-	}
+  private BuildcraftFuelRegistry() {
+  }
 
-	public static ICoolantManager getCoolantManager() {
-		return coolant;
-	}
+  public static IFuelManager getFuelManager() {
+    return fuel;
+  }
 
-	public static void setFuelManager(IFuelManager manager) {
-		if (fuel != null) {
-			throw new IllegalStateException("Fuel manager already set");
-		}
-		fuel = manager;
-	}
+  public static void setFuelManager(IFuelManager manager) {
+    if (fuel != null) {
+      throw new IllegalStateException("Fuel manager already set");
+    }
+    fuel = manager;
+  }
 
-	public static void setCoolantManager(ICoolantManager manager) {
-		if (coolant != null) {
-			throw new IllegalStateException("Coolant manager already set");
-		}
-		coolant = manager;
-	}
+  public static ICoolantManager getCoolantManager() {
+    return coolant;
+  }
 
-	private BuildcraftFuelRegistry() {
-	}
+  public static void setCoolantManager(ICoolantManager manager) {
+    if (coolant != null) {
+      throw new IllegalStateException("Coolant manager already set");
+    }
+    coolant = manager;
+  }
 }

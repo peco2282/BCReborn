@@ -16,20 +16,20 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SimpleFluidFilter implements IFluidFilter {
 
-	private Fluid fluidChecked;
+  private Fluid fluidChecked;
 
-	public SimpleFluidFilter(FluidStack stack) {
-		if (stack != null) {
-			fluidChecked = stack.getFluid();
-		}
-	}
+  public SimpleFluidFilter(FluidStack stack) {
+    if (stack != null) {
+      fluidChecked = stack.getFluid();
+    }
+  }
 
-	@Override
-	public boolean matches(Fluid fluid) {
-		if (fluidChecked != null) {
-			return fluidChecked == fluid;
-		} else {
-			return false;
-		}
-	}
+  @Override
+  public boolean matches(Fluid fluid) {
+    if (fluidChecked != null) {
+      return fluidChecked == fluid;
+    } else {
+      return false;
+    }
+  }
 }

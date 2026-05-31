@@ -26,62 +26,56 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
 
-public class ActionFiller implements IActionExternal {
+public record ActionFiller(FillerPattern pattern) implements IActionExternal {
 
-	public final FillerPattern pattern;
+  @Override
+  public String getDescription() {
+    return "Pattern: " + pattern.getDescription();
+  }
 
-	public ActionFiller(FillerPattern pattern) {
-		this.pattern = pattern;
-	}
+  @Override
+  public String getUniqueTag() {
+    return "filler:" + pattern.getUniqueTag();
+  }
 
-	@Override
-	public String getDescription() {
-		return "Pattern: " + pattern.getDescription();
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public TextureAtlasSprite getIcon() {
+    return pattern.getIcon();
+  }
 
-	@Override
-	public String getUniqueTag() {
-		return "filler:" + pattern.getUniqueTag();
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    pattern.registerIcons(textureGetter);
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getIcon() {
-		return pattern.getIcon();
-	}
+  @Override
+  public int minParameters() {
+    return pattern.minParameters();
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		pattern.registerIcons(textureGetter);
-	}
+  @Override
+  public int maxParameters() {
+    return pattern.maxParameters();
+  }
 
-	@Override
-	public int minParameters() {
-		return pattern.minParameters();
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return pattern.createParameter(index);
+  }
 
-	@Override
-	public int maxParameters() {
-		return pattern.maxParameters();
-	}
+  @Override
+  public IStatement rotateLeft() {
+    return this;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return pattern.createParameter(index);
-	}
-
-	@Override
-	public IStatement rotateLeft() {
-		return this;
-	}
-
-	@Override
-	public void actionActivate(BlockEntity target, Direction side,
-							   IStatementContainer source, IStatementParameter[] parameters) {
-		if (target instanceof FillerBlockEntity) {
-			// ((FillerBlockEntity) target).setPattern(delta);
-			// ((FillerBlockEntity) target).patternParameters = parameters;
-		}
-	}
+  @Override
+  public void actionActivate(BlockEntity target, Direction side,
+                             IStatementContainer source, IStatementParameter[] parameters) {
+    if (target instanceof FillerBlockEntity) {
+      // ((FillerBlockEntity) target).setPattern(delta);
+      // ((FillerBlockEntity) target).patternParameters = parameters;
+    }
+  }
 }

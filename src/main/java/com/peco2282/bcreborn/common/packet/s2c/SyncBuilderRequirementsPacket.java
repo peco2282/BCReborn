@@ -23,37 +23,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public record SyncBuilderRequirementsPacket(BlockPos pos, List<RequirementItemStack> requirements) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeInt(requirements.size());
-        for (RequirementItemStack req : requirements) {
-            req.writeData(buffer);
-        }
+public record SyncBuilderRequirementsPacket(BlockPos pos,
+                                            List<RequirementItemStack> requirements) implements CustomPacket {
+  public static SyncBuilderRequirementsPacket decode(FriendlyByteBuf buffer) {
+    BlockPos pos = buffer.readBlockPos();
+    int size = buffer.readInt();
+    List<RequirementItemStack> requirements = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) {
+      RequirementItemStack req = new RequirementItemStack(null, 0); // Temporary stack will be overwritten
+      req.readData(buffer);
+      requirements.add(req);
     }
+    return new SyncBuilderRequirementsPacket(pos, requirements);
+  }
 
-    public static SyncBuilderRequirementsPacket decode(FriendlyByteBuf buffer) {
-        BlockPos pos = buffer.readBlockPos();
-        int size = buffer.readInt();
-        List<RequirementItemStack> requirements = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            RequirementItemStack req = new RequirementItemStack(null, 0); // Temporary stack will be overwritten
-            req.readData(buffer);
-            requirements.add(req);
-        }
-        return new SyncBuilderRequirementsPacket(pos, requirements);
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+    buffer.writeInt(requirements.size());
+    for (RequirementItemStack req : requirements) {
+      req.writeData(buffer);
     }
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            if (Minecraft.getInstance().level != null) {
-                Minecraft.getInstance().level.getBlockEntity(pos, BlockEntityTypesBuilders.BUILDER.get())
-                    .ifPresent(be -> be.setItemRequirements(requirements));
-            }
-        });
-        ctx.setPacketHandled(true);
-    }
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      if (Minecraft.getInstance().level != null) {
+        Minecraft.getInstance().level.getBlockEntity(pos, BlockEntityTypesBuilders.BUILDER.get())
+          .ifPresent(be -> be.setItemRequirements(requirements));
+      }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

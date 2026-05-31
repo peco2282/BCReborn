@@ -20,16 +20,16 @@ import net.minecraft.world.level.BlockGetter;
  */
 public interface ICullable {
 
-	//Side Rendering States
-	//They are used to effectively cull obstructed sides while processing facades.
-	//Make sure your implementation is correct otherwise expect FPS drop
+  //Side Rendering States
+  //They are used to effectively cull obstructed sides while processing facades.
+  //Make sure your implementation is correct otherwise expect FPS drop
 
-	void setRenderSide(Direction side, boolean render);
-	
-	void setRenderAllSides();
-	
-	boolean shouldSideBeRendered(BlockGetter blockAccess, int x, int y, int z, int side);
-	
-	void setRenderMask(int mask);	
-	
+  void setRenderSide(Direction side, boolean render);
+
+  void setRenderAllSides();
+
+  boolean shouldSideBeRendered(BlockGetter blockAccess, int x, int y, int z, int side);
+
+  void setRenderMask(int mask);
+
 }

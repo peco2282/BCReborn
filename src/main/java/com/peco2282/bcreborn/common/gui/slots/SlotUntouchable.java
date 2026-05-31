@@ -19,33 +19,33 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SlotUntouchable extends SlotBase implements IPhantomSlot {
 
-	public SlotUntouchable(Container contents, int id, int x, int y) {
-		super(contents, id, x, y);
-	}
+  public SlotUntouchable(Container contents, int id, int x, int y) {
+    super(contents, id, x, y);
+  }
 
-	@Override
-	public boolean mayPlace(ItemStack itemstack) {
-		return false;
-	}
+  @Override
+  public boolean mayPlace(ItemStack itemstack) {
+    return false;
+  }
 
-	@Override
-	public boolean mayPickup(Player par1EntityPlayer) {
-		return false;
-	}
+  @Override
+  public boolean mayPickup(Player par1EntityPlayer) {
+    return false;
+  }
 
-	@Override
-	public boolean canAdjust() {
-		return false;
-	}
+  @Override
+  public boolean canAdjust() {
+    return false;
+  }
 
-	@Override
-	public boolean canShift() {
-		return false;
-	}
+  @Override
+  public boolean canShift() {
+    return false;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean isActive() {
-		return false;
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public boolean isActive() {
+    return false;
+  }
 }

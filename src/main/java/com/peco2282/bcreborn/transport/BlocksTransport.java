@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @InitRegister(modId = BCRebornTransport.MODID, priority = 0)
 public class BlocksTransport {
@@ -57,7 +56,6 @@ public class BlocksTransport {
       }
     }
   }
-
 
 
   public static List<RegistryObject<PipeBlock>> getPipeList() {

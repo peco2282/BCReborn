@@ -22,159 +22,156 @@ import java.util.*;
 
 public class PathFindingSearch implements IIterableAlgorithm {
 
-	public static final int PATH_ITERATIONS = 1000;
-	private static final HashMap<ResourceKey<Level>, HashSet<BlockIndex>> reservations = new HashMap<>();
+  public static final int PATH_ITERATIONS = 1000;
+  private static final HashMap<ResourceKey<Level>, HashSet<BlockIndex>> reservations = new HashMap<>();
 
-	private Level world;
-	private BlockIndex start;
-	private List<PathFinding> pathFinders;
-	private IBlockFilter pathFound;
-	private IZone zone;
-	private float maxDistance;
-	private Iterator<BlockIndex> blockIter;
+  private final Level world;
+  private final BlockIndex start;
+  private final List<PathFinding> pathFinders;
+  private final IBlockFilter pathFound;
+  private final IZone zone;
+  private final float maxDistance;
+  private final Iterator<BlockIndex> blockIter;
 
-	private double maxDistanceToEnd;
+  private final double maxDistanceToEnd;
 
-	public PathFindingSearch(Level iWorld, BlockIndex iStart,
-							 Iterator<BlockIndex> iBlockIter, IBlockFilter iPathFound,
-							 double iMaxDistanceToEnd, float iMaxDistance, IZone iZone) {
-		world = iWorld;
-		start = iStart;
-		pathFound = iPathFound;
+  public PathFindingSearch(Level iWorld, BlockIndex iStart,
+                           Iterator<BlockIndex> iBlockIter, IBlockFilter iPathFound,
+                           double iMaxDistanceToEnd, float iMaxDistance, IZone iZone) {
+    world = iWorld;
+    start = iStart;
+    pathFound = iPathFound;
 
-		maxDistance = iMaxDistance;
-		maxDistanceToEnd = iMaxDistanceToEnd;
-		zone = iZone;
-		blockIter = iBlockIter;
+    maxDistance = iMaxDistance;
+    maxDistanceToEnd = iMaxDistanceToEnd;
+    zone = iZone;
+    blockIter = iBlockIter;
 
-		pathFinders = new LinkedList<PathFinding>();
-	}
+    pathFinders = new LinkedList<PathFinding>();
+  }
 
-	@Override
-	public void iterate() {
-		if (pathFinders.size() < 5 && blockIter.hasNext()) {
-			iterateSearch(PATH_ITERATIONS * 10);
-		}
-		iteratePathFind(PATH_ITERATIONS);
-	}
+  @Override
+  public void iterate() {
+    if (pathFinders.size() < 5 && blockIter.hasNext()) {
+      iterateSearch(PATH_ITERATIONS * 10);
+    }
+    iteratePathFind(PATH_ITERATIONS);
+  }
 
-	private void iterateSearch(int itNumber) {
-		for (int i = 0; i < itNumber; ++i) {
-			if (!blockIter.hasNext()) {
-				return;
-			}
+  private void iterateSearch(int itNumber) {
+    for (int i = 0; i < itNumber; ++i) {
+      if (!blockIter.hasNext()) {
+        return;
+      }
 
-			BlockIndex delta = blockIter.next();
-			BlockIndex block = new BlockIndex(start.x + delta.x,
-					((start.y + delta.y) > 0) ? start.y + delta.y : 0,
-					start.z + delta.z);
-			if (isLoadedChunk(block.x, block.z)) {
-				if (isTarget(block)) {
-					pathFinders.add(new PathFinding(world, start, block, maxDistanceToEnd, maxDistance));
-				}
-			}
+      BlockIndex delta = blockIter.next();
+      BlockIndex block = new BlockIndex(start.x + delta.x,
+        ((start.y + delta.y) > 0) ? start.y + delta.y : 0,
+        start.z + delta.z);
+      if (isLoadedChunk(block.x, block.z)) {
+        if (isTarget(block)) {
+          pathFinders.add(new PathFinding(world, start, block, maxDistanceToEnd, maxDistance));
+        }
+      }
 
-			if (pathFinders.size() >= 5) {
-				return;
-			}
-		}
-	}
+      if (pathFinders.size() >= 5) {
+        return;
+      }
+    }
+  }
 
-	private boolean isTarget(BlockIndex block) {
-		if (zone != null && !zone.contains(block.x, block.y, block.z)) {
-			return false;
-		}
-		if (!pathFound.matches(world, new BlockPos(block.x, block.y, block.z))) {
-			return false;
-		}
-		synchronized (reservations) {
-			if (reservations.containsKey(world.dimension())) {
-				HashSet<BlockIndex> dimReservations = reservations
-						.get(world.dimension());
-				if (dimReservations.contains(block)) {
-					return false;
-				}
-			}
-		}
-		if (!BuildCraftAPI.isSoftBlock(world, block.x - 1, block.y, block.z)
-				&& !BuildCraftAPI.isSoftBlock(world, block.x + 1, block.y, block.z)
-				&& !BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z - 1)
-				&& !BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z + 1)
-				&& !BuildCraftAPI.isSoftBlock(world, block.x, block.y - 1, block.z)
-				&& !BuildCraftAPI.isSoftBlock(world, block.x, block.y + 1, block.z)) {
-			return false;
-		}
-		return true;
-	}
+  private boolean isTarget(BlockIndex block) {
+    if (zone != null && !zone.contains(block.x, block.y, block.z)) {
+      return false;
+    }
+    if (!pathFound.matches(world, new BlockPos(block.x, block.y, block.z))) {
+      return false;
+    }
+    synchronized (reservations) {
+      if (reservations.containsKey(world.dimension())) {
+        HashSet<BlockIndex> dimReservations = reservations
+          .get(world.dimension());
+        if (dimReservations.contains(block)) {
+          return false;
+        }
+      }
+    }
+    return BuildCraftAPI.isSoftBlock(world, block.x - 1, block.y, block.z)
+      || BuildCraftAPI.isSoftBlock(world, block.x + 1, block.y, block.z)
+      || BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z - 1)
+      || BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z + 1)
+      || BuildCraftAPI.isSoftBlock(world, block.x, block.y - 1, block.z)
+      || BuildCraftAPI.isSoftBlock(world, block.x, block.y + 1, block.z);
+  }
 
-	private boolean isLoadedChunk(int x, int z) {
-		return world.getChunkSource().hasChunk(x >> 4, z >> 4);
-	}
+  private boolean isLoadedChunk(int x, int z) {
+    return world.getChunkSource().hasChunk(x >> 4, z >> 4);
+  }
 
-	public void iteratePathFind(int itNumber) {
-		for (PathFinding pathFinding : new ArrayList<PathFinding>(pathFinders)) {
-			pathFinding.iterate(itNumber / pathFinders.size());
-			if (pathFinding.isDone()) {
-				LinkedList<BlockIndex> path = pathFinding.getResult();
-				if (path != null && path.size() > 0) {
-					if (reserve(pathFinding.end())) {
-						return;
-					}
-				}
-				pathFinders.remove(pathFinding);
-			}
-		}
-	}
+  public void iteratePathFind(int itNumber) {
+    for (PathFinding pathFinding : new ArrayList<PathFinding>(pathFinders)) {
+      pathFinding.iterate(itNumber / pathFinders.size());
+      if (pathFinding.isDone()) {
+        LinkedList<BlockIndex> path = pathFinding.getResult();
+        if (path != null && path.size() > 0) {
+          if (reserve(pathFinding.end())) {
+            return;
+          }
+        }
+        pathFinders.remove(pathFinding);
+      }
+    }
+  }
 
-	@Override
-	public boolean isDone() {
-		for (PathFinding pathFinding : pathFinders) {
-			if (pathFinding.isDone()) {
-				return true;
-			}
-		}
-		return !blockIter.hasNext();
-	}
+  @Override
+  public boolean isDone() {
+    for (PathFinding pathFinding : pathFinders) {
+      if (pathFinding.isDone()) {
+        return true;
+      }
+    }
+    return !blockIter.hasNext();
+  }
 
-	public LinkedList<BlockIndex> getResult() {
-		for (PathFinding pathFinding : pathFinders) {
-			if (pathFinding.isDone()) {
-				return pathFinding.getResult();
-			}
-		}
-		return new LinkedList<BlockIndex>();
-	}
+  public LinkedList<BlockIndex> getResult() {
+    for (PathFinding pathFinding : pathFinders) {
+      if (pathFinding.isDone()) {
+        return pathFinding.getResult();
+      }
+    }
+    return new LinkedList<BlockIndex>();
+  }
 
-	public BlockIndex getResultTarget() {
-		for (PathFinding pathFinding : pathFinders) {
-			if (pathFinding.isDone()) {
-				return pathFinding.end();
-			}
-		}
-		return null;
-	}
+  public BlockIndex getResultTarget() {
+    for (PathFinding pathFinding : pathFinders) {
+      if (pathFinding.isDone()) {
+        return pathFinding.end();
+      }
+    }
+    return null;
+  }
 
-	private boolean reserve(BlockIndex block) {
-		synchronized (reservations) {
-			if (!reservations.containsKey(world.dimension())) {
-				reservations.put(world.dimension(),
-						new HashSet<BlockIndex>());
-			}
-			HashSet<BlockIndex> dimReservations = reservations
-					.get(world.dimension());
-			if (dimReservations.contains(block)) {
-				return false;
-			}
-			dimReservations.add(block);
-			return true;
-		}
-	}
+  private boolean reserve(BlockIndex block) {
+    synchronized (reservations) {
+      if (!reservations.containsKey(world.dimension())) {
+        reservations.put(world.dimension(),
+          new HashSet<BlockIndex>());
+      }
+      HashSet<BlockIndex> dimReservations = reservations
+        .get(world.dimension());
+      if (dimReservations.contains(block)) {
+        return false;
+      }
+      dimReservations.add(block);
+      return true;
+    }
+  }
 
-	public void unreserve(BlockIndex block) {
-		synchronized (reservations) {
-			if (reservations.containsKey(world.dimension())) {
-				reservations.get(world.dimension()).remove(block);
-			}
-		}
-	}
+  public void unreserve(BlockIndex block) {
+    synchronized (reservations) {
+      if (reservations.containsKey(world.dimension())) {
+        reservations.get(world.dimension()).remove(block);
+      }
+    }
+  }
 }

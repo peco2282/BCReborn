@@ -36,29 +36,56 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 
 public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, ISerializable {
+  private final String owner = "[BuildCraft]";
   protected boolean init = false;
   protected IControllable.Mode mode;
-
+  protected TileBuffer[] cache;
+  protected HashSet<Player> guiWatchers = new HashSet<>();
   private int receivedTick, extractedTick;
   private long worldTimeEnergyReceive;
   private EnergyStorage battery;
-
-
-  protected TileBuffer[] cache;
-  protected HashSet<Player> guiWatchers = new HashSet<>();
-  private final String owner = "[BuildCraft]";
 
 
   public BuildCraftBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
     super(p_155228_, p_155229_, p_155230_);
   }
 
-  public void setBattery(EnergyStorage battery) {
-    this.battery = battery;
+  public static <T extends BuildCraftBlockEntity> BlockEntityTicker<T> ticker() {
+    return (level, blockPos, blockState, blockEntity) -> {
+      if (!blockEntity.init && !blockEntity.isRemoved()) {
+        blockEntity.initialize();
+        blockEntity.init = true;
+      }
+      blockEntity.tick(level, blockPos, blockState);
+    };
+  }
+
+  protected static ResourceBuilder getResource(String path) {
+    return ResourceBuilder.create(path);
+  }
+
+  protected static ResourceBuilder getResource(String ns, String path) {
+    return ResourceBuilder.create(ns, path);
+  }
+
+  protected static ResourceBuilder getChildResource(ResourceLocation root, String path) {
+    return ResourceBuilder.create(root.getNamespace(), root.getPath()).addPath(path);
+  }
+
+  protected static ResourceBuilder getChildResource(ResourceLocation root, ResourceLocation child) {
+    if (root.getNamespace().equals(child.getNamespace())) {
+      return getChildResource(root, child.getPath());
+    } else {
+      throw new IllegalArgumentException("Cannot get child resource from different namespaces: " + root.getNamespace() + " apply " + child.getNamespace() + "!");
+    }
   }
 
   public EnergyStorage getBattery() {
     return battery;
+  }
+
+  public void setBattery(EnergyStorage battery) {
+    this.battery = battery;
   }
 
   public @NotNull BlockPos getBlockPos() {
@@ -131,7 +158,6 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
     return (int) (level.getGameTime() - worldTimeEnergyReceive);
   }
 
-
   @Override
   public int hashCode() {
     var pos = getBlockPos();
@@ -159,36 +185,6 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
         BCNetworkManager.sendBlockEntityUpdate(this, getBlockPos(), this::writeData);
       }
       level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-    }
-  }
-
-  public static <T extends BuildCraftBlockEntity> BlockEntityTicker<T> ticker() {
-    return (level, blockPos, blockState, blockEntity) -> {
-      if (!blockEntity.init && !blockEntity.isRemoved()) {
-        blockEntity.initialize();
-        blockEntity.init = true;
-      }
-      blockEntity.tick(level, blockPos, blockState);
-    };
-  }
-
-  protected static ResourceBuilder getResource(String path) {
-    return ResourceBuilder.create(path);
-  }
-
-  protected static ResourceBuilder getResource(String ns, String path) {
-    return ResourceBuilder.create(ns, path);
-  }
-
-  protected static ResourceBuilder getChildResource(ResourceLocation root, String path) {
-    return ResourceBuilder.create(root.getNamespace(), root.getPath()).addPath(path);
-  }
-
-  protected static ResourceBuilder getChildResource(ResourceLocation root, ResourceLocation child) {
-    if (root.getNamespace().equals(child.getNamespace())) {
-      return getChildResource(root, child.getPath());
-    } else {
-      throw new IllegalArgumentException("Cannot get child resource from different namespaces: " + root.getNamespace() + " apply " + child.getNamespace() + "!");
     }
   }
 

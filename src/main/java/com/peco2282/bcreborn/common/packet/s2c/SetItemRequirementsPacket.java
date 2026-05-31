@@ -23,20 +23,20 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public record SetItemRequirementsPacket(
-    BlockPos pos,
-    List<RequirementItemStack> requirements
+  BlockPos pos,
+  List<RequirementItemStack> requirements
 ) implements CustomPacket {
+  public static SetItemRequirementsPacket decode(FriendlyByteBuf buffer) {
+    return new SetItemRequirementsPacket(
+      buffer.readBlockPos(),
+      buffer.readCollection(ArrayList::new, RequirementItemStack::decode)
+    );
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeCollection(requirements, (buf, req) -> req.writeData(buf));
-  }
-
-  public static SetItemRequirementsPacket decode(FriendlyByteBuf buffer) {
-    return new SetItemRequirementsPacket(
-        buffer.readBlockPos(),
-        buffer.readCollection(ArrayList::new, RequirementItemStack::decode)
-    );
   }
 
   @Override
@@ -44,9 +44,9 @@ public record SetItemRequirementsPacket(
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
       getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BUILDER.get())
-          .ifPresent(be -> {
-            be.setItemRequirements(requirements);
-          });
+        .ifPresent(be -> {
+          be.setItemRequirements(requirements);
+        });
     });
     ctx.setPacketHandled(true);
   }

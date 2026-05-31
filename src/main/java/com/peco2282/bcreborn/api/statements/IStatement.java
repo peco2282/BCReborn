@@ -19,21 +19,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public interface IStatement {
-    String getUniqueTag();
+  String getUniqueTag();
 
-    @OnlyIn(Dist.CLIENT)
-    TextureAtlasSprite getIcon();
+  @OnlyIn(Dist.CLIENT)
+  TextureAtlasSprite getIcon();
 
-    @OnlyIn(Dist.CLIENT)
-    void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  @OnlyIn(Dist.CLIENT)
+  void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
-    int maxParameters();
+  int maxParameters();
 
-    int minParameters();
+  int minParameters();
 
-    String getDescription();
+  String getDescription();
 
-    IStatementParameter createParameter(int index);
+  IStatementParameter createParameter(int index);
 
-    IStatement rotateLeft();
+  IStatement rotateLeft();
 }

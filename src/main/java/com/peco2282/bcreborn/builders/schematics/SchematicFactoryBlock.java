@@ -23,36 +23,36 @@ import net.minecraft.world.level.block.Blocks;
 
 public class SchematicFactoryBlock extends SchematicFactory<SchematicBlock> {
 
-	@Override
-	protected SchematicBlock loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
-			throws MappingNotFoundException {
-		int blockId = nbt.getInt("blockId");
-		Block b = registry.getBlockForId(blockId);
+  @Override
+  protected SchematicBlock loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
+    throws MappingNotFoundException {
+    int blockId = nbt.getInt("blockId");
+    Block b = registry.getBlockForId(blockId);
 
-		if (b == Blocks.AIR) {
-			SchematicBlock s = new SchematicBlock();
-			s.state = Blocks.AIR.defaultBlockState();
+    if (b == Blocks.AIR) {
+      SchematicBlock s = new SchematicBlock();
+      s.state = Blocks.AIR.defaultBlockState();
 
-			return s;
-		} else {
-			SchematicBlock s = SchematicRegistry.INSTANCE.createSchematicBlock(b, nbt.getInt("blockMeta"));
+      return s;
+    } else {
+      SchematicBlock s = SchematicRegistry.INSTANCE.createSchematicBlock(b, nbt.getInt("blockMeta"));
 
-			if (s != null) {
-				s.readSchematicFromNBT(nbt, registry);
-				return s;
-			}
-		}
+      if (s != null) {
+        s.readSchematicFromNBT(nbt, registry);
+        return s;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicBlock object, MappingRegistry registry) {
-		super.saveSchematicToWorldNBT(nbt, object, registry);
+  @Override
+  public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicBlock object, MappingRegistry registry) {
+    super.saveSchematicToWorldNBT(nbt, object, registry);
 
-		Block b = object.state != null ? object.state.getBlock() : object.block;
-		nbt.putInt("blockId", registry.getIdForBlock(b));
-		object.writeSchematicToNBT(nbt, registry);
-	}
+    Block b = object.state != null ? object.state.getBlock() : object.block;
+    nbt.putInt("blockId", registry.getIdForBlock(b));
+    object.writeSchematicToNBT(nbt, registry);
+  }
 
 }

@@ -22,8 +22,8 @@ import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 public class BCFakePlayer {
-  private static WeakReference<FakePlayer> playerCache = new WeakReference<>(null);
   public static final GameProfile GAME_PROFILE = new GameProfile(UUID.nameUUIDFromBytes(BCReborn.MOD_ID_BASE.getBytes()), "[BuildCraft]");
+  private static WeakReference<FakePlayer> playerCache = new WeakReference<>(null);
 
   public static FakePlayer createBuildCraftPlayer(ServerLevel world) {
     return FakePlayerFactory.get(world, GAME_PROFILE);
@@ -34,6 +34,7 @@ public class BCFakePlayer {
     p.setPos(pos.getX(), pos.getY(), pos.getZ());
     return p;
   }
+
   public static FakePlayer createBuildCraftPlayer(ServerLevel world, int x, int y, int z) {
     var p = FakePlayerFactory.get(world, GAME_PROFILE);
     p.setPos(x, y, z);

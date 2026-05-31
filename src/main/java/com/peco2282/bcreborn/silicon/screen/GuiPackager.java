@@ -22,35 +22,35 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPackager extends BuildCraftScreen<PackagerMenu> {
 
-	public static final ResourceLocation TEXTURE = BCRebornSilicon.location("textures/gui/packager.png");
-	private final PackagerBlockEntity bench;
+  public static final ResourceLocation TEXTURE = BCRebornSilicon.location("textures/gui/packager.png");
+  private final PackagerBlockEntity bench;
 
-	public GuiPackager(PackagerMenu container, Inventory inventory, Component title) {
-		super(container, inventory, title);
-		this.bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
-		this.imageWidth = 176;
-		this.imageHeight = 197;
-		this.inventoryLabelY = this.imageHeight - 94;
-	}
+  public GuiPackager(PackagerMenu container, Inventory inventory, Component title) {
+    super(container, inventory, title);
+    this.bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
+    this.imageWidth = 176;
+    this.imageHeight = 197;
+    this.inventoryLabelY = this.imageHeight - 94;
+  }
 
-	@Override
-	protected void initilaizeLedger(Inventory inventory) {
-		// ロジックなし
-	}
+  @Override
+  protected void initilaizeLedger(Inventory inventory) {
+    // ロジックなし
+  }
 
-	@Override
-	protected ResourceLocation getMenuTexture() {
-		return TEXTURE;
-	}
+  @Override
+  protected ResourceLocation getMenuTexture() {
+    return TEXTURE;
+  }
 
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		int x = (width - imageWidth) / 2;
-		int y = (height - imageHeight) / 2;
-		guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-		
-		// 1.7.10 のベンチ固有の描画ロジック (patternSlotSet) を再現する場合
-		// ただし、現在の PackagerBlockEntity にはそのフラグがないため、今は描画のみ
-		// 本来は bench.isPatternSlotSet(i) で判定する
-	}
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    int x = (width - imageWidth) / 2;
+    int y = (height - imageHeight) / 2;
+    guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+    // 1.7.10 のベンチ固有の描画ロジック (patternSlotSet) を再現する場合
+    // ただし、現在の PackagerBlockEntity にはそのフラグがないため、今は描画のみ
+    // 本来は bench.isPatternSlotSet(i) で判定する
+  }
 }

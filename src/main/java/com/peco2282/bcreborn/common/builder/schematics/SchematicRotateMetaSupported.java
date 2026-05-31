@@ -15,27 +15,26 @@ import com.google.common.collect.Sets;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Set;
 
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
 public class SchematicRotateMetaSupported extends SchematicRotateMeta {
 
-    public SchematicRotateMetaSupported() {
-        super();
-    }
+  public SchematicRotateMetaSupported() {
+    super();
+  }
 
-    @Override
-    public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-        Direction side = Direction.NORTH;
-        if (state != null) {
-            if (state.hasProperty(BlockStateProperties.FACING)) {
-                side = state.getValue(BlockStateProperties.FACING);
-            } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-                side = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            }
-        }
-        return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
+  @Override
+  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
+    Direction side = Direction.NORTH;
+    if (state != null) {
+      if (state.hasProperty(BlockStateProperties.FACING)) {
+        side = state.getValue(BlockStateProperties.FACING);
+      } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+        side = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+      }
     }
+    return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
+  }
 }

@@ -19,33 +19,33 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class FillerRegistry {
-    private TreeMap<String, IFillerPattern> patterns = new TreeMap<>();
+  private final TreeMap<String, IFillerPattern> patterns = new TreeMap<>();
 
-    public void addPattern(IFillerPattern pattern) {
-        patterns.put(pattern.getUniqueTag(), pattern);
-    }
+  public void addPattern(IFillerPattern pattern) {
+    patterns.put(pattern.getUniqueTag(), pattern);
+  }
 
-    public IFillerPattern getPattern(String patternName) {
-        return patterns.get(patternName);
-    }
+  public IFillerPattern getPattern(String patternName) {
+    return patterns.get(patternName);
+  }
 
-    public IFillerPattern getNextPattern(IFillerPattern currentPattern) {
-        Map.Entry<String, IFillerPattern> pattern = patterns.higherEntry(currentPattern.getUniqueTag());
-        if (pattern == null) {
-            pattern = patterns.firstEntry();
-        }
-        return pattern.getValue();
+  public IFillerPattern getNextPattern(IFillerPattern currentPattern) {
+    Map.Entry<String, IFillerPattern> pattern = patterns.higherEntry(currentPattern.getUniqueTag());
+    if (pattern == null) {
+      pattern = patterns.firstEntry();
     }
+    return pattern.getValue();
+  }
 
-    public IFillerPattern getPreviousPattern(IFillerPattern currentPattern) {
-        Map.Entry<String, IFillerPattern> pattern = patterns.lowerEntry(currentPattern.getUniqueTag());
-        if (pattern == null) {
-            pattern = patterns.lastEntry();
-        }
-        return pattern.getValue();
+  public IFillerPattern getPreviousPattern(IFillerPattern currentPattern) {
+    Map.Entry<String, IFillerPattern> pattern = patterns.lowerEntry(currentPattern.getUniqueTag());
+    if (pattern == null) {
+      pattern = patterns.lastEntry();
     }
+    return pattern.getValue();
+  }
 
-    public Collection<IFillerPattern> getPatterns() {
-        return Collections.unmodifiableCollection(patterns.values());
-    }
+  public Collection<IFillerPattern> getPatterns() {
+    return Collections.unmodifiableCollection(patterns.values());
+  }
 }

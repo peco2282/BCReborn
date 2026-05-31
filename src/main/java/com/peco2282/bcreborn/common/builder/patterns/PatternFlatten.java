@@ -23,47 +23,47 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PatternFlatten extends FillerPattern {
-    public static final PatternFlatten INSTANCE = new PatternFlatten();
-    public static final Codec<PatternFlatten> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
-    ).apply(instance, PatternFlatten::new));
+  public static final PatternFlatten INSTANCE = new PatternFlatten();
+  public static final Codec<PatternFlatten> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
+  ).apply(instance, PatternFlatten::new));
 
-    private IStatementParameter[] parameters = new IStatementParameter[0];
+  private IStatementParameter[] parameters = new IStatementParameter[0];
 
-    public PatternFlatten(List<IStatementParameter> parameters) {
-        this();
-        this.parameters = parameters.toArray(new IStatementParameter[0]);
-    }
+  public PatternFlatten(List<IStatementParameter> parameters) {
+    this();
+    this.parameters = parameters.toArray(new IStatementParameter[0]);
+  }
 
-    public PatternFlatten() {
-        super("flatten");
-    }
+  public PatternFlatten() {
+    super("flatten");
+  }
 
-    @Override
-    public Codec<? extends FillerPattern> getCodec() {
-        return CODEC;
-    }
+  @Override
+  public Codec<? extends FillerPattern> getCodec() {
+    return CODEC;
+  }
 
-    @Override
-    public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-        int xMin = (int) box.pMin().x;
-        int yMin = box.pMin().y > 0 ? (int) box.pMin().y - 1 : 0;
-        int zMin = (int) box.pMin().z;
+  @Override
+  public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
+    int xMin = (int) box.pMin().x;
+    int yMin = box.pMin().y > 0 ? (int) box.pMin().y - 1 : 0;
+    int zMin = (int) box.pMin().z;
 
-        int xMax = (int) box.pMax().x;
-        int yMax = (int) box.pMax().y;
-        int zMax = (int) box.pMax().z;
+    int xMax = (int) box.pMax().x;
+    int yMax = (int) box.pMax().y;
+    int zMax = (int) box.pMax().z;
 
-        Template bpt = new Template(box.sizeX(), yMax - yMin + 1, box.sizeZ());
+    Template bpt = new Template(box.sizeX(), yMax - yMin + 1, box.sizeZ());
 
-        if (box.pMin().y > 0) {
-            for (int x = xMin; x <= xMax; ++x) {
-                for (int z = zMin; z <= zMax; ++z) {
-                    bpt.put(x - xMin, 0, z - zMin, new SchematicMask(true));
-                }
-            }
+    if (box.pMin().y > 0) {
+      for (int x = xMin; x <= xMax; ++x) {
+        for (int z = zMin; z <= zMax; ++z) {
+          bpt.put(x - xMin, 0, z - zMin, new SchematicMask(true));
         }
-
-        return bpt;
+      }
     }
+
+    return bpt;
+  }
 }

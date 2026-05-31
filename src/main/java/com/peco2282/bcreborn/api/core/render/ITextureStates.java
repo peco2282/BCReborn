@@ -15,9 +15,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.level.block.Block;
 
 public interface ITextureStates extends ICullable {
-    ITextureStateManager getTextureState();
+  ITextureStateManager getTextureState();
 
-    TextureAtlasSprite getIcon(int side, int meta);
+  TextureAtlasSprite getIcon(int side, int meta);
 
-    Block getBlock();
+  Block getBlock();
 }

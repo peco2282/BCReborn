@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.common.builder;
 
 import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.Position;
-import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -22,80 +21,79 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.LinkedList;
 
 public class BuildingSlotBlock extends BuildingSlot {
-    public int x, y, z;
-    public SchematicBlockBase schematic;
+  public int x, y, z;
+  public SchematicBlockBase schematic;
+  public Mode mode = Mode.Build;
+  public int buildStage = 0;
 
-    public enum Mode {
-        ClearIfInvalid, Build
+  @Override
+  public SchematicBlockBase getSchematic() {
+    if (schematic == null) {
+      return new SchematicMask(false);
     }
+    return schematic;
+  }
 
-    public Mode mode = Mode.Build;
-    public int buildStage = 0;
+  @Override
+  public Position getDestination() {
+    Position p = new Position();
+    p.x = x;
+    p.y = y;
+    p.z = z;
+    return p;
+  }
 
-    @Override
-    public SchematicBlockBase getSchematic() {
-        if (schematic == null) {
-            return new SchematicMask(false);
-        }
-        return schematic;
+  @Override
+  public boolean writeToWorld(IBuilderContext context) {
+    if (mode == Mode.ClearIfInvalid) {
+      if (getSchematic().isAlreadyBuilt(context, x, y, z)) {
+        return context.world().destroyBlock(new BlockPos(x, y, z), true);
+      } else {
+        context.world().setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+      }
     }
+    return false;
+  }
 
-    @Override
-    public Position getDestination() {
-        Position p = new Position();
-        p.x = x;
-        p.y = y;
-        p.z = z;
-        return p;
-    }
+  @Override
+  public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
+    return new LinkedList<>();
+  }
 
-    @Override
-    public boolean writeToWorld(IBuilderContext context) {
-        if (mode == Mode.ClearIfInvalid) {
-            if (getSchematic().isAlreadyBuilt(context, x, y, z)) {
-                return context.world().destroyBlock(new BlockPos(x, y, z), true);
-            } else {
-                context.world().setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
-            }
-        }
-        return false;
-    }
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context) {
+    return false;
+  }
 
-    @Override
-    public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
-        return new LinkedList<>();
-    }
+  @Override
+  public void writeToNBT(CompoundTag nbt, MappingRegistry registry) {
+    nbt.putInt("x", x);
+    nbt.putInt("y", y);
+    nbt.putInt("z", z);
+    nbt.putByte("mode", (byte) mode.ordinal());
+    nbt.putInt("buildStage", buildStage);
+  }
 
-    @Override
-    public boolean isAlreadyBuilt(IBuilderContext context) {
-        return false;
-    }
+  @Override
+  public void readFromNBT(CompoundTag nbt, MappingRegistry registry) throws MappingNotFoundException {
+    x = nbt.getInt("x");
+    y = nbt.getInt("y");
+    z = nbt.getInt("z");
+    mode = Mode.values()[nbt.getByte("mode")];
+    buildStage = nbt.getInt("buildStage");
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag nbt, MappingRegistry registry) {
-        nbt.putInt("x", x);
-        nbt.putInt("y", y);
-        nbt.putInt("z", z);
-        nbt.putByte("mode", (byte) mode.ordinal());
-        nbt.putInt("buildStage", buildStage);
-    }
+  @Override
+  public int getEnergyRequirement() {
+    return 0;
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag nbt, MappingRegistry registry) throws MappingNotFoundException {
-        x = nbt.getInt("x");
-        y = nbt.getInt("y");
-        z = nbt.getInt("z");
-        mode = Mode.values()[nbt.getByte("mode")];
-        buildStage = nbt.getInt("buildStage");
-    }
+  @Override
+  public int buildTime() {
+    return 1;
+  }
 
-    @Override
-    public int getEnergyRequirement() {
-        return 0;
-    }
-
-    @Override
-    public int buildTime() {
-        return 1;
-    }
+  public enum Mode {
+    ClearIfInvalid, Build
+  }
 }

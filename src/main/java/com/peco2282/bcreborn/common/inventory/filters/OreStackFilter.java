@@ -22,25 +22,25 @@ import net.minecraft.world.item.ItemStack;
  */
 public class OreStackFilter implements IStackFilter {
 
-	private final String[] ores;
+  private final String[] ores;
 
-	public OreStackFilter(String... iOres) {
-		ores = iOres;
-	}
+  public OreStackFilter(String... iOres) {
+    ores = iOres;
+  }
 
-	@Override
-	public boolean matches(ItemStack stack) {
-		if (stack.isEmpty()) {
-			return false;
-		}
+  @Override
+  public boolean matches(ItemStack stack) {
+    if (stack.isEmpty()) {
+      return false;
+    }
 
-		for (String ore : ores) {
-			TagKey<Item> tagKey = TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("forge", ore));
-			if (stack.is(tagKey)) {
-				return true;
-			}
-		}
+    for (String ore : ores) {
+      TagKey<Item> tagKey = TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("forge", ore));
+      if (stack.is(tagKey)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

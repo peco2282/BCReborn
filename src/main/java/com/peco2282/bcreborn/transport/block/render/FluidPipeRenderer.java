@@ -38,11 +38,12 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   private static final float CENTER_MIN = 0.5f - ARM_HALF;
   private static final float CENTER_MAX = 0.5f + ARM_HALF;
 
-  public FluidPipeRenderer(BlockEntityRendererProvider.Context context) {}
+  public FluidPipeRenderer(BlockEntityRendererProvider.Context context) {
+  }
 
   @Override
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                     MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     FluidTank tank = blockEntity.getFluidTank();
     if (tank == null) return;
 
@@ -59,8 +60,8 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
     if (stillTexture == null) return;
 
     TextureAtlasSprite sprite = Minecraft.getInstance()
-        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-        .apply(stillTexture);
+      .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+      .apply(stillTexture);
 
     int color = fluidExt.getTintColor(fluidStack);
     float r = ((color >> 16) & 0xFF) / 255.0f;
@@ -76,9 +77,9 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
     // 中心部を描画
     renderCube(matrix, consumer, sprite,
-        CENTER_MIN, CENTER_MIN, CENTER_MIN,
-        CENTER_MAX, CENTER_MAX, CENTER_MAX,
-        r, g, b, a, packedLight);
+      CENTER_MIN, CENTER_MIN, CENTER_MIN,
+      CENTER_MAX, CENTER_MAX, CENTER_MAX,
+      r, g, b, a, packedLight);
 
     // 各方向の腕を描画（接続されている方向のみ）
     for (Direction dir : Direction.values()) {
@@ -99,7 +100,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   }
 
   private void renderArm(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-      Direction dir, float fillRatio, float r, float g, float b, float a, int packedLight) {
+                         Direction dir, float fillRatio, float r, float g, float b, float a, int packedLight) {
     float minX, minY, minZ, maxX, maxY, maxZ;
 
     // 充填率に応じて液体の高さを調整（水平方向は高さ、垂直方向は全体）
@@ -107,44 +108,64 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
     switch (dir) {
       case EAST -> {
-        minX = CENTER_MAX; maxX = 1.0f;
-        minY = CENTER_MIN; maxY = liquidHeight;
-        minZ = CENTER_MIN; maxZ = CENTER_MAX;
+        minX = CENTER_MAX;
+        maxX = 1.0f;
+        minY = CENTER_MIN;
+        maxY = liquidHeight;
+        minZ = CENTER_MIN;
+        maxZ = CENTER_MAX;
       }
       case WEST -> {
-        minX = 0.0f; maxX = CENTER_MIN;
-        minY = CENTER_MIN; maxY = liquidHeight;
-        minZ = CENTER_MIN; maxZ = CENTER_MAX;
+        minX = 0.0f;
+        maxX = CENTER_MIN;
+        minY = CENTER_MIN;
+        maxY = liquidHeight;
+        minZ = CENTER_MIN;
+        maxZ = CENTER_MAX;
       }
       case NORTH -> {
-        minX = CENTER_MIN; maxX = CENTER_MAX;
-        minY = CENTER_MIN; maxY = liquidHeight;
-        minZ = 0.0f; maxZ = CENTER_MIN;
+        minX = CENTER_MIN;
+        maxX = CENTER_MAX;
+        minY = CENTER_MIN;
+        maxY = liquidHeight;
+        minZ = 0.0f;
+        maxZ = CENTER_MIN;
       }
       case SOUTH -> {
-        minX = CENTER_MIN; maxX = CENTER_MAX;
-        minY = CENTER_MIN; maxY = liquidHeight;
-        minZ = CENTER_MAX; maxZ = 1.0f;
+        minX = CENTER_MIN;
+        maxX = CENTER_MAX;
+        minY = CENTER_MIN;
+        maxY = liquidHeight;
+        minZ = CENTER_MAX;
+        maxZ = 1.0f;
       }
       case UP -> {
-        minX = CENTER_MIN; maxX = CENTER_MAX;
-        minY = CENTER_MAX; maxY = 1.0f;
-        minZ = CENTER_MIN; maxZ = CENTER_MAX;
+        minX = CENTER_MIN;
+        maxX = CENTER_MAX;
+        minY = CENTER_MAX;
+        maxY = 1.0f;
+        minZ = CENTER_MIN;
+        maxZ = CENTER_MAX;
       }
       case DOWN -> {
-        minX = CENTER_MIN; maxX = CENTER_MAX;
-        minY = 0.0f; maxY = CENTER_MIN;
-        minZ = CENTER_MIN; maxZ = CENTER_MAX;
+        minX = CENTER_MIN;
+        maxX = CENTER_MAX;
+        minY = 0.0f;
+        maxY = CENTER_MIN;
+        minZ = CENTER_MIN;
+        maxZ = CENTER_MAX;
       }
-      default -> { return; }
+      default -> {
+        return;
+      }
     }
 
     renderCube(matrix, consumer, sprite, minX, minY, minZ, maxX, maxY, maxZ, r, g, b, a, packedLight);
   }
 
   private void renderCube(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-      float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
-      float r, float g, float b, float a, int packedLight) {
+                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
+                          float r, float g, float b, float a, int packedLight) {
     float u0 = sprite.getU0();
     float u1 = sprite.getU1();
     float v0 = sprite.getV0();

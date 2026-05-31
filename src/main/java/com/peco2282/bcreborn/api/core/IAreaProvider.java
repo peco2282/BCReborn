@@ -15,20 +15,20 @@ package com.peco2282.bcreborn.api.core;
  * To be implemented by TileEntities able to provide a square area on the world, typically BuildCraft markers.
  */
 public interface IAreaProvider {
-	int xMin();
+  int xMin();
 
-	int yMin();
+  int yMin();
 
-	int zMin();
+  int zMin();
 
-	int xMax();
+  int xMax();
 
-	int yMax();
+  int yMax();
 
-	int zMax();
+  int zMax();
 
-	/**
-	 * Remove from the world all objects used to define the area.
-	 */
-	void removeFromWorld();
+  /**
+   * Remove from the world all objects used to define the area.
+   */
+  void removeFromWorld();
 }

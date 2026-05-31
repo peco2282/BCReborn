@@ -28,15 +28,41 @@ public class ConfigFactory {
   private static ForgeConfigSpec.BooleanValue mapLocation;
   private static ForgeConfigSpec.BooleanValue packageItem;
 
-  public static boolean isAutoWorkbenchBlock() { return autoWorkbenchBlock.get(); }
-  public static boolean isFilteredBufferBlock() { return filteredBufferBlock.get(); }
-  public static boolean isPackagerBlock() { return packagerBlock.get(); }
-  public static boolean isRequester() { return requester.get(); }
-  public static boolean isBlueprintItem() { return blueprintItem.get(); }
-  public static boolean isTemplateItem() { return templateItem.get(); }
-  public static boolean isList() { return list.get(); }
-  public static boolean isMapLocation() { return mapLocation.get(); }
-  public static boolean isPackageItem() { return packageItem.get(); }
+  public static boolean isAutoWorkbenchBlock() {
+    return autoWorkbenchBlock.get();
+  }
+
+  public static boolean isFilteredBufferBlock() {
+    return filteredBufferBlock.get();
+  }
+
+  public static boolean isPackagerBlock() {
+    return packagerBlock.get();
+  }
+
+  public static boolean isRequester() {
+    return requester.get();
+  }
+
+  public static boolean isBlueprintItem() {
+    return blueprintItem.get();
+  }
+
+  public static boolean isTemplateItem() {
+    return templateItem.get();
+  }
+
+  public static boolean isList() {
+    return list.get();
+  }
+
+  public static boolean isMapLocation() {
+    return mapLocation.get();
+  }
+
+  public static boolean isPackageItem() {
+    return packageItem.get();
+  }
 
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Factory settings").push("factory");

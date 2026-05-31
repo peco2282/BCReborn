@@ -23,35 +23,35 @@ import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 
 public class BoardRobotCarrier extends RedstoneBoardRobot {
 
-	public BoardRobotCarrier(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotCarrier(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("carrier");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("carrier");
+  }
 
-	@Override
-	public void update() {
-		if (!robot.containsItems()) {
-			if (robot.getLinkedStation() == null) return;
-			startDelegateAI(new AIRobotGotoStationAndLoad(robot, ActionRobotFilter.getGateFilter(robot.getLinkedStation()), AIRobotLoad.ANY_QUANTITY));
-		} else {
-			startDelegateAI(new AIRobotGotoStationAndUnload(robot));
-		}
-	}
+  @Override
+  public void update() {
+    if (!robot.containsItems()) {
+      if (robot.getLinkedStation() == null) return;
+      startDelegateAI(new AIRobotGotoStationAndLoad(robot, ActionRobotFilter.getGateFilter(robot.getLinkedStation()), AIRobotLoad.ANY_QUANTITY));
+    } else {
+      startDelegateAI(new AIRobotGotoStationAndUnload(robot));
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoStationAndLoad) {
-			if (!ai.success()) {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		} else if (ai instanceof AIRobotGotoStationAndUnload) {
-			if (!ai.success()) {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoStationAndLoad) {
+      if (!ai.success()) {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    } else if (ai instanceof AIRobotGotoStationAndUnload) {
+      if (!ai.success()) {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    }
+  }
 }

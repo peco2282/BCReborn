@@ -25,43 +25,43 @@ import java.util.LinkedList;
 
 public class DefaultActionProvider implements IActionProvider {
 
-	// These should be initialized in a central place like BuildCraftCore
-	public static IActionInternal actionRedstone = new ActionRedstoneOutput();
-	public static IActionExternal[] actionControl;
+  // These should be initialized in a central place like BuildCraftCore
+  public static IActionInternal actionRedstone = new ActionRedstoneOutput();
+  public static IActionExternal[] actionControl;
 
-	static {
-		actionControl = new IActionExternal[IControllable.Mode.values().length];
-		for (IControllable.Mode mode : IControllable.Mode.values()) {
-			if (mode != IControllable.Mode.Unknown) {
-				actionControl[mode.ordinal()] = new ActionMachineControl(mode);
-			}
-		}
-	}
+  static {
+    actionControl = new IActionExternal[IControllable.Mode.values().length];
+    for (IControllable.Mode mode : IControllable.Mode.values()) {
+      if (mode != IControllable.Mode.Unknown) {
+        actionControl[mode.ordinal()] = new ActionMachineControl(mode);
+      }
+    }
+  }
 
-	@Override
-	public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
-		LinkedList<IActionInternal> res = new LinkedList<IActionInternal>();
+  @Override
+  public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
+    LinkedList<IActionInternal> res = new LinkedList<IActionInternal>();
 
-		if (container instanceof IRedstoneStatementContainer) {
-			res.add(actionRedstone);
-		}
+    if (container instanceof IRedstoneStatementContainer) {
+      res.add(actionRedstone);
+    }
 
-		return res;
-	}
+    return res;
+  }
 
-	@Override
-	public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
-		LinkedList<IActionExternal> res = new LinkedList<IActionExternal>();
+  @Override
+  public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
+    LinkedList<IActionExternal> res = new LinkedList<IActionExternal>();
 
-		if (tile instanceof IControllable) {
-			for (IControllable.Mode mode : IControllable.Mode.values()) {
-				if (mode != IControllable.Mode.Unknown &&
-						((IControllable) tile).acceptsControlMode(mode)) {
-					res.add(actionControl[mode.ordinal()]);
-				}
-			}
-		}
+    if (tile instanceof IControllable) {
+      for (IControllable.Mode mode : IControllable.Mode.values()) {
+        if (mode != IControllable.Mode.Unknown &&
+          ((IControllable) tile).acceptsControlMode(mode)) {
+          res.add(actionControl[mode.ordinal()]);
+        }
+      }
+    }
 
-		return res;
-	}
+    return res;
+  }
 }

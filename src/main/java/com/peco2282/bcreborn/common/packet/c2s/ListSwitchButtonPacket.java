@@ -19,17 +19,17 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ListSwitchButtonPacket(
-    int lineIndex,
-    int button
+  int lineIndex,
+  int button
 ) implements CustomPacket {
+  public static ListSwitchButtonPacket decode(FriendlyByteBuf buffer) {
+    return new ListSwitchButtonPacket(buffer.readUnsignedByte(), buffer.readUnsignedByte());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeByte(lineIndex);
     buffer.writeByte(button);
-  }
-
-  public static ListSwitchButtonPacket decode(FriendlyByteBuf buffer) {
-    return new ListSwitchButtonPacket(buffer.readUnsignedByte(), buffer.readUnsignedByte());
   }
 
   @Override

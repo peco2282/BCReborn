@@ -18,19 +18,19 @@ import net.minecraft.nbt.CompoundTag;
 
 public class SchematicFactoryMask extends SchematicFactory<SchematicMask> {
 
-	@Override
-	protected SchematicMask loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry) {
-		SchematicMask s = new SchematicMask();
-		s.readSchematicFromNBT(nbt, registry);
+  @Override
+  protected SchematicMask loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry) {
+    SchematicMask s = new SchematicMask();
+    s.readSchematicFromNBT(nbt, registry);
 
-		return s;
-	}
+    return s;
+  }
 
-	@Override
-	public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicMask object, MappingRegistry registry) {
-		super.saveSchematicToWorldNBT(nbt, object, registry);
+  @Override
+  public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicMask object, MappingRegistry registry) {
+    super.saveSchematicToWorldNBT(nbt, object, registry);
 
-		object.writeSchematicToNBT(nbt, registry);
-	}
+    object.writeSchematicToNBT(nbt, registry);
+  }
 
 }

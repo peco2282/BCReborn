@@ -19,8 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.LinkedList;
 
 public class SchematicAir extends SchematicBlock {
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
 
-	}
+  }
 }

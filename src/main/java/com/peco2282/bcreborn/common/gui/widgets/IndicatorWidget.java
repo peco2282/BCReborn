@@ -12,31 +12,31 @@
 package com.peco2282.bcreborn.common.gui.widgets;
 
 
-import net.minecraft.client.gui.GuiGraphics;
 import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class IndicatorWidget extends Widget {
 
-	public final IIndicatorController controller;
+  public final IIndicatorController controller;
 
-	public IndicatorWidget(IIndicatorController controller, int x, int y, int u, int v, int w, int h) {
-		super(x, y, u, v, w, h);
-		this.controller = controller;
-	}
+  public IndicatorWidget(IIndicatorController controller, int x, int y, int u, int v, int w, int h) {
+    super(x, y, u, v, w, h);
+    this.controller = controller;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void draw(GuiGraphics guiGraphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
-		int scale = controller.getScaledLevel(h);
-		gui.drawTexturedModalRect(guiGraphics, guiX + x, guiY + y + h - scale, u, v + h - scale, w, scale);
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void draw(GuiGraphics guiGraphics, BuildCraftScreen<?> gui, int guiX, int guiY, int mouseX, int mouseY) {
+    int scale = controller.getScaledLevel(h);
+    gui.drawTexturedModalRect(guiGraphics, guiX + x, guiY + y + h - scale, u, v + h - scale, w, scale);
+  }
 
-	@Override
-	public ToolTip getToolTip() {
-		return controller.getToolTip();
-	}
+  @Override
+  public ToolTip getToolTip() {
+    return controller.getToolTip();
+  }
 
 }

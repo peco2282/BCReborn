@@ -21,41 +21,41 @@ import net.minecraftforge.fluids.FluidUtil;
  */
 public class ArrayFluidFilter implements IFluidFilter {
 
-	protected Fluid[] fluids;
+  protected Fluid[] fluids;
 
-	public ArrayFluidFilter(ItemStack... stacks) {
-		fluids = new Fluid[stacks.length];
+  public ArrayFluidFilter(ItemStack... stacks) {
+    fluids = new Fluid[stacks.length];
 
-		for (int i = 0; i < stacks.length; ++i) {
-			FluidStack stack = FluidUtil.getFluidContained(stacks[i]).orElse(FluidStack.EMPTY);
-			if (!stack.isEmpty()) {
-				fluids[i] = stack.getFluid();
-			}
-		}
-	}
+    for (int i = 0; i < stacks.length; ++i) {
+      FluidStack stack = FluidUtil.getFluidContained(stacks[i]).orElse(FluidStack.EMPTY);
+      if (!stack.isEmpty()) {
+        fluids[i] = stack.getFluid();
+      }
+    }
+  }
 
-	public ArrayFluidFilter(Fluid... iFluids) {
-		fluids = iFluids;
-	}
+  public ArrayFluidFilter(Fluid... iFluids) {
+    fluids = iFluids;
+  }
 
 
-	public boolean hasFilter() {
-		for (Fluid filter : fluids) {
-			if (filter != null) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean hasFilter() {
+    for (Fluid filter : fluids) {
+      if (filter != null) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public boolean matches(Fluid fluid) {
-		for (Fluid filter : fluids) {
-			if (filter != null && fluid == filter) {
-				return true;
-			}
-		}
+  @Override
+  public boolean matches(Fluid fluid) {
+    for (Fluid filter : fluids) {
+      if (filter != null && fluid == filter) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

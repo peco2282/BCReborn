@@ -19,10 +19,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class RenderConstructionMarker implements BlockEntityRenderer<ConstructionMarkerBlockEntity> {
 
-	public RenderConstructionMarker(BlockEntityRendererProvider.Context context) {
-	}
+  public RenderConstructionMarker(BlockEntityRendererProvider.Context context) {
+  }
 
-	@Override
-	public void render(ConstructionMarkerBlockEntity marker, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-	}
+  @Override
+  public void render(ConstructionMarkerBlockEntity marker, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+  }
 }

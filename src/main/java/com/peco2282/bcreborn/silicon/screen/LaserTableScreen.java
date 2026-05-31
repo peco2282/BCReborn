@@ -20,21 +20,21 @@ import net.minecraft.world.entity.player.Inventory;
 
 public abstract class LaserTableScreen<M extends BuildCraftMenu<M>> extends BuildCraftScreen<M> {
 
-	protected final LaserTableBaseBlockEntity table;
+  protected final LaserTableBaseBlockEntity table;
 
-	public LaserTableScreen(M container, Inventory playerInventory, Component title, LaserTableBaseBlockEntity table) {
-		super(container, playerInventory, title);
-		this.table = table;
-	}
+  public LaserTableScreen(M container, Inventory playerInventory, Component title, LaserTableBaseBlockEntity table) {
+    super(container, playerInventory, title);
+    this.table = table;
+  }
 
-	@Override
-	protected void initilaizeLedger(Inventory playerInventory) {
-		// 1.20.1 では Ledger システムが BuildCraftScreen にある
-	}
+  @Override
+  protected void initilaizeLedger(Inventory playerInventory) {
+    // 1.20.1 では Ledger システムが BuildCraftScreen にある
+  }
 
-	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
-	}
+  @Override
+  protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+    guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+  }
 }

@@ -32,39 +32,62 @@ public class ConfigBuilders {
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> excludedBlocks;
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> excludedMods;
 
-  public static boolean isDropBrokenBlocks() { return dropBrokenBlocks.get(); }
-  public static boolean isQuarryDoChunkLoading() { return quarryDoChunkLoading.get(); }
-  public static boolean isQuarryOneTimeUse() { return quarryOneTimeUse.get(); }
-  public static int getMiningDepth() { return miningDepth.get(); }
-  public static String getServerDatabaseDirectory() { return serverDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());  }
-  public static String getClientDatabaseDirectory() { return clientDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());  }
-  public static List<? extends String> getExcludedBlocks() { return excludedBlocks.get(); }
-  public static List<? extends String> getExcludedMods() { return excludedMods.get(); }
+  public static boolean isDropBrokenBlocks() {
+    return dropBrokenBlocks.get();
+  }
+
+  public static boolean isQuarryDoChunkLoading() {
+    return quarryDoChunkLoading.get();
+  }
+
+  public static boolean isQuarryOneTimeUse() {
+    return quarryOneTimeUse.get();
+  }
+
+  public static int getMiningDepth() {
+    return miningDepth.get();
+  }
+
+  public static String getServerDatabaseDirectory() {
+    return serverDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());
+  }
+
+  public static String getClientDatabaseDirectory() {
+    return clientDatabaseDirectory.get().replace("$MINECRAFT", new File(".").getAbsolutePath());
+  }
+
+  public static List<? extends String> getExcludedBlocks() {
+    return excludedBlocks.get();
+  }
+
+  public static List<? extends String> getExcludedMods() {
+    return excludedMods.get();
+  }
 
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Builders settings").push("builders");
 
     dropBrokenBlocks = builder.comment("Should the builder and filler drop the cleared blocks?")
-        .define("dropBrokenBlocks", false);
+      .define("dropBrokenBlocks", false);
 
     builder.comment("Quarry settings").push("quarry");
     quarryDoChunkLoading = builder.comment("Should the quarry keep the chunks it is working on loaded?")
-        .define("doChunkLoading", true);
+      .define("doChunkLoading", true);
     quarryOneTimeUse = builder.comment("Should the quarry only be usable once after placing?")
-        .define("oneTimeUse", false);
+      .define("oneTimeUse", false);
     miningDepth = builder.comment("Maximum mining depth for the mining well.")
-        .defineInRange("miningDepth", 256, 1, 512);
+      .defineInRange("miningDepth", 256, 1, 512);
     builder.pop();
 
     builder.comment("Blueprint settings").push("blueprints");
     serverDatabaseDirectory = builder.comment("Location for the server blueprint database (used by the Electronic Library).")
-        .define("serverDatabaseDirectory", "$MINECRAFT/blueprints/server");
+      .define("serverDatabaseDirectory", "$MINECRAFT/blueprints/server");
     clientDatabaseDirectory = builder.comment("Location for the client blueprint database (used by the Electronic Library).")
-        .define("clientDatabaseDirectory", "$MINECRAFT/blueprints/client");
+      .define("clientDatabaseDirectory", "$MINECRAFT/blueprints/client");
     excludedBlocks = builder.comment("Blocks that should be excluded from the builder.")
-        .defineList("excludedBlocks", List.of(), e -> e instanceof String);
+      .defineList("excludedBlocks", List.of(), e -> e instanceof String);
     excludedMods = builder.comment("Mods that should be excluded from the builder.")
-        .defineList("excludedMods", List.of(), e -> e instanceof String);
+      .defineList("excludedMods", List.of(), e -> e instanceof String);
     builder.pop();
 
     builder.pop();

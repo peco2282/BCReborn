@@ -48,240 +48,237 @@ import java.util.List;
 import java.util.Set;
 
 public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity implements MenuProvider, IBuildingItemsProvider, IBoxProvider {
-    private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+  public static Set<ConstructionMarkerBlockEntity> currentMarkers = new HashSet<>();
+  public LaserData laser;
+  public ItemStack blueprint = ItemStack.EMPTY;
+  public Box box = new Box();
+  public BptBuilderBase bluePrintBuilder;
+  public BptContext bptContext;
+  private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+  private final ArrayList<BuildingItem> buildersInAction = new ArrayList<>();
+  private CompoundTag initNBT;
 
-    public static Set<ConstructionMarkerBlockEntity> currentMarkers = new HashSet<>();
+  public ConstructionMarkerBlockEntity(BlockPos pos, BlockState state) {
+    super(BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), pos, state);
+  }
 
-    public LaserData laser;
-    public ItemStack blueprint = ItemStack.EMPTY;
-    public Box box = new Box();
-    public BptBuilderBase bluePrintBuilder;
-    public BptContext bptContext;
+  public Direction getDirection() {
+    BlockState state = getBlockState();
+    if (state.hasProperty(ConstructionMarkerBlock.FACING)) {
+      return state.getValue(ConstructionMarkerBlock.FACING);
+    }
+    return Direction.NORTH;
+  }
 
-    private ArrayList<BuildingItem> buildersInAction = new ArrayList<>();
-    private CompoundTag initNBT;
+  public ItemStack getBlueprint() {
+    return items.get(0);
+  }
 
-    public ConstructionMarkerBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), pos, state);
+  public void setBlueprint(ItemStack stack) {
+    items.set(0, stack);
+    setChanged();
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+  }
+
+  public boolean hasBlueprint() {
+    return !items.get(0).isEmpty();
+  }
+
+  public ItemStack removeBlueprint() {
+    ItemStack stack = items.get(0);
+    items.set(0, ItemStack.EMPTY);
+    setChanged();
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+    return stack;
+  }
+
+  @Override
+  public @NotNull Component getDisplayName() {
+    return Component.literal("Construction Marker");
+  }
+
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+    return null;
+  }
+
+
+  @Override
+  public void initialize() {
+    super.initialize();
+    box.kind = Box.Kind.BLUE_STRIPES;
+
+    if (level.isClientSide) {
+      BCNetworkManager.sendUploadBuildersInAction(getBlockPos());
+    }
+  }
+
+  @Override
+  protected void tick(Level level, BlockPos pos, BlockState state) {
+    BuildingItem toRemove = null;
+
+    for (BuildingItem i : buildersInAction) {
+      i.update();
+
+      if (i.isDone) {
+        toRemove = i;
+      }
     }
 
-    public Direction getDirection() {
-        BlockState state = getBlockState();
-        if (state.hasProperty(ConstructionMarkerBlock.FACING)) {
-            return state.getValue(ConstructionMarkerBlock.FACING);
+    if (toRemove != null) {
+      buildersInAction.remove(toRemove);
+    }
+
+    if (level.isClientSide) {
+      return;
+    }
+
+    ItemStack itemBlueprint = getBlueprint();
+    if (!itemBlueprint.isEmpty() && BlueprintItem.getId(itemBlueprint) != null && bluePrintBuilder == null) {
+      BlueprintBase bpt = BlueprintItem.loadBlueprint(itemBlueprint);
+      if (bpt instanceof Blueprint) {
+        BlockPos pos1 = getBlockPos();
+        bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), getDirection());
+        if (bpt != null) {
+          bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
+          bptContext = bluePrintBuilder.getContext();
+          box.initialize(bluePrintBuilder.xMin(), bluePrintBuilder.yMin(), bluePrintBuilder.zMin(), bluePrintBuilder.xMax(), bluePrintBuilder.yMax(), bluePrintBuilder.zMax());
         }
-        return Direction.NORTH;
+      } else {
+        return;
+      }
     }
 
-    public ItemStack getBlueprint() {
-        return items.get(0);
+    Direction direction = getDirection();
+    if (laser == null && direction != null && direction != Direction.UP) {
+      BlockPos pos2 = getBlockPos();
+      laser = new LaserData();
+      laser.head = new Position(pos2.getX() + 0.5F, pos2.getY() + 0.5F, pos2.getZ() + 0.5F);
+      laser.tail = new Position(pos2.getX() + 0.5F + direction.getStepX() * 0.5F,
+        pos2.getY() + 0.5F + direction.getStepY() * 0.5F,
+        pos2.getZ() + 0.5F + direction.getStepZ() * 0.5F);
+      laser.isVisible = true;
     }
 
-    public void setBlueprint(ItemStack stack) {
-        items.set(0, stack);
-        setChanged();
-        if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        }
+    if (initNBT != null) {
+      if (bluePrintBuilder != null) {
+        bluePrintBuilder.loadBuildStateToNBT(initNBT.getCompound("builderState"), this);
+      }
+
+      initNBT = null;
     }
+  }
 
-    public boolean hasBlueprint() {
-        return !items.get(0).isEmpty();
+  @Override
+  public void load(@NotNull CompoundTag nbt) {
+    super.load(nbt);
+    items = NonNullList.withSize(1, ItemStack.EMPTY);
+    ContainerHelper.loadAllItems(nbt, items);
+
+    if (nbt.contains("bptBuilder")) {
+      initNBT = nbt.getCompound("bptBuilder").copy();
     }
+  }
 
-    public ItemStack removeBlueprint() {
-        ItemStack stack = items.get(0);
-        items.set(0, ItemStack.EMPTY);
-        setChanged();
-        if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-        }
-        return stack;
+  @Override
+  protected void saveAdditional(@NotNull CompoundTag nbt) {
+    super.saveAdditional(nbt);
+    ContainerHelper.saveAllItems(nbt, items);
+
+    CompoundTag bptNBT = new CompoundTag();
+    if (bluePrintBuilder != null) {
+      CompoundTag builderCpt = new CompoundTag();
+      bluePrintBuilder.saveBuildStateToNBT(builderCpt, this);
+      bptNBT.put("builderState", builderCpt);
     }
+    nbt.put("bptBuilder", bptNBT);
+  }
 
-    @Override
-    public @NotNull Component getDisplayName() {
-      return Component.literal("Construction Marker");
+  @Override
+  public List<BuildingItem> getBuilders() {
+    return buildersInAction;
+  }
+
+
+  @Override
+  public void setRemoved() {
+    super.setRemoved();
+    if (level != null && !level.isClientSide) {
+      currentMarkers.remove(this);
     }
+  }
 
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
-        return null;
+  @Override
+  public void onLoad() {
+    super.onLoad();
+    if (level != null && !level.isClientSide) {
+      currentMarkers.add(this);
     }
+  }
 
+  public boolean needsToBuild() {
+    return !isRemoved() && bluePrintBuilder != null && !bluePrintBuilder.isDone(this);
+  }
 
-    @Override
-    public void initialize() {
-        super.initialize();
-        box.kind = Box.Kind.BLUE_STRIPES;
+  public BptContext getContext() {
+    return bptContext;
+  }
 
-        if (level.isClientSide) {
-           BCNetworkManager.sendUploadBuildersInAction(getBlockPos());
-        }
+  @Override
+  public void addAndLaunchBuildingItem(BuildingItem item) {
+    buildersInAction.add(item);
+    BCNetworkManager.sendNearLaunchItem(getBlockPos().getCenter(), level.dimension(), getBlockPos(), item);
+  }
+
+  @Override
+  public Box getBox() {
+    return box;
+  }
+
+  @Override
+  public AABB getRenderBoundingBox() {
+    Box renderBox = new Box(this).extendToEncompass(box);
+
+    return renderBox.expand(50).getBoundingBox();
+  }
+
+  @Override
+  public void writeData(FriendlyByteBuf data) {
+    box.writeData(data);
+    ItemStack itemBlueprint = getBlueprint();
+    data.writeByte((laser != null ? 1 : 0) | (!itemBlueprint.isEmpty() ? 2 : 0));
+    if (laser != null) {
+      laser.writeData(data);
     }
-
-    @Override
-    protected void tick(Level level, BlockPos pos, BlockState state) {
-        BuildingItem toRemove = null;
-
-        for (BuildingItem i : buildersInAction) {
-            i.update();
-
-            if (i.isDone) {
-                toRemove = i;
-            }
-        }
-
-        if (toRemove != null) {
-            buildersInAction.remove(toRemove);
-        }
-
-        if (level.isClientSide) {
-            return;
-        }
-
-        ItemStack itemBlueprint = getBlueprint();
-        if (!itemBlueprint.isEmpty() && BlueprintItem.getId(itemBlueprint) != null && bluePrintBuilder == null) {
-            BlueprintBase bpt = BlueprintItem.loadBlueprint(itemBlueprint);
-            if (bpt instanceof Blueprint) {
-                BlockPos pos1 = getBlockPos();
-                bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), getDirection());
-                if (bpt != null) {
-                    bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
-                    bptContext = bluePrintBuilder.getContext();
-                    box.initialize(bluePrintBuilder.xMin(), bluePrintBuilder.yMin(), bluePrintBuilder.zMin(), bluePrintBuilder.xMax(), bluePrintBuilder.yMax(), bluePrintBuilder.zMax());
-                }
-            } else {
-                return;
-            }
-        }
-
-        Direction direction = getDirection();
-        if (laser == null && direction != null && direction != Direction.UP) {
-            BlockPos pos2 = getBlockPos();
-            laser = new LaserData();
-            laser.head = new Position(pos2.getX() + 0.5F, pos2.getY() + 0.5F, pos2.getZ() + 0.5F);
-            laser.tail = new Position(pos2.getX() + 0.5F + direction.getStepX() * 0.5F,
-                pos2.getY() + 0.5F + direction.getStepY() * 0.5F,
-                pos2.getZ() + 0.5F + direction.getStepZ() * 0.5F);
-            laser.isVisible = true;
-        }
-
-        if (initNBT != null) {
-            if (bluePrintBuilder != null) {
-                bluePrintBuilder.loadBuildStateToNBT(initNBT.getCompound("builderState"), this);
-            }
-
-            initNBT = null;
-        }
+    if (!itemBlueprint.isEmpty()) {
+      data.writeItem(itemBlueprint);
     }
+  }
 
-    @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
-        items = NonNullList.withSize(1, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(nbt, items);
-
-        if (nbt.contains("bptBuilder")) {
-            initNBT = nbt.getCompound("bptBuilder").copy();
-        }
+  @Override
+  public void readData(FriendlyByteBuf data) {
+    box.readData(data);
+    int flags = data.readUnsignedByte();
+    if ((flags & 1) != 0) {
+      laser = new LaserData();
+      laser.readData(data);
+    } else {
+      laser = null;
     }
-
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        ContainerHelper.saveAllItems(nbt, items);
-
-        CompoundTag bptNBT = new CompoundTag();
-        if (bluePrintBuilder != null) {
-            CompoundTag builderCpt = new CompoundTag();
-            bluePrintBuilder.saveBuildStateToNBT(builderCpt, this);
-            bptNBT.put("builderState", builderCpt);
-        }
-        nbt.put("bptBuilder", bptNBT);
+    if ((flags & 2) != 0) {
+      setBlueprint(data.readItem());
+    } else {
+      setBlueprint(ItemStack.EMPTY);
     }
+  }
 
-    @Override
-    public List<BuildingItem> getBuilders() {
-        return buildersInAction;
+  public void sendBuildersInAction(ServerPlayer player, BlockPos pos) {
+    for (BuildingItem i : buildersInAction) {
+      BCNetworkManager.sendLaunchItem(player, pos, i);
     }
-
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null && !level.isClientSide) {
-            currentMarkers.remove(this);
-        }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (level != null && !level.isClientSide) {
-            currentMarkers.add(this);
-        }
-    }
-
-    public boolean needsToBuild() {
-        return !isRemoved() && bluePrintBuilder != null && !bluePrintBuilder.isDone(this);
-    }
-
-    public BptContext getContext() {
-        return bptContext;
-    }
-
-    @Override
-    public void addAndLaunchBuildingItem(BuildingItem item) {
-        buildersInAction.add(item);
-        BCNetworkManager.sendNearLaunchItem(getBlockPos().getCenter(), level.dimension(), getBlockPos(), item);
-    }
-
-    @Override
-    public Box getBox() {
-        return box;
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        Box renderBox = new Box(this).extendToEncompass(box);
-
-        return renderBox.expand(50).getBoundingBox();
-    }
-
-    @Override
-    public void writeData(FriendlyByteBuf data) {
-        box.writeData(data);
-        ItemStack itemBlueprint = getBlueprint();
-        data.writeByte((laser != null ? 1 : 0) | (!itemBlueprint.isEmpty() ? 2 : 0));
-        if (laser != null) {
-            laser.writeData(data);
-        }
-        if (!itemBlueprint.isEmpty()) {
-            data.writeItem(itemBlueprint);
-        }
-    }
-
-    @Override
-    public void readData(FriendlyByteBuf data) {
-        box.readData(data);
-        int flags = data.readUnsignedByte();
-        if ((flags & 1) != 0) {
-            laser = new LaserData();
-            laser.readData(data);
-        } else {
-            laser = null;
-        }
-        if ((flags & 2) != 0) {
-            setBlueprint(data.readItem());
-        } else {
-            setBlueprint(ItemStack.EMPTY);
-        }
-    }
-
-    public void sendBuildersInAction(ServerPlayer player, BlockPos pos) {
-        for (BuildingItem i : buildersInAction) {
-            BCNetworkManager.sendLaunchItem(player, pos, i);
-        }
-    }
+  }
 }

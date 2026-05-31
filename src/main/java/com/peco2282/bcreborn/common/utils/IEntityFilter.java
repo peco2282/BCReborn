@@ -15,6 +15,6 @@ import net.minecraft.world.entity.Entity;
 
 public interface IEntityFilter {
 
-	boolean matches(Entity entity);
+  boolean matches(Entity entity);
 
 }

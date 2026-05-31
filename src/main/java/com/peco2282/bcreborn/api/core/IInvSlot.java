@@ -15,22 +15,22 @@ package com.peco2282.bcreborn.api.core;
 import net.minecraft.world.item.ItemStack;
 
 public interface IInvSlot {
-    /**
-     * Returns the slot number of the underlying Inventory.
-     *
-     * @return the slot number
-     */
-    int getIndex();
+  /**
+   * Returns the slot number of the underlying Inventory.
+   *
+   * @return the slot number
+   */
+  int getIndex();
 
-    boolean canPutStackInSlot(ItemStack stack);
+  boolean canPutStackInSlot(ItemStack stack);
 
-    boolean canTakeStackFromSlot(ItemStack stack);
+  boolean canTakeStackFromSlot(ItemStack stack);
 
-    boolean isItemValidForSlot(ItemStack stack);
+  boolean isItemValidForSlot(ItemStack stack);
 
-	ItemStack decreaseStackInSlot(int amount);
+  ItemStack decreaseStackInSlot(int amount);
 
-    ItemStack getStackInSlot();
+  ItemStack getStackInSlot();
 
-    void setStackInSlot(ItemStack stack);
+  void setStackInSlot(ItemStack stack);
 }

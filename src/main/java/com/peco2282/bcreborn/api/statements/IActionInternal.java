@@ -13,6 +13,6 @@ package com.peco2282.bcreborn.api.statements;
 
 public interface IActionInternal extends IStatement {
 
-	void actionActivate(IStatementContainer source, IStatementParameter[] parameters);
-	
+  void actionActivate(IStatementContainer source, IStatementParameter[] parameters);
+
 }

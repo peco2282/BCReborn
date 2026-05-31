@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Collection;
 
 public interface IActionProvider {
-    Collection<IActionInternal> getInternalActions(IStatementContainer container);
+  Collection<IActionInternal> getInternalActions(IStatementContainer container);
 
-    Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile);
+  Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile);
 }

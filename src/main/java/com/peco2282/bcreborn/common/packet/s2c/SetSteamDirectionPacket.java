@@ -19,33 +19,33 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SetSteamDirectionPacket(
-        int entityId,
-        int x,
-        int y,
-        int z
+  int entityId,
+  int x,
+  int y,
+  int z
 ) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(entityId);
-        buffer.writeInt(x);
-        buffer.writeShort(y);
-        buffer.writeInt(z);
+  public static SetSteamDirectionPacket decode(FriendlyByteBuf buffer) {
+    return new SetSteamDirectionPacket(buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readInt());
+  }
+
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeInt(entityId);
+    buffer.writeInt(x);
+    buffer.writeShort(y);
+    buffer.writeInt(z);
+  }
+
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context context = supplier.get();
+    if (context.getDirection().getReceptionSide().isServer()) {
+      return;
     }
 
-    public static SetSteamDirectionPacket decode(FriendlyByteBuf buffer) {
-        return new SetSteamDirectionPacket(buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readInt());
+    EntityRobot robot = (EntityRobot) context.getSender().serverLevel().getEntity(entityId);
+    if (robot != null) {
+      robot.setSteamDirection(x, y, z);
     }
-
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context context = supplier.get();
-        if (context.getDirection().getReceptionSide().isServer()) {
-            return;
-        }
-
-        EntityRobot robot = (EntityRobot) context.getSender().serverLevel().getEntity(entityId);
-        if (robot != null) {
-            robot.setSteamDirection(x, y, z);
-        }
-    }
+  }
 }

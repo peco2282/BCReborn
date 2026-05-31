@@ -19,100 +19,100 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class RobotManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RobotManager.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RobotManager.class);
 
-    public static IRobotRegistryProvider registryProvider;
-    public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
+  public static IRobotRegistryProvider registryProvider;
+  public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
 
-    private static Map<Class<? extends AIRobot>, String> aiRobotsNames;
-    private static Map<String, Class<? extends AIRobot>> aiRobotsByNames;
-    private static Map<String, Class<? extends AIRobot>> aiRobotsByLegacyClassNames;
-    private static Map<Class<? extends ResourceId>, String> resourceIdNames;
-    private static Map<String, Class<? extends ResourceId>> resourceIdByNames;
-    private static Map<String, Class<? extends ResourceId>> resourceIdLegacyClassNames;
-    private static Map<Class<? extends DockingStation>, String> dockingStationNames;
-    private static Map<String, Class<? extends DockingStation>> dockingStationByNames;
+  private static final Map<Class<? extends AIRobot>, String> aiRobotsNames;
+  private static final Map<String, Class<? extends AIRobot>> aiRobotsByNames;
+  private static final Map<String, Class<? extends AIRobot>> aiRobotsByLegacyClassNames;
+  private static final Map<Class<? extends ResourceId>, String> resourceIdNames;
+  private static final Map<String, Class<? extends ResourceId>> resourceIdByNames;
+  private static final Map<String, Class<? extends ResourceId>> resourceIdLegacyClassNames;
+  private static final Map<Class<? extends DockingStation>, String> dockingStationNames;
+  private static final Map<String, Class<? extends DockingStation>> dockingStationByNames;
 
-    static {
-        aiRobotsByNames = new HashMap<>();
-        aiRobotsNames = new HashMap<>();
-        aiRobotsByLegacyClassNames = new HashMap<>();
-        resourceIdNames = new HashMap<>();
-        resourceIdByNames = new HashMap<>();
-        resourceIdLegacyClassNames = new HashMap<>();
-        dockingStationNames = new HashMap<>();
-        dockingStationByNames = new HashMap<>();
-        registerResourceId(ResourceIdBlock.class, "resourceIdBlock", "buildcraft.core.robots.ResourceIdBlock");
-        registerResourceId(ResourceIdRequest.class, "resourceIdRequest", "buildcraft.core.robots.ResourceIdRequest");
+  static {
+    aiRobotsByNames = new HashMap<>();
+    aiRobotsNames = new HashMap<>();
+    aiRobotsByLegacyClassNames = new HashMap<>();
+    resourceIdNames = new HashMap<>();
+    resourceIdByNames = new HashMap<>();
+    resourceIdLegacyClassNames = new HashMap<>();
+    dockingStationNames = new HashMap<>();
+    dockingStationByNames = new HashMap<>();
+    registerResourceId(ResourceIdBlock.class, "resourceIdBlock", "buildcraft.core.robots.ResourceIdBlock");
+    registerResourceId(ResourceIdRequest.class, "resourceIdRequest", "buildcraft.core.robots.ResourceIdRequest");
+  }
+
+  public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name) {
+    registerAIRobot(aiRobot, name, null);
+  }
+
+  public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name, String legacyClassName) {
+    if (aiRobotsByNames.containsKey(name)) {
+      LOGGER.info("Overriding {} with {}", aiRobotsByNames.get(name).getName(), aiRobot.getName());
     }
-
-    public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name) {
-        registerAIRobot(aiRobot, name, null);
+    try {
+      aiRobot.getConstructor(EntityRobotBase.class);
+    } catch (NoSuchMethodException e) {
+      throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load constructor! This is a bug!");
     }
-
-    public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name, String legacyClassName) {
-        if (aiRobotsByNames.containsKey(name)) {
-            LOGGER.info("Overriding {} with {}", aiRobotsByNames.get(name).getName(), aiRobot.getName());
-        }
-        try {
-            aiRobot.getConstructor(EntityRobotBase.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load constructor! This is a bug!");
-        }
-        aiRobots.add(aiRobot);
-        aiRobotsByNames.put(name, aiRobot);
-        aiRobotsNames.put(aiRobot, name);
-        if (legacyClassName != null) {
-            aiRobotsByLegacyClassNames.put(legacyClassName, aiRobot);
-        }
+    aiRobots.add(aiRobot);
+    aiRobotsByNames.put(name, aiRobot);
+    aiRobotsNames.put(aiRobot, name);
+    if (legacyClassName != null) {
+      aiRobotsByLegacyClassNames.put(legacyClassName, aiRobot);
     }
+  }
 
-    public static Class<?> getAIRobotByName(String aiRobotName) {
-        return aiRobotsByNames.get(aiRobotName);
-    }
+  public static Class<?> getAIRobotByName(String aiRobotName) {
+    return aiRobotsByNames.get(aiRobotName);
+  }
 
-    public static String getAIRobotName(Class<? extends AIRobot> aiRobotClass) {
-        return aiRobotsNames.get(aiRobotClass);
-    }
+  public static String getAIRobotName(Class<? extends AIRobot> aiRobotClass) {
+    return aiRobotsNames.get(aiRobotClass);
+  }
 
-    public static Class<?> getAIRobotByLegacyClassName(String aiRobotLegacyClassName) {
-        return aiRobotsByLegacyClassNames.get(aiRobotLegacyClassName);
-    }
+  public static Class<?> getAIRobotByLegacyClassName(String aiRobotLegacyClassName) {
+    return aiRobotsByLegacyClassNames.get(aiRobotLegacyClassName);
+  }
 
-    public static void registerResourceId(Class<? extends ResourceId> resourceId, String name) {
-        registerResourceId(resourceId, name, null);
-    }
+  public static void registerResourceId(Class<? extends ResourceId> resourceId, String name) {
+    registerResourceId(resourceId, name, null);
+  }
 
-    public static void registerResourceId(Class<? extends ResourceId> resourceId, String name, String legacyClassName) {
-        resourceIdByNames.put(name, resourceId);
-        resourceIdNames.put(resourceId, name);
-        if (legacyClassName != null) {
-            resourceIdLegacyClassNames.put(legacyClassName, resourceId);
-        }
+  public static void registerResourceId(Class<? extends ResourceId> resourceId, String name, String legacyClassName) {
+    resourceIdByNames.put(name, resourceId);
+    resourceIdNames.put(resourceId, name);
+    if (legacyClassName != null) {
+      resourceIdLegacyClassNames.put(legacyClassName, resourceId);
     }
+  }
 
-    public static Class<?> getResourceIdByName(String resourceIdName) {
-        return resourceIdByNames.get(resourceIdName);
-    }
+  public static Class<?> getResourceIdByName(String resourceIdName) {
+    return resourceIdByNames.get(resourceIdName);
+  }
 
-    public static String getResourceIdName(Class<? extends ResourceId> resourceIdClass) {
-        return resourceIdNames.get(resourceIdClass);
-    }
+  public static String getResourceIdName(Class<? extends ResourceId> resourceIdClass) {
+    return resourceIdNames.get(resourceIdClass);
+  }
 
-    public static Class<?> getResourceIdByLegacyClassName(String resourceIdLegacyClassName) {
-        return resourceIdLegacyClassNames.get(resourceIdLegacyClassName);
-    }
+  public static Class<?> getResourceIdByLegacyClassName(String resourceIdLegacyClassName) {
+    return resourceIdLegacyClassNames.get(resourceIdLegacyClassName);
+  }
 
-    public static void registerDockingStation(Class<? extends DockingStation> dockingStation, String name) {
-        dockingStationByNames.put(name, dockingStation);
-        dockingStationNames.put(dockingStation, name);
-    }
+  public static void registerDockingStation(Class<? extends DockingStation> dockingStation, String name) {
+    dockingStationByNames.put(name, dockingStation);
+    dockingStationNames.put(dockingStation, name);
+  }
 
-    public static Class<? extends DockingStation> getDockingStationByName(String dockingStationTypeName) {
-        return dockingStationByNames.get(dockingStationTypeName);
-    }
+  public static Class<? extends DockingStation> getDockingStationByName(String dockingStationTypeName) {
+    return dockingStationByNames.get(dockingStationTypeName);
+  }
 
-    public static String getDockingStationName(Class<? extends DockingStation> dockingStation) {
-        return dockingStationNames.get(dockingStation);
-    }
+  public static String getDockingStationName(Class<? extends DockingStation> dockingStation) {
+    return dockingStationNames.get(dockingStation);
+  }
 }

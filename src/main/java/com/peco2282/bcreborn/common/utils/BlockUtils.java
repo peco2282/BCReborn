@@ -40,300 +40,298 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BlockUtils {
-	// Dummy constants for missing ones in BCRebornCore
-	private static final float miningMultiplier = 1.0f;
-	private static final boolean miningAllowPlayerProtectedBlocks = false;
-	/**
-	 * Deactivate constructor
-	 */
-	private BlockUtils() {
-	}
+  // Dummy constants for missing ones in BCRebornCore
+  private static final float miningMultiplier = 1.0f;
+  private static final boolean miningAllowPlayerProtectedBlocks = false;
 
-	public static List<ItemStack> getItemStackFromBlock(ServerLevel world, BlockPos pos) {
-		BlockState state = world.getBlockState(pos);
+  /**
+   * Deactivate constructor
+   */
+  private BlockUtils() {
+  }
 
-		if (state.isAir()) {
-			return null;
-		}
+  public static List<ItemStack> getItemStackFromBlock(ServerLevel world, BlockPos pos) {
+    BlockState state = world.getBlockState(pos);
 
-		BlockEntity entity = world.getBlockEntity(pos);
+    if (state.isAir()) {
+      return null;
+    }
 
-		List<ItemStack> dropsList = Block.getDrops(state, world, pos, entity);
-		// In 1.20.1, harvest check logic is different. Defaulting to 1.0f for now.
-		float dropChance = 1.0f;
+    BlockEntity entity = world.getBlockEntity(pos);
 
-		ArrayList<ItemStack> returnList = new ArrayList<ItemStack>();
-		for (ItemStack s : dropsList) {
-			if (world.random.nextFloat() <= dropChance) {
-				returnList.add(s);
-			}
-		}
+    List<ItemStack> dropsList = Block.getDrops(state, world, pos, entity);
+    // In 1.20.1, harvest check logic is different. Defaulting to 1.0f for now.
+    float dropChance = 1.0f;
 
-		return returnList;
-	}
+    ArrayList<ItemStack> returnList = new ArrayList<ItemStack>();
+    for (ItemStack s : dropsList) {
+      if (world.random.nextFloat() <= dropChance) {
+        returnList.add(s);
+      }
+    }
 
-	public static boolean breakBlock(ServerLevel world, BlockPos pos) {
-		return breakBlock(world, pos, ConfigCore.getItemLifespan() * 20);
-	}
+    return returnList;
+  }
 
-	public static boolean breakBlock(ServerLevel world, BlockPos pos, int forcedLifespan) {
-		List<ItemStack> items = new ArrayList<ItemStack>();
+  public static boolean breakBlock(ServerLevel world, BlockPos pos) {
+    return breakBlock(world, pos, ConfigCore.getItemLifespan() * 20);
+  }
 
-		if (breakBlock(world, pos, items)) {
-			for (ItemStack item : items) {
-				dropItem(world, pos, forcedLifespan, item);
-			}
-			return true;
-		}
-		return false;
-	}
+  public static boolean breakBlock(ServerLevel world, BlockPos pos, int forcedLifespan) {
+    List<ItemStack> items = new ArrayList<ItemStack>();
 
-	public static Player getFakePlayerWithTool(ServerLevel world, BlockPos pos, ItemStack tool) {
-		Player player = BCFakePlayer.createBuildCraftPlayer(world, pos);
-		int i = 0;
+    if (breakBlock(world, pos, items)) {
+      for (ItemStack item : items) {
+        dropItem(world, pos, forcedLifespan, item);
+      }
+      return true;
+    }
+    return false;
+  }
 
-		while (player.getMainHandItem() != tool && i < 9) {
-			if (i > 0) {
-				player.getInventory().setItem(i - 1, ItemStack.EMPTY);
-			}
+  public static Player getFakePlayerWithTool(ServerLevel world, BlockPos pos, ItemStack tool) {
+    Player player = BCFakePlayer.createBuildCraftPlayer(world, pos);
+    int i = 0;
 
-			player.getInventory().setItem(i, tool);
-			i++;
-		}
+    while (player.getMainHandItem() != tool && i < 9) {
+      if (i > 0) {
+        player.getInventory().setItem(i - 1, ItemStack.EMPTY);
+      }
 
-		return player;
-	}
+      player.getInventory().setItem(i, tool);
+      i++;
+    }
 
-	public static boolean harvestBlock(ServerLevel world, BlockPos pos, ItemStack tool) {
-		BlockState state = world.getBlockState(pos);
-		Block block = state.getBlock();
+    return player;
+  }
 
-		Player player = getFakePlayerWithTool(world, pos, tool);
+  public static boolean harvestBlock(ServerLevel world, BlockPos pos, ItemStack tool) {
+    BlockState state = world.getBlockState(pos);
+    Block block = state.getBlock();
 
-		BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, state, player);
-		MinecraftForge.EVENT_BUS.post(breakEvent);
+    Player player = getFakePlayerWithTool(world, pos, tool);
 
-		if (breakEvent.isCanceled()) {
-			return false;
-		}
+    BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, state, player);
+    MinecraftForge.EVENT_BUS.post(breakEvent);
 
-		if (!state.canHarvestBlock(world, pos, player)) {
-			return false;
-		}
+    if (breakEvent.isCanceled()) {
+      return false;
+    }
 
-		block.playerWillDestroy(world, pos, state, player);
-		world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    if (!state.canHarvestBlock(world, pos, player)) {
+      return false;
+    }
 
-		return true;
-	}
+    block.playerWillDestroy(world, pos, state, player);
+    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 
-	public static boolean breakBlock(ServerLevel world, BlockPos pos, List<ItemStack> drops) {
-		BlockState state = world.getBlockState(pos);
-		BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, state,
-				BCFakePlayer.createBuildCraftPlayer(world, pos));
-		MinecraftForge.EVENT_BUS.post(breakEvent);
+    return true;
+  }
 
-		if (breakEvent.isCanceled()) {
-			return false;
-		}
+  public static boolean breakBlock(ServerLevel world, BlockPos pos, List<ItemStack> drops) {
+    BlockState state = world.getBlockState(pos);
+    BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, state,
+      BCFakePlayer.createBuildCraftPlayer(world, pos));
+    MinecraftForge.EVENT_BUS.post(breakEvent);
 
-		if (!state.isAir() && !world.isClientSide
-				&& world.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).get()) {
-			List<ItemStack> blockDrops = getItemStackFromBlock(world, pos);
-			if (blockDrops != null) {
-				drops.addAll(blockDrops);
-			}
-		}
-		world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    if (breakEvent.isCanceled()) {
+      return false;
+    }
 
-		return true;
-	}
+    if (!state.isAir() && !world.isClientSide
+      && world.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).get()) {
+      List<ItemStack> blockDrops = getItemStackFromBlock(world, pos);
+      if (blockDrops != null) {
+        drops.addAll(blockDrops);
+      }
+    }
+    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 
-	public static void dropItem(ServerLevel world, BlockPos pos, int forcedLifespan, ItemStack stack) {
-		float var = 0.7F;
-		double dx = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
-		double dy = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
-		double dz = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
-		ItemEntity entityitem = new ItemEntity(world, pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz, stack);
+    return true;
+  }
 
-		entityitem.lifespan = forcedLifespan; // In 1.20.1, lifespan is handled differently or via accessor
-		entityitem.setPickUpDelay(10);
+  public static void dropItem(ServerLevel world, BlockPos pos, int forcedLifespan, ItemStack stack) {
+    float var = 0.7F;
+    double dx = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
+    double dy = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
+    double dz = world.random.nextFloat() * var + (1.0F - var) * 0.5D;
+    ItemEntity entityitem = new ItemEntity(world, pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz, stack);
 
-		world.addFreshEntity(entityitem);
-	}
+    entityitem.lifespan = forcedLifespan; // In 1.20.1, lifespan is handled differently or via accessor
+    entityitem.setPickUpDelay(10);
 
-	public static boolean canChangeBlock(Level world, BlockPos pos) {
-		return canChangeBlock(world.getBlockState(pos).getBlock(), world, pos);
-	}
+    world.addFreshEntity(entityitem);
+  }
 
-	public static boolean canChangeBlock(Block block, Level world, BlockPos pos) {
-		if (block == null || world.getBlockState(pos).isAir()) {
-			return true;
-		}
+  public static boolean canChangeBlock(Level world, BlockPos pos) {
+    return canChangeBlock(world.getBlockState(pos).getBlock(), world, pos);
+  }
 
-		if (isUnbreakableBlock(world, pos, block)) {
-			return false;
-		}
-		FluidState fs = world.getFluidState(pos);
-		if (fs.is(Fluids.LAVA) || fs.is(Fluids.FLOWING_LAVA)) {
-			return false;
-		} else if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid() != null) {
-			Fluid f = ((IFluidBlock) block).getFluid();
-			if (f.getAmount(fs) >= 3000) {
-				return false;
-			}
-		}
+  public static boolean canChangeBlock(Block block, Level world, BlockPos pos) {
+    if (block == null || world.getBlockState(pos).isAir()) {
+      return true;
+    }
 
-		return true;
-	}
+    if (isUnbreakableBlock(world, pos, block)) {
+      return false;
+    }
+    FluidState fs = world.getFluidState(pos);
+    if (fs.is(Fluids.LAVA) || fs.is(Fluids.FLOWING_LAVA)) {
+      return false;
+    } else if (block instanceof IFluidBlock && ((IFluidBlock) block).getFluid() != null) {
+      Fluid f = ((IFluidBlock) block).getFluid();
+      return f.getAmount(fs) < 3000;
+    }
 
-	public static float getBlockHardnessMining(Level world, BlockPos pos, Block b, ItemStack tool) {
-		if (world instanceof ServerLevel && !miningAllowPlayerProtectedBlocks) {
-			float relativeHardness = world.getBlockState(pos).getDestroyProgress(getFakePlayerWithTool((ServerLevel) world, pos, tool), world, pos);
+    return true;
+  }
 
-			if (relativeHardness <= 0.0F) {
-				return -1.0F;
-			}
-		}
+  public static float getBlockHardnessMining(Level world, BlockPos pos, Block b, ItemStack tool) {
+    if (world instanceof ServerLevel && !miningAllowPlayerProtectedBlocks) {
+      float relativeHardness = world.getBlockState(pos).getDestroyProgress(getFakePlayerWithTool((ServerLevel) world, pos, tool), world, pos);
 
-		return world.getBlockState(pos).getDestroySpeed(world, pos);
-	}
+      if (relativeHardness <= 0.0F) {
+        return -1.0F;
+      }
+    }
 
-	public static boolean isUnbreakableBlock(Level world, BlockPos pos, Block b) {
-		if (b == null) {
-			return false;
-		}
+    return world.getBlockState(pos).getDestroySpeed(world, pos);
+  }
 
-		return getBlockHardnessMining(world, pos, b, null) < 0;
-	}
+  public static boolean isUnbreakableBlock(Level world, BlockPos pos, Block b) {
+    if (b == null) {
+      return false;
+    }
 
-	public static boolean isUnbreakableBlock(Level world, int x, int y, int z) {
-		return isUnbreakableBlock(world, new BlockPos(x, y, z));
-	}
+    return getBlockHardnessMining(world, pos, b, null) < 0;
+  }
 
-	public static boolean isUnbreakableBlock(Level world, BlockPos pos) {
-		return isUnbreakableBlock(world, pos, world.getBlockState(pos).getBlock());
-	}
+  public static boolean isUnbreakableBlock(Level world, int x, int y, int z) {
+    return isUnbreakableBlock(world, new BlockPos(x, y, z));
+  }
 
-	/**
-	 * Returns true if a block cannot be harvested without a tool.
-	 */
-	public static boolean isToughBlock(Level world, BlockPos pos) {
-		return world.getBlockState(pos).requiresCorrectToolForDrops();
-	}
+  public static boolean isUnbreakableBlock(Level world, BlockPos pos) {
+    return isUnbreakableBlock(world, pos, world.getBlockState(pos).getBlock());
+  }
 
-	public static boolean isFullFluidBlock(Level world, BlockPos pos) {
-		return isFullFluidBlock(world.getBlockState(pos).getBlock(), world, pos);
-	}
+  /**
+   * Returns true if a block cannot be harvested without a tool.
+   */
+  public static boolean isToughBlock(Level world, BlockPos pos) {
+    return world.getBlockState(pos).requiresCorrectToolForDrops();
+  }
 
-	public static boolean isFullFluidBlock(Block block, Level world, BlockPos pos) {
-		if (block instanceof IFluidBlock) {
-			return ((IFluidBlock) block).getFilledPercentage(world, pos) == 1.0f;
-		} else {
-			return world.getFluidState(pos).isSource();
-		}
-	}
+  public static boolean isFullFluidBlock(Level world, BlockPos pos) {
+    return isFullFluidBlock(world.getBlockState(pos).getBlock(), world, pos);
+  }
 
-	public static Fluid getFluid(Block block) {
-		if (block instanceof IFluidBlock) {
-			return ((IFluidBlock) block).getFluid();
-		} else {
-			return block.getFluidState(null).getType(); // Passing null as default if no state available
-		}
-	}
+  public static boolean isFullFluidBlock(Block block, Level world, BlockPos pos) {
+    if (block instanceof IFluidBlock) {
+      return ((IFluidBlock) block).getFilledPercentage(world, pos) == 1.0f;
+    } else {
+      return world.getFluidState(pos).isSource();
+    }
+  }
 
-	public static FluidStack drainBlock(Level world, BlockPos pos, boolean doDrain) {
-		return drainBlock(world.getBlockState(pos).getBlock(), world, pos, doDrain);
-	}
+  public static Fluid getFluid(Block block) {
+    if (block instanceof IFluidBlock) {
+      return ((IFluidBlock) block).getFluid();
+    } else {
+      return block.getFluidState(null).getType(); // Passing null as default if no state available
+    }
+  }
 
-	public static FluidStack drainBlock(Block block, Level world, BlockPos pos, boolean doDrain) {
-		if (block instanceof IFluidBlock) {
-			IFluidBlock fluidBlock = (IFluidBlock) block;
-			return fluidBlock.drain(world, pos, doDrain ? net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE : net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE);
-		} else {
-			FluidState fluidState = world.getFluidState(pos);
-			if (fluidState.isSource()) {
-				Fluid fluid = fluidState.getType();
-				if (doDrain) {
-					world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-				}
-				return new FluidStack(fluid, FluidType.BUCKET_VOLUME);
-			}
-			return null;
-		}
-	}
+  public static FluidStack drainBlock(Level world, BlockPos pos, boolean doDrain) {
+    return drainBlock(world.getBlockState(pos).getBlock(), world, pos, doDrain);
+  }
 
-	/**
-	 * Create an explosion which only affects a single block.
-	 */
-	public static void explodeBlock(Level world, BlockPos pos) {
-		if (world.isClientSide) {
-			return;
-		}
+  public static FluidStack drainBlock(Block block, Level world, BlockPos pos, boolean doDrain) {
+    if (block instanceof IFluidBlock fluidBlock) {
+      return fluidBlock.drain(world, pos, doDrain ? net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE : net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE);
+    } else {
+      FluidState fluidState = world.getFluidState(pos);
+      if (fluidState.isSource()) {
+        Fluid fluid = fluidState.getType();
+        if (doDrain) {
+          world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        }
+        return new FluidStack(fluid, FluidType.BUCKET_VOLUME);
+      }
+      return null;
+    }
+  }
 
-		Explosion explosion = new Explosion(world, null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, true, Explosion.BlockInteraction.KEEP);
-		// explosion.getToBlow().add(pos); // Explosion is immutable or handled differently in 1.20.1
-		// world.explode(...) is preferred
-		world.explode(null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, true, Level.ExplosionInteraction.BLOCK);
+  /**
+   * Create an explosion which only affects a single block.
+   */
+  public static void explodeBlock(Level world, BlockPos pos) {
+    if (world.isClientSide) {
+      return;
+    }
 
-		for (Player player : world.players()) {
-			if (!(player instanceof ServerPlayer)) {
-				continue;
-			}
+    Explosion explosion = new Explosion(world, null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, true, Explosion.BlockInteraction.KEEP);
+    // explosion.getToBlow().add(pos); // Explosion is immutable or handled differently in 1.20.1
+    // world.explode(...) is preferred
+    world.explode(null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, true, Level.ExplosionInteraction.BLOCK);
 
-			if (player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 4096) {
-				// ((ServerPlayer) player).connection.send(new ClientboundExplodePacket(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, new ArrayList<>(), null));
-			}
-		}
-	}
+    for (Player player : world.players()) {
+      if (!(player instanceof ServerPlayer)) {
+        continue;
+      }
 
-	public static int computeBlockBreakEnergy(Level world, BlockPos pos) {
-		return (int) Math.floor(BuilderAPI.BREAK_ENERGY * miningMultiplier * ((world.getBlockState(pos).getDestroySpeed(world, pos) + 1) * 2));
-	}
+      if (player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 4096) {
+        // ((ServerPlayer) player).connection.send(new ClientboundExplodePacket(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 3f, new ArrayList<>(), null));
+      }
+    }
+  }
 
-	/**
-	 * The following functions let you avoid unnecessary chunk loads, which is nice.
-	 */
-	public static BlockEntity getTileEntity(Level world, BlockPos pos) {
-		return getTileEntity(world, pos, false);
-	}
+  public static int computeBlockBreakEnergy(Level world, BlockPos pos) {
+    return (int) Math.floor(BuilderAPI.BREAK_ENERGY * miningMultiplier * ((world.getBlockState(pos).getDestroySpeed(world, pos) + 1) * 2));
+  }
 
-	public static BlockEntity getTileEntity(Level world, BlockPos pos, boolean force) {
-		if (pos.getY() < world.getMinBuildHeight() || pos.getY() > world.getMaxBuildHeight()) {
-			return null;
-		}
-		if (!force) {
-			return world.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) != null ? world.getBlockEntity(pos) : null;
-		} else {
-			return world.getBlockEntity(pos);
-		}
-	}
+  /**
+   * The following functions let you avoid unnecessary chunk loads, which is nice.
+   */
+  public static BlockEntity getTileEntity(Level world, BlockPos pos) {
+    return getTileEntity(world, pos, false);
+  }
 
-	public static Block getBlock(Level world, BlockPos pos) {
-		return getBlock(world, pos, false);
-	}
+  public static BlockEntity getTileEntity(Level world, BlockPos pos, boolean force) {
+    if (pos.getY() < world.getMinBuildHeight() || pos.getY() > world.getMaxBuildHeight()) {
+      return null;
+    }
+    if (!force) {
+      return world.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) != null ? world.getBlockEntity(pos) : null;
+    } else {
+      return world.getBlockEntity(pos);
+    }
+  }
 
-	public static Block getBlock(Level world, BlockPos pos, boolean force) {
-		if (pos.getY() < world.getMinBuildHeight() || pos.getY() > world.getMaxBuildHeight()) {
-			return Blocks.AIR;
-		}
-		if (!force) {
-			return world.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) != null ? world.getBlockState(pos).getBlock() : Blocks.AIR;
-		} else {
-			return world.getBlockState(pos).getBlock();
-		}
-	}
+  public static Block getBlock(Level world, BlockPos pos) {
+    return getBlock(world, pos, false);
+  }
 
-	public static void onComparatorUpdate(Level world, BlockPos pos, Block block) {
-		world.updateNeighborsAt(pos, block);
-	}
+  public static Block getBlock(Level world, BlockPos pos, boolean force) {
+    if (pos.getY() < world.getMinBuildHeight() || pos.getY() > world.getMaxBuildHeight()) {
+      return Blocks.AIR;
+    }
+    if (!force) {
+      return world.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) != null ? world.getBlockState(pos).getBlock() : Blocks.AIR;
+    } else {
+      return world.getBlockState(pos).getBlock();
+    }
+  }
 
-	public static ChestBlockEntity getOtherDoubleChest(BlockEntity inv) {
-		if (inv instanceof ChestBlockEntity chest) {
-			// In 1.20.1, we'd use ChestBlock.getContainer or similar, but for now we'll return null to satisfy the signature.
-			// TODO: Implement correctly using 1.20.1 double chest logic
-			return null;
-		}
-		return null;
-	}
+  public static void onComparatorUpdate(Level world, BlockPos pos, Block block) {
+    world.updateNeighborsAt(pos, block);
+  }
+
+  public static ChestBlockEntity getOtherDoubleChest(BlockEntity inv) {
+    if (inv instanceof ChestBlockEntity chest) {
+      // In 1.20.1, we'd use ChestBlock.getContainer or similar, but for now we'll return null to satisfy the signature.
+      // TODO: Implement correctly using 1.20.1 double chest logic
+      return null;
+    }
+    return null;
+  }
 }

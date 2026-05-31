@@ -11,8 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.boards;
 
-import java.util.ArrayList;
-
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
@@ -24,7 +22,6 @@ import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
@@ -32,121 +29,122 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import java.util.ArrayList;
+
 public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
 
-	private BlockIndex blockFound;
-	private ArrayList<Block> blockFilter = new ArrayList<Block>();
+  private BlockIndex blockFound;
+  private final ArrayList<Block> blockFilter = new ArrayList<Block>();
 
-	public BoardRobotGenericSearchBlock(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotGenericSearchBlock(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	/**
-	 * This function has to be derived in a thread safe manner, as it may be
-	 * called from parallel jobs. In particular, world should not be directly
-	 * used, only through WorldProperty class and subclasses.
-	 */
-	public abstract boolean isExpectedBlock(Level world, int x, int y, int z);
+  /**
+   * This function has to be derived in a thread safe manner, as it may be
+   * called from parallel jobs. In particular, world should not be directly
+   * used, only through WorldProperty class and subclasses.
+   */
+  public abstract boolean isExpectedBlock(Level world, int x, int y, int z);
 
-	@Override
-	public void update() {
-		updateFilter();
+  @Override
+  public void update() {
+    updateFilter();
 
-		startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
-			if (isExpectedBlock(world, pos.getX(), pos.getY(), pos.getZ())
-					&& !robot.getRegistry().isTaken(new ResourceIdBlock(pos))) {
-				return matchesGateFilter(world, pos.getX(), pos.getY(), pos.getZ());
-			} else {
-				return false;
-			}
-		}));
-	}
+    startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
+      if (isExpectedBlock(world, pos.getX(), pos.getY(), pos.getZ())
+        && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))) {
+        return matchesGateFilter(world, pos.getX(), pos.getY(), pos.getZ());
+      } else {
+        return false;
+      }
+    }));
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
-			if (ai.success()) {
-				blockFound = searchAI.getBlockFound();
-			} else {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
+      if (ai.success()) {
+        blockFound = searchAI.getBlockFound();
+      } else {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    }
+  }
 
-	@Override
-	public void end() {
-		releaseBlockFound(true);
-	}
+  @Override
+  public void end() {
+    releaseBlockFound(true);
+  }
 
-	protected BlockIndex blockFound() {
-		return blockFound;
-	}
+  protected BlockIndex blockFound() {
+    return blockFound;
+  }
 
-	protected void releaseBlockFound(boolean success) {
-		if (blockFound != null) {
-			// TODO: if !ai.success() -> can't break block, blacklist it
-			robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
-			blockFound = null;
-		}
-	}
+  protected void releaseBlockFound(boolean success) {
+    if (blockFound != null) {
+      // TODO: if !ai.success() -> can't break block, blacklist it
+      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      blockFound = null;
+    }
+  }
 
-	public final void updateFilter() {
-		blockFilter.clear();
+  public final void updateFilter() {
+    blockFilter.clear();
 
-		if (robot.getLinkedStation() == null) {
-			return;
-		}
+    if (robot.getLinkedStation() == null) {
+      return;
+    }
 
-		for (StatementSlot slot : robot.getLinkedStation().getActiveActions()) {
-			if (slot.statement instanceof ActionRobotFilter) {
-				for (IStatementParameter p : slot.parameters) {
-					if (p != null && p instanceof StatementParameterItemStack) {
-						StatementParameterItemStack param = (StatementParameterItemStack) p;
-						ItemStack stack = param.getItemStack();
+    for (StatementSlot slot : robot.getLinkedStation().getActiveActions()) {
+      if (slot.statement instanceof ActionRobotFilter) {
+        for (IStatementParameter p : slot.parameters) {
+          if (p != null && p instanceof StatementParameterItemStack param) {
+            ItemStack stack = param.getItemStack();
 
-						if (stack != null && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
-							blockFilter.add(((BlockItem) stack.getItem()).getBlock());
-						}
-					}
-				}
-			}
-		}
-	}
+            if (stack != null && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+              blockFilter.add(((BlockItem) stack.getItem()).getBlock());
+            }
+          }
+        }
+      }
+    }
+  }
 
-	protected boolean matchesGateFilter(Level world, int x, int y, int z) {
-		if (blockFilter.size() == 0) {
-			return true;
-		}
+  protected boolean matchesGateFilter(Level world, int x, int y, int z) {
+    if (blockFilter.size() == 0) {
+      return true;
+    }
 
-		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+    Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 
-		for (int i = 0; i < blockFilter.size(); ++i) {
-			if (blockFilter.get(i) == block) {
-				return true;
-			}
-		}
+    for (int i = 0; i < blockFilter.size(); ++i) {
+      if (blockFilter.get(i) == block) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	@Override
-	public void writeSelfToNBT(CompoundTag nbt) {
-		super.writeSelfToNBT(nbt);
+  @Override
+  public void writeSelfToNBT(CompoundTag nbt) {
+    super.writeSelfToNBT(nbt);
 
-		if (blockFound != null) {
-			CompoundTag sub = new CompoundTag();
-			blockFound.writeTo(sub);
-			nbt.put("indexStored", sub);
-		}
-	}
+    if (blockFound != null) {
+      CompoundTag sub = new CompoundTag();
+      blockFound.writeTo(sub);
+      nbt.put("indexStored", sub);
+    }
+  }
 
-	@Override
-	public void loadSelfFromNBT(CompoundTag nbt) {
-		super.loadSelfFromNBT(nbt);
+  @Override
+  public void loadSelfFromNBT(CompoundTag nbt) {
+    super.loadSelfFromNBT(nbt);
 
-		if (nbt.contains("indexStored")) {
-			blockFound = new BlockIndex(nbt.getCompound("indexStored"));
-		}
-	}
+    if (nbt.contains("indexStored")) {
+      blockFound = new BlockIndex(nbt.getCompound("indexStored"));
+    }
+  }
 
 }

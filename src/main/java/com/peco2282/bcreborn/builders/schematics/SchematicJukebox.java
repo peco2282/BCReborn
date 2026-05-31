@@ -18,15 +18,15 @@ import com.peco2282.bcreborn.api.core.JavaTools;
 import net.minecraft.world.item.ItemStack;
 
 public class SchematicJukebox extends SchematicTile {
-	public SchematicJukebox() {
-	}
+  public SchematicJukebox() {
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		super.storeRequirements(context, x, y, z);
-		if (tileNBT != null && tileNBT.contains("RecordItem")) {
-			ItemStack recordStack = ItemStack.of(tileNBT.getCompound("RecordItem"));
-			storedRequirements = JavaTools.concat(storedRequirements, new ItemStack[] { recordStack });
-		}
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    super.storeRequirements(context, x, y, z);
+    if (tileNBT != null && tileNBT.contains("RecordItem")) {
+      ItemStack recordStack = ItemStack.of(tileNBT.getCompound("RecordItem"));
+      storedRequirements = JavaTools.concat(storedRequirements, new ItemStack[]{recordStack});
+    }
+  }
 }

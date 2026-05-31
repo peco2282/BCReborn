@@ -17,6 +17,6 @@ import net.minecraft.world.Nameable;
 
 public interface ITileBuilder extends Container, Nameable {
 
-	boolean isBuildingMaterialSlot(int i);
+  boolean isBuildingMaterialSlot(int i);
 
 }

@@ -19,10 +19,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class RenderArchitect implements BlockEntityRenderer<ArchitectBlockEntity> {
 
-	public RenderArchitect(BlockEntityRendererProvider.Context context) {
-	}
+  public RenderArchitect(BlockEntityRendererProvider.Context context) {
+  }
 
-	@Override
-	public void render(ArchitectBlockEntity architect, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-	}
+  @Override
+  public void render(ArchitectBlockEntity architect, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+  }
 }

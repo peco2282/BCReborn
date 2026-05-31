@@ -28,34 +28,34 @@ import java.util.function.Function;
 
 public class ActionStationProvideFluids extends BCStatement implements IActionInternal {
 
-	public ActionStationProvideFluids() {
-		super("station.provide_fluids");
-	}
+  public ActionStationProvideFluids() {
+    super("station.provide_fluids");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.station.povide_fluids");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.station.povide_fluids");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_provide_fluids"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_provide_fluids"));
+  }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

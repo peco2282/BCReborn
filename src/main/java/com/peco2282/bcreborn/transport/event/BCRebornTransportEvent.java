@@ -19,7 +19,6 @@ import com.peco2282.bcreborn.transport.block.render.FluidPipeRenderer;
 import com.peco2282.bcreborn.transport.block.render.ItemPipeRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

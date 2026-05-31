@@ -23,60 +23,59 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.function.Function;
 
 public class TriggerEnergy extends BCStatement implements ITriggerInternal {
 
-	private final boolean high;
+  private final boolean high;
 
-	public TriggerEnergy(boolean high) {
-		super("buildcraft:energyStored" + (high ? "high" : "low"));
+  public TriggerEnergy(boolean high) {
+    super("buildcraft:energyStored" + (high ? "high" : "low"));
 
-		this.high = high;
-	}
+    this.high = high;
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.machine.energyStored." + (high ? "high" : "low"));
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.machine.energyStored." + (high ? "high" : "low"));
+  }
 
-	protected boolean isActive(BlockEntity tile, Direction side) {
-		if (tile == null) return false;
-		return tile.getCapability(ForgeCapabilities.ENERGY, side).map(storage -> {
-			if (storage.getMaxEnergyStored() > 0) {
-				float level = (float) storage.getEnergyStored() / (float) storage.getMaxEnergyStored();
-				if (high) {
-					return level > 0.95F;
-				} else {
-					return level < 0.05F;
-				}
-			}
-			return false;
-		}).orElse(false);
-	}
+  protected boolean isActive(BlockEntity tile, Direction side) {
+    if (tile == null) return false;
+    return tile.getCapability(ForgeCapabilities.ENERGY, side).map(storage -> {
+      if (storage.getMaxEnergyStored() > 0) {
+        float level = (float) storage.getEnergyStored() / (float) storage.getMaxEnergyStored();
+        if (high) {
+          return level > 0.95F;
+        } else {
+          return level < 0.05F;
+        }
+      }
+      return false;
+    }).orElse(false);
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_energy_storage_" + (high ? "high" : "low")));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_energy_storage_" + (high ? "high" : "low")));
+  }
 
-	@Override
-	public boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters) {
-		BlockEntity tile = source.getTile();
-		if (tile == null) return false;
+  @Override
+  public boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters) {
+    BlockEntity tile = source.getTile();
+    if (tile == null) return false;
 
-		// Check the tile itself first
-		if (isActive(tile, null)) return true;
+    // Check the tile itself first
+    if (isActive(tile, null)) return true;
 
-		// Check neighbors
-		for (Direction side : Direction.values()) {
-			BlockEntity neighbor = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(side));
-			if (isActive(neighbor, side.getOpposite())) return true;
-		}
+    // Check neighbors
+    for (Direction side : Direction.values()) {
+      BlockEntity neighbor = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(side));
+      if (isActive(neighbor, side.getOpposite())) return true;
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

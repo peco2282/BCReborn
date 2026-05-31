@@ -19,73 +19,73 @@ import java.util.Iterator;
 
 public class BlockScannerExpanding implements Iterable<BlockIndex> {
 
-	private int searchRadius;
-	private int searchX;
-	private int searchY;
-	private int searchZ;
+  private int searchRadius;
+  private int searchX;
+  private int searchY;
+  private int searchZ;
 
-	class BlockIt implements Iterator<BlockIndex> {
+  public BlockScannerExpanding() {
+    searchRadius = 1;
+    searchX = -1;
+    searchY = -1;
+    searchZ = -1;
+  }
 
-		@Override
-		public boolean hasNext() {
-			return searchRadius < 64;
-		}
+  @Override
+  public Iterator<BlockIndex> iterator() {
+    return new BlockIt();
+  }
 
-		@Override
-		public BlockIndex next() {
-			// Step through each block in a hollow cube of size (searchRadius * 2 -1), if done
-			// add 1 to the radius and start over.
+  public BlockPos nextBlockPos() {
+    BlockIndex index = new BlockIt().next();
+    return new BlockPos(index.x, index.y, index.z);
+  }
 
-			BlockIndex next = new BlockIndex(searchX, searchY, searchZ);
+  class BlockIt implements Iterator<BlockIndex> {
 
-			// Step to the next Y
-			if (Math.abs(searchX) == searchRadius || Math.abs(searchZ) == searchRadius) {
-				searchY += 1;
-			} else {
-				searchY += searchRadius * 2;
-			}
+    @Override
+    public boolean hasNext() {
+      return searchRadius < 64;
+    }
 
-			if (searchY > searchRadius) {
-				// Step to the next Z
-				searchY = -searchRadius;
-				searchZ += 1;
+    @Override
+    public BlockIndex next() {
+      // Step through each block in a hollow cube of size (searchRadius * 2 -1), if done
+      // add 1 to the radius and start over.
 
-				if (searchZ > searchRadius) {
-					// Step to the next X
-					searchZ = -searchRadius;
-					searchX += 1;
+      BlockIndex next = new BlockIndex(searchX, searchY, searchZ);
 
-					if (searchX > searchRadius) {
-						// Step to the next radius
-						searchRadius += 1;
-						searchX = -searchRadius;
-						searchY = -searchRadius;
-						searchZ = -searchRadius;
-					}
-				}
-			}
-			return next;
-		}
+      // Step to the next Y
+      if (Math.abs(searchX) == searchRadius || Math.abs(searchZ) == searchRadius) {
+        searchY += 1;
+      } else {
+        searchY += searchRadius * 2;
+      }
 
-		@Override
-		public void remove() {
-		}
-	}
+      if (searchY > searchRadius) {
+        // Step to the next Z
+        searchY = -searchRadius;
+        searchZ += 1;
 
-	public BlockScannerExpanding() {
-		searchRadius = 1;
-		searchX = -1;
-		searchY = -1;
-		searchZ = -1;
-	}
+        if (searchZ > searchRadius) {
+          // Step to the next X
+          searchZ = -searchRadius;
+          searchX += 1;
 
-	@Override
-	public Iterator<BlockIndex> iterator() {
-		return new BlockIt();
-	}
+          if (searchX > searchRadius) {
+            // Step to the next radius
+            searchRadius += 1;
+            searchX = -searchRadius;
+            searchY = -searchRadius;
+            searchZ = -searchRadius;
+          }
+        }
+      }
+      return next;
+    }
 
-	public BlockPos nextBlockPos() {
-		BlockIndex index = new BlockIt().next();
-		return new BlockPos(index.x, index.y, index.z);
-	}
+    @Override
+    public void remove() {
+    }
+  }
 }

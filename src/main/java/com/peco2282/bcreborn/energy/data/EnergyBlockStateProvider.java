@@ -27,6 +27,10 @@ public class EnergyBlockStateProvider extends BlockStateProvider {
     super(output, BCRebornEnergy.MODID, exFileHelper);
   }
 
+  private static String getName(Block block) {
+    return block.builtInRegistryHolder().key().location().getPath();
+  }
+
   @Override
   protected void registerStatesAndModels() {
 
@@ -51,15 +55,12 @@ public class EnergyBlockStateProvider extends BlockStateProvider {
     simpleBlock(block, model);
 
     itemModels()
-        .getBuilder(getName(block))
-        .parent(model)
-        .transforms()
-        .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(30, 160, 0).translation(0, 3, -2).scale(0.23F, 0.23F, 0.23F).end()
-        .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(30, 160, 0).translation(0, 3, 0).scale(0.375F, 0.375F, 0.375F).end()
-        .transform(ItemDisplayContext.GUI).rotation(30, 160, 0).translation(2, 3, 0).scale(0.5325F, 0.5325F, 0.5325F).end()
-        .end();
-  }
-  private static String getName(Block block) {
-    return block.builtInRegistryHolder().key().location().getPath();
+      .getBuilder(getName(block))
+      .parent(model)
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(30, 160, 0).translation(0, 3, -2).scale(0.23F, 0.23F, 0.23F).end()
+      .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(30, 160, 0).translation(0, 3, 0).scale(0.375F, 0.375F, 0.375F).end()
+      .transform(ItemDisplayContext.GUI).rotation(30, 160, 0).translation(2, 3, 0).scale(0.5325F, 0.5325F, 0.5325F).end()
+      .end();
   }
 }

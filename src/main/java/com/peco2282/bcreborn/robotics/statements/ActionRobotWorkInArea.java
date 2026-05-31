@@ -30,83 +30,82 @@ import java.util.function.Function;
 
 public class ActionRobotWorkInArea extends BCStatement implements IActionInternal {
 
-	public enum AreaType {
-		WORK("work_in_area"),
-		LOAD_UNLOAD("load_unload_area");
+  private final AreaType areaType;
 
-		private final String name;
+  public ActionRobotWorkInArea(AreaType iAreaType) {
+    super(iAreaType.getTag());
 
-		AreaType(String iName) {
-			name = iName;
-		}
+    areaType = iAreaType;
+  }
 
-		public String getTag() {
-			return "robot." + name;
-		}
+  public static IZone getArea(StatementSlot slot) {
+    if (slot.parameters[0] == null) {
+      return null;
+    }
 
-		public String getUnlocalizedName() {
-			return "gate.action.robot." + name;
-		}
+    ItemStack stack = slot.parameters[0].getItemStack();
 
-		public String getIcon() {
-			return "triggers/action_robot_" + name;
-		}
-	}
+    if (stack.isEmpty() || !(stack.getItem() instanceof IMapLocation map)) {
+      return null;
+    }
 
-	private final AreaType areaType;
+    return map.getZone(stack);
+  }
 
-	public ActionRobotWorkInArea(AreaType iAreaType) {
-		super(iAreaType.getTag());
+  @Override
+  public String getDescription() {
+    return StringUtils.localize(areaType.getUnlocalizedName());
+  }
 
-		areaType = iAreaType;
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location(areaType.getIcon()));
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize(areaType.getUnlocalizedName());
-	}
+  @Override
+  public int minParameters() {
+    return 1;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location(areaType.getIcon()));
-	}
+  @Override
+  public int maxParameters() {
+    return 1;
+  }
 
-	public static IZone getArea(StatementSlot slot) {
-		if (slot.parameters[0] == null) {
-			return null;
-		}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterMapLocation();
+  }
 
-		ItemStack stack = slot.parameters[0].getItemStack();
+  @Override
+  public void actionActivate(IStatementContainer source, IStatementParameter[] parameters) {
+  }
 
-		if (stack.isEmpty() || !(stack.getItem() instanceof IMapLocation)) {
-			return null;
-		}
+  public AreaType getAreaType() {
+    return areaType;
+  }
 
-		IMapLocation map = (IMapLocation) stack.getItem();
-		return map.getZone(stack);
-	}
+  public enum AreaType {
+    WORK("work_in_area"),
+    LOAD_UNLOAD("load_unload_area");
 
-	@Override
-	public int minParameters() {
-		return 1;
-	}
+    private final String name;
 
-	@Override
-	public int maxParameters() {
-		return 1;
-	}
+    AreaType(String iName) {
+      name = iName;
+    }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterMapLocation();
-	}
+    public String getTag() {
+      return "robot." + name;
+    }
 
-	@Override
-	public void actionActivate(IStatementContainer source, IStatementParameter[] parameters) {
-	}
+    public String getUnlocalizedName() {
+      return "gate.action.robot." + name;
+    }
 
-	public AreaType getAreaType() {
-		return areaType;
-	}
+    public String getIcon() {
+      return "triggers/action_robot_" + name;
+    }
+  }
 }

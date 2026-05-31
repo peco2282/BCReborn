@@ -19,10 +19,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class RenderFiller implements BlockEntityRenderer<FillerBlockEntity> {
 
-	public RenderFiller(BlockEntityRendererProvider.Context context) {
-	}
+  public RenderFiller(BlockEntityRendererProvider.Context context) {
+  }
 
-	@Override
-	public void render(FillerBlockEntity filler, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-	}
+  @Override
+  public void render(FillerBlockEntity filler, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+  }
 }

@@ -42,18 +42,15 @@ public class EnergyTransportModule {
   private static final int AVERAGE_WINDOW = 10;
 
   private final PipeBlockEntity pipe;
-
+  private final int[][] powerHistory = new int[6][AVERAGE_WINDOW];
+  public int[] nextPowerQuery = new int[6];
+  // クライアント表示用移動平均（10tick窓）
+  public short[] displayPower = new short[6];
   // ダブルバッファ: 現tick / 次tick（double精度でoriginalに合わせる）
   private double[] internalPower = new double[6];
   private double[] internalNextPower = new double[6];
-
   // 需要バッファ: 現tick / 次tick
   private int[] powerQuery = new int[6];
-  public int[] nextPowerQuery = new int[6];
-
-  // クライアント表示用移動平均（10tick窓）
-  public short[] displayPower = new short[6];
-  private final int[][] powerHistory = new int[6][AVERAGE_WINDOW];
   private int historyIndex = 0;
 
   // オーバーロードカウンタ
@@ -63,7 +60,7 @@ public class EnergyTransportModule {
   private int maxPower;
 
   // 抵抗値（損失率）— PipeMaterial から初期化
-  private float powerResistance;
+  private final float powerResistance;
 
   // 最後にステップした worldTime（同一tick内の二重ステップ防止）
   private long currentDate = Long.MIN_VALUE;
@@ -112,13 +109,13 @@ public class EnergyTransportModule {
 
         // 比例配分量を計算（double精度）
         double share = Math.min(
-            internalPower[i] * powerQuery[j] / (double) unusedQuery,
-            internalPower[i]
+          internalPower[i] * powerQuery[j] / (double) unusedQuery,
+          internalPower[i]
         );
         unusedQuery -= powerQuery[j];
 
         if (be instanceof PipeBlockEntity neighborPipe
-            && neighborPipe.getTransportType() == PipeType.ENERGY) {
+          && neighborPipe.getTransportType() == PipeType.ENERGY) {
           // 隣接エネルギーパイプへ転送
           EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
           if (neighborModule != null) {
@@ -165,7 +162,7 @@ public class EnergyTransportModule {
     if (overload >= OVERLOAD_TICKS) {
       overload = 0;
       level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-          1.0f, Level.ExplosionInteraction.BLOCK);
+        1.0f, Level.ExplosionInteraction.BLOCK);
     }
 
     // 4. 隣接機械から需要を収集（次tick用）
@@ -178,7 +175,7 @@ public class EnergyTransportModule {
 
       // 隣接エネルギーパイプは需要収集対象外（パイプ間は requestEnergy で伝播）
       if (be instanceof PipeBlockEntity neighborPipe
-          && neighborPipe.getTransportType() == PipeType.ENERGY) {
+        && neighborPipe.getTransportType() == PipeType.ENERGY) {
         continue;
       }
 
@@ -211,7 +208,7 @@ public class EnergyTransportModule {
 
       BlockEntity be = level.getBlockEntity(neighborPos);
       if (be instanceof PipeBlockEntity neighborPipe
-          && neighborPipe.getTransportType() == PipeType.ENERGY) {
+        && neighborPipe.getTransportType() == PipeType.ENERGY) {
         EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
         if (neighborModule != null) {
           neighborModule.requestEnergy(dir.getOpposite(), transferQuery[i]);
@@ -294,15 +291,15 @@ public class EnergyTransportModule {
     return maxPower;
   }
 
-  public float getPowerResistance() {
-    return powerResistance;
-  }
-
   /**
    * 最大転送量を動的に変更する（鉄パイプのレンチ操作用）。
    */
   public void setMaxPower(int maxPower) {
     this.maxPower = maxPower;
+  }
+
+  public float getPowerResistance() {
+    return powerResistance;
   }
 
   // ---- ダブルバッファのステップ ----

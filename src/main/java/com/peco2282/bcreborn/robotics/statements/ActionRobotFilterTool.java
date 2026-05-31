@@ -11,10 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Function;
-
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.statements.*;
@@ -29,71 +25,75 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Function;
+
 
 public class ActionRobotFilterTool extends BCStatement implements IActionInternal {
 
-	public ActionRobotFilterTool() {
-		super("robot.work_filter_tool");
-	}
+  public ActionRobotFilterTool() {
+    super("robot.work_filter_tool");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.robot.filter_tool");
-	}
+  public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
+    ArrayList<ItemStack> result = new ArrayList<ItemStack>();
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter_tool"));
-	}
+    for (StatementSlot slot : station.getActiveActions()) {
+      if (slot.statement instanceof ActionRobotFilterTool) {
+        for (IStatementParameter p : slot.parameters) {
+          if (p instanceof StatementParameterItemStack param) {
+            ItemStack stack = param.getItemStack();
 
-	@Override
-	public int minParameters() {
-		return 1;
-	}
+            if (!stack.isEmpty()) {
+              result.add(stack);
+            }
+          }
+        }
+      }
+    }
 
-	@Override
-	public int maxParameters() {
-		return 1;
-	}
+    return result;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+  public static IStackFilter getGateFilter(DockingStation station) {
+    Collection<ItemStack> stacks = getGateFilterStacks(station);
 
-	public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
-		ArrayList<ItemStack> result = new ArrayList<ItemStack>();
+    if (stacks.size() == 0) {
+      return new PassThroughStackFilter();
+    } else {
+      return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
+    }
+  }
 
-		for (StatementSlot slot : station.getActiveActions()) {
-			if (slot.statement instanceof ActionRobotFilterTool) {
-				for (IStatementParameter p : slot.parameters) {
-					if (p instanceof StatementParameterItemStack param) {
-                        ItemStack stack = param.getItemStack();
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.robot.filter_tool");
+  }
 
-						if (!stack.isEmpty()) {
-							result.add(stack);
-						}
-					}
-				}
-			}
-		}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_robot_filter_tool"));
+  }
 
-		return result;
-	}
+  @Override
+  public int minParameters() {
+    return 1;
+  }
 
-	public static IStackFilter getGateFilter(DockingStation station) {
-		Collection<ItemStack> stacks = getGateFilterStacks(station);
+  @Override
+  public int maxParameters() {
+    return 1;
+  }
 
-		if (stacks.size() == 0) {
-			return new PassThroughStackFilter();
-		} else {
-			return new ArrayStackOrListFilter(stacks.toArray(new ItemStack[stacks.size()]));
-		}
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-                               IStatementParameter[] parameters) {
-	}
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
+  }
 }

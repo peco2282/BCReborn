@@ -27,9 +27,9 @@ public class EngineItemHandler implements IItemHandler {
   private final EngineBlockEntity<?> engine;
 
   public EngineItemHandler(
-      ItemStackHandler inventory,
-      Direction outputDirection,
-      EngineBlockEntity<?> engine
+    ItemStackHandler inventory,
+    Direction outputDirection,
+    EngineBlockEntity<?> engine
   ) {
     this.inventory = inventory;
     this.outputDirection = outputDirection;

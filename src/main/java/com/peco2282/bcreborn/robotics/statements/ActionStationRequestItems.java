@@ -25,33 +25,33 @@ import java.util.function.Function;
 
 public class ActionStationRequestItems extends ActionStationInputItems {
 
-	public ActionStationRequestItems() {
-		super("station.request_items");
-	}
+  public ActionStationRequestItems() {
+    super("station.request_items");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.station.request_items");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.station.request_items");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_request_items"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_request_items"));
+  }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	@Override
-	public int minParameters() {
-		return 1;
-	}
+  @Override
+  public int minParameters() {
+    return 1;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStackExact(EntityRobot.TRANSFER_INV_SLOTS);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStackExact(EntityRobot.TRANSFER_INV_SLOTS);
+  }
 }

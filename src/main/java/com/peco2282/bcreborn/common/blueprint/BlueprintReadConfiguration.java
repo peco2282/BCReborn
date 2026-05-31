@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.ISerializable;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -44,9 +43,9 @@ public class BlueprintReadConfiguration implements ISerializable {
   @Override
   public void writeData(FriendlyByteBuf stream) {
     stream.writeByte(
-        (rotate ? 1 : 0) |
-            (excavate ? 2 : 0) |
-            (allowCreative ? 4 : 0)
+      (rotate ? 1 : 0) |
+        (excavate ? 2 : 0) |
+        (allowCreative ? 4 : 0)
     );
   }
 }

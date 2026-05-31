@@ -24,42 +24,42 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * An IPipePluggable MUST have an empty constructor for client-side rendering!
  */
 public abstract class PipePluggable implements INBTStoreable, ISerializable {
-    public abstract ItemStack[] getDropItems(IPipeTile pipe);
+  public abstract ItemStack[] getDropItems(IPipeTile pipe);
 
-    public void update(IPipeTile pipe, Direction direction) {
-    }
+  public void update(IPipeTile pipe, Direction direction) {
+  }
 
-    public void onAttachedPipe(IPipeTile pipe, Direction direction) {
-        validate(pipe, direction);
-    }
+  public void onAttachedPipe(IPipeTile pipe, Direction direction) {
+    validate(pipe, direction);
+  }
 
-    public void onDetachedPipe(IPipeTile pipe, Direction direction) {
-        invalidate();
-    }
+  public void onDetachedPipe(IPipeTile pipe, Direction direction) {
+    invalidate();
+  }
 
-    public abstract boolean isBlocking(IPipeTile pipe, Direction direction);
+  public abstract boolean isBlocking(IPipeTile pipe, Direction direction);
 
-    public void invalidate() {
-    }
+  public void invalidate() {
+  }
 
-    public void validate(IPipeTile pipe, Direction direction) {
-    }
+  public void validate(IPipeTile pipe, Direction direction) {
+  }
 
-    public boolean isSolidOnSide(IPipeTile pipe, Direction direction) {
-        return false;
-    }
+  public boolean isSolidOnSide(IPipeTile pipe, Direction direction) {
+    return false;
+  }
 
-    public abstract AABB getBoundingBox(Direction side);
+  public abstract AABB getBoundingBox(Direction side);
 
-    @OnlyIn(Dist.CLIENT)
-    public abstract IPipePluggableRenderer getRenderer();
+  @OnlyIn(Dist.CLIENT)
+  public abstract IPipePluggableRenderer getRenderer();
 
-    @OnlyIn(Dist.CLIENT)
-    public IPipePluggableDynamicRenderer getDynamicRenderer() {
-        return null;
-    }
+  @OnlyIn(Dist.CLIENT)
+  public IPipePluggableDynamicRenderer getDynamicRenderer() {
+    return null;
+  }
 
-    public boolean requiresRenderUpdate(PipePluggable old) {
-        return true;
-    }
+  public boolean requiresRenderUpdate(PipePluggable old) {
+    return true;
+  }
 }

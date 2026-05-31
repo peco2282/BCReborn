@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.api.fuels;
 import net.minecraftforge.fluids.FluidType;
 
 public interface ICoolant {
-    FluidType getFluid();
+  FluidType getFluid();
 
-    float getDegreesCoolingPerMB(float heat);
+  float getDegreesCoolingPerMB(float heat);
 }

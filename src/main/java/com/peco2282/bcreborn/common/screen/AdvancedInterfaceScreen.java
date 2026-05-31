@@ -11,15 +11,13 @@
  */
 package com.peco2282.bcreborn.common.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.common.gui.GuiAdvancedInterface;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.ArrayList;
 

@@ -12,13 +12,9 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
-import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,95 +26,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAreaProvider {
   public static final int MARKER_RANGE = 64;
-
-  // -----------------------------------------------------------------------
-  // TileWrapper
-  // -----------------------------------------------------------------------
-  public static class TileWrapper implements ISerializable {
-
-    public BlockPos pos;
-    private MarkerBlockEntity marker;
-
-    public TileWrapper() {
-      pos = BlockPos.ZERO;
-    }
-
-    public TileWrapper(BlockPos pos) {
-      this.pos = pos;
-    }
-
-    public boolean isSet() {
-      return pos != null && !pos.equals(BlockPos.ZERO);
-    }
-
-    public MarkerBlockEntity getMarker(Level world) {
-      if (!isSet()) {
-        return null;
-      }
-
-      if (marker == null) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof MarkerBlockEntity) {
-          marker = (MarkerBlockEntity) tile;
-        }
-      }
-
-      return marker;
-    }
-
-    public void reset() {
-      pos = BlockPos.ZERO;
-      marker = null;
-    }
-
-    @Override
-    public void readData(FriendlyByteBuf stream) {
-      pos = BlockPos.of(stream.readLong());
-      marker = null;
-    }
-
-    @Override
-    public void writeData(FriendlyByteBuf stream) {
-      stream.writeLong(pos.asLong());
-    }
-  }
-
-  // -----------------------------------------------------------------------
-  // Origin
-  // -----------------------------------------------------------------------
-  public static class Origin implements ISerializable {
-    public TileWrapper vectO = new TileWrapper();
-    public TileWrapper[] vect = {new TileWrapper(), new TileWrapper(), new TileWrapper()};
-    public BlockPos.MutableBlockPos posMin = BlockPos.ZERO.mutable();
-    public BlockPos.MutableBlockPos posMax = BlockPos.ZERO.mutable();
-
-    public boolean isSet() {
-      return vectO != null && vectO.isSet();
-    }
-
-    @Override
-    public void writeData(FriendlyByteBuf stream) {
-      vectO.writeData(stream);
-      for (TileWrapper tw : vect) {
-        tw.writeData(stream);
-      }
-      stream.writeLong(posMin.asLong());
-      stream.writeLong(posMax.asLong());
-    }
-
-    @Override
-    public void readData(FriendlyByteBuf stream) {
-      vectO.readData(stream);
-      for (TileWrapper tw : vect) {
-        tw.readData(stream);
-      }
-      posMin = BlockPos.of(stream.readLong()).mutable();
-      posMax = BlockPos.of(stream.readLong()).mutable();
-    }
-  }
-
   // -----------------------------------------------------------------------
   // Fields
   // -----------------------------------------------------------------------
@@ -126,7 +39,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   public boolean showSignals = false;
   public List<LaserData> lasers = new ArrayList<>();
   public List<LaserData> signals = new ArrayList<>();
-
   // Positions loaded from NBT, resolved in initialize()
   private BlockPos initVectO = null;
   private BlockPos[] initVect = null;
@@ -222,9 +134,9 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       for (int i = 0; i < 3; i++) {
         if (origin.vect[i].isSet()) {
           LaserData laser = new LaserData(
-                  new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-                  new Vec3(origin.vect[i].pos.getX() + 0.5, origin.vect[i].pos.getY() + 0.5, origin.vect[i].pos.getZ() + 0.5),
-                  LaserKind.Blue
+            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+            new Vec3(origin.vect[i].pos.getX() + 0.5, origin.vect[i].pos.getY() + 0.5, origin.vect[i].pos.getZ() + 0.5),
+            LaserKind.Blue
           );
           laser.isVisible = showSignals;
           signals.add(laser);
@@ -236,9 +148,9 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       for (int i = 0; i < 3; i++) {
         if (origin.vect[i].isSet() && origin.vect[i].pos.equals(worldPosition)) {
           LaserData laser = new LaserData(
-                  new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-                  new Vec3(originPos.getX() + 0.5, originPos.getY() + 0.5, originPos.getZ() + 0.5),
-                  LaserKind.Blue
+            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
+            new Vec3(originPos.getX() + 0.5, originPos.getY() + 0.5, originPos.getZ() + 0.5),
+            LaserKind.Blue
           );
           laser.isVisible = showSignals;
           signals.add(laser);
@@ -411,14 +323,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     }
   }
 
-//  private static BlockPos offset(int x, int y, int z, int axis, int delta) {
-//    return switch (axis) {
-//      case 0 -> new BlockPos(x + delta, y, z);
-//      case 1 -> new BlockPos(x, y + delta, z);
-//      default -> new BlockPos(x, y, z + delta);
-//    };
-//  }
-
   private boolean linkTo(MarkerBlockEntity marker, int n) {
     if (marker == null || marker == this) {
       return false;
@@ -431,7 +335,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
         System.out.println("[DEBUG_LOG] linkTo: already same origin instance");
         return false;
       }
-      
+
       // If both have origins but different, and one is not fully formed, we might want to merge.
       // For now, prioritize the one that is already an origin.
       if (origin.vectO.pos.equals(worldPosition)) {
@@ -516,6 +420,14 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     origin.posMax = new BlockPos(xMax, yMax, zMax).mutable();
   }
 
+//  private static BlockPos offset(int x, int y, int z, int axis, int delta) {
+//    return switch (axis) {
+//      case 0 -> new BlockPos(x + delta, y, z);
+//      case 1 -> new BlockPos(x, y + delta, z);
+//      default -> new BlockPos(x, y, z + delta);
+//    };
+//  }
+
   // -----------------------------------------------------------------------
   // ITileAreaProvider / IAreaProvider
   // -----------------------------------------------------------------------
@@ -565,8 +477,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     }
 
     if (x < (xMin() - 1) || x > (xMax() + 1)
-        || y < (yMin() - 1) || y > (yMax() + 1)
-        || z < (zMin() - 1) || z > (zMax() + 1)) {
+      || y < (yMin() - 1) || y > (yMax() + 1)
+      || z < (zMin() - 1) || z > (zMax() + 1)) {
       return false;
     }
 
@@ -625,10 +537,10 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
 
       // 2. Clear origin reference from all markers in this group
       List<MarkerBlockEntity> affectedMarkers = new ArrayList<>();
-      
+
       MarkerBlockEntity mO = o.vectO.getMarker(level);
       if (mO != null) affectedMarkers.add(mO);
-      
+
       for (TileWrapper m : o.vect) {
         MarkerBlockEntity mark = m.getMarker(level);
         if (mark != null) {
@@ -753,5 +665,91 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       list.add(new LaserData(stream.readNbt()));
     }
     return list;
+  }
+
+  // -----------------------------------------------------------------------
+  // TileWrapper
+  // -----------------------------------------------------------------------
+  public static class TileWrapper implements ISerializable {
+
+    public BlockPos pos;
+    private MarkerBlockEntity marker;
+
+    public TileWrapper() {
+      pos = BlockPos.ZERO;
+    }
+
+    public TileWrapper(BlockPos pos) {
+      this.pos = pos;
+    }
+
+    public boolean isSet() {
+      return pos != null && !pos.equals(BlockPos.ZERO);
+    }
+
+    public MarkerBlockEntity getMarker(Level world) {
+      if (!isSet()) {
+        return null;
+      }
+
+      if (marker == null) {
+        BlockEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof MarkerBlockEntity) {
+          marker = (MarkerBlockEntity) tile;
+        }
+      }
+
+      return marker;
+    }
+
+    public void reset() {
+      pos = BlockPos.ZERO;
+      marker = null;
+    }
+
+    @Override
+    public void readData(FriendlyByteBuf stream) {
+      pos = BlockPos.of(stream.readLong());
+      marker = null;
+    }
+
+    @Override
+    public void writeData(FriendlyByteBuf stream) {
+      stream.writeLong(pos.asLong());
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // Origin
+  // -----------------------------------------------------------------------
+  public static class Origin implements ISerializable {
+    public TileWrapper vectO = new TileWrapper();
+    public TileWrapper[] vect = {new TileWrapper(), new TileWrapper(), new TileWrapper()};
+    public BlockPos.MutableBlockPos posMin = BlockPos.ZERO.mutable();
+    public BlockPos.MutableBlockPos posMax = BlockPos.ZERO.mutable();
+
+    public boolean isSet() {
+      return vectO != null && vectO.isSet();
+    }
+
+    @Override
+    public void writeData(FriendlyByteBuf stream) {
+      vectO.writeData(stream);
+      for (TileWrapper tw : vect) {
+        tw.writeData(stream);
+      }
+      stream.writeLong(posMin.asLong());
+      stream.writeLong(posMax.asLong());
+    }
+
+    @Override
+    public void readData(FriendlyByteBuf stream) {
+      vectO.readData(stream);
+      for (TileWrapper tw : vect) {
+        tw.readData(stream);
+      }
+      posMin = BlockPos.of(stream.readLong()).mutable();
+      posMax = BlockPos.of(stream.readLong()).mutable();
+    }
   }
 }

@@ -21,39 +21,39 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class BoardRobotGenericBreakBlock extends BoardRobotGenericSearchBlock {
 
-	public BoardRobotGenericBreakBlock(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotGenericBreakBlock(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public abstract boolean isExpectedTool(ItemStack stack);
+  public abstract boolean isExpectedTool(ItemStack stack);
 
-	@Override
-	public final void update() {
-		ItemStack held = robot.getMainHandItem();
-		if (!isExpectedTool(ItemStack.EMPTY) && held.isEmpty()) {
-			startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, (ItemStack stack) -> {
-				return !stack.isEmpty()
-						&& (stack.getDamageValue() < stack.getMaxDamage())
-						&& isExpectedTool(stack);
-			}));
-		} else if (!held.isEmpty() && held.getDamageValue() >= held.getMaxDamage()) {
-			startDelegateAI(new AIRobotGotoStationAndUnload(robot));
-		} else if (blockFound() != null) {
-			startDelegateAI(new AIRobotBreak(robot, blockFound()));
-		} else {
-			super.update();
-		}
-	}
+  @Override
+  public final void update() {
+    ItemStack held = robot.getMainHandItem();
+    if (!isExpectedTool(ItemStack.EMPTY) && held.isEmpty()) {
+      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, (ItemStack stack) -> {
+        return !stack.isEmpty()
+          && (stack.getDamageValue() < stack.getMaxDamage())
+          && isExpectedTool(stack);
+      }));
+    } else if (!held.isEmpty() && held.getDamageValue() >= held.getMaxDamage()) {
+      startDelegateAI(new AIRobotGotoStationAndUnload(robot));
+    } else if (blockFound() != null) {
+      startDelegateAI(new AIRobotBreak(robot, blockFound()));
+    } else {
+      super.update();
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotFetchAndEquipItemStack || ai instanceof AIRobotGotoStationAndUnload) {
-			if (!ai.success()) {
-				startDelegateAI(new AIRobotGotoSleep(robot));
-			}
-		} else if (ai instanceof AIRobotBreak) {
-			releaseBlockFound(ai.success());
-		}
-		super.delegateAIEnded(ai);
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotFetchAndEquipItemStack || ai instanceof AIRobotGotoStationAndUnload) {
+      if (!ai.success()) {
+        startDelegateAI(new AIRobotGotoSleep(robot));
+      }
+    } else if (ai instanceof AIRobotBreak) {
+      releaseBlockFound(ai.success());
+    }
+    super.delegateAIEnded(ai);
+  }
 }

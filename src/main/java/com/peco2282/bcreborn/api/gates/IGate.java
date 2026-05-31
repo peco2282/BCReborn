@@ -20,18 +20,18 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import java.util.List;
 
 public interface IGate extends ISidedStatementContainer {
-    @Deprecated
-    void setPulsing(boolean pulse);
+  @Deprecated
+  void setPulsing(boolean pulse);
 
-    IPipe getPipe();
+  IPipe getPipe();
 
-    List<IStatement> getTriggers();
+  List<IStatement> getTriggers();
 
-    List<IStatement> getActions();
+  List<IStatement> getActions();
 
-    List<StatementSlot> getActiveActions();
+  List<StatementSlot> getActiveActions();
 
-    List<IStatementParameter> getTriggerParameters(int index);
+  List<IStatementParameter> getTriggerParameters(int index);
 
-    List<IStatementParameter> getActionParameters(int index);
+  List<IStatementParameter> getActionParameters(int index);
 }

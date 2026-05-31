@@ -17,8 +17,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IRobotOverlayItem {
-    boolean isValidRobotOverlay(ItemStack stack);
+  boolean isValidRobotOverlay(ItemStack stack);
 
-    @OnlyIn(Dist.CLIENT)
-    void renderRobotOverlay(ItemStack stack, TextureManager textureManager);
+  @OnlyIn(Dist.CLIENT)
+  void renderRobotOverlay(ItemStack stack, TextureManager textureManager);
 }

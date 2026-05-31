@@ -18,42 +18,42 @@ import com.peco2282.bcreborn.robotics.IStationFilter;
 
 public class AIRobotRecharge extends AIRobot {
 
-	public AIRobotRecharge(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotRecharge(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public void start() {
-		robot.getRegistry().releaseResources(robot);
-		robot.setDeltaMovement(0, 0, 0);
+  @Override
+  public void start() {
+    robot.getRegistry().releaseResources(robot);
+    robot.setDeltaMovement(0, 0, 0);
 
-		startDelegateAI(new AIRobotSearchAndGotoStation(robot, new IStationFilter() {
-			@Override
-			public boolean matches(DockingStation station) {
-				return station.providesPower();
-			}
-		}, null));
-	}
+    startDelegateAI(new AIRobotSearchAndGotoStation(robot, new IStationFilter() {
+      @Override
+      public boolean matches(DockingStation station) {
+        return station.providesPower();
+      }
+    }, null));
+  }
 
-	@Override
-	public int getEnergyCost() {
-		return 0;
-	}
+  @Override
+  public int getEnergyCost() {
+    return 0;
+  }
 
-	@Override
-	public void update() {
-		if (robot.getEnergy() >= EntityRobotBase.MAX_ENERGY - 500) {
-			terminate();
-		}
-	}
+  @Override
+  public void update() {
+    if (robot.getEnergy() >= EntityRobotBase.MAX_ENERGY - 500) {
+      terminate();
+    }
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotSearchAndGotoStation) {
-			if (!ai.success()) {
-				setSuccess(false);
-				terminate();
-			}
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotSearchAndGotoStation) {
+      if (!ai.success()) {
+        setSuccess(false);
+        terminate();
+      }
+    }
+  }
 }

@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.common.utils;
 
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -21,15 +20,15 @@ import java.util.Optional;
 
 public final class CraftingUtils {
 
-	/**
-	 * Deactivate constructor
-	 */
-	private CraftingUtils() {
-	}
+  /**
+   * Deactivate constructor
+   */
+  private CraftingUtils() {
+  }
 
-	public static CraftingRecipe findMatchingRecipe(
-			CraftingContainer container, Level level) {
-		Optional<CraftingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container, level);
-		return recipe.orElse(null);
-	}
+  public static CraftingRecipe findMatchingRecipe(
+    CraftingContainer container, Level level) {
+    Optional<CraftingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container, level);
+    return recipe.orElse(null);
+  }
 }

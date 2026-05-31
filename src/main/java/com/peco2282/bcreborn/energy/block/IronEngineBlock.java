@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.energy.block;
 import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
 import com.peco2282.bcreborn.energy.block.entity.IronEngineBlockEntity;
-import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

@@ -11,31 +11,29 @@
  */
 package com.peco2282.bcreborn.common.inventory;
 
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.core.Direction;
-
 public abstract class Transactor implements ITransactor {
 
-	@Override
-	public ItemStack add(ItemStack stack, Direction orientation, boolean doAdd) {
-		ItemStack added = stack.copy();
-		added.setCount(inject(stack, orientation, doAdd));
-		return added;
-	}
+  public static ITransactor getTransactorFor(Object object) {
+    if (object instanceof WorldlyContainer) {
+      return new TransactorSimple((WorldlyContainer) object);
+    } else if (object instanceof Container) {
+      return new TransactorSimple((Container) object);
+    }
 
-	public abstract int inject(ItemStack stack, Direction orientation, boolean doAdd);
+    return null;
+  }
 
-	public static ITransactor getTransactorFor(Object object) {
-		if (object instanceof WorldlyContainer) {
-			return new TransactorSimple((WorldlyContainer) object);
-		} else if (object instanceof Container) {
-			return new TransactorSimple((Container) object);
-		}
+  @Override
+  public ItemStack add(ItemStack stack, Direction orientation, boolean doAdd) {
+    ItemStack added = stack.copy();
+    added.setCount(inject(stack, orientation, doAdd));
+    return added;
+  }
 
-		return null;
-	}
+  public abstract int inject(ItemStack stack, Direction orientation, boolean doAdd);
 }

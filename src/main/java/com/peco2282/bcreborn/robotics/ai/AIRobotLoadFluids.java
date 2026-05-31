@@ -11,90 +11,89 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
-import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.FluidStack;
-
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationProvideFluids;
+import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotLoadFluids extends AIRobot {
 
-	private int waitedCycles = 0;
-	private IFluidFilter filter;
+  private int waitedCycles = 0;
+  private IFluidFilter filter;
 
-	public AIRobotLoadFluids(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotLoadFluids(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public AIRobotLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
-		this(iRobot);
+  public AIRobotLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
+    this(iRobot);
 
-		filter = iFilter;
-		setSuccess(false);
-	}
+    filter = iFilter;
+    setSuccess(false);
+  }
 
-	@Override
-	public void update() {
-		if (filter == null) {
-			terminate();
-			return;
-		}
+  public static int load(EntityRobotBase robot, DockingStation station, IFluidFilter filter,
+                         boolean doLoad) {
+    if (station == null) {
+      return 0;
+    }
 
-		waitedCycles++;
+    if (!ActionRobotFilter.canInteractWithFluid(station, filter,
+      ActionStationProvideFluids.class)) {
+      return 0;
+    }
 
-		if (waitedCycles > 40) {
-			if (load(robot, robot.getDockingStation(), filter, true) == 0) {
-				terminate();
-			} else {
-				setSuccess(true);
-				waitedCycles = 0;
-			}
-		}
-	}
+    IFluidHandler handler = station.getFluidInput();
+    if (handler == null) {
+      return 0;
+    }
 
-	public static int load(EntityRobotBase robot, DockingStation station, IFluidFilter filter,
-						   boolean doLoad) {
-		if (station == null) {
-			return 0;
-		}
+    Direction side = station.getFluidInputSide();
 
-		if (!ActionRobotFilter.canInteractWithFluid(station, filter,
-				ActionStationProvideFluids.class)) {
-			return 0;
-		}
+    FluidStack drainable = handler.drain(FluidType.BUCKET_VOLUME,
+      IFluidHandler.FluidAction.SIMULATE);
+    if (drainable == FluidStack.EMPTY || !filter.matches(drainable.getFluid())) {
+      return 0;
+    }
 
-		IFluidHandler handler = station.getFluidInput();
-		if (handler == null) {
-			return 0;
-		}
+    drainable = drainable.copy();
+    int filled = robot.fill(drainable, doLoad ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
 
-		Direction side = station.getFluidInputSide();
+    if (filled > 0 && doLoad) {
+      drainable.setAmount(filled);
+      handler.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
+    }
+    return filled;
+  }
 
-		FluidStack drainable = handler.drain(FluidType.BUCKET_VOLUME,
-				IFluidHandler.FluidAction.SIMULATE);
-		if (drainable == FluidStack.EMPTY || !filter.matches(drainable.getFluid())) {
-			return 0;
-		}
+  @Override
+  public void update() {
+    if (filter == null) {
+      terminate();
+      return;
+    }
 
-		drainable = drainable.copy();
-		int filled = robot.fill(drainable, doLoad ? IFluidHandler.FluidAction.EXECUTE : IFluidHandler.FluidAction.SIMULATE);
+    waitedCycles++;
 
-		if (filled > 0 && doLoad) {
-			drainable.setAmount(filled);
-			handler.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
-		}
-		return filled;
-	}
+    if (waitedCycles > 40) {
+      if (load(robot, robot.getDockingStation(), filter, true) == 0) {
+        terminate();
+      } else {
+        setSuccess(true);
+        waitedCycles = 0;
+      }
+    }
+  }
 
-	@Override
-	public int getEnergyCost() {
-		return 8;
-	}
+  @Override
+  public int getEnergyCost() {
+    return 8;
+  }
 
 }

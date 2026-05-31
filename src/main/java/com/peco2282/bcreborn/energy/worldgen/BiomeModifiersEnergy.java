@@ -19,7 +19,6 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.Tags;
@@ -36,25 +35,25 @@ public class BiomeModifiersEnergy {
     HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
 
     context.register(
-        OIL_LAKE_DESERT,
-        new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-            biomes.getOrThrow(Tags.Biomes.IS_DESERT),
-            HolderSet.direct(
-                placedFeatures.getOrThrow(PlacedFeaturesEnergy.OIL_LAKE_DESERT)
-            ),
-            GenerationStep.Decoration.VEGETAL_DECORATION
-        )
+      OIL_LAKE_DESERT,
+      new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+        biomes.getOrThrow(Tags.Biomes.IS_DESERT),
+        HolderSet.direct(
+          placedFeatures.getOrThrow(PlacedFeaturesEnergy.OIL_LAKE_DESERT)
+        ),
+        GenerationStep.Decoration.VEGETAL_DECORATION
+      )
     );
 
     context.register(
-        OIL_LAKE_OCEAN,
-        new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-            biomes.getOrThrow(BiomeTags.IS_OCEAN),
-            HolderSet.direct(
-                placedFeatures.getOrThrow(PlacedFeaturesEnergy.OIL_LAKE_OCEAN)
-            ),
-            GenerationStep.Decoration.VEGETAL_DECORATION
-        )
+      OIL_LAKE_OCEAN,
+      new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+        biomes.getOrThrow(BiomeTags.IS_OCEAN),
+        HolderSet.direct(
+          placedFeatures.getOrThrow(PlacedFeaturesEnergy.OIL_LAKE_OCEAN)
+        ),
+        GenerationStep.Decoration.VEGETAL_DECORATION
+      )
     );
   }
 }

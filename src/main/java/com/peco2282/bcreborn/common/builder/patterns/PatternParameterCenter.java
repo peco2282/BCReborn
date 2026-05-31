@@ -26,68 +26,68 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterCenter implements IStatementParameter {
-    public static final Codec<PatternParameterCenter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.INT.fieldOf("direction").forGetter(p -> p.direction)
-    ).apply(instance, PatternParameterCenter::new));
-    private static final TextureAtlasSprite[] ICONS = new TextureAtlasSprite[9];
-    private static final int[] shiftLeft = {6, 3, 0, 7, 4, 1, 8, 5, 2};
-    private int direction;
+  public static final Codec<PatternParameterCenter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    Codec.INT.fieldOf("direction").forGetter(p -> p.direction)
+  ).apply(instance, PatternParameterCenter::new));
+  private static final TextureAtlasSprite[] ICONS = new TextureAtlasSprite[9];
+  private static final int[] shiftLeft = {6, 3, 0, 7, 4, 1, 8, 5, 2};
+  private int direction;
 
-    public PatternParameterCenter() {
-    }
+  public PatternParameterCenter() {
+  }
 
-    public PatternParameterCenter(int direction) {
-        this.direction = direction;
-    }
+  public PatternParameterCenter(int direction) {
+    this.direction = direction;
+  }
 
-    @Override
-    public String getUniqueTag() {
-        return "buildcraft:fillerParameterCenter";
-    }
+  @Override
+  public String getUniqueTag() {
+    return "buildcraft:fillerParameterCenter";
+  }
 
-    @Override
-    public TextureAtlasSprite getIcon() {
-        return ICONS[direction];
-    }
+  @Override
+  public TextureAtlasSprite getIcon() {
+    return ICONS[direction];
+  }
 
-    @Override
-    public ItemStack getItemStack() {
-        return null;
-    }
+  @Override
+  public ItemStack getItemStack() {
+    return null;
+  }
 
-    @Override
-    public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-        for (int i = 0; i < 9; i++) {
-            ICONS[i] = textureGetter.apply(BCRebornCore.location("item/filler_parameter/center_" + i + ".png"));
-        }
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    for (int i = 0; i < 9; i++) {
+      ICONS[i] = textureGetter.apply(BCRebornCore.location("item/filler_parameter/center_" + i + ".png"));
     }
+  }
 
-    @Override
-    public String getDescription() {
-        return "direction.center." + direction;
-    }
+  @Override
+  public String getDescription() {
+    return "direction.center." + direction;
+  }
 
-    @Override
-    public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-        direction = (direction + 1) % 9;
-    }
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    direction = (direction + 1) % 9;
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag compound) {
-        direction = compound.getByte("dir");
-    }
+  @Override
+  public void readFromNBT(CompoundTag compound) {
+    direction = compound.getByte("dir");
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag compound) {
-        compound.putByte("dir", (byte) direction);
-    }
+  @Override
+  public void writeToNBT(CompoundTag compound) {
+    compound.putByte("dir", (byte) direction);
+  }
 
-    @Override
-    public IStatementParameter rotateLeft() {
-        return new PatternParameterCenter(shiftLeft[direction % 9]);
-    }
+  @Override
+  public IStatementParameter rotateLeft() {
+    return new PatternParameterCenter(shiftLeft[direction % 9]);
+  }
 
-    public int getDirection() {
-        return direction;
-    }
+  public int getDirection() {
+    return direction;
+  }
 }

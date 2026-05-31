@@ -16,10 +16,8 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -29,110 +27,111 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFluidHandler {
-	public static final int[] REBUILD_DELAY = new int[8];
-	public static final int MAX_LIQUID = 2000;
-	private final TreeMap<Integer, Deque<BlockIndex>> pumpLayerQueues = new TreeMap<>();
-	private final Set<BlockIndex> visitedBlocks = new HashSet<>();
-	private Deque<BlockIndex> fluidsFound = new LinkedList<>();
-	private final FluidTank tank = new FluidTank(MAX_LIQUID);
-	private int rebuildDelay;
-	private int tick = Utils.RANDOM.nextInt();
-	private boolean powered = false;
-	private boolean[] blockedSides = new boolean[6];
+  public static final int[] REBUILD_DELAY = new int[8];
+  public static final int MAX_LIQUID = 2000;
 
-	static {
-		REBUILD_DELAY[0] = 128;
-		REBUILD_DELAY[1] = 256;
-		REBUILD_DELAY[2] = 512;
-		REBUILD_DELAY[3] = 1024;
-		REBUILD_DELAY[4] = 2048;
-		REBUILD_DELAY[5] = 4096;
-		REBUILD_DELAY[6] = 8192;
-		REBUILD_DELAY[7] = 16384;
-	}
+  static {
+    REBUILD_DELAY[0] = 128;
+    REBUILD_DELAY[1] = 256;
+    REBUILD_DELAY[2] = 512;
+    REBUILD_DELAY[3] = 1024;
+    REBUILD_DELAY[4] = 2048;
+    REBUILD_DELAY[5] = 4096;
+    REBUILD_DELAY[6] = 8192;
+    REBUILD_DELAY[7] = 16384;
+  }
 
-	public FloodGateBlockEntity(BlockPos pos, BlockState state) {
-		super(FactoryBlockEntityTypes.FLOOD_GATE.get(), pos, state);
-	}
+  private final TreeMap<Integer, Deque<BlockIndex>> pumpLayerQueues = new TreeMap<>();
+  private final Set<BlockIndex> visitedBlocks = new HashSet<>();
+  private final FluidTank tank = new FluidTank(MAX_LIQUID);
+  private final Deque<BlockIndex> fluidsFound = new LinkedList<>();
+  private int rebuildDelay;
+  private int tick = Utils.RANDOM.nextInt();
+  private boolean powered = false;
+  private final boolean[] blockedSides = new boolean[6];
 
-	@Override
-	public void tick(Level level, BlockPos pos, BlockState state) {
-		if (level.isClientSide) {
-			return;
-		}
+  public FloodGateBlockEntity(BlockPos pos, BlockState state) {
+    super(FactoryBlockEntityTypes.FLOOD_GATE.get(), pos, state);
+  }
 
-		if (powered) {
-			return;
-		}
+  @Override
+  public void tick(Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) {
+      return;
+    }
 
-		tick++;
-		if (tick % 16 == 0) {
-			// Placeholder logic for placing fluids
-		}
-	}
+    if (powered) {
+      return;
+    }
 
-	@Override
-	public void load(CompoundTag data) {
-		super.load(data);
-		tank.readFromNBT(data.getCompound("tank"));
-		rebuildDelay = data.getByte("rebuildDelay");
-		powered = data.getBoolean("powered");
-		for (int i = 0; i < 6; i++) {
-			blockedSides[i] = data.getBoolean("blocked[" + i + "]");
-		}
-	}
+    tick++;
+    if (tick % 16 == 0) {
+      // Placeholder logic for placing fluids
+    }
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag data) {
-		super.saveAdditional(data);
-		CompoundTag tankNbt = new CompoundTag();
-		tank.writeToNBT(tankNbt);
-		data.put("tank", tankNbt);
-		data.putByte("rebuildDelay", (byte) rebuildDelay);
-		data.putBoolean("powered", powered);
-		for (int i = 0; i < 6; i++) {
-			if (blockedSides[i]) {
-				data.putBoolean("blocked[" + i + "]", true);
-			}
-		}
-	}
+  @Override
+  public void load(CompoundTag data) {
+    super.load(data);
+    tank.readFromNBT(data.getCompound("tank"));
+    rebuildDelay = data.getByte("rebuildDelay");
+    powered = data.getBoolean("powered");
+    for (int i = 0; i < 6; i++) {
+      blockedSides[i] = data.getBoolean("blocked[" + i + "]");
+    }
+  }
 
-	@Override
-	public int getTanks() {
-		return 1;
-	}
+  @Override
+  public void saveAdditional(CompoundTag data) {
+    super.saveAdditional(data);
+    CompoundTag tankNbt = new CompoundTag();
+    tank.writeToNBT(tankNbt);
+    data.put("tank", tankNbt);
+    data.putByte("rebuildDelay", (byte) rebuildDelay);
+    data.putBoolean("powered", powered);
+    for (int i = 0; i < 6; i++) {
+      if (blockedSides[i]) {
+        data.putBoolean("blocked[" + i + "]", true);
+      }
+    }
+  }
 
-	@Override
-	public @NotNull FluidStack getFluidInTank(int tank) {
-		return this.tank.getFluid();
-	}
+  @Override
+  public int getTanks() {
+    return 1;
+  }
 
-	@Override
-	public int getTankCapacity(int tank) {
-		return this.tank.getCapacity();
-	}
+  @Override
+  public @NotNull FluidStack getFluidInTank(int tank) {
+    return this.tank.getFluid();
+  }
 
-	@Override
-	public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-		return true;
-	}
+  @Override
+  public int getTankCapacity(int tank) {
+    return this.tank.getCapacity();
+  }
 
-	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		return tank.fill(resource, action);
-	}
+  @Override
+  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    return true;
+  }
 
-	@Override
-	public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-		return FluidStack.EMPTY;
-	}
+  @Override
+  public int fill(FluidStack resource, FluidAction action) {
+    return tank.fill(resource, action);
+  }
 
-	@Override
-	public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-		return FluidStack.EMPTY;
-	}
+  @Override
+  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+    return FluidStack.EMPTY;
+  }
 
-	public boolean isSideBlocked(int side) {
-		return blockedSides[side];
-	}
+  @Override
+  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+    return FluidStack.EMPTY;
+  }
+
+  public boolean isSideBlocked(int side) {
+    return blockedSides[side];
+  }
 }

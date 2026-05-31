@@ -25,26 +25,26 @@ import java.io.File;
  */
 public abstract class BlueprintDeployer {
 
-	/**
-	 * The deployed instantiated by BuildCraft. This is set by the BuildCraft
-	 * builder mod. Mods that want to work with BuildCraft not installed should
-	 * check for this value to be not null.
-	 */
-	public static BlueprintDeployer instance;
+  /**
+   * The deployed instantiated by BuildCraft. This is set by the BuildCraft
+   * builder mod. Mods that want to work with BuildCraft not installed should
+   * check for this value to be not null.
+   */
+  public static BlueprintDeployer instance;
 
-	/**
-	 * Deploy the contents of the blueprints as if the builder was located at
-	 * {x, y, z} facing the direction dir.
-	 */
-	public abstract void deployBlueprint(Level world, int x, int y, int z,
-	                                     Direction dir, File file);
-			
-	/**
-	*Deploy the contents of the byte array as if the builder was located at
-	*{x, y, z} facing the direction dir.
-	*/
-	
-	public abstract void deployBlueprintFromFileStream(Level world, int x, int y,
-	int z, Direction dir, byte [] data);
+  /**
+   * Deploy the contents of the blueprints as if the builder was located at
+   * {x, y, z} facing the direction dir.
+   */
+  public abstract void deployBlueprint(Level world, int x, int y, int z,
+                                       Direction dir, File file);
+
+  /**
+   * Deploy the contents of the byte array as if the builder was located at
+   * {x, y, z} facing the direction dir.
+   */
+
+  public abstract void deployBlueprintFromFileStream(Level world, int x, int y,
+                                                     int z, Direction dir, byte[] data);
 
 }

@@ -23,67 +23,67 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  */
 public class Template extends BlueprintBase {
 
-    public Template() {
-        id.extension = "tpl";
+  public Template() {
+    id.extension = "tpl";
+  }
+
+  public Template(int sizeX, int sizeY, int sizeZ) {
+    super(sizeX, sizeY, sizeZ);
+    id.extension = "tpl";
+  }
+
+  @Override
+  public void readFromWorld(IBuilderContext context, BlockEntity anchorTile, int x, int y, int z) {
+    int posX = (int) (x - context.surroundingBox().pMin().x);
+    int posY = (int) (y - context.surroundingBox().pMin().y);
+    int posZ = (int) (z - context.surroundingBox().pMin().z);
+
+    BlockPos pos = new BlockPos(x, y, z);
+    if (!context.world().isEmptyBlock(pos)) {
+      put(posX, posY, posZ, new SchematicMask(true));
     }
+  }
 
-    public Template(int sizeX, int sizeY, int sizeZ) {
-        super(sizeX, sizeY, sizeZ);
-        id.extension = "tpl";
-    }
+  @Override
+  public void saveContents(CompoundTag nbt) {
+    // Note: this way of storing data is suboptimal, we really need a bit
+    // per mask entry, not a byte. However, this is fine, as compression
+    // will fix it.
+    byte[] data = new byte[sizeX * sizeY * sizeZ];
+    int ind = 0;
 
-    @Override
-    public void readFromWorld(IBuilderContext context, BlockEntity anchorTile, int x, int y, int z) {
-        int posX = (int) (x - context.surroundingBox().pMin().x);
-        int posY = (int) (y - context.surroundingBox().pMin().y);
-        int posZ = (int) (z - context.surroundingBox().pMin().z);
-
-        BlockPos pos = new BlockPos(x, y, z);
-        if (!context.world().isEmptyBlock(pos)) {
-            put(posX, posY, posZ, new SchematicMask(true));
+    for (int x = 0; x < sizeX; ++x) {
+      for (int y = 0; y < sizeY; ++y) {
+        for (int z = 0; z < sizeZ; ++z) {
+          data[ind] = (byte) ((get(x, y, z) == null) ? 0 : 1);
+          ind++;
         }
+      }
     }
 
-    @Override
-    public void saveContents(CompoundTag nbt) {
-        // Note: this way of storing data is suboptimal, we really need a bit
-        // per mask entry, not a byte. However, this is fine, as compression
-        // will fix it.
-        byte[] data = new byte[sizeX * sizeY * sizeZ];
-        int ind = 0;
+    nbt.putByteArray("mask", data);
+  }
 
-        for (int x = 0; x < sizeX; ++x) {
-            for (int y = 0; y < sizeY; ++y) {
-                for (int z = 0; z < sizeZ; ++z) {
-                    data[ind] = (byte) ((get(x, y, z) == null) ? 0 : 1);
-                    ind++;
-                }
-            }
+  @Override
+  public void loadContents(CompoundTag nbt) throws BptError {
+    byte[] data = nbt.getByteArray("mask");
+    int ind = 0;
+
+    for (int x = 0; x < sizeX; ++x) {
+      for (int y = 0; y < sizeY; ++y) {
+        for (int z = 0; z < sizeZ; ++z) {
+          if (data[ind] == 1) {
+            put(x, y, z, new SchematicMask(true));
+          }
+          ind++;
         }
-
-        nbt.putByteArray("mask", data);
+      }
     }
+  }
 
-    @Override
-    public void loadContents(CompoundTag nbt) throws BptError {
-        byte[] data = nbt.getByteArray("mask");
-        int ind = 0;
-
-        for (int x = 0; x < sizeX; ++x) {
-            for (int y = 0; y < sizeY; ++y) {
-                for (int z = 0; z < sizeZ; ++z) {
-                    if (data[ind] == 1) {
-                        put(x, y, z, new SchematicMask(true));
-                    }
-                    ind++;
-                }
-            }
-        }
-    }
-
-    @Override
-    public ItemStack getStack() {
-        // Item reference will be resolved at runtime via registry
-        return ItemStack.EMPTY;
-    }
+  @Override
+  public ItemStack getStack() {
+    // Item reference will be resolved at runtime via registry
+    return ItemStack.EMPTY;
+  }
 }

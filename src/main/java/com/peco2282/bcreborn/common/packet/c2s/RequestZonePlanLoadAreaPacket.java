@@ -23,28 +23,28 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record RequestZonePlanLoadAreaPacket(BlockPos pos, int index) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeByte(index);
-    }
+  public static RequestZonePlanLoadAreaPacket decode(FriendlyByteBuf buffer) {
+    return new RequestZonePlanLoadAreaPacket(buffer.readBlockPos(), buffer.readUnsignedByte());
+  }
 
-    public static RequestZonePlanLoadAreaPacket decode(FriendlyByteBuf buffer) {
-        return new RequestZonePlanLoadAreaPacket(buffer.readBlockPos(), buffer.readUnsignedByte());
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+    buffer.writeByte(index);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            ServerPlayer player = ctx.getSender();
-            if (player == null) return;
-            getBlockEntity(ctx, pos, BlockEntityTypesRobotics.ZONE_PLAN.get())
-                .ifPresent(be -> {
-                    ZonePlan plan = be.selectArea(index);
-                    BCNetworkManager.sendSyncZonePlanAreaLoaded(player, pos, plan);
-                });
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      ServerPlayer player = ctx.getSender();
+      if (player == null) return;
+      getBlockEntity(ctx, pos, BlockEntityTypesRobotics.ZONE_PLAN.get())
+        .ifPresent(be -> {
+          ZonePlan plan = be.selectArea(index);
+          BCNetworkManager.sendSyncZonePlanAreaLoaded(player, pos, plan);
         });
-        ctx.setPacketHandled(true);
-    }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

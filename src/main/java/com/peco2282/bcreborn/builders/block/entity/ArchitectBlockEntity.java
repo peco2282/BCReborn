@@ -26,7 +26,6 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
-import com.peco2282.bcreborn.common.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +34,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -48,28 +46,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, ContainerBlockEntity {
 
-  public enum Mode {
-    NONE, EDIT, COPY
-  }
-
   public String currentAuthorName = "";
   public Mode mode = Mode.NONE;
-
   public Box box = new Box();
   public String name = "";
   public BlueprintReadConfiguration readConfiguration = new BlueprintReadConfiguration();
-
   public ArrayList<LaserData> subLasers = new ArrayList<LaserData>();
   public ArrayList<BlockIndex> subBlueprints = new ArrayList<BlockIndex>();
-
-  private SimpleInventory inv = new SimpleInventory(2, "Architect", 1);
+  private final SimpleInventory inv = new SimpleInventory(2, "Architect", 1);
   private RecursiveBlueprintReader reader;
   private boolean clientIsWorking, initialized;
-
   public ArchitectBlockEntity(BlockPos pos, BlockState state) {
     super(BlockEntityTypesBuilders.ARCHITECT.get(), pos, state);
   }
@@ -238,10 +227,6 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     }
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public void setReadConfiguration(BlueprintReadConfiguration config) {
     this.readConfiguration = config;
   }
@@ -293,6 +278,10 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   @Override
   public @NotNull Component getName() {
     return getDisplayName();
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
@@ -375,5 +364,9 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
       completeBox.extendToEncompass(d.tail);
     }
     return completeBox.getBoundingBox();
+  }
+
+  public enum Mode {
+    NONE, EDIT, COPY
   }
 }

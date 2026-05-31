@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.api.recipes;
 
 public interface IFlexibleRecipeIngredient {
-    /**
-     * @return An ItemStack, FluidStack or List of ItemStacks containing the matches for this ingredient.
-     */
-    Object getIngredient();
+  /**
+   * @return An ItemStack, FluidStack or List of ItemStacks containing the matches for this ingredient.
+   */
+  Object getIngredient();
 }

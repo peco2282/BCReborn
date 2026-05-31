@@ -26,214 +26,214 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 public class SchematicBlock extends SchematicBlockBase {
-	public static final BlockIndex[] RELATIVE_INDEXES = new BlockIndex[] {
-			new BlockIndex(0, -1, 0),
-			new BlockIndex(0, 1, 0),
-			new BlockIndex(0, 0, -1),
-			new BlockIndex(0, 0, 1),
-			new BlockIndex(-1, 0, 0),
-			new BlockIndex(1, 0, 0),
-	};
-	public Direction facing = Direction.UP;
-	@Deprecated
-	public int meta = 0;
+  public static final BlockIndex[] RELATIVE_INDEXES = new BlockIndex[]{
+    new BlockIndex(0, -1, 0),
+    new BlockIndex(0, 1, 0),
+    new BlockIndex(0, 0, -1),
+    new BlockIndex(0, 0, 1),
+    new BlockIndex(-1, 0, 0),
+    new BlockIndex(1, 0, 0),
+  };
+  public Direction facing = Direction.UP;
+  @Deprecated
+  public int meta = 0;
 
-	@Deprecated
-	public Block block = null;
-	public BlockState state = null;
-	public BuildingPermission defaultPermission = BuildingPermission.ALL;
+  @Deprecated
+  public Block block = null;
+  public BlockState state = null;
+  public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
-	/**
-	 * This field contains requirements for a given block when stored in the
-	 * blueprint. Modders can either rely on this list or compute their own int
-	 * Schematic.
-	 */
-	public ItemStack[] storedRequirements = new ItemStack[0];
+  /**
+   * This field contains requirements for a given block when stored in the
+   * blueprint. Modders can either rely on this list or compute their own int
+   * Schematic.
+   */
+  public ItemStack[] storedRequirements = new ItemStack[0];
 
-	private boolean doNotUse = false;
+  private boolean doNotUse = false;
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		if (state != null) {
-			if (storedRequirements.length != 0) {
-				Collections.addAll(requirements, storedRequirements);
-			} else {
-				requirements.add(new ItemStack(state.getBlock()));
-			}
-		} else if (block != null) {
-			if (storedRequirements.length != 0) {
-				Collections.addAll(requirements, storedRequirements);
-			} else {
-				requirements.add(new ItemStack(block));
-			}
-		}
-	}
+  protected static boolean isBlock(IBuilderContext context, int x, int y, int z, Block... blocks) {
+    BlockState state = context.world().getBlockState(new BlockPos(x, y, z));
+    for (Block block : blocks) {
+      if (state.is(block)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
-		BlockPos pos = new BlockPos(x, y, z);
-		state = context.world().getBlockState(pos);
-		block = state.getBlock();
-		meta = 0; // No longer used, but keeping it at 0
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    if (state != null) {
+      if (storedRequirements.length != 0) {
+        Collections.addAll(requirements, storedRequirements);
+      } else {
+        requirements.add(new ItemStack(state.getBlock()));
+      }
+    } else if (block != null) {
+      if (storedRequirements.length != 0) {
+        Collections.addAll(requirements, storedRequirements);
+      } else {
+        requirements.add(new ItemStack(block));
+      }
+    }
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-		if (state != null) {
-			return state == worldState;
-		}
-		return block == worldState.getBlock();
-	}
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
+    BlockPos pos = new BlockPos(x, y, z);
+    state = context.world().getBlockState(pos);
+    block = state.getBlock();
+    meta = 0; // No longer used, but keeping it at 0
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		super.placeInWorld(context, x, y, z, stacks);
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
+    if (state != null) {
+      return state == worldState;
+    }
+    return block == worldState.getBlock();
+  }
 
-		this.setBlockInWorld(context, x, y, z);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    super.placeInWorld(context, x, y, z, stacks);
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		super.storeRequirements(context, x, y, z);
+    this.setBlockInWorld(context, x, y, z);
+  }
 
-		BlockPos pos = new BlockPos(x, y, z);
-		BlockState worldState = context.world().getBlockState(pos);
-		List<ItemStack> req = Block.getDrops(
-				worldState,
-				(net.minecraft.server.level.ServerLevel) context.world(),
-				pos,
-				context.world().getBlockEntity(pos));
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    super.storeRequirements(context, x, y, z);
 
-		if (req != null) {
-			storedRequirements = req.toArray(new ItemStack[0]);
-		}
-	}
+    BlockPos pos = new BlockPos(x, y, z);
+    BlockState worldState = context.world().getBlockState(pos);
+    List<ItemStack> req = Block.getDrops(
+      worldState,
+      (net.minecraft.server.level.ServerLevel) context.world(),
+      pos,
+      context.world().getBlockEntity(pos));
 
-	@Override
-	public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.writeSchematicToNBT(nbt, registry);
+    if (req != null) {
+      storedRequirements = req.toArray(new ItemStack[0]);
+    }
+  }
 
-		writeBlockToNBT(nbt, registry);
-		writeRequirementsToNBT(nbt, registry);
-	}
+  @Override
+  public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.writeSchematicToNBT(nbt, registry);
 
-	@Override
-	public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		super.readSchematicFromNBT(nbt, registry);
+    writeBlockToNBT(nbt, registry);
+    writeRequirementsToNBT(nbt, registry);
+  }
 
-		readBlockFromNBT(nbt, registry);
-		if (!doNotUse()) {
-			readRequirementsFromNBT(nbt, registry);
-		}
-	}
+  @Override
+  public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    super.readSchematicFromNBT(nbt, registry);
 
-	/**
-	 * Get a list of relative block coordinates which have to be built before
-	 * this block can be placed.
-	 */
-	public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-		Set<BlockIndex> indexes = new HashSet<BlockIndex>();
-		if (block instanceof FallingBlock) {
-			indexes.add(RELATIVE_INDEXES[1]); // DOWN index
-		}
-		return indexes;
-	}
+    readBlockFromNBT(nbt, registry);
+    if (!doNotUse()) {
+      readRequirementsFromNBT(nbt, registry);
+    }
+  }
 
-	@Override
-	public BuildingStage getBuildStage() {
-		if (block instanceof LiquidBlock) {
-			return BuildingStage.EXPANDING;
-		} else {
-			return BuildingStage.STANDALONE;
-		}
-	}
+  /**
+   * Get a list of relative block coordinates which have to be built before
+   * this block can be placed.
+   */
+  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
+    Set<BlockIndex> indexes = new HashSet<BlockIndex>();
+    if (block instanceof FallingBlock) {
+      indexes.add(RELATIVE_INDEXES[1]); // DOWN index
+    }
+    return indexes;
+  }
 
-	@Override
-	public BuildingPermission getBuildingPermission() {
-		return defaultPermission;
-	}
+  @Override
+  public BuildingStage getBuildStage() {
+    if (block instanceof LiquidBlock) {
+      return BuildingStage.EXPANDING;
+    } else {
+      return BuildingStage.STANDALONE;
+    }
+  }
 
-	// Utility functions
-	protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
-		if (state != null) {
-			context.world().setBlock(new BlockPos(x, y, z), state, 3);
-		} else if (block != null) {
-			context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
-		}
-	}
+  @Override
+  public BuildingPermission getBuildingPermission() {
+    return defaultPermission;
+  }
 
-	public boolean doNotUse() {
-		return doNotUse;
-	}
+  // Utility functions
+  protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
+    if (state != null) {
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
+    } else if (block != null) {
+      context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+    }
+  }
 
-	protected void readBlockFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		try {
-			state = registry.readBlockStateFromNBT(nbt);
-			block = state.getBlock();
-		} catch (MappingNotFoundException e) {
-			doNotUse = true;
-		}
-	}
+  public boolean doNotUse() {
+    return doNotUse;
+  }
 
-	protected void readRequirementsFromNBT(CompoundTag nbt, MappingRegistry registry) {
-		if (nbt.contains("rq")) {
-			ListTag rq = nbt.getList("rq", Tag.TAG_COMPOUND);
+  protected void readBlockFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    try {
+      state = registry.readBlockStateFromNBT(nbt);
+      block = state.getBlock();
+    } catch (MappingNotFoundException e) {
+      doNotUse = true;
+    }
+  }
 
-			ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
-			for (int i = 0; i < rq.size(); ++i) {
-				try {
-					CompoundTag sub = rq.getCompound(i);
-					if (sub.getInt("id") >= 0) {
-						registry.stackToWorld(sub);
-						ItemStack stack = ItemStack.of(sub);
-						if (!stack.isEmpty()) {
-							rqs.add(stack);
-						}
-					} else {
-						defaultPermission = BuildingPermission.CREATIVE_ONLY;
-					}
-				} catch (MappingNotFoundException e) {
-					defaultPermission = BuildingPermission.CREATIVE_ONLY;
-				} catch (Throwable t) {
-					t.printStackTrace();
-					defaultPermission = BuildingPermission.CREATIVE_ONLY;
-				}
-			}
+  protected void readRequirementsFromNBT(CompoundTag nbt, MappingRegistry registry) {
+    if (nbt.contains("rq")) {
+      ListTag rq = nbt.getList("rq", Tag.TAG_COMPOUND);
 
-			storedRequirements = rqs.toArray(new ItemStack[0]);
-		} else {
-			storedRequirements = new ItemStack[0];
-		}
-	}
+      ArrayList<ItemStack> rqs = new ArrayList<ItemStack>();
+      for (int i = 0; i < rq.size(); ++i) {
+        try {
+          CompoundTag sub = rq.getCompound(i);
+          if (sub.getInt("id") >= 0) {
+            registry.stackToWorld(sub);
+            ItemStack stack = ItemStack.of(sub);
+            if (!stack.isEmpty()) {
+              rqs.add(stack);
+            }
+          } else {
+            defaultPermission = BuildingPermission.CREATIVE_ONLY;
+          }
+        } catch (MappingNotFoundException e) {
+          defaultPermission = BuildingPermission.CREATIVE_ONLY;
+        } catch (Throwable t) {
+          t.printStackTrace();
+          defaultPermission = BuildingPermission.CREATIVE_ONLY;
+        }
+      }
 
-	protected void writeBlockToNBT(CompoundTag nbt, MappingRegistry registry) {
-		registry.writeBlockStateToNBT(nbt, state);
-	}
+      storedRequirements = rqs.toArray(new ItemStack[0]);
+    } else {
+      storedRequirements = new ItemStack[0];
+    }
+  }
 
-	protected void writeRequirementsToNBT(CompoundTag nbt, MappingRegistry registry) {
-		if (storedRequirements.length > 0) {
-			ListTag rq = new ListTag();
+  protected void writeBlockToNBT(CompoundTag nbt, MappingRegistry registry) {
+    registry.writeBlockStateToNBT(nbt, state);
+  }
 
-			for (ItemStack stack : storedRequirements) {
-				CompoundTag sub = new CompoundTag();
-				stack.save(sub);
-				registry.stackToRegistry(sub);
-				rq.add(sub);
-			}
+  protected void writeRequirementsToNBT(CompoundTag nbt, MappingRegistry registry) {
+    if (storedRequirements.length > 0) {
+      ListTag rq = new ListTag();
 
-			nbt.put("rq", rq);
-		}
-	}
+      for (ItemStack stack : storedRequirements) {
+        CompoundTag sub = new CompoundTag();
+        stack.save(sub);
+        registry.stackToRegistry(sub);
+        rq.add(sub);
+      }
 
-	protected static boolean isBlock(IBuilderContext context, int x, int y, int z, Block... blocks) {
-		BlockState state = context.world().getBlockState(new BlockPos(x, y, z));
-		for (Block block : blocks) {
-			if (state.is(block)) {
-				return true;
-			}
-		}
-		return false;
-	}
+      nbt.put("rq", rq);
+    }
+  }
 }

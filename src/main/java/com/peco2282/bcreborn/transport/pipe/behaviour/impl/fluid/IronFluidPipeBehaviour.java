@@ -66,7 +66,7 @@ public class IronFluidPipeBehaviour implements FluidPipeBehaviour {
       BlockState newState = state;
       for (Direction dir : Direction.values()) {
         newState = newState.setValue(PipeBlock.PROPERTY_MAP.get(dir),
-            state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
+          state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
       }
       level.setBlock(pos, newState, 3);
       player.displayClientMessage(Component.literal("Output direction: " + next.name()), true);

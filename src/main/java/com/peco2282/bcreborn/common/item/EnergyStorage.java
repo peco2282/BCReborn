@@ -25,7 +25,7 @@ public class EnergyStorage implements IEnergyStorage {
 
   public void read(CompoundTag tag) {
     if (tag.contains("energy") && tag.contains("maxEnergy") && tag.contains("maxReceive") && tag.contains("maxExtract")
-        && tag.getInt("maxEnergy") > 0) {
+      && tag.getInt("maxEnergy") > 0) {
       this.energy = tag.getInt("energy");
       this.maxEnergy = tag.getInt("maxEnergy");
       this.maxReceive = tag.getInt("maxReceive");

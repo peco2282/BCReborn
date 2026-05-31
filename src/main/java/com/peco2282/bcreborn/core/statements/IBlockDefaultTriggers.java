@@ -16,11 +16,12 @@ import net.minecraft.core.Direction;
 /**
  * A tile entity implementing this interface will be able to prevent BuildCraft from
  * adding default triggers.
- *
+ * <p>
  * This does not block other statement providers from adding triggers or actions.
  * See IOverrideDefaultStatements for a more aggressive approach.
  */
 public interface IBlockDefaultTriggers {
-	boolean blockInventoryTriggers(Direction side);
-	boolean blockFluidHandlerTriggers(Direction side);
+  boolean blockInventoryTriggers(Direction side);
+
+  boolean blockFluidHandlerTriggers(Direction side);
 }

@@ -25,67 +25,67 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class PatternParameterXZDir implements IStatementParameter {
-    public static final Codec<PatternParameterXZDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("dir").forGetter(p -> p.direction)
-    ).apply(instance, PatternParameterXZDir::new));
+  public static final Codec<PatternParameterXZDir> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    Codec.INT.fieldOf("dir").forGetter(p -> p.direction)
+  ).apply(instance, PatternParameterXZDir::new));
 
-    private static final String[] names = {"west", "east", "north", "south"};
-    private static final int[] shiftLeft = {3, 2, 0, 1};
-    private static final int[] shiftRight = {2, 3, 1, 0};
-    private int direction;
+  private static final String[] names = {"west", "east", "north", "south"};
+  private static final int[] shiftLeft = {3, 2, 0, 1};
+  private static final int[] shiftRight = {2, 3, 1, 0};
+  private int direction;
 
-    public PatternParameterXZDir() {
-    }
+  public PatternParameterXZDir() {
+  }
 
-    public PatternParameterXZDir(int direction) {
-        this.direction = direction;
-    }
+  public PatternParameterXZDir(int direction) {
+    this.direction = direction;
+  }
 
-    @Override
-    public String getUniqueTag() {
-        return "buildcraft:fillerParameterXZDir";
-    }
+  @Override
+  public String getUniqueTag() {
+    return "buildcraft:fillerParameterXZDir";
+  }
 
-    @Override
-    public TextureAtlasSprite getIcon() {
-        return null;
-    }
+  @Override
+  public TextureAtlasSprite getIcon() {
+    return null;
+  }
 
-    @Override
-    public ItemStack getItemStack() {
-        return null;
-    }
+  @Override
+  public ItemStack getItemStack() {
+    return null;
+  }
 
-    @Override
-    public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    }
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+  }
 
-    @Override
-    public String getDescription() {
-        return "direction." + names[direction & 3];
-    }
+  @Override
+  public String getDescription() {
+    return "direction." + names[direction & 3];
+  }
 
-    @Override
-    public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-        direction = shiftRight[direction & 3];
-    }
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    direction = shiftRight[direction & 3];
+  }
 
-    @Override
-    public void readFromNBT(CompoundTag compound) {
-        direction = compound.getByte("dir");
-    }
+  @Override
+  public void readFromNBT(CompoundTag compound) {
+    direction = compound.getByte("dir");
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag compound) {
-        compound.putByte("dir", (byte) direction);
-    }
+  @Override
+  public void writeToNBT(CompoundTag compound) {
+    compound.putByte("dir", (byte) direction);
+  }
 
-    @Override
-    public IStatementParameter rotateLeft() {
-        return new PatternParameterXZDir(shiftLeft[direction & 3]);
-    }
+  @Override
+  public IStatementParameter rotateLeft() {
+    return new PatternParameterXZDir(shiftLeft[direction & 3]);
+  }
 
-    public int getDirection() {
-        return direction;
-    }
+  public int getDirection() {
+    return direction;
+  }
 }

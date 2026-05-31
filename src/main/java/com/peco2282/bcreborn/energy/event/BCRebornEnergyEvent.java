@@ -12,10 +12,8 @@
 package com.peco2282.bcreborn.energy.event;
 
 import com.peco2282.bcreborn.BCReborn;
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.BCRebornEnergy;
 import com.peco2282.bcreborn.common.block.render.EngineBlockRenderer;
-import com.peco2282.bcreborn.core.BlockEntityTypesCore;
 import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
 import com.peco2282.bcreborn.energy.MenuTypesEnergy;
 import com.peco2282.bcreborn.energy.screen.IronEngineScreen;

@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.api.core;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

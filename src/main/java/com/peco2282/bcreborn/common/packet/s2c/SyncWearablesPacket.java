@@ -21,30 +21,30 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public record SyncWearablesPacket(
-        int entityId,
-        List<ItemStack> wearables
+  int entityId,
+  List<ItemStack> wearables
 ) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(entityId);
-        buffer.writeInt(wearables.size());
-        for (ItemStack stack : wearables) {
-            buffer.writeItem(stack);
-        }
-    }
+  public static SyncWearablesPacket decode(FriendlyByteBuf buffer) {
+    return new SyncWearablesPacket(buffer.readInt(), buffer.readList(FriendlyByteBuf::readItem));
+  }
 
-    public static SyncWearablesPacket decode(FriendlyByteBuf buffer) {
-        return new SyncWearablesPacket(buffer.readInt(), buffer.readList(FriendlyByteBuf::readItem));
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeInt(entityId);
+    buffer.writeInt(wearables.size());
+    for (ItemStack stack : wearables) {
+      buffer.writeItem(stack);
     }
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> {
-            EntityRobot robot = (EntityRobot) supplier.get().getSender().serverLevel().getEntity(entityId);
-            if (robot != null) {
-                robot.doSyncWearables(wearables);
-            }
-        });
-        supplier.get().setPacketHandled(true);
-    }
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    supplier.get().enqueueWork(() -> {
+      EntityRobot robot = (EntityRobot) supplier.get().getSender().serverLevel().getEntity(entityId);
+      if (robot != null) {
+        robot.doSyncWearables(wearables);
+      }
+    });
+    supplier.get().setPacketHandled(true);
+  }
 }

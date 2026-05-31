@@ -17,5 +17,5 @@ import com.peco2282.bcreborn.common.Box;
 import java.util.ArrayList;
 
 public interface IBoxesProvider {
-	ArrayList<Box> getBoxes();
+  ArrayList<Box> getBoxes();
 }

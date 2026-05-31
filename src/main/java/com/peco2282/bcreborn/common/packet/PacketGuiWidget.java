@@ -17,30 +17,30 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record PacketGuiWidget(int windowId, int widgetId, byte[] data) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(windowId);
-        buffer.writeInt(widgetId);
-        buffer.writeByteArray(data);
-    }
+  public static PacketGuiWidget decode(FriendlyByteBuf buffer) {
+    return new PacketGuiWidget(buffer.readInt(), buffer.readInt(), buffer.readByteArray());
+  }
 
-    public static PacketGuiWidget decode(FriendlyByteBuf buffer) {
-        return new PacketGuiWidget(buffer.readInt(), buffer.readInt(), buffer.readByteArray());
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeInt(windowId);
+    buffer.writeInt(widgetId);
+    buffer.writeByteArray(data);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        // This is handled by BuildCraftMenu usually, but let's implement basic handling here if needed
-        // In 1.20.1, we often handle this in the menu itself via a custom message
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-             net.minecraft.client.player.LocalPlayer player = net.minecraft.client.Minecraft.getInstance().player;
-             if (player != null && player.containerMenu.containerId == windowId) {
-                 if (player.containerMenu instanceof com.peco2282.bcreborn.common.menu.BuildCraftMenu<?> menu) {
-                     menu.handleWidgetClientData(widgetId, new FriendlyByteBuf(io.netty.buffer.Unpooled.wrappedBuffer(data)));
-                 }
-             }
-        });
-        ctx.setPacketHandled(true);
-    }
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    // This is handled by BuildCraftMenu usually, but let's implement basic handling here if needed
+    // In 1.20.1, we often handle this in the menu itself via a custom message
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      net.minecraft.client.player.LocalPlayer player = net.minecraft.client.Minecraft.getInstance().player;
+      if (player != null && player.containerMenu.containerId == windowId) {
+        if (player.containerMenu instanceof com.peco2282.bcreborn.common.menu.BuildCraftMenu<?> menu) {
+          menu.handleWidgetClientData(widgetId, new FriendlyByteBuf(io.netty.buffer.Unpooled.wrappedBuffer(data)));
+        }
+      }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

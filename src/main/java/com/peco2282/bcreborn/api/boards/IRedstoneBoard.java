@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.api.boards;
 
 public interface IRedstoneBoard<T> {
 
-	void updateBoard(T container);
+  void updateBoard(T container);
 
-	RedstoneBoardNBT<?> getNBTHandler();
+  RedstoneBoardNBT<?> getNBTHandler();
 }

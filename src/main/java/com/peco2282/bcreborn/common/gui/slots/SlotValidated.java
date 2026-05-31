@@ -18,12 +18,12 @@ import net.minecraft.world.item.ItemStack;
 
 public class SlotValidated extends Slot {
 
-	public SlotValidated(Container inv, int id, int x, int y) {
-		super(inv, id, x, y);
-	}
+  public SlotValidated(Container inv, int id, int x, int y) {
+    super(inv, id, x, y);
+  }
 
-	@Override
-	public boolean mayPlace(ItemStack itemStack) {
-		return container.canPlaceItem(this.getSlotIndex(), itemStack);
-	}
+  @Override
+  public boolean mayPlace(ItemStack itemStack) {
+    return container.canPlaceItem(this.getSlotIndex(), itemStack);
+  }
 }

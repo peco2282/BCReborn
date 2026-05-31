@@ -16,26 +16,26 @@ import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 
 public enum LockButtonState implements IMultiButtonState {
 
-	UNLOCKED(new ButtonTextureSet(224, 0, 16, 16)), LOCKED(new ButtonTextureSet(240, 0, 16, 16));
-	public static final LockButtonState[] VALUES = values();
-	private final IButtonTextureSet texture;
+  UNLOCKED(new ButtonTextureSet(224, 0, 16, 16)), LOCKED(new ButtonTextureSet(240, 0, 16, 16));
+  public static final LockButtonState[] VALUES = values();
+  private final IButtonTextureSet texture;
 
-	LockButtonState(IButtonTextureSet texture) {
-		this.texture = texture;
-	}
+  LockButtonState(IButtonTextureSet texture) {
+    this.texture = texture;
+  }
 
-	@Override
-	public String getLabel() {
-		return "";
-	}
+  @Override
+  public String getLabel() {
+    return "";
+  }
 
-	@Override
-	public IButtonTextureSet getTextureSet() {
-		return texture;
-	}
+  @Override
+  public IButtonTextureSet getTextureSet() {
+    return texture;
+  }
 
-	@Override
-	public ToolTip getToolTip() {
-		return null;
-	}
+  @Override
+  public ToolTip getToolTip() {
+    return null;
+  }
 }

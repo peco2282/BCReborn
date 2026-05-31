@@ -17,12 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<EntityRobotBase> {
 
-    @Override
-    public RedstoneBoardRobot create(CompoundTag nbt, EntityRobotBase robot) {
-        return create(robot);
-    }
+  @Override
+  public RedstoneBoardRobot create(CompoundTag nbt, EntityRobotBase robot) {
+    return create(robot);
+  }
 
-    public abstract RedstoneBoardRobot create(Object robot);
+  public abstract RedstoneBoardRobot create(Object robot);
 
-    public abstract ResourceLocation getRobotTexture();
+  public abstract ResourceLocation getRobotTexture();
 }

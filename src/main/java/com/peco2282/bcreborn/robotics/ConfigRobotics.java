@@ -27,11 +27,25 @@ public class ConfigRobotics {
   // boards blacklist
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> boardsBlacklist;
 
-  public static boolean isRobot() { return robot.get(); }
-  public static boolean isRobotStation() { return robotStation.get(); }
-  public static boolean isArchitectBlock() { return architectBlock.get(); }
-  public static boolean isConstructionMarkerBlock() { return constructionMarkerBlock.get(); }
-  public static List<? extends String> getBoardsBlacklist() { return boardsBlacklist.get(); }
+  public static boolean isRobot() {
+    return robot.get();
+  }
+
+  public static boolean isRobotStation() {
+    return robotStation.get();
+  }
+
+  public static boolean isArchitectBlock() {
+    return architectBlock.get();
+  }
+
+  public static boolean isConstructionMarkerBlock() {
+    return constructionMarkerBlock.get();
+  }
+
+  public static List<? extends String> getBoardsBlacklist() {
+    return boardsBlacklist.get();
+  }
 
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Robotics settings").push("robotics");
@@ -47,7 +61,7 @@ public class ConfigRobotics {
     builder.pop();
 
     boardsBlacklist = builder.comment("Blacklisted robot boards")
-        .defineList("boards.blacklist", List.of(), e -> e instanceof String);
+      .defineList("boards.blacklist", List.of(), e -> e instanceof String);
 
     builder.pop();
     return builder;

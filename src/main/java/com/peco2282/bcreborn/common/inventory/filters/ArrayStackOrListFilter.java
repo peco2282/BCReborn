@@ -20,22 +20,22 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ArrayStackOrListFilter extends ArrayStackFilter {
 
-	public ArrayStackOrListFilter(ItemStack... stacks) {
-		super(stacks);
-	}
+  public ArrayStackOrListFilter(ItemStack... stacks) {
+    super(stacks);
+  }
 
-	@Override
-	public boolean matches(ItemStack stack) {
-		if (stacks.length == 0 || !hasFilter()) {
-			return true;
-		}
+  @Override
+  public boolean matches(ItemStack stack) {
+    if (stacks.length == 0 || !hasFilter()) {
+      return true;
+    }
 
-		for (ItemStack s : stacks) {
-			if (StackHelper.isMatchingItemOrList(s, stack)) {
-				return true;
-			}
-		}
+    for (ItemStack s : stacks) {
+      if (StackHelper.isMatchingItemOrList(s, stack)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

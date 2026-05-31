@@ -32,95 +32,95 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PaintbrushItem extends BuildCraftItem {
-    public static final String TAG_COLOR = "color";
+  public static final String TAG_COLOR = "color";
 
-    public PaintbrushItem() {
-        super(new Properties().stacksTo(1).durability(63));
+  public PaintbrushItem() {
+    super(new Properties().stacksTo(1).durability(63));
+  }
+
+  public static int getColor(ItemStack stack) {
+    CompoundTag tag = stack.getTag();
+    return tag != null && tag.contains(TAG_COLOR) ? tag.getByte(TAG_COLOR) : -1;
+  }
+
+  public static void setColor(ItemStack stack, int color) {
+    if (color < 0) {
+      stack.removeTagKey(TAG_COLOR);
+    } else {
+      stack.getOrCreateTag().putByte(TAG_COLOR, (byte) color);
+    }
+  }
+
+  @Override
+  public Component getName(ItemStack stack) {
+    Component base = super.getName(stack);
+    int color = getColor(stack);
+
+    if (color >= 0) {
+      return Component.literal(base.getString() + " (" + DyeColor.byId(color) + ")");
     }
 
-    public static int getColor(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        return tag != null && tag.contains(TAG_COLOR) ? tag.getByte(TAG_COLOR) : -1;
-    }
+    return base;
+  }
 
-    public static void setColor(ItemStack stack, int color) {
-        if (color < 0) {
-            stack.removeTagKey(TAG_COLOR);
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    int color = getColor(stack);
+    if (color >= 0) {
+      tooltip.add(Component.translatable("color.minecraft." + DyeColor.byId(15 - color).getName()));
+    }
+  }
+
+  @Override
+  public InteractionResult useOn(UseOnContext context) {
+    ItemStack stack = context.getItemInHand();
+    Level level = context.getLevel();
+    BlockPos pos = context.getClickedPos();
+    Direction side = context.getClickedFace();
+
+    int color = getColor(stack);
+    BlockState state = level.getBlockState(pos);
+    Block block = state.getBlock();
+
+    if (color >= 0) {
+      DyeColor dyeColor = DyeColor.byId(15 - color);
+      if (block instanceof IColoredBlock colored) {
+
+        if (colored.recolorBlock(state, level, pos, side, dyeColor)) {
+          if (!level.isClientSide) {
+            stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
+          }
+
+          if (context.getPlayer() != null) {
+            context.getPlayer().swing(context.getHand());
+          }
+
+          return InteractionResult.sidedSuccess(level.isClientSide);
         } else {
-            stack.getOrCreateTag().putByte(TAG_COLOR, (byte) color);
+          return InteractionResult.sidedSuccess(level.isClientSide);
         }
-    }
-
-    @Override
-    public Component getName(ItemStack stack) {
-        Component base = super.getName(stack);
-        int color = getColor(stack);
-
-        if (color >= 0) {
-            return Component.literal(base.getString() + " (" + DyeColor.byId(color) + ")");
+      }
+    } else if (block instanceof IColorRemovable removable) {
+      if (removable.removeColorFromBlock(level, pos.getX(), pos.getY(), pos.getZ(), side)) {
+        if (context.getPlayer() != null) {
+          context.getPlayer().swing(context.getHand());
         }
 
-        return base;
+        return InteractionResult.sidedSuccess(level.isClientSide);
+      }
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        int color = getColor(stack);
-        if (color >= 0) {
-            tooltip.add(Component.translatable("color.minecraft." + DyeColor.byId(15 - color).getName()));
-        }
-    }
+    return InteractionResult.PASS;
+  }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        ItemStack stack = context.getItemInHand();
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        Direction side = context.getClickedFace();
+  private boolean tryRecolorBlock(Level level, BlockPos pos, BlockState state, DyeColor dyeColor) {
+    // Custom recoloring logic for blocks that support color properties
+    // This is a placeholder - implement actual recoloring based on your block types
+    return false;
+  }
 
-        int color = getColor(stack);
-        BlockState state = level.getBlockState(pos);
-        Block block = state.getBlock();
-
-        if (color >= 0) {
-            DyeColor dyeColor = DyeColor.byId(15 - color);
-            if (block instanceof IColoredBlock colored) {
-
-                if (colored.recolorBlock(state, level, pos, side, dyeColor)) {
-                    if (!level.isClientSide) {
-                        stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
-                    }
-
-                    if (context.getPlayer() != null) {
-                        context.getPlayer().swing(context.getHand());
-                    }
-
-                    return InteractionResult.sidedSuccess(level.isClientSide);
-                } else {
-                    return InteractionResult.sidedSuccess(level.isClientSide);
-                }
-            }
-        } else if (block instanceof IColorRemovable removable) {
-            if (removable.removeColorFromBlock(level, pos.getX(), pos.getY(), pos.getZ(), side)) {
-                if (context.getPlayer() != null) {
-                    context.getPlayer().swing(context.getHand());
-                }
-
-                return InteractionResult.sidedSuccess(level.isClientSide);
-            }
-        }
-
-        return InteractionResult.PASS;
-    }
-
-    private boolean tryRecolorBlock(Level level, BlockPos pos, BlockState state, DyeColor dyeColor) {
-        // Custom recoloring logic for blocks that support color properties
-        // This is a placeholder - implement actual recoloring based on your block types
-        return false;
-    }
-
-    @Override
-    public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader world, BlockPos pos, net.minecraft.world.entity.player.Player player) {
-        return true;
-    }
+  @Override
+  public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader world, BlockPos pos, net.minecraft.world.entity.player.Player player) {
+    return true;
+  }
 }

@@ -15,16 +15,13 @@ import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.power.IEngine;
 import com.peco2282.bcreborn.api.power.ILaserTarget;
 import com.peco2282.bcreborn.api.transport.IInjectable;
-import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.common.inventory.ITransactor;
 import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.inventory.Transactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,135 +36,135 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Utils {
-	public static final boolean CAULDRON_DETECTED;
-	public static final XorShift128Random RANDOM = new XorShift128Random();
-	private static final List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
+  public static final boolean CAULDRON_DETECTED;
+  public static final XorShift128Random RANDOM = new XorShift128Random();
+  private static final List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
 
-	static {
-		boolean cauldron = false;
-		try {
-			cauldron = Utils.class.getClassLoader().loadClass("org.spigotmc.SpigotConfig") != null;
-		} catch (ClassNotFoundException e) {
+  static {
+    boolean cauldron = false;
+    try {
+      cauldron = Utils.class.getClassLoader().loadClass("org.spigotmc.SpigotConfig") != null;
+    } catch (ClassNotFoundException e) {
 
-		}
-		CAULDRON_DETECTED = cauldron;
-	}
+    }
+    CAULDRON_DETECTED = cauldron;
+  }
 
 
-	/**
-	 * Deactivate constructor
-	 */
-	private Utils() {
-	}
+  /**
+   * Deactivate constructor
+   */
+  private Utils() {
+  }
 
-	public static boolean isRegistered(Block block) {
-		return block != null && net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block) != null;
-	}
+  public static boolean isRegistered(Block block) {
+    return block != null && net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block) != null;
+  }
 
-	public static boolean isRegistered(Item item) {
-		return item != null && net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item) != null;
-	}
+  public static boolean isRegistered(Item item) {
+    return item != null && net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item) != null;
+  }
 
-	public static boolean isRegistered(ItemStack stack) {
-	    if (stack == null || stack.isEmpty()) {
-	        return false;
-	    }
-	    return isRegistered(stack.getItem());
-	}
+  public static boolean isRegistered(ItemStack stack) {
+    if (stack == null || stack.isEmpty()) {
+      return false;
+    }
+    return isRegistered(stack.getItem());
+  }
 
-	/**
-	 * Tries to add the passed stack to any valid inventories around the given
-	 * coordinates.
-	 *
-	 * @param stack
-	 * @param world
-	 * @param pos
-	 * @return amount used
-	 */
-	public static int addToRandomInventoryAround(Level world, BlockPos pos, ItemStack stack) {
-		Collections.shuffle(directions);
-		for (Direction orientation : directions) {
-			BlockPos neighbor = pos.relative(orientation);
+  /**
+   * Tries to add the passed stack to any valid inventories around the given
+   * coordinates.
+   *
+   * @param stack
+   * @param world
+   * @param pos
+   * @return amount used
+   */
+  public static int addToRandomInventoryAround(Level world, BlockPos pos, ItemStack stack) {
+    Collections.shuffle(directions);
+    for (Direction orientation : directions) {
+      BlockPos neighbor = pos.relative(orientation);
 
-			BlockEntity tileInventory = BlockUtils.getTileEntity(world, neighbor);
-			ITransactor transactor = Transactor.getTransactorFor(tileInventory);
-			if (transactor != null && !(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
-				ItemStack added = transactor.add(stack, orientation.getOpposite(), true);
-				if (!added.isEmpty()) {
-					return added.getCount();
-				}
-			}
-		}
-		return 0;
-	}
+      BlockEntity tileInventory = BlockUtils.getTileEntity(world, neighbor);
+      ITransactor transactor = Transactor.getTransactorFor(tileInventory);
+      if (transactor != null && !(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
+        ItemStack added = transactor.add(stack, orientation.getOpposite(), true);
+        if (!added.isEmpty()) {
+          return added.getCount();
+        }
+      }
+    }
+    return 0;
+  }
 
-	public static int addToRandomInjectableAround(Level world, BlockPos pos, Direction from, ItemStack stack) {
-		List<IInjectable> possiblePipes = new ArrayList<IInjectable>();
-		List<Direction> pipeDirections = new ArrayList<Direction>();
+  public static int addToRandomInjectableAround(Level world, BlockPos pos, Direction from, ItemStack stack) {
+    List<IInjectable> possiblePipes = new ArrayList<IInjectable>();
+    List<Direction> pipeDirections = new ArrayList<Direction>();
 
-		for (Direction side : Direction.values()) {
-			if (from.getOpposite() == side) {
-				continue;
-			}
+    for (Direction side : Direction.values()) {
+      if (from.getOpposite() == side) {
+        continue;
+      }
 
-			BlockPos neighbor = pos.relative(side);
+      BlockPos neighbor = pos.relative(side);
 
-			BlockEntity tile = BlockUtils.getTileEntity(world, neighbor);
+      BlockEntity tile = BlockUtils.getTileEntity(world, neighbor);
 
-			if (tile instanceof IInjectable injectable) {
-				if (!injectable.canInjectItems(side.getOpposite())) {
-					continue;
-				}
+      if (tile instanceof IInjectable injectable) {
+        if (!injectable.canInjectItems(side.getOpposite())) {
+          continue;
+        }
 
-				possiblePipes.add(injectable);
-				pipeDirections.add(side.getOpposite());
-			}
-		}
+        possiblePipes.add(injectable);
+        pipeDirections.add(side.getOpposite());
+      }
+    }
 
-		if (!possiblePipes.isEmpty()) {
-			int choice = RANDOM.nextInt(possiblePipes.size());
+    if (!possiblePipes.isEmpty()) {
+      int choice = RANDOM.nextInt(possiblePipes.size());
 
-			IInjectable pipeEntry = possiblePipes.get(choice);
+      IInjectable pipeEntry = possiblePipes.get(choice);
 
-			return pipeEntry.injectItem(stack, true, pipeDirections.get(choice), null);
-		}
-		return 0;
-	}
+      return pipeEntry.injectItem(stack, true, pipeDirections.get(choice), null);
+    }
+    return 0;
+  }
 
-	public static void dropTryIntoPlayerInventory(Level world, BlockPos pos, ItemStack stack, Player player) {
-		if (player != null && player.getInventory().add(stack)) {
-			if (player instanceof ServerPlayer serverPlayer) {
-				serverPlayer.containerMenu.broadcastChanges();
-			}
-		}
-		InvUtils.dropItems(world, stack, pos.getX(), pos.getY(), pos.getZ());
-	}
+  public static void dropTryIntoPlayerInventory(Level world, BlockPos pos, ItemStack stack, Player player) {
+    if (player != null && player.getInventory().add(stack)) {
+      if (player instanceof ServerPlayer serverPlayer) {
+        serverPlayer.containerMenu.broadcastChanges();
+      }
+    }
+    InvUtils.dropItems(world, stack, pos.getX(), pos.getY(), pos.getZ());
+  }
 
-	public static IAreaProvider getNearbyAreaProvider(Level world, BlockPos pos) {
-		// Loaded tile entity list is not directly accessible like this in 1.20.1.
-		// Usually handled via area registries or searching nearby block entities.
-		// TODO: Implement correctly for 1.20.1
-		return null;
-	}
+  public static IAreaProvider getNearbyAreaProvider(Level world, BlockPos pos) {
+    // Loaded tile entity list is not directly accessible like this in 1.20.1.
+    // Usually handled via area registries or searching nearby block entities.
+    // TODO: Implement correctly for 1.20.1
+    return null;
+  }
 
-	public static void preDestroyBlock(Level world, BlockPos pos) {
-		BlockEntity tile = world.getBlockEntity(pos);
+  public static void preDestroyBlock(Level world, BlockPos pos) {
+    BlockEntity tile = world.getBlockEntity(pos);
 
-		if (tile instanceof Container container && !world.isClientSide) {
-			InvUtils.dropItems(world, container, pos.getX(), pos.getY(), pos.getZ());
-			InvUtils.wipeInventory(container);
-		}
-	}
+    if (tile instanceof Container container && !world.isClientSide) {
+      InvUtils.dropItems(world, container, pos.getX(), pos.getY(), pos.getZ());
+      InvUtils.wipeInventory(container);
+    }
+  }
 
-	public static boolean isFakePlayer(Player player) {
-		return player instanceof FakePlayer;
-	}
+  public static boolean isFakePlayer(Player player) {
+    return player instanceof FakePlayer;
+  }
 
-	public static int[] createSlotArray(int first, int count) {
-		int[] slots = new int[count];
-		for (int k = first; k < first + count; k++) {
-			slots[k - first] = k;
-		}
-		return slots;
-	}
+  public static int[] createSlotArray(int first, int count) {
+    int[] slots = new int[count];
+    for (int k = first; k < first + count; k++) {
+      slots[k - first] = k;
+    }
+    return slots;
+  }
 }

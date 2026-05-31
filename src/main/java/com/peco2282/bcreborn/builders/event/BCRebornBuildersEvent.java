@@ -28,11 +28,8 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Mod.EventBusSubscriber(modid = BCRebornBuilders.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class BCRebornBuildersEvent {

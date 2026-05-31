@@ -18,37 +18,27 @@ import net.minecraft.world.item.ItemStack;
  * Returns true if the stack matches any one one of the filter stacks.
  * Checks the OreDictionary and wildcards.
  */
-public class CraftingFilter implements IStackFilter {
+public record CraftingFilter(ItemStack... stacks) implements IStackFilter {
 
-	private final ItemStack[] stacks;
+  @Override
+  public boolean matches(ItemStack stack) {
+    if (stacks.length == 0 || !hasFilter()) {
+      return true;
+    }
+    for (ItemStack s : stacks) {
+      if (StackHelper.isCraftingEquivalent(s, stack, true)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public CraftingFilter(ItemStack... stacks) {
-		this.stacks = stacks;
-	}
-
-	@Override
-	public boolean matches(ItemStack stack) {
-		if (stacks.length == 0 || !hasFilter()) {
-			return true;
-		}
-		for (ItemStack s : stacks) {
-			if (StackHelper.isCraftingEquivalent(s, stack, true)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public ItemStack[] getStacks() {
-		return stacks;
-	}
-
-	public boolean hasFilter() {
-		for (ItemStack filter : stacks) {
-			if (filter != null) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean hasFilter() {
+    for (ItemStack filter : stacks) {
+      if (filter != null) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

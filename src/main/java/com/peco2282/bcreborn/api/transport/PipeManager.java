@@ -15,49 +15,52 @@ import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class PipeManager {
 
-    public static List<IStripesHandler> stripesHandlers = new ArrayList<>();
-    public static ArrayList<Class<? extends PipePluggable>> pipePluggables = new ArrayList<>();
-    private static Map<String, Class<? extends PipePluggable>> pipePluggableNames = new HashMap<>();
-    private static Map<Class<? extends PipePluggable>, String> pipePluggableByNames = new HashMap<>();
-    private static Map<IStripesHandler, Integer> stripesHandlerPriorities = new HashMap<>();
+  public static List<IStripesHandler> stripesHandlers = new ArrayList<>();
+  public static ArrayList<Class<? extends PipePluggable>> pipePluggables = new ArrayList<>();
+  private static final Map<String, Class<? extends PipePluggable>> pipePluggableNames = new HashMap<>();
+  private static final Map<Class<? extends PipePluggable>, String> pipePluggableByNames = new HashMap<>();
+  private static final Map<IStripesHandler, Integer> stripesHandlerPriorities = new HashMap<>();
 
-    @Deprecated
-    public static boolean canExtractItems(Object extractor, Level world, BlockPos pos) {
-        return true;
-    }
+  @Deprecated
+  public static boolean canExtractItems(Object extractor, Level world, BlockPos pos) {
+    return true;
+  }
 
-    @Deprecated
-    public static boolean canExtractFluids(Object extractor, Level world, BlockPos pos) {
-        return true;
-    }
+  @Deprecated
+  public static boolean canExtractFluids(Object extractor, Level world, BlockPos pos) {
+    return true;
+  }
 
-    @Deprecated
-    public static void registerStripesHandler(IStripesHandler handler) {
-        registerStripesHandler(handler, 0);
-    }
+  @Deprecated
+  public static void registerStripesHandler(IStripesHandler handler) {
+    registerStripesHandler(handler, 0);
+  }
 
-    public static void registerStripesHandler(IStripesHandler handler, int priority) {
-        stripesHandlers.add(handler);
-        stripesHandlerPriorities.put(handler, priority);
+  public static void registerStripesHandler(IStripesHandler handler, int priority) {
+    stripesHandlers.add(handler);
+    stripesHandlerPriorities.put(handler, priority);
 
-        stripesHandlers.sort((o1, o2) -> stripesHandlerPriorities.get(o2) - stripesHandlerPriorities.get(o1));
-    }
+    stripesHandlers.sort((o1, o2) -> stripesHandlerPriorities.get(o2) - stripesHandlerPriorities.get(o1));
+  }
 
-    public static void registerPipePluggable(Class<? extends PipePluggable> pluggable, String name) {
-        pipePluggables.add(pluggable);
-        pipePluggableNames.put(name, pluggable);
-        pipePluggableByNames.put(pluggable, name);
-    }
+  public static void registerPipePluggable(Class<? extends PipePluggable> pluggable, String name) {
+    pipePluggables.add(pluggable);
+    pipePluggableNames.put(name, pluggable);
+    pipePluggableByNames.put(pluggable, name);
+  }
 
-    public static Class<?> getPluggableByName(String pluggableName) {
-        return pipePluggableNames.get(pluggableName);
-    }
+  public static Class<?> getPluggableByName(String pluggableName) {
+    return pipePluggableNames.get(pluggableName);
+  }
 
-    public static String getPluggableName(Class<? extends PipePluggable> aClass) {
-        return pipePluggableByNames.get(aClass);
-    }
+  public static String getPluggableName(Class<? extends PipePluggable> aClass) {
+    return pipePluggableByNames.get(aClass);
+  }
 }

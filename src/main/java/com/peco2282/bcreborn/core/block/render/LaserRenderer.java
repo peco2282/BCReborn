@@ -56,21 +56,21 @@ public class LaserRenderer {
     }
 
     poseStack.pushPose();
-    
+
     // Translation to tail
     poseStack.translate(laser.tail.x, laser.tail.y, laser.tail.z);
-    
+
     // Rotate to match angles
     // order: Y rotation then Z rotation
-    poseStack.mulPose(Axis.YP.rotationDegrees((float)laser.angleZ));
-    poseStack.mulPose(Axis.ZP.rotationDegrees((float)laser.angleY));
+    poseStack.mulPose(Axis.YP.rotationDegrees((float) laser.angleZ));
+    poseStack.mulPose(Axis.ZP.rotationDegrees((float) laser.angleY));
 
     VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(texture));
-    
+
     float v1 = laser.laserTexAnimation / 40.0f;
-    float v2 = v1 + (float)laser.renderSize; // Texture tiling
+    float v2 = v1 + (float) laser.renderSize; // Texture tiling
     float size = 1.0f / 16.0f;
-    float length = (float)laser.renderSize;
+    float length = (float) laser.renderSize;
 
     Matrix4f matrix4f = poseStack.last().pose();
     Matrix3f matrix3f = poseStack.last().normal();

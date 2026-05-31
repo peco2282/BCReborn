@@ -20,28 +20,28 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ProgrammingTableScreen extends LaserTableScreen<ProgrammingTableMenu> {
 
-	public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/programming_table.png");
+  public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/programming_table.png");
 
-	public ProgrammingTableScreen(ProgrammingTableMenu container, Inventory playerInventory, Component title) {
-		super(container, playerInventory, title, (ProgrammingTableBlockEntity) container.getSlot(0).container);
-		this.imageWidth = 176;
-		this.imageHeight = 205;
-		this.inventoryLabelY = this.imageHeight - 94;
-	}
+  public ProgrammingTableScreen(ProgrammingTableMenu container, Inventory playerInventory, Component title) {
+    super(container, playerInventory, title, (ProgrammingTableBlockEntity) container.getSlot(0).container);
+    this.imageWidth = 176;
+    this.imageHeight = 205;
+    this.inventoryLabelY = this.imageHeight - 94;
+  }
 
-	@Override
-	protected ResourceLocation getMenuTexture() {
-		return TEXTURE;
-	}
+  @Override
+  protected ResourceLocation getMenuTexture() {
+    return TEXTURE;
+  }
 
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		int x = (width - imageWidth) / 2;
-		int y = (height - imageHeight) / 2;
-		guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-		if (table.getEnergy() > 0) {
-			int h = table.getProgressScaled(70);
-			guiGraphics.blit(TEXTURE, x + 164, y + 36 + 70 - h, 176, 18, 4, h);
-		}
-	}
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    int x = (width - imageWidth) / 2;
+    int y = (height - imageHeight) / 2;
+    guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+    if (table.getEnergy() > 0) {
+      int h = table.getProgressScaled(70);
+      guiGraphics.blit(TEXTURE, x + 164, y + 36 + 70 - h, 176, 18, 4, h);
+    }
+  }
 }

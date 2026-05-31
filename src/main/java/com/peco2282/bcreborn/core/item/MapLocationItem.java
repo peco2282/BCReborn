@@ -11,11 +11,7 @@
  */
 package com.peco2282.bcreborn.core.item;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
-import com.peco2282.bcreborn.api.core.IAreaProvider;
-import com.peco2282.bcreborn.api.core.IBox;
-import com.peco2282.bcreborn.api.core.IPathProvider;
-import com.peco2282.bcreborn.api.core.IZone;
+import com.peco2282.bcreborn.api.core.*;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
@@ -37,228 +33,228 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapLocationItem extends BuildCraftItem implements IMapLocation {
-    public static final String TAG_NAME = "name";
-    public static final String TAG_KIND = "kind";
-    public static final String TAG_PATH = "path";
+  public static final String TAG_NAME = "name";
+  public static final String TAG_KIND = "kind";
+  public static final String TAG_PATH = "path";
 
-    public static final byte KIND_SPOT = 0;
-    public static final byte KIND_AREA = 1;
-    public static final byte KIND_PATH = 2;
-    public static final byte KIND_ZONE = 3;
+  public static final byte KIND_SPOT = 0;
+  public static final byte KIND_AREA = 1;
+  public static final byte KIND_PATH = 2;
+  public static final byte KIND_ZONE = 3;
 
-    public MapLocationItem() {
-        super(new Properties());
+  public MapLocationItem() {
+    super(new Properties());
+  }
+
+  public static IBox getPointBox(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
+
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      int x = tag.getInt("x");
+      int y = tag.getInt("y");
+      int z = tag.getInt("z");
+
+      return new Box(x, y, z, x, y, z);
     }
 
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return stack.getOrCreateTag().contains(TAG_KIND) ? 1 : 16;
+    return null;
+  }
+
+  @Override
+  public int getMaxStackSize(ItemStack stack) {
+    return stack.getOrCreateTag().contains(TAG_KIND) ? 1 : 16;
+  }
+
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    CompoundTag tag = stack.getOrCreateTag();
+
+    String name = tag.getString(TAG_NAME);
+    if (!name.isEmpty()) {
+      tooltip.add(Component.literal(name));
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        CompoundTag tag = stack.getOrCreateTag();
-
-        String name = tag.getString(TAG_NAME);
-        if (!name.isEmpty()) {
-            tooltip.add(Component.literal(name));
-        }
-
-        if (!tag.contains(TAG_KIND)) {
-            return;
-        }
-
-        switch (tag.getByte(TAG_KIND)) {
-            case KIND_SPOT -> {
-                Direction side = Direction.values()[tag.getByte("side")];
-                tooltip.add(Component.literal("{" + tag.getInt("x") + ", " + tag.getInt("y") + ", " + tag.getInt("z") + ", " + side + "}"));
-            }
-            case KIND_AREA -> {
-                int x = tag.getInt("xMin");
-                int y = tag.getInt("yMin");
-                int z = tag.getInt("zMin");
-                int xLength = tag.getInt("xMax") - x + 1;
-                int yLength = tag.getInt("yMax") - y + 1;
-                int zLength = tag.getInt("zMax") - z + 1;
-
-                tooltip.add(Component.literal("{" + x + ", " + y + ", " + z + "} + {" + xLength + " x " + yLength + " x " + zLength + "}"));
-            }
-            case KIND_PATH -> {
-                ListTag path = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
-                if (!path.isEmpty()) {
-                    BlockIndex first = new BlockIndex(path.getCompound(0));
-                    tooltip.add(Component.literal("{" + first.x + ", " + first.y + ", " + first.z + "} + " + path.size() + " elements"));
-                }
-            }
-            case KIND_ZONE -> {
-                // ZonePlan 移植後に詳細表示を追加する。
-            }
-            default -> {
-            }
-        }
+    if (!tag.contains(TAG_KIND)) {
+      return;
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        ItemStack stack = context.getItemInHand();
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        CompoundTag tag = stack.getOrCreateTag();
+    switch (tag.getByte(TAG_KIND)) {
+      case KIND_SPOT -> {
+        Direction side = Direction.values()[tag.getByte("side")];
+        tooltip.add(Component.literal("{" + tag.getInt("x") + ", " + tag.getInt("y") + ", " + tag.getInt("z") + ", " + side + "}"));
+      }
+      case KIND_AREA -> {
+        int x = tag.getInt("xMin");
+        int y = tag.getInt("yMin");
+        int z = tag.getInt("zMin");
+        int xLength = tag.getInt("xMax") - x + 1;
+        int yLength = tag.getInt("yMax") - y + 1;
+        int zLength = tag.getInt("zMax") - z + 1;
 
-        if (blockEntity instanceof IPathProvider pathProvider) {
-            tag.putByte(TAG_KIND, KIND_PATH);
-
-            ListTag pathTag = new ListTag();
-            for (BlockIndex index : pathProvider.getPath()) {
-                CompoundTag indexTag = new CompoundTag();
-                index.writeTo(indexTag);
-                pathTag.add(indexTag);
-            }
-
-            tag.put(TAG_PATH, pathTag);
-        } else if (blockEntity instanceof IAreaProvider areaProvider) {
-            tag.putByte(TAG_KIND, KIND_AREA);
-            tag.putInt("xMin", areaProvider.xMin());
-            tag.putInt("yMin", areaProvider.yMin());
-            tag.putInt("zMin", areaProvider.zMin());
-            tag.putInt("xMax", areaProvider.xMax());
-            tag.putInt("yMax", areaProvider.yMax());
-            tag.putInt("zMax", areaProvider.zMax());
-        } else {
-            tag.putByte(TAG_KIND, KIND_SPOT);
-            tag.putByte("side", (byte) context.getClickedFace().ordinal());
-            tag.putInt("x", pos.getX());
-            tag.putInt("y", pos.getY());
-            tag.putInt("z", pos.getZ());
+        tooltip.add(Component.literal("{" + x + ", " + y + ", " + z + "} + {" + xLength + " x " + yLength + " x " + zLength + "}"));
+      }
+      case KIND_PATH -> {
+        ListTag path = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
+        if (!path.isEmpty()) {
+          BlockIndex first = new BlockIndex(path.getCompound(0));
+          tooltip.add(Component.literal("{" + first.x + ", " + first.y + ", " + first.z + "} + " + path.size() + " elements"));
         }
+      }
+      case KIND_ZONE -> {
+        // ZonePlan 移植後に詳細表示を追加する。
+      }
+      default -> {
+      }
+    }
+  }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+  @Override
+  public InteractionResult useOn(UseOnContext context) {
+    ItemStack stack = context.getItemInHand();
+    Level level = context.getLevel();
+    BlockPos pos = context.getClickedPos();
+    BlockEntity blockEntity = level.getBlockEntity(pos);
+    CompoundTag tag = stack.getOrCreateTag();
+
+    if (blockEntity instanceof IPathProvider pathProvider) {
+      tag.putByte(TAG_KIND, KIND_PATH);
+
+      ListTag pathTag = new ListTag();
+      for (BlockIndex index : pathProvider.getPath()) {
+        CompoundTag indexTag = new CompoundTag();
+        index.writeTo(indexTag);
+        pathTag.add(indexTag);
+      }
+
+      tag.put(TAG_PATH, pathTag);
+    } else if (blockEntity instanceof IAreaProvider areaProvider) {
+      tag.putByte(TAG_KIND, KIND_AREA);
+      tag.putInt("xMin", areaProvider.xMin());
+      tag.putInt("yMin", areaProvider.yMin());
+      tag.putInt("zMin", areaProvider.zMin());
+      tag.putInt("xMax", areaProvider.xMax());
+      tag.putInt("yMax", areaProvider.yMax());
+      tag.putInt("zMax", areaProvider.zMax());
+    } else {
+      tag.putByte(TAG_KIND, KIND_SPOT);
+      tag.putByte("side", (byte) context.getClickedFace().ordinal());
+      tag.putInt("x", pos.getX());
+      tag.putInt("y", pos.getY());
+      tag.putInt("z", pos.getZ());
     }
 
-    @Override
-    public Component getName(ItemStack stack) {
-        return Component.literal(stack.getOrCreateTag().getString(TAG_NAME));
+    return InteractionResult.sidedSuccess(level.isClientSide);
+  }
+
+  @Override
+  public Component getName(ItemStack stack) {
+    return Component.literal(stack.getOrCreateTag().getString(TAG_NAME));
+  }
+
+  @Override
+  public boolean setName(ItemStack stack, Component name) {
+    stack.getOrCreateTag().putString(TAG_NAME, name.getString());
+    return true;
+  }
+
+  @Override
+  public MapLocationType getType(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
+
+    if (!tag.contains(TAG_KIND)) {
+      return MapLocationType.CLEAN;
     }
 
-    @Override
-    public boolean setName(ItemStack stack, Component name) {
-        stack.getOrCreateTag().putString(TAG_NAME, name.getString());
-        return true;
+    return switch (tag.getByte(TAG_KIND)) {
+      case KIND_SPOT -> MapLocationType.SPOT;
+      case KIND_AREA -> MapLocationType.AREA;
+      case KIND_PATH -> MapLocationType.PATH;
+      case KIND_ZONE -> MapLocationType.ZONE;
+      default -> MapLocationType.CLEAN;
+    };
+  }
+
+  @Override
+  public BlockIndex getPoint(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
+
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      return new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
     }
 
-    @Override
-    public MapLocationType getType(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+    return null;
+  }
 
-        if (!tag.contains(TAG_KIND)) {
-            return MapLocationType.CLEAN;
-        }
+  @Override
+  public IBox getBox(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
 
-        return switch (tag.getByte(TAG_KIND)) {
-            case KIND_SPOT -> MapLocationType.SPOT;
-            case KIND_AREA -> MapLocationType.AREA;
-            case KIND_PATH -> MapLocationType.PATH;
-            case KIND_ZONE -> MapLocationType.ZONE;
-            default -> MapLocationType.CLEAN;
-        };
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_AREA) {
+      return new Box(
+        tag.getInt("xMin"),
+        tag.getInt("yMin"),
+        tag.getInt("zMin"),
+        tag.getInt("xMax"),
+        tag.getInt("yMax"),
+        tag.getInt("zMax")
+      );
     }
 
-    @Override
-    public BlockIndex getPoint(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            return new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
-        }
-
-        return null;
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      return getPointBox(stack);
     }
 
-    @Override
-    public IBox getBox(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+    return null;
+  }
 
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_AREA) {
-            return new Box(
-                    tag.getInt("xMin"),
-                    tag.getInt("yMin"),
-                    tag.getInt("zMin"),
-                    tag.getInt("xMax"),
-                    tag.getInt("yMax"),
-                    tag.getInt("zMax")
-            );
-        }
+  @Override
+  public IZone getZone(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
 
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            return getPointBox(stack);
-        }
-
-        return null;
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_AREA) {
+      return getBox(stack);
     }
 
-    public static IBox getPointBox(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            int x = tag.getInt("x");
-            int y = tag.getInt("y");
-            int z = tag.getInt("z");
-
-            return new Box(x, y, z, x, y, z);
-        }
-
-        return null;
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      return getPointBox(stack);
     }
 
-    @Override
-    public IZone getZone(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+    // ZonePlan 移植後に KIND_ZONE を復元する。
+    return null;
+  }
 
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_AREA) {
-            return getBox(stack);
-        }
+  @Override
+  public List<BlockIndex> getPath(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
 
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            return getPointBox(stack);
-        }
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_PATH) {
+      List<BlockIndex> indexes = new ArrayList<>();
+      ListTag pathTag = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
 
-        // ZonePlan 移植後に KIND_ZONE を復元する。
-        return null;
+      for (int i = 0; i < pathTag.size(); i++) {
+        indexes.add(new BlockIndex(pathTag.getCompound(i)));
+      }
+
+      return indexes;
     }
 
-    @Override
-    public List<BlockIndex> getPath(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_PATH) {
-            List<BlockIndex> indexes = new ArrayList<>();
-            ListTag pathTag = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
-
-            for (int i = 0; i < pathTag.size(); i++) {
-                indexes.add(new BlockIndex(pathTag.getCompound(i)));
-            }
-
-            return indexes;
-        }
-
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            List<BlockIndex> indexes = new ArrayList<>();
-            indexes.add(new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
-            return indexes;
-        }
-
-        return null;
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      List<BlockIndex> indexes = new ArrayList<>();
+      indexes.add(new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+      return indexes;
     }
 
-    @Override
-    public Direction getPointSide(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+    return null;
+  }
 
-        if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-            return Direction.values()[tag.getByte("side")];
-        }
+  @Override
+  public Direction getPointSide(ItemStack stack) {
+    CompoundTag tag = stack.getOrCreateTag();
 
-        return Direction.UP;
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
+      return Direction.values()[tag.getByte("side")];
     }
+
+    return Direction.UP;
+  }
 }

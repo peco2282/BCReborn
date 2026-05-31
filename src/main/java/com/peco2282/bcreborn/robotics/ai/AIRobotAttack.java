@@ -25,76 +25,76 @@ import net.minecraft.world.entity.Entity;
 
 public class AIRobotAttack extends AIRobot {
 
-	private Entity target;
+  private Entity target;
 
-	private int delay = 10;
+  private int delay = 10;
 
-	public AIRobotAttack(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public AIRobotAttack(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	public AIRobotAttack(EntityRobotBase iRobot, Entity iTarget) {
-		this(iRobot);
+  public AIRobotAttack(EntityRobotBase iRobot, Entity iTarget) {
+    this(iRobot);
 
-		target = iTarget;
-	}
+    target = iTarget;
+  }
 
-	@Override
-	public void preempt(AIRobot ai) {
-		if (ai instanceof AIRobotGotoBlock) {
-			// target may become null in the event of a load. In that case, just
-			// go to the expected location.
-			if (target != null && robot.distanceTo(target) <= 2.0) {
-				abortDelegateAI();
-				robot.setItemActive(true);
-			}
-		}
-	}
+  @Override
+  public void preempt(AIRobot ai) {
+    if (ai instanceof AIRobotGotoBlock) {
+      // target may become null in the event of a load. In that case, just
+      // go to the expected location.
+      if (target != null && robot.distanceTo(target) <= 2.0) {
+        abortDelegateAI();
+        robot.setItemActive(true);
+      }
+    }
+  }
 
-	@Override
-	public void update() {
-		if (target == null || target.isRemoved()) {
-			terminate();
-			return;
-		}
+  @Override
+  public void update() {
+    if (target == null || target.isRemoved()) {
+      terminate();
+      return;
+    }
 
-		if (robot.distanceTo(target) > 2.0) {
-			startDelegateAI(new AIRobotGotoBlock(robot, (int) Math.floor(target.getX()),
-					(int) Math.floor(target.getY()), (int) Math.floor(target.getZ())));
-			robot.setItemActive(false);
+    if (robot.distanceTo(target) > 2.0) {
+      startDelegateAI(new AIRobotGotoBlock(robot, (int) Math.floor(target.getX()),
+        (int) Math.floor(target.getY()), (int) Math.floor(target.getZ())));
+      robot.setItemActive(false);
 
-			return;
-		}
+      return;
+    }
 
-		delay++;
+    delay++;
 
-		if (delay > 20) {
-			delay = 0;
-			if (robot instanceof EntityRobot robotImpl) {
-				robotImpl.attackTargetEntityWithCurrentItem(target);
-			}
-			robot.aimItemAt((int) Math.floor(target.getX()), (int) Math.floor(target.getY()),
-					(int) Math.floor(target.getZ()));
-		}
-	}
+    if (delay > 20) {
+      delay = 0;
+      if (robot instanceof EntityRobot robotImpl) {
+        robotImpl.attackTargetEntityWithCurrentItem(target);
+      }
+      robot.aimItemAt((int) Math.floor(target.getX()), (int) Math.floor(target.getY()),
+        (int) Math.floor(target.getZ()));
+    }
+  }
 
-	@Override
-	public void end() {
-		robot.setItemActive(false);
-	}
+  @Override
+  public void end() {
+    robot.setItemActive(false);
+  }
 
-	@Override
-	public void delegateAIEnded(AIRobot ai) {
-		if (ai instanceof AIRobotGotoBlock) {
-			if (!ai.success()) {
-				robot.unreachableEntityDetected(target);
-			}
-			terminate();
-		}
-	}
+  @Override
+  public void delegateAIEnded(AIRobot ai) {
+    if (ai instanceof AIRobotGotoBlock) {
+      if (!ai.success()) {
+        robot.unreachableEntityDetected(target);
+      }
+      terminate();
+    }
+  }
 
-	@Override
-	public int getEnergyCost() {
-		return 10;
-	}
+  @Override
+  public int getEnergyCost() {
+    return 10;
+  }
 }

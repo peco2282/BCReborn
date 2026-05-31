@@ -19,17 +19,17 @@ import net.minecraft.world.item.ItemStack;
  * the passed Container
  */
 public class IInventorySlot extends AdvancedSlot {
-	private final Container tile;
-	private final int slot;
+  private final Container tile;
+  private final int slot;
 
-	public IInventorySlot(GuiAdvancedInterface<?> gui, int x, int y, Container tile, int slot) {
-		super(gui, x, y);
-		this.tile = tile;
-		this.slot = slot;
-	}
+  public IInventorySlot(GuiAdvancedInterface<?> gui, int x, int y, Container tile, int slot) {
+    super(gui, x, y);
+    this.tile = tile;
+    this.slot = slot;
+  }
 
-	@Override
-	public ItemStack getItemStack() {
-		return tile.getItem(slot);
-	}
+  @Override
+  public ItemStack getItemStack() {
+    return tile.getItem(slot);
+  }
 }

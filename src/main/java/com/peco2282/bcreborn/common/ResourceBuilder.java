@@ -13,10 +13,8 @@ package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class ResourceBuilder {
@@ -36,42 +34,6 @@ public class ResourceBuilder {
   public ResourceBuilder(ResourceLocation location) {
     this.namespace = location.getNamespace();
     this.path = location.getPath();
-  }
-
-  public ResourceBuilder editNamespace(UnaryOperator<String> operator) {
-    this.namespace = operator.apply(this.namespace);
-    return this;
-  }
-
-  public ResourceBuilder editPath(UnaryOperator<String> operator) {
-    this.path = operator.apply(this.path);
-    return this;
-  }
-
-  public ResourceBuilder addPath(String path) {
-    this.path += "/" + (path.startsWith("/") ? path.substring(1) : path);
-    return this;
-  }
-
-  public ResourceBuilder addPath(ResourceLocation path) {
-    return this.addPath(path.getPath());
-  }
-
-  public String getPath() {
-    return this.path;
-  }
-
-
-  public ResourceLocation build(ResourceType type) {
-    var path = this.path.startsWith("/") ? this.path.substring(1) : this.path;
-    return ResourceLocation.fromNamespaceAndPath(
-        this.namespace,
-        type.path + path
-    );
-  }
-
-  public ModelLayerLocation asModel(String layer) {
-    return new ModelLayerLocation(this.build(ResourceType.NO_PREFIX), layer);
   }
 
   public static ResourceBuilder core() {
@@ -125,6 +87,7 @@ public class ResourceBuilder {
   public static ResourceBuilder robotics() {
     return new ResourceBuilder(BCRebornRobotics.MODID);
   }
+
   public static ResourceBuilder robotics(String path) {
     return new ResourceBuilder(BCRebornRobotics.MODID, path);
   }
@@ -135,6 +98,41 @@ public class ResourceBuilder {
 
   public static ResourceBuilder create(String namespace, String path) {
     return new ResourceBuilder(namespace, path);
+  }
+
+  public ResourceBuilder editNamespace(UnaryOperator<String> operator) {
+    this.namespace = operator.apply(this.namespace);
+    return this;
+  }
+
+  public ResourceBuilder editPath(UnaryOperator<String> operator) {
+    this.path = operator.apply(this.path);
+    return this;
+  }
+
+  public ResourceBuilder addPath(String path) {
+    this.path += "/" + (path.startsWith("/") ? path.substring(1) : path);
+    return this;
+  }
+
+  public ResourceBuilder addPath(ResourceLocation path) {
+    return this.addPath(path.getPath());
+  }
+
+  public String getPath() {
+    return this.path;
+  }
+
+  public ResourceLocation build(ResourceType type) {
+    var path = this.path.startsWith("/") ? this.path.substring(1) : this.path;
+    return ResourceLocation.fromNamespaceAndPath(
+      this.namespace,
+      type.path + path
+    );
+  }
+
+  public ModelLayerLocation asModel(String layer) {
+    return new ModelLayerLocation(this.build(ResourceType.NO_PREFIX), layer);
   }
 
   public enum ResourceType {

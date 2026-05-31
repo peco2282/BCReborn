@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import org.jetbrains.annotations.Nullable;
 
 public class QuarryBlock extends BuildCraftBlock {
-   public QuarryBlock() {
-     super(Properties.of().noOcclusion().lightLevel(state -> 1));
-   }
+  public QuarryBlock() {
+    super(Properties.of().noOcclusion().lightLevel(state -> 1));
+  }
 
   @Nullable
   @Override

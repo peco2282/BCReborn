@@ -22,40 +22,40 @@ import java.util.LinkedList;
 
 public class SchematicRefinery extends SchematicTile {
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(FactoryBlocks.REFINERY.get()));
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(new ItemStack(FactoryBlocks.REFINERY.get()));
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-	}
+  }
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		meta = Direction.values()[meta].get2DDataValue();
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    meta = Direction.values()[meta].get2DDataValue();
+  }
 
-	@Override
-	public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
-		super.initializeFromObjectAt(context, x, y, z);
+  @Override
+  public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
+    super.initializeFromObjectAt(context, x, y, z);
 
-		tileNBT.remove("tank1");
-		tileNBT.remove("tank2");
-		tileNBT.remove("result");
-		tileNBT.remove("mjStored");
-	}
+    tileNBT.remove("tank1");
+    tileNBT.remove("tank2");
+    tileNBT.remove("result");
+    tileNBT.remove("mjStored");
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		// to support refineries coming from older blueprints
-		tileNBT.remove("tank1");
-		tileNBT.remove("tank2");
-		tileNBT.remove("result");
-		tileNBT.remove("mjStored");
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    // to support refineries coming from older blueprints
+    tileNBT.remove("tank1");
+    tileNBT.remove("tank2");
+    tileNBT.remove("result");
+    tileNBT.remove("mjStored");
 
-		super.placeInWorld(context, x, y, z, stacks);
-	}
+    super.placeInWorld(context, x, y, z, stacks);
+  }
 
 }

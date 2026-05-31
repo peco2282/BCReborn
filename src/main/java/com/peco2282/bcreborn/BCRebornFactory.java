@@ -21,7 +21,6 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,43 +29,43 @@ import org.slf4j.Logger;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BCRebornFactory.MODID)
 public class BCRebornFactory implements BCReborn {
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "bcrebornfactory";
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
-    private static final ContextProcessor processor = ContextProcessor.create(MODID);
+  // Define mod id in a common place for everything to reference
+  public static final String MODID = "bcrebornfactory";
+  // Directly reference a slf4j logger
+  private static final Logger LOGGER = LogUtils.getLogger();
+  private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
+  private static final ContextProcessor processor = ContextProcessor.create(MODID);
 
-    public static BCRegistry getRegistry() {
-        return REGISTRY;
-    }
+  public BCRebornFactory(FMLJavaModLoadingContext context) {
+    IEventBus modEventBus = context.getModEventBus();
 
-    public static ResourceLocation location(String path) {
-        return BCReborn.getLocation(Type.ENERGY, path);
-    }
+    // Register the commonSetup method for modloading
+    modEventBus.addListener(this::commonSetup);
 
-    public BCRebornFactory(FMLJavaModLoadingContext context) {
-        IEventBus modEventBus = context.getModEventBus();
+    // Register ourselves for server apply other game events we are interested in
+    MinecraftForge.EVENT_BUS.register(this);
+    processor.initRegister();
+    REGISTRY.register(modEventBus);
+  }
 
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
+  public static BCRegistry getRegistry() {
+    return REGISTRY;
+  }
 
-        // Register ourselves for server apply other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        processor.initRegister();
-        REGISTRY.register(modEventBus);
-    }
+  public static ResourceLocation location(String path) {
+    return BCReborn.getLocation(Type.ENERGY, path);
+  }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-        LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-    }
+  private void commonSetup(final FMLCommonSetupEvent event) {
+    // Some common setup code
+    LOGGER.info("HELLO FROM COMMON SETUP");
+    LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+  }
 
-    // You can use SubscribeEvent apply let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
-    }
+  // You can use SubscribeEvent apply let the Event Bus discover methods to call
+  @SubscribeEvent
+  public void onServerStarting(ServerStartingEvent event) {
+    // Do something when the server starts
+    LOGGER.info("HELLO from server starting");
+  }
 }

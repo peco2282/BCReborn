@@ -19,29 +19,29 @@ import net.minecraft.world.WorldlyContainer;
 
 public final class InventoryIterator {
 
-	/**
-	 * Deactivate constructor
-	 */
-	private InventoryIterator() {
-	}
+  /**
+   * Deactivate constructor
+   */
+  private InventoryIterator() {
+  }
 
-	public static Iterable<IInvSlot> getIterable(Container inv) {
-		return getIterable(inv, Direction.UP);
-	}
+  public static Iterable<IInvSlot> getIterable(Container inv) {
+    return getIterable(inv, Direction.UP);
+  }
 
-	/**
-	 * Returns an Iterable object for the specified side of the inventory.
-	 *
-	 * @param inv
-	 * @param side
-	 * @return Iterable
-	 */
-	public static Iterable<IInvSlot> getIterable(Container inv, Direction side) {
-		if (inv instanceof WorldlyContainer) {
-			return new InventoryIteratorSided((WorldlyContainer) inv, side);
-		}
+  /**
+   * Returns an Iterable object for the specified side of the inventory.
+   *
+   * @param inv
+   * @param side
+   * @return Iterable
+   */
+  public static Iterable<IInvSlot> getIterable(Container inv, Direction side) {
+    if (inv instanceof WorldlyContainer) {
+      return new InventoryIteratorSided((WorldlyContainer) inv, side);
+    }
 
-		return new InventoryIteratorSimple(inv);
-	}
+    return new InventoryIteratorSimple(inv);
+  }
 
 }

@@ -28,10 +28,10 @@ import org.jetbrains.annotations.Nullable;
 public class TankBlock extends BuildCraftBlock {
   public TankBlock() {
     super(Properties.of()
-        .mapColor(MapColor.NONE)
-        .sound(SoundType.GLASS)
-        .strength(0.5F)
-        .noOcclusion());
+      .mapColor(MapColor.NONE)
+      .sound(SoundType.GLASS)
+      .strength(0.5F)
+      .noOcclusion());
   }
 
   @Override

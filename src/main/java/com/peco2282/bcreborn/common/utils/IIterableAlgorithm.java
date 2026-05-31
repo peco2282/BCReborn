@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.common.utils;
 
 public interface IIterableAlgorithm {
 
-	void iterate();
+  void iterate();
 
-	boolean isDone();
+  boolean isDone();
 
 }

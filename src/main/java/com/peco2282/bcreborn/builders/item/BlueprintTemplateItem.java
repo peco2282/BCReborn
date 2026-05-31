@@ -15,17 +15,17 @@ import net.minecraft.world.item.ItemStack;
 
 public class BlueprintTemplateItem extends BlueprintItem {
 
-    protected BlueprintTemplateItem(Properties properties) {
-        super(properties);
-    }
+  protected BlueprintTemplateItem(Properties properties) {
+    super(properties);
+  }
 
-    @Override
-    public String getIconType() {
-        return "template";
-    }
+  @Override
+  public String getIconType() {
+    return "template";
+  }
 
-    @Override
-    public Type getType(ItemStack stack) {
-        return Type.TEMPLATE;
-    }
+  @Override
+  public Type getType(ItemStack stack) {
+    return Type.TEMPLATE;
+  }
 }

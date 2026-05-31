@@ -68,12 +68,12 @@ public final class BCRegistry {
     FILLER_PATTERN = DeferredRegister.create(BCRegistryKeys.FILLER_PATTERNS, modid);
   }
 
-  public <B extends Block> RegistryObject<B> registerBlock(@NotNull String name, @NotNull Supplier<B> block) {
-    return BLOCKS.register(name, block);
+  public static BCRegistry getRegistry(String modid) {
+    return CREATED.computeIfAbsent(modid, BCRegistry::new);
   }
 
-  public interface BlockItemSupplier<B extends BlockItem> {
-    B get(Block block, Item.Properties properties);
+  public <B extends Block> RegistryObject<B> registerBlock(@NotNull String name, @NotNull Supplier<B> block) {
+    return BLOCKS.register(name, block);
   }
 
   public <B extends Block> RegistryObject<B> registerBlockItem(@NotNull String name, @NotNull Supplier<B> block) {
@@ -81,9 +81,9 @@ public final class BCRegistry {
   }
 
   public <B extends Block, BI extends BlockItem> RegistryObject<B> registerBlockItem(
-      @NotNull String name,
-      @NotNull BlockItemSupplier<BI> item,
-      @NotNull Supplier<B> block
+    @NotNull String name,
+    @NotNull BlockItemSupplier<BI> item,
+    @NotNull Supplier<B> block
   ) {
     var reg = BLOCKS.register(name, block);
     registerItem(name, () -> item.get(reg.get(), new Item.Properties()));
@@ -140,7 +140,7 @@ public final class BCRegistry {
     return modid;
   }
 
-  public static BCRegistry getRegistry(String modid) {
-    return CREATED.computeIfAbsent(modid, BCRegistry::new);
+  public interface BlockItemSupplier<B extends BlockItem> {
+    B get(Block block, Item.Properties properties);
   }
 }

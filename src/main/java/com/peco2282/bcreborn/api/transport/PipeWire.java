@@ -17,55 +17,59 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Locale;
 
 public enum PipeWire {
-    RED, BLUE, GREEN, YELLOW;
+  RED, BLUE, GREEN, YELLOW;
 
-    public static Item item;
-    public static final PipeWire[] VALUES = values();
+  public static final PipeWire[] VALUES = values();
+  public static Item item;
 
-    public PipeWire reverse() {
-        switch (this) {
-            case RED: return YELLOW;
-            case BLUE: return GREEN;
-            case GREEN: return BLUE;
-            default: return RED;
-        }
+  public static PipeWire fromOrdinal(int ordinal) {
+    if (ordinal < 0 || ordinal >= VALUES.length) {
+      return RED;
+    } else {
+      return VALUES[ordinal];
     }
+  }
 
-    public String getTag() {
-        return name().toLowerCase(Locale.ENGLISH) + "PipeWire";
+  public PipeWire reverse() {
+    switch (this) {
+      case RED:
+        return YELLOW;
+      case BLUE:
+        return GREEN;
+      case GREEN:
+        return BLUE;
+      default:
+        return RED;
     }
+  }
 
-    public String getColor() {
-        String name = this.toString().toLowerCase(Locale.ENGLISH);
-        char first = Character.toUpperCase(name.charAt(0));
-        return first + name.substring(1);
-    }
+  public String getTag() {
+    return name().toLowerCase(Locale.ENGLISH) + "PipeWire";
+  }
 
-    public ItemStack getStack() {
-        return getStack(1);
-    }
+  public String getColor() {
+    String name = this.toString().toLowerCase(Locale.ENGLISH);
+    char first = Character.toUpperCase(name.charAt(0));
+    return first + name.substring(1);
+  }
 
-    public ItemStack getStack(int qty) {
-        if (item == null) {
-            return ItemStack.EMPTY;
-        } else {
-            return new ItemStack(item, qty);
-        }
-    }
+  public ItemStack getStack() {
+    return getStack(1);
+  }
 
-    public boolean isPipeWire(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) {
-            return false;
-        } else {
-            return stack.getItem() == item;
-        }
+  public ItemStack getStack(int qty) {
+    if (item == null) {
+      return ItemStack.EMPTY;
+    } else {
+      return new ItemStack(item, qty);
     }
+  }
 
-    public static PipeWire fromOrdinal(int ordinal) {
-        if (ordinal < 0 || ordinal >= VALUES.length) {
-            return RED;
-        } else {
-            return VALUES[ordinal];
-        }
+  public boolean isPipeWire(ItemStack stack) {
+    if (stack == null || stack.isEmpty()) {
+      return false;
+    } else {
+      return stack.getItem() == item;
     }
+  }
 }

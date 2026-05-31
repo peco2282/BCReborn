@@ -11,67 +11,66 @@
  */
 package com.peco2282.bcreborn.robotics.map;
 
+import com.peco2282.bcreborn.api.core.INBTStoreable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 
-import com.peco2282.bcreborn.api.core.INBTStoreable;
-
 public class MapRegion implements INBTStoreable {
-	private final Int2ObjectOpenHashMap<MapChunk> chunks = new Int2ObjectOpenHashMap<>();
-	private final int x, z;
+  private final Int2ObjectOpenHashMap<MapChunk> chunks = new Int2ObjectOpenHashMap<>();
+  private final int x, z;
 
-	public MapRegion(int x, int z) {
-		this.x = x;
-		this.z = z;
-	}
+  public MapRegion(int x, int z) {
+    this.x = x;
+    this.z = z;
+  }
 
-	public int getX() {
-		return x;
-	}
+  public int getX() {
+    return x;
+  }
 
-	public int getZ() {
-		return z;
-	}
+  public int getZ() {
+    return z;
+  }
 
-	public boolean hasChunk(int x, int z) {
-		return chunks.containsKey((z << 4) | x);
-	}
+  public boolean hasChunk(int x, int z) {
+    return chunks.containsKey((z << 4) | x);
+  }
 
-	public MapChunk getChunk(int x, int z) {
-		int id = (z << 4) | x;
-		MapChunk chunk = chunks.get(id);
-		if (chunk == null) {
-			chunk = new MapChunk(x, z);
-			chunks.put(id, chunk);
-		}
-		return chunk;
-	}
+  public MapChunk getChunk(int x, int z) {
+    int id = (z << 4) | x;
+    MapChunk chunk = chunks.get(id);
+    if (chunk == null) {
+      chunk = new MapChunk(x, z);
+      chunks.put(id, chunk);
+    }
+    return chunk;
+  }
 
-	@Override
-	public void readFromNBT(CompoundTag tag) {
-		chunks.clear();
+  @Override
+  public void readFromNBT(CompoundTag tag) {
+    chunks.clear();
 
-		if (tag != null) {
-			for (int i = 0; i < 256; i++) {
-				if (tag.contains("r" + i)) {
-					MapChunk chunk = new MapChunk(tag.getCompound("r" + i));
-					chunks.put(i, chunk);
-				}
-			}
-		}
-	}
+    if (tag != null) {
+      for (int i = 0; i < 256; i++) {
+        if (tag.contains("r" + i)) {
+          MapChunk chunk = new MapChunk(tag.getCompound("r" + i));
+          chunks.put(i, chunk);
+        }
+      }
+    }
+  }
 
-	@Override
-	public void writeToNBT(CompoundTag tag) {
-		for (int i = 0; i < 256; i++) {
-			MapChunk chunk = chunks.get(i);
-			if (chunk != null) {
-				CompoundTag chunkNBT = new CompoundTag();
-				synchronized (chunk) {
-					chunk.writeToNBT(chunkNBT);
-				}
-				tag.put("r" + i, chunkNBT);
-			}
-		}
-	}
+  @Override
+  public void writeToNBT(CompoundTag tag) {
+    for (int i = 0; i < 256; i++) {
+      MapChunk chunk = chunks.get(i);
+      if (chunk != null) {
+        CompoundTag chunkNBT = new CompoundTag();
+        synchronized (chunk) {
+          chunk.writeToNBT(chunkNBT);
+        }
+        tag.put("r" + i, chunkNBT);
+      }
+    }
+  }
 }

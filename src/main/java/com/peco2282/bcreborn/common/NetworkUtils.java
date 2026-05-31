@@ -11,12 +11,9 @@
  */
 package com.peco2282.bcreborn.common;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-
-import java.nio.charset.StandardCharsets;
 
 public interface NetworkUtils {
   static void writeUTF(FriendlyByteBuf data, String str) {

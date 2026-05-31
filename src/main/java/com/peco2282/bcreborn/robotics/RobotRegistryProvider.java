@@ -22,32 +22,32 @@ import java.util.HashMap;
 
 
 public class RobotRegistryProvider implements IRobotRegistryProvider {
-	private static final HashMap<ResourceKey<Level>, RobotRegistry> registries = new HashMap<>();
+  private static final HashMap<ResourceKey<Level>, RobotRegistry> registries = new HashMap<>();
 
-	@Override
-	public synchronized RobotRegistry getRegistry(Level world) {
-        if (!(world instanceof ServerLevel serverLevel)) {
-            return null; // Registry only exists on server
-        }
+  @Override
+  public synchronized RobotRegistry getRegistry(Level world) {
+    if (!(world instanceof ServerLevel serverLevel)) {
+      return null; // Registry only exists on server
+    }
 
-		if (!registries.containsKey(world.dimension())
-				|| registries.get(world.dimension()).level != world) {
+    if (!registries.containsKey(world.dimension())
+      || registries.get(world.dimension()).level != world) {
 
-			RobotRegistry newRegistry = serverLevel.getDataStorage().computeIfAbsent(RobotRegistry::load, RobotRegistry::new, "robotRegistry");
+      RobotRegistry newRegistry = serverLevel.getDataStorage().computeIfAbsent(RobotRegistry::load, RobotRegistry::new, "robotRegistry");
 
-			newRegistry.level = serverLevel;
+      newRegistry.level = serverLevel;
 
-			for (DockingStation d : newRegistry.stations.values()) {
-				d.world = world;
-			}
+      for (DockingStation d : newRegistry.stations.values()) {
+        d.world = world;
+      }
 
-			MinecraftForge.EVENT_BUS.register(newRegistry);
+      MinecraftForge.EVENT_BUS.register(newRegistry);
 
-			registries.put(world.dimension(), newRegistry);
+      registries.put(world.dimension(), newRegistry);
 
-			return newRegistry;
-		}
+      return newRegistry;
+    }
 
-		return registries.get(world.dimension());
-	}
+    return registries.get(world.dimension());
+  }
 }

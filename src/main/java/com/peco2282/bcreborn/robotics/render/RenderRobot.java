@@ -46,226 +46,226 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RenderRobot extends EntityRenderer<EntityRobot> {
-	private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
-	private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
-	private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
+  private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
+  private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
+  private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
 
-	private final ModelPart box;
-	private final ModelPart helmetBox;
-	private final ModelPart skullOverlayBox;
-	private final ItemRenderer itemRenderer;
+  private final ModelPart box;
+  private final ModelPart helmetBox;
+  private final ModelPart skullOverlayBox;
+  private final ItemRenderer itemRenderer;
 
-	private final Map<String, GameProfile> gameProfileCache = new HashMap<>();
+  private final Map<String, GameProfile> gameProfileCache = new HashMap<>();
 
-	public RenderRobot(EntityRendererProvider.Context context) {
-		super(context);
-		this.itemRenderer = context.getItemRenderer();
-		
-		ModelPart root = context.bakeLayer(RobotModelLayers.ROBOT);
-		this.box = root.getChild("box");
-		this.helmetBox = root.getChild("helmetBox");
-		this.skullOverlayBox = root.getChild("skullOverlayBox");
-	}
+  public RenderRobot(EntityRendererProvider.Context context) {
+    super(context);
+    this.itemRenderer = context.getItemRenderer();
 
-	@Override
-	public void render(EntityRobot robot, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-		poseStack.pushPose();
+    ModelPart root = context.bakeLayer(RobotModelLayers.ROBOT);
+    this.box = root.getChild("box");
+    this.helmetBox = root.getChild("helmetBox");
+    this.skullOverlayBox = root.getChild("skullOverlayBox");
+  }
 
-		float robotYaw = Mth.lerp(partialTicks, robot.yRotO, robot.getYRot());
-		poseStack.mulPose(Axis.YP.rotationDegrees(-robotYaw));
+  public static LayerDefinition createLayer() {
+    MeshDefinition mesh = new MeshDefinition();
+    PartDefinition root = mesh.getRoot();
+    root.addOrReplaceChild("box", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -4F, -4F, 8, 8, 8), PartPose.ZERO);
+    root.addOrReplaceChild("helmetBox", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -8F, -4F, 8, 8, 8), PartPose.ZERO);
+    root.addOrReplaceChild("skullOverlayBox", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, new CubeDeformation(0.5F)), PartPose.ZERO);
+    return LayerDefinition.create(mesh, 64, 32);
+  }
 
-		// Items in slots
-		for (int i = 0; i < 4; i++) {
-			ItemStack stack = robot.getItem(i);
-			if (!stack.isEmpty()) {
-				poseStack.pushPose();
-				float tx = (i == 1 || i == 2) ? 0.125F : -0.125F;
-				float tz = (i == 2 || i == 3) ? 0.125F : -0.125F;
-				poseStack.translate(tx, 0, tz);
-				doRenderItem(stack, poseStack, bufferSource, packedLight);
-				poseStack.popPose();
-			}
-		}
+  @Override
+  public void render(EntityRobot robot, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    poseStack.pushPose();
 
-		// Item in use
-		ItemStack itemInUse = robot.itemInUse;
-		if (itemInUse != null && !itemInUse.isEmpty()) {
-			poseStack.pushPose();
-			poseStack.mulPose(Axis.ZP.rotationDegrees(robot.itemAngle2));
-			if (robot.itemActive) {
-				float stage = robot.itemActiveStage; // Updated in EntityRobot.tick
-				poseStack.mulPose(Axis.ZP.rotationDegrees(stage));
-			}
-			poseStack.translate(-0.4F, 0, 0);
-			poseStack.mulPose(Axis.YP.rotationDegrees(-45F + 180F));
-			poseStack.scale(0.8F, 0.8F, 0.8F);
+    float robotYaw = Mth.lerp(partialTicks, robot.yRotO, robot.getYRot());
+    poseStack.mulPose(Axis.YP.rotationDegrees(-robotYaw));
 
-			itemRenderer.renderStatic(itemInUse, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, robot.level(), robot.getId());
-			poseStack.popPose();
-		}
+    // Items in slots
+    for (int i = 0; i < 4; i++) {
+      ItemStack stack = robot.getItem(i);
+      if (!stack.isEmpty()) {
+        poseStack.pushPose();
+        float tx = (i == 1 || i == 2) ? 0.125F : -0.125F;
+        float tz = (i == 2 || i == 3) ? 0.125F : -0.125F;
+        poseStack.translate(tx, 0, tz);
+        doRenderItem(stack, poseStack, bufferSource, packedLight);
+        poseStack.popPose();
+      }
+    }
 
-		// Laser
-		LaserData laser = robot.laser;
-		if (laser != null && laser.isVisible) {
-			poseStack.pushPose();
-			// Laser is rendered relative to robot position
-			// EntityRobot sets laser head to its own pos, so we render at 0,0,0 relative to robot
-			laser.update();
-			poseStack.mulPose(Axis.YP.rotationDegrees((float) laser.angleZ));
-			poseStack.mulPose(Axis.ZP.rotationDegrees((float) laser.angleY));
-			VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(LASER_TEXTURE));
-			renderLaserLine(poseStack, vertexConsumer, laser.renderSize, laser.laserTexAnimation, packedLight);
-			poseStack.popPose();
-		}
+    // Item in use
+    ItemStack itemInUse = robot.itemInUse;
+    if (itemInUse != null && !itemInUse.isEmpty()) {
+      poseStack.pushPose();
+      poseStack.mulPose(Axis.ZP.rotationDegrees(robot.itemAngle2));
+      if (robot.itemActive) {
+        float stage = robot.itemActiveStage; // Updated in EntityRobot.tick
+        poseStack.mulPose(Axis.ZP.rotationDegrees(stage));
+      }
+      poseStack.translate(-0.4F, 0, 0);
+      poseStack.mulPose(Axis.YP.rotationDegrees(-45F + 180F));
+      poseStack.scale(0.8F, 0.8F, 0.8F);
 
-		// Robot body
-		ResourceLocation texture = robot.getTexture();
-		if (texture != null) {
-			poseStack.pushPose();
-			float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
-			if (robot.hurtTime > 0) {
-				poseStack.mulPose(Axis.ZP.rotationDegrees(robot.hurtTime * 0.01f));
-			}
-			
-			VertexConsumer bodyConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
-			int bodyRed = robot.hurtTime > 0 ? 255 : 255;
-			int bodyGreen = robot.hurtTime > 0 ? 153 : 255;
-			int bodyBlue = robot.hurtTime > 0 ? 153 : 255;
-			box.render(poseStack, bodyConsumer, packedLight, OverlayTexture.NO_OVERLAY, bodyRed, bodyGreen, bodyBlue, 255);
+      itemRenderer.renderStatic(itemInUse, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, robot.level(), robot.getId());
+      poseStack.popPose();
+    }
 
-			if (robot.isActive()) {
-				// Overlay
-				VertexConsumer redConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(OVERLAY_RED));
-				int alpha = (int)(storagePercent * 255);
-				box.render(poseStack, redConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, alpha);
+    // Laser
+    LaserData laser = robot.laser;
+    if (laser != null && laser.isVisible) {
+      poseStack.pushPose();
+      // Laser is rendered relative to robot position
+      // EntityRobot sets laser head to its own pos, so we render at 0,0,0 relative to robot
+      laser.update();
+      poseStack.mulPose(Axis.YP.rotationDegrees((float) laser.angleZ));
+      poseStack.mulPose(Axis.ZP.rotationDegrees((float) laser.angleY));
+      VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(LASER_TEXTURE));
+      renderLaserLine(poseStack, vertexConsumer, laser.renderSize, laser.laserTexAnimation, packedLight);
+      poseStack.popPose();
+    }
 
-				VertexConsumer cyanConsumer = bufferSource.getBuffer(RenderType.entityCutout(OVERLAY_CYAN));
-				box.render(poseStack, cyanConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, 255);
-			}
-			poseStack.popPose();
-		}
+    // Robot body
+    ResourceLocation texture = robot.getTexture();
+    if (texture != null) {
+      poseStack.pushPose();
+      float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
+      if (robot.hurtTime > 0) {
+        poseStack.mulPose(Axis.ZP.rotationDegrees(robot.hurtTime * 0.01f));
+      }
 
-		// Wearables
-		for (ItemStack wearable : robot.getWearables()) {
-			doRenderWearable(robot, wearable, poseStack, bufferSource, packedLight);
-		}
+      VertexConsumer bodyConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
+      int bodyRed = 255;
+      int bodyGreen = robot.hurtTime > 0 ? 153 : 255;
+      int bodyBlue = robot.hurtTime > 0 ? 153 : 255;
+      box.render(poseStack, bodyConsumer, packedLight, OverlayTexture.NO_OVERLAY, bodyRed, bodyGreen, bodyBlue, 255);
 
-		poseStack.popPose();
-		super.render(robot, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
-	}
+      if (robot.isActive()) {
+        // Overlay
+        VertexConsumer redConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(OVERLAY_RED));
+        int alpha = (int) (storagePercent * 255);
+        box.render(poseStack, redConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, alpha);
 
-	private void doRenderItem(ItemStack stack, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-		poseStack.pushPose();
-		poseStack.translate(0, 0.28F, 0);
-		poseStack.scale(0.5f, 0.5f, 0.5f);
-		itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, null, 0);
-		poseStack.popPose();
-	}
+        VertexConsumer cyanConsumer = bufferSource.getBuffer(RenderType.entityCutout(OVERLAY_CYAN));
+        box.render(poseStack, cyanConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, 255);
+      }
+      poseStack.popPose();
+    }
 
-	private void doRenderWearable(EntityRobot entity, ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-		Item item = wearable.getItem();
-		if (item instanceof IRobotOverlayItem) {
-			// IRobotOverlayItem still uses TextureManager, this is a limitation of not updating API
-			((IRobotOverlayItem) item).renderRobotOverlay(wearable, Minecraft.getInstance().getTextureManager());
-		} else if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
-			poseStack.pushPose();
-			poseStack.scale(1.0125F, 1.0125F, 1.0125F);
-			poseStack.translate(0.0f, -0.25f, 0.0f);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+    // Wearables
+    for (ItemStack wearable : robot.getWearables()) {
+      doRenderWearable(robot, wearable, poseStack, bufferSource, packedLight);
+    }
 
-			HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
-			ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
-			
-			VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));
-			armorModel.renderToBuffer(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-			
-			poseStack.popPose();
-		} else if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkullBlock) {
-			doRenderSkull(wearable, poseStack, bufferSource, packedLight);
-		}
-	}
+    poseStack.popPose();
+    super.render(robot, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
+  }
 
-	private void doRenderSkull(ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-		poseStack.pushPose();
-		poseStack.scale(1.0125F, 1.0125F, 1.0125F);
-		GameProfile gameProfile = null;
-		CompoundTag nbt = wearable.getTag();
-		if (nbt != null) {
-			if (nbt.contains("SkullOwner", 10)) {
-				gameProfile = NbtUtils.readGameProfile(nbt.getCompound("SkullOwner"));
-			}
-		}
+  private void doRenderItem(ItemStack stack, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    poseStack.pushPose();
+    poseStack.translate(0, 0.28F, 0);
+    poseStack.scale(0.5f, 0.5f, 0.5f);
+    itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, null, 0);
+    poseStack.popPose();
+  }
 
-		poseStack.translate(-0.5F, -0.25F, -0.5F);
-		SkullBlock.Type skullType = ((SkullBlock) ((BlockItem) wearable.getItem()).getBlock()).getType();
-		SkullBlockRenderer.renderSkull(null, 180.0F, 0.0F, poseStack, bufferSource, packedLight, SkullBlockRenderer.createSkullRenderers(Minecraft.getInstance().getEntityModels()).get(skullType), SkullBlockRenderer.getRenderType(skullType, gameProfile));
-		
-		if (gameProfile != null) {
-			poseStack.pushPose();
-			poseStack.translate(0.5F, 0.25F, 0.5F);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
-			poseStack.mulPose(Axis.YP.rotationDegrees(-90.0f));
-			VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SkullBlockRenderer.getRenderType(skullType, gameProfile).toString().contains("overlay") ? OVERLAY_RED : OVERLAY_CYAN)); // Dummy logic for skull overlay
-			skullOverlayBox.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-			poseStack.popPose();
-		}
-		poseStack.popPose();
-	}
+  private void doRenderWearable(EntityRobot entity, ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    Item item = wearable.getItem();
+    if (item instanceof IRobotOverlayItem) {
+      // IRobotOverlayItem still uses TextureManager, this is a limitation of not updating API
+      ((IRobotOverlayItem) item).renderRobotOverlay(wearable, Minecraft.getInstance().getTextureManager());
+    } else if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
+      poseStack.pushPose();
+      poseStack.scale(1.0125F, 1.0125F, 1.0125F);
+      poseStack.translate(0.0f, -0.25f, 0.0f);
+      poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-	private void renderLaserLine(PoseStack poseStack, VertexConsumer consumer, double length, int texIndex, int packedLight) {
-		Matrix4f matrix4f = poseStack.last().pose();
-		Matrix3f matrix3f = poseStack.last().normal();
+      HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
+      ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
 
-		float size = 1.0f / 16.0f;
-		float v0 = texIndex / 40.0f;
-		float v1 = v0 + (1.0f / 40.0f);
+      VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));
+      armorModel.renderToBuffer(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-		drawQuad(matrix4f, matrix3f, consumer, (float) length, size, v0, v1, packedLight);
-	}
+      poseStack.popPose();
+    } else if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkullBlock) {
+      doRenderSkull(wearable, poseStack, bufferSource, packedLight);
+    }
+  }
 
-	private void drawQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float length, float size, float v0, float v1, int packedLight) {
-		vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v1, packedLight);
-		vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v1, packedLight);
+  private void doRenderSkull(ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    poseStack.pushPose();
+    poseStack.scale(1.0125F, 1.0125F, 1.0125F);
+    GameProfile gameProfile = null;
+    CompoundTag nbt = wearable.getTag();
+    if (nbt != null) {
+      if (nbt.contains("SkullOwner", 10)) {
+        gameProfile = NbtUtils.readGameProfile(nbt.getCompound("SkullOwner"));
+      }
+    }
 
-		vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v1, packedLight);
-		vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v1, packedLight);
-		
-		vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v1, packedLight);
-		vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v1, packedLight);
-		
-		vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v0, packedLight);
-		vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v1, packedLight);
-		vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v1, packedLight);
-	}
+    poseStack.translate(-0.5F, -0.25F, -0.5F);
+    SkullBlock.Type skullType = ((SkullBlock) ((BlockItem) wearable.getItem()).getBlock()).getType();
+    SkullBlockRenderer.renderSkull(null, 180.0F, 0.0F, poseStack, bufferSource, packedLight, SkullBlockRenderer.createSkullRenderers(Minecraft.getInstance().getEntityModels()).get(skullType), SkullBlockRenderer.getRenderType(skullType, gameProfile));
 
-	private void vertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float x, float y, float z, float u, float v, int packedLight) {
-		consumer.vertex(matrix4f, x, y, z)
-				.color(255, 255, 255, 255)
-				.uv(u, v)
-				.overlayCoords(OverlayTexture.NO_OVERLAY)
-				.uv2(packedLight)
-				.normal(matrix3f, 0, 1, 0)
-				.endVertex();
-	}
+    if (gameProfile != null) {
+      poseStack.pushPose();
+      poseStack.translate(0.5F, 0.25F, 0.5F);
+      poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+      poseStack.mulPose(Axis.YP.rotationDegrees(-90.0f));
+      VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SkullBlockRenderer.getRenderType(skullType, gameProfile).toString().contains("overlay") ? OVERLAY_RED : OVERLAY_CYAN)); // Dummy logic for skull overlay
+      skullOverlayBox.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      poseStack.popPose();
+    }
+    poseStack.popPose();
+  }
 
-	@Override
-	public ResourceLocation getTextureLocation(EntityRobot robot) {
-		return robot.getTexture();
-	}
+  private void renderLaserLine(PoseStack poseStack, VertexConsumer consumer, double length, int texIndex, int packedLight) {
+    Matrix4f matrix4f = poseStack.last().pose();
+    Matrix3f matrix3f = poseStack.last().normal();
 
-	public static LayerDefinition createLayer() {
-		MeshDefinition mesh = new MeshDefinition();
-		PartDefinition root = mesh.getRoot();
-		root.addOrReplaceChild("box", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -4F, -4F, 8, 8, 8), PartPose.ZERO);
-		root.addOrReplaceChild("helmetBox", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -8F, -4F, 8, 8, 8), PartPose.ZERO);
-		root.addOrReplaceChild("skullOverlayBox", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, new CubeDeformation(0.5F)), PartPose.ZERO);
-		return LayerDefinition.create(mesh, 64, 32);
-	}
+    float size = 1.0f / 16.0f;
+    float v0 = texIndex / 40.0f;
+    float v1 = v0 + (1.0f / 40.0f);
+
+    drawQuad(matrix4f, matrix3f, consumer, (float) length, size, v0, v1, packedLight);
+  }
+
+  private void drawQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float length, float size, float v0, float v1, int packedLight) {
+    vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v1, packedLight);
+    vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v1, packedLight);
+
+    vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v1, packedLight);
+    vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v1, packedLight);
+
+    vertex(matrix4f, matrix3f, consumer, 0, size, -size, 0, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, size, -size, 1, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, size, size, 1, v1, packedLight);
+    vertex(matrix4f, matrix3f, consumer, 0, size, size, 0, v1, packedLight);
+
+    vertex(matrix4f, matrix3f, consumer, 0, -size, size, 0, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, -size, size, 1, v0, packedLight);
+    vertex(matrix4f, matrix3f, consumer, length, -size, -size, 1, v1, packedLight);
+    vertex(matrix4f, matrix3f, consumer, 0, -size, -size, 0, v1, packedLight);
+  }
+
+  private void vertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer consumer, float x, float y, float z, float u, float v, int packedLight) {
+    consumer.vertex(matrix4f, x, y, z)
+      .color(255, 255, 255, 255)
+      .uv(u, v)
+      .overlayCoords(OverlayTexture.NO_OVERLAY)
+      .uv2(packedLight)
+      .normal(matrix3f, 0, 1, 0)
+      .endVertex();
+  }
+
+  @Override
+  public ResourceLocation getTextureLocation(EntityRobot robot) {
+    return robot.getTexture();
+  }
 }

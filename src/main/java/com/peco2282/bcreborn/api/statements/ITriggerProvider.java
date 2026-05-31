@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Collection;
 
 public interface ITriggerProvider {
-    Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container);
+  Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container);
 
-    Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile);
+  Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile);
 }

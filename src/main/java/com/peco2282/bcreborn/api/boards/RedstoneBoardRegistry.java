@@ -19,24 +19,24 @@ import java.util.Collection;
 import java.util.function.Function;
 
 public abstract class RedstoneBoardRegistry {
-    public static RedstoneBoardRegistry instance;
+  public static RedstoneBoardRegistry instance;
 
-    public abstract void registerBoardType(RedstoneBoardNBT<?> redstoneBoardNBT, int energyCost);
+  public abstract void registerBoardType(RedstoneBoardNBT<?> redstoneBoardNBT, int energyCost);
 
-    @Deprecated
-    public abstract void registerBoardClass(RedstoneBoardNBT<?> redstoneBoardNBT, float probability);
+  @Deprecated
+  public abstract void registerBoardClass(RedstoneBoardNBT<?> redstoneBoardNBT, float probability);
 
-    public abstract void setEmptyRobotBoard(RedstoneBoardRobotNBT redstoneBoardNBT);
+  public abstract RedstoneBoardRobotNBT getEmptyRobotBoard();
 
-    public abstract RedstoneBoardRobotNBT getEmptyRobotBoard();
+  public abstract void setEmptyRobotBoard(RedstoneBoardRobotNBT redstoneBoardNBT);
 
-    public abstract RedstoneBoardNBT<?> getRedstoneBoard(CompoundTag nbt);
+  public abstract RedstoneBoardNBT<?> getRedstoneBoard(CompoundTag nbt);
 
-    public abstract RedstoneBoardNBT<?> getRedstoneBoard(String id);
+  public abstract RedstoneBoardNBT<?> getRedstoneBoard(String id);
 
-    public abstract void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
+  public abstract void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
-    public abstract Collection<RedstoneBoardNBT<?>> getAllBoardNBTs();
+  public abstract Collection<RedstoneBoardNBT<?>> getAllBoardNBTs();
 
-    public abstract int getEnergyCost(RedstoneBoardNBT<?> board);
+  public abstract int getEnergyCost(RedstoneBoardNBT<?> board);
 }

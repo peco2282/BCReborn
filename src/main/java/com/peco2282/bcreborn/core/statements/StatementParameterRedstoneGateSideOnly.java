@@ -27,67 +27,67 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public class StatementParameterRedstoneGateSideOnly implements
-		IStatementParameter {
+  IStatementParameter {
 
-	@OnlyIn(Dist.CLIENT)
-	private static TextureAtlasSprite icon;
+  @OnlyIn(Dist.CLIENT)
+  private static TextureAtlasSprite icon;
 
-	public boolean isOn = false;
+  public boolean isOn = false;
 
-	public StatementParameterRedstoneGateSideOnly() {
+  public StatementParameterRedstoneGateSideOnly() {
 
-	}
+  }
 
-	@Override
-	public ItemStack getItemStack() {
-		return null;
-	}
+  @Override
+  public ItemStack getItemStack() {
+    return null;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getIcon() {
-		if (!isOn) {
-			return null;
-		} else {
-			return icon;
-		}
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public TextureAtlasSprite getIcon() {
+    if (!isOn) {
+      return null;
+    } else {
+      return icon;
+    }
+  }
 
-	@Override
-	public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-		isOn = !isOn;
-	}
+  @Override
+  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    isOn = !isOn;
+  }
 
-	@Override
-	public void writeToNBT(CompoundTag compound) {
-		compound.putBoolean("isOn", isOn);
-	}
+  @Override
+  public void writeToNBT(CompoundTag compound) {
+    compound.putBoolean("isOn", isOn);
+  }
 
-	@Override
-	public void readFromNBT(CompoundTag compound) {
-		if (compound.contains("isOn")) {
-			isOn = compound.getBoolean("isOn");
-		}
-	}
+  @Override
+  public void readFromNBT(CompoundTag compound) {
+    if (compound.contains("isOn")) {
+      isOn = compound.getBoolean("isOn");
+    }
+  }
 
-	@Override
-	public String getDescription() {
-		return isOn ? StringUtils.localize("gate.parameter.redstone.gateSideOnly") : "";
-	}
+  @Override
+  public String getDescription() {
+    return isOn ? StringUtils.localize("gate.parameter.redstone.gateSideOnly") : "";
+  }
 
-	@Override
-	public String getUniqueTag() {
-		return "buildcraft:redstoneGateSideOnly";
-	}
+  @Override
+  public String getUniqueTag() {
+    return "buildcraft:redstoneGateSideOnly";
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/redstone_gate_side_only"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/redstone_gate_side_only"));
+  }
 
-	@Override
-	public IStatementParameter rotateLeft() {
-		return this;
-	}
+  @Override
+  public IStatementParameter rotateLeft() {
+    return this;
+  }
 }

@@ -33,78 +33,78 @@ import java.util.function.Function;
 
 public class TriggerFluidContainer extends BCStatement implements ITriggerExternal {
 
-	public enum State {
+  public State state;
 
-		Empty, Contains, Space, Full
-	}
+  public TriggerFluidContainer(State state) {
+    super("buildcraft:fluid." + state.name().toLowerCase(Locale.ENGLISH), "buildcraft.fluid." + state.name().toLowerCase(Locale.ENGLISH));
+    this.state = state;
+  }
 
-	public State state;
+  @Override
+  public int maxParameters() {
+    return state == State.Contains || state == State.Space ? 1 : 0;
+  }
 
-	public TriggerFluidContainer(State state) {
-		super("buildcraft:fluid." + state.name().toLowerCase(Locale.ENGLISH), "buildcraft.fluid." + state.name().toLowerCase(Locale.ENGLISH));
-		this.state = state;
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.fluid." + state.name().toLowerCase(Locale.ENGLISH));
+  }
 
-	@Override
-	public int maxParameters() {
-		return state == State.Contains || state == State.Space ? 1 : 0;
-	}
+  @Override
+  public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer statementContainer, IStatementParameter[] parameters) {
+    if (tile == null) return false;
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.fluid." + state.name().toLowerCase(Locale.ENGLISH));
-	}
+    return tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).map(handler -> {
+      FluidStack searchedFluid = FluidStack.EMPTY;
 
-	@Override
-	public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer statementContainer, IStatementParameter[] parameters) {
-		if (tile == null) return false;
+      if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
+        searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(FluidStack.EMPTY);
+      }
 
-		return tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).map(handler -> {
-			FluidStack searchedFluid = FluidStack.EMPTY;
+      boolean foundItems = false;
+      boolean foundSpace = false;
 
-			if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
-				searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(FluidStack.EMPTY);
-			}
+      for (int i = 0; i < handler.getTanks(); i++) {
+        FluidStack stack = handler.getFluidInTank(i);
+        if (!stack.isEmpty()) {
+          if (searchedFluid.isEmpty() || searchedFluid.isFluidEqual(stack)) {
+            foundItems = true;
+          }
+        }
 
-			boolean foundItems = false;
-			boolean foundSpace = false;
+        if (handler.fill(searchedFluid.isEmpty() ? new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1) : searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
+          foundSpace = true;
+        } else if (stack.isEmpty() || stack.getAmount() < handler.getTankCapacity(i)) {
+          foundSpace = true;
+        }
+      }
 
-			for (int i = 0; i < handler.getTanks(); i++) {
-				FluidStack stack = handler.getFluidInTank(i);
-				if (!stack.isEmpty()) {
-					if (searchedFluid.isEmpty() || searchedFluid.isFluidEqual(stack)) {
-						foundItems = true;
-					}
-				}
+      switch (state) {
+        case Empty:
+          return !foundItems;
+        case Contains:
+          return foundItems;
+        case Space:
+          return foundSpace;
+        default:
+          return !foundSpace;
+      }
+    }).orElse(false);
+  }
 
-				if (handler.fill(searchedFluid.isEmpty() ? new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1) : searchedFluid, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE) > 0) {
-					foundSpace = true;
-				} else if (stack.isEmpty() || stack.getAmount() < handler.getTankCapacity(i)) {
-					foundSpace = true;
-				}
-			}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_liquidcontainer_" + state.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-			switch (state) {
-				case Empty:
-					return !foundItems;
-				case Contains:
-					return foundItems;
-				case Space:
-					return foundSpace;
-				default:
-					return !foundSpace;
-			}
-		}).orElse(false);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornCore.location("triggers/trigger_liquidcontainer_" + state.name().toLowerCase(Locale.ENGLISH)));
-	}
+  public enum State {
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+    Empty, Contains, Space, Full
+  }
 }

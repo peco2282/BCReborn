@@ -26,29 +26,29 @@ import java.util.function.Function;
 
 public class ActionStationAcceptItems extends ActionStationInputItems {
 
-	public ActionStationAcceptItems() {
-		super("station.accept_items");
-		StatementManager.statements.put("buildcraft:station.drop_in_pipe", this);
-	}
+  public ActionStationAcceptItems() {
+    super("station.accept_items");
+    StatementManager.statements.put("buildcraft:station.drop_in_pipe", this);
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.station.accept_items");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.station.accept_items");
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_accept_items"));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornRobotics.location("triggers/action_station_accept_items"));
+  }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
 }

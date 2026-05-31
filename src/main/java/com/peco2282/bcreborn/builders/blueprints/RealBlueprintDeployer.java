@@ -25,8 +25,8 @@ import java.io.IOException;
 
 public class RealBlueprintDeployer extends BlueprintDeployer {
 
-	@Override
-	public void deployBlueprint(Level world, int x, int y, int z,
+  @Override
+  public void deployBlueprint(Level world, int x, int y, int z,
                               Direction dir, File file) {
 
     try {
@@ -36,47 +36,47 @@ public class RealBlueprintDeployer extends BlueprintDeployer {
     }
   }
 
-	@Override
-	public void deployBlueprintFromFileStream(Level world, int x, int y, int z,
-											  Direction dir, byte[] data) {
+  @Override
+  public void deployBlueprintFromFileStream(Level world, int x, int y, int z,
+                                            Direction dir, byte[] data) {
 
     try {
       deployBlueprint(world, x, y, z, dir, (Blueprint) BlueprintBase.loadBluePrint(NbtIo.readCompressed(new ByteArrayInputStream(data))));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-	}
+  }
 
-	private void deployBlueprint(Level world, int x, int y, int z, Direction dir, Blueprint bpt) {
-		bpt.id = new LibraryId();
-		bpt.id.extension = "bpt";
+  private void deployBlueprint(Level world, int x, int y, int z, Direction dir, Blueprint bpt) {
+    bpt.id = new LibraryId();
+    bpt.id.extension = "bpt";
 
-		BptContext context = bpt.getContext(world, bpt.getBoxForPos(x, y, z));
+    BptContext context = bpt.getContext(world, bpt.getBoxForPos(x, y, z));
 
-		if (bpt.rotate) {
-			if (dir == Direction.EAST) {
-				// Do nothing
-			} else if (dir == Direction.SOUTH) {
-				bpt.rotateLeft(context);
-			} else if (dir == Direction.WEST) {
-				bpt.rotateLeft(context);
-				bpt.rotateLeft(context);
-			} else if (dir == Direction.NORTH) {
-				bpt.rotateLeft(context);
-				bpt.rotateLeft(context);
-				bpt.rotateLeft(context);
-			}
-		}
+    if (bpt.rotate) {
+      if (dir == Direction.EAST) {
+        // Do nothing
+      } else if (dir == Direction.SOUTH) {
+        bpt.rotateLeft(context);
+      } else if (dir == Direction.WEST) {
+        bpt.rotateLeft(context);
+        bpt.rotateLeft(context);
+      } else if (dir == Direction.NORTH) {
+        bpt.rotateLeft(context);
+        bpt.rotateLeft(context);
+        bpt.rotateLeft(context);
+      }
+    }
 
-		Translation transform = new Translation();
+    Translation transform = new Translation();
 
-		transform.x = x - bpt.anchorX;
-		transform.y = y - bpt.anchorY;
-		transform.z = z - bpt.anchorZ;
+    transform.x = x - bpt.anchorX;
+    transform.y = y - bpt.anchorY;
+    transform.z = z - bpt.anchorZ;
 
-		bpt.translateToWorld(transform);
+    bpt.translateToWorld(transform);
 
-		new BptBuilderBlueprint(bpt, world, x, y, z).deploy();
-	}
+    new BptBuilderBlueprint(bpt, world, x, y, z).deploy();
+  }
 }
 

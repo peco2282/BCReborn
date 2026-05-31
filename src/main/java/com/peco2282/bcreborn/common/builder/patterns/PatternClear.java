@@ -22,37 +22,37 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PatternClear extends FillerPattern {
-    public static final PatternClear INSTANCE = new PatternClear();
-    public static final Codec<PatternClear> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
-    ).apply(instance, PatternClear::new));
+  public static final PatternClear INSTANCE = new PatternClear();
+  public static final Codec<PatternClear> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    IStatementParameter.CODEC.listOf().fieldOf("parameters").forGetter(p -> Arrays.asList(p.parameters))
+  ).apply(instance, PatternClear::new));
 
-    private IStatementParameter[] parameters = new IStatementParameter[0];
+  private IStatementParameter[] parameters = new IStatementParameter[0];
 
-    public PatternClear(List<IStatementParameter> parameters) {
-        this();
-        this.parameters = parameters.toArray(new IStatementParameter[0]);
-    }
+  public PatternClear(List<IStatementParameter> parameters) {
+    this();
+    this.parameters = parameters.toArray(new IStatementParameter[0]);
+  }
 
-    public PatternClear() {
-        super("clear");
-    }
+  public PatternClear() {
+    super("clear");
+  }
 
-    @Override
-    public Codec<? extends FillerPattern> getCodec() {
-        return CODEC;
-    }
+  @Override
+  public Codec<? extends FillerPattern> getCodec() {
+    return CODEC;
+  }
 
-    @Override
-    public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-        int xMin = (int) box.pMin().x;
-        int yMin = (int) box.pMin().y;
-        int zMin = (int) box.pMin().z;
+  @Override
+  public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
+    int xMin = (int) box.pMin().x;
+    int yMin = (int) box.pMin().y;
+    int zMin = (int) box.pMin().z;
 
-        int xMax = (int) box.pMax().x;
-        int yMax = (int) box.pMax().y;
-        int zMax = (int) box.pMax().z;
+    int xMax = (int) box.pMax().x;
+    int yMax = (int) box.pMax().y;
+    int zMax = (int) box.pMax().z;
 
-        return new Template(xMax - xMin + 1, yMax - yMin + 1, zMax - zMin + 1);
-    }
+    return new Template(xMax - xMin + 1, yMax - yMin + 1, zMax - zMin + 1);
+  }
 }

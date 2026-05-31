@@ -13,23 +13,13 @@ package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
-import com.peco2282.bcreborn.common.SimpleInventory;
-import com.peco2282.bcreborn.transport.BlocksTransport;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.registries.RegistryObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
+import com.peco2282.bcreborn.transport.BlocksTransport;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -47,7 +37,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -60,6 +53,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,6 +71,7 @@ import java.util.*;
  * Transport logic itself is delegated to transport modules.
  */
 public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock {
+  public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
   // 流体輸送モジュール（FLUID パイプのみ有効）
@@ -96,13 +91,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
   private final LazyOptional<IFluidHandler> fluidHandlerCap;
   private final LazyOptional<IEnergyStorage> energyCap;
-  // 流体流入方向を記録するためのラッパー（逆流防止用）
-  @Nullable
-  private PipeFluidHandler pipeFluidHandler = null;
   private final boolean[] wireSignals = new boolean[4];
   protected PipeType transportType;
   protected PipeMaterial pipeMaterial;
   protected int ticksSincePull = 0;
+  // 流体流入方向を記録するためのラッパー（逆流防止用）
+  @Nullable
+  private PipeFluidHandler pipeFluidHandler = null;
   // Clay流体パイプのラウンドロビンカウンタ
   private int fluidRoundRobinIndex = 0;
   private PipeBehaviour behaviour;
@@ -115,8 +110,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
 //  private int pipeColor = 0;
   private DyeColor pipeColor = DyeColor.WHITE;
-
-  public final SideProperties sideProperties = new SideProperties();
 
   public PipeBlockEntity(BlockPos pos, BlockState state) {
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
@@ -147,6 +140,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     this.behaviour = PipeBehaviourManager.getBehaviour(type, material);
   }
 
+  public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
+    return switch (type) {
+      case ITEM -> BlockEntityTypesTransport.ITEM_PIPE.get();
+      case FLUID -> BlockEntityTypesTransport.FLUID_PIPE.get();
+      case ENERGY -> BlockEntityTypesTransport.ENERGY_PIPE.get();
+    };
+  }
+
   public int getTicksSincePull() {
     return ticksSincePull;
   }
@@ -162,6 +163,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public void setBehaviour(PipeBehaviour behaviour) {
     this.behaviour = behaviour;
   }
+
+  // ---- アイテム輸送 ----
 
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
@@ -189,12 +192,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  // ---- アイテム輸送 ----
-
   private void tickItems(Level level, BlockPos pos) {
     itemTransportModule.tick(level, pos);
   }
-
 
   public int getExtractionEnergy() {
     int totalEnergy = 0;
@@ -239,11 +239,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     itemTransportModule.dropItems();
   }
 
+  // ---- Fluid ----
+
   public List<TravelingItem> getTravelingItems() {
     return itemTransportModule.getTravelingItems();
   }
-
-  // ---- Fluid ----
 
   @Nullable
   public FluidTank getFluidTank() {
@@ -259,11 +259,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return fluidRoundRobinIndex;
   }
 
+  // ---- Energy ----
+
   public void advanceFluidRoundRobin(int size) {
     if (size > 0) fluidRoundRobinIndex = (fluidRoundRobinIndex + 1) % size;
   }
-
-  // ---- Energy ----
 
   @Nullable
   public EnergyTransportModule getEnergyTransportModule() {
@@ -275,11 +275,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return energyStorage;
   }
 
+  // ---- Wire signals ----
+
   public int getPipeEnergyStored() {
     return energyStorage != null ? energyStorage.getEnergyStored() : 0;
   }
-
-  // ---- Wire signals ----
 
   public void setWireSignal(DyeColor color, boolean signal) {
     int index = getWireIndex(color);
@@ -318,6 +318,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
+  // ---- Getters / Setters ----
+
   private int getWireIndex(DyeColor color) {
     if (color == null) return -1;
     return switch (color) {
@@ -328,8 +330,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       default -> -1;
     };
   }
-
-  // ---- Getters / Setters ----
 
   public PipeType getTransportType() {
     return transportType;
@@ -414,6 +414,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return pipeColor;
   }
 
+  // ---- NBT ----
+
   public void setPipeColor(DyeColor color) {
     this.pipeColor = color;
     setChanged();
@@ -423,8 +425,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
     }
   }
-
-  // ---- NBT ----
 
   @Override
   public void load(CompoundTag tag) {
@@ -485,6 +485,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
+  // ---- Capabilities ----
+
   @Override
   protected void saveAdditional(CompoundTag tag) {
     super.saveAdditional(tag);
@@ -530,8 +532,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  // ---- Capabilities ----
-
   @NotNull
   @Override
   public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -550,6 +550,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return super.getCapability(cap, side);
   }
 
+  // ---- Network ----
+
   @Override
   public void invalidateCaps() {
     super.invalidateCaps();
@@ -557,8 +559,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     fluidHandlerCap.invalidate();
     energyCap.invalidate();
   }
-
-  // ---- Network ----
 
   @Nullable
   @Override
@@ -571,13 +571,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return saveWithoutMetadata();
   }
 
-  public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
-    return switch (type) {
-      case ITEM -> BlockEntityTypesTransport.ITEM_PIPE.get();
-      case FLUID -> BlockEntityTypesTransport.FLUID_PIPE.get();
-      case ENERGY -> BlockEntityTypesTransport.ENERGY_PIPE.get();
-    };
-  }
   public Item getPipeItem() {
     RegistryObject<PipeBlock> block = BlocksTransport.PIPES_BY_MAT.get(pipeMaterial).get(transportType);
     if (block != null) {
@@ -697,57 +690,57 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public static class SideProperties {
-		public PipePluggable[] pluggables = new PipePluggable[Direction.values().length];
+    public PipePluggable[] pluggables = new PipePluggable[Direction.values().length];
 
-		public void writeToNBT(CompoundTag nbt) {
-			for (int i = 0; i < Direction.values().length; i++) {
-				PipePluggable pluggable = pluggables[i];
-				final String key = "pluggable[" + i + "]";
-				if (pluggable == null) {
-					nbt.remove(key);
-				} else {
-					CompoundTag pluggableData = new CompoundTag();
-					String name = PipeManager.getPluggableName(pluggable.getClass());
-					if (name != null) {
-						pluggableData.putString("pluggableName", name);
-					}
-					pluggable.writeToNBT(pluggableData);
-					nbt.put(key, pluggableData);
-				}
-			}
-		}
+    public void writeToNBT(CompoundTag nbt) {
+      for (int i = 0; i < Direction.values().length; i++) {
+        PipePluggable pluggable = pluggables[i];
+        final String key = "pluggable[" + i + "]";
+        if (pluggable == null) {
+          nbt.remove(key);
+        } else {
+          CompoundTag pluggableData = new CompoundTag();
+          String name = PipeManager.getPluggableName(pluggable.getClass());
+          if (name != null) {
+            pluggableData.putString("pluggableName", name);
+          }
+          pluggable.writeToNBT(pluggableData);
+          nbt.put(key, pluggableData);
+        }
+      }
+    }
 
-		public void readFromNBT(CompoundTag nbt) {
-			for (int i = 0; i < Direction.values().length; i++) {
-				final String key = "pluggable[" + i + "]";
-				if (!nbt.contains(key)) {
-					continue;
-				}
-				try {
-					CompoundTag pluggableData = nbt.getCompound(key);
-					Class<?> pluggableClass = PipeManager.getPluggableByName(pluggableData.getString("pluggableName"));
+    public void readFromNBT(CompoundTag nbt) {
+      for (int i = 0; i < Direction.values().length; i++) {
+        final String key = "pluggable[" + i + "]";
+        if (!nbt.contains(key)) {
+          continue;
+        }
+        try {
+          CompoundTag pluggableData = nbt.getCompound(key);
+          Class<?> pluggableClass = PipeManager.getPluggableByName(pluggableData.getString("pluggableName"));
 
-					if (pluggableClass != null && PipePluggable.class.isAssignableFrom(pluggableClass)) {
-						PipePluggable pluggable = (PipePluggable) pluggableClass.getDeclaredConstructor().newInstance();
-						pluggable.readFromNBT(pluggableData);
-						pluggables[i] = pluggable;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
+          if (pluggableClass != null && PipePluggable.class.isAssignableFrom(pluggableClass)) {
+            PipePluggable pluggable = (PipePluggable) pluggableClass.getDeclaredConstructor().newInstance();
+            pluggable.readFromNBT(pluggableData);
+            pluggables[i] = pluggable;
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
 
-		public void rotateLeft() {
-			PipePluggable[] newPluggables = new PipePluggable[Direction.values().length];
-			for (Direction dir : Direction.values()) {
-				Direction newDir = dir;
-				if (dir.getAxis() != Direction.Axis.Y) {
-					newDir = dir.getClockWise();
-				}
-				newPluggables[newDir.ordinal()] = pluggables[dir.ordinal()];
-			}
-			pluggables = newPluggables;
-		}
-	}
+    public void rotateLeft() {
+      PipePluggable[] newPluggables = new PipePluggable[Direction.values().length];
+      for (Direction dir : Direction.values()) {
+        Direction newDir = dir;
+        if (dir.getAxis() != Direction.Axis.Y) {
+          newDir = dir.getClockWise();
+        }
+        newPluggables[newDir.ordinal()] = pluggables[dir.ordinal()];
+      }
+      pluggables = newPluggables;
+    }
+  }
 }

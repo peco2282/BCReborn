@@ -22,103 +22,103 @@ import net.minecraft.world.level.GameType;
 import java.util.*;
 
 public class BuildingSlotMapIterator {
-	public static int MAX_PER_ITEM = 512;
-	private final BptBuilderBlueprint builderBlueprint;
-	private final Map<BuilderItemMetaPair, List<BuildingSlotBlock>> slotMap;
-	private final Set<BuilderItemMetaPair> availablePairs = new HashSet<BuilderItemMetaPair>();
-	private final int[] buildStageOccurences;
-	private final boolean isCreative;
-	private Iterator<BuilderItemMetaPair> keyIterator;
-	private BuilderItemMetaPair currentKey;
-	private List<BuildingSlotBlock> slots;
-	private int slotPos, slotFound;
+  public static int MAX_PER_ITEM = 512;
+  private final BptBuilderBlueprint builderBlueprint;
+  private final Map<BuilderItemMetaPair, List<BuildingSlotBlock>> slotMap;
+  private final Set<BuilderItemMetaPair> availablePairs = new HashSet<BuilderItemMetaPair>();
+  private final int[] buildStageOccurences;
+  private final boolean isCreative;
+  private Iterator<BuilderItemMetaPair> keyIterator;
+  private BuilderItemMetaPair currentKey;
+  private List<BuildingSlotBlock> slots;
+  private int slotPos, slotFound;
 
-	public BuildingSlotMapIterator(BptBuilderBlueprint builderBlueprint, TileAbstractBuilder builder) {
-		this.builderBlueprint = builderBlueprint;
-		this.slotMap = builderBlueprint.buildList;
-		this.buildStageOccurences = builderBlueprint.buildStageOccurences;
-		this.isCreative = builder == null
-				|| builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
+  public BuildingSlotMapIterator(BptBuilderBlueprint builderBlueprint, TileAbstractBuilder builder) {
+    this.builderBlueprint = builderBlueprint;
+    this.slotMap = builderBlueprint.buildList;
+    this.buildStageOccurences = builderBlueprint.buildStageOccurences;
+    this.isCreative = builder == null
+      || builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
 
-		reset();
-	}
+    reset();
+  }
 
-	public void refresh(TileAbstractBuilder builder) {
-		if (!isCreative) {
-			availablePairs.clear();
-			availablePairs.add(new BuilderItemMetaPair(null));
+  public void refresh(TileAbstractBuilder builder) {
+    if (!isCreative) {
+      availablePairs.clear();
+      availablePairs.add(new BuilderItemMetaPair(null));
 
-			if (builder != null) {
-				for (ItemStack stack : builder.getInventoryList()) {
-					if (stack != null && !stack.isEmpty()) {
-						availablePairs.add(new BuilderItemMetaPair(stack));
-					}
-				}
-				for (Tank t : builder.getFluidTanks()) {
-					if (t.getFluid() != null && t.getFluid().getFluid() != null) {
-						availablePairs.add(new BuilderItemMetaPair(new ItemStack(net.minecraft.world.item.Items.BUCKET)));
-					}
-				}
-			}
-		}
-	}
+      if (builder != null) {
+        for (ItemStack stack : builder.getInventoryList()) {
+          if (stack != null && !stack.isEmpty()) {
+            availablePairs.add(new BuilderItemMetaPair(stack));
+          }
+        }
+        for (Tank t : builder.getFluidTanks()) {
+          if (t.getFluid() != null && t.getFluid().getFluid() != null) {
+            availablePairs.add(new BuilderItemMetaPair(new ItemStack(net.minecraft.world.item.Items.BUCKET)));
+          }
+        }
+      }
+    }
+  }
 
-	public void skipKey() {
-		findNextKey();
-	}
+  public void skipKey() {
+    findNextKey();
+  }
 
-	private void findNextKey() {
-		slotPos = -1;
-		slotFound = 0;
-		slots = null;
-		while (keyIterator.hasNext()) {
-			currentKey = keyIterator.next();
-			if (isCreative || availablePairs.contains(currentKey)) {
-				slots = slotMap.get(currentKey);
-				slotPos = currentKey.position - 1;
-				return;
-			}
-		}
-		this.currentKey = null;
-		this.keyIterator = slotMap.keySet().iterator();
-	}
+  private void findNextKey() {
+    slotPos = -1;
+    slotFound = 0;
+    slots = null;
+    while (keyIterator.hasNext()) {
+      currentKey = keyIterator.next();
+      if (isCreative || availablePairs.contains(currentKey)) {
+        slots = slotMap.get(currentKey);
+        slotPos = currentKey.position - 1;
+        return;
+      }
+    }
+    this.currentKey = null;
+    this.keyIterator = slotMap.keySet().iterator();
+  }
 
-	public BuildingSlotBlock next() {
-		if (slots == null) {
-			findNextKey();
-		}
-		while (slots != null) {
-			slotPos++;
-			while (slotFound < MAX_PER_ITEM && slotPos < slots.size()) {
-				BuildingSlotBlock b = slots.get(slotPos);
-				if (b != null) {
-					slotFound++;
-					currentKey.position = slotPos + 1;
-					return b;
-				}
-				slotPos++;
-			}
-			if (slotFound >= MAX_PER_ITEM) {
-				currentKey.position = slotPos;
-			} else if (slotPos >= slots.size()) {
-				currentKey.position = 0;
-			}
-			findNextKey();
-		}
-		return null;
-	}
+  public BuildingSlotBlock next() {
+    if (slots == null) {
+      findNextKey();
+    }
+    while (slots != null) {
+      slotPos++;
+      while (slotFound < MAX_PER_ITEM && slotPos < slots.size()) {
+        BuildingSlotBlock b = slots.get(slotPos);
+        if (b != null) {
+          slotFound++;
+          currentKey.position = slotPos + 1;
+          return b;
+        }
+        slotPos++;
+      }
+      if (slotFound >= MAX_PER_ITEM) {
+        currentKey.position = slotPos;
+      } else if (slotPos >= slots.size()) {
+        currentKey.position = 0;
+      }
+      findNextKey();
+    }
+    return null;
+  }
 
-	public void remove() {
-		BuildingSlotBlock slot = slots.get(slotPos);
-		slots.set(slotPos, null);
+  public void remove() {
+    BuildingSlotBlock slot = slots.get(slotPos);
+    slots.set(slotPos, null);
 
-		builderBlueprint.onRemoveBuildingSlotBlock(slot);
-	}
+    builderBlueprint.onRemoveBuildingSlotBlock(slot);
+  }
 
-	public void reset() {
-		this.keyIterator = slotMap.keySet().iterator();
-		this.currentKey = null;
-		this.slots = null;
-		findNextKey();
-	}
+  public void reset() {
+    this.keyIterator = slotMap.keySet().iterator();
+    this.currentKey = null;
+    this.slots = null;
+    findNextKey();
+  }
 }

@@ -14,26 +14,24 @@ package com.peco2282.bcreborn.builders.schematics;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 
 import java.util.LinkedList;
 
 public class SchematicCustomStack extends SchematicBlock {
 
-	final ItemStack customStack;
+  final ItemStack customStack;
 
-	public SchematicCustomStack(ItemStack customStack) {
-		this.customStack = customStack;
-	}
+  public SchematicCustomStack(ItemStack customStack) {
+    this.customStack = customStack;
+  }
 
-	@Override
-	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(customStack.copy());
-	}
+  @Override
+  public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
+    requirements.add(customStack.copy());
+  }
 
-	@Override
-	public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-		// cancel requirements reading
-	}
+  @Override
+  public void storeRequirements(IBuilderContext context, int x, int y, int z) {
+    // cancel requirements reading
+  }
 }

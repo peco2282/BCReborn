@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.core.data;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import net.minecraft.world.item.DyeColor;
 import com.peco2282.bcreborn.core.ItemsCore;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -33,42 +33,42 @@ public class CoreItemModelProvider extends ItemModelProvider {
     basicItem(ItemsCore.DIAMOND_GEAR.get());
 
     getBuilder("list")
-            .parent(getExistingFile(mcLoc("item/generated")))
-            .texture("layer0", "item/list/clean")
-            .override()
-            .predicate(modLoc("written"), 1.0f)
-            .model(getBuilder("list_used")
-                    .parent(getExistingFile(mcLoc("item/generated")))
-                    .texture("layer0", "item/list/used"))
-            .end();
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/list/clean")
+      .override()
+      .predicate(modLoc("written"), 1.0f)
+      .model(getBuilder("list_used")
+        .parent(getExistingFile(mcLoc("item/generated")))
+        .texture("layer0", "item/list/used"))
+      .end();
 
     // basicItem(ItemsCore.LIST.get()); // Removed as it was causing the error and replaced with the builder above
 
     var paintbrushBuilder = getBuilder("paintbrush")
-            .parent(getExistingFile(mcLoc("item/generated")))
-            .texture("layer0", "item/paintbrush/clean");
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/paintbrush/clean");
 
     for (int i = 0; i < 16; i++) {
-        DyeColor color = DyeColor.byId(i);
-        paintbrushBuilder.override()
-                .predicate(modLoc("color"), i + 1)
-                .model(getBuilder("paintbrush_" + color.getName())
-                        .parent(getExistingFile(mcLoc("item/generated")))
-                        .texture("layer0", "item/paintbrush/" + color.getName()))
-                .end();
+      DyeColor color = DyeColor.byId(i);
+      paintbrushBuilder.override()
+        .predicate(modLoc("color"), i + 1)
+        .model(getBuilder("paintbrush_" + color.getName())
+          .parent(getExistingFile(mcLoc("item/generated")))
+          .texture("layer0", "item/paintbrush/" + color.getName()))
+        .end();
     }
 
     getBuilder("map_location")
-            .parent(getExistingFile(mcLoc("item/generated")))
-            .texture("layer0", "item/map_location/clean")
-            .override().predicate(modLoc("kind"), 1.0f).model(getBuilder("map_location_spot").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/spot")).end()
-            .override().predicate(modLoc("kind"), 2.0f).model(getBuilder("map_location_area").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/area")).end()
-            .override().predicate(modLoc("kind"), 3.0f).model(getBuilder("map_location_path").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/path")).end()
-            .override().predicate(modLoc("kind"), 4.0f).model(getBuilder("map_location_zone").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/zone")).end();
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/map_location/clean")
+      .override().predicate(modLoc("kind"), 1.0f).model(getBuilder("map_location_spot").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/spot")).end()
+      .override().predicate(modLoc("kind"), 2.0f).model(getBuilder("map_location_area").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/area")).end()
+      .override().predicate(modLoc("kind"), 3.0f).model(getBuilder("map_location_path").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/path")).end()
+      .override().predicate(modLoc("kind"), 4.0f).model(getBuilder("map_location_zone").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/zone")).end();
 
 
     withExistingParent("wrench", mcLoc("item/generated"))
-        .texture("layer0", modLoc("item/wrench_item"));
+      .texture("layer0", modLoc("item/wrench_item"));
     getBuilder("wood_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
 //    withExistingParent("wood_engine", mcLoc("builtin/entity"));
   }

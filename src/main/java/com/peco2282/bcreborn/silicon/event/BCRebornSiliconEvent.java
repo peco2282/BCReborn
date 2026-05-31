@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.silicon.event;
 
 import com.peco2282.bcreborn.BCRebornSilicon;
-import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
+import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.block.render.LaserBlockEntityRenderer;
 import com.peco2282.bcreborn.silicon.screen.*;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -24,21 +24,21 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = BCRebornSilicon.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BCRebornSiliconEvent {
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(SiliconMenuTypes.ASSEMBLY_TABLE.get(), AssemblyTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.ADVANCED_CRAFTING_TABLE.get(), AdvancedCraftingTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.INTEGRATION_TABLE.get(), IntegrationTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.CHARGING_TABLE.get(), ChargingTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.PROGRAMMING_TABLE.get(), ProgrammingTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.STAMPING_TABLE.get(), StampingTableScreen::new);
-            MenuScreens.register(SiliconMenuTypes.PACKAGER.get(), GuiPackager::new);
-        });
-    }
+  @SubscribeEvent
+  public static void onClientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> {
+      MenuScreens.register(SiliconMenuTypes.ASSEMBLY_TABLE.get(), AssemblyTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.ADVANCED_CRAFTING_TABLE.get(), AdvancedCraftingTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.INTEGRATION_TABLE.get(), IntegrationTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.CHARGING_TABLE.get(), ChargingTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.PROGRAMMING_TABLE.get(), ProgrammingTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.STAMPING_TABLE.get(), StampingTableScreen::new);
+      MenuScreens.register(SiliconMenuTypes.PACKAGER.get(), GuiPackager::new);
+    });
+  }
 
-    @SubscribeEvent
-    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(SiliconBlockEntityTypes.LASER.get(), LaserBlockEntityRenderer::new);
-    }
+  @SubscribeEvent
+  public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerBlockEntityRenderer(SiliconBlockEntityTypes.LASER.get(), LaserBlockEntityRenderer::new);
+  }
 }

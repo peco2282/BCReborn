@@ -58,10 +58,6 @@ public class CreativeEngineBlockEntity extends EngineBlockEntity<CreativeEngineB
     if (this.energyStorage != null) {
       this.energyStorage.generateEnergy(this.energyStorage.getMaxEnergyStored(), false);
     }
-    if (canPushEnergy()) {
-      setPumping(true);
-    } else {
-      setPumping(false);
-    }
+    setPumping(canPushEnergy());
   }
 }

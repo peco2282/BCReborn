@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface IProgrammingRecipe {
-    String getId();
+  String getId();
 
-    List<ItemStack> getOptions(int width, int height);
+  List<ItemStack> getOptions(int width, int height);
 
-    int getEnergyCost(ItemStack option);
+  int getEnergyCost(ItemStack option);
 
-    boolean canCraft(ItemStack input);
+  boolean canCraft(ItemStack input);
 
-    ItemStack craft(ItemStack input, ItemStack option);
+  ItemStack craft(ItemStack input, ItemStack option);
 }

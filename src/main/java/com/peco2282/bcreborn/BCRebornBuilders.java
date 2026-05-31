@@ -24,7 +24,6 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,24 +42,7 @@ public class BCRebornBuilders implements BCReborn {
 
   private static final BlueprintServerDatabase serverDB = new BlueprintServerDatabase();
   private static final LibraryDatabase clientDB = new LibraryDatabase();
-
-  public static BlueprintServerDatabase getServerDB() {
-    return serverDB;
-  }
-  public static LibraryDatabase getClientDB() {
-    return clientDB;
-  }
-
-
-  public static BCRegistry getRegistry() {
-    return REGISTRY;
-  }
-
   private static final ContextProcessor PROCESSOR = ContextProcessor.create(MODID);
-
-  public static ResourceLocation location(String path) {
-    return BCReborn.getLocation(Type.BUILDERS, path);
-  }
 
   public BCRebornBuilders(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
@@ -75,8 +57,23 @@ public class BCRebornBuilders implements BCReborn {
     processor.initRegister();
 
 
-
     REGISTRY.register(modEventBus);
+  }
+
+  public static BlueprintServerDatabase getServerDB() {
+    return serverDB;
+  }
+
+  public static LibraryDatabase getClientDB() {
+    return clientDB;
+  }
+
+  public static BCRegistry getRegistry() {
+    return REGISTRY;
+  }
+
+  public static ResourceLocation location(String path) {
+    return BCReborn.getLocation(Type.BUILDERS, path);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {

@@ -18,51 +18,51 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.Objects;
 
 public class ResourceIdRequest extends ResourceId {
-    private BlockPos index;
-    private Direction side;
-    private int slot;
+  private BlockPos index;
+  private Direction side;
+  private int slot;
 
-    public ResourceIdRequest() {
-    }
+  public ResourceIdRequest() {
+  }
 
-    public ResourceIdRequest(DockingStation station, int slot) {
-        index = station.index().toBlockPos();
-        side = station.side();
-        this.slot = slot;
-    }
+  public ResourceIdRequest(DockingStation station, int slot) {
+    index = station.index().toBlockPos();
+    side = station.side();
+    this.slot = slot;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != getClass()) {
-            return false;
-        }
-        ResourceIdRequest compareId = (ResourceIdRequest) obj;
-        return index.equals(compareId.index) && side == compareId.side && slot == compareId.slot;
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || obj.getClass() != getClass()) {
+      return false;
     }
+    ResourceIdRequest compareId = (ResourceIdRequest) obj;
+    return index.equals(compareId.index) && side == compareId.side && slot == compareId.slot;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(index, side, slot);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(index, side, slot);
+  }
 
-    @Override
-    public void writeToNBT(CompoundTag nbt) {
-        super.writeToNBT(nbt);
-        CompoundTag indexNBT = new CompoundTag();
-        indexNBT.putInt("x", index.getX());
-        indexNBT.putInt("y", index.getY());
-        indexNBT.putInt("z", index.getZ());
-        nbt.put("index", indexNBT);
-        nbt.putByte("side", (byte) (side != null ? side.ordinal() : 0));
-        nbt.putInt("localId", slot);
-    }
+  @Override
+  public void writeToNBT(CompoundTag nbt) {
+    super.writeToNBT(nbt);
+    CompoundTag indexNBT = new CompoundTag();
+    indexNBT.putInt("x", index.getX());
+    indexNBT.putInt("y", index.getY());
+    indexNBT.putInt("z", index.getZ());
+    nbt.put("index", indexNBT);
+    nbt.putByte("side", (byte) (side != null ? side.ordinal() : 0));
+    nbt.putInt("localId", slot);
+  }
 
-    @Override
-    protected void readFromNBT(CompoundTag nbt) {
-        super.readFromNBT(nbt);
-        CompoundTag indexNBT = nbt.getCompound("index");
-        index = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
-        side = Direction.values()[nbt.getByte("side")];
-        slot = nbt.getInt("localId");
-    }
+  @Override
+  protected void readFromNBT(CompoundTag nbt) {
+    super.readFromNBT(nbt);
+    CompoundTag indexNBT = nbt.getCompound("index");
+    index = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
+    side = Direction.values()[nbt.getByte("side")];
+    slot = nbt.getInt("localId");
+  }
 }

@@ -11,19 +11,18 @@
  */
 package com.peco2282.bcreborn.common.block;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.minecraft.core.Direction;
-
 public interface ITileBufferHolder {
 
-	void blockRemoved(Direction from);
+  void blockRemoved(Direction from);
 
-	void blockCreated(Direction from, Block block, BlockEntity tile);
+  void blockCreated(Direction from, Block block, BlockEntity tile);
 
-	Block getBlock(Direction to);
+  Block getBlock(Direction to);
 
-	BlockEntity getTile(Direction to);
+  BlockEntity getTile(Direction to);
 
 }

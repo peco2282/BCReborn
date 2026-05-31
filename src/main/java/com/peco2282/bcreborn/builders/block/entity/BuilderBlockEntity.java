@@ -43,250 +43,253 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BuilderBlockEntity extends TileAbstractBuilder implements MenuProvider, ILEDProvider {
-    private static final int POWER_ACTIVATION = 25;
+  private static final int POWER_ACTIVATION = 25;
 
-    private SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
-    private List<RequirementItemStack> requiredToBuild = new ArrayList<>();
-    private CompoundTag initNBT = null;
-    private boolean done = true;
-    private boolean isBuilding = false;
+  private final SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
+  private List<RequirementItemStack> requiredToBuild = new ArrayList<>();
+  private CompoundTag initNBT = null;
+  private boolean done = true;
+  private boolean isBuilding = false;
 
-    private BptBuilderTemplate currentBuilder;
-    private List<BuildingItem> builders = new LinkedList<>();
+  private BptBuilderTemplate currentBuilder;
+  private final List<BuildingItem> builders = new LinkedList<>();
 
-    public BuilderBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-        super(BlockEntityTypesBuilders.BUILDER.get(), p_155229_, p_155230_);
-        setBattery(new EnergyStorage(10000, 1000, 1000));
+  public BuilderBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
+    super(BlockEntityTypesBuilders.BUILDER.get(), p_155229_, p_155230_);
+    setBattery(new EnergyStorage(10000, 1000, 1000));
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+    cache = TileBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
+  }
+
+  @Override
+  protected void tick(Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) {
+      for (BuildingItem b : builders) {
+        b.update();
+      }
+      return;
     }
 
-    @Override
-    public void initialize() {
-        super.initialize();
-        cache = TileBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
+    if (mode == IControllable.Mode.Off) {
+      isBuilding = false;
+      return;
     }
 
-    @Override
-    protected void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) {
-            for (BuildingItem b : builders) {
-                b.update();
-            }
-            return;
+    if (getBattery().getEnergyStored() < POWER_ACTIVATION) {
+      isBuilding = false;
+      return;
+    }
+
+    ItemStack blueprintStack = inv.getItem(0);
+    if (blueprintStack.isEmpty()) {
+      currentBuilder = null;
+      isBuilding = false;
+      return;
+    }
+
+    if (currentBuilder == null) {
+      CompoundTag nbt = blueprintStack.getTag();
+      if (nbt != null) {
+        BlueprintBase bpt = BlueprintBase.loadBluePrint(nbt);
+        if (bpt != null) {
+          Direction dir = getBlockState().getValue(BuilderBlock.FACING);
+          BlockPos pos1 = getBlockPos();
+          bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), dir);
+          currentBuilder = new BptBuilderTemplate(bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
+          done = false;
         }
-
-        if (mode == IControllable.Mode.Off) {
-            isBuilding = false;
-            return;
-        }
-
-        if (getBattery().getEnergyStored() < POWER_ACTIVATION) {
-            isBuilding = false;
-            return;
-        }
-
-        ItemStack blueprintStack = inv.getItem(0);
-        if (blueprintStack.isEmpty()) {
-            currentBuilder = null;
-            isBuilding = false;
-            return;
-        }
-
-        if (currentBuilder == null) {
-            CompoundTag nbt = blueprintStack.getTag();
-            if (nbt != null) {
-                BlueprintBase bpt = BlueprintBase.loadBluePrint(nbt);
-                if (bpt != null) {
-                    Direction dir = getBlockState().getValue(BuilderBlock.FACING);
-                    BlockPos pos1 = getBlockPos();
-                    bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), dir);
-                    currentBuilder = new BptBuilderTemplate(bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
-                    done = false;
-                }
-            }
-        }
-
-        if (currentBuilder != null) {
-            BlockPos pos2 = getBlockPos();
-            isBuilding = currentBuilder.buildNextSlot(level, this, pos2.getX(), pos2.getY(), pos2.getZ());
-            if (isBuilding) {
-                getBattery().useEnergy(POWER_ACTIVATION, POWER_ACTIVATION, false);
-            }
-            if (currentBuilder.isDone(this)) {
-                done = true;
-                currentBuilder = null;
-            }
-        }
-
-        // Update building items
-        List<BuildingItem> toRemove = new ArrayList<>();
-        for (BuildingItem b : builders) {
-            b.update();
-            // TODO: check if building item is finished
-        }
-        builders.removeAll(toRemove);
+      }
     }
 
-    @Override
-    public Collection<BuildingItem> getBuilders() {
-        return builders;
+    if (currentBuilder != null) {
+      BlockPos pos2 = getBlockPos();
+      isBuilding = currentBuilder.buildNextSlot(level, this, pos2.getX(), pos2.getY(), pos2.getZ());
+      if (isBuilding) {
+        getBattery().useEnergy(POWER_ACTIVATION, POWER_ACTIVATION, false);
+      }
+      if (currentBuilder.isDone(this)) {
+        done = true;
+        currentBuilder = null;
+      }
     }
 
-    @Override
-    public void addAndLaunchBuildingItem(BuildingItem item) {
-        item.initialize();
-        builders.add(item);
+    // Update building items
+    List<BuildingItem> toRemove = new ArrayList<>();
+    for (BuildingItem b : builders) {
+      b.update();
+      // TODO: check if building item is finished
     }
+    builders.removeAll(toRemove);
+  }
 
-    public Container getInventory() {
-        return inv;
-    }
+  @Override
+  public Collection<BuildingItem> getBuilders() {
+    return builders;
+  }
 
-    @Override
-    public List<ItemStack> getInventoryList() {
-        List<ItemStack> list = new LinkedList<>();
-        for (int i = 1; i < inv.getContainerSize(); i++) {
-            list.add(inv.getItem(i));
-        }
-        return list;
-    }
+  @Override
+  public void addAndLaunchBuildingItem(BuildingItem item) {
+    item.initialize();
+    builders.add(item);
+  }
 
-    public SimpleInventory getBuilderInventory() {
-        return inv;
-    }
+  public Container getInventory() {
+    return inv;
+  }
 
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        inv.readFromNBT(nbt, "Items");
-        done = nbt.getBoolean("done");
-        if (nbt.contains("initNBT")) {
-            initNBT = nbt.getCompound("initNBT");
-        }
+  @Override
+  public List<ItemStack> getInventoryList() {
+    List<ItemStack> list = new LinkedList<>();
+    for (int i = 1; i < inv.getContainerSize(); i++) {
+      list.add(inv.getItem(i));
     }
+    return list;
+  }
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        inv.writeToNBT(nbt, "Items");
-        nbt.putBoolean("done", done);
-        if (initNBT != null) {
-            nbt.put("initNBT", initNBT);
-        }
-    }
+  public SimpleInventory getBuilderInventory() {
+    return inv;
+  }
 
-    @Override
-    public void writeData(FriendlyByteBuf data) {
-        super.writeData(data);
-        data.writeBoolean(done);
-        data.writeBoolean(isBuilding);
+  @Override
+  public void load(CompoundTag nbt) {
+    super.load(nbt);
+    inv.readFromNBT(nbt, "Items");
+    done = nbt.getBoolean("done");
+    if (nbt.contains("initNBT")) {
+      initNBT = nbt.getCompound("initNBT");
     }
+  }
 
-    @Override
-    public void readData(FriendlyByteBuf data) {
-        super.readData(data);
-        done = data.readBoolean();
-        isBuilding = data.readBoolean();
+  @Override
+  protected void saveAdditional(CompoundTag nbt) {
+    super.saveAdditional(nbt);
+    inv.writeToNBT(nbt, "Items");
+    nbt.putBoolean("done", done);
+    if (initNBT != null) {
+      nbt.put("initNBT", initNBT);
     }
+  }
 
-    public void updateRequirementsOnGuiOpen(Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            BCNetworkManager.sendSyncBuilderRequirements(serverPlayer, getBlockPos(), requiredToBuild);
-        }
-    }
+  @Override
+  public void writeData(FriendlyByteBuf data) {
+    super.writeData(data);
+    data.writeBoolean(done);
+    data.writeBoolean(isBuilding);
+  }
 
-    public void addGuiWatcher(Player player) {
-        guiWatchers.add(player);
-    }
+  @Override
+  public void readData(FriendlyByteBuf data) {
+    super.readData(data);
+    done = data.readBoolean();
+    isBuilding = data.readBoolean();
+  }
 
-    public void removeGuiWatcher(Player player) {
-        guiWatchers.remove(player);
+  public void updateRequirementsOnGuiOpen(Player player) {
+    if (player instanceof ServerPlayer serverPlayer) {
+      BCNetworkManager.sendSyncBuilderRequirements(serverPlayer, getBlockPos(), requiredToBuild);
     }
+  }
 
-    public List<RequirementItemStack> getRequiredItems() {
-        return requiredToBuild;
-    }
+  public void addGuiWatcher(Player player) {
+    guiWatchers.add(player);
+  }
 
-    public void setItemRequirements(List<RequirementItemStack> requirements) {
-        this.requiredToBuild = new ArrayList<>(requirements);
-    }
+  public void removeGuiWatcher(Player player) {
+    guiWatchers.remove(player);
+  }
 
-    @Override
-    public int getLEDLevel(int led) {
-        return isBuilding ? 15 : 0;
-    }
+  public List<RequirementItemStack> getRequiredItems() {
+    return requiredToBuild;
+  }
 
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.translatable("container.bcrebornbuilders.builder");
-    }
+  public void setItemRequirements(List<RequirementItemStack> requirements) {
+    this.requiredToBuild = new ArrayList<>(requirements);
+  }
 
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
-        return new BuilderMenu(windowId, inventory, this);
-    }
+  @Override
+  public int getLEDLevel(int led) {
+    return isBuilding ? 15 : 0;
+  }
 
-    @Override
-    public AbstractContainerMenu createMenu(int p_58627_, Inventory p_58628_) {
-        return new BuilderMenu(p_58627_, p_58628_, this);
-    }
+  @Override
+  public @NotNull Component getDisplayName() {
+    return Component.translatable("container.bcrebornbuilders.builder");
+  }
 
-    @Override
-    public int getContainerSize() {
-        return inv.getContainerSize();
-    }
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+    return new BuilderMenu(windowId, inventory, this);
+  }
 
-    @Override
-    public boolean isEmpty() {
-        return inv.isEmpty();
-    }
+  @Override
+  public AbstractContainerMenu createMenu(int p_58627_, Inventory p_58628_) {
+    return new BuilderMenu(p_58627_, p_58628_, this);
+  }
 
-    @Override
-    public ItemStack getItem(int p_18942_) {
-        return inv.getItem(p_18942_);
-    }
+  @Override
+  public int getContainerSize() {
+    return inv.getContainerSize();
+  }
 
-    @Override
-    public ItemStack removeItem(int p_18942_, int p_18943_) {
-        return inv.removeItem(p_18942_, p_18943_);
-    }
+  @Override
+  public boolean isEmpty() {
+    return inv.isEmpty();
+  }
 
-    @Override
-    public ItemStack removeItemNoUpdate(int p_18951_) {
-        return inv.removeItemNoUpdate(p_18951_);
-    }
+  @Override
+  public ItemStack getItem(int p_18942_) {
+    return inv.getItem(p_18942_);
+  }
 
-    @Override
-    public void setItem(int p_18944_, ItemStack p_18945_) {
-        inv.setItem(p_18944_, p_18945_);
-    }
+  @Override
+  public ItemStack removeItem(int p_18942_, int p_18943_) {
+    return inv.removeItem(p_18942_, p_18943_);
+  }
 
-    @Override
-    public boolean stillValid(@NotNull Player player) {
-        return super.stillValid(player);
-    }
+  @Override
+  public ItemStack removeItemNoUpdate(int p_18951_) {
+    return inv.removeItemNoUpdate(p_18951_);
+  }
 
-    @Override
-    public void clearContent() {
-        inv.clearContent();
-    }
+  @Override
+  public void setItem(int p_18944_, ItemStack p_18945_) {
+    inv.setItem(p_18944_, p_18945_);
+  }
 
-    @Override
-    public @NotNull Component getName() {
-        return getDisplayName();
-    }
+  @Override
+  public boolean stillValid(@NotNull Player player) {
+    return super.stillValid(player);
+  }
 
-    public void eraseTank(int tankId) {
-        List<Tank> tanks = getFluidTanks();
-        if (tankId >= 0 && tankId < tanks.size()) {
-            tanks.get(tankId).setFluid(null);
-            setChanged();
-        }
-    }
+  @Override
+  public void clearContent() {
+    inv.clearContent();
+  }
 
-    public List<RequirementItemStack> getNeededItems() {
-        return List.copyOf(requiredToBuild);
+  @Override
+  public @NotNull Component getName() {
+    return getDisplayName();
+  }
+
+  public void eraseTank(int tankId) {
+    List<Tank> tanks = getFluidTanks();
+    if (tankId >= 0 && tankId < tanks.size()) {
+      tanks.get(tankId).setFluid(null);
+      setChanged();
     }
+  }
+
+  public List<RequirementItemStack> getNeededItems() {
+    return List.copyOf(requiredToBuild);
+  }
 }

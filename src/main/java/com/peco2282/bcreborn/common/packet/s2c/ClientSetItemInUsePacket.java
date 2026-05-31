@@ -19,21 +19,21 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ClientSetItemInUsePacket(
-        int entityId,
-        ItemStack itemInUse
+  int entityId,
+  ItemStack itemInUse
 ) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(entityId);
-        buffer.writeItem(itemInUse);
-    }
+  public static ClientSetItemInUsePacket decode(FriendlyByteBuf buffer) {
+    return new ClientSetItemInUsePacket(buffer.readInt(), buffer.readItem());
+  }
 
-    public static ClientSetItemInUsePacket decode(FriendlyByteBuf buffer) {
-        return new ClientSetItemInUsePacket(buffer.readInt(), buffer.readItem());
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeInt(entityId);
+    buffer.writeItem(itemInUse);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
 
-    }
+  }
 }

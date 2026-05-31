@@ -79,9 +79,9 @@ public class ConstructionMarkerBlock extends MarkerBlock {
   public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
     if (placer != null) {
       Direction facing = Direction.getNearest(
-          (float) placer.getLookAngle().x,
-          (float) placer.getLookAngle().y,
-          (float) placer.getLookAngle().z
+        (float) placer.getLookAngle().x,
+        (float) placer.getLookAngle().y,
+        (float) placer.getLookAngle().z
       ).getOpposite();
       level.setBlock(pos, state.setValue(FACING, facing), 3);
     }

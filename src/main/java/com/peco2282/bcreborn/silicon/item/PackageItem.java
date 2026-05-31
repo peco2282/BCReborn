@@ -32,63 +32,63 @@ import java.util.List;
 
 public class PackageItem extends BuildCraftItem {
 
-	public static final class DispenseBehaviour extends DefaultDispenseItemBehavior {
-		@Override
-		public ItemStack execute(BlockSource source, ItemStack stack) {
-			Level world = source.getLevel();
-			var direction = source.getBlockState().getValue(DispenserBlock.FACING);
+  public PackageItem() {
+    super(new Properties().stacksTo(1));
+  }
 
-			PackageEntity entityPackage = new PackageEntity(world,
-					source.x() + direction.getStepX(),
-					source.y() + direction.getStepY(),
-					source.z() + direction.getStepZ(), stack.copy());
-			entityPackage.shoot(direction.getStepX(), direction.getStepY() + 0.1F, direction.getStepZ(), 1.1F, 6.0F);
-			world.addFreshEntity(entityPackage);
-			stack.shrink(1);
-			return stack;
-		}
-	}
+  public static void update(ItemStack stack) {
+    // NOP
+  }
 
-	public PackageItem() {
-		super(new Properties().stacksTo(1));
-	}
+  public static ItemStack getStack(ItemStack stack, int slot) {
+    CompoundTag tag = stack.getOrCreateTag();
+    if (tag != null && tag.contains("item" + slot)) {
+      return ItemStack.of(tag.getCompound("item" + slot));
+    } else {
+      return ItemStack.EMPTY;
+    }
+  }
 
-	public static void update(ItemStack stack) {
-		// NOP
-	}
+  @Override
+  public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    ItemStack stack = player.getItemInHand(hand);
+    world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
 
-	public static ItemStack getStack(ItemStack stack, int slot) {
-		CompoundTag tag = stack.getOrCreateTag();
-		if (tag != null && tag.contains("item" + slot)) {
-			return ItemStack.of(tag.getCompound("item" + slot));
-		} else {
-			return ItemStack.EMPTY;
-		}
-	}
+    if (!world.isClientSide) {
+      world.addFreshEntity(new PackageEntity(world, player, stack.copy()));
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
+    if (!player.getAbilities().instabuild) {
+      stack.shrink(1);
+    }
 
-		if (!world.isClientSide) {
-			world.addFreshEntity(new PackageEntity(world, player, stack.copy()));
-		}
+    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+  }
 
-		if (!player.getAbilities().instabuild) {
-			stack.shrink(1);
-		}
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    CompoundTag tag = stack.getOrCreateTag();
+    if (tag != null && !tag.isEmpty()) {
+      tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:0}}"));
+      tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:1}}"));
+      tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:2}}"));
+    }
+  }
 
-		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
-	}
+  public static final class DispenseBehaviour extends DefaultDispenseItemBehavior {
+    @Override
+    public ItemStack execute(BlockSource source, ItemStack stack) {
+      Level world = source.getLevel();
+      var direction = source.getBlockState().getValue(DispenserBlock.FACING);
 
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		CompoundTag tag = stack.getOrCreateTag();
-		if (tag != null && !tag.isEmpty()) {
-			tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:0}}"));
-			tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:1}}"));
-			tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:2}}"));
-		}
-	}
+      PackageEntity entityPackage = new PackageEntity(world,
+        source.x() + direction.getStepX(),
+        source.y() + direction.getStepY(),
+        source.z() + direction.getStepZ(), stack.copy());
+      entityPackage.shoot(direction.getStepX(), direction.getStepY() + 0.1F, direction.getStepZ(), 1.1F, 6.0F);
+      world.addFreshEntity(entityPackage);
+      stack.shrink(1);
+      return stack;
+    }
+  }
 }

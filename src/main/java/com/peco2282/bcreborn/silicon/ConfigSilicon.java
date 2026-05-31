@@ -30,17 +30,49 @@ public class ConfigSilicon {
   private static ForgeConfigSpec.BooleanValue libraryBlock;
   private static ForgeConfigSpec.BooleanValue zonePlan;
 
-  public static boolean isRedstoneChipset() { return redstoneChipset.get(); }
-  public static boolean isRedstoneCrystal() { return redstoneCrystal.get(); }
-  public static boolean isRedstoneBoard() { return redstoneBoard.get(); }
-  public static boolean isGateCopier() { return gateCopier.get(); }
-  public static boolean isPipeGate() { return pipeGate.get(); }
-  public static boolean isPipeLens() { return pipeLens.get(); }
-  public static boolean isPipeWire() { return pipeWire.get(); }
-  public static boolean isLaserBlock() { return laserBlock.get(); }
-  public static boolean isLaserTableBlock() { return laserTableBlock.get(); }
-  public static boolean isLibraryBlock() { return libraryBlock.get(); }
-  public static boolean isZonePlan() { return zonePlan.get(); }
+  public static boolean isRedstoneChipset() {
+    return redstoneChipset.get();
+  }
+
+  public static boolean isRedstoneCrystal() {
+    return redstoneCrystal.get();
+  }
+
+  public static boolean isRedstoneBoard() {
+    return redstoneBoard.get();
+  }
+
+  public static boolean isGateCopier() {
+    return gateCopier.get();
+  }
+
+  public static boolean isPipeGate() {
+    return pipeGate.get();
+  }
+
+  public static boolean isPipeLens() {
+    return pipeLens.get();
+  }
+
+  public static boolean isPipeWire() {
+    return pipeWire.get();
+  }
+
+  public static boolean isLaserBlock() {
+    return laserBlock.get();
+  }
+
+  public static boolean isLaserTableBlock() {
+    return laserTableBlock.get();
+  }
+
+  public static boolean isLibraryBlock() {
+    return libraryBlock.get();
+  }
+
+  public static boolean isZonePlan() {
+    return zonePlan.get();
+  }
 
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Silicon settings").push("silicon");

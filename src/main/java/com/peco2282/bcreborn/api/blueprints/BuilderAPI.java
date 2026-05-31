@@ -14,16 +14,15 @@ package com.peco2282.bcreborn.api.blueprints;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 
 public final class BuilderAPI {
-	/**
-	 *  @deprecated Use {@link BCRegistryKeys#SCHEMATIC}
-	 */
-	@Deprecated
-	public static ISchematicRegistry schematicRegistry;
-	public static ISchematicHelper schematicHelper;
+  public static final int BREAK_ENERGY = 160;
+  public static final int BUILD_ENERGY = 240;
+  /**
+   * @deprecated Use {@link BCRegistryKeys#SCHEMATIC}
+   */
+  @Deprecated
+  public static ISchematicRegistry schematicRegistry;
+  public static ISchematicHelper schematicHelper;
 
-	public static final int BREAK_ENERGY = 160;
-	public static final int BUILD_ENERGY = 240;
-	
-	private BuilderAPI() {	
-	}
+  private BuilderAPI() {
+  }
 }

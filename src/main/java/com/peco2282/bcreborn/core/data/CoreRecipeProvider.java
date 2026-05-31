@@ -29,57 +29,57 @@ public class CoreRecipeProvider extends RecipeProvider {
   protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
 
     shaped(RecipeCategory.MISC, ItemsCore.WOODEN_GEAR.get())
-        .pattern(" S ")
-        .pattern("S S")
-        .pattern(" S ")
-        .define('S', Items.STICK)
-        .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
-        .save(p_251297_);
+      .pattern(" S ")
+      .pattern("S S")
+      .pattern(" S ")
+      .define('S', Items.STICK)
+      .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
+      .save(p_251297_);
 
     shaped(RecipeCategory.MISC, ItemsCore.STONE_GEAR.get())
-        .pattern(" C ")
-        .pattern("CGC")
-        .pattern(" C ")
-        .define('C', Items.COBBLESTONE)
-        .define('G', ItemsCore.WOODEN_GEAR.get())
-        .unlockedBy(getHasName(ItemsCore.WOODEN_GEAR.get()), inventoryTrigger(get(Items.COBBLESTONE, ItemsCore.WOODEN_GEAR.get())))
-        .save(p_251297_);
+      .pattern(" C ")
+      .pattern("CGC")
+      .pattern(" C ")
+      .define('C', Items.COBBLESTONE)
+      .define('G', ItemsCore.WOODEN_GEAR.get())
+      .unlockedBy(getHasName(ItemsCore.WOODEN_GEAR.get()), inventoryTrigger(get(Items.COBBLESTONE, ItemsCore.WOODEN_GEAR.get())))
+      .save(p_251297_);
 
     shaped(RecipeCategory.MISC, ItemsCore.IRON_GEAR.get())
-        .pattern(" I ")
-        .pattern("IGI")
-        .pattern(" I ")
-        .define('I', Items.IRON_INGOT)
-        .define('G', ItemsCore.STONE_GEAR.get())
-        .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
-        .save(p_251297_);
+      .pattern(" I ")
+      .pattern("IGI")
+      .pattern(" I ")
+      .define('I', Items.IRON_INGOT)
+      .define('G', ItemsCore.STONE_GEAR.get())
+      .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
+      .save(p_251297_);
 
     shaped(RecipeCategory.MISC, ItemsCore.GOLD_GEAR.get())
-        .pattern(" G ")
-        .pattern("GIG")
-        .pattern(" G ")
-        .define('G', Items.GOLD_INGOT)
-        .define('I', ItemsCore.IRON_GEAR.get())
-        .unlockedBy(getHasName(ItemsCore.IRON_GEAR.get()), inventoryTrigger(get(Items.GOLD_INGOT, ItemsCore.IRON_GEAR.get())))
-        .save(p_251297_);
+      .pattern(" G ")
+      .pattern("GIG")
+      .pattern(" G ")
+      .define('G', Items.GOLD_INGOT)
+      .define('I', ItemsCore.IRON_GEAR.get())
+      .unlockedBy(getHasName(ItemsCore.IRON_GEAR.get()), inventoryTrigger(get(Items.GOLD_INGOT, ItemsCore.IRON_GEAR.get())))
+      .save(p_251297_);
 
     shaped(RecipeCategory.MISC, ItemsCore.DIAMOND_GEAR.get())
-        .pattern(" D ")
-        .pattern("DGD")
-        .pattern(" D ")
-        .define('D', Items.DIAMOND)
-        .define('G', ItemsCore.GOLD_GEAR.get())
-        .unlockedBy(getHasName(ItemsCore.GOLD_GEAR.get()), inventoryTrigger(get(Items.DIAMOND, ItemsCore.GOLD_GEAR.get())))
-        .save(p_251297_);
+      .pattern(" D ")
+      .pattern("DGD")
+      .pattern(" D ")
+      .define('D', Items.DIAMOND)
+      .define('G', ItemsCore.GOLD_GEAR.get())
+      .unlockedBy(getHasName(ItemsCore.GOLD_GEAR.get()), inventoryTrigger(get(Items.DIAMOND, ItemsCore.GOLD_GEAR.get())))
+      .save(p_251297_);
 
     shaped(RecipeCategory.MISC, ItemsCore.WRENCH.get())
-        .pattern("I I")
-        .pattern(" S ")
-        .pattern(" I ")
-        .define('I', Items.IRON_INGOT)
-        .define('S', ItemsCore.STONE_GEAR.get())
-        .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
-        .save(p_251297_);
+      .pattern("I I")
+      .pattern(" S ")
+      .pattern(" I ")
+      .define('I', Items.IRON_INGOT)
+      .define('S', ItemsCore.STONE_GEAR.get())
+      .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
+      .save(p_251297_);
   }
 
   ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike item) {
@@ -97,6 +97,7 @@ public class CoreRecipeProvider extends RecipeProvider {
   ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike item, int count) {
     return ShapelessRecipeBuilder.shapeless(category, item, count);
   }
+
   ItemPredicate get(ItemLike... items) {
     return ItemPredicate.Builder.item().of(items).build();
   }

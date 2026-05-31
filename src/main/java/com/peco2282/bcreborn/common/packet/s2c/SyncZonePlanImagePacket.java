@@ -22,31 +22,31 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SyncZonePlanImagePacket(BlockPos pos, int totalSize, int offset, byte[] data) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeInt(totalSize);
-        buffer.writeInt(offset);
-        buffer.writeByteArray(data);
-    }
+  public static SyncZonePlanImagePacket decode(FriendlyByteBuf buffer) {
+    return new SyncZonePlanImagePacket(
+      buffer.readBlockPos(),
+      buffer.readInt(),
+      buffer.readInt(),
+      buffer.readByteArray()
+    );
+  }
 
-    public static SyncZonePlanImagePacket decode(FriendlyByteBuf buffer) {
-        return new SyncZonePlanImagePacket(
-            buffer.readBlockPos(),
-            buffer.readInt(),
-            buffer.readInt(),
-            buffer.readByteArray()
-        );
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+    buffer.writeInt(totalSize);
+    buffer.writeInt(offset);
+    buffer.writeByteArray(data);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            AbstractContainerMenu menu = Minecraft.getInstance().player.containerMenu;
-            if (menu instanceof ZonePlanMenu zonePlanMenu && zonePlanMenu.gui != null) {
-                zonePlanMenu.gui.applyMapImageBytes(offset, data);
-                // TODO: use dynamic texture from screen
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      AbstractContainerMenu menu = Minecraft.getInstance().player.containerMenu;
+      if (menu instanceof ZonePlanMenu zonePlanMenu && zonePlanMenu.gui != null) {
+        zonePlanMenu.gui.applyMapImageBytes(offset, data);
+        // TODO: use dynamic texture from screen
                 /*
                 for (int i = 0; i < data.length; ++i) {
                     if (offset + i < zonePlanMenu.gui.mapTexture.colorMap.length) {
@@ -54,8 +54,8 @@ public record SyncZonePlanImagePacket(BlockPos pos, int totalSize, int offset, b
                     }
                 }
                 */
-            }
-        });
-        ctx.setPacketHandled(true);
-    }
+      }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

@@ -21,22 +21,22 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotShovelman extends BoardRobotGenericBreakBlock {
 
-	public BoardRobotShovelman(EntityRobotBase iRobot) {
-		super(iRobot);
-	}
+  public BoardRobotShovelman(EntityRobotBase iRobot) {
+    super(iRobot);
+  }
 
-	@Override
-	public RedstoneBoardRobotNBT getNBTHandler() {
-		return BCBoardNBT.REGISTRY.get("shovelman");
-	}
+  @Override
+  public RedstoneBoardRobotNBT getNBTHandler() {
+    return BCBoardNBT.REGISTRY.get("shovelman");
+  }
 
-	@Override
-	public boolean isExpectedTool(ItemStack stack) {
-		return !stack.isEmpty() && stack.is(ItemTags.SHOVELS);
-	}
+  @Override
+  public boolean isExpectedTool(ItemStack stack) {
+    return !stack.isEmpty() && stack.is(ItemTags.SHOVELS);
+  }
 
-	@Override
-	public boolean isExpectedBlock(Level world, int x, int y, int z) {
-		return BuildCraftAPI.getWorldProperty("shoveled").get(world, new BlockPos(x, y, z));
-	}
+  @Override
+  public boolean isExpectedBlock(Level world, int x, int y, int z) {
+    return BuildCraftAPI.getWorldProperty("shoveled").get(world, new BlockPos(x, y, z));
+  }
 }

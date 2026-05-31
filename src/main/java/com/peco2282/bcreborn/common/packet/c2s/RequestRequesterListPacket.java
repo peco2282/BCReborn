@@ -23,30 +23,30 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record RequestRequesterListPacket(BlockPos pos) implements CustomPacket {
-    @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-    }
+  public static RequestRequesterListPacket decode(FriendlyByteBuf buffer) {
+    return new RequestRequesterListPacket(buffer.readBlockPos());
+  }
 
-    public static RequestRequesterListPacket decode(FriendlyByteBuf buffer) {
-        return new RequestRequesterListPacket(buffer.readBlockPos());
-    }
+  @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+  }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            ServerPlayer player = ctx.getSender();
-            if (player == null) return;
-            getBlockEntity(ctx, pos, BlockEntityTypesRobotics.REQUESTER.get())
-                .ifPresent(be -> {
-                    ItemStack[] stacks = new ItemStack[be.getRequestsCount()];
-                    for (int i = 0; i < stacks.length; i++) {
-                        stacks[i] = be.getRequestTemplate(i);
-                    }
-                    BCNetworkManager.sendSyncRequesterList(player, pos, stacks);
-                });
+  @Override
+  public void handle(Supplier<NetworkEvent.Context> supplier) {
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      ServerPlayer player = ctx.getSender();
+      if (player == null) return;
+      getBlockEntity(ctx, pos, BlockEntityTypesRobotics.REQUESTER.get())
+        .ifPresent(be -> {
+          ItemStack[] stacks = new ItemStack[be.getRequestsCount()];
+          for (int i = 0; i < stacks.length; i++) {
+            stacks[i] = be.getRequestTemplate(i);
+          }
+          BCNetworkManager.sendSyncRequesterList(player, pos, stacks);
         });
-        ctx.setPacketHandled(true);
-    }
+    });
+    ctx.setPacketHandled(true);
+  }
 }

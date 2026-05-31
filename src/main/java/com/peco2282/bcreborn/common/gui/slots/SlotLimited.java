@@ -16,17 +16,17 @@ import net.minecraft.world.Container;
 
 public class SlotLimited extends SlotBase {
 
-	private final int limit;
+  private final int limit;
 
-	public SlotLimited(Container iinventory, int slotIndex, int posX, int posY, int limit) {
-		super(iinventory, slotIndex, posX, posY);
-		this.limit = limit;
-	}
+  public SlotLimited(Container iinventory, int slotIndex, int posX, int posY, int limit) {
+    super(iinventory, slotIndex, posX, posY);
+    this.limit = limit;
+  }
 
-	@Override
-	public int getMaxStackSize() {
-		return limit;
-	}
+  @Override
+  public int getMaxStackSize() {
+    return limit;
+  }
 
 
 }

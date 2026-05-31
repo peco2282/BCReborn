@@ -15,15 +15,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 
 public interface ITablet {
-    Dist getSide();
+  Dist getSide();
 
-    void refreshScreen(TabletBitmap data);
+  void refreshScreen(TabletBitmap data);
 
-    int getScreenWidth();
+  int getScreenWidth();
 
-    int getScreenHeight();
+  int getScreenHeight();
 
-    void launchProgram(String name);
+  void launchProgram(String name);
 
-    void sendMessage(CompoundTag compound);
+  void sendMessage(CompoundTag compound);
 }

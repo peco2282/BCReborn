@@ -18,47 +18,47 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class LibraryBookTypeHandler extends LibraryTypeHandlerNBT {
-	public LibraryBookTypeHandler() {
-		super("book");
-	}
+  public LibraryBookTypeHandler() {
+    super("book");
+  }
 
-	@Override
-	public boolean isHandler(ItemStack stack, HandlerType type) {
-		if (type == HandlerType.STORE) {
-			return stack.getItem() == Items.WRITTEN_BOOK;
-		} else {
-			return stack.getItem() == Items.WRITABLE_BOOK || stack.getItem() == Items.WRITTEN_BOOK;
-		}
-	}
+  @Override
+  public boolean isHandler(ItemStack stack, HandlerType type) {
+    if (type == HandlerType.STORE) {
+      return stack.getItem() == Items.WRITTEN_BOOK;
+    } else {
+      return stack.getItem() == Items.WRITABLE_BOOK || stack.getItem() == Items.WRITTEN_BOOK;
+    }
+  }
 
-	@Override
-	public int getTextColor() {
-		return 0x684804;
-	}
+  @Override
+  public int getTextColor() {
+    return 0x684804;
+  }
 
-	@Override
-	public String getName(ItemStack stack) {
-		String s = stack.getOrCreateTag().getString("title");
-		return s.isEmpty() ? s : "";
-	}
+  @Override
+  public String getName(ItemStack stack) {
+    String s = stack.getOrCreateTag().getString("title");
+    return s.isEmpty() ? s : "";
+  }
 
-	@Override
-	public ItemStack load(ItemStack stack, CompoundTag compound) {
-		ItemStack out = new ItemStack(Items.WRITTEN_BOOK);
-		CompoundTag outNBT = new CompoundTag();
-		outNBT.putString("title", compound.getString("title"));
-		outNBT.putString("author", compound.getString("author"));
-		outNBT.put("pages", compound.getList("pages", Tag.TAG_STRING));
-		out.save(outNBT);
-		return out;
-	}
+  @Override
+  public ItemStack load(ItemStack stack, CompoundTag compound) {
+    ItemStack out = new ItemStack(Items.WRITTEN_BOOK);
+    CompoundTag outNBT = new CompoundTag();
+    outNBT.putString("title", compound.getString("title"));
+    outNBT.putString("author", compound.getString("author"));
+    outNBT.put("pages", compound.getList("pages", Tag.TAG_STRING));
+    out.save(outNBT);
+    return out;
+  }
 
-	@Override
-	public boolean store(ItemStack stack, CompoundTag compound) {
-		CompoundTag inNBT = stack.getOrCreateTag();
-		compound.putString("title", inNBT.getString("title"));
-		compound.putString("author", inNBT.getString("author"));
-		compound.put("pages", inNBT.getList("pages", Tag.TAG_STRING));
-		return true;
-	}
+  @Override
+  public boolean store(ItemStack stack, CompoundTag compound) {
+    CompoundTag inNBT = stack.getOrCreateTag();
+    compound.putString("title", inNBT.getString("title"));
+    compound.putString("author", inNBT.getString("author"));
+    compound.put("pages", inNBT.getList("pages", Tag.TAG_STRING));
+    return true;
+  }
 }

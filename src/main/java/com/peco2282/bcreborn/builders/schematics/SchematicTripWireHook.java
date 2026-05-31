@@ -21,24 +21,24 @@ import java.util.LinkedList;
 
 public class SchematicTripWireHook extends SchematicBlock {
 
-	@Override
-	public void rotateLeft(IBuilderContext context) {
-		if (state != null) {
-			state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-		}
-	}
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+    }
+  }
 
-	@Override
-	public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-		super.placeInWorld(context, x, y, z, stacks);
-	}
+  @Override
+  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
+    super.placeInWorld(context, x, y, z, stacks);
+  }
 
-	@Override
-	public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-		if (state != null) {
-			return state.getBlock() == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-		}
-		return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-	}
+  @Override
+  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
+    if (state != null) {
+      return state.getBlock() == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
+    }
+    return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
+  }
 
 }

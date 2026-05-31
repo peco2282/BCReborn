@@ -11,64 +11,63 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import java.util.Optional;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.*;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import java.util.Optional;
 
 public final class FluidUtils {
-    private FluidUtils() {
-    }
+  private FluidUtils() {
+  }
 
-    public static FluidStack getFluidStackFromBlock(BlockState state) {
-        if (state != null) {
-            Block b = state.getBlock();
-            if (b instanceof IFluidBlock fb) {
-                Fluid f = fb.getFluid();
-                if (f != null) {
-                    return new FluidStack(f, 1000);
-                }
-            } else if (b instanceof BucketPickup) {
-                Fluid f = state.getFluidState().getType();
-                if (f != Fluids.EMPTY) {
-                    return new FluidStack(f, 1000);
-                }
-            }
+  public static FluidStack getFluidStackFromBlock(BlockState state) {
+    if (state != null) {
+      Block b = state.getBlock();
+      if (b instanceof IFluidBlock fb) {
+        Fluid f = fb.getFluid();
+        if (f != null) {
+          return new FluidStack(f, 1000);
         }
-        return FluidStack.EMPTY;
-    }
-
-    public static FluidStack getFluidStackFromItemStack(ItemStack stack) {
-        if (stack != null && !stack.isEmpty()) {
-            Optional<IFluidHandlerItem> cap = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
-            if (cap.isPresent()) {
-                IFluidHandlerItem handler = cap.get();
-                if (handler.getTanks() > 0) {
-                    return handler.getFluidInTank(0);
-                }
-            } else if (stack.getItem() instanceof BlockItem bi) {
-                return getFluidStackFromBlock(bi.getBlock().defaultBlockState());
-            }
+      } else if (b instanceof BucketPickup) {
+        Fluid f = state.getFluidState().getType();
+        if (f != Fluids.EMPTY) {
+          return new FluidStack(f, 1000);
         }
-        return FluidStack.EMPTY;
+      }
     }
+    return FluidStack.EMPTY;
+  }
 
-    public static Fluid getFluidFromItemStack(ItemStack stack) {
-        FluidStack fluidStack = getFluidStackFromItemStack(stack);
-        return fluidStack.getFluid();
+  public static FluidStack getFluidStackFromItemStack(ItemStack stack) {
+    if (stack != null && !stack.isEmpty()) {
+      Optional<IFluidHandlerItem> cap = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+      if (cap.isPresent()) {
+        IFluidHandlerItem handler = cap.get();
+        if (handler.getTanks() > 0) {
+          return handler.getFluidInTank(0);
+        }
+      } else if (stack.getItem() instanceof BlockItem bi) {
+        return getFluidStackFromBlock(bi.getBlock().defaultBlockState());
+      }
     }
+    return FluidStack.EMPTY;
+  }
 
-    public static boolean isFluidContainer(ItemStack stack) {
-        return stack != null && !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
-    }
+  public static Fluid getFluidFromItemStack(ItemStack stack) {
+    FluidStack fluidStack = getFluidStackFromItemStack(stack);
+    return fluidStack.getFluid();
+  }
+
+  public static boolean isFluidContainer(ItemStack stack) {
+    return stack != null && !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+  }
 }

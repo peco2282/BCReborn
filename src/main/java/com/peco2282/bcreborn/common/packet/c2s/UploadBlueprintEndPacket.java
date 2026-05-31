@@ -20,15 +20,15 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record UploadBlueprintEndPacket(
-    BlockPos pos
+  BlockPos pos
 ) implements CustomPacket {
+  public static UploadBlueprintEndPacket decode(FriendlyByteBuf buffer) {
+    return new UploadBlueprintEndPacket(buffer.readBlockPos());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
-  }
-
-  public static UploadBlueprintEndPacket decode(FriendlyByteBuf buffer) {
-    return new UploadBlueprintEndPacket(buffer.readBlockPos());
   }
 
   @Override

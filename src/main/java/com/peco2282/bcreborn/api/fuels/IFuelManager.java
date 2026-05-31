@@ -17,15 +17,15 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.Collection;
 
 public interface IFuelManager {
-    IFuel addFuel(IFuel fuel);
+  IFuel addFuel(IFuel fuel);
 
-    IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
+  IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
 
-    IFuel addFuel(FluidType fluid, int powerPerCycle, int totalBurningTime);
+  IFuel addFuel(FluidType fluid, int powerPerCycle, int totalBurningTime);
 
-    Collection<IFuel> getFuels();
+  Collection<IFuel> getFuels();
 
-    IFuel getFuel(FluidType fluid);
+  IFuel getFuel(FluidType fluid);
 
-    IFuel getFuel(Fluid fluid);
+  IFuel getFuel(Fluid fluid);
 }

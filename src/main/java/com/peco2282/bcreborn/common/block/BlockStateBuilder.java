@@ -17,12 +17,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BlockStateBuilder {
-  private BlockStateBuilder() {}
+  private final Map<Property<?>, Comparable<?>> PROPERTIES = new ConcurrentHashMap<>();
+
+  private BlockStateBuilder() {
+  }
+
   public static BlockStateBuilder builder() {
     return new BlockStateBuilder();
   }
-
-  private final Map<Property<?>, Comparable<?>> PROPERTIES = new ConcurrentHashMap<>();
 
   public <T extends Comparable<T>> BlockStateBuilder put(Property<T> property, T value) {
     PROPERTIES.put(property, value);

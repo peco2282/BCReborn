@@ -20,16 +20,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ArchitectNameSyncPacket(
-    BlockPos pos,
-    String name) implements CustomPacket {
+  BlockPos pos,
+  String name) implements CustomPacket {
+  public static ArchitectNameSyncPacket decode(FriendlyByteBuf buffer) {
+    return new ArchitectNameSyncPacket(buffer.readBlockPos(), buffer.readUtf());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeUtf(name);
-  }
-
-  public static ArchitectNameSyncPacket decode(FriendlyByteBuf buffer) {
-    return new ArchitectNameSyncPacket(buffer.readBlockPos(), buffer.readUtf());
   }
 
   @Override

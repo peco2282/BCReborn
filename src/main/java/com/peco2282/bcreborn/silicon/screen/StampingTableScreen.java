@@ -20,29 +20,29 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class StampingTableScreen extends LaserTableScreen<StampingTableMenu> {
 
-	public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/stamper.png");
+  public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("bcrebornsilicon", "textures/gui/stamper.png");
 
-	public StampingTableScreen(StampingTableMenu container, Inventory playerInventory, Component title) {
-		super(container, playerInventory, title, (StampingTableBlockEntity) container.getSlot(0).container);
-		this.imageWidth = 176;
-		this.imageHeight = 151;
-		this.inventoryLabelY = this.imageHeight - 94;
-	}
+  public StampingTableScreen(StampingTableMenu container, Inventory playerInventory, Component title) {
+    super(container, playerInventory, title, (StampingTableBlockEntity) container.getSlot(0).container);
+    this.imageWidth = 176;
+    this.imageHeight = 151;
+    this.inventoryLabelY = this.imageHeight - 94;
+  }
 
-	@Override
-	protected ResourceLocation getMenuTexture() {
-		return TEXTURE;
-	}
+  @Override
+  protected ResourceLocation getMenuTexture() {
+    return TEXTURE;
+  }
 
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		int x = (width - imageWidth) / 2;
-		int y = (height - imageHeight) / 2;
-		guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-		if (table.getEnergy() > 0) {
-			int progress = table.getProgressScaled(98);
-			// フラッシュアニメーションのロジックは簡略化
-			guiGraphics.blit(TEXTURE, x + 36, y + 14, 0, 221, progress, 24);
-		}
-	}
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    int x = (width - imageWidth) / 2;
+    int y = (height - imageHeight) / 2;
+    guiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+    if (table.getEnergy() > 0) {
+      int progress = table.getProgressScaled(98);
+      // フラッシュアニメーションのロジックは簡略化
+      guiGraphics.blit(TEXTURE, x + 36, y + 14, 0, 221, progress, 24);
+    }
+  }
 }

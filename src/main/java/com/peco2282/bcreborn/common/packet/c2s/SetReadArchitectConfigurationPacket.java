@@ -21,15 +21,9 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SetReadArchitectConfigurationPacket(
-    BlockPos pos,
-    BlueprintReadConfiguration config
+  BlockPos pos,
+  BlueprintReadConfiguration config
 ) implements CustomPacket {
-  @Override
-  public void encode(FriendlyByteBuf buffer) {
-    buffer.writeBlockPos(pos);
-    config.writeData(buffer);
-  }
-
   public static SetReadArchitectConfigurationPacket decode(FriendlyByteBuf buffer) {
     BlockPos pos = buffer.readBlockPos();
     BlueprintReadConfiguration config = new BlueprintReadConfiguration();
@@ -38,14 +32,20 @@ public record SetReadArchitectConfigurationPacket(
   }
 
   @Override
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(pos);
+    config.writeData(buffer);
+  }
+
+  @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
       getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
-          .ifPresent(be -> {
-            be.setReadConfiguration(config);
-            be.getUpdatePacket();
-          });
+        .ifPresent(be -> {
+          be.setReadConfiguration(config);
+          be.getUpdatePacket();
+        });
     });
     ctx.setPacketHandled(true);
   }

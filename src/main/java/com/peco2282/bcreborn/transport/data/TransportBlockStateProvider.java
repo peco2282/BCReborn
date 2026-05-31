@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
-import java.util.Set;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -26,7 +25,13 @@ import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Set;
+
 public class TransportBlockStateProvider extends BlockStateProvider {
+  private static final Set<PipeMaterial> EXTRACTION_OVERLAY_MATERIALS = Set.of(
+    PipeMaterial.WOOD, PipeMaterial.DAIZULI, PipeMaterial.EMERALD, PipeMaterial.EMZULI, PipeMaterial.IRON
+  );
+
   public TransportBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
     super(output, BCRebornTransport.MODID, exFileHelper);
   }
@@ -48,19 +53,19 @@ public class TransportBlockStateProvider extends BlockStateProvider {
 
     // センターモデルの作成
     BlockModelBuilder centerModel = models().withExistingParent("block/pipe/" + baseName + "_" + typeName + "_center", "block/block")
-        .texture("particle", centerTex)
-        .element()
-        .from(4, 4, 4)
-        .to(12, 12, 12)
-        .face(Direction.NORTH).texture("#texture").uvs(4, 4, 12, 12).end()
-        .face(Direction.SOUTH).texture("#texture").uvs(4, 4, 12, 12).end()
-        .face(Direction.EAST).texture("#texture").uvs(4, 4, 12, 12).end()
-        .face(Direction.WEST).texture("#texture").uvs(4, 4, 12, 12).end()
-        .face(Direction.UP).texture("#texture").uvs(4, 4, 12, 12).end()
-        .face(Direction.DOWN).texture("#texture").uvs(4, 4, 12, 12).end()
-        .end()
-        .renderType("cutout")
-        .texture("texture", centerTex);
+      .texture("particle", centerTex)
+      .element()
+      .from(4, 4, 4)
+      .to(12, 12, 12)
+      .face(Direction.NORTH).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.SOUTH).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.EAST).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.WEST).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.UP).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.DOWN).texture("#texture").uvs(4, 4, 12, 12).end()
+      .end()
+      .renderType("cutout")
+      .texture("texture", centerTex);
 
     MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
 
@@ -76,13 +81,13 @@ public class TransportBlockStateProvider extends BlockStateProvider {
 
       ResourceLocation sideTex = getPipeTexture(material, type, side.getName());
       BlockModelBuilder sideModel = models().withExistingParent("block/pipe/" + baseName + "_" + typeName + "_" + side.getName(), "block/block")
-          .texture("particle", sideTex)
-          .texture("texture", sideTex)
-          .renderType("cutout");
+        .texture("particle", sideTex)
+        .texture("texture", sideTex)
+        .renderType("cutout");
 
       var element = sideModel.element()
-          .from(from[0], from[1], from[2])
-          .to(to[0], to[1], to[2]);
+        .from(from[0], from[1], from[2])
+        .to(to[0], to[1], to[2]);
 
       for (Direction dir : Direction.values()) {
         float[] uv = getSideUV(side, dir);
@@ -92,9 +97,9 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       element.end();
 
       builder.part()
-          .modelFile(sideModel)
-          .addModel()
-          .condition(PipeBlock.PROPERTY_MAP.get(side), true);
+        .modelFile(sideModel)
+        .addModel()
+        .condition(PipeBlock.PROPERTY_MAP.get(side), true);
     }
 
     // 搬入口オーバーレイモデルの追加（対応マテリアルのみ）
@@ -104,39 +109,35 @@ public class TransportBlockStateProvider extends BlockStateProvider {
         int sideValue = side.get3DDataValue();
         BlockModelBuilder overlayModel = models().withExistingParent(
             "block/pipe/" + baseName + "_" + typeName + "_extract_" + side.getName(), "block/block")
-            .texture("particle", overlayTex)
-            .texture("overlay", overlayTex)
-            .renderType("cutout");
+          .texture("particle", overlayTex)
+          .texture("overlay", overlayTex)
+          .renderType("cutout");
 
         // センター部分のオーバーレイ面
         overlayModel.element()
-            .from(4, 4, 4).to(12, 12, 12)
-            .face(side).texture("#overlay").uvs(4, 4, 12, 12).end()
-            .end();
+          .from(4, 4, 4).to(12, 12, 12)
+          .face(side).texture("#overlay").uvs(4, 4, 12, 12).end()
+          .end();
 
         // サイド部分のオーバーレイ面（先端面のみ）
         float[] from = getSideFrom(side);
         float[] to = getSideTo(side);
         overlayModel.element()
-            .from(from[0], from[1], from[2]).to(to[0], to[1], to[2])
-            .face(side).texture("#overlay").uvs(4, 4, 12, 12).end()
-            .end();
+          .from(from[0], from[1], from[2]).to(to[0], to[1], to[2])
+          .face(side).texture("#overlay").uvs(4, 4, 12, 12).end()
+          .end();
 
         builder.part()
-            .modelFile(overlayModel)
-            .addModel()
-            .condition(PipeBlock.EXTRACTION_SIDE, sideValue);
+          .modelFile(overlayModel)
+          .addModel()
+          .condition(PipeBlock.EXTRACTION_SIDE, sideValue);
       }
     }
 
     // アイテムモデルの作成
     itemModels()
-        .withExistingParent(block.getId().getPath(), centerModel.getLocation());
+      .withExistingParent(block.getId().getPath(), centerModel.getLocation());
   }
-
-  private static final Set<PipeMaterial> EXTRACTION_OVERLAY_MATERIALS = Set.of(
-      PipeMaterial.WOOD, PipeMaterial.DAIZULI, PipeMaterial.EMERALD, PipeMaterial.EMZULI, PipeMaterial.IRON
-  );
 
   private ResourceLocation getExtractionOverlayTexture(PipeMaterial material, PipeType type) {
     if (!EXTRACTION_OVERLAY_MATERIALS.contains(material)) return null;
@@ -261,50 +262,50 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       case NORTH -> switch (face) {
         case NORTH -> new float[]{4, 4, 12, 12}; // 先端面
         case SOUTH -> new float[]{4, 4, 12, 12}; // 根元面（センターと接する）
-        case WEST  -> new float[]{0, 4,  4, 12};
-        case EAST  -> new float[]{0, 4,  4, 12};
-        case UP    -> new float[]{4, 0, 12,  4};
-        case DOWN  -> new float[]{4, 0, 12,  4};
+        case WEST -> new float[]{0, 4, 4, 12};
+        case EAST -> new float[]{0, 4, 4, 12};
+        case UP -> new float[]{4, 0, 12, 4};
+        case DOWN -> new float[]{4, 0, 12, 4};
       };
       case SOUTH -> switch (face) {
         case SOUTH -> new float[]{4, 4, 12, 12};
         case NORTH -> new float[]{4, 4, 12, 12};
-        case WEST  -> new float[]{12, 4, 16, 12};
-        case EAST  -> new float[]{12, 4, 16, 12};
-        case UP    -> new float[]{4, 12, 12, 16};
-        case DOWN  -> new float[]{4, 12, 12, 16};
+        case WEST -> new float[]{12, 4, 16, 12};
+        case EAST -> new float[]{12, 4, 16, 12};
+        case UP -> new float[]{4, 12, 12, 16};
+        case DOWN -> new float[]{4, 12, 12, 16};
       };
       case WEST -> switch (face) {
-        case WEST  -> new float[]{4, 4, 12, 12};
-        case EAST  -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{0, 4,  4, 12};
-        case SOUTH -> new float[]{0, 4,  4, 12};
-        case UP    -> new float[]{0, 4,  4, 12};
-        case DOWN  -> new float[]{0, 4,  4, 12};
+        case WEST -> new float[]{4, 4, 12, 12};
+        case EAST -> new float[]{4, 4, 12, 12};
+        case NORTH -> new float[]{0, 4, 4, 12};
+        case SOUTH -> new float[]{0, 4, 4, 12};
+        case UP -> new float[]{0, 4, 4, 12};
+        case DOWN -> new float[]{0, 4, 4, 12};
       };
       case EAST -> switch (face) {
-        case EAST  -> new float[]{4, 4, 12, 12};
-        case WEST  -> new float[]{4, 4, 12, 12};
+        case EAST -> new float[]{4, 4, 12, 12};
+        case WEST -> new float[]{4, 4, 12, 12};
         case NORTH -> new float[]{12, 4, 16, 12};
         case SOUTH -> new float[]{12, 4, 16, 12};
-        case UP    -> new float[]{12, 4, 16, 12};
-        case DOWN  -> new float[]{12, 4, 16, 12};
+        case UP -> new float[]{12, 4, 16, 12};
+        case DOWN -> new float[]{12, 4, 16, 12};
       };
       case DOWN -> switch (face) {
-        case DOWN  -> new float[]{4, 4, 12, 12};
-        case UP    -> new float[]{4, 4, 12, 12};
-        case NORTH -> new float[]{4, 0, 12,  4};
-        case SOUTH -> new float[]{4, 0, 12,  4};
-        case WEST  -> new float[]{4, 0, 12,  4};
-        case EAST  -> new float[]{4, 0, 12,  4};
+        case DOWN -> new float[]{4, 4, 12, 12};
+        case UP -> new float[]{4, 4, 12, 12};
+        case NORTH -> new float[]{4, 0, 12, 4};
+        case SOUTH -> new float[]{4, 0, 12, 4};
+        case WEST -> new float[]{4, 0, 12, 4};
+        case EAST -> new float[]{4, 0, 12, 4};
       };
       case UP -> switch (face) {
-        case UP    -> new float[]{4, 4, 12, 12};
-        case DOWN  -> new float[]{4, 4, 12, 12};
+        case UP -> new float[]{4, 4, 12, 12};
+        case DOWN -> new float[]{4, 4, 12, 12};
         case NORTH -> new float[]{4, 12, 12, 16};
         case SOUTH -> new float[]{4, 12, 12, 16};
-        case WEST  -> new float[]{4, 12, 12, 16};
-        case EAST  -> new float[]{4, 12, 12, 16};
+        case WEST -> new float[]{4, 12, 12, 16};
+        case EAST -> new float[]{4, 12, 12, 16};
       };
     };
   }

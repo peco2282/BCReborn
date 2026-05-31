@@ -15,13 +15,13 @@ import com.peco2282.bcreborn.api.gates.IGate;
 import net.minecraft.core.Direction;
 
 public interface IPipe {
-    IPipeTile getTile();
+  IPipeTile getTile();
 
-    IGate getGate(Direction side);
+  IGate getGate(Direction side);
 
-    boolean hasGate(Direction side);
+  boolean hasGate(Direction side);
 
-    boolean isWired(PipeWire wire);
+  boolean isWired(PipeWire wire);
 
-    boolean isWireActive(PipeWire wire);
+  boolean isWireActive(PipeWire wire);
 }
