@@ -90,9 +90,9 @@ public abstract class BptBuilderBase implements IAreaProvider {
 
   protected abstract BuildingSlot reserveNextBlock(Level world);
 
-  protected abstract BuildingSlot getNextBlock(Level world, TileAbstractBuilder inv);
+  protected abstract BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv);
 
-  public boolean buildNextSlot(Level world, TileAbstractBuilder builder, double x, double y, double z) {
+  public boolean buildNextSlot(Level world, AbstractBuilderBlockEntity builder, double x, double y, double z) {
     initialize();
 
     if (world.getGameTime() < nextBuildDate) {
@@ -190,11 +190,11 @@ public abstract class BptBuilderBase implements IAreaProvider {
     return BlockUtils.computeBlockBreakEnergy(context.world(), new BlockPos(slot.x, slot.y, slot.z));
   }
 
-  protected final boolean canDestroy(TileAbstractBuilder builder, IBuilderContext context, BuildingSlotBlock slot) {
+  protected final boolean canDestroy(AbstractBuilderBlockEntity builder, IBuilderContext context, BuildingSlotBlock slot) {
     return builder.energyAvailable() >= getBlockBreakEnergy(slot);
   }
 
-  public void consumeEnergyToDestroy(TileAbstractBuilder builder, BuildingSlotBlock slot) {
+  public void consumeEnergyToDestroy(AbstractBuilderBlockEntity builder, BuildingSlotBlock slot) {
     builder.consumeEnergy(getBlockBreakEnergy(slot));
   }
 

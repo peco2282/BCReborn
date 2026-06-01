@@ -18,7 +18,7 @@ import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.common.gui.GuiAdvancedInterface;
+import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.ChatFormatting;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuilderScreen extends GuiAdvancedInterface<BuilderMenu> {
+public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
   private static final ResourceLocation REGULAR_TEXTURE = BCRebornBuilders.location("textures/gui/builder.png");
   private static final ResourceLocation BLUEPRINT_TEXTURE = BCRebornBuilders.location("textures/gui/builder_blueprint.png");
   private final BuilderBlockEntity builder;

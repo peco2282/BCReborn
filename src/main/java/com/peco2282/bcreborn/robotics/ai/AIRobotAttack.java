@@ -15,12 +15,12 @@ package com.peco2282.bcreborn.robotics.ai;
 //
 //import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 //import com.peco2282.bcreborn.api.robots.AIRobot;
-//import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-//import com.peco2282.bcreborn.robotics.EntityRobot;
+//import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+//import com.peco2282.bcreborn.robotics.RobotEntity;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.world.entity.Entity;
 
 public class AIRobotAttack extends AIRobot {
@@ -29,11 +29,11 @@ public class AIRobotAttack extends AIRobot {
 
   private int delay = 10;
 
-  public AIRobotAttack(EntityRobotBase iRobot) {
+  public AIRobotAttack(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotAttack(EntityRobotBase iRobot, Entity iTarget) {
+  public AIRobotAttack(RobotEntityBase iRobot, Entity iTarget) {
     this(iRobot);
 
     target = iTarget;
@@ -70,7 +70,7 @@ public class AIRobotAttack extends AIRobot {
 
     if (delay > 20) {
       delay = 0;
-      if (robot instanceof EntityRobot robotImpl) {
+      if (robot instanceof RobotEntity robotImpl) {
         robotImpl.attackTargetEntityWithCurrentItem(target);
       }
       robot.aimItemAt((int) Math.floor(target.getX()), (int) Math.floor(target.getY()),

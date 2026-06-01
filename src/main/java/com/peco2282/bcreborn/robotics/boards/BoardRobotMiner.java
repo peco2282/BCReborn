@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
@@ -27,7 +27,7 @@ public class BoardRobotMiner extends BoardRobotGenericBreakBlock {
   private static final int MAX_HARVEST_LEVEL = 3;
   private int harvestLevel = 0;
 
-  public BoardRobotMiner(EntityRobotBase iRobot) {
+  public BoardRobotMiner(RobotEntityBase iRobot) {
     super(iRobot);
     detectHarvestLevel();
   }

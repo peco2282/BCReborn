@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotWakeUp;
 
@@ -21,7 +21,7 @@ public class AIRobotSleep extends AIRobot {
   private static final int SLEEPING_TIME = 60 * 20;
   private int sleptTime = 0;
 
-  public AIRobotSleep(EntityRobotBase iRobot) {
+  public AIRobotSleep(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

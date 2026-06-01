@@ -20,7 +20,7 @@ import com.peco2282.bcreborn.common.builder.BuildingSlot;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock.Mode;
 import com.peco2282.bcreborn.common.builder.BuildingSlotIterator;
-import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
@@ -121,7 +121,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
   }
 
   @Override
-  public BuildingSlot getNextBlock(Level world, TileAbstractBuilder inv) {
+  public BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
     if (!buildList.isEmpty() || !clearList.isEmpty()) {
       BuildingSlotBlock slot = internalGetNextBlock(world, inv);
       checkDone();
@@ -134,7 +134,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
     return null;
   }
 
-  private BuildingSlotBlock internalGetNextBlock(Level world, TileAbstractBuilder builder) {
+  private BuildingSlotBlock internalGetNextBlock(Level world, AbstractBuilderBlockEntity builder) {
     BuildingSlotBlock result = null;
 
     IInvSlot firstSlotToConsume = null;

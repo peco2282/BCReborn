@@ -12,18 +12,18 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
 
 public class AIRobotGotoStationAndLoadFluids extends AIRobot {
 
   private IFluidFilter filter;
 
-  public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot) {
+  public AIRobotGotoStationAndLoadFluids(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotGotoStationAndLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
+  public AIRobotGotoStationAndLoadFluids(RobotEntityBase iRobot, IFluidFilter iFilter) {
     this(iRobot);
 
     filter = iFilter;

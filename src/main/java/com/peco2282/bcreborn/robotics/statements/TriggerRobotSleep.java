@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.api.statements.ITriggerInternal;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
 import com.peco2282.bcreborn.robotics.RobotUtils;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -51,7 +51,7 @@ public class TriggerRobotSleep extends BCStatement implements ITriggerInternal {
 
     for (DockingStation station : stations) {
       if (station.robotTaking() != null) {
-        EntityRobot robot = (EntityRobot) station.robotTaking();
+        RobotEntity robot = (RobotEntity) station.robotTaking();
 
         if (robot.isActive()) {
           return true;

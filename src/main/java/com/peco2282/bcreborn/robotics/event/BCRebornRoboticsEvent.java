@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.event;
 
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
-import com.peco2282.bcreborn.robotics.EntityTypeRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
 import com.peco2282.bcreborn.robotics.render.RenderRobot;
 import com.peco2282.bcreborn.robotics.render.RenderZonePlan;
@@ -37,7 +37,7 @@ public class BCRebornRoboticsEvent {
 
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-    event.registerEntityRenderer(EntityTypeRobotics.ROBOT.get(), RenderRobot::new);
+    event.registerEntityRenderer(RoboticsEntityTypes.ROBOT.get(), RenderRobot::new);
     event.registerBlockEntityRenderer(BlockEntityTypesRobotics.ZONE_PLAN.get(), RenderZonePlan::new);
   }
 }

@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.common.gui;
 
 
-import com.peco2282.bcreborn.common.gui.buttons.GuiBetterButton;
+import com.peco2282.bcreborn.common.gui.buttons.BetterButton;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class GuiTools {
+public final class ScreenUtils {
 
   public static final Button.OnPress EMPTY_PRESS = (button) -> {
   };
@@ -28,7 +28,7 @@ public final class GuiTools {
   /**
    * Deactivate constructor
    */
-  private GuiTools() {
+  private ScreenUtils() {
   }
 
   public static void drawCenteredString(Font fr, String s, int y) {
@@ -43,15 +43,15 @@ public final class GuiTools {
     // Use standard drawInBatch requires more params in 1.20.1, simplified
   }
 
-  public static void newButtonRowAuto(List<GuiBetterButton> buttonList, int xStart, int xSize, List<? extends GuiBetterButton> buttons) {
+  public static void newButtonRowAuto(List<BetterButton> buttonList, int xStart, int xSize, List<? extends BetterButton> buttons) {
     int buttonWidth = 0;
-    for (GuiBetterButton b : buttons) {
+    for (BetterButton b : buttons) {
       buttonWidth += b.getWidth();
     }
     int remaining = xSize - buttonWidth;
     int spacing = remaining / (buttons.size() + 1);
     int pointer = 0;
-    for (GuiBetterButton b : buttons) {
+    for (BetterButton b : buttons) {
       pointer += spacing;
       b.setX(xStart + pointer);
       pointer += b.getWidth();
@@ -59,9 +59,9 @@ public final class GuiTools {
     }
   }
 
-  public static void newButtonRow(List<GuiBetterButton> buttonList, int xStart, int spacing, List<? extends GuiBetterButton> buttons) {
+  public static void newButtonRow(List<BetterButton> buttonList, int xStart, int spacing, List<? extends BetterButton> buttons) {
     int pointer = 0;
-    for (GuiBetterButton b : buttons) {
+    for (BetterButton b : buttons) {
       b.setX(xStart + pointer);
       pointer += b.getWidth() + spacing;
       buttonList.add(b);

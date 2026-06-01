@@ -33,7 +33,7 @@ public class BCRebornSiliconEvent {
       MenuScreens.register(SiliconMenuTypes.CHARGING_TABLE.get(), ChargingTableScreen::new);
       MenuScreens.register(SiliconMenuTypes.PROGRAMMING_TABLE.get(), ProgrammingTableScreen::new);
       MenuScreens.register(SiliconMenuTypes.STAMPING_TABLE.get(), StampingTableScreen::new);
-      MenuScreens.register(SiliconMenuTypes.PACKAGER.get(), GuiPackager::new);
+      MenuScreens.register(SiliconMenuTypes.PACKAGER.get(), PackagerScreen::new);
     });
   }
 

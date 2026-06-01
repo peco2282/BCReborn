@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.common.gui.GuiAdvancedInterface;
+import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.gui.StatementParameterSlot;
 import com.peco2282.bcreborn.common.gui.StatementSlot;
 import com.peco2282.bcreborn.transport.Gate;
@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.function.Function;
 
-public class GateInterfaceScreen extends GuiAdvancedInterface<GateInterfaceMenu> {
+public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMenu> {
   private static final Function<String, ResourceLocation> TEXTURE = s -> {
     assert s.length() == 1;
     char it = s.charAt(0);

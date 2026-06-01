@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 
-public class StoneEngineBlockEntity extends ContainerEngineBlockEntity<StoneEngineBlockEntity> {
+public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngineBlockEntity> {
   public static final float MAX_OUTPUT = 10;
   public static final float MIN_OUTPUT = MAX_OUTPUT / 3;
   public static final float TARGET_OUTPUT = .375f;

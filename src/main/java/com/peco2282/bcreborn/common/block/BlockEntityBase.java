@@ -21,24 +21,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 
-public class EntityBlock extends Entity {
+public class BlockEntityBase extends Entity {
   public float shadowSize = 0;
   public float rotationX = 0;
   public float rotationY = 0;
   public float rotationZ = 0;
   public double iSize, jSize, kSize;
 
-  public EntityBlock(EntityType<?> type, Level world) {
+  public BlockEntityBase(EntityType<?> type, Level world) {
     super(type, world);
     noPhysics = true;
   }
 
-  public EntityBlock(EntityType<?> type, Level world, double xPos, double yPos, double zPos) {
+  public BlockEntityBase(EntityType<?> type, Level world, double xPos, double yPos, double zPos) {
     this(type, world);
     setPos(xPos, yPos, zPos);
   }
 
-  public EntityBlock(EntityType<?> type, Level world, double i, double j, double k, double iSize, double jSize, double kSize) {
+  public BlockEntityBase(EntityType<?> type, Level world, double i, double j, double k, double iSize, double jSize, double kSize) {
     this(type, world);
     this.iSize = iSize;
     this.jSize = jSize;

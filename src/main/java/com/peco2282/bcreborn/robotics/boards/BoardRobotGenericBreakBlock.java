@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotBreak;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class BoardRobotGenericBreakBlock extends BoardRobotGenericSearchBlock {
 
-  public BoardRobotGenericBreakBlock(EntityRobotBase iRobot) {
+  public BoardRobotGenericBreakBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

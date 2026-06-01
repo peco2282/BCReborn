@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.statements;
 
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -35,7 +35,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
     this.invert = invert;
   }
 
-  public static boolean isForbidden(DockingStation station, EntityRobotBase robot) {
+  public static boolean isForbidden(DockingStation station, RobotEntityBase robot) {
     for (StatementSlot s : station.getActiveActions()) {
       if (s.statement instanceof ActionStationForbidRobot) {
         if (((ActionStationForbidRobot) s.statement).invert ^ ActionStationForbidRobot.isForbidden(s, robot)) {
@@ -47,7 +47,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
     return false;
   }
 
-  public static boolean isForbidden(StatementSlot slot, EntityRobotBase robot) {
+  public static boolean isForbidden(StatementSlot slot, RobotEntityBase robot) {
     for (IStatementParameter p : slot.parameters) {
       if (p instanceof StatementParameterRobot && StatementParameterRobot.matches(p, robot)) {
         return true;

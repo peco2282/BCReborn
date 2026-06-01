@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
 public class AIRobotShutdown extends AIRobot {
   private int skip;
   private double motionX;
   private double motionZ;
 
-  public AIRobotShutdown(EntityRobotBase iRobot) {
+  public AIRobotShutdown(RobotEntityBase iRobot) {
     super(iRobot);
     skip = 0;
     motionX = robot.getDeltaMovement().x;

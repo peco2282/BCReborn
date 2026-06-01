@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndLoad;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
@@ -23,7 +23,7 @@ import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 
 public class BoardRobotCarrier extends RedstoneBoardRobot {
 
-  public BoardRobotCarrier(EntityRobotBase iRobot) {
+  public BoardRobotCarrier(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

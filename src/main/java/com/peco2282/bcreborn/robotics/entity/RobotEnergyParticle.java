@@ -19,18 +19,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EntityRobotEnergyParticle extends TextureSheetParticle {
+public class RobotEnergyParticle extends TextureSheetParticle {
   private final float smokeParticleScale;
 
-  public EntityRobotEnergyParticle(ClientLevel world, double x, double y, double z,
-                                   double vx,
-                                   double vy, double vz) {
+  public RobotEnergyParticle(ClientLevel world, double x, double y, double z,
+                             double vx,
+                             double vy, double vz) {
     this(world, x, y, z, vx, vy, vz, 1.0F);
   }
 
-  public EntityRobotEnergyParticle(ClientLevel world, double x, double y, double z,
-                                   double vx,
-                                   double vy, double vz, float size) {
+  public RobotEnergyParticle(ClientLevel world, double x, double y, double z,
+                             double vx,
+                             double vy, double vz, float size) {
     super(world, x, y, z, vx, vy, vz);
     this.xd *= 0.10000000149011612D;
     this.yd *= 0.10000000149011612D;

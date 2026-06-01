@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics;
 
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.robots.*;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,8 +30,8 @@ import java.util.*;
 public class RobotRegistry extends SavedData implements IRobotRegistry {
 
   protected final HashMap<StationIndex, DockingStation> stations = new HashMap<>();
-  private final Long2ObjectOpenHashMap<EntityRobot> robotsLoaded = new Long2ObjectOpenHashMap<>();
-  private final HashSet<EntityRobot> robotsLoadedSet = new HashSet<>();
+  private final Long2ObjectOpenHashMap<RobotEntity> robotsLoaded = new Long2ObjectOpenHashMap<>();
+  private final HashSet<RobotEntity> robotsLoadedSet = new HashSet<>();
   private final HashMap<ResourceId, Long> resourcesTaken = new HashMap<>();
   private final Long2ObjectOpenHashMap<HashSet<ResourceId>> resourcesTakenByRobot = new Long2ObjectOpenHashMap<>();
   private final Long2ObjectOpenHashMap<HashSet<StationIndex>> stationsTakenByRobot = new Long2ObjectOpenHashMap<>();
@@ -56,11 +56,11 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public void registerRobot(EntityRobotBase robotObj) {
-    if (!(robotObj instanceof EntityRobot robot)) return;
+  public void registerRobot(RobotEntityBase robotObj) {
+    if (!(robotObj instanceof RobotEntity robot)) return;
     setDirty();
 
-    if (robot.getRobotId() == EntityRobotBase.NULL_ROBOT_ID) {
+    if (robot.getRobotId() == RobotEntityBase.NULL_ROBOT_ID) {
       robot.setUniqueRobotId(getNextRobotId());
     }
     addRobotLoaded(robot);
@@ -74,65 +74,65 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     return stationsTakenByRobot.get(robotId);
   }
 
-  private void addRobotLoaded(EntityRobot robot) {
+  private void addRobotLoaded(RobotEntity robot) {
     robotsLoaded.put(robot.getRobotId(), robot);
     robotsLoadedSet.add(robot);
   }
 
-  private void removeRobotLoaded(EntityRobot robot) {
+  private void removeRobotLoaded(RobotEntity robot) {
     robotsLoaded.remove(robot.getRobotId());
     robotsLoadedSet.remove(robot);
   }
 
   @Override
-  public void killRobot(EntityRobotBase robot) {
+  public void killRobot(RobotEntityBase robot) {
     setDirty();
     releaseResources(robot);
-    if (robot instanceof EntityRobot entityRobot) {
+    if (robot instanceof RobotEntity entityRobot) {
       removeRobotLoaded(entityRobot);
     }
   }
 
   @Override
-  public void unloadRobot(EntityRobotBase robot) {
+  public void unloadRobot(RobotEntityBase robot) {
     setDirty();
     releaseResources(robot);
-    if (robot instanceof EntityRobot entityRobot) {
+    if (robot instanceof RobotEntity entityRobot) {
       removeRobotLoaded(entityRobot);
     }
   }
 
   @Override
-  public EntityRobotBase getLoadedRobot(long id) {
+  public RobotEntityBase getLoadedRobot(long id) {
     return robotsLoaded.get(id);
   }
 
   @Override
   public synchronized boolean isTaken(ResourceId resourceId) {
-    return robotIdTaking(resourceId) != EntityRobotBase.NULL_ROBOT_ID;
+    return robotIdTaking(resourceId) != RobotEntityBase.NULL_ROBOT_ID;
   }
 
   @Override
   public synchronized long robotIdTaking(ResourceId resourceId) {
     if (!resourcesTaken.containsKey(resourceId)) {
-      return EntityRobotBase.NULL_ROBOT_ID;
+      return RobotEntityBase.NULL_ROBOT_ID;
     }
 
     long robotId = resourcesTaken.get(resourceId);
-    EntityRobot robot = robotsLoaded.get(robotId);
+    RobotEntity robot = robotsLoaded.get(robotId);
 
     if (robot != null && !robot.isRemoved()) {
       return robotId;
     } else {
       release(resourceId);
-      return EntityRobotBase.NULL_ROBOT_ID;
+      return RobotEntityBase.NULL_ROBOT_ID;
     }
   }
 
   @Override
-  public synchronized EntityRobotBase robotTaking(ResourceId resourceId) {
+  public synchronized RobotEntityBase robotTaking(ResourceId resourceId) {
     long robotId = robotIdTaking(resourceId);
-    if (robotId == EntityRobotBase.NULL_ROBOT_ID) {
+    if (robotId == RobotEntityBase.NULL_ROBOT_ID) {
       return null;
     }
     return robotsLoaded.get(robotId);
@@ -140,7 +140,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 
   @Override
   public synchronized boolean take(ResourceId resourceId, Object robot) {
-    if (robot instanceof EntityRobotBase robotBase) {
+    if (robot instanceof RobotEntityBase robotBase) {
       return take(resourceId, robotBase.getRobotId());
     }
     return false;
@@ -175,7 +175,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 
   @Override
   public synchronized void releaseResources(Object robotObj) {
-    if (!(robotObj instanceof EntityRobotBase robot)) return;
+    if (!(robotObj instanceof RobotEntityBase robot)) return;
     setDirty();
 
     long robotId = robot.getRobotId();

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.common.SimpleInventory;
-import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuarryBlockEntity extends TileAbstractBuilder {
+public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
   private final SimpleInventory inv = new SimpleInventory(0, "Quarry", 64);
 
   public QuarryBlockEntity(BlockPos pos, BlockState state) {

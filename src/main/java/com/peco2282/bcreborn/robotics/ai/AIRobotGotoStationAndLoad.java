@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 
 public class AIRobotGotoStationAndLoad extends AIRobot {
@@ -20,11 +20,11 @@ public class AIRobotGotoStationAndLoad extends AIRobot {
   private IStackFilter filter;
   private int quantity;
 
-  public AIRobotGotoStationAndLoad(EntityRobotBase iRobot) {
+  public AIRobotGotoStationAndLoad(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotGotoStationAndLoad(EntityRobotBase iRobot, IStackFilter iFilter, int iQuantity) {
+  public AIRobotGotoStationAndLoad(RobotEntityBase iRobot, IStackFilter iFilter, int iQuantity) {
     this(iRobot);
 
     filter = iFilter;

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 import com.peco2282.bcreborn.robotics.boards.BoardRobotPicker;
 import net.minecraft.util.Mth;
@@ -32,11 +32,11 @@ public class AIRobotFetchItem extends AIRobot {
   private int pickTime = -1;
   private IZone zone;
 
-  public AIRobotFetchItem(EntityRobotBase iRobot) {
+  public AIRobotFetchItem(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotFetchItem(EntityRobotBase iRobot, float iMaxRange, IStackFilter iStackFilter, IZone iZone) {
+  public AIRobotFetchItem(RobotEntityBase iRobot, float iMaxRange, IStackFilter iStackFilter, IZone iZone) {
     this(iRobot);
 
     maxRange = iMaxRange;

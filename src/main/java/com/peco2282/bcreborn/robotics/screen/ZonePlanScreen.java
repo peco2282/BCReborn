@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.screen;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.common.gui.GuiAdvancedInterface;
+import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.robotics.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
 
-public class ZonePlanScreen extends GuiAdvancedInterface<ZonePlanMenu> {
+public class ZonePlanScreen extends AdvancedInterfaceScreen<ZonePlanMenu> {
   public static final int WINDOWED_MAP_WIDTH = 213;
   public static final int WINDOWED_MAP_HEIGHT = 100;
 

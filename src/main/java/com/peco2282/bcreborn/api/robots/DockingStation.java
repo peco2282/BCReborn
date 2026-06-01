@@ -24,8 +24,8 @@ public abstract class DockingStation {
   public Direction side;
   public Level world;
 
-  private long robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
-  private EntityRobotBase robotTaking;
+  private long robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
+  private RobotEntityBase robotTaking;
 
   private boolean linkIsMain = false;
 
@@ -59,8 +59,8 @@ public abstract class DockingStation {
     return side;
   }
 
-  public EntityRobotBase robotTaking() {
-    if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
+  public RobotEntityBase robotTaking() {
+    if (robotTakingId == RobotEntityBase.NULL_ROBOT_ID) {
       return null;
     } else if (robotTaking == null) {
       robotTaking = RobotManager.registryProvider.getRegistry(world).getLoadedRobot(
@@ -78,8 +78,8 @@ public abstract class DockingStation {
     return robotTakingId;
   }
 
-  public boolean takeAsMain(EntityRobotBase robot) {
-    if (robotTakingId == EntityRobotBase.NULL_ROBOT_ID) {
+  public boolean takeAsMain(RobotEntityBase robot) {
+    if (robotTakingId == RobotEntityBase.NULL_ROBOT_ID) {
       IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
       linkIsMain = true;
       robotTaking = robot;
@@ -94,7 +94,7 @@ public abstract class DockingStation {
     }
   }
 
-  public boolean take(EntityRobotBase robot) {
+  public boolean take(RobotEntityBase robot) {
     if (robotTaking == null) {
       IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
       linkIsMain = false;
@@ -109,7 +109,7 @@ public abstract class DockingStation {
     }
   }
 
-  public void release(EntityRobotBase robot) {
+  public void release(RobotEntityBase robot) {
     if (robotTaking == robot && !linkIsMain) {
       IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
       unsafeRelease(robot);
@@ -122,11 +122,11 @@ public abstract class DockingStation {
    * Same a release but doesn't clear the registry (presumably called from the
    * registry).
    */
-  public void unsafeRelease(EntityRobotBase robot) {
+  public void unsafeRelease(RobotEntityBase robot) {
     if (robotTaking == robot) {
       linkIsMain = false;
       robotTaking = null;
-      robotTakingId = EntityRobotBase.NULL_ROBOT_ID;
+      robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
     }
   }
 
@@ -147,7 +147,7 @@ public abstract class DockingStation {
   }
 
   public boolean isTaken() {
-    return robotTakingId != EntityRobotBase.NULL_ROBOT_ID;
+    return robotTakingId != RobotEntityBase.NULL_ROBOT_ID;
   }
 
   public long robotIdTaking() {

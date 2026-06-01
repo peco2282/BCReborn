@@ -16,12 +16,12 @@ import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.block.BuilderBlock;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
 import com.peco2282.bcreborn.common.SimpleInventory;
-import com.peco2282.bcreborn.common.block.TileBuffer;
+import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.blueprint.BlueprintBase;
 import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
-import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
@@ -48,7 +48,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BuilderBlockEntity extends TileAbstractBuilder implements MenuProvider, ILEDProvider {
+public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, ILEDProvider {
   private static final int POWER_ACTIVATION = 25;
 
   private final SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
@@ -68,7 +68,7 @@ public class BuilderBlockEntity extends TileAbstractBuilder implements MenuProvi
   @Override
   public void initialize() {
     super.initialize();
-    cache = TileBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
+    cache = BlockEntityBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
   }
 
   @Override

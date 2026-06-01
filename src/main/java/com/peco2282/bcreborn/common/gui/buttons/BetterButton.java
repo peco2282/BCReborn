@@ -22,19 +22,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBetterButton extends Button implements IToolTipProvider {
+public class BetterButton extends Button implements IToolTipProvider {
   protected final IButtonTextureSet texture;
   private ToolTip toolTip;
 
-  public GuiBetterButton(int id, int x, int y, String label) {
+  public BetterButton(int id, int x, int y, String label) {
     this(id, x, y, 200, StandardButtonTextureSets.LARGE_BUTTON, label);
   }
 
-  public GuiBetterButton(int id, int x, int y, int width, String label) {
+  public BetterButton(int id, int x, int y, int width, String label) {
     this(id, x, y, width, StandardButtonTextureSets.LARGE_BUTTON, label);
   }
 
-  public GuiBetterButton(int id, int x, int y, int width, IButtonTextureSet texture, String label) {
+  public BetterButton(int id, int x, int y, int width, IButtonTextureSet texture, String label) {
     super(x, y, width, texture.getHeight(), Component.literal(label), (b) -> {
     }, Button.DEFAULT_NARRATION);
     this.texture = texture;
@@ -80,7 +80,7 @@ public class GuiBetterButton extends Button implements IToolTipProvider {
     return toolTip;
   }
 
-  public GuiBetterButton setToolTip(ToolTip tips) {
+  public BetterButton setToolTip(ToolTip tips) {
     this.toolTip = tips;
     return this;
   }

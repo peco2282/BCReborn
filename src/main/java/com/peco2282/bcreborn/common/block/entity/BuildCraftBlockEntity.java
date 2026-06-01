@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.common.ResourceBuilder;
-import com.peco2282.bcreborn.common.block.TileBuffer;
+import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
@@ -39,7 +39,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   private final String owner = "[BuildCraft]";
   protected boolean init = false;
   protected IControllable.Mode mode;
-  protected TileBuffer[] cache;
+  protected BlockEntityBuffer[] cache;
   protected HashSet<Player> guiWatchers = new HashSet<>();
   private int receivedTick, extractedTick;
   private long worldTimeEnergyReceive;

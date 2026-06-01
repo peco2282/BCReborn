@@ -431,7 +431,7 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
         // We don't have a backing inventory for the matrix, it's just a phantom inventory
         // In 1.7.10 it was extending InventoryCrafting which had a field.
         // Let's use a SimpleInventory internally or just mirror the 1.7.10 behavior.
-        // For now let's assume it was using ContainerDummy which is empty.
+        // For now let's assume it was using DummyMenu which is empty.
         return ItemStack.EMPTY;
       }
     }

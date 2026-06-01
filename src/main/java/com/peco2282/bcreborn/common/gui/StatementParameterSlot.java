@@ -23,7 +23,7 @@ public abstract class StatementParameterSlot extends AdvancedSlot {
   public int slot;
   public StatementSlot statementSlot;
 
-  public StatementParameterSlot(GuiAdvancedInterface<?> gui, int x, int y, int slot, StatementSlot iStatementSlot) {
+  public StatementParameterSlot(AdvancedInterfaceScreen<?> gui, int x, int y, int slot, StatementSlot iStatementSlot) {
     super(gui, x, y);
 
     this.slot = slot;

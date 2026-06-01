@@ -15,8 +15,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.lists.ListMatchHandler;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.common.gui.GuiAdvancedInterface;
-import com.peco2282.bcreborn.common.gui.buttons.GuiImageButton;
+import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
+import com.peco2282.bcreborn.common.gui.buttons.ImageButton;
 import com.peco2282.bcreborn.common.gui.buttons.IButtonClickEventListener;
 import com.peco2282.bcreborn.common.gui.buttons.IButtonClickEventTrigger;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 
-public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements IButtonClickEventListener {
+public class ListNewScreen extends AdvancedInterfaceScreen<ListNewMenu> implements IButtonClickEventListener {
   private static final ResourceLocation TEXTURE_BASE = BCRebornCore.location("textures/gui/list_new.png");
   private static final int BUTTON_COUNT = 3;
 
@@ -99,13 +99,13 @@ public class ListNewScreen extends GuiAdvancedInterface<ListNewMenu> implements 
       int bOffX = 8 + ListHandlerNew.WIDTH * 18 - BUTTON_COUNT * 11;
       int bOffY = 32 + sy * 33 + 18;
 
-      addRenderableWidget(new GuiImageButton(bOff, leftPos + bOffX, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 176, 28));
-      addRenderableWidget(new GuiImageButton(bOff + 1, leftPos + bOffX + 11, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 185, 28));
-      addRenderableWidget(new GuiImageButton(bOff + 2, leftPos + bOffX + 22, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 194, 28));
+      addRenderableWidget(new ImageButton(bOff, leftPos + bOffX, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 176, 28));
+      addRenderableWidget(new ImageButton(bOff + 1, leftPos + bOffX + 11, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 185, 28));
+      addRenderableWidget(new ImageButton(bOff + 2, leftPos + bOffX + 22, topPos + bOffY, 11, TEXTURE_BASE, 176, 16, 194, 28));
     }
 
     for (Renderable o : renderables) {
-      if (o instanceof GuiImageButton b) {
+      if (o instanceof ImageButton b) {
         int lineId = b.id / BUTTON_COUNT;
         int buttonId = b.id % BUTTON_COUNT;
         if (getMenu().lines[lineId].getOption(buttonId)) {

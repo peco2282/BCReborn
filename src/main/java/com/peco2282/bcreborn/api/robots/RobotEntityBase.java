@@ -23,13 +23,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public abstract class EntityRobotBase extends PathfinderMob implements Container, IFluidHandler {
+public abstract class RobotEntityBase extends PathfinderMob implements Container, IFluidHandler {
   public static final int MAX_ENERGY = 100000;
   public static final int SAFETY_ENERGY = MAX_ENERGY / 5;
   public static final int SHUTDOWN_ENERGY = 0;
   public static final long NULL_ROBOT_ID = Long.MAX_VALUE;
 
-  public EntityRobotBase(EntityType<? extends PathfinderMob> type, Level world) {
+  public RobotEntityBase(EntityType<? extends PathfinderMob> type, Level world) {
     super(type, world);
   }
 

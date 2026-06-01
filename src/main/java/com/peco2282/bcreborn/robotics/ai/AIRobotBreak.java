@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -27,11 +27,11 @@ public class AIRobotBreak extends AIRobot {
   private float hardness;
   private float speed;
 
-  public AIRobotBreak(EntityRobotBase iRobot) {
+  public AIRobotBreak(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotBreak(EntityRobotBase iRobot, BlockIndex iBlockToBreak) {
+  public AIRobotBreak(RobotEntityBase iRobot, BlockIndex iBlockToBreak) {
     this(iRobot);
 
     blockToBreak = iBlockToBreak;

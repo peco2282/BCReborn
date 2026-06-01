@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
@@ -29,7 +29,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
 
   private BlockIndex blockFound;
 
-  public BoardRobotPlanter(EntityRobotBase iRobot) {
+  public BoardRobotPlanter(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

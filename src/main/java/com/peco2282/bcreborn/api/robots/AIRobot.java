@@ -15,18 +15,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 public class AIRobot {
-  public EntityRobotBase robot;
+  public RobotEntityBase robot;
 
   private AIRobot delegateAI;
   private AIRobot parentAI;
   private boolean success;
 
-  public AIRobot(EntityRobotBase iRobot) {
+  public AIRobot(RobotEntityBase iRobot) {
     robot = iRobot;
     success = true;
   }
 
-  public static AIRobot loadAI(CompoundTag nbt, EntityRobotBase robot) {
+  public static AIRobot loadAI(CompoundTag nbt, RobotEntityBase robot) {
     AIRobot ai = null;
 
     try {
@@ -37,7 +37,7 @@ public class AIRobot {
         aiRobotClass = RobotManager.getAIRobotByName(nbt.getString("aiName"));
       }
       if (aiRobotClass != null) {
-        ai = (AIRobot) aiRobotClass.getConstructor(EntityRobotBase.class).newInstance(robot);
+        ai = (AIRobot) aiRobotClass.getConstructor(RobotEntityBase.class).newInstance(robot);
         ai.loadFromNBT(nbt);
       }
     } catch (Throwable e) {
@@ -191,7 +191,7 @@ public class AIRobot {
           aiRobotClass = RobotManager.getAIRobotByName(sub.getString("aiName"));
         }
         if (aiRobotClass != null) {
-          delegateAI = (AIRobot) aiRobotClass.getConstructor(EntityRobotBase.class).newInstance(robot);
+          delegateAI = (AIRobot) aiRobotClass.getConstructor(RobotEntityBase.class).newInstance(robot);
           delegateAI.parentAI = this;
 
           if (delegateAI.canLoadFromNBT()) {

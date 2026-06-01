@@ -18,7 +18,7 @@ import com.mojang.math.Axis;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.robots.IRobotOverlayItem;
 import com.peco2282.bcreborn.common.LaserData;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -45,7 +45,7 @@ import org.joml.Matrix4f;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderRobot extends EntityRenderer<EntityRobot> {
+public class RenderRobot extends EntityRenderer<RobotEntity> {
   private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
   private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
   private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
@@ -76,7 +76,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
   }
 
   @Override
-  public void render(EntityRobot robot, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+  public void render(RobotEntity robot, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
     poseStack.pushPose();
 
     float robotYaw = Mth.lerp(partialTicks, robot.yRotO, robot.getYRot());
@@ -101,7 +101,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
       poseStack.pushPose();
       poseStack.mulPose(Axis.ZP.rotationDegrees(robot.itemAngle2));
       if (robot.itemActive) {
-        float stage = robot.itemActiveStage; // Updated in EntityRobot.tick
+        float stage = robot.itemActiveStage; // Updated in RobotEntity.tick
         poseStack.mulPose(Axis.ZP.rotationDegrees(stage));
       }
       poseStack.translate(-0.4F, 0, 0);
@@ -117,7 +117,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
     if (laser != null && laser.isVisible) {
       poseStack.pushPose();
       // Laser is rendered relative to robot position
-      // EntityRobot sets laser head to its own pos, so we render at 0,0,0 relative to robot
+      // RobotEntity sets laser head to its own pos, so we render at 0,0,0 relative to robot
       laser.update();
       poseStack.mulPose(Axis.YP.rotationDegrees((float) laser.angleZ));
       poseStack.mulPose(Axis.ZP.rotationDegrees((float) laser.angleY));
@@ -170,7 +170,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
     poseStack.popPose();
   }
 
-  private void doRenderWearable(EntityRobot entity, ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+  private void doRenderWearable(RobotEntity entity, ItemStack wearable, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
     Item item = wearable.getItem();
     if (item instanceof IRobotOverlayItem) {
       // IRobotOverlayItem still uses TextureManager, this is a limitation of not updating API
@@ -181,7 +181,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
       poseStack.translate(0.0f, -0.25f, 0.0f);
       poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-      @SuppressWarnings("unchecked") HumanoidModel<EntityRobot> armorModel = (HumanoidModel<EntityRobot>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
+      @SuppressWarnings("unchecked") HumanoidModel<RobotEntity> armorModel = (HumanoidModel<RobotEntity>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
       ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
 
       VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));
@@ -264,7 +264,7 @@ public class RenderRobot extends EntityRenderer<EntityRobot> {
   }
 
   @Override
-  public ResourceLocation getTextureLocation(EntityRobot robot) {
+  public ResourceLocation getTextureLocation(RobotEntity robot) {
     return robot.getTexture();
   }
 }

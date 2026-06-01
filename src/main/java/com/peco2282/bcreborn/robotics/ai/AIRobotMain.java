@@ -13,14 +13,14 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
 public class AIRobotMain extends AIRobot {
 
   private AIRobot overridingAI;
   private int rechargeCooldown;
 
-  public AIRobotMain(EntityRobotBase iRobot) {
+  public AIRobotMain(RobotEntityBase iRobot) {
     super(iRobot);
     rechargeCooldown = 0;
   }
@@ -32,13 +32,13 @@ public class AIRobotMain extends AIRobot {
 
   @Override
   public void preempt(AIRobot ai) {
-    if (robot.getEnergy() <= EntityRobotBase.SHUTDOWN_ENERGY
+    if (robot.getEnergy() <= RobotEntityBase.SHUTDOWN_ENERGY
       && (robot.getDockingStation() == null || !robot.getDockingStation().providesPower())) {
       if (!(ai instanceof AIRobotShutdown)) {
         BCLog.logger.info("Shutting down robot " + robot.toString() + " - no power");
         startDelegateAI(new AIRobotShutdown(robot));
       }
-    } else if (robot.getEnergy() < EntityRobotBase.SAFETY_ENERGY) {
+    } else if (robot.getEnergy() < RobotEntityBase.SAFETY_ENERGY) {
       if (!(ai instanceof AIRobotRecharge) && !(ai instanceof AIRobotShutdown)) {
         if (rechargeCooldown-- <= 0) {
           startDelegateAI(new AIRobotRecharge(robot));

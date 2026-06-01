@@ -11,20 +11,20 @@
  */
 package com.peco2282.bcreborn.common.gui.buttons;
 
-public class GuiToggleButton extends GuiBetterButton {
+public class ToggleButton extends BetterButton {
 
   public boolean active;
 
-  public GuiToggleButton(int id, int x, int y, String label, boolean active) {
+  public ToggleButton(int id, int x, int y, String label, boolean active) {
     this(id, x, y, 200, StandardButtonTextureSets.LARGE_BUTTON, label, active);
   }
 
-  public GuiToggleButton(int id, int x, int y, int width, String s, boolean active) {
+  public ToggleButton(int id, int x, int y, int width, String s, boolean active) {
     super(id, x, y, width, StandardButtonTextureSets.LARGE_BUTTON, s);
     this.active = active;
   }
 
-  public GuiToggleButton(int id, int x, int y, int width, IButtonTextureSet texture, String s, boolean active) {
+  public ToggleButton(int id, int x, int y, int width, IButtonTextureSet texture, String s, boolean active) {
     super(id, x, y, width, texture, s);
     this.active = active;
   }
