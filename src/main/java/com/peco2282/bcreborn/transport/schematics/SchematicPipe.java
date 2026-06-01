@@ -222,9 +222,7 @@ public class SchematicPipe extends SchematicTile {
   private ArrayList<ItemStack> computeItemDrop(PipeBlockEntity pipe) {
     ArrayList<ItemStack> list = new ArrayList<>();
     try {
-      Field propsField = PipeBlockEntity.class.getDeclaredField("sideProperties");
-      propsField.setAccessible(true);
-      PipeBlockEntity.SideProperties props = (PipeBlockEntity.SideProperties) propsField.get(pipe);
+      PipeBlockEntity.SideProperties props = pipe.sideProperties;
 
       for (PipePluggable pluggable : props.pluggables) {
         if (pluggable != null) {
