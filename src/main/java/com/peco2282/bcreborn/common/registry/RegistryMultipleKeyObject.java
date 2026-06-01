@@ -16,9 +16,11 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,17 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
     return new TwoKeys<>(key1s, key2s, nameMaker, registerer, constructor);
   }
 
+  public static <V, K1, K2> TwoKeys<V, K1, K2> two(
+    Collection<K1> key1s,                                           // Allow Key1 to be a collection
+    Collection<K2> key2s,                                           // Allow Key2 to be a collection
+    BiFunction<K1, K2, String> nameMaker,                           // Create registry name from key1 and key2
+    BiFunction<String, Supplier<V>, RegistryObject<V>> registerer,  // Registerer the object
+    BiFunction<K1, K2, V> constructor,                              // Constructor for the object
+    BiPredicate<K1, K2> isValid                                     // Predicate to check if the object is valid
+  ) {
+    return new TwoKeys<>(key1s, key2s, nameMaker, registerer, constructor, isValid);
+  }
+
   public static <V, K1, K2, K3> ThreeKeys<V, K1, K2, K3> three(
     Collection<K1> key1s,                                           // Allow Key1 to be a collection
     Collection<K2> key2s,                                           // Allow Key2 to be a collection
@@ -46,6 +59,9 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
   }
 
   // @formatter:on
+
+  public abstract List<RegistryObject<V>> getAll();
+
   public static class TwoKeys<V, K1, K2> extends RegistryMultipleKeyObject<V> {
     private final Collection<K1> key1s;
     private final Collection<K2> key2s;
@@ -63,6 +79,28 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
       for (K1 k1 : key1s) {
         var map2 = new ConcurrentHashMap<K2, RegistryObject<V>>();
         for (K2 k2 : key2s) {
+          String name = nameMaker.apply(k1, k2);
+          Supplier<V> supplier = () -> constructor.apply(k1, k2);
+          map2.put(k2, registerer.apply(name, supplier));
+        }
+        map.put(k1, map2);
+      }
+    }
+
+    public TwoKeys(
+      Collection<K1> key1s,
+      Collection<K2> key2s,
+      BiFunction<K1, K2, String> nameMaker,
+      BiFunction<String, Supplier<V>, RegistryObject<V>> registerer,
+      BiFunction<K1, K2, V> constructor,
+      BiPredicate<K1, K2> isValid
+    ) {
+      this.key1s = key1s;
+      this.key2s = key2s;
+      for (K1 k1 : key1s) {
+        var map2 = new ConcurrentHashMap<K2, RegistryObject<V>>();
+        for (K2 k2 : key2s) {
+          if (!isValid.test(k1, k2)) continue;
           String name = nameMaker.apply(k1, k2);
           Supplier<V> supplier = () -> constructor.apply(k1, k2);
           map2.put(k2, registerer.apply(name, supplier));
@@ -97,6 +135,11 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
         }
       }
       return Collections.unmodifiableMap(m);
+    }
+
+    @Override
+    public List<RegistryObject<V>> getAll() {
+      return map.values().stream().flatMap(m -> m.values().stream()).toList();
     }
   }
 
@@ -170,6 +213,11 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
         }
       }
       return Collections.unmodifiableMap(m);
+    }
+
+    @Override
+    public List<RegistryObject<V>> getAll() {
+      return map.values().stream().flatMap(m -> m.values().stream().flatMap(m2 -> m2.values().stream())).toList();
     }
   }
 }
