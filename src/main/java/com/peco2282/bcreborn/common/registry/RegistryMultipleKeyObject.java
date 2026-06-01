@@ -15,10 +15,12 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryObject<V>> {
   // @formatter:off
@@ -77,6 +79,25 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
     public RegistryObject<V> get(K1 key1, K2 key2) {
       return map.get(key1).get(key2);
     }
+
+    public Map<K1, Map<K2, RegistryObject<V>>> getMap() {
+      return Collections.unmodifiableMap(map);
+    }
+
+    public Map<K2, RegistryObject<V>> getMapByKey1(K1 key1) {
+      return Collections.unmodifiableMap(map.get(key1));
+    }
+
+    public Map<K1, RegistryObject<V>> getMapByKey2(K2 key2) {
+      var m = new ConcurrentHashMap<K1, RegistryObject<V>>();
+      for (var entry : map.entrySet()) {
+        var reg = entry.getValue().get(key2);
+        if (reg != null) {
+          m.put(entry.getKey(), reg);
+        }
+      }
+      return Collections.unmodifiableMap(m);
+    }
   }
 
   public static class ThreeKeys<V, K1, K2, K3> extends RegistryMultipleKeyObject<V> {
@@ -118,6 +139,37 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
 
     public RegistryObject<V> get(K1 key1, K2 key2, K3 key3) {
       return map.get(key1).get(key2).get(key3);
+    }
+
+    public Map<K1, Map<K2, Map<K3, RegistryObject<V>>>> getMap() {
+      return Collections.unmodifiableMap(map);
+    }
+
+    public Map<K2, Map<K3, RegistryObject<V>>> getMapByKey1(K1 key1) {
+      return Collections.unmodifiableMap(map.get(key1));
+    }
+
+    public Map<K1, Map<K3, RegistryObject<V>>> getMapByKey2(K2 key2) {
+      var m = new ConcurrentHashMap<K1, Map<K3, RegistryObject<V>>>();
+      for (var entry : map.entrySet()) {
+        var reg = entry.getValue().get(key2);
+        if (reg != null) {
+          m.put(entry.getKey(), reg);
+        }
+      }
+      return Collections.unmodifiableMap(m);
+    }
+
+    public Map<K3, Map<K1, RegistryObject<V>>> getMapByKey3(K3 key3) {
+      var m = new ConcurrentHashMap<K3, Map<K1, RegistryObject<V>>>();
+      for (var entry : map.entrySet()) {
+        for (var entry2 : entry.getValue().entrySet()) {
+          if (entry2.getValue().containsKey(key3)) {
+            m.computeIfAbsent(key3, k -> new ConcurrentHashMap<>()).put(entry.getKey(), entry2.getValue().get(key3));
+          }
+        }
+      }
+      return Collections.unmodifiableMap(m);
     }
   }
 }
