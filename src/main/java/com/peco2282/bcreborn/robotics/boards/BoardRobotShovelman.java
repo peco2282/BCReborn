@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotShovelman extends BoardRobotGenericBreakBlock {
 
-  public BoardRobotShovelman(EntityRobotBase iRobot) {
+  public BoardRobotShovelman(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

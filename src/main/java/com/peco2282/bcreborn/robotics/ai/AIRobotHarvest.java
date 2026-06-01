@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotHarvest extends AIRobot {
@@ -21,11 +21,11 @@ public class AIRobotHarvest extends AIRobot {
   private BlockIndex blockFound;
   private final int delay = 0;
 
-  public AIRobotHarvest(EntityRobotBase iRobot) {
+  public AIRobotHarvest(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotHarvest(EntityRobotBase iRobot, BlockIndex iBlockFound) {
+  public AIRobotHarvest(RobotEntityBase iRobot, BlockIndex iBlockFound) {
     super(iRobot);
     blockFound = iBlockFound;
   }

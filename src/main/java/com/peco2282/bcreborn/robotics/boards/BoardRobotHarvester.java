@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotHarvest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,11 +22,11 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotHarvester extends BoardRobotGenericSearchBlock {
 
-  public BoardRobotHarvester(EntityRobotBase iRobot) {
+  public BoardRobotHarvester(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public BoardRobotHarvester(EntityRobotBase iRobot, CompoundTag nbt) {
+  public BoardRobotHarvester(RobotEntityBase iRobot, CompoundTag nbt) {
     super(iRobot);
   }
 

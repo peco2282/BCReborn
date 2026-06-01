@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.builder.BuildingSlot;
@@ -37,7 +37,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
   private LinkedList<ItemStack> requirementsToLookFor;
   private int launchingDelay = 0;
 
-  public BoardRobotBuilder(EntityRobotBase iRobot) {
+  public BoardRobotBuilder(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
@@ -217,7 +217,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
   }
 
   private boolean hasEnoughEnergy() {
-    return robot.getEnergy() - currentBuildingSlot.getEnergyRequirement() > EntityRobotBase.SAFETY_ENERGY;
+    return robot.getEnergy() - currentBuildingSlot.getEnergyRequirement() > RobotEntityBase.SAFETY_ENERGY;
   }
 
 }

@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public final class TileBuffer {
+public final class BlockEntityBuffer {
 
   private final SafeTimeTracker tracker = new SafeTimeTracker(20, 5);
   private final Level world;
@@ -29,7 +29,7 @@ public final class TileBuffer {
   private Block block = null;
   private BlockEntity tile;
 
-  public TileBuffer(Level world, int x, int y, int z, boolean loadUnloaded) {
+  public BlockEntityBuffer(Level world, int x, int y, int z, boolean loadUnloaded) {
     this.world = world;
     this.x = x;
     this.y = y;
@@ -39,12 +39,12 @@ public final class TileBuffer {
     refresh();
   }
 
-  public static TileBuffer[] makeBuffer(Level world, int x, int y, int z, boolean loadUnloaded) {
-    TileBuffer[] buffer = new TileBuffer[6];
+  public static BlockEntityBuffer[] makeBuffer(Level world, int x, int y, int z, boolean loadUnloaded) {
+    BlockEntityBuffer[] buffer = new BlockEntityBuffer[6];
 
     for (int i = 0; i < 6; i++) {
       Direction d = Direction.from3DDataValue(i);
-      buffer[i] = new TileBuffer(world, x + d.getStepX(), y + d.getStepY(), z + d.getStepZ(), loadUnloaded);
+      buffer[i] = new BlockEntityBuffer(world, x + d.getStepX(), y + d.getStepY(), z + d.getStepZ(), loadUnloaded);
     }
 
     return buffer;

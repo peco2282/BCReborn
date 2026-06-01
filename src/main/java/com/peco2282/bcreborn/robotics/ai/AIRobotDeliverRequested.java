@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.inventory.filters.ArrayStackOrListFilter;
@@ -25,11 +25,11 @@ public class AIRobotDeliverRequested extends AIRobot {
 
   private StackRequest requested;
 
-  public AIRobotDeliverRequested(EntityRobotBase iRobot) {
+  public AIRobotDeliverRequested(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotDeliverRequested(EntityRobotBase robot, StackRequest request) {
+  public AIRobotDeliverRequested(RobotEntityBase robot, StackRequest request) {
     this(robot);
 
     requested = request;

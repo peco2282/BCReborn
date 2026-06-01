@@ -25,7 +25,7 @@ import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
 import com.peco2282.bcreborn.robotics.RobotUtils;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGoAndLinkToDock;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -62,7 +62,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
 
     for (DockingStation station : stations) {
       if (station.robotTaking() != null) {
-        EntityRobot robot = (EntityRobot) station.robotTaking();
+        RobotEntity robot = (RobotEntity) station.robotTaking();
         Object ai = robot.getOverridingAI();
 
         if (ai != null) {

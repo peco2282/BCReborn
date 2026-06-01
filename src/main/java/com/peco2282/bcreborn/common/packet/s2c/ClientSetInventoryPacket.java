@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -34,7 +34,7 @@ public record ClientSetInventoryPacket(int entityId, short slot, ItemStack stack
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     supplier.get().enqueueWork(() -> {
-      EntityRobot robot = (EntityRobot) supplier.get().getSender().serverLevel().getEntity(entityId);
+      RobotEntity robot = (RobotEntity) supplier.get().getSender().serverLevel().getEntity(entityId);
       if (robot != null) {
         robot.clientSetInventory(slot, stack);
       }

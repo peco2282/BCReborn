@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
 import net.minecraft.nbt.CompoundTag;
@@ -28,11 +28,11 @@ public class AIRobotSearchBlock extends AIRobot {
   public LinkedList<BlockIndex> path;
   private Iterator<BlockIndex> blockIter;
 
-  public AIRobotSearchBlock(EntityRobotBase iRobot) {
+  public AIRobotSearchBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchBlock(EntityRobotBase iRobot, boolean random, IBlockFilter iFilter,
+  public AIRobotSearchBlock(RobotEntityBase iRobot, boolean random, IBlockFilter iFilter,
                             double iMaxDistanceToEnd) {
     super(iRobot);
 

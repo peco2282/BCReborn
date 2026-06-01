@@ -21,11 +21,11 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-public abstract class GuiAdvancedInterface<M extends BuildCraftMenu<M>> extends BuildCraftScreen<M> {
+public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> extends BuildCraftScreen<M> {
 
   public ArrayList<AdvancedSlot> slots = new ArrayList<>();
 
-  public GuiAdvancedInterface(M container, Inventory inventory, Component texture) {
+  public AdvancedInterfaceScreen(M container, Inventory inventory, Component texture) {
     super(container, inventory, texture);
   }
 

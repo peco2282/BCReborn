@@ -26,7 +26,7 @@ public class FluidSlot extends AdvancedSlot {
   public Fluid fluid;
   public int colorRenderCache;
 
-  public FluidSlot(GuiAdvancedInterface<?> gui, int x, int y) {
+  public FluidSlot(AdvancedInterfaceScreen<?> gui, int x, int y) {
     super(gui, x, y);
   }
 

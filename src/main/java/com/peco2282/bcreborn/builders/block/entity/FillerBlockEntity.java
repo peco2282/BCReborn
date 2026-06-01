@@ -17,11 +17,11 @@ import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.menu.FillerMenu;
 import com.peco2282.bcreborn.common.Box;
-import com.peco2282.bcreborn.common.ContainerBlockEntity;
+import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.SimpleInventory;
-import com.peco2282.bcreborn.common.block.TileBuffer;
+import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
-import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.common.builder.patterns.FillerPattern;
 import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.common.internal.IBoxesProvider;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvider, ContainerBlockEntity, ILEDProvider, IAreaProvider, IBoxProvider, IBoxesProvider, IDropControlInventory {
+public class FillerBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, IBlockEntityContainer, ILEDProvider, IAreaProvider, IBoxProvider, IBoxesProvider, IDropControlInventory {
   public static final int POWER_ACTIVATION = 25;
   private final SimpleInventory inv = new SimpleInventory(28, "Filler", 64);
   public int currentPattern = 0;
@@ -70,7 +70,7 @@ public class FillerBlockEntity extends TileAbstractBuilder implements MenuProvid
   @Override
   public void initialize() {
     super.initialize();
-    cache = TileBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
+    cache = BlockEntityBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
     if (!box.isInitialized()) {
       for (Direction dir : Direction.values()) {
         BlockEntity tile = level.getBlockEntity(worldPosition.relative(dir));

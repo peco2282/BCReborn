@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +26,7 @@ public class AIRobotSearchAndGotoBlock extends AIRobot {
   private boolean random;
   private double maxDistanceToEnd;
 
-  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot) {
+  public AIRobotSearchAndGotoBlock(RobotEntityBase iRobot) {
     super(iRobot);
 
     blockFound = null;
@@ -35,12 +35,12 @@ public class AIRobotSearchAndGotoBlock extends AIRobot {
     filter = null;
   }
 
-  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
+  public AIRobotSearchAndGotoBlock(RobotEntityBase iRobot, boolean iRandom,
                                    IBlockFilter iFilter) {
     this(iRobot, iRandom, iFilter, 0);
   }
 
-  public AIRobotSearchAndGotoBlock(EntityRobotBase iRobot, boolean iRandom,
+  public AIRobotSearchAndGotoBlock(RobotEntityBase iRobot, boolean iRandom,
                                    IBlockFilter iFilter, double iMaxDistanceToEnd) {
     this(iRobot);
 

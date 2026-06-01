@@ -13,13 +13,13 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
 import net.minecraft.world.entity.item.ItemEntity;
 
 public class AIRobotDisposeItems extends AIRobot {
 
-  public AIRobotDisposeItems(EntityRobotBase iRobot) {
+  public AIRobotDisposeItems(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

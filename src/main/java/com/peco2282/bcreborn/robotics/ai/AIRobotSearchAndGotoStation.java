@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.IStationFilter;
 
 public class AIRobotSearchAndGotoStation extends AIRobot {
@@ -21,11 +21,11 @@ public class AIRobotSearchAndGotoStation extends AIRobot {
   private IStationFilter filter;
   private IZone zone;
 
-  public AIRobotSearchAndGotoStation(EntityRobotBase iRobot) {
+  public AIRobotSearchAndGotoStation(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchAndGotoStation(EntityRobotBase iRobot, IStationFilter iFilter, IZone iZone) {
+  public AIRobotSearchAndGotoStation(RobotEntityBase iRobot, IStationFilter iFilter, IZone iZone) {
     this(iRobot);
 
     filter = iFilter;

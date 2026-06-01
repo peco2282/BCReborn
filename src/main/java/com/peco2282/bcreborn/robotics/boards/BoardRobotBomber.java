@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class BoardRobotBomber extends RedstoneBoardRobot {
 
   private final int flyingHeight = 20;
 
-  public BoardRobotBomber(EntityRobotBase iRobot) {
+  public BoardRobotBomber(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

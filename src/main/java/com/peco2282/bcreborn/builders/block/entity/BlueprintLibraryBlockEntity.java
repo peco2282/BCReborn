@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.builders.block.entity;
 import com.peco2282.bcreborn.api.library.LibraryTypeHandler;
 import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.menu.BlueprintLibraryMenu;
-import com.peco2282.bcreborn.common.ContainerBlockEntity;
+import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implements ContainerBlockEntity {
+public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implements IBlockEntityContainer {
   public static final int CHUNK_SIZE = 16384;
   private static final int PROGRESS_TIME = 100;
   public SimpleInventory inv = new SimpleInventory(4, "Electronic Library", 1);

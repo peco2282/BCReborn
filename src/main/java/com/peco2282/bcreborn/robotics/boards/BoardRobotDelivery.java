@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotDisposeItems;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +28,7 @@ public class BoardRobotDelivery extends RedstoneBoardRobot {
 
   // private StackRequest currentRequest = null; // TODO: Implement StackRequest
 
-  public BoardRobotDelivery(EntityRobotBase iRobot) {
+  public BoardRobotDelivery(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

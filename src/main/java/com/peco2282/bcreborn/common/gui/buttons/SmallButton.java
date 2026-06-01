@@ -15,13 +15,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiButtonSmall extends GuiBetterButton {
+public class SmallButton extends BetterButton {
 
-  public GuiButtonSmall(int i, int x, int y, String s) {
+  public SmallButton(int i, int x, int y, String s) {
     this(i, x, y, 200, s);
   }
 
-  public GuiButtonSmall(int i, int x, int y, int w, String s) {
+  public SmallButton(int i, int x, int y, int w, String s) {
     super(i, x, y, w, StandardButtonTextureSets.SMALL_BUTTON, s);
   }
 }

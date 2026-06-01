@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
 import com.peco2282.bcreborn.builders.blueprints.RecursiveBlueprintReader;
 import com.peco2282.bcreborn.builders.menu.ArchitectMenu;
 import com.peco2282.bcreborn.common.Box;
-import com.peco2282.bcreborn.common.ContainerBlockEntity;
+import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, ContainerBlockEntity {
+public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, IBlockEntityContainer {
 
   public String currentAuthorName = "";
   public Mode mode = Mode.NONE;

@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilterTool;
 import net.minecraft.world.Container;
@@ -23,11 +23,11 @@ public class AIRobotFetchAndEquipItemStack extends AIRobot {
   private IStackFilter filter;
   private int delay = 0;
 
-  public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot) {
+  public AIRobotFetchAndEquipItemStack(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotFetchAndEquipItemStack(EntityRobotBase iRobot, IStackFilter iFilter) {
+  public AIRobotFetchAndEquipItemStack(RobotEntityBase iRobot, IStackFilter iFilter) {
     this(iRobot);
 
     this.filter = iFilter;

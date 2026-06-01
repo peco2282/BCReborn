@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchItem;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
@@ -27,7 +27,7 @@ public class BoardRobotPicker extends RedstoneBoardRobot {
 
   public static Set<Integer> targettedItems = new HashSet<>();
 
-  public BoardRobotPicker(EntityRobotBase iRobot) {
+  public BoardRobotPicker(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

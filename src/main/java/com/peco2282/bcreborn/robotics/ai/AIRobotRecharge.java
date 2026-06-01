@@ -13,12 +13,11 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
-import com.peco2282.bcreborn.robotics.IStationFilter;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
 public class AIRobotRecharge extends AIRobot {
 
-  public AIRobotRecharge(EntityRobotBase iRobot) {
+  public AIRobotRecharge(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
@@ -37,7 +36,7 @@ public class AIRobotRecharge extends AIRobot {
 
   @Override
   public void update() {
-    if (robot.getEnergy() >= EntityRobotBase.MAX_ENERGY - 500) {
+    if (robot.getEnergy() >= RobotEntityBase.MAX_ENERGY - 500) {
       terminate();
     }
   }

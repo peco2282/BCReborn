@@ -11,14 +11,14 @@
  */
 package com.peco2282.bcreborn.api.boards;
 
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<EntityRobotBase> {
+public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<RobotEntityBase> {
 
   @Override
-  public RedstoneBoardRobot create(CompoundTag nbt, EntityRobotBase robot) {
+  public RedstoneBoardRobot create(CompoundTag nbt, RobotEntityBase robot) {
     return create(robot);
   }
 

@@ -26,7 +26,7 @@ public abstract class AdvancedSlot {
   public BuildCraftScreen<?> gui;
   public boolean drawBackround = false;
 
-  public AdvancedSlot(GuiAdvancedInterface<?> gui, int x, int y) {
+  public AdvancedSlot(AdvancedInterfaceScreen<?> gui, int x, int y) {
     this.x = x;
     this.y = y;
     this.gui = gui;
@@ -36,7 +36,7 @@ public abstract class AdvancedSlot {
     return null;
   }
 
-  public final void drawTooltip(GuiAdvancedInterface<?> gui, GuiGraphics guiGraphics, int x, int y) {
+  public final void drawTooltip(AdvancedInterfaceScreen<?> gui, GuiGraphics guiGraphics, int x, int y) {
     String desc = getDescription();
     if (desc != null) {
       gui.drawTooltip(guiGraphics, desc, x, y);
@@ -90,7 +90,7 @@ public abstract class AdvancedSlot {
   public void drawStack(GuiGraphics guiGraphics, ItemStack item) {
     int cornerX = (gui.width - gui.getXSize()) / 2;
     int cornerY = (gui.height - gui.getYSize()) / 2;
-    ((GuiAdvancedInterface<?>) gui).drawStack(guiGraphics, item, cornerX + x, cornerY + y);
+    ((AdvancedInterfaceScreen<?>) gui).drawStack(guiGraphics, item, cornerX + x, cornerY + y);
   }
 
   public boolean shouldDrawHighlight() {

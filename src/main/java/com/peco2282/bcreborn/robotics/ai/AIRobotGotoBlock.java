@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IterableAlgorithmRunner;
 import com.peco2282.bcreborn.common.utils.PathFinding;
 import net.minecraft.nbt.CompoundTag;
@@ -33,24 +33,24 @@ public class AIRobotGotoBlock extends AIRobotGoto {
   private BlockIndex lastBlockInPath;
   private boolean loadedFromNBT;
 
-  public AIRobotGotoBlock(EntityRobotBase iRobot) {
+  public AIRobotGotoBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotGotoBlock(EntityRobotBase robot, int x, int y, int z) {
+  public AIRobotGotoBlock(RobotEntityBase robot, int x, int y, int z) {
     this(robot);
     finalX = x;
     finalY = y;
     finalZ = z;
   }
 
-  public AIRobotGotoBlock(EntityRobotBase robot, int x, int y, int z, double iMaxDistance) {
+  public AIRobotGotoBlock(RobotEntityBase robot, int x, int y, int z, double iMaxDistance) {
     this(robot, x, y, z);
 
     maxDistance = iMaxDistance;
   }
 
-  public AIRobotGotoBlock(EntityRobotBase robot, LinkedList<BlockIndex> iPath) {
+  public AIRobotGotoBlock(RobotEntityBase robot, LinkedList<BlockIndex> iPath) {
     this(robot);
     path = iPath;
     finalX = path.getLast().x;

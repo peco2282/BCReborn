@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -25,11 +25,11 @@ public class AIRobotLoad extends AIRobot {
   private int quantity;
   private int waitedCycles = 0;
 
-  public AIRobotLoad(EntityRobotBase iRobot) {
+  public AIRobotLoad(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotLoad(EntityRobotBase iRobot, IStackFilter iFilter, int iQuantity) {
+  public AIRobotLoad(RobotEntityBase iRobot, IStackFilter iFilter, int iQuantity) {
     super(iRobot);
 
     filter = iFilter;
@@ -63,7 +63,7 @@ public class AIRobotLoad extends AIRobot {
     return ItemStack.EMPTY;
   }
 
-  public static boolean load(EntityRobotBase robot, DockingStation station, IStackFilter filter,
+  public static boolean load(RobotEntityBase robot, DockingStation station, IStackFilter filter,
                              int quantity, boolean doLoad) {
     if (station == null) {
       return false;

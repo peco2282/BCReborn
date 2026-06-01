@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 
 import javax.annotation.Nullable;
 
-public interface ContainerBlockEntity extends Container, MenuProvider, Nameable {
+public interface IBlockEntityContainer extends Container, MenuProvider, Nameable {
   @Nullable
   @Override
   default AbstractContainerMenu createMenu(int p_58641_, Inventory p_58642_, Player p_58643_) {

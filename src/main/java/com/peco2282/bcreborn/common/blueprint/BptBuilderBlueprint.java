@@ -291,7 +291,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   @Override
-  public BuildingSlot getNextBlock(Level world, TileAbstractBuilder inv) {
+  public BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
     if (getBuildListCount() != 0) {
       BuildingSlot slot = internalGetNextBlock(world, inv);
       checkDone();
@@ -308,7 +308,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
     return null;
   }
 
-  protected boolean readyForSlotLookup(TileAbstractBuilder builder) {
+  protected boolean readyForSlotLookup(AbstractBuilderBlockEntity builder) {
     return builder == null || builder.energyAvailable() >= BuilderAPI.BREAK_ENERGY;
   }
 
@@ -317,7 +317,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
    * be verified and performed. Otherwise, the next possible building slot is
    * returned, possibly for reservation, with no building.
    */
-  private BuildingSlot internalGetNextBlock(Level world, TileAbstractBuilder builder) {
+  private BuildingSlot internalGetNextBlock(Level world, AbstractBuilderBlockEntity builder) {
     if (!readyForSlotLookup(builder)) {
       return null;
     }
@@ -451,7 +451,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   // TODO: Remove recomputeNeededItems() and replace with something more efficient
-  private BuildingSlot internalGetNextEntity(Level world, TileAbstractBuilder builder) {
+  private BuildingSlot internalGetNextEntity(Level world, AbstractBuilderBlockEntity builder) {
     Iterator<BuildingSlotEntity> it = entityList.iterator();
 
     while (it.hasNext()) {
@@ -477,7 +477,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
     return null;
   }
 
-  public boolean checkRequirements(TileAbstractBuilder builder, Schematic slot) {
+  public boolean checkRequirements(AbstractBuilderBlockEntity builder, Schematic slot) {
     LinkedList<ItemStack> tmpReq = new LinkedList<>();
 
     try {
@@ -587,8 +587,8 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       Fluid fluid = null;
 
       for (IInvSlot slotInv : InventoryIterator.getIterable(inv, Direction.UP)) {
-        if (inv instanceof TileAbstractBuilder &&
-          !((TileAbstractBuilder) inv).isBuildingMaterialSlot(slotInv.getIndex())) {
+        if (inv instanceof AbstractBuilderBlockEntity &&
+          !((AbstractBuilderBlockEntity) inv).isBuildingMaterialSlot(slotInv.getIndex())) {
           continue;
         }
 

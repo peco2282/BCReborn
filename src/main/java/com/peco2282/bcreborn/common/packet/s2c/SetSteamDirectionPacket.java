@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -43,7 +43,7 @@ public record SetSteamDirectionPacket(
       return;
     }
 
-    EntityRobot robot = (EntityRobot) context.getSender().serverLevel().getEntity(entityId);
+    RobotEntity robot = (RobotEntity) context.getSender().serverLevel().getEntity(entityId);
     if (robot != null) {
       robot.setSteamDirection(x, y, z);
     }

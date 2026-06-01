@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,11 +23,11 @@ public class AIRobotGoAndLinkToDock extends AIRobot {
 
   private DockingStation station;
 
-  public AIRobotGoAndLinkToDock(EntityRobotBase iRobot) {
+  public AIRobotGoAndLinkToDock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotGoAndLinkToDock(EntityRobotBase iRobot, DockingStation iStation) {
+  public AIRobotGoAndLinkToDock(RobotEntityBase iRobot, DockingStation iStation) {
     this(iRobot);
 
     station = iStation;

@@ -35,7 +35,7 @@ import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.item.WrenchItem;
-import com.peco2282.bcreborn.robotics.EntityTypeRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RobotRegistry;
 import com.peco2282.bcreborn.robotics.ai.AIRobotMain;
 import com.peco2282.bcreborn.robotics.ai.AIRobotShutdown;
@@ -95,32 +95,32 @@ import java.util.*;
 import java.util.function.Predicate;
 
 
-public class EntityRobot extends EntityRobotBase implements
+public class RobotEntity extends RobotEntityBase implements
   IEntityAdditionalSpawnData, Container, IFluidHandler, IDebuggable {
 
   public static final ResourceLocation ROBOT_BASE = BCRebornRobotics.location("textures/entities/robot_base.png");
   public static final int MAX_WEARABLES = 8;
   public static final int TRANSFER_INV_SLOTS = 4;
   private static final EntityDataAccessor<Float> DATA_LASER_X =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Float> DATA_LASER_Y =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Float> DATA_LASER_Z =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Byte> DATA_LASER_VISIBLE =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.BYTE);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.BYTE);
   private static final EntityDataAccessor<String> DATA_BOARD_ID =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.STRING);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<Float> DATA_ITEM_ANGLE_1 =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Float> DATA_ITEM_ANGLE_2 =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.FLOAT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Integer> DATA_ENERGY_SPEND_PER_CYCLE =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.INT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.INT);
   private static final EntityDataAccessor<Byte> DATA_ACTIVE =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.BYTE);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.BYTE);
   private static final EntityDataAccessor<Integer> DATA_ENERGY =
-    SynchedEntityData.defineId(EntityRobot.class, EntityDataSerializers.INT);
+    SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.INT);
   private static final Set<Integer> blacklistedItemsForUpdate = Sets.newHashSet();
 
   public LaserData laser = new LaserData();
@@ -162,7 +162,7 @@ public class EntityRobot extends EntityRobotBase implements
 
   private boolean isActiveClient = false;
 
-  private long robotId = EntityRobotBase.NULL_ROBOT_ID;
+  private long robotId = RobotEntityBase.NULL_ROBOT_ID;
 
   private int energySpendPerCycle = 0;
   private int ticksCharging = 0;
@@ -171,8 +171,8 @@ public class EntityRobot extends EntityRobotBase implements
   private int steamDy = -1;
   private int steamDz = 0;
 
-  public EntityRobot(Level world, RedstoneBoardRobotNBT boardNBT) {
-    this(EntityTypeRobotics.ROBOT.get(), world);
+  public RobotEntity(Level world, RedstoneBoardRobotNBT boardNBT) {
+    this(RoboticsEntityTypes.ROBOT.get(), world);
 
     board = boardNBT.create(this);
     entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID());
@@ -184,7 +184,7 @@ public class EntityRobot extends EntityRobotBase implements
   }
 
 
-  public EntityRobot(EntityType<EntityRobot> type, Level world) {
+  public RobotEntity(EntityType<RobotEntity> type, Level world) {
     super(type, world);
     setDeltaMovement(0, 0, 0);
 
@@ -412,7 +412,7 @@ public class EntityRobot extends EntityRobotBase implements
 
   @OnlyIn(Dist.CLIENT)
   private void spawnEnergyFX() {
-    Minecraft.getInstance().particleEngine.add(new EntityRobotEnergyParticle(
+    Minecraft.getInstance().particleEngine.add(new RobotEnergyParticle(
       (ClientLevel) level(),
       getX() + steamDx * 0.25, getY() + steamDy * 0.25, getZ() + steamDz * 0.25,
       steamDx * 0.05, steamDy * 0.05, steamDz * 0.05,

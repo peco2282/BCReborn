@@ -12,11 +12,11 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
 public class AIRobotGotoStationAndUnloadFluids extends AIRobot {
 
-  public AIRobotGotoStationAndUnloadFluids(EntityRobotBase iRobot) {
+  public AIRobotGotoStationAndUnloadFluids(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

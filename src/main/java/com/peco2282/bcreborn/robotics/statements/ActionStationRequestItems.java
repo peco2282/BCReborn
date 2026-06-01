@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.StatementParameterItemStackExact;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,6 +52,6 @@ public class ActionStationRequestItems extends ActionStationInputItems {
 
   @Override
   public IStatementParameter createParameter(int index) {
-    return new StatementParameterItemStackExact(EntityRobot.TRANSFER_INV_SLOTS);
+    return new StatementParameterItemStackExact(RobotEntity.TRANSFER_INV_SLOTS);
   }
 }

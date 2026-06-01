@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.builder;
 
-import com.peco2282.bcreborn.common.ContainerBlockEntity;
+import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
@@ -30,11 +30,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TileAbstractBuilder extends BuildCraftBlockEntity implements IBuildingItemsProvider, ContainerBlockEntity {
+public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity implements IBuildingItemsProvider, IBlockEntityContainer {
 
   public List<RequirementItemStack> requiredToBuild = new ArrayList<>();
 
-  public TileAbstractBuilder(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+  public AbstractBuilderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
   }
 

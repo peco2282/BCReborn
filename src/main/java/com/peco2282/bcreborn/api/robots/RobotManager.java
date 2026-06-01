@@ -55,7 +55,7 @@ public abstract class RobotManager {
       LOGGER.info("Overriding {} with {}", aiRobotsByNames.get(name).getName(), aiRobot.getName());
     }
     try {
-      aiRobot.getConstructor(EntityRobotBase.class);
+      aiRobot.getConstructor(RobotEntityBase.class);
     } catch (NoSuchMethodException e) {
       throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load constructor! This is a bug!");
     }

@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
 import net.minecraft.core.Direction;
@@ -24,11 +24,11 @@ public class AIRobotUnload extends AIRobot {
 
   private int waitedCycles = 0;
 
-  public AIRobotUnload(EntityRobotBase iRobot) {
+  public AIRobotUnload(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public static boolean unload(EntityRobotBase robot, DockingStation station, boolean doUnload) {
+  public static boolean unload(RobotEntityBase robot, DockingStation station, boolean doUnload) {
     if (station == null) {
       return false;
     }

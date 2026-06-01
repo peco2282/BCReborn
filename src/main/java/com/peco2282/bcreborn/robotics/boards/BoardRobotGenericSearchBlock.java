@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
@@ -36,7 +36,7 @@ public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
   private BlockIndex blockFound;
   private final ArrayList<Block> blockFilter = new ArrayList<>();
 
-  public BoardRobotGenericSearchBlock(EntityRobotBase iRobot) {
+  public BoardRobotGenericSearchBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

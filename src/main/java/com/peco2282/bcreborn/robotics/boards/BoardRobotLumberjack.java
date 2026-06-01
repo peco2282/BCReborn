@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
@@ -22,11 +22,11 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotLumberjack extends BoardRobotGenericBreakBlock {
 
-  public BoardRobotLumberjack(EntityRobotBase iRobot) {
+  public BoardRobotLumberjack(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public BoardRobotLumberjack(EntityRobotBase iRobot, CompoundTag nbt) {
+  public BoardRobotLumberjack(RobotEntityBase iRobot, CompoundTag nbt) {
     super(iRobot);
   }
 

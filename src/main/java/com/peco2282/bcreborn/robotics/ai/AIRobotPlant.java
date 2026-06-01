@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
@@ -27,11 +27,11 @@ public class AIRobotPlant extends AIRobot {
   private BlockIndex blockFound;
   private int delay = 0;
 
-  public AIRobotPlant(EntityRobotBase iRobot) {
+  public AIRobotPlant(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotPlant(EntityRobotBase iRobot, BlockIndex iBlockFound) {
+  public AIRobotPlant(RobotEntityBase iRobot, BlockIndex iBlockFound) {
     this(iRobot);
 
     blockFound = iBlockFound;

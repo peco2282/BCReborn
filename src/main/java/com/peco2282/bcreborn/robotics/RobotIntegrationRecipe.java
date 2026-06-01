@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +67,7 @@ public class RobotIntegrationRecipe {
 
     int energy = RobotItem.getEnergy(input);
     if (energy == 0) {
-      energy = EntityRobotBase.SAFETY_ENERGY;
+      energy = RobotEntityBase.SAFETY_ENERGY;
     }
     return RobotItem.createRobotStack(boardNBT, energy);
   }

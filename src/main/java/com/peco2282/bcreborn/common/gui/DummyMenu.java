@@ -21,8 +21,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ContainerDummy extends BuildCraftMenu<ContainerDummy> {
-  public ContainerDummy(@Nullable MenuType<ContainerDummy> p_38851_, int p_38852_, Inventory p_38853_) {
+public class DummyMenu extends BuildCraftMenu<DummyMenu> {
+  public DummyMenu(@Nullable MenuType<DummyMenu> p_38851_, int p_38852_, Inventory p_38853_) {
     super(p_38851_, p_38852_, p_38853_);
   }
 

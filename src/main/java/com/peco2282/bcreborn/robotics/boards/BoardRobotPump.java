@@ -17,7 +17,7 @@ import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnloadFluids;
@@ -31,7 +31,7 @@ public class BoardRobotPump extends RedstoneBoardRobot {
 
   private BlockIndex blockFound;
 
-  public BoardRobotPump(EntityRobotBase iRobot) {
+  public BoardRobotPump(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

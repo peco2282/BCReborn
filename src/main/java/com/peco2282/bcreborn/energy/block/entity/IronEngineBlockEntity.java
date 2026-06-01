@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class IronEngineBlockEntity extends ContainerEngineBlockEntity<IronEngineBlockEntity> implements IFluidHandler {
+public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngineBlockEntity> implements IFluidHandler {
 
   // --- 暫定・内部状態 ---
   private int burnTime = 0;

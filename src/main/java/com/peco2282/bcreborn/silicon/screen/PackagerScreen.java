@@ -20,11 +20,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class GuiPackager extends BuildCraftScreen<PackagerMenu> {
+public class PackagerScreen extends BuildCraftScreen<PackagerMenu> {
 
   public static final ResourceLocation TEXTURE = BCRebornSilicon.location("textures/gui/packager.png");
 
-  public GuiPackager(PackagerMenu container, Inventory inventory, Component title) {
+  public PackagerScreen(PackagerMenu container, Inventory inventory, Component title) {
     super(container, inventory, title);
     PackagerBlockEntity bench = (PackagerBlockEntity) container.getSlot(0).container; // 暫定的に。実際にはContainerが保持
     this.imageWidth = 176;

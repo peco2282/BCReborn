@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
@@ -50,7 +50,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
 
     Constructor<? extends RedstoneBoardRobot> boardInitLocal;
     try {
-      boardInitLocal = board.getConstructor(EntityRobotBase.class);
+      boardInitLocal = board.getConstructor(RobotEntityBase.class);
     } catch (Exception e) {
       try {
         boardInitLocal = board.getConstructor(Object.class);

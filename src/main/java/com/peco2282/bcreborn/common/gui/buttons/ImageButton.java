@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.gui.buttons;
 
 
-import com.peco2282.bcreborn.common.gui.GuiTools;
+import com.peco2282.bcreborn.common.gui.ScreenUtils;
 import com.peco2282.bcreborn.common.gui.tooltips.IToolTipProvider;
 import com.peco2282.bcreborn.common.gui.tooltips.ToolTip;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 
 @OnlyIn(Dist.CLIENT)
-public class GuiImageButton extends Button implements IButtonClickEventTrigger, IToolTipProvider {
+public class ImageButton extends Button implements IButtonClickEventTrigger, IToolTipProvider {
   public final int id;
   private final int size, u, v, baseU, baseV;
   private final ResourceLocation texture;
@@ -34,12 +34,12 @@ public class GuiImageButton extends Button implements IButtonClickEventTrigger, 
   private boolean active = false;
   private ToolTip toolTip;
 
-  public GuiImageButton(int id, int x, int y, int size, ResourceLocation texture, int u, int v) {
+  public ImageButton(int id, int x, int y, int size, ResourceLocation texture, int u, int v) {
     this(id, x, y, size, texture, 0, 0, u, v);
   }
 
-  public GuiImageButton(int id, int x, int y, int size, ResourceLocation texture, int baseU, int baseV, int u, int v) {
-    super(x, y, size, size, Component.literal(""), GuiTools.EMPTY_PRESS, GuiTools.EMPTY_NARRATION);
+  public ImageButton(int id, int x, int y, int size, ResourceLocation texture, int baseU, int baseV, int u, int v) {
+    super(x, y, size, size, Component.literal(""), ScreenUtils.EMPTY_PRESS, ScreenUtils.EMPTY_NARRATION);
     this.id = id;
     this.size = size;
     this.u = u;
@@ -117,7 +117,7 @@ public class GuiImageButton extends Button implements IButtonClickEventTrigger, 
     return toolTip;
   }
 
-  public GuiImageButton setToolTip(ToolTip tips) {
+  public ImageButton setToolTip(ToolTip tips) {
     this.toolTip = tips;
     return this;
   }

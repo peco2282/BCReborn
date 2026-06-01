@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IEntityFilter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -28,11 +28,11 @@ public class AIRobotSearchEntity extends AIRobot {
   private IZone zone;
   private IEntityFilter filter;
 
-  public AIRobotSearchEntity(EntityRobotBase iRobot) {
+  public AIRobotSearchEntity(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchEntity(EntityRobotBase iRobot, IEntityFilter iFilter, float iMaxRange, IZone iZone) {
+  public AIRobotSearchEntity(RobotEntityBase iRobot, IEntityFilter iFilter, float iMaxRange, IZone iZone) {
     this(iRobot);
 
     maxRange = iMaxRange;

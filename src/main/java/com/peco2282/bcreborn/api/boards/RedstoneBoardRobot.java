@@ -12,13 +12,13 @@
 package com.peco2282.bcreborn.api.boards;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
-public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoard<EntityRobotBase> {
+public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoard<RobotEntityBase> {
 
-  protected final EntityRobotBase robot;
+  protected final RobotEntityBase robot;
 
-  public RedstoneBoardRobot(EntityRobotBase robot) {
+  public RedstoneBoardRobot(RobotEntityBase robot) {
     super(robot);
     this.robot = robot;
   }
@@ -27,7 +27,7 @@ public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoa
   public abstract RedstoneBoardRobotNBT getNBTHandler();
 
   @Override
-  public final void updateBoard(EntityRobotBase container) {
+  public final void updateBoard(RobotEntityBase container) {
 
   }
 

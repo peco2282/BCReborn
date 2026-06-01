@@ -22,7 +22,7 @@ public class IInventorySlot extends AdvancedSlot {
   private final Container tile;
   private final int slot;
 
-  public IInventorySlot(GuiAdvancedInterface<?> gui, int x, int y, Container tile, int slot) {
+  public IInventorySlot(AdvancedInterfaceScreen<?> gui, int x, int y, Container tile, int slot) {
     super(gui, x, y);
     this.tile = tile;
     this.slot = slot;

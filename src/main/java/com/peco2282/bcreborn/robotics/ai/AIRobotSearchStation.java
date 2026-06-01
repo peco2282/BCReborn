@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.IStationFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationForbidRobot;
 
@@ -24,11 +24,11 @@ public class AIRobotSearchStation extends AIRobot {
   private IStationFilter filter;
   private IZone zone;
 
-  public AIRobotSearchStation(EntityRobotBase iRobot) {
+  public AIRobotSearchStation(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchStation(EntityRobotBase iRobot, IStationFilter iFilter, IZone iZone) {
+  public AIRobotSearchStation(RobotEntityBase iRobot, IStationFilter iFilter, IZone iZone) {
     this(iRobot);
 
     filter = iFilter;

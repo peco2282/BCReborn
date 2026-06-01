@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -23,11 +23,11 @@ public class AIRobotPumpBlock extends AIRobot {
   private BlockIndex blockToPump;
   private long waited = 0;
 
-  public AIRobotPumpBlock(EntityRobotBase iRobot) {
+  public AIRobotPumpBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotPumpBlock(EntityRobotBase iRobot, BlockIndex iBlockToPump) {
+  public AIRobotPumpBlock(RobotEntityBase iRobot, BlockIndex iBlockToPump) {
     this(iRobot);
 
     blockToPump = iBlockToPump;

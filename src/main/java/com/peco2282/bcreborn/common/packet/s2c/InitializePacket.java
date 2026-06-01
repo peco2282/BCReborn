@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.entity.EntityRobot;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,7 +55,7 @@ public record InitializePacket(
       }
 
       // 目的の Entity 型に絞る
-      if (entity instanceof EntityRobot robot) {
+      if (entity instanceof RobotEntity robot) {
         robot.itemInUse = itemInUse;
         robot.itemActive = itemActive;
         robot.doInitialize(sender);

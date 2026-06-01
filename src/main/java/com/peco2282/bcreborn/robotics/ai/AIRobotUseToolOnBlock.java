@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,11 +27,11 @@ public class AIRobotUseToolOnBlock extends AIRobot {
   private BlockIndex useToBlock;
   private int useCycles = 0;
 
-  public AIRobotUseToolOnBlock(EntityRobotBase iRobot) {
+  public AIRobotUseToolOnBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotUseToolOnBlock(EntityRobotBase iRobot, BlockIndex index) {
+  public AIRobotUseToolOnBlock(RobotEntityBase iRobot, BlockIndex index) {
     this(iRobot);
 
     useToBlock = index;

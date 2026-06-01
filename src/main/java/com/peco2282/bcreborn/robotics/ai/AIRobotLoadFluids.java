@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationProvideFluids;
@@ -27,18 +27,18 @@ public class AIRobotLoadFluids extends AIRobot {
   private int waitedCycles = 0;
   private IFluidFilter filter;
 
-  public AIRobotLoadFluids(EntityRobotBase iRobot) {
+  public AIRobotLoadFluids(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotLoadFluids(EntityRobotBase iRobot, IFluidFilter iFilter) {
+  public AIRobotLoadFluids(RobotEntityBase iRobot, IFluidFilter iFilter) {
     this(iRobot);
 
     filter = iFilter;
     setSuccess(false);
   }
 
-  public static int load(EntityRobotBase robot, DockingStation station, IFluidFilter filter,
+  public static int load(RobotEntityBase robot, DockingStation station, IFluidFilter filter,
                          boolean doLoad) {
     if (station == null) {
       return 0;

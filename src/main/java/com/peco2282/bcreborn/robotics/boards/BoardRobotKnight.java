@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Enemy;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.SwordItem;
 
 public class BoardRobotKnight extends RedstoneBoardRobot {
 
-  public BoardRobotKnight(EntityRobotBase iRobot) {
+  public BoardRobotKnight(RobotEntityBase iRobot) {
     super(iRobot);
   }
 

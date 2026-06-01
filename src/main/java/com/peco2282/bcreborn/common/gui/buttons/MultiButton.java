@@ -21,11 +21,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiMultiButton extends GuiBetterButton {
+public class MultiButton extends BetterButton {
 
   private final MultiButtonController<?> control;
 
-  public GuiMultiButton(int id, int x, int y, int width, MultiButtonController<?> control) {
+  public MultiButton(int id, int x, int y, int width, MultiButtonController<?> control) {
     super(id, x, y, width, StandardButtonTextureSets.LARGE_BUTTON, "");
     this.control = control;
   }

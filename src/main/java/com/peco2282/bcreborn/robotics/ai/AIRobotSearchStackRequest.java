@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
@@ -34,11 +34,11 @@ public class AIRobotSearchStackRequest extends AIRobot {
 
   private IStackFilter filter;
 
-  public AIRobotSearchStackRequest(EntityRobotBase iRobot) {
+  public AIRobotSearchStackRequest(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchStackRequest(EntityRobotBase iRobot, IStackFilter iFilter, Collection<ItemStack> iBlackList) {
+  public AIRobotSearchStackRequest(RobotEntityBase iRobot, IStackFilter iFilter, Collection<ItemStack> iBlackList) {
     this(iRobot);
 
     blackList = iBlackList;

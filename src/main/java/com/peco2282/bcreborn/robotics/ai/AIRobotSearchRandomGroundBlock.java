@@ -15,7 +15,7 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
-import com.peco2282.bcreborn.api.robots.EntityRobotBase;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
 import com.peco2282.bcreborn.common.utils.WrapRandomSource;
 import net.minecraft.core.BlockPos;
@@ -32,11 +32,11 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot {
   private IZone zone;
   private int attempts = 0;
 
-  public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot) {
+  public AIRobotSearchRandomGroundBlock(RobotEntityBase iRobot) {
     super(iRobot);
   }
 
-  public AIRobotSearchRandomGroundBlock(EntityRobotBase iRobot, int iRange, IBlockFilter iFilter, IZone iZone) {
+  public AIRobotSearchRandomGroundBlock(RobotEntityBase iRobot, int iRange, IBlockFilter iFilter, IZone iZone) {
     this(iRobot);
 
     range = iRange;

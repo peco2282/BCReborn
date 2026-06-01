@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.common.builder.BuilderItemMetaPair;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
-import com.peco2282.bcreborn.common.builder.TileAbstractBuilder;
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -33,7 +33,7 @@ public class BuildingSlotMapIterator {
   private List<BuildingSlotBlock> slots;
   private int slotPos, slotFound;
 
-  public BuildingSlotMapIterator(BptBuilderBlueprint builderBlueprint, TileAbstractBuilder builder) {
+  public BuildingSlotMapIterator(BptBuilderBlueprint builderBlueprint, AbstractBuilderBlockEntity builder) {
     this.builderBlueprint = builderBlueprint;
     this.slotMap = builderBlueprint.buildList;
     int[] buildStageOccurences = builderBlueprint.buildStageOccurences;
@@ -43,7 +43,7 @@ public class BuildingSlotMapIterator {
     reset();
   }
 
-  public void refresh(TileAbstractBuilder builder) {
+  public void refresh(AbstractBuilderBlockEntity builder) {
     if (!isCreative) {
       availablePairs.clear();
       availablePairs.add(new BuilderItemMetaPair(null));

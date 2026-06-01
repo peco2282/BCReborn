@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.energy.block.entity;
 
-import com.peco2282.bcreborn.common.ContainerBlockEntity;
+import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -31,12 +31,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ContainerEngineBlockEntity<E extends ContainerEngineBlockEntity<E>> extends EngineBlockEntity<E>
-  implements WorldlyContainer, Container, ContainerBlockEntity, MenuProvider {
+public abstract class EngineBlockEntityContainer<E extends EngineBlockEntityContainer<E>> extends EngineBlockEntity<E>
+  implements WorldlyContainer, Container, IBlockEntityContainer, MenuProvider {
   protected final SimpleInventory inv;
   protected final int[] defaultSlotArray;
 
-  public ContainerEngineBlockEntity(
+  public EngineBlockEntityContainer(
     BlockEntityType<E> p_155228_,
     BlockPos p_155229_,
     BlockState p_155230_,
