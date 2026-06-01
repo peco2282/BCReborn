@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @InitRegister(modId = BCRebornTransport.MODID, priority = 1)
 public class BlockEntityTypesTransport {
@@ -35,37 +36,15 @@ public class BlockEntityTypesTransport {
     return REGISTRY.registerBlockEntityType(name, type);
   }
 
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ITEM_PIPE = register("item_pipe", () -> {
-    Set<Block> validBlocks = new HashSet<>();
-    for (RegistryObject<PipeBlock> block : BlocksTransport.getPipeByType(PipeType.ITEM).values()) {
-      validBlocks.add(block.get());
-    }
-    return new BlockEntityType<>(PipeBlockEntity::new, validBlocks, null);
-  });
+  private static Set<Block> filter(PipeType type) {
+    return BlocksTransport.getPipeByType(type).values().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet());
+  }
 
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> FLUID_PIPE = register("fluid_pipe", () -> {
-    Set<Block> validBlocks = new HashSet<>();
-    for (RegistryObject<PipeBlock> block : BlocksTransport.getPipeByType(PipeType.FLUID).values()) {
-      validBlocks.add(block.get());
-    }
-    return new BlockEntityType<>(PipeBlockEntity::new, validBlocks, null);
-  });
+  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ITEM_PIPE = register("item_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ITEM), null));
 
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ENERGY_PIPE = register("energy_pipe", () -> {
-    Set<Block> validBlocks = new HashSet<>();
-    for (RegistryObject<PipeBlock> block : BlocksTransport.getPipeByType(PipeType.ENERGY).values()) {
-      validBlocks.add(block.get());
-    }
-    return new BlockEntityType<>(PipeBlockEntity::new, validBlocks, null);
-  });
+  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> FLUID_PIPE = register("fluid_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.FLUID), null));
 
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> PIPE = register("pipe", () -> {
-    Set<Block> validBlocks = new HashSet<>();
-    for (Map<PipeType, RegistryObject<PipeBlock>> materialMap : BlocksTransport.PIPES_BY_MAT.values()) {
-      for (RegistryObject<PipeBlock> pipe : materialMap.values()) {
-        validBlocks.add(pipe.get());
-      }
-    }
-    return new BlockEntityType<>(PipeBlockEntity::new, validBlocks, null);
-  });
+  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ENERGY_PIPE = register("energy_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ENERGY), null));
+
+  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> PIPE = register("pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, BlocksTransport.getPipeList().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet()), null));
 }

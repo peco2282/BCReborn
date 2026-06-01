@@ -37,8 +37,8 @@ public class TransportGameTests {
     BlockPos pos2 = new BlockPos(1, 1, 1);
 
     // パイプを設置
-    helper.setBlock(pos1, BlocksTransport.PIPES_BY_MAT.get(PipeMaterial.COBBLESTONE).get(PipeType.ITEM).get().defaultBlockState());
-    helper.setBlock(pos2, BlocksTransport.PIPES_BY_MAT.get(PipeMaterial.COBBLESTONE).get(PipeType.ITEM).get().defaultBlockState());
+    helper.setBlock(pos1, BlocksTransport.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
+    helper.setBlock(pos2, BlocksTransport.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
 
     // チェストを設置（目的地）
     BlockPos chestPos = new BlockPos(2, 1, 1);

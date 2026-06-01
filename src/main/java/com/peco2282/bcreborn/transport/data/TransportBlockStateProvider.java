@@ -38,7 +38,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
 
   @Override
   protected void registerStatesAndModels() {
-    BlocksTransport.PIPES_BY_MAT.forEach((material, typeMap) -> typeMap.forEach((type, block) -> generatePipeBlockState(material, type, block)));
+    BlocksTransport.pipesForEach((type, material, block) -> generatePipeBlockState(material, type, block));
   }
 
   private void generatePipeBlockState(PipeMaterial material, PipeType type, RegistryObject<PipeBlock> block) {
