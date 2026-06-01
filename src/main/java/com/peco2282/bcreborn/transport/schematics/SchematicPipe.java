@@ -68,7 +68,7 @@ public class SchematicPipe extends SchematicTile {
       typeField.setAccessible(true);
       PipeType type = (PipeType) typeField.get(pipe);
 
-      RegistryObject<PipeBlock> block = BlocksTransport.PIPES_BY_MAT.get(material).get(type);
+      RegistryObject<PipeBlock> block = BlocksTransport.get(type, material);
       if (block != null) {
         return block.get().asItem();
       }

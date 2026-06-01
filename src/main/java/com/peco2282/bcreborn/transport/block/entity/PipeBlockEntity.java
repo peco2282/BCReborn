@@ -623,7 +623,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public Item getPipeItem() {
-    RegistryObject<PipeBlock> block = BlocksTransport.PIPES_BY_MAT.get(pipeMaterial).get(transportType);
+    RegistryObject<PipeBlock> block = BlocksTransport.PIPES.get(transportType, pipeMaterial);
     if (block != null) {
       return block.get().asItem();
     }

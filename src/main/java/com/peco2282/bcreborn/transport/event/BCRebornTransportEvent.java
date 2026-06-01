@@ -35,10 +35,11 @@ public class BCRebornTransportEvent {
   @SuppressWarnings("removal")
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> {
-      BlocksTransport.PIPES_BY_MAT.forEach((material, typeMap) -> typeMap.forEach((type, block) -> {
-        //noinspection removal
-        ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
-      }));
+      BlocksTransport.pipesForEach((type, material, block) -> {
+        if (block != null) {
+          ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
+        }
+      });
 
       MenuScreens.register(TransportMenuTypes.DIAMOND_PIPE_MENU.get(), DiamondPipeScreen::new);
       MenuScreens.register(TransportMenuTypes.EMERALD_PIPE_MENU.get(), EmeraldPipeScreen::new);
