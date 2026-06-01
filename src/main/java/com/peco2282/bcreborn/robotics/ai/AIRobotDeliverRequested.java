@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 public class AIRobotDeliverRequested extends AIRobot {
 
   private StackRequest requested;
-  private final boolean delivered = false;
 
   public AIRobotDeliverRequested(EntityRobotBase iRobot) {
     super(iRobot);
@@ -87,7 +86,7 @@ public class AIRobotDeliverRequested extends AIRobot {
 
   @Override
   public boolean success() {
-    return delivered;
+    return false;
   }
 
   @Override
