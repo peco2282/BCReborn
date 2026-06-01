@@ -36,7 +36,7 @@ public enum EnumColor implements StringRepresentable {
     public static final EnumColor[] VALUES = values();
 
     public String getTag() {
-        return name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+        return name().toLowerCase(Locale.ENGLISH);
     }
 
     public String getName() {
