@@ -25,6 +25,10 @@ public enum PipeType implements StringRepresentable {
     this.name = name;
   }
 
+  public boolean supports(PipeMaterial material) {
+    return !material.unsupports(this);
+  }
+
   @Override
   public @NotNull String getSerializedName() {
     return name;
