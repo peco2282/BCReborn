@@ -97,7 +97,6 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
 
   @Override
   public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-    System.out.println(p_38942_);
     return new ItemStack(Blocks.ACACIA_DOOR);
   }
 

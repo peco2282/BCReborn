@@ -55,8 +55,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     super.initialize();
 
     updateSignals();
-    System.out.println("initVectO: " + initVectO);
-    System.out.println("initVect: " + Arrays.toString(initVect));
     if (initVectO != null) {
       origin = new Origin();
       origin.vectO = new TileWrapper(initVectO);
@@ -328,26 +326,21 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       return false;
     }
 
-    System.out.println("[DEBUG_LOG] linkTo: this=" + worldPosition + " (originSet=" + origin.isSet() + "), marker=" + marker.worldPosition + " (originSet=" + marker.origin.isSet() + "), axis=" + n);
 
     if (origin.isSet() && marker.origin.isSet()) {
       if (origin == marker.origin) {
-        System.out.println("[DEBUG_LOG] linkTo: already same origin instance");
         return false;
       }
 
       // If both have origins but different, and one is not fully formed, we might want to merge.
       // For now, prioritize the one that is already an origin.
       if (origin.vectO.pos.equals(worldPosition)) {
-        System.out.println("[DEBUG_LOG] linkTo: marker " + marker.worldPosition + " joining this origin " + worldPosition);
         marker.origin = origin;
         origin.vect[n] = new TileWrapper(marker.getBlockPos());
       } else if (marker.origin.vectO.pos.equals(marker.worldPosition)) {
-        System.out.println("[DEBUG_LOG] linkTo: this " + worldPosition + " joining marker's origin " + marker.worldPosition);
         origin = marker.origin;
         origin.vect[n] = new TileWrapper(getBlockPos());
       } else {
-        System.out.println("[DEBUG_LOG] linkTo: both belong to different groups, force resetting this to join marker's origin");
         origin = marker.origin;
         origin.vect[n] = new TileWrapper(getBlockPos());
       }
@@ -356,15 +349,12 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
       marker.origin = origin;
       origin.vectO = new TileWrapper(getBlockPos());
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
-      System.out.println("[DEBUG_LOG] linkTo: both no origin, created new origin " + getBlockPos());
     } else if (!origin.isSet()) {
       origin = marker.origin;
       origin.vect[n] = new TileWrapper(getBlockPos());
-      System.out.println("[DEBUG_LOG] linkTo: this had no origin, joined marker's origin " + origin.vectO.pos);
     } else {
       marker.origin = origin;
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
-      System.out.println("[DEBUG_LOG] linkTo: marker joined this origin " + origin.vectO.pos);
     }
 
     MarkerBlockEntity mO = origin.vectO.getMarker(level);
@@ -373,7 +363,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
     }
     updateSignals();
     marker.updateSignals();
-    System.out.println("[DEBUG_LOG] Linked to: " + marker.worldPosition + " (origin: " + origin.vectO.pos + ")");
 
     return true;
   }

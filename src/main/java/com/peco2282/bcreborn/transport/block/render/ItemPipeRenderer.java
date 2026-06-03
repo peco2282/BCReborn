@@ -57,7 +57,6 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
     // 現tickのprogressから次tickの予測位置へ外挿補間（速度×partialTickを加算）
     float progress = travelingItem.getProgress() + travelingItem.getSpeed() * partialTick;
-    System.out.println("progress: " + progress + ", speed: " + travelingItem.getSpeed() + ", partialTick: " + partialTick);
 
     // アイテムの3D座標を計算（パイプ中心 = 0.5, 0.5, 0.5）
     float x = 0.5f;

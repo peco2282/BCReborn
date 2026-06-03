@@ -57,7 +57,6 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
     float progress = engine.getPistonProgress(partialTick);
     float offset = progress * 7.99f;
     model.setMovingOffset(offset); // Y軸負方向（UP向き基準）
-    System.out.println("offset: " + offset + " Progresses: " + progress);
 
     // --- テクスチャ取得 ---
     ResourceLocation baseTex = EngineTextures.getBaseTexture(engine);
