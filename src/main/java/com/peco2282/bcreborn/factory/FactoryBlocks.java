@@ -43,7 +43,6 @@ public class FactoryBlocks {
     output.accept(HOPPER.get());
     output.accept(FLOOD_GATE.get());
     output.accept(MINING_WELL.get());
-    output.accept(PLAIN_PIPE.get());
     output.accept(PUMP.get());
     output.accept(REFINERY.get());
     output.accept(TANK.get());
