@@ -12,9 +12,21 @@
 package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.data.tag.CommonBlockTags;
 import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
+import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.energy.BlocksEnergy;
+import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.robotics.RoboticsBlocks;
+import com.peco2282.bcreborn.robotics.RoboticsItems;
+import com.peco2282.bcreborn.silicon.SiliconBlocks;
+import com.peco2282.bcreborn.silicon.SiliconItems;
+import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -34,55 +46,59 @@ public class BCRebornCreativeTabs {
   public static final RegistryObject<CreativeModeTab> CORE = register("core", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Core"))
 //      .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.CORE).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.CORE).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .displayItems((param, output) -> {
+        BlocksCore.registerCreativeTab(param, output);
+        ItemsCore.registerCreativeTab(param, output);
+      })
       .build()
   );
   public static final RegistryObject<CreativeModeTab> BUILDERS = register("builders", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Builders"))
-//      .icon(() -> new ItemStack(BlocksBuilders.COPPER_BLOCK.get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.BUILDERS).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.BUILDERS).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(BuildersBlock.QUARRY.get()))
+      .displayItems(BuildersBlock::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );
   public static final RegistryObject<CreativeModeTab> ENERGY = register("energy", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Energy"))
-//      .icon(() -> new ItemStack(BlocksEnergy.CREATIVE_ENGINE.get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.ENERGY).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.ENERGY).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(BlocksEnergy.CREATIVE_ENGINE.get()))
+      .displayItems(BlocksEnergy::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );
   public static final RegistryObject<CreativeModeTab> TRANSPORT = register("transport", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Transport"))
-//      .icon(() -> new ItemStack(BlocksTransport.PIPES_BY_MAT.get(PipeMaterial.WOOD).get(PipeType.ITEM).get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.TRANSPORT).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.TRANSPORT).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(BlocksTransport.get(PipeType.ITEM, PipeMaterial.WOOD).get()))
+      .displayItems(BlocksTransport::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );
-  public static final RegistryObject<CreativeModeTab> SILICON = register("silicon", () -> CreativeModeTab.builder()
+  public static final RegistryObject<CreativeModeTab> SILICON = register("silicon", () -> {
+    System.out.println("Building SILICON CreativeTab");
+    return CreativeModeTab.builder()
       .title(Component.literal("BCReborn Silicon"))
-//      .icon(() -> new ItemStack(BlocksSilicon.SILICON_ORE.get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.SILICON).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.SILICON).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(SiliconBlocks.LASER.get()))
+      .displayItems((parameters, output) -> {
+        SiliconBlocks.registerCreativeTab(parameters, output);
+        SiliconItems.registerCreativeTab(parameters, output);
+      })
 //      .withTabsAfter(CORE_ID)
-      .build()
-  );
+      .build();
+  });
   public static final RegistryObject<CreativeModeTab> ROBOTICS = register("robotics", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Robotics"))
-//      .icon(() -> new ItemStack(BlocksTransport.PIPES_BY_MAT.get(PipeMaterial.WOOD).get(PipeType.ITEM).get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.ROBOTICS).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.ROBOTICS).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(RoboticsBlocks.REQUESTER.get()))
+      .displayItems((parameters, output) -> {
+        RoboticsBlocks.registerCreativeTab(parameters, output);
+        RoboticsItems.registerCreativeTab(parameters, output);
+      })
 //      .withTabsAfter(CORE_ID)
       .build()
   );
   public static final RegistryObject<CreativeModeTab> FACTORY = register("factory", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Factory"))
-//      .icon(() -> new ItemStack(BlocksFactory.FACTORY.get()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenBlock(CommonBlockTags.FACTORY).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
-      .displayItems((parameters, output) -> output.acceptAll(RegistryUtil.flattenItem(CommonItemTags.FACTORY).stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList()))
+      .icon(() -> new ItemStack(FactoryBlocks.AUTO_WORKBENCH.get()))
+      .displayItems(FactoryBlocks::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );
@@ -92,6 +108,11 @@ public class BCRebornCreativeTabs {
   }
 
   public static RegistryObject<CreativeModeTab> register(String name, Supplier<CreativeModeTab> supplier) {
-    return BCRebornCore.getRegistry().registerCreativeTab(name, supplier);
+    System.out.println("Registering creative tab: " + name);
+    RegistryObject<CreativeModeTab> tab = BCRebornCore.getRegistry().registerCreativeTab(name, supplier);
+    if (name.equals("silicon")) {
+      System.out.println("Silicon tab registered");
+    }
+    return tab;
   }
 }
