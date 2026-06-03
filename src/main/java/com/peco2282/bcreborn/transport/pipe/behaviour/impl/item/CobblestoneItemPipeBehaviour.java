@@ -44,16 +44,16 @@ public class CobblestoneItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
     float speed = item.getSpeed();
-    float minSpeed = 0.01f;
-    float maxSpeed = 0.15f;
+    float minSpeed = 0.015f;
+    float maxSpeed = 0.225f;
     int remaining = item.getBoostedBlocksRemaining();
     if (remaining > 0) {
       // 加速後の残り距離に応じて減衰係数を調整（16ブロックで完全減衰）
-      float decayRate = 0.001f * ((float) GoldenItemPipeBehaviour.BOOST_DISTANCE / COBBLESTONE_DECAY_DISTANCE);
+      float decayRate = 0.0015f * ((float) GoldenItemPipeBehaviour.BOOST_DISTANCE / COBBLESTONE_DECAY_DISTANCE);
       item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - decayRate)));
       item.setBoostedBlocksRemaining(remaining - 1);
     } else {
-      item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - 0.001f)));
+      item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - 0.0015f)));
     }
   }
 }
