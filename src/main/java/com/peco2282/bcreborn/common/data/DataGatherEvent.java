@@ -38,10 +38,10 @@ public class DataGatherEvent {
     DataGenerator generator = event.getGenerator();
     ExistingFileHelper helper = event.getExistingFileHelper();
     CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
-    BCBlockTagsProvider provider = new BCBlockTagsProvider(generator.getPackOutput(), lookup, "bcreborncore", helper);
+    BCBlockTagsProvider provider = new BCBlockTagsProvider(generator.getPackOutput(), lookup, BCReborn.MOD_ID_BASE, helper);
     generator.addProvider(true, provider);
-    generator.addProvider(true, new BCItemTagsProvider(generator.getPackOutput(), lookup, provider.contentsGetter(), "bcreborncore", helper));
-    generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), "bcreborncore", "en_us"));
+    generator.addProvider(true, new BCItemTagsProvider(generator.getPackOutput(), lookup, provider.contentsGetter(), BCReborn.MOD_ID_BASE, helper));
+    generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, "en_us"));
     generator.addProvider(true, new BCBlockStateProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, helper));
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
 
