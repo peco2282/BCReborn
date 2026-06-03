@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.transport.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -120,13 +121,14 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   @Override
   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     BlockEntity be = level.getBlockEntity(pos);
-    if (be instanceof PipeBlockEntity pipeBE && pipeBE.getBehaviour() != null) {
-      InteractionResult result = pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);
-      if (result != InteractionResult.PASS) {
-        return result;
+    if (be instanceof PipeBlockEntity pipeBE && pipeBE.getBehaviour() != null && !player.isShiftKeyDown()) {
+      if (player.getItemInHand(hand).is(ItemsCore.WRENCH.get())) {
+        return pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);
+      } else {
+        return pipeBE.getBehaviour().onUse(pipeBE, level, pos, player, hand, hit);
       }
     }
-    return super.use(state, level, pos, player, hand, hit);
+    return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
   @Override
