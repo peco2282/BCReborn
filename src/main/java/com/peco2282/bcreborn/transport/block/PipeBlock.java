@@ -185,15 +185,6 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       }
     }
 
-    // 鉄パイプの出力方向判定
-    if (this.material == PipeMaterial.IRON && thisBE instanceof PipeBlockEntity pipeBE) {
-      if (pipeBE.getIronPipeOutput() != direction) {
-        if (!(neighborBlock instanceof PipeBlock)) {
-          return false;
-        }
-      }
-    }
-
     // 他のパイプとの接続
     if (neighborBlock instanceof PipeBlock otherPipe) {
       return otherPipe.getTransportType() == this.transportType;
