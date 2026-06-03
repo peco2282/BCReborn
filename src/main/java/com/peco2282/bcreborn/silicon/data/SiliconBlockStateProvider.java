@@ -4,6 +4,7 @@ import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -15,7 +16,7 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
   @Override
   protected void registerStatesAndModels() {
     // Laser
-    simpleBlock(SiliconBlocks.LASER.get(), models()
+    simpleBlockWithItem(SiliconBlocks.LASER.get(), models()
       .getBuilder("laser")
       .texture("bottom", modLoc("block/laser_block/bottom"))
       .texture("side", modLoc("block/laser_block/side"))
@@ -41,10 +42,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(5, 5, 11, 11).texture("#top").end()
       .face(Direction.DOWN).uvs(5, 5, 11, 11).texture("#top").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Assembly Table
-    simpleBlock(SiliconBlocks.ASSEMBLY_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.ASSEMBLY_TABLE.get(), models()
       .getBuilder("assembly_table")
       .texture("default", modLoc("block/assembly_table/default"))
       .texture("particle", modLoc("block/assembly_table/default"))
@@ -73,10 +79,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(4, 5.25F, 8, 9.25F).texture("#default").end()
       .face(Direction.DOWN).uvs(8, 5.25F, 11.75F, 9.25F).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Advanced Crafting Table
-    simpleBlock(SiliconBlocks.ADVANCED_CRAFTING_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.ADVANCED_CRAFTING_TABLE.get(), models()
       .getBuilder("advanced_crafting_table")
       .texture("default", modLoc("block/advanced_crafting_table/default"))
       .texture("particle", modLoc("block/advanced_crafting_table/default"))
@@ -128,10 +139,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(3, 5.25F, 6, 8.25F).texture("#default").end()
       .face(Direction.DOWN).uvs(6, 5.25F, 9, 8.25F).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Integration Table
-    simpleBlock(SiliconBlocks.INTEGRATION_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.INTEGRATION_TABLE.get(), models()
       .getBuilder("integration_table")
       .texture("default", modLoc("block/integration_table/default"))
       .texture("particle", modLoc("block/integration_table/default"))
@@ -211,10 +227,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(1.5F, 9.5F, 3, 11).texture("#default").end()
       .face(Direction.DOWN).uvs(3, 9.5F, 4.5F, 11).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Charging Table
-    simpleBlock(SiliconBlocks.CHARGING_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.CHARGING_TABLE.get(), models()
       .getBuilder("charging_table")
       .texture("default", modLoc("block/charging_table/default"))
       .texture("particle", modLoc("block/charging_table/default"))
@@ -261,10 +282,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.WEST).uvs(10.5F, 8.25F, 14, 9.5F).texture("#default").end()
       .face(Direction.DOWN).uvs(7, 4.75F, 10.5F, 8.25F).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Programming Table
-    simpleBlock(SiliconBlocks.PROGRAMMING_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.PROGRAMMING_TABLE.get(), models()
       .getBuilder("programming_table")
       .texture("default", modLoc("block/programming_table/default"))
       .texture("particle", modLoc("block/programming_table/default"))
@@ -356,10 +382,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(2, 12, 4, 14).texture("#default").end()
       .face(Direction.DOWN).uvs(4, 12, 6, 14).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Stamping Table
-    simpleBlock(SiliconBlocks.STAMPING_TABLE.get(), models()
+    simpleBlockWithItem(SiliconBlocks.STAMPING_TABLE.get(), models()
       .getBuilder("stamping_table")
       .texture("default", modLoc("block/stamping_table/default"))
       .texture("particle", modLoc("block/stamping_table/default"))
@@ -411,10 +442,15 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.UP).uvs(3, 5.25F, 6, 8.25F).texture("#default").end()
       .face(Direction.DOWN).uvs(6, 5.25F, 9, 8.25F).texture("#default").end()
       .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
+      .end()
     );
 
     // Packager
-    simpleBlock(SiliconBlocks.PACKAGER.get(), models()
+    simpleBlockWithItem(SiliconBlocks.PACKAGER.get(), models()
       .getBuilder("packager")
       .texture("bottom", modLoc("block/packager_block/bottom"))
       .texture("side", modLoc("block/packager_block/side"))
@@ -427,6 +463,11 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .face(Direction.WEST).uvs(0, 0, 16, 16).texture("#side").end()
       .face(Direction.UP).uvs(0, 0, 16, 16).texture("#top").end()
       .face(Direction.DOWN).uvs(0, 0, 16, 16).texture("#bottom").end()
+      .end()
+      .transforms()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(.3F, .3F, .3F).end()
+      .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
       .end()
     );
   }
