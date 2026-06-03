@@ -21,9 +21,9 @@ import com.peco2282.bcreborn.transport.pipe.TravelingItem;
  */
 final class SpeedHelper {
 
-  private static final float MIN_SPEED = 0.01f;
-  private static final float MAX_SPEED = 0.15f;
-  private static final float SLOWDOWN = 0.001f;
+  private static final float MIN_SPEED = 0.015f;
+  private static final float MAX_SPEED = 0.225f;
+  private static final float SLOWDOWN = 0.0015f;
 
   private SpeedHelper() {
   }

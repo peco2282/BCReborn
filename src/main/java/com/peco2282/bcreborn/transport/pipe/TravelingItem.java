@@ -39,7 +39,7 @@ public class TravelingItem {
   private float prevProgress; // 前tickのprogress（partialTick補間用）
   private boolean centerReached; // 中央到達フラグ（Voidパイプ等で使用）
   private Direction nextDirection;
-  private float speed = 0.05f;
+  private float speed = 0.075f;
   // bounceCount は将来の jam detection / congestion system 用。
   // 現時点では挙動変更には使用しない。
   private int bounceCount;
