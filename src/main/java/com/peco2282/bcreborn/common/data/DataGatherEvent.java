@@ -15,10 +15,8 @@ import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.builders.data.BuildersBlockStateProvider;
 import com.peco2282.bcreborn.core.data.CoreBlockStateProvider;
-import com.peco2282.bcreborn.core.data.CoreItemModelProvider;
 import com.peco2282.bcreborn.core.data.CoreRecipeProvider;
 import com.peco2282.bcreborn.energy.data.EnergyBlockStateProvider;
-import com.peco2282.bcreborn.energy.data.EnergyItemModelProvider;
 import com.peco2282.bcreborn.silicon.data.SiliconBlockStateProvider;
 import com.peco2282.bcreborn.transport.data.TransportBlockStateProvider;
 import net.minecraft.core.HolderLookup;
@@ -47,13 +45,11 @@ public class DataGatherEvent {
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
 
     generator.addProvider(true, new CoreBlockStateProvider(generator.getPackOutput(), helper));
-    generator.addProvider(true, new CoreItemModelProvider(generator.getPackOutput(), helper));
     generator.addProvider(true, new CoreRecipeProvider(generator.getPackOutput()));
 
     generator.addProvider(true, new BuildersBlockStateProvider(generator.getPackOutput(), helper));
 
     generator.addProvider(true, new EnergyBlockStateProvider(generator.getPackOutput(), helper));
-    generator.addProvider(true, new EnergyItemModelProvider(generator.getPackOutput(), helper));
 
     generator.addProvider(true, new TransportBlockStateProvider(generator.getPackOutput(), helper));
 
