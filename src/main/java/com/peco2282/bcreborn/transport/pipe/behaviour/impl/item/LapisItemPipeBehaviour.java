@@ -43,8 +43,9 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
   }
 
   @Override
-  public void onInjectItem(PipeBlockEntity pipe, ItemStack stack, Direction from, float speed) {
-    // アイテムにパイプの色タグを付与する（originalのReachedCenter eventHandler相当）
+  public void onReachedCenter(PipeBlockEntity pipe, TravelingItem item) {
+    // originalのReachedCenter eventHandlerと同様に、中央到達時にアイテムを色付けする
+    ItemStack stack = item.getStack();
     if (!stack.isEmpty()) {
       var tag = stack.getOrCreateTag();
       tag.putInt("BCPipeColor", pipe.getPipeColor().getId());
@@ -54,8 +55,6 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
     // originalのAdjustSpeed eventHandler: slowdownAmount /= 4 に相当
-    // 通常の速度低下(0.99倍)を1/4に抑制する → 0.99^(1/4) ≈ 0.9975倍
-    // 実装上は速度低下量を1/4にする: (speed - 0.01) * 0.0025 を引く
     float speed = item.getSpeed();
     float slowdown = (speed - 0.01f) * 0.01f; // 通常の速度低下量
     float adjustedSlowdown = slowdown / 4f;    // 1/4に抑制

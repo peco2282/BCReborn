@@ -46,8 +46,9 @@ public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
   }
 
   @Override
-  public void onInjectItem(PipeBlockEntity pipe, ItemStack stack, Direction from, float speed) {
-    // Lapisと同様: アイテムにパイプの色タグを付与する
+  public void onReachedCenter(PipeBlockEntity pipe, TravelingItem item) {
+    // Lapisと同様: 中央到達時にアイテムを色付けする
+    ItemStack stack = item.getStack();
     if (!stack.isEmpty()) {
       var tag = stack.getOrCreateTag();
       tag.putInt("BCPipeColor", pipe.getPipeColor().getId());
