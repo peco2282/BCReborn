@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.robotics.block.RequesterBlock;
 import com.peco2282.bcreborn.robotics.block.ZonePlanBlock;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -35,5 +36,10 @@ public class RoboticsBlocks {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> supplier) {
     return REGISTRY.registerBlock(name, supplier);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(REQUESTER.get());
+    output.accept(ZONE_PLAN.get());
   }
 }

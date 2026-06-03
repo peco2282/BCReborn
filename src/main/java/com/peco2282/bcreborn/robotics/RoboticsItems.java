@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import com.peco2282.bcreborn.robotics.item.RobotStationItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -33,5 +34,11 @@ public class RoboticsItems {
 
   private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> supplier) {
     return REGISTRY.registerItem(name, supplier);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(REDSTONE_BOARD.get());
+    output.accept(ROBOT.get());
+    output.accept(ROBOT_STATION.get());
   }
 }

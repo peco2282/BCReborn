@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.core.item.ListItem;
 import com.peco2282.bcreborn.core.item.MapLocationItem;
 import com.peco2282.bcreborn.core.item.PaintbrushItem;
 import com.peco2282.bcreborn.core.item.WrenchItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -46,5 +47,18 @@ public class ItemsCore {
 
   private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return REGISTRY.registerItem(name, item);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(WRENCH.get());
+    output.accept(WOODEN_GEAR.get());
+    output.accept(STONE_GEAR.get());
+    output.accept(IRON_GEAR.get());
+    output.accept(GOLD_GEAR.get());
+    output.accept(DIAMOND_GEAR.get());
+    output.accept(BUILD_TOOL_BOX.get());
+    output.accept(LIST.get());
+    output.accept(PAINTBRUSH.get());
+    output.accept(MAP_LOCATION.get());
   }
 }

@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.silicon.item.PackageItem;
 import com.peco2282.bcreborn.silicon.item.RedstoneChipsetItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -38,5 +39,15 @@ public class SiliconItems {
 
   private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return REGISTRY.registerItem(name, item);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(PACKAGE_ITEM.get());
+    output.accept(GOLD_CHIPSET.get());
+    output.accept(DIAMOND_CHIPSET.get());
+    output.accept(PULSATING_CHIPSET.get());
+    output.accept(QUARTZ_CHIPSET.get());
+    output.accept(COMP_CHIPSET.get());
+    output.accept(EMERALD_CHIPSET.get());
   }
 }

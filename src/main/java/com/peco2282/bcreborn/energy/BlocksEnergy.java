@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.energy.block.CreativeEngineBlock;
 import com.peco2282.bcreborn.energy.block.IronEngineBlock;
 import com.peco2282.bcreborn.energy.block.StoneEngineBlock;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -32,5 +33,11 @@ public class BlocksEnergy {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> type) {
     return REGISTRY.registerBlockItem(name, type);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(CREATIVE_ENGINE.get());
+    output.accept(IRON_ENGINE.get());
+    output.accept(STONE_ENGINE.get());
   }
 }
