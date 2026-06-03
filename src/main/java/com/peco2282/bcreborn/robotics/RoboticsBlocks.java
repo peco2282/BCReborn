@@ -35,7 +35,7 @@ public class RoboticsBlocks {
   );
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> supplier) {
-    return REGISTRY.registerBlock(name, supplier);
+    return REGISTRY.registerBlockItem(name, supplier);
   }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
