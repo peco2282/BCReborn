@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour;
 
-import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,9 +25,6 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface PipeBlockEvent {
   default InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                         Player player, InteractionHand hand, BlockHitResult hit) {
-    if (player.getItemInHand(hand).is(ItemsCore.WRENCH.get())) {
-      return pipe.getBehaviour().onUse(pipe, level, pos, player, hand, hit);
-    }
     return InteractionResult.PASS;
   }
 
