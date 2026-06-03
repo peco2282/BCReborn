@@ -42,12 +42,14 @@ public class SiliconItems {
   }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
-    output.accept(PACKAGE_ITEM.get());
+    output.accept(REDSTONE_CHIPSET.get());
+    output.accept(IRON_CHIPSET.get());
     output.accept(GOLD_CHIPSET.get());
     output.accept(DIAMOND_CHIPSET.get());
     output.accept(PULSATING_CHIPSET.get());
     output.accept(QUARTZ_CHIPSET.get());
     output.accept(COMP_CHIPSET.get());
     output.accept(EMERALD_CHIPSET.get());
+    output.accept(PACKAGE_ITEM.get());
   }
 }
