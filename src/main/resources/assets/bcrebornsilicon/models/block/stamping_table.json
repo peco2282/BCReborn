@@ -1,9 +1,0 @@
-{
-  "parent": "bcrebornsilicon:block/laser_table_base",
-  "textures": {
-    "particle": "bcrebornsilicon:block/stamping_table_top",
-    "top": "bcrebornsilicon:block/stamping_table_top",
-    "side": "bcrebornsilicon:block/stamping_table_side",
-    "bottom": "bcrebornsilicon:block/laser_table_bottom"
-  }
-}
