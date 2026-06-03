@@ -67,7 +67,7 @@ public class EngineItemRenderer extends BlockEntityWithoutLevelRenderer {
     poseStack.pushPose();
     poseStack.scale(1.2F, 1.2F, 1.2F);
 
-    poseStack.translate(0.65, 0.2, 0.2);
+    poseStack.translate(0.62, 0.2, 0.2);
 
     poseStack.mulPose(Axis.YP.rotationDegrees(65F));
 
