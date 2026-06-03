@@ -64,13 +64,13 @@ public class StripesItemPipeBehaviour implements ItemPipeBehaviour {
       .count();
     if (connectedCount >= 2) return;
 
-    // 来た方向の逆（出口方向）にブロックを設置しようとする
+    // 来た方向の逆（出口方向）
     Direction outputDir = from.getOpposite();
     BlockPos targetPos = pipe.getBlockPos().relative(outputDir);
+    BlockState targetState = level.getBlockState(targetPos);
 
     if (stack.getItem() instanceof BlockItem blockItem) {
-      BlockState targetState = level.getBlockState(targetPos);
-      // 空気または置き換え可能なブロックの場合に設置
+      // 設置処理
       if (targetState.isAir() || targetState.canBeReplaced()) {
         BlockState placeState = blockItem.getBlock().defaultBlockState();
         if (placeState.canSurvive(level, targetPos)) {
@@ -79,24 +79,32 @@ public class StripesItemPipeBehaviour implements ItemPipeBehaviour {
         }
       }
     } else {
-      // 耐久値のあるアイテム等：使用処理を行い、残ったアイテムをターゲット位置にドロップ
-      if (stack.isDamageableItem()) {
-        stack.setDamageValue(stack.getDamageValue() + 1);
-        if (stack.getDamageValue() >= stack.getMaxDamage()) {
+      // ブロック破壊処理（ストライプパイプがツール等のアイテムとして注入された場合）
+      // BC 1.7.10 ではアイテムが注入された時、それがツールでなくても破壊を試みることがある
+      // ここでは、非ブロックアイテムが「空気でないブロック」に対して注入された場合、それを破壊してドロップさせる
+      if (!targetState.isAir() && targetState.getDestroySpeed(level, targetPos) >= 0) {
+        level.destroyBlock(targetPos, true);
+        stack.shrink(1);
+      } else {
+        // 耐久値のあるアイテム等：使用処理を行い、残ったアイテムをターゲット位置にドロップ
+        if (stack.isDamageableItem()) {
+          stack.setDamageValue(stack.getDamageValue() + 1);
+          if (stack.getDamageValue() >= stack.getMaxDamage()) {
+            stack.setCount(0);
+          }
+        } else {
+          stack.shrink(1);
+        }
+        // 使用後に残ったアイテムをターゲット位置にドロップ
+        if (!stack.isEmpty()) {
+          double x = targetPos.getX() + 0.5;
+          double y = targetPos.getY() + 0.5;
+          double z = targetPos.getZ() + 0.5;
+          ItemEntity itemEntity = new ItemEntity(level, x, y, z, stack.copy());
+          itemEntity.setDefaultPickUpDelay();
+          level.addFreshEntity(itemEntity);
           stack.setCount(0);
         }
-      } else {
-        stack.shrink(1);
-      }
-      // 使用後に残ったアイテムをターゲット位置にドロップ
-      if (!stack.isEmpty()) {
-        double x = targetPos.getX() + 0.5;
-        double y = targetPos.getY() + 0.5;
-        double z = targetPos.getZ() + 0.5;
-        ItemEntity itemEntity = new ItemEntity(level, x, y, z, stack.copy());
-        itemEntity.setDefaultPickUpDelay();
-        level.addFreshEntity(itemEntity);
-        stack.setCount(0);
       }
     }
   }

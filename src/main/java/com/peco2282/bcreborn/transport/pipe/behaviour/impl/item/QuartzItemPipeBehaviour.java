@@ -29,9 +29,10 @@ public class QuartzItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
+    // originalのAdjustSpeed eventHandler: slowdownAmount /= 2 に相当
     float speed = item.getSpeed();
-    float minSpeed = 0.01f;
-    float maxSpeed = 0.15f;
-    item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - 0.001f)));
+    float slowdown = (speed - 0.01f) * 0.01f; // 通常の速度低下量
+    float adjustedSlowdown = slowdown / 2f;    // 1/2に抑制
+    item.setSpeed(Math.max(0.01f, speed - adjustedSlowdown));
   }
 }
