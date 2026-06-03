@@ -35,7 +35,7 @@ public class CommonBlockTags {
 
   public static final TagKey<Block> ENGINES = create("engines");
 
-  public static final TagKey<Block> FUEL = create("fuel_bucket");
+  public static final TagKey<Block> FUEL = create("fuel");
 
   public static final TagKey<Block> LASER_TABLE = create("laser_table");
 
