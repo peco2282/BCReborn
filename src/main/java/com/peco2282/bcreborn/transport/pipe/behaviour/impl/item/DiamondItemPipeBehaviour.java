@@ -11,12 +11,23 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
+import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Diamond Pipe: フィルターに一致するアイテムを対応する方向へ振り分ける。
@@ -124,5 +135,16 @@ public class DiamondItemPipeBehaviour implements ItemPipeBehaviour {
       if (!filter.getItem(i).isEmpty()) return true;
     }
     return false;
+  }
+
+  @Override
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (level.isClientSide) return InteractionResult.PASS;
+    NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
+      (id, inv, plyr) -> TransportMenuTypes.DIAMOND_PIPE_MENU.get().create(id, inv),
+      Component.empty()
+      ), buf -> buf.writeBlockPos(pos)
+    );
+    return InteractionResult.SUCCESS;
   }
 }
