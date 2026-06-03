@@ -13,18 +13,20 @@ package com.peco2282.bcreborn.core.data;
 
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.MarkerBlock;
+import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
 import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.ItemsCore;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class CoreBlockStateProvider extends BlockStateProvider {
+public class CoreBlockStateProvider extends BCBlockStateHelper {
   public CoreBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
     super(output, BCRebornCore.MODID, exFileHelper);
   }
@@ -37,7 +39,7 @@ public class CoreBlockStateProvider extends BlockStateProvider {
   @Override
   protected void registerStatesAndModels() {
     simpleEngine(BlocksCore.WOODEN_ENGINE.get());
-//    simpleBlockWithItem(BlocksCore.BLUE_MARKER.get(), models().withExistingParent("blue_marker", mcLoc("block/template_torch")).texture("torch", "block/marker_block/default").renderType(mcLoc("cutout")));
+//    simpleBlockWithItem(BlocksCore.BLUE_MARKER.get(), models().withExistingItemParent("blue_marker", mcLoc("block/template_torch")).texture("torch", "block/marker_block/default").renderType(mcLoc("cutout")));
     ModelFile model = models()
       .getBuilder("blue_marker")
       .texture("torch", modLoc("block/marker_block/default"))
@@ -114,6 +116,53 @@ public class CoreBlockStateProvider extends BlockStateProvider {
       });
 
     itemModels().withExistingParent(getName(BlocksCore.BLUE_MARKER.get()), mcLoc("item/generated"));
+
+    // Item models
+
+    basicItem(ItemsCore.WOODEN_GEAR.get());
+    basicItem(ItemsCore.STONE_GEAR.get());
+    basicItem(ItemsCore.IRON_GEAR.get());
+    basicItem(ItemsCore.GOLD_GEAR.get());
+    basicItem(ItemsCore.DIAMOND_GEAR.get());
+
+    getItemBuilder("list")
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/list/clean")
+      .override()
+      .predicate(modLoc("written"), 1.0f)
+      .model(getItemBuilder("list_used")
+        .parent(getExistingFile(mcLoc("item/generated")))
+        .texture("layer0", "item/list/used"))
+      .end();
+
+    // basicItem(ItemsCore.LIST.get()); // Removed as it was causing the error and replaced with the builder above
+
+    var paintbrushBuilder = getItemBuilder("paintbrush")
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/paintbrush/clean");
+
+    for (DyeColor color : DyeColor.values()) {
+      paintbrushBuilder.override()
+        .predicate(modLoc("color"), color.getId() + 1)
+        .model(getItemBuilder("paintbrush_" + color.getName())
+          .parent(getExistingFile(mcLoc("item/generated")))
+          .texture("layer0", "item/paintbrush/" + color.getName()))
+        .end();
+    }
+
+    itemModels().getBuilder("map_location")
+      .parent(getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", "item/map_location/clean")
+      .override().predicate(modLoc("kind"), 1.0f).model(getItemBuilder("map_location_spot").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/spot")).end()
+      .override().predicate(modLoc("kind"), 2.0f).model(getItemBuilder("map_location_area").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/area")).end()
+      .override().predicate(modLoc("kind"), 3.0f).model(getItemBuilder("map_location_path").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/path")).end()
+      .override().predicate(modLoc("kind"), 4.0f).model(getItemBuilder("map_location_zone").parent(getExistingFile(mcLoc("item/generated"))).texture("layer0", "item/map_location/zone")).end();
+
+
+    withExistingItemParent("wrench", mcLoc("item/generated"))
+      .texture("layer0", modLoc("item/wrench_item"));
+    getItemBuilder("wood_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
+//    withExistingItemParent("wood_engine", mcLoc("builtin/entity"));
   }
 
   private void simpleEngine(Block block) {
