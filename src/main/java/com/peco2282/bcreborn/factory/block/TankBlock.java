@@ -22,16 +22,19 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
 
 public class TankBlock extends BuildCraftBlock {
+  public static final BooleanProperty IS_STACKED = BooleanProperty.create("is_stacked");
   public TankBlock() {
     super(Properties.of()
       .mapColor(MapColor.NONE)
       .sound(SoundType.GLASS)
       .strength(0.5F)
       .noOcclusion());
+    this.registerDefaultState(this.getStateDefinition().any().setValue(IS_STACKED, false));
   }
 
   @Override
@@ -52,6 +55,7 @@ public class TankBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(IS_STACKED);
   }
 
   @Override
