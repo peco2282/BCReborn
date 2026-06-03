@@ -20,6 +20,8 @@ import com.peco2282.bcreborn.common.registry.RegistryMultipleKeyObject;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
@@ -91,5 +93,9 @@ public class BlocksTransport {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> type) {
     return REGISTRY.registerBlockItem(name, type);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(ItemStack::new).toList());
   }
 }

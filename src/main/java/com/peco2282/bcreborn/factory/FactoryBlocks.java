@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.factory.block.*;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -35,5 +36,16 @@ public class FactoryBlocks {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> block) {
     return REGISTRY.registerBlockItem(name, block);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(AUTO_WORKBENCH.get());
+    output.accept(HOPPER.get());
+    output.accept(FLOOD_GATE.get());
+    output.accept(MINING_WELL.get());
+    output.accept(PLAIN_PIPE.get());
+    output.accept(PUMP.get());
+    output.accept(REFINERY.get());
+    output.accept(TANK.get());
   }
 }

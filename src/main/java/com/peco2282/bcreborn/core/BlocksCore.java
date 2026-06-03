@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.core.block.*;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -32,5 +33,13 @@ public class BlocksCore {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> block) {
     return REGISTRY.registerBlockItem(name, block);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(WOODEN_ENGINE.get());
+    output.accept(PATH_MARKER.get());
+    output.accept(SPRING.get());
+    output.accept(BLUE_MARKER.get());
+    output.accept(BUILD_TOOL.get());
   }
 }

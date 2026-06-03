@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.silicon.block.LaserBlock;
 import com.peco2282.bcreborn.silicon.block.LaserTableBlock;
 import com.peco2282.bcreborn.silicon.block.PackagerBlock;
 import com.peco2282.bcreborn.silicon.item.LaserTableItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -42,5 +43,16 @@ public class SiliconBlocks {
 
   private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> blockSupplier) {
     return REGISTRY.registerBlockItem(name, blockSupplier);
+  }
+
+  public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(LASER.get());
+    output.accept(ASSEMBLY_TABLE.get());
+    output.accept(ADVANCED_CRAFTING_TABLE.get());
+    output.accept(INTEGRATION_TABLE.get());
+    output.accept(CHARGING_TABLE.get());
+    output.accept(PROGRAMMING_TABLE.get());
+    output.accept(STAMPING_TABLE.get());
+    output.accept(PACKAGER.get());
   }
 }
