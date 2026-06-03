@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.energy.data;
 
 import com.peco2282.bcreborn.BCRebornEnergy;
+import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
 import com.peco2282.bcreborn.energy.BlocksEnergy;
 import com.peco2282.bcreborn.energy.FluidsEnergy;
 import net.minecraft.data.PackOutput;
@@ -22,7 +23,7 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class EnergyBlockStateProvider extends BlockStateProvider {
+public class EnergyBlockStateProvider extends BCBlockStateHelper {
   public EnergyBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
     super(output, BCRebornEnergy.MODID, exFileHelper);
   }
@@ -42,6 +43,13 @@ public class EnergyBlockStateProvider extends BlockStateProvider {
 
     liquidBlock(FluidsEnergy.OIL_BLOCK.get(), modLoc("block/fluids/oil_still"));
     liquidBlock(FluidsEnergy.FUEL_BLOCK.get(), modLoc("block/fluids/fuel_still"));
+
+    basicItem(FluidsEnergy.OIL_BUCKET.get());
+    basicItem(FluidsEnergy.FUEL_BUCKET.get());
+
+    getItemBuilder("creative_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
+    getItemBuilder("iron_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
+    getItemBuilder("stone_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }
 
   private void liquidBlock(Block block, ResourceLocation model) {
