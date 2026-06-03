@@ -45,7 +45,7 @@ public class BCRebornCreativeTabs {
   public static final ResourceKey<CreativeModeTab> BUILDERS_ID = create(BCRebornCore.location("builders"));
   public static final RegistryObject<CreativeModeTab> CORE = register("core", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Core"))
-//      .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
+      .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
       .displayItems((param, output) -> {
         BlocksCore.registerCreativeTab(param, output);
         ItemsCore.registerCreativeTab(param, output);
