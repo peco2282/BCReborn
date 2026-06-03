@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.robotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
+import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ import java.util.function.Function;
 
 public class ImplRedstoneBoardRegistry extends RedstoneBoardRegistry {
   private final HashMap<String, BoardFactory> boards = new HashMap<>();
-  private RedstoneBoardRobotNBT emptyRobotBoardNBT;
+  private RedstoneBoardRobotNBT emptyRobotBoardNBT = RedstoneBoardRobotEmptyNBT.instance;
 
   @Override
   public void registerBoardType(RedstoneBoardNBT<?> redstoneBoardNBT, int energyCost) {
