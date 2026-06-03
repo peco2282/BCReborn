@@ -41,7 +41,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
     engineTag();
     pipeTag();
     laserTableTag();
-    fuelBucketTag();
+    fuelTag();
 
     tag(CommonBlockTags.BUILDERS).add(BuildersBlock.ARCHITECT.get(), BuildersBlock.BUILDER.get(), BuildersBlock.FRAME.get(), BuildersBlock.CONSTRUCTION_MARKER.get(), BuildersBlock.BLUEPRINT_LIBRARY.get(), BuildersBlock.QUARRY.get(), BuildersBlock.FILLER.get());
     tag(CommonBlockTags.CORE)
@@ -54,7 +54,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
     tag(CommonBlockTags.TRANSPORT).addTag(CommonBlockTags.PIPES);
   }
 
-  private void fuelBucketTag() {
+  private void fuelTag() {
     tag(CommonBlockTags.FUEL)
       .add(FluidsEnergy.OIL_BLOCK.get(), FluidsEnergy.FUEL_BLOCK.get());
   }
