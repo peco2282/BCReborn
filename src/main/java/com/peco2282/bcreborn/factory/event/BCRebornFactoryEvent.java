@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.factory.event;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryMenuTypes;
@@ -27,9 +28,11 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.slf4j.Logger;
 
-@Mod.EventBusSubscriber(modid = BCRebornFactory.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = BCRebornFactory.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BCRebornFactoryEvent {
+  private static final Logger LOGGER = BCReborn.createLogger();
 
   public static final ModelLayerLocation HOPPER_LAYER = new ModelLayerLocation(BCRebornFactory.location("hopper"), "main");
   public static final ModelLayerLocation REFINERY_LAYER = new ModelLayerLocation(BCRebornFactory.location("refinery"), "main");
@@ -45,6 +48,7 @@ public class BCRebornFactoryEvent {
 
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    LOGGER.info("Registering renderers");
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.HOPPER.get(), RenderHopper::new);
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.REFINERY.get(), RenderRefinery::new);
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.TANK.get(), RenderTank::new);
@@ -52,6 +56,7 @@ public class BCRebornFactoryEvent {
 
   @SubscribeEvent
   public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    LOGGER.info("Registering layer definitions");
     event.registerLayerDefinition(HOPPER_LAYER, RenderHopper::createLayer);
     event.registerLayerDefinition(REFINERY_LAYER, RenderRefinery::createLayer);
   }
