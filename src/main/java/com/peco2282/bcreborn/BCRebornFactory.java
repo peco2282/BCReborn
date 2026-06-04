@@ -53,7 +53,7 @@ public class BCRebornFactory implements BCReborn {
   }
 
   public static ResourceLocation location(String path) {
-    return BCReborn.getLocation(Type.ENERGY, path);
+    return BCReborn.getLocation(Type.FACTORY, path);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
