@@ -38,7 +38,8 @@ public class HopperBlock extends BuildCraftBlock {
     super(Properties.of()
       .mapColor(MapColor.METAL)
       .sound(SoundType.METAL)
-      .strength(3.0F));
+      .strength(3.0F)
+      .noOcclusion());
   }
 
   @Override
