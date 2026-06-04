@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.factory.block.entity.HopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +21,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -41,7 +43,7 @@ public class HopperBlock extends BuildCraftBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return null;
+    return new HopperBlockEntity(pos, state);
   }
 
   @Nullable
@@ -75,5 +77,10 @@ public class HopperBlock extends BuildCraftBlock {
   @Override
   public boolean isRotatable() {
     return false;
+  }
+
+  @Override
+  public RenderShape getRenderShape(BlockState p_49232_) {
+    return RenderShape.ENTITYBLOCK_ANIMATED;
   }
 }
