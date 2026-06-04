@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.factory.block.*;
+import com.peco2282.bcreborn.factory.item.HopperBlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
@@ -26,7 +27,7 @@ public class FactoryBlocks {
   private static final BCRegistry REGISTRY = BCRebornFactory.getRegistry();
 
   public static final RegistryObject<AutoWorkbenchBlock> AUTO_WORKBENCH = register("auto_workbench", AutoWorkbenchBlock::new);
-  public static final RegistryObject<HopperBlock> HOPPER = register("hopper", HopperBlock::new);
+  public static final RegistryObject<HopperBlock> HOPPER = REGISTRY.registerBlockItem("hopper", HopperBlockItem::new, HopperBlock::new);
   public static final RegistryObject<FloodGateBlock> FLOOD_GATE = register("flood_gate", FloodGateBlock::new);
   public static final RegistryObject<MiningWellBlock> MINING_WELL = register("mining_well", MiningWellBlock::new);
   public static final RegistryObject<PlainPipeBlock> PLAIN_PIPE = register("plain_pipe", PlainPipeBlock::new);
