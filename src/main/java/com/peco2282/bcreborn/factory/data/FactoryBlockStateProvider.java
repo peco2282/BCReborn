@@ -18,7 +18,9 @@ import com.peco2282.bcreborn.factory.block.TankBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder.FaceRotation;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class FactoryBlockStateProvider extends BCBlockStateHelper {
@@ -133,6 +135,30 @@ public class FactoryBlockStateProvider extends BCBlockStateHelper {
 
     simpleBlockItem(FactoryBlocks.TANK.get(), tank);
 
+    var hopperModel = models().getBuilder("hopper")
+      .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")))
+      .transforms()
+      .transform(ItemDisplayContext.GUI)
+      .rotation(30, 160, 0)
+      .translation(2, 3, 0)
+      .scale(0.65F)
+      .end()
+      .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+      .rotation(30, 160, 0)
+      .translation(0, 3, -2)
+      .scale(0.25F)
+      .end()
+      .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+      .rotation(30, 160, 0)
+      .translation(0, 3, 0)
+      .scale(0.35F)
+      .end()
+      .end();
+
+    getVariantBuilder(FactoryBlocks.HOPPER.get())
+      .partialState()
+      .setModels(new ConfiguredModel(hopperModel));
+    simpleBlockItem(FactoryBlocks.HOPPER.get(), hopperModel);
 
     simpleBlockItem(FactoryBlocks.REFINERY.get(), models().getBuilder("refinery_inventory")
       .texture("refinery", modLoc("block/refinery_block/refinery"))
