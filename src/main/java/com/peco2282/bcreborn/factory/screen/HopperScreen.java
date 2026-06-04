@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class HopperScreen extends BuildCraftScreen<HopperMenu> {
-  public static final ResourceLocation TEXTURE = BCRebornFactory.location("textures/gui/hopper.png");
+  public static final ResourceLocation TEXTURE = BCRebornFactory.location("textures/gui/hopper_gui.png");
 
   public HopperScreen(HopperMenu menu, Inventory playerInv, Component title) {
     super(menu, playerInv, title);
