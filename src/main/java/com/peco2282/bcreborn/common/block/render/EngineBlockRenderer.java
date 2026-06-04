@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.common.block.entity.EngineTextures;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -47,6 +47,10 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
   public void render(E engine, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
     poseStack.pushPose();
+    int light = LevelRenderer.getLightColor(
+      engine.getLevel(),
+      engine.getBlockPos().above()
+    );
 
     // --- 向きに応じた回転 ---
     Direction facing = engine.orientation;
@@ -65,13 +69,13 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
 
     // --- 各パーツを描画（getBuffer直後に描画してバッファフラッシュを防ぐ） ---
     // base と moving は同じbaseTexture（本家準拠）
-    model.renderBase(poseStack, bufferSource.getBuffer(RenderType.entityCutout(baseTex)), LightTexture.FULL_BRIGHT, packedOverlay);
-    model.renderMoving(poseStack, bufferSource.getBuffer(RenderType.entityCutout(baseTex)), LightTexture.FULL_BRIGHT, packedOverlay);
-    model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), LightTexture.FULL_BRIGHT, packedOverlay);
-    model.renderTrunk(poseStack, bufferSource.getBuffer(RenderType.entityCutout(trunkTex)), LightTexture.FULL_BRIGHT, packedOverlay);
+    model.renderBase(poseStack, bufferSource.getBuffer(RenderType.entityCutout(baseTex)), light, packedOverlay);
+    model.renderMoving(poseStack, bufferSource.getBuffer(RenderType.entityCutout(baseTex)), light, packedOverlay);
+    model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), light, packedOverlay);
+    model.renderTrunk(poseStack, bufferSource.getBuffer(RenderType.entityCutout(trunkTex)), light, packedOverlay);
     for (int i = 0; i < 8; i += 2) {
       model.setMovingOffset(offset + i);
-      model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), LightTexture.FULL_BRIGHT, packedOverlay);
+      model.renderChamber(poseStack, bufferSource.getBuffer(RenderType.entityCutout(chamberTex)), light, packedOverlay);
     }
 
     poseStack.popPose();
