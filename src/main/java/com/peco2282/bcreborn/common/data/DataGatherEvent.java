@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.core.data.CoreBlockStateProvider;
 import com.peco2282.bcreborn.core.data.CoreRecipeProvider;
 import com.peco2282.bcreborn.energy.data.EnergyBlockStateProvider;
 import com.peco2282.bcreborn.factory.data.FactoryBlockStateProvider;
+import com.peco2282.bcreborn.robotics.data.RoboticsBlockStateProvider;
 import com.peco2282.bcreborn.silicon.data.SiliconBlockStateProvider;
 import com.peco2282.bcreborn.transport.data.TransportBlockStateProvider;
 import net.minecraft.core.HolderLookup;
@@ -57,5 +58,7 @@ public class DataGatherEvent {
     generator.addProvider(true, new SiliconBlockStateProvider(generator.getPackOutput(), helper));
 
     generator.addProvider(true, new FactoryBlockStateProvider(generator.getPackOutput(), helper));
+
+    generator.addProvider(true, new RoboticsBlockStateProvider(generator.getPackOutput(), helper));
   }
 }
