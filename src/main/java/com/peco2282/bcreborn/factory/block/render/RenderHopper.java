@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.factory.block.entity.HopperBlockEntity;
 import com.peco2282.bcreborn.factory.event.BCRebornFactoryEvent;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -40,11 +41,15 @@ public class RenderHopper implements BlockEntityRenderer<HopperBlockEntity> {
   private static final ResourceLocation HOPPER_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/top.png");
   private static final ResourceLocation HOPPER_MIDDLE_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/middle.png");
 
-  private final ModelPart top;
-  private final ModelPart bottom;
+  public final ModelPart top;
+  public final ModelPart bottom;
 
   public RenderHopper(BlockEntityRendererProvider.Context context) {
-    ModelPart root = context.bakeLayer(BCRebornFactoryEvent.HOPPER_LAYER);
+    this(context.getModelSet());
+  }
+
+  public RenderHopper(EntityModelSet modelSet) {
+    ModelPart root = modelSet.bakeLayer(BCRebornFactoryEvent.HOPPER_LAYER);
     this.top = root.getChild("top");
     this.bottom = root.getChild("bottom");
   }
@@ -72,14 +77,18 @@ public class RenderHopper implements BlockEntityRenderer<HopperBlockEntity> {
       blockEntity.getBlockPos().above()
     );
 
-    VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(HOPPER_TEXTURE));
-    top.render(poseStack, vertexConsumer, light, packedOverlay);
-    bottom.render(poseStack, vertexConsumer, light, packedOverlay);
-
-    // Middle part (ModelFrustum)
-    renderMiddle(poseStack, bufferSource.getBuffer(RenderType.entityCutout(HOPPER_MIDDLE_TEXTURE)), light, packedOverlay);
+    renderInternal(poseStack, bufferSource, light, packedOverlay);
 
     poseStack.popPose();
+  }
+
+  public void renderInternal(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(HOPPER_TEXTURE));
+    top.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    bottom.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+
+    // Middle part (ModelFrustum)
+    renderMiddle(poseStack, bufferSource.getBuffer(RenderType.entityCutout(HOPPER_MIDDLE_TEXTURE)), packedLight, packedOverlay);
   }
 
   private void renderMiddle(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay) {
