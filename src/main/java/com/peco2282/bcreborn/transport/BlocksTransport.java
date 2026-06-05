@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
-import com.peco2282.bcreborn.common.registry.RegistryMultipleKeyObject;
+import com.peco2282.bcreborn.common.registry.KeyedRegistryObject;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 public class BlocksTransport {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
-  public static final RegistryMultipleKeyObject.TwoKeys<PipeBlock, PipeType, PipeMaterial> PIPES = RegistryMultipleKeyObject.two(
+  public static final KeyedRegistryObject.TwoKeys<PipeBlock, PipeType, PipeMaterial> PIPES = KeyedRegistryObject.two(
     Arrays.stream(PipeType.values()).toList(),
     Arrays.stream(PipeMaterial.values()).toList(),
     (type, material) -> "pipe_" + material.getSerializedName() + "_" + type.getSerializedName(),

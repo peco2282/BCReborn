@@ -20,7 +20,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.registry.RegistryBooleanObject;
 import com.peco2282.bcreborn.common.registry.RegistryEnumObject;
-import com.peco2282.bcreborn.common.registry.RegistryMultipleKeyObject;
+import com.peco2282.bcreborn.common.registry.KeyedRegistryObject;
 import com.peco2282.bcreborn.common.registry.RegistrySizedObject;
 import com.peco2282.bcreborn.transport.statements.*;
 import net.minecraft.core.Direction;
@@ -50,7 +50,7 @@ public class TransportStatements {
   public static final RegistryEnumObject<TriggerClockTimer.Time, TriggerClockTimer> TRIGGER_CLOCK_TIMER = registerEnum("trigger_clock_timer", TriggerClockTimer::new, TriggerClockTimer.Time.class);
   public static final RegistryBooleanObject<TriggerLightSensor> TRIGGER_LIGHT_SENSOR = registerBoolean("trigger_light_sensor", TriggerLightSensor::new, "bright", "dark");
   public static final RegistryEnumObject<TriggerPipeContents.PipeContents, TriggerPipeContents> TRIGGER_PIPE_CONTENTS = registerEnum("trigger_pipe_contents", TriggerPipeContents::new, TriggerPipeContents.PipeContents.class);
-  public static final RegistryMultipleKeyObject.TwoKeys<TriggerPipeSignal, Boolean, PipeWire> TRIGGER_PIPE_SIGNAL = RegistryMultipleKeyObject.two(
+  public static final KeyedRegistryObject.TwoKeys<TriggerPipeSignal, Boolean, PipeWire> TRIGGER_PIPE_SIGNAL = KeyedRegistryObject.two(
     List.of(true, false),
     Arrays.stream(PipeWire.class.getEnumConstants()).toList(),
     (k1, k2) -> "trigger_pipe_signal" + k2.name().toLowerCase(Locale.ENGLISH) + (k1 ? "_active" : "_inactive"),
