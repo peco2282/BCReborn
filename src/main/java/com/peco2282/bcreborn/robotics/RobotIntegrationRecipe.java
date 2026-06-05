@@ -35,7 +35,7 @@ public class RobotIntegrationRecipe {
     ArrayList<List<ItemStack>> list = new ArrayList<>();
     ArrayList<ItemStack> example = new ArrayList<>();
     for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
-      ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
+      ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARDS.get().get());
       nbt.createBoard(stack.getOrCreateTag());
       example.add(stack);
     }

@@ -19,8 +19,10 @@ import com.peco2282.bcreborn.silicon.SiliconItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +45,8 @@ public class BCItemTagsProvider extends ItemTagsProvider {
       .addTag(CommonItemTags.FUEL_BUCKET);
     tag(CommonItemTags.FACTORY);
     tag(CommonItemTags.ROBOTICS)
-      .add(RoboticsItems.REDSTONE_BOARD.get(), RoboticsItems.ROBOT.get(), RoboticsItems.ROBOT_STATION.get());
+      .add(RoboticsItems.REDSTONE_BOARDS.getAll().stream().map(RegistryObject::get).toArray(Item[]::new))
+      .add(RoboticsItems.ROBOT.get(), RoboticsItems.ROBOT_STATION.get());
     tag(CommonItemTags.SILICON)
       .addTag(CommonItemTags.CHIPSET).add(SiliconItems.PACKAGE_ITEM.get());
     tag(CommonItemTags.TRANSPORT);
