@@ -22,9 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryObject<V>> {
+public abstract class KeyedRegistryObject<V> implements Supplier<RegistryObject<V>> {
   // @formatter:off
   public static <V, K1, K2> TwoKeys<V, K1, K2> two(
     Collection<K1> key1s,                                           // Allow Key1 to be a collection
@@ -62,7 +61,7 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
 
   public abstract List<RegistryObject<V>> getAll();
 
-  public static class TwoKeys<V, K1, K2> extends RegistryMultipleKeyObject<V> {
+  public static class TwoKeys<V, K1, K2> extends KeyedRegistryObject<V> {
     private final Collection<K1> key1s;
     private final Collection<K2> key2s;
     private final Map<K1, Map<K2, RegistryObject<V>>> map = new ConcurrentHashMap<>();
@@ -143,7 +142,7 @@ public abstract class RegistryMultipleKeyObject<V> implements Supplier<RegistryO
     }
   }
 
-  public static class ThreeKeys<V, K1, K2, K3> extends RegistryMultipleKeyObject<V> {
+  public static class ThreeKeys<V, K1, K2, K3> extends KeyedRegistryObject<V> {
     private final Collection<K1> key1s;
     private final Collection<K2> key2s;
     private final Collection<K3> key3s;
