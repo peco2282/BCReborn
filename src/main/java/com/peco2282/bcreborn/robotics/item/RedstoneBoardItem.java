@@ -30,7 +30,7 @@ public class RedstoneBoardItem extends BuildCraftItem {
   }
 
   public static ItemStack createStack(RedstoneBoardNBT<?> boardNBT) {
-    ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
+    ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARDS.get().get());
     CompoundTag nbtData = stack.getOrCreateTag();
     boardNBT.createBoard(nbtData);
     return stack;

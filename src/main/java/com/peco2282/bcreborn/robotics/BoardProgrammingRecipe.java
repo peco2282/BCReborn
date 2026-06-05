@@ -18,7 +18,6 @@ import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class BoardProgrammingRecipe implements IProgrammingRecipe {
   public List<ItemStack> getOptions(int width, int height) {
     List<ItemStack> options = new ArrayList<>(width * height);
     for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
-      ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARD.get());
+      ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARDS.get().get());
       nbt.createBoard(stack.getOrCreateTag());
       options.add(stack);
     }
