@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.silicon.data;
 
 import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
+import com.peco2282.bcreborn.silicon.SiliconItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -481,5 +482,12 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .transform(ItemDisplayContext.GUI).rotation(22.5F, 45, 0).scale(.6F, .6F, .6F).end()
       .end()
     );
+
+    SiliconItems.getAllChipsets().forEach(chipset -> {
+      itemModels()
+        .getBuilder(chipset.getId().getPath())
+        .parent(models().getExistingFile(mcLoc("item/generated")))
+        .texture("layer0", modLoc("item/chipset/redstone_" + chipset.getId().getPath()));
+    });
   }
 }

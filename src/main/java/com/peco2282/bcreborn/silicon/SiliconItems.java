@@ -20,6 +20,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornSilicon.MODID)
@@ -36,6 +37,10 @@ public class SiliconItems {
   public static final RegistryObject<RedstoneChipsetItem> EMERALD_CHIPSET = register("emerald_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.EMERALD));
 
   public static final RegistryObject<PackageItem> PACKAGE_ITEM = register("package", PackageItem::new);
+
+  public static List<RegistryObject<RedstoneChipsetItem>> getAllChipsets() {
+    return List.of(REDSTONE_CHIPSET, IRON_CHIPSET, GOLD_CHIPSET, DIAMOND_CHIPSET, PULSATING_CHIPSET, QUARTZ_CHIPSET, COMP_CHIPSET, EMERALD_CHIPSET);
+  }
 
   private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return REGISTRY.registerItem(name, item);
