@@ -3,6 +3,7 @@ package com.peco2282.bcreborn.robotics.data;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
 import com.peco2282.bcreborn.robotics.RoboticsBlocks;
+import com.peco2282.bcreborn.robotics.RoboticsItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -63,5 +64,12 @@ public class RoboticsBlockStateProvider extends BCBlockStateHelper {
       .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).scale(0.3F).end()
       .transform(ItemDisplayContext.GUI).rotation(22.5F, 135, 0).scale(0.6F).end()
       .end());
+
+    RoboticsItems.REDSTONE_BOARDS.getMap().forEach((k, v) -> {
+      itemModels()
+        .getBuilder(v.getId().getPath())
+        .parent(getExistingFile(mcLoc("item/generated")))
+        .texture("layer0", modLoc("item/board/" + k));
+    });
   }
 }
