@@ -55,8 +55,12 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
     ItemStack stack = travelingItem.getStack();
     if (stack.isEmpty()) return;
 
-    // 現tickのprogressから次tickの予測位置へ外挿補間（速度×partialTickを加算）
-    float progress = travelingItem.getProgress() + travelingItem.getSpeed() * partialTick;
+    // prevProgress と progress の間で partialTick を使用して線形補間
+    float progress = travelingItem.getPrevProgress() + (travelingItem.getProgress() - travelingItem.getPrevProgress()) * partialTick;
+    if (travelingItem.getProgress() < travelingItem.getPrevProgress()) {
+      // 次のパイプへ移動した直後や、折り返した直後などで progress がリセットされた場合
+      progress = travelingItem.getProgress();
+    }
 
     // アイテムの3D座標を計算（パイプ中心 = 0.5, 0.5, 0.5）
     float x = 0.5f;
