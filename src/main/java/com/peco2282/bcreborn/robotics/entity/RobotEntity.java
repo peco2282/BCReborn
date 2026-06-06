@@ -227,9 +227,7 @@ public class RobotEntity extends RobotEntityBase implements
     RedstoneBoardNBT<?> boardNBT = RegistryUtil.getRedstoneBoard(entityData
       .get(DATA_BOARD_ID));
 
-    if (boardNBT != null) {
-      texture = ((RedstoneBoardRobotNBT) boardNBT).getRobotTexture();
-    }
+    texture = ((RedstoneBoardRobotNBT) boardNBT).getRobotTexture();
 
     itemAngle1 = entityData.get(DATA_ITEM_ANGLE_1);
     itemAngle2 = entityData.get(DATA_ITEM_ANGLE_2);
