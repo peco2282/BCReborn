@@ -175,7 +175,7 @@ public class RobotEntity extends RobotEntityBase implements
     this(RoboticsEntityTypes.ROBOT.get(), world);
 
     board = boardNBT.create(this);
-    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID());
+    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
 
     if (!world.isClientSide) {
       mainAI = new AIRobotMain(this);
@@ -613,7 +613,7 @@ public class RobotEntity extends RobotEntityBase implements
       board = RedstoneBoardRegistry.instance.getEmptyRobotBoard().create(this);
     }
 
-    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID());
+    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
 
     stackRequestNBT = nbt.getList("stackRequests", ListTag.TAG_COMPOUND);
 

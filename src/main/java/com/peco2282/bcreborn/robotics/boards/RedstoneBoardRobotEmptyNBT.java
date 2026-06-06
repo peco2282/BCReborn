@@ -43,8 +43,8 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  public String getID() {
-    return "buildcraft:boardRobotEmpty";
+  public ResourceLocation getID() {
+    return BCRebornRobotics.location("robot_empty");
   }
 
   @Override
