@@ -9,17 +9,21 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.common;
+package com.peco2282.bcreborn.api;
 
 import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -83,6 +87,21 @@ public interface RegistryUtil {
       .filter(it -> it.getValue() instanceof IFillerPattern)
       .map(it -> Map.entry(it.getKey(), (IFillerPattern) it.getValue()))
       .collect(Collectors.toUnmodifiableSet());
+  }
+
+  static RedstoneBoardNBT<?> getRedstoneBoard(CompoundTag tag) {
+    return getRedstoneBoard(tag.getString("id"));
+  }
+
+  static RedstoneBoardNBT<?> getRedstoneBoard(String id) {
+    return getRedstoneBoardsList().stream().filter(it -> it.getID().equals(ResourceLocation.parse(id))).findFirst().orElseGet(RoboticsRedstoneRobots.EMPTY);
+  }
+
+  static List<RedstoneBoardNBT<?>> getRedstoneBoardsList() {
+    return getRegistry(BCRegistryKeys.REDSTONE_BOARD).getEntries().stream()
+      .map(Map.Entry::getValue)
+      .<RedstoneBoardNBT<?>>map(it ->  (RedstoneBoardNBT<?>) it)
+      .toList();
   }
 
   @Contract(value = "null->fail; _->!null", pure = true)
