@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class RedstoneBoardNBT<T> {
   public static final int COST_ZERO = 0;
@@ -32,6 +33,20 @@ public abstract class RedstoneBoardNBT<T> {
   public static final int COST_MEDIUM = 32_000;
   public static final int COST_HIGH = 128_000;
   public static final int COST_VERY_HIGH = 512_000;
+
+  private static Supplier<? extends RedstoneBoardNBT<?>> empty;
+
+  public static Supplier<? extends RedstoneBoardNBT<?>> getEmpty() {
+    return empty;
+  }
+
+  public static void setEmpty(Supplier<? extends RedstoneBoardNBT<?>> empty) {
+    if (RedstoneBoardNBT.empty == null) {
+      RedstoneBoardNBT.empty = empty;
+    } else {
+      throw new IllegalStateException("RedstoneBoardNBT empty supplier is already set");
+    }
+  }
 
   private static final Random rand = new Random();
 
