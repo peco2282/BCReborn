@@ -27,20 +27,21 @@ import java.util.Random;
 import java.util.function.Function;
 
 public abstract class RedstoneBoardNBT<T> {
+  public static final int COST_ZERO = 0;
+  public static final int COST_LOW = 8_000;
+  public static final int COST_MEDIUM = 32_000;
+  public static final int COST_HIGH = 128_000;
+  public static final int COST_VERY_HIGH = 512_000;
 
   private static final Random rand = new Random();
+
+  public abstract int getEnergyCost();
 
   public abstract ResourceLocation getID();
 
   public abstract void addInformation(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag);
 
   public abstract IRedstoneBoard<T> create(CompoundTag nbt, T object);
-
-  @OnlyIn(Dist.CLIENT)
-  public abstract void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
-
-  @OnlyIn(Dist.CLIENT)
-  public abstract TextureAtlasSprite getIcon(CompoundTag nbt);
 
   public void createBoard(CompoundTag nbt) {
     nbt.putString("id", getID().toString());
