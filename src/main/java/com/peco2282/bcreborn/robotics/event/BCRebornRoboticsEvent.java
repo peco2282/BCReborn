@@ -40,4 +40,9 @@ public class BCRebornRoboticsEvent {
     event.registerEntityRenderer(RoboticsEntityTypes.ROBOT.get(), RenderRobot::new);
     event.registerBlockEntityRenderer(BlockEntityTypesRobotics.ZONE_PLAN.get(), RenderZonePlan::new);
   }
+
+  @SubscribeEvent
+  public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    event.registerLayerDefinition(RenderRobot.LAYER_LOCATION, RenderRobot::createLayer);
+  }
 }

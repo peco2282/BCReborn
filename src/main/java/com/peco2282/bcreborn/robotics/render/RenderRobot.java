@@ -21,6 +21,7 @@ import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -49,6 +50,7 @@ public class RenderRobot extends EntityRenderer<RobotEntity> {
   private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
   private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
   private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
+  public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(BCRebornRobotics.location("robot"), "main");
 
   private final ModelPart box;
   private final ModelPart skullOverlayBox;
