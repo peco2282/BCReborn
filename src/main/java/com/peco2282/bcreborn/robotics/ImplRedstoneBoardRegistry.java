@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Function;
 
+@Deprecated(forRemoval = true)
 public class ImplRedstoneBoardRegistry extends RedstoneBoardRegistry {
   private final HashMap<String, BoardFactory> boards = new HashMap<>();
   private RedstoneBoardRobotNBT emptyRobotBoardNBT = RedstoneBoardRobotEmptyNBT.instance;
