@@ -39,6 +39,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   private final ResourceLocation id;
   private final String upperName, boardType;
   private final Function<RobotEntityBase, ? extends RedstoneBoardRobot> boardInit;
+  private final int energyCost;
 
   @OnlyIn(Dist.CLIENT)
   private TextureAtlasSprite icon;
@@ -49,6 +50,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
     this.texture = BCRebornRobotics.location("textures/entity/robot/robot_" + name + ".png");
     this.boardInit = board;
+    this.energyCost = energyCost;
 
     REGISTRY.put(name, this);
   }

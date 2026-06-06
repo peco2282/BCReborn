@@ -30,7 +30,11 @@ import java.util.function.Function;
 public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 
   public static RedstoneBoardRobotEmptyNBT instance = new RedstoneBoardRobotEmptyNBT();
-  private TextureAtlasSprite icon;
+
+  @Override
+  public int getEnergyCost() {
+    return COST_ZERO;
+  }
 
   @Override
   public RedstoneBoardRobot create(RobotEntityBase robot) {
@@ -50,15 +54,4 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
   @Override
   public void addInformation(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
   }
-
-  @Override
-  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    icon = textureGetter.apply(BCRebornRobotics.location("board/clean"));
-  }
-
-  @Override
-  public TextureAtlasSprite getIcon(CompoundTag nbt) {
-    return icon;
-  }
-
 }
