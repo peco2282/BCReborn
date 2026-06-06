@@ -41,10 +41,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   private final Function<RobotEntityBase, ? extends RedstoneBoardRobot> boardInit;
   private final int energyCost;
 
-  @OnlyIn(Dist.CLIENT)
-  private TextureAtlasSprite icon;
-
-  public BCBoardNBT(ResourceLocation id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType) {
+  public BCBoardNBT(ResourceLocation id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType, int energyCost) {
     this.id = id;
     this.boardType = boardType;
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -53,6 +50,10 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
     this.energyCost = energyCost;
 
     REGISTRY.put(name, this);
+  }
+
+  public int getEnergyCost() {
+    return energyCost;
   }
 
   @Override
@@ -72,19 +73,11 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  @OnlyIn(Dist.CLIENT)
-  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    icon = textureGetter.apply(BCRebornRobotics.location("board/" + boardType));
-  }
-
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public TextureAtlasSprite getIcon(CompoundTag nbt) {
-    return icon;
-  }
-
-  @Override
   public ResourceLocation getRobotTexture() {
     return texture;
+  }
+
+  public String getBoardType() {
+    return boardType;
   }
 }
