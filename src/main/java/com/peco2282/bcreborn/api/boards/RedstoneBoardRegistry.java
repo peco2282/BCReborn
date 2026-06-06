@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Collection;
 import java.util.function.Function;
 
+@Deprecated(forRemoval = true)
 public abstract class RedstoneBoardRegistry {
   public static RedstoneBoardRegistry instance = new ImplRedstoneBoardRegistry();
 
