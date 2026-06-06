@@ -114,9 +114,9 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
       startDelegateAI(new AIRobotGotoStationAndLoad(robot, new ArrayStackFilter(
         requirementsToLookFor.getFirst()), requirementsToLookFor.getFirst().getCount()));
       return;
-    }
+    } else {
 
-    if (requirementsToLookFor.isEmpty()) {
+//    if (requirementsToLookFor.isEmpty()) {
       if (currentBuildingSlot.stackConsumed == null) {
         // Once all the element are in, if not already, use them to
         // prepare the slot.
