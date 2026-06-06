@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.event;
 
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.crops.ICropHandler;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
@@ -34,5 +35,6 @@ public class BCRegistryEvent {
     event.create(new RegistryBuilder<IFacadeItem>().setName(BCRegistryKeys.FACADE_ITEM.location()));
     event.create(new RegistryBuilder<IStatement>().setName(BCRegistryKeys.STATEMENT.location()));
     event.create(new RegistryBuilder<IStatementParameter>().setName(BCRegistryKeys.STATEMENT_PARAMETER.location()));
+    event.create(new RegistryBuilder<RedstoneBoardNBT<?>>().setName(BCRegistryKeys.REDSTONE_BOARD.location()));
   }
 }
