@@ -52,6 +52,7 @@ public class TravelingItem {
     // entryDirection はその方向をそのまま保持する（来た方向 = NORTH）
     this.entryDirection = from;
     this.progress = 0;
+    this.prevProgress = 0;
     this.nextDirection = null;
   }
 
@@ -67,6 +68,7 @@ public class TravelingItem {
     Direction entryDir = Direction.from3DDataValue(dirValue);
     TravelingItem item = new TravelingItem(stack, entryDir);
     item.progress = tag.getFloat("Progress");
+    item.prevProgress = item.progress; // ロード時は前回の状態が不明なので現在の値で初期化
     if (tag.contains("Speed")) {
       item.speed = tag.getFloat("Speed");
     }
@@ -106,6 +108,10 @@ public class TravelingItem {
 
   public void setProgress(float progress) {
     this.progress = progress;
+  }
+
+  public void setPrevProgress(float prevProgress) {
+    this.prevProgress = prevProgress;
   }
 
   public int getBoostedBlocksRemaining() {

@@ -173,7 +173,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
-    if (level.isClientSide) return;
+    if (level.isClientSide) {
+      if (transportType == PipeType.ITEM) {
+        tickItems(level, pos);
+      }
+      return;
+    }
     ticksSincePull++;
 
     if (behaviour != null) {
@@ -182,6 +187,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     if (transportType == PipeType.ITEM) {
       tickItems(level, pos);
+      if (!level.isClientSide && !itemTransportModule.getTravelingItems().isEmpty()) {
+        level.sendBlockUpdated(pos, state, state, 3);
+      }
     } else if (transportType == PipeType.FLUID) {
       if (fluidTransportModule != null) {
         fluidTransportModule.tick(level, pos);
