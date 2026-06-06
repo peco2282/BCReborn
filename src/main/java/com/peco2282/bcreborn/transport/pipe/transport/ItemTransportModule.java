@@ -110,6 +110,7 @@ public class ItemTransportModule {
             Direction back = item.getEntryDirection().getOpposite();
             item.setNextDirection(back);
             item.setProgress(0.0f);
+            item.setPrevProgress(0.0f);
             item.incrementBounceCount();
             pipe.setChanged();
           }
