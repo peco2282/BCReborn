@@ -28,11 +28,11 @@ import java.util.function.Supplier;
 @InitRegister(modId = BCRebornRobotics.MODID)
 public class RoboticsItems {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
-  private static final List<String> boardNames = List.of("blue", "clean", "green", "red", "unknown", "yellow");
+  private static final List<String> boardNames = List.of("clean", "green", "blue", "red", "yellow", "unknown");
 
   public static final KeyedRegistryObject.SingleKey<RedstoneBoardItem, String> REDSTONE_BOARDS = KeyedRegistryObject.single(
     boardNames,
-    name -> name + "_redstone_board",
+    name -> name + "_board",
     RoboticsItems::register,
     ignore -> new RedstoneBoardItem()
   );// register("redstone_board", RedstoneBoardItem::new);
