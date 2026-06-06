@@ -30,7 +30,7 @@ public abstract class RedstoneBoardNBT<T> {
 
   private static final Random rand = new Random();
 
-  public abstract String getID();
+  public abstract ResourceLocation getID();
 
   public abstract void addInformation(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag);
 
@@ -43,7 +43,7 @@ public abstract class RedstoneBoardNBT<T> {
   public abstract TextureAtlasSprite getIcon(CompoundTag nbt);
 
   public void createBoard(CompoundTag nbt) {
-    nbt.putString("id", getID());
+    nbt.putString("id", getID().toString());
   }
 
   public int getParameterNumber(CompoundTag nbt) {

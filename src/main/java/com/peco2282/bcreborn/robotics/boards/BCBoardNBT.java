@@ -36,13 +36,14 @@ import java.util.function.Function;
 public class BCBoardNBT extends RedstoneBoardRobotNBT {
   public static final Map<String, RedstoneBoardRobotNBT> REGISTRY = new HashMap<>();
   private final ResourceLocation texture;
-  private final String id, upperName, boardType;
+  private final ResourceLocation id;
+  private final String upperName, boardType;
   private final Function<RobotEntityBase, ? extends RedstoneBoardRobot> boardInit;
 
   @OnlyIn(Dist.CLIENT)
   private TextureAtlasSprite icon;
 
-  public BCBoardNBT(String id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType) {
+  public BCBoardNBT(ResourceLocation id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType) {
     this.id = id;
     this.boardType = boardType;
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -53,7 +54,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  public String getID() {
+  public ResourceLocation getID() {
     return id;
   }
 
