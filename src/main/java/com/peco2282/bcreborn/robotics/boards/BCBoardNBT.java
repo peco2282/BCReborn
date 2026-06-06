@@ -37,29 +37,17 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   public static final Map<String, RedstoneBoardRobotNBT> REGISTRY = new HashMap<>();
   private final ResourceLocation texture;
   private final String id, upperName, boardType;
-  private final Constructor<? extends RedstoneBoardRobot> boardInit;
+  private final Function<RobotEntityBase, ? extends RedstoneBoardRobot> boardInit;
 
   @OnlyIn(Dist.CLIENT)
   private TextureAtlasSprite icon;
 
-  public BCBoardNBT(String id, String name, Class<? extends RedstoneBoardRobot> board, String boardType) {
+  public BCBoardNBT(String id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType) {
     this.id = id;
     this.boardType = boardType;
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
     this.texture = BCRebornRobotics.location("textures/entity/robot/robot_" + name + ".png");
-
-    Constructor<? extends RedstoneBoardRobot> boardInitLocal;
-    try {
-      boardInitLocal = board.getConstructor(RobotEntityBase.class);
-    } catch (Exception e) {
-      try {
-        boardInitLocal = board.getConstructor(Object.class);
-      } catch (Exception e1) {
-        e.printStackTrace();
-        boardInitLocal = null;
-      }
-    }
-    this.boardInit = boardInitLocal;
+    this.boardInit = board;
 
     REGISTRY.put(name, this);
   }
@@ -76,13 +64,8 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  public RedstoneBoardRobot create(Object robot) {
-    try {
-      return boardInit.newInstance(robot);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
+  public RedstoneBoardRobot create(RobotEntityBase robot) {
+    return boardInit.apply(robot);
   }
 
   @Override

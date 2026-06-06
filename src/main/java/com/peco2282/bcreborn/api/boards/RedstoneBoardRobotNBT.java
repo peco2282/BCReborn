@@ -22,7 +22,7 @@ public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<RobotEntity
     return create(robot);
   }
 
-  public abstract RedstoneBoardRobot create(Object robot);
+  public abstract RedstoneBoardRobot create(RobotEntityBase robot);
 
   public abstract ResourceLocation getRobotTexture();
 }
