@@ -47,10 +47,9 @@ public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> exte
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append(getClass().getSimpleName()).append("{");
-    builder.append("keyType=").append(keyType.getSimpleName()).append(", ");
-    builder.append("size=").append(size()).append("}");
-    return builder.toString();
+    String builder = getClass().getSimpleName() + "{" +
+      "keyType=" + keyType.getSimpleName() + ", " +
+      "size=" + size() + "}";
+    return builder;
   }
 }
