@@ -18,8 +18,8 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BCLog;
@@ -37,6 +37,7 @@ import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.item.WrenchItem;
 import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RobotRegistry;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotMain;
 import com.peco2282.bcreborn.robotics.ai.AIRobotShutdown;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSleep;
@@ -223,7 +224,7 @@ public class RobotEntity extends RobotEntityBase implements
     laser.tail.z = entityData.get(DATA_LASER_Z);
     laser.isVisible = entityData.get(DATA_LASER_VISIBLE) == 1;
 
-    RedstoneBoardNBT<?> boardNBT = RedstoneBoardRegistry.instance.getRedstoneBoard(entityData
+    RedstoneBoardNBT<?> boardNBT = RegistryUtil.getRedstoneBoard(entityData
       .get(DATA_BOARD_ID));
 
     if (boardNBT != null) {
@@ -610,7 +611,7 @@ public class RobotEntity extends RobotEntityBase implements
     }
 
     if (board == null) {
-      board = RedstoneBoardRegistry.instance.getEmptyRobotBoard().create(this);
+      board = RoboticsRedstoneRobots.EMPTY.get().create(this);
     }
 
     entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());

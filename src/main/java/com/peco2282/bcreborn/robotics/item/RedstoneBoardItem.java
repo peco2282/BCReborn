@@ -11,10 +11,12 @@
  */
 package com.peco2282.bcreborn.robotics.item;
 
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
+import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -43,18 +45,18 @@ public class RedstoneBoardItem extends BuildCraftItem {
   private static CompoundTag getNBT(ItemStack stack) {
     CompoundTag cpt = stack.getOrCreateTag();
     if (!cpt.contains("id")) {
-      RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
+      RoboticsRedstoneRobots.EMPTY.get().createBoard(cpt);
     }
     return cpt;
   }
 
   private static RedstoneBoardNBT<?> getBoardNBT(CompoundTag cpt) {
-    return RedstoneBoardRegistry.instance.getRedstoneBoard(cpt);
+    return RegistryUtil.getRedstoneBoard(cpt);
   }
 
   @Override
   public int getMaxStackSize(ItemStack stack) {
-    return getBoardNBT(stack) != RedstoneBoardRegistry.instance.getEmptyRobotBoard() ? 1 : 16;
+    return !(getBoardNBT(stack) instanceof RedstoneBoardRobotEmptyNBT) ? 1 : 16;
   }
 
   @Override

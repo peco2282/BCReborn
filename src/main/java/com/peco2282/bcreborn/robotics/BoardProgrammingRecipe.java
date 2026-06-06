@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.robotics;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,7 +31,7 @@ public class BoardProgrammingRecipe implements IProgrammingRecipe {
   @Override
   public List<ItemStack> getOptions(int width, int height) {
     List<ItemStack> options = new ArrayList<>(width * height);
-    for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
+    for (RedstoneBoardNBT<?> nbt : RegistryUtil.getRedstoneBoardsList()) {
       ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARDS.get().get());
       nbt.createBoard(stack.getOrCreateTag());
       options.add(stack);
@@ -42,9 +42,7 @@ public class BoardProgrammingRecipe implements IProgrammingRecipe {
 
   @Override
   public int getEnergyCost(ItemStack option) {
-    return RedstoneBoardRegistry.instance.getEnergyCost(
-      RedstoneBoardRegistry.instance.getRedstoneBoard(option.getTag())
-    );
+    return RegistryUtil.getRedstoneBoard(option.getOrCreateTag()).getEnergyCost();
   }
 
   @Override

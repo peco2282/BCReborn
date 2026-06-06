@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.robotics;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,14 +27,14 @@ public class RobotIntegrationRecipe {
 
   public List<ItemStack> generateExampleInput() {
     ArrayList<ItemStack> example = new ArrayList<>();
-    example.add(RobotItem.createRobotStack(RedstoneBoardRegistry.instance.getEmptyRobotBoard(), 0));
+    example.add(RobotItem.createRobotStack(RoboticsRedstoneRobots.EMPTY.get(), 0));
     return example;
   }
 
   public List<List<ItemStack>> generateExampleExpansions() {
     ArrayList<List<ItemStack>> list = new ArrayList<>();
     ArrayList<ItemStack> example = new ArrayList<>();
-    for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
+    for (RedstoneBoardNBT<?> nbt : RegistryUtil.getRedstoneBoardsList()) {
       ItemStack stack = new ItemStack(RoboticsItems.REDSTONE_BOARDS.get().get());
       nbt.createBoard(stack.getOrCreateTag());
       example.add(stack);
@@ -45,7 +45,7 @@ public class RobotIntegrationRecipe {
 
   public List<ItemStack> generateExampleOutput() {
     ArrayList<ItemStack> example = new ArrayList<>();
-    for (RedstoneBoardNBT<?> nbt : RedstoneBoardRegistry.instance.getAllBoardNBTs()) {
+    for (RedstoneBoardNBT<?> nbt : RegistryUtil.getRedstoneBoardsList()) {
       example.add(RobotItem.createRobotStack((RedstoneBoardRobotNBT) nbt, 0));
     }
     return example;
