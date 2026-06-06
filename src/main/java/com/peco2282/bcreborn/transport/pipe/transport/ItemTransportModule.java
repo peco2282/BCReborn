@@ -60,11 +60,10 @@ public class ItemTransportModule {
     PipeBehaviour behaviour = pipe.getBehaviour();
 
     for (TravelingItem item : snapshot) {
-
       if (behaviour instanceof ItemPipeBehaviour ib) {
         ib.adjustSpeed(pipe, item);
       } else {
-        SpeedHelper.readjustSpeed(item);
+        SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
       }
 
       item.tick(level, pos);
