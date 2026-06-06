@@ -73,7 +73,7 @@ public class StandardItemExtractionModule implements ExtractionModule {
           if (!stack.isEmpty()) {
             ItemStack extracted = handler.extractItem(i, extractAmount, false);
             if (!extracted.isEmpty()) {
-              pipe.injectItem(extracted, extractDir);
+              pipe.injectItemWithSpeed(extracted, extractDir, pipe.getPipeMaterial().getItemSpeed());
               pipe.consumeExtractionEnergy(10);
               pipe.resetTicksSincePull();
               return;

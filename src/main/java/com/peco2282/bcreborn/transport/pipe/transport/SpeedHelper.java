@@ -19,11 +19,11 @@ import com.peco2282.bcreborn.transport.pipe.TravelingItem;
  * 状態を持たない static utility クラス。
  * speed calculation 系へ分離するための退避クラス。
  */
-final class SpeedHelper {
+public final class SpeedHelper {
 
-  private static final float MIN_SPEED = 0.015f;
-  private static final float MAX_SPEED = 0.225f;
-  private static final float SLOWDOWN = 0.0015f;
+  private static final float MIN_SPEED = 0.01f;
+  private static final float MAX_SPEED = 0.4f;
+  private static final float SLOWDOWN = 0.002f;
 
   private SpeedHelper() {
   }
@@ -31,11 +31,15 @@ final class SpeedHelper {
   /**
    * TravelingItem の速度を規定範囲内に収まるよう再調整する。
    * <p>
-   * 将来パイプ素材ごとに MIN/MAX を変えたい場合はここを拡張する。
+   * 基本的な減衰ロジックを提供。
    */
-  static void readjustSpeed(TravelingItem item) {
+  public static void readjustSpeed(TravelingItem item, float defaultSpeed) {
     float speed = item.getSpeed();
-    speed = Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed - SLOWDOWN));
-    item.setSpeed(speed);
+    if (speed > defaultSpeed) {
+      speed = Math.max(defaultSpeed, speed - SLOWDOWN);
+    } else if (speed < defaultSpeed) {
+      speed = Math.min(defaultSpeed, speed + SLOWDOWN);
+    }
+    item.setSpeed(Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed)));
   }
 }

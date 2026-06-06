@@ -15,22 +15,22 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 public enum PipeMaterial implements StringRepresentable {
-  WOOD("wood", 0.075f, 10, 320, 0.0000f),
-  COBBLESTONE("cobblestone", 0.075f, 10, 80, 0.0500f),
-  STONE("stone", 0.075f, 20, 160, 0.0250f),
-  GOLD("gold", 0.3f, 80, 2560, 0.003125f),
-  IRON("iron", 0.075f, 40, 1280, 0.0125f),
-  DIAMOND("diamond", 0.075f, 80, 10240, 0.0000f),
-  EMERALD("emerald", 0.075f, 40, -1, 0.0000f),
-  OBSIDIAN("obsidian", 0.075f, -1, -1, 0.0000f),
-  QUARTZ("quartz", 0.075f, 40, 640, 0.0125f),
-  VOID("void", 0.075f, 10, -1, 0.0000f),
-  CLAY("clay", 0.075f, 40, -1, 0.0000f),
-  SANDSTONE("sandstone", 0.075f, 20, -1, 0.0125f),
-  LAPIS("lapis", 0.075f, -1, -1, 0.0000f),
-  DAIZULI("daizuli", 0.075f, -1, -1, 0.0000f),
-  EMZULI("emzuli", 0.075f, -1, -1, 0.0000f),
-  STRIPES("stripes", 0.075f, -1, -1, 0.0000f);
+  WOOD("wood", 0.05f, 10, 320, 0.0000f),
+  COBBLESTONE("cobblestone", 0.05f, 10, 80, 0.0500f),
+  STONE("stone", 0.05f, 20, 160, 0.0250f),
+  GOLD("gold", 0.2f, 80, 2560, 0.003125f),
+  IRON("iron", 0.05f, 40, 1280, 0.0125f),
+  DIAMOND("diamond", 0.05f, 80, 10240, 0.0000f),
+  EMERALD("emerald", 0.05f, 40, -1, 0.0000f),
+  OBSIDIAN("obsidian", 0.05f, -1, -1, 0.0000f),
+  QUARTZ("quartz", 0.05f, 40, 640, 0.0125f),
+  VOID("void", 0.05f, 10, -1, 0.0000f),
+  CLAY("clay", 0.05f, 40, -1, 0.0000f),
+  SANDSTONE("sandstone", 0.05f, 20, -1, 0.0125f),
+  LAPIS("lapis", 0.05f, -1, -1, 0.0000f),
+  DAIZULI("daizuli", 0.05f, -1, -1, 0.0000f),
+  EMZULI("emzuli", 0.05f, -1, -1, 0.0000f),
+  STRIPES("stripes", 0.05f, -1, -1, 0.0000f);
 
   private static final int UNDEFINE_PIPE = -1;
   private final String name;

@@ -39,7 +39,7 @@ public interface ItemPipeBehaviour extends PipeBehaviour {
    * アイテムの移動速度を調整する
    */
   default void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    item.setSpeed(Math.max(0.01f, item.getSpeed() * 0.99f));
+    item.setSpeed(pipe.getPipeMaterial().getItemSpeed());
   }
 
   /**

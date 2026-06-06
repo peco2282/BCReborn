@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.transport.SpeedHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,12 +34,15 @@ public class GoldenItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    if (!pipe.getLevel().hasNeighborSignal(pipe.getBlockPos())) return;
+    if (!pipe.getLevel().hasNeighborSignal(pipe.getBlockPos())) {
+      SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
+      return;
+    }
     float speed = item.getSpeed();
-    if (speed < 0.3f) {
+    if (speed < 0.15f) {
       speed *= 2.0f;
     } else {
-      speed += 0.075f;
+      speed += 0.04f;
     }
     item.setSpeed(Math.min(speed, MAX_SPEED));
     // 加速後の残り距離カウンタをセット（丸石/焼石パイプが減衰に使用）

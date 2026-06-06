@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.transport.SpeedHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -43,17 +44,10 @@ public class CobblestoneItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    float speed = item.getSpeed();
-    float minSpeed = 0.015f;
-    float maxSpeed = 0.225f;
     int remaining = item.getBoostedBlocksRemaining();
     if (remaining > 0) {
-      // 加速後の残り距離に応じて減衰係数を調整（16ブロックで完全減衰）
-      float decayRate = 0.0015f * ((float) GoldenItemPipeBehaviour.BOOST_DISTANCE / COBBLESTONE_DECAY_DISTANCE);
-      item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - decayRate)));
       item.setBoostedBlocksRemaining(remaining - 1);
-    } else {
-      item.setSpeed(Math.max(minSpeed, Math.min(maxSpeed, speed - 0.0015f)));
     }
+    SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
   }
 }
