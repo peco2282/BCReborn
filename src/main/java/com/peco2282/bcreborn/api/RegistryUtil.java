@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import com.peco2282.bcreborn.api.statements.IStatement;
-import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -94,13 +93,13 @@ public interface RegistryUtil {
   }
 
   static RedstoneBoardNBT<?> getRedstoneBoard(String id) {
-    return getRedstoneBoardsList().stream().filter(it -> it.getID().equals(ResourceLocation.parse(id))).findFirst().orElseGet(RoboticsRedstoneRobots.EMPTY);
+    return getRedstoneBoardsList().stream().filter(it -> it.getID().equals(ResourceLocation.parse(id))).findFirst().orElseGet(RedstoneBoardNBT.getEmpty());
   }
 
   static List<RedstoneBoardNBT<?>> getRedstoneBoardsList() {
     return getRegistry(BCRegistryKeys.REDSTONE_BOARD).getEntries().stream()
       .map(Map.Entry::getValue)
-      .<RedstoneBoardNBT<?>>map(it ->  (RedstoneBoardNBT<?>) it)
+      .<RedstoneBoardNBT<?>>map(it -> (RedstoneBoardNBT<?>) it)
       .toList();
   }
 

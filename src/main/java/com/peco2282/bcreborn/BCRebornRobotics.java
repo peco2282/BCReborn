@@ -12,8 +12,10 @@
 package com.peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -62,6 +64,7 @@ public class BCRebornRobotics implements BCReborn {
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
+    RedstoneBoardNBT.setEmpty(RoboticsRedstoneRobots.EMPTY);
     RoboticsStatements.init();
   }
 
