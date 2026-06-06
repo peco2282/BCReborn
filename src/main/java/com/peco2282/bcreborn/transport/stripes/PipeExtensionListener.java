@@ -47,16 +47,16 @@ public class PipeExtensionListener {
 
 	private final Map<Level, HashSet<PipeExtensionRequest>> requests = new HashMap<>();
 
-	public void requestPipeExtension(ItemStack stack, Level world, BlockPos pos, Direction o, IStripesActivator h) {
+	public void requestPipeExtension(ItemStack stack, Level world, BlockPos aPos, Direction direction, IStripesActivator activator) {
 		if (world.isClientSide) {
 			return;
 		}
 
 		requests.computeIfAbsent(world, k -> new HashSet<>()).add(new PipeExtensionRequest() {{
 			this.stack = stack.copy();
-			this.pos = pos;
-			this.o = o;
-			this.h = h;
+			this.pos = aPos;
+			this.o = direction;
+			this.h = activator;
 		}});
 	}
 
