@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.registry;
 
 import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.crops.ICropHandler;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
@@ -29,6 +30,7 @@ public class BCRegistryKeys {
   public static final ResourceKey<Registry<IFacadeItem>> FACADE_ITEM = key("facade_item");
   public static final ResourceKey<Registry<IStatement>> STATEMENT = key("statement");
   public static final ResourceKey<Registry<IStatementParameter>> STATEMENT_PARAMETER = key("statement_parameter");
+  public static final ResourceKey<Registry<RedstoneBoardNBT<?>>> REDSTONE_BOARD = key("redstone_board");
 
 
   private static <T> ResourceKey<Registry<T>> key(String name) {

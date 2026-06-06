@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.blueprints.Schematic;
+import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import com.peco2282.bcreborn.api.statements.IStatement;
@@ -55,6 +56,7 @@ public final class BCRegistry {
   private final DeferredRegister<Schematic> SCHEMATIC;
   private final DeferredRegister<IStatement> STATEMENT;
   private final DeferredRegister<IStatementParameter> STATEMENT_PARAMETER;
+  private final DeferredRegister<RedstoneBoardNBT<?>> REDSTONE_BOARD;
 
   private BCRegistry(@NotNull String modid) {
     this.modid = modid;
@@ -70,6 +72,7 @@ public final class BCRegistry {
     SCHEMATIC = DeferredRegister.create(BCRegistryKeys.SCHEMATIC, modid);
     STATEMENT = DeferredRegister.create(BCRegistryKeys.STATEMENT, modid);
     STATEMENT_PARAMETER = DeferredRegister.create(BCRegistryKeys.STATEMENT_PARAMETER, modid);
+    REDSTONE_BOARD = DeferredRegister.create(BCRegistryKeys.REDSTONE_BOARD, modid);
   }
 
   public static BCRegistry getRegistry(String modid) {
@@ -130,6 +133,10 @@ public final class BCRegistry {
     return STATEMENT_PARAMETER.register(name, parameter);
   }
 
+  public <T, R extends RedstoneBoardNBT<T>> RegistryObject<R> registerRedstoneBoard(@NotNull String name, @NotNull Supplier<R> board) {
+    return REDSTONE_BOARD.register(name, board);
+  }
+
   public void register(IEventBus bus) {
     BLOCKS.register(bus);
     ITEMS.register(bus);
@@ -142,6 +149,7 @@ public final class BCRegistry {
     SCHEMATIC.register(bus);
     STATEMENT.register(bus);
     STATEMENT_PARAMETER.register(bus);
+    REDSTONE_BOARD.register(bus);
   }
 
   @Contract(pure = true)
