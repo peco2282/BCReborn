@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,7 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
   private TextureAtlasSprite icon;
 
   @Override
-  public RedstoneBoardRobot create(Object robot) {
+  public RedstoneBoardRobot create(RobotEntityBase robot) {
     return null; // TODO: Implement when BoardRobotEmpty is available
   }
 
