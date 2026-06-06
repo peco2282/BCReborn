@@ -11,10 +11,12 @@
  */
 package com.peco2282.bcreborn.robotics.item;
 
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
+import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -51,14 +53,14 @@ public class RobotItem extends BuildCraftItem {
   private static CompoundTag getNBT(ItemStack stack) {
     CompoundTag cpt = stack.getOrCreateTag();
     if (!cpt.contains("board")) {
-      RedstoneBoardRegistry.instance.getEmptyRobotBoard().createBoard(cpt);
+      RoboticsRedstoneRobots.EMPTY.get().createBoard(cpt);
     }
     return cpt;
   }
 
   private static RedstoneBoardRobotNBT getRobotNBT(CompoundTag cpt) {
     CompoundTag boardCpt = cpt.getCompound("board");
-    return (RedstoneBoardRobotNBT) RedstoneBoardRegistry.instance.getRedstoneBoard(boardCpt);
+    return (RedstoneBoardRobotNBT) RegistryUtil.getRedstoneBoard(boardCpt);
   }
 
   private static int getEnergy(CompoundTag cpt) {
@@ -74,7 +76,7 @@ public class RobotItem extends BuildCraftItem {
     CompoundTag cpt = getNBT(stack);
     RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
 
-    if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
+    if (!(boardNBT instanceof RedstoneBoardRobotEmptyNBT)) {
       return 1;
     } else {
       return 16;
@@ -86,7 +88,7 @@ public class RobotItem extends BuildCraftItem {
     CompoundTag cpt = getNBT(stack);
     RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
 
-    if (boardNBT != RedstoneBoardRegistry.instance.getEmptyRobotBoard()) {
+    if (!(boardNBT instanceof RedstoneBoardRobotEmptyNBT)) {
       boardNBT.addInformation(stack, level, tooltip, flag);
 
       int energy = getEnergy(cpt);

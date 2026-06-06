@@ -14,11 +14,11 @@ package com.peco2282.bcreborn.robotics;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRegistry;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IDockingStationProvider;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +60,7 @@ public final class RobotUtils {
 
 
   public static RedstoneBoardRobotNBT getNextBoard(ItemStack stack, boolean reverse) {
-    Collection<RedstoneBoardNBT<?>> boards = RedstoneBoardRegistry.instance.getAllBoardNBTs();
+    Collection<RedstoneBoardNBT<?>> boards = RegistryUtil.getRedstoneBoardsList();
     if (stack.isEmpty() || !(stack.getItem() instanceof RobotItem)) {
       if (!reverse) {
         return (RedstoneBoardRobotNBT) Iterables.getFirst(boards, null);
