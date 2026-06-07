@@ -32,7 +32,7 @@ import java.util.HashSet;
 
 public final class SchematicRegistry implements ISchematicRegistry {
 
-  public static final SchematicRegistry INSTANCE = new SchematicRegistry();
+  public static final SchematicRegistry INSTANCE;
 
   public final HashMap<BlockState, SchematicFactory<? extends SchematicBlock>> schematicBlocks = new HashMap<>();
   public final HashMap<EntityType<? extends Entity>, SchematicFactory<? extends SchematicEntity>> schematicEntities = new HashMap<>();
@@ -40,6 +40,10 @@ public final class SchematicRegistry implements ISchematicRegistry {
   private final HashSet<String> modsForbidden = new HashSet<>();
   private final HashSet<String> blocksForbidden = new HashSet<>();
 
+  static {
+    INSTANCE = new SchematicRegistry();
+    BuilderAPI.schematicRegistry = INSTANCE;
+  }
   private SchematicRegistry() {
   }
 
@@ -258,6 +262,8 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(BuildersBlock.FILLER.get(), SchematicBuilderLike::new);
 //    schemes.registerSchematicBlock(libraryBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
     schemes.registerSchematicBlock(BuildersBlock.QUARRY.get(), SchematicBuilderLike::new);
+    schemes.registerSchematicBlock(BuildersBlock.CONSTRUCTION_MARKER.get(), SchematicIgnore::new);
+    schemes.registerSchematicBlock(BuildersBlock.FRAME.get(), SchematicFree::new);
 
   }
 }
