@@ -33,14 +33,14 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornTransport.MODID)
-public class BlocksTransport {
+public class TransportBlocks {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
   public static final KeyedRegistryObject.TwoKeys<PipeBlock, PipeType, PipeMaterial> PIPES = KeyedRegistryObject.two(
     Arrays.stream(PipeType.values()).toList(),
     Arrays.stream(PipeMaterial.values()).toList(),
     (type, material) -> "pipe_" + material.getSerializedName() + "_" + type.getSerializedName(),
-    BlocksTransport::register,
+    TransportBlocks::register,
     (type, material) -> new PipeBlock(type, material, BlockBehaviour.Properties.of().noOcclusion()),
     PipeType::supports
   );

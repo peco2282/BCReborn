@@ -22,7 +22,7 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
-public class MenuTypesRobotics {
+public class RoboticsMenuTypes {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
   private static <M extends AbstractContainerMenu> RegistryObject<MenuType<M>> register(String name, MenuType<M> menuType) {

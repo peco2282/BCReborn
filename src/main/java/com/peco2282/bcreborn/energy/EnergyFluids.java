@@ -34,7 +34,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Consumer;
 
-public class FluidsEnergy {
+public class EnergyFluids {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 
   private static final DeferredRegister<FluidType> FLUID_TYPES =

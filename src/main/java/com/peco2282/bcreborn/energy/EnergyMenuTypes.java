@@ -22,7 +22,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.RegistryObject;
 
 @InitRegister(modId = BCRebornEnergy.MODID)
-public class MenuTypesEnergy {
+public class EnergyMenuTypes {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 
   private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String name, MenuType.MenuSupplier<T> type) {

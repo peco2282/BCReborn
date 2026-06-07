@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.silicon;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ConfigSilicon {
+public class SiliconConfig {
   // items
   private static ForgeConfigSpec.BooleanValue redstoneChipset;
   private static ForgeConfigSpec.BooleanValue redstoneCrystal;

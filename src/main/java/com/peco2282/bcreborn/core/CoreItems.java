@@ -26,7 +26,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornCore.MODID)
-public class ItemsCore {
+public class CoreItems {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   public static final RegistryObject<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties()));

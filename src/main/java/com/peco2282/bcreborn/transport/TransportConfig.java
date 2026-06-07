@@ -15,7 +15,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
 
-public class ConfigTransport {
+public class TransportConfig {
   // pipes - general
   private static ForgeConfigSpec.IntValue baseFluidRate;
   private static ForgeConfigSpec.DoubleValue pipeHardness;

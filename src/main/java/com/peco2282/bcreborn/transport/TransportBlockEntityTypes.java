@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @InitRegister(modId = BCRebornTransport.MODID, priority = 1)
-public class BlockEntityTypesTransport {
+public class TransportBlockEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
@@ -34,7 +34,7 @@ public class BlockEntityTypesTransport {
   }
 
   private static Set<Block> filter(PipeType type) {
-    return BlocksTransport.getPipeByType(type).values().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet());
+    return TransportBlocks.getPipeByType(type).values().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet());
   }
 
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ITEM_PIPE = register("item_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ITEM), null));
@@ -43,5 +43,5 @@ public class BlockEntityTypesTransport {
 
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ENERGY_PIPE = register("energy_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ENERGY), null));
 
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> PIPE = register("pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, BlocksTransport.getPipeList().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet()), null));
+  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> PIPE = register("pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, TransportBlocks.getPipeList().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet()), null));
 }

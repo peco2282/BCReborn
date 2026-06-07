@@ -16,7 +16,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.io.File;
 import java.util.List;
 
-public class ConfigBuilders {
+public class BuildersConfig {
   // builders
   private static ForgeConfigSpec.BooleanValue dropBrokenBlocks;
 

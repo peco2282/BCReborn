@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.energy;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ConfigEnergy {
+public class EnergyConfig {
   // fuel
   private static ForgeConfigSpec.DoubleValue fuelFuelCombustion;
   private static ForgeConfigSpec.IntValue fuelFuelCombustionEnergyOutput;

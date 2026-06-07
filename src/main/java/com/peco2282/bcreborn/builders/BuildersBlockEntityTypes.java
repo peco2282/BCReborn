@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornBuilders.MODID)
-public class BlockEntityTypesBuilders {
+public class BuildersBlockEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornBuilders.getRegistry();
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {

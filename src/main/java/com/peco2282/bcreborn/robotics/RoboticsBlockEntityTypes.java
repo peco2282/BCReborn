@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
-public class BlockEntityTypesRobotics {
+public class RoboticsBlockEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {

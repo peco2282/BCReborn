@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornEnergy.MODID)
-public class BlockEntityTypesEnergy {
+public class EnergyBlockEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
@@ -37,12 +37,12 @@ public class BlockEntityTypesEnergy {
   @SafeVarargs
   private static <T extends BlockEntity> Supplier<BlockEntityType<T>> of(BlockEntityType.BlockEntitySupplier<T> supplier, Supplier<? extends Block>... validBlocks) {
     return () -> new BlockEntityType<>(supplier, CodingUtils.map2Set(Arrays.asList(validBlocks), Supplier::get), null);
-  }  public static final RegistryObject<BlockEntityType<StoneEngineBlockEntity>> STONE_ENGINE = register("stone_engine", of(StoneEngineBlockEntity::new, BlocksEnergy.STONE_ENGINE));
+  }  public static final RegistryObject<BlockEntityType<StoneEngineBlockEntity>> STONE_ENGINE = register("stone_engine", of(StoneEngineBlockEntity::new, EnergyBlocks.STONE_ENGINE));
 
 
 
-  public static final RegistryObject<BlockEntityType<CreativeEngineBlockEntity>> CREATIVE_ENGINE = register("creative_engine", of(CreativeEngineBlockEntity::new, BlocksEnergy.CREATIVE_ENGINE));
-  public static final RegistryObject<BlockEntityType<IronEngineBlockEntity>> IRON_ENGINE = register("iron_engine", of(IronEngineBlockEntity::new, BlocksEnergy.IRON_ENGINE));
+  public static final RegistryObject<BlockEntityType<CreativeEngineBlockEntity>> CREATIVE_ENGINE = register("creative_engine", of(CreativeEngineBlockEntity::new, EnergyBlocks.CREATIVE_ENGINE));
+  public static final RegistryObject<BlockEntityType<IronEngineBlockEntity>> IRON_ENGINE = register("iron_engine", of(IronEngineBlockEntity::new, EnergyBlocks.IRON_ENGINE));
 
 
 }
