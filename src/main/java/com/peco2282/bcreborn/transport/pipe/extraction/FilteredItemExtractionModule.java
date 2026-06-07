@@ -71,22 +71,44 @@ public class FilteredItemExtractionModule implements ExtractionModule {
         IItemHandler handler = cap.orElseThrow(IllegalStateException::new);
         SimpleInventory filter = pipe.getFilter(extractDir);
         int filterSize = filter.getContainerSize();
+        PipeBlockEntity.ExtractFilterMode mode = pipe.getExtractFilterMode();
 
-        for (int attempt = 0; attempt < filterSize; attempt++) {
-          pipe.setFilterSlotIndex((pipe.getFilterSlotIndex() + 1) % filterSize);
-          ItemStack filterStack = filter.getItem(pipe.getFilterSlotIndex());
-          if (filterStack.isEmpty()) continue;
+        for (int i = 0; i < handler.getSlots(); i++) {
+          ItemStack stack = handler.getStackInSlot(i);
+          if (stack.isEmpty()) continue;
 
-          for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (!stack.isEmpty() && ItemStack.isSameItemSameTags(stack, filterStack)) {
-              ItemStack extracted = handler.extractItem(i, extractAmount, false);
-              if (!extracted.isEmpty()) {
-                pipe.injectItem(extracted, extractDir);
-                pipe.consumeExtractionEnergy(10);
-                pipe.resetTicksSincePull();
-                return;
+          boolean matches = false;
+          if (mode == PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN) {
+            // ラウンドロビン: フィルタースロットを順に確認し、一致するものがあれば抽出
+            for (int attempt = 0; attempt < filterSize; attempt++) {
+              int nextIdx = (pipe.getFilterSlotIndex() + 1) % filterSize;
+              pipe.setFilterSlotIndex(nextIdx);
+              ItemStack filterStack = filter.getItem(nextIdx);
+              if (!filterStack.isEmpty() && ItemStack.isSameItemSameTags(stack, filterStack)) {
+                matches = true;
+                break;
               }
+            }
+          } else {
+            // ホワイトリスト / ブラックリスト: フィルター全体を確認
+            boolean inFilter = false;
+            for (int slot = 0; slot < filterSize; slot++) {
+              ItemStack filterStack = filter.getItem(slot);
+              if (!filterStack.isEmpty() && ItemStack.isSameItemSameTags(stack, filterStack)) {
+                inFilter = true;
+                break;
+              }
+            }
+            matches = (mode == PipeBlockEntity.ExtractFilterMode.WHITE_LIST) ? inFilter : !inFilter;
+          }
+
+          if (matches) {
+            ItemStack extracted = handler.extractItem(i, extractAmount, false);
+            if (!extracted.isEmpty()) {
+              pipe.injectItem(extracted, extractDir);
+              pipe.consumeExtractionEnergy(10);
+              pipe.resetTicksSincePull();
+              return;
             }
           }
         }

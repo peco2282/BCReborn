@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
+import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -55,8 +56,21 @@ public class EmeraldItemPipeBehaviour implements ItemPipeBehaviour {
   }
 
   @Override
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (!level.isClientSide) {
+      PipeBlockEntity.ExtractFilterMode nextMode = pipe.getExtractFilterMode().next();
+      pipe.setExtractFilterMode(nextMode);
+      player.displayClientMessage(Component.literal("Filter mode: " + nextMode.name()), true);
+    }
+    return InteractionResult.sidedSuccess(level.isClientSide);
+  }
+
+  @Override
   public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
+    if (player.getItemInHand(hand).getItem() instanceof IToolWrench) {
+      return onWrenchUse(pipe, level, pos, player, hand, hit);
+    }
     if (!level.isClientSide) {
       Direction current = pipe.getExtractionSide();
       Direction next = Direction.values()[(current.ordinal() + 1) % Direction.values().length];
