@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.BCLog;
+import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.schematics.*;
 import com.peco2282.bcreborn.common.builder.schematics.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -242,21 +243,21 @@ public final class SchematicRegistry implements ISchematicRegistry {
 
     // Standard entities
 
-//    schemes.registerSchematicEntity(EntityMinecartEmpty.class, SchematicMinecart.class, Items.minecart);
-//    schemes.registerSchematicEntity(EntityMinecartFurnace.class, SchematicMinecart.class, Items.furnace_minecart);
-//    schemes.registerSchematicEntity(EntityMinecartTNT.class, SchematicMinecart.class, Items.tnt_minecart);
-//    schemes.registerSchematicEntity(EntityMinecartChest.class, SchematicMinecart.class, Items.chest_minecart);
-//    schemes.registerSchematicEntity(EntityMinecartHopper.class, SchematicMinecart.class, Items.hopper_minecart);
-//
-//    schemes.registerSchematicEntity(EntityPainting.class, SchematicHanging.class, Items.painting);
-//    schemes.registerSchematicEntity(EntityItemFrame.class, SchematicHanging.class, Items.item_frame);
-//
+    schemes.registerSchematicEntity(EntityType.MINECART, () -> new SchematicMinecart(Items.MINECART));
+    schemes.registerSchematicEntity(EntityType.FURNACE_MINECART, () -> new SchematicMinecart(Items.FURNACE_MINECART));
+    schemes.registerSchematicEntity(EntityType.TNT_MINECART, () -> new SchematicMinecart(Items.TNT_MINECART));
+    schemes.registerSchematicEntity(EntityType.CHEST_MINECART, () -> new SchematicMinecart(Items.CHEST_MINECART));
+    schemes.registerSchematicEntity(EntityType.HOPPER_MINECART, () -> new SchematicMinecart(Items.HOPPER_MINECART));
+
+    schemes.registerSchematicEntity(EntityType.PAINTING, () -> new SchematicHanging(Items.PAINTING));
+    schemes.registerSchematicEntity(EntityType.ITEM_FRAME, () -> new SchematicHanging(Items.ITEM_FRAME));
+
 //    // BuildCraft blocks
 //    schemes.registerSchematicBlock(architectBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
-//    schemes.registerSchematicBlock(builderBlock, SchematicBuilderLike.class);
-//    schemes.registerSchematicBlock(fillerBlock, SchematicBuilderLike.class);
+    schemes.registerSchematicBlock(BuildersBlock.BUILDER.get(), SchematicBuilderLike::new);
+    schemes.registerSchematicBlock(BuildersBlock.FILLER.get(), SchematicBuilderLike::new);
 //    schemes.registerSchematicBlock(libraryBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
-//    schemes.registerSchematicBlock(quarryBlock, SchematicBuilderLike.class);
+    schemes.registerSchematicBlock(BuildersBlock.QUARRY.get(), SchematicBuilderLike::new);
 
   }
 }
