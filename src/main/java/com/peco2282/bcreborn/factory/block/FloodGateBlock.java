@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.factory.block.entity.FloodGateBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,7 +42,7 @@ public class FloodGateBlock extends BuildCraftBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return null;
+    return new FloodGateBlockEntity(pos, state);
   }
 
   @Nullable

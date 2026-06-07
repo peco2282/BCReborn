@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -39,7 +40,7 @@ public class TankBlock extends BuildCraftBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return null;
+    return new TankBlockEntity(pos, state);
   }
 
   @Nullable

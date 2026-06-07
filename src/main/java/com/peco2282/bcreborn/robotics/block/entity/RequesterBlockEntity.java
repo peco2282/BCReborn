@@ -16,15 +16,21 @@ import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.menu.RequesterMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-public class RequesterBlockEntity extends BuildCraftBlockEntity implements Container, IRequestProvider {
+public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuProvider, Container, IRequestProvider {
   public static final int NB_ITEMS = 20;
 
   private final SimpleInventory inv = new SimpleInventory(NB_ITEMS, "items", 64);
@@ -179,5 +185,15 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements Conta
 
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.translatable("container.bcreborn.requester");
+  }
+
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    return new RequesterMenu(p_39954_, p_39955_, this);
   }
 }

@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.block.entity.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class LaserTableBlock extends BuildCraftBlock implements ILaserTargetBlock {
@@ -53,6 +55,7 @@ public class LaserTableBlock extends BuildCraftBlock implements ILaserTargetBloc
     BlockEntity tile = level.getBlockEntity(pos);
     if (tile instanceof LaserTableBaseBlockEntity table) {
       // TODO: GUI opening logic
+      NetworkHooks.openScreen((ServerPlayer) player, table, pos);
       return InteractionResult.CONSUME;
     }
     return InteractionResult.PASS;

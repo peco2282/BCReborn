@@ -64,7 +64,7 @@ public class HopperBlock extends BuildCraftBlock {
     }
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
-      if (entity instanceof MenuProvider provider) {
+      if (entity instanceof HopperBlockEntity provider) {
         NetworkHooks.openScreen((ServerPlayer) player, provider, pos);
       }
     }

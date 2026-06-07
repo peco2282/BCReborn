@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.api.transport.IItemPipe;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.factory.block.entity.AutoWorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -57,7 +58,7 @@ public class AutoWorkbenchBlock extends BuildCraftBlock {
 
     if (!p_60504_.isClientSide) {
       BlockEntity entity = p_60504_.getBlockEntity(p_60505_);
-      if (entity instanceof MenuProvider provider)
+      if (entity instanceof AutoWorkbenchBlockEntity provider)
         NetworkHooks.openScreen((ServerPlayer) p_60506_, provider);
     }
 
@@ -65,8 +66,8 @@ public class AutoWorkbenchBlock extends BuildCraftBlock {
   }
 
   @Override
-  public @Nullable BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-    return null;
+  public @Nullable AutoWorkbenchBlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+    return new AutoWorkbenchBlockEntity(p_153215_, p_153216_);
   }
 
   @Override

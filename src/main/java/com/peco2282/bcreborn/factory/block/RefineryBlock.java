@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.factory.block.entity.RefineryBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,7 +82,7 @@ public class RefineryBlock extends BuildCraftBlock {
     }
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
-      if (entity instanceof MenuProvider provider) {
+      if (entity instanceof RefineryBlockEntity provider) {
         NetworkHooks.openScreen((ServerPlayer) player, provider, pos);
       }
     }

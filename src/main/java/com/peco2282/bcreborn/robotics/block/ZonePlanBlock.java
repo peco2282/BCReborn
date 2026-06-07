@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ZonePlanBlock extends BuildCraftBlock {
@@ -48,6 +50,10 @@ public class ZonePlanBlock extends BuildCraftBlock {
   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     if (!level.isClientSide) {
       // TODO: Menu opening
+      BlockEntity entity = level.getBlockEntity(pos);
+      if (entity instanceof ZonePlanBlockEntity provider) {
+        NetworkHooks.openScreen((ServerPlayer) player, provider, pos);
+      }
     }
     return InteractionResult.SUCCESS;
   }

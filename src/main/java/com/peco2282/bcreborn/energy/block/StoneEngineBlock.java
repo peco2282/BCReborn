@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
 import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class StoneEngineBlock extends EngineBlock {
   @Override
@@ -34,7 +36,7 @@ public class StoneEngineBlock extends EngineBlock {
     if (!p_60504_.isClientSide) {
       BlockEntity entity = p_60504_.getBlockEntity(p_60505_);
       if (entity instanceof StoneEngineBlockEntity engine) {
-        p_60506_.openMenu(engine);
+        NetworkHooks.openScreen((ServerPlayer) p_60506_, engine, p_60505_);
         return InteractionResult.SUCCESS;
       }
     }

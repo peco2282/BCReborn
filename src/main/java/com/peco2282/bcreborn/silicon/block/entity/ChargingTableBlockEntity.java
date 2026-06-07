@@ -12,8 +12,14 @@
 package com.peco2282.bcreborn.silicon.block.entity;
 
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
+import com.peco2282.bcreborn.silicon.menu.ChargingTableMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class ChargingTableBlockEntity extends LaserTableBaseBlockEntity {
   public ChargingTableBlockEntity(BlockPos pos, BlockState state) {
@@ -38,5 +44,15 @@ public class ChargingTableBlockEntity extends LaserTableBaseBlockEntity {
   @Override
   public boolean hasWork() {
     return false;
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.empty();
+  }
+
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    return new ChargingTableMenu(p_39954_, p_39955_, this);
   }
 }

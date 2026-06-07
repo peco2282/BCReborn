@@ -14,17 +14,22 @@ package com.peco2282.bcreborn.silicon.block.entity;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
+import com.peco2282.bcreborn.silicon.menu.PackagerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class PackagerBlockEntity extends BuildCraftBlockEntity implements WorldlyContainer {
+public class PackagerBlockEntity extends BuildCraftBlockEntity implements MenuProvider, WorldlyContainer {
   protected SimpleInventory inv = new SimpleInventory(10, "inv", 64);
 
   public PackagerBlockEntity(BlockPos pos, BlockState state) {
@@ -101,5 +106,15 @@ public class PackagerBlockEntity extends BuildCraftBlockEntity implements Worldl
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     inv.writeToNBT(nbt, "inv");
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.literal("Packager");
+  }
+
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    return new PackagerMenu(p_39954_, p_39955_, this);
   }
 }
