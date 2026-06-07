@@ -20,6 +20,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,8 +41,8 @@ public class SchematicBlock extends SchematicBlockBase {
   public int meta = 0;
 
   @Deprecated
-  public Block block = null;
-  public BlockState state = null;
+  public Block block = Blocks.AIR;
+  public BlockState state = Blocks.AIR.defaultBlockState();
   public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
   /**
