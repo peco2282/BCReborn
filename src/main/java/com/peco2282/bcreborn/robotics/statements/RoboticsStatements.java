@@ -16,47 +16,27 @@ import com.peco2282.bcreborn.api.statements.ITriggerInternal;
 import com.peco2282.bcreborn.api.statements.StatementManager;
 
 public class RoboticsStatements {
-  public static ITriggerInternal triggerRobotSleep;
-  public static ITriggerInternal triggerRobotInStation;
-  public static ITriggerInternal triggerRobotLinked;
-  public static ITriggerInternal triggerRobotReserved;
+  public final static ITriggerInternal triggerRobotSleep = new TriggerRobotSleep();
+  public final static ITriggerInternal triggerRobotInStation = new TriggerRobotInStation();
+  public final static ITriggerInternal triggerRobotLinked = new TriggerRobotLinked(false);
+  public final static ITriggerInternal triggerRobotReserved = new TriggerRobotLinked(true);
 
-  public static IActionInternal actionRobotGotoStation;
-  public static IActionInternal actionRobotWakeUp;
-  public static IActionInternal actionRobotWorkInArea;
-  public static IActionInternal actionRobotLoadUnloadArea;
-  public static IActionInternal actionRobotFilter;
-  public static IActionInternal actionRobotFilterTool;
-  public static IActionInternal actionStationRequestItems;
-  public static IActionInternal actionStationProvideItems;
-  public static IActionInternal actionStationAcceptFluids;
-  public static IActionInternal actionStationProvideFluids;
-  public static IActionInternal actionStationForceRobot;
-  public static IActionInternal actionStationForbidRobot;
-  public static IActionInternal actionStationAcceptItems;
-  public static IActionInternal actionStationMachineRequestItems;
+  public static final IActionInternal actionRobotGotoStation = new ActionRobotGotoStation();
+  public static final IActionInternal actionRobotWakeUp = new ActionRobotWakeUp();
+  public static final IActionInternal actionRobotWorkInArea = new ActionRobotWorkInArea(ActionRobotWorkInArea.AreaType.WORK);
+  public static final IActionInternal actionRobotLoadUnloadArea = new ActionRobotWorkInArea(ActionRobotWorkInArea.AreaType.LOAD_UNLOAD);
+  public static final IActionInternal actionRobotFilter = new ActionRobotFilter();
+  public static final IActionInternal actionRobotFilterTool = new ActionRobotFilterTool();
+  public static final IActionInternal actionStationRequestItems = new ActionStationRequestItems();
+  public static final IActionInternal actionStationProvideItems = new ActionStationProvideItems();
+  public static final IActionInternal actionStationAcceptFluids = new ActionStationAcceptFluids();
+  public static final IActionInternal actionStationProvideFluids = new ActionStationProvideFluids();
+  public static final IActionInternal actionStationForceRobot = new ActionStationForbidRobot(true);
+  public static final IActionInternal actionStationForbidRobot = new ActionStationForbidRobot(false);
+  public static final IActionInternal actionStationAcceptItems = new ActionStationAcceptItems();
+  public static final IActionInternal actionStationMachineRequestItems = new ActionStationRequestItemsMachine();
 
   public static void init() {
-    triggerRobotSleep = new TriggerRobotSleep();
-    triggerRobotInStation = new TriggerRobotInStation();
-    triggerRobotLinked = new TriggerRobotLinked(false);
-    triggerRobotReserved = new TriggerRobotLinked(true);
-
-    actionRobotGotoStation = new ActionRobotGotoStation();
-    actionRobotWakeUp = new ActionRobotWakeUp();
-    actionRobotWorkInArea = new ActionRobotWorkInArea(ActionRobotWorkInArea.AreaType.WORK);
-    actionRobotLoadUnloadArea = new ActionRobotWorkInArea(ActionRobotWorkInArea.AreaType.LOAD_UNLOAD);
-    actionRobotFilter = new ActionRobotFilter();
-    actionRobotFilterTool = new ActionRobotFilterTool();
-    actionStationRequestItems = new ActionStationRequestItems();
-    actionStationProvideItems = new ActionStationProvideItems();
-    actionStationAcceptFluids = new ActionStationAcceptFluids();
-    actionStationProvideFluids = new ActionStationProvideFluids();
-    actionStationForceRobot = new ActionStationForbidRobot(true);
-    actionStationForbidRobot = new ActionStationForbidRobot(false);
-    actionStationAcceptItems = new ActionStationAcceptItems();
-    actionStationMachineRequestItems = new ActionStationRequestItemsMachine();
-
     StatementManager.registerParameterClass(StatementParameterRobot.class);
     StatementManager.registerParameterClass(StatementParameterMapLocation.class);
     StatementManager.registerActionProvider(new RobotsActionProvider());
