@@ -11,31 +11,48 @@
  */
 package com.peco2282.bcreborn.energy.block.entity;
 
+import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
+import com.peco2282.bcreborn.api.fuels.ICoolant;
+import com.peco2282.bcreborn.api.fuels.IFuel;
 import com.peco2282.bcreborn.common.ResourceBuilder;
-import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
 import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import com.peco2282.bcreborn.energy.fluids.Tank;
+import com.peco2282.bcreborn.energy.fluids.TankManager;
 import com.peco2282.bcreborn.energy.menu.IronEngineMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngineBlockEntity> implements IFluidHandler {
 
-  // --- 暫定・内部状態 ---
+  public static final int TANK_FUEL = 0;
+  public static final int TANK_COOLANT = 1;
+
+  private final TankManager<Tank> tankManager = new TankManager<>(
+    new Tank("fuel", 10000),
+    new Tank("coolant", 10000)
+  );
+
   private int burnTime = 0;
   private int totalBurnTime = 0;
+  private int penaltyCoolingTime = 0;
+  private IFuel currentFuel;
 
   public IronEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesEnergy.IRON_ENGINE.get(), p_155229_, p_155230_, 1);
-    // 大容量・高出力（暫定・旧BC基準寄り）
-    configureEnergy(80000, 120);
+    configureEnergy(100000, 100);
   }
 
   @Override
@@ -45,8 +62,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public boolean isFuelable(ItemStack stack) {
-    // 暫定：固体燃料対応（タグ or バニラ燃焼可能）
-    return stack.is(CommonItemTags.ENGINE_ENERGY) || ForgeHooks.getBurnTime(stack, null) > 0;
+    return false;
   }
 
   @Override
@@ -56,16 +72,15 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public void updateProgress() {
-    // 燃焼終了していて、燃料があれば投入して開始
-    if (burnTime <= 0 && !isOverheated()) {
-      ItemStack stack = getItem(0);
-      if (!stack.isEmpty() && isFuelable(stack)) {
-        int time = ForgeHooks.getBurnTime(stack, null);
-        if (time > 0) {
-          totalBurnTime = burnTime = time;
-          // 1個消費
-          stack.shrink(1);
-          if (stack.isEmpty()) setItem(0, ItemStack.EMPTY);
+    if (burnTime <= 0 && !isOverheated() && penaltyCoolingTime <= 0) {
+      FluidStack fuelStack = tankManager.get(TANK_FUEL).getFluid();
+      if (!fuelStack.isEmpty()) {
+        IFuel fuel = BuildcraftFuelRegistry.getFuelManager().getFuel(fuelStack.getFluid());
+        if (fuel != null && fuelStack.getAmount() >= 1) {
+          currentFuel = fuel;
+          burnTime = fuel.getTotalBurningTime();
+          totalBurnTime = burnTime;
+          tankManager.get(TANK_FUEL).drain(1, FluidAction.EXECUTE);
           setActive(true);
         }
       }
@@ -74,47 +89,79 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public void overheat() {
-
+    burnTime = 0;
+    penaltyCoolingTime = 1000;
   }
 
   @Override
   public void explode() {
-
+    level.explode(null, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), 4, true, net.minecraft.world.level.Level.ExplosionInteraction.BLOCK);
+    level.setBlock(getBlockPos(), Blocks.AIR.defaultBlockState(), 3);
   }
 
   @Override
   public void burning() {
-    if (burnTime > 0) {
-      // 出力は段階倍率を反映
+    if (penaltyCoolingTime > 0) {
+      penaltyCoolingTime--;
+    }
+
+    if (burnTime > 0 && currentFuel != null) {
       if (this.energyStorage != null) {
         float mult = getOutputMultiplier();
-        int base = 60; // 暫定基準出力
-        int gen = Math.max(0, Math.round(base * mult));
+        // currentFuel.getPowerPerCycle() は 1MJ/t = 10 相当を想定
+        int gen = Math.round(currentFuel.getPowerPerCycle() * mult);
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
-      setPumping(energyStorage.getEnergyStored() > 0 && canPushEnergy());
+
+      // 冷却ロジック
+      float heatToAdd = 0.4f; // 燃焼による発熱
+      float heatToReduce = 0.05f; // 自然冷却
+      FluidStack coolantStack = tankManager.get(TANK_COOLANT).getFluid();
+      if (!coolantStack.isEmpty()) {
+        ICoolant coolant = BuildcraftFuelRegistry.getCoolantManager().getCoolant(coolantStack.getFluid());
+        if (coolant != null) {
+          float cooling = coolant.getDegreesCoolingPerMB(heat);
+          // ヒートレベルに応じて冷却水を消費 (1mB/t 最小)
+          int toDrain = Math.max(1, Math.round(heat / 100f));
+          FluidStack drained = tankManager.get(TANK_COOLANT).drain(toDrain, FluidAction.EXECUTE);
+          heatToReduce += cooling * drained.getAmount();
+        }
+      }
+
+      heat = Math.max(0, heat + heatToAdd - heatToReduce);
+
+      if (heat > 1000 && level.random.nextFloat() < (heat - 1000) / 1000f) {
+        explode();
+      }
+
+      setPumping(true);
       if (burnTime <= 0) {
         setActive(false);
-        setPumping(false);
       }
     } else {
       setPumping(false);
+      // 非燃焼時の冷却
+      heat = Math.max(0, heat - 0.1f);
     }
   }
 
   @Override
   public void load(CompoundTag data) {
     super.load(data);
-    if (data.contains("burnTime")) this.burnTime = data.getInt("burnTime");
-    if (data.contains("totalBurnTime")) this.totalBurnTime = data.getInt("totalBurnTime");
+    tankManager.readFromNBT(data);
+    burnTime = data.getInt("burnTime");
+    totalBurnTime = data.getInt("totalBurnTime");
+    penaltyCoolingTime = data.getInt("penaltyCoolingTime");
   }
 
   @Override
   public void saveAdditional(CompoundTag data) {
     super.saveAdditional(data);
+    tankManager.writeToNBT(data);
     data.putInt("burnTime", burnTime);
     data.putInt("totalBurnTime", totalBurnTime);
+    data.putInt("penaltyCoolingTime", penaltyCoolingTime);
   }
 
   @Override
@@ -137,93 +184,55 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
    */
   @Override
   public int getTanks() {
-    return 0;
+    return tankManager.getTanks();
   }
 
-  /**
-   * Returns the FluidStack in a given tank.
-   *
-   * <p>
-   * <strong>IMPORTANT:</strong> This FluidStack <em>MUST NOT</em> be modified. This method is not for
-   * altering internal contents. Any implementers who are able to detect modification via this method
-   * should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
-   * </p>
-   *
-   * <p>
-   * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLUIDSTACK</em></strong>
-   * </p>
-   *
-   * @param tank Tank to query.
-   * @return FluidStack in a given tank. FluidStack.EMPTY if the tank is empty.
-   */
   @Override
   public @NotNull FluidStack getFluidInTank(int tank) {
-    return FluidStack.EMPTY;
+    return tankManager.get(tank).getFluid();
   }
 
-  /**
-   * Retrieves the maximum fluid amount for a given tank.
-   *
-   * @param tank Tank to query.
-   * @return The maximum fluid amount held by the tank.
-   */
   @Override
   public int getTankCapacity(int tank) {
-    return 0;
+    return tankManager.get(tank).getCapacity();
   }
 
-  /**
-   * This function is a way to determine which fluids can exist inside a given handler. General purpose tanks will
-   * basically always return TRUE for this.
-   *
-   * @param tank  Tank to query for validity
-   * @param stack Stack to test with for validity
-   * @return TRUE if the tank can hold the FluidStack, not considering current state.
-   * (Basically, is a given fluid EVER allowed in this tank?) Return FALSE if the answer to that question is 'no.'
-   */
   @Override
   public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    if (tank == TANK_FUEL) {
+      return BuildcraftFuelRegistry.getFuelManager().getFuel(stack.getFluid()) != null;
+    } else if (tank == TANK_COOLANT) {
+      return BuildcraftFuelRegistry.getCoolantManager().getCoolant(stack.getFluid()) != null;
+    }
     return false;
   }
 
-  /**
-   * Fills fluid into internal tanks, distribution is left entirely to the IFluidHandler.
-   *
-   * @param resource FluidStack representing the Fluid and maximum amount of fluid to be filled.
-   * @param action   If SIMULATE, fill will only be simulated.
-   * @return Amount of resource that was (or would have been, if simulated) filled.
-   */
   @Override
   public int fill(FluidStack resource, FluidAction action) {
+    if (isFluidValid(TANK_FUEL, resource)) {
+      return tankManager.get(TANK_FUEL).fill(resource, action);
+    } else if (isFluidValid(TANK_COOLANT, resource)) {
+      return tankManager.get(TANK_COOLANT).fill(resource, action);
+    }
     return 0;
   }
 
-  /**
-   * Drains fluid out of internal tanks, distribution is left entirely to the IFluidHandler.
-   *
-   * @param resource FluidStack representing the Fluid and maximum amount of fluid to be drained.
-   * @param action   If SIMULATE, drain will only be simulated.
-   * @return FluidStack representing the Fluid and amount that was (or would have been, if
-   * simulated) drained.
-   */
   @Override
   public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-    return FluidStack.EMPTY;
+    return tankManager.drain(resource, action);
   }
 
-  /**
-   * Drains fluid out of internal tanks, distribution is left entirely to the IFluidHandler.
-   * <p>
-   * This method is not Fluid-sensitive.
-   *
-   * @param maxDrain Maximum amount of fluid to drain.
-   * @param action   If SIMULATE, drain will only be simulated.
-   * @return FluidStack representing the Fluid and amount that was (or would have been, if
-   * simulated) drained.
-   */
   @Override
   public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-    return FluidStack.EMPTY;
+    return tankManager.drain(maxDrain, action);
+  }
+
+  @Override
+  public <C> @NotNull LazyOptional<C> getCapability(@NotNull Capability<C> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.FLUID_HANDLER) {
+      return LazyOptional.of(() -> this).cast();
+    }
+    return super.getCapability(cap, side);
   }
 
   @Override
