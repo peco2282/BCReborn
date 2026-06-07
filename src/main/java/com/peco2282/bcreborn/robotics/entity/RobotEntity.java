@@ -35,8 +35,8 @@ import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.item.WrenchItem;
-import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RobotRegistry;
+import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotMain;
 import com.peco2282.bcreborn.robotics.ai.AIRobotShutdown;
@@ -123,42 +123,31 @@ public class RobotEntity extends RobotEntityBase implements
   private static final EntityDataAccessor<Integer> DATA_ENERGY =
     SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.INT);
   private static final Set<Integer> blacklistedItemsForUpdate = Sets.newHashSet();
-
+  private final List<ItemStack> wearables = new ArrayList<>();
+  private final ItemStack[] inv = new ItemStack[TRANSFER_INV_SLOTS];
+  private final int maxFluid = FluidType.BUCKET_VOLUME * 4;
+  private final WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<>();
+  private final EnergyStorage battery = new EnergyStorage(MAX_ENERGY, MAX_ENERGY, 100);
   public LaserData laser = new LaserData();
   public DockingStation linkedDockingStation;
   public BlockIndex linkedDockingStationIndex;
   public Direction linkedDockingStationSide;
-
   public BlockIndex currentDockingStationIndex;
   public Direction currentDockingStationSide;
-
   public boolean isDocked = false;
-
   public RedstoneBoardRobot board;
   public AIRobotMain mainAI;
-
   public ItemStack itemInUse;
   public float itemAngle1 = 0;
   public float itemAngle2 = 0;
   public boolean itemActive = false;
   public float itemActiveStage = 0;
   public long lastUpdateTime = 0;
-
   private DockingStation currentDockingStation;
-  private final List<ItemStack> wearables = new ArrayList<>();
-
   private boolean needsUpdate = false;
-  private final ItemStack[] inv = new ItemStack[TRANSFER_INV_SLOTS];
   private FluidStack tank;
-  private final int maxFluid = FluidType.BUCKET_VOLUME * 4;
   private ResourceLocation texture;
-
-  private final WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<>();
-
   private ListTag stackRequestNBT;
-
-  private final EnergyStorage battery = new EnergyStorage(MAX_ENERGY, MAX_ENERGY, 100);
-
   private boolean firstUpdateDone = false;
 
   private boolean isActiveClient = false;

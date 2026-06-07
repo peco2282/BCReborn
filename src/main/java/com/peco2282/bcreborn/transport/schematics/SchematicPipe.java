@@ -22,13 +22,13 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.RegistryObject;
 

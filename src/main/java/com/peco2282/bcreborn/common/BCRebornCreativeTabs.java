@@ -14,8 +14,6 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.common.bean.InitRegister;
-import com.peco2282.bcreborn.common.data.tag.CommonBlockTags;
-import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
 import com.peco2282.bcreborn.core.BlocksCore;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.energy.BlocksEnergy;
@@ -44,13 +42,13 @@ public class BCRebornCreativeTabs {
   public static final ResourceKey<CreativeModeTab> TRANSPORT_ID = create(BCRebornCore.location("transport"));
   public static final ResourceKey<CreativeModeTab> BUILDERS_ID = create(BCRebornCore.location("builders"));
   public static final RegistryObject<CreativeModeTab> CORE = register("core", () -> CreativeModeTab.builder()
-      .title(Component.literal("BCReborn Core"))
-      .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
-      .displayItems((param, output) -> {
-        BlocksCore.registerCreativeTab(param, output);
-        ItemsCore.registerCreativeTab(param, output);
-      })
-      .build()
+    .title(Component.literal("BCReborn Core"))
+    .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
+    .displayItems((param, output) -> {
+      BlocksCore.registerCreativeTab(param, output);
+      ItemsCore.registerCreativeTab(param, output);
+    })
+    .build()
   );
   public static final RegistryObject<CreativeModeTab> BUILDERS = register("builders", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Builders"))

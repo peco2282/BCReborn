@@ -19,12 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class StackRequest {
-  private IRequestProvider requester;
-
   private final int slot;
-
   private final ItemStack stack;
-
+  private IRequestProvider requester;
   private DockingStation station;
   private BlockIndex stationIndex;
   private Direction stationSide;

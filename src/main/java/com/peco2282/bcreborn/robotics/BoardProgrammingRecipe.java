@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics;
 
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
-import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import net.minecraft.world.item.ItemStack;
 

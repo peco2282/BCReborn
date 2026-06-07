@@ -11,10 +11,10 @@
  */
 package com.peco2282.bcreborn.robotics;
 
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
-import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.world.item.ItemStack;

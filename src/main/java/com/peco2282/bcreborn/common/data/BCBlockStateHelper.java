@@ -20,6 +20,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 @SuppressWarnings("UnusedReturnValue")
 public abstract class BCBlockStateHelper extends BlockStateProvider {
   private final ModelProvider<?> provider;
+
   public BCBlockStateHelper(PackOutput output, String modid, ExistingFileHelper exFileHelper) {
     super(output, modid, exFileHelper);
     this.provider = models();

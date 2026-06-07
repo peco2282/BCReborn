@@ -23,68 +23,68 @@ import java.util.List;
 
 public final class GateExpansionTimer extends GateExpansionBuildcraft implements IGateExpansion {
 
-	public static GateExpansionTimer INSTANCE = new GateExpansionTimer();
+  public static GateExpansionTimer INSTANCE = new GateExpansionTimer();
 
-	private GateExpansionTimer() {
-		super("timer");
-	}
+  private GateExpansionTimer() {
+    super("timer");
+  }
 
-	@Override
-	public GateExpansionController makeController(BlockEntity pipeTile) {
-		return new GateExpansionControllerTimer(pipeTile);
-	}
+  @Override
+  public GateExpansionController makeController(BlockEntity pipeTile) {
+    return new GateExpansionControllerTimer(pipeTile);
+  }
 
-	private class GateExpansionControllerTimer extends GateExpansionController {
+  private class GateExpansionControllerTimer extends GateExpansionController {
 
-		private static class Timer {
+    private final Timer[] timers = new Timer[8]; // Placeholder
 
-			private static final int ACTIVE_TIME = 5;
-			private final int delay;
-			private int clock;
+    public GateExpansionControllerTimer(BlockEntity pipeTile) {
+      super(GateExpansionTimer.this, pipeTile);
+      for (int i = 0; i < timers.length; i++) {
+        timers[i] = new Timer(1); // Placeholder
+      }
+    }
 
-			public Timer(int delay) {
-				this.delay = delay;
-			}
+    @Override
+    public boolean isTriggerActive(IStatement trigger, IStatementParameter[] parameters) {
+      // TODO: TriggerClockTimer
+      return super.isTriggerActive(trigger, parameters);
+    }
 
-			public void tick() {
-				if (clock > -ACTIVE_TIME) {
-					clock--;
-				} else {
-					clock = delay * 20 + ACTIVE_TIME;
-				}
-			}
+    @Override
+    public void addTriggers(List<ITriggerInternal> list) {
+      super.addTriggers(list);
+      // TODO: TriggerClockTimer
+    }
 
-			public boolean isActive() {
-				return clock < 0;
-			}
-		}
+    @Override
+    public void tick(IGate gate) {
+      for (Timer timer : timers) {
+        timer.tick();
+      }
+    }
 
-		private final Timer[] timers = new Timer[8]; // Placeholder
+    private static class Timer {
 
-		public GateExpansionControllerTimer(BlockEntity pipeTile) {
-			super(GateExpansionTimer.this, pipeTile);
-			for (int i = 0; i < timers.length; i++) {
-				timers[i] = new Timer(1); // Placeholder
-			}
-		}
+      private static final int ACTIVE_TIME = 5;
+      private final int delay;
+      private int clock;
 
-		@Override
-		public boolean isTriggerActive(IStatement trigger, IStatementParameter[] parameters) {
-			// TODO: TriggerClockTimer
-			return super.isTriggerActive(trigger, parameters);
-		}
+      public Timer(int delay) {
+        this.delay = delay;
+      }
 
-		@Override
-		public void addTriggers(List<ITriggerInternal> list) {
-			super.addTriggers(list);
-			// TODO: TriggerClockTimer
-		}
+      public void tick() {
+        if (clock > -ACTIVE_TIME) {
+          clock--;
+        } else {
+          clock = delay * 20 + ACTIVE_TIME;
+        }
+      }
 
-		@Override
-		public void tick(IGate gate) {
-			for (Timer timer : timers) {
-				timer.tick();
-			}
-		}
-	}
+      public boolean isActive() {
+        return clock < 0;
+      }
+    }
+  }
 }

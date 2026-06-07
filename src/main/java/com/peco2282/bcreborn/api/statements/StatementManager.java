@@ -25,11 +25,11 @@ import java.util.function.Function;
 
 public final class StatementManager {
 
+  private static final List<ITriggerProvider> triggerProviders = new LinkedList<>();
+  private static final List<IActionProvider> actionProviders = new LinkedList<>();
   public static Map<ResourceLocation, IStatement> statements = new HashMap<>();
   public static Map<ResourceLocation, Class<? extends IStatementParameter>> parameters = new HashMap<>();
   public static Map<ResourceLocation, Codec<? extends IStatementParameter>> parameterCodecs = new HashMap<>();
-  private static final List<ITriggerProvider> triggerProviders = new LinkedList<>();
-  private static final List<IActionProvider> actionProviders = new LinkedList<>();
 
   private StatementManager() {
   }

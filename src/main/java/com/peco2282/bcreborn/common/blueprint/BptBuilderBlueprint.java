@@ -40,16 +40,14 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class BptBuilderBlueprint extends BptBuilderBase {
+  private final ArrayList<RequirementItemStack> neededItems = new ArrayList<>();
+  private final LinkedList<BuildingSlotEntity> entityList = new LinkedList<>();
+  private final LinkedList<BuildingSlot> postProcessing = new LinkedList<>();
+  private final IndexRequirementMap requirementMap = new IndexRequirementMap();
   protected HashSet<Integer> builtEntities = new HashSet<>();
   protected HashMap<BuilderItemMetaPair, List<BuildingSlotBlock>> buildList = new HashMap<>();
   protected int[] buildStageOccurences;
-
-  private final ArrayList<RequirementItemStack> neededItems = new ArrayList<>();
-
-  private final LinkedList<BuildingSlotEntity> entityList = new LinkedList<>();
-  private final LinkedList<BuildingSlot> postProcessing = new LinkedList<>();
   private BuildingSlotMapIterator iterator;
-  private final IndexRequirementMap requirementMap = new IndexRequirementMap();
 
   public BptBuilderBlueprint(Blueprint bluePrint, Level world, int x, int y, int z) {
     super(bluePrint, world, x, y, z);

@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
-import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.registry.BCRegistryKeys;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;

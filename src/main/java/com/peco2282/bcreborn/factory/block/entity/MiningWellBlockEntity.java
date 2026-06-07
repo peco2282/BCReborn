@@ -34,12 +34,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHasWork, IPipeConnection, IControllable, ILEDProvider {
+  private final SafeTimeTracker updateTracker = new SafeTimeTracker(BCRebornCore.updateFactor);
   private boolean isDigging = true;
   private BlockMiner miner;
   private int ledState;
   private int ticksSinceAction = 9001;
-
-  private final SafeTimeTracker updateTracker = new SafeTimeTracker(BCRebornCore.updateFactor);
 
   public MiningWellBlockEntity(BlockPos pos, BlockState state) {
     super(FactoryBlockEntityTypes.MINING_WELL.get(), pos, state);

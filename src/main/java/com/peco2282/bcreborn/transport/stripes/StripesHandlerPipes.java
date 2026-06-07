@@ -25,23 +25,23 @@ import net.minecraft.world.phys.Vec3;
 
 public class StripesHandlerPipes implements IStripesHandler {
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		// return stack.getItem() instanceof ItemPipe;
-		return false; // TODO: ItemPipe
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    // return stack.getItem() instanceof ItemPipe;
+    return false; // TODO: ItemPipe
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
-		// TODO: Implement pipe placement
-		BlockPos target = pos.relative(direction.getOpposite());
-		BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, false);
-		UseOnContext context = new UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hitResult);
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
+    // TODO: Implement pipe placement
+    BlockPos target = pos.relative(direction.getOpposite());
+    BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, false);
+    UseOnContext context = new UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hitResult);
 
     return stack.useOn(context).consumesAction();
   }

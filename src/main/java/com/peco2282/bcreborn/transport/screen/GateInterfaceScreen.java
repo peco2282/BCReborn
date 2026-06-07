@@ -41,6 +41,39 @@ public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMe
     }
     return BCRebornTransport.location("textures/gui/gate_interface_" + index + ".png");
   };
+  private IPipe pipe;
+  private Gate gate;
+
+  public GateInterfaceScreen(GateInterfaceMenu p_97741_, Inventory p_97742_, Component p_97743_) {
+    super(p_97741_, p_97742_, p_97743_);
+    this.imageWidth = 176;
+    this.imageHeight = 166;
+    this.inventoryLabelY = this.imageHeight - 93;
+  }
+
+  @Override
+  protected void initilaizeLedger(Inventory p_97742_) {
+  }
+
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    int x = (this.width - this.imageWidth) / 2;
+    int y = (this.height - this.imageHeight) / 2;
+    guiGraphics.blit(TEXTURE.apply("1"), x, y, 0, 0, this.imageWidth, this.imageHeight);
+  }
+
+  @Override
+  protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    guiGraphics.drawString(this.font, this.title, this.imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
+    guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.inventoryLabelY, 0x404040, false);
+  }
+
+  @Override
+  public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    this.renderBackground(guiGraphics);
+    super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.renderTooltip(guiGraphics, mouseX, mouseY);
+  }
 
   private class TriggerSlot extends StatementSlot {
     public TriggerSlot(int x, int y, IPipe pipe, int slot) {
@@ -95,37 +128,5 @@ public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMe
     public void setParameter(IStatementParameter param, boolean notifyServer) {
       GateInterfaceScreen.this.gate.setActionParameter(statementSlot.slot, slot, param);
     }
-  }
-  private IPipe pipe;
-  private Gate gate;
-  public GateInterfaceScreen(GateInterfaceMenu p_97741_, Inventory p_97742_, Component p_97743_) {
-    super(p_97741_, p_97742_, p_97743_);
-    this.imageWidth = 176;
-    this.imageHeight = 166;
-    this.inventoryLabelY = this.imageHeight - 93;
-  }
-
-  @Override
-  protected void initilaizeLedger(Inventory p_97742_) {
-  }
-
-  @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    int x = (this.width - this.imageWidth) / 2;
-    int y = (this.height - this.imageHeight) / 2;
-    guiGraphics.blit(TEXTURE.apply("1"), x, y, 0, 0, this.imageWidth, this.imageHeight);
-  }
-
-  @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-    guiGraphics.drawString(this.font, this.title, this.imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
-    guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.inventoryLabelY, 0x404040, false);
-  }
-
-  @Override
-  public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    this.renderBackground(guiGraphics);
-    super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    this.renderTooltip(guiGraphics, mouseX, mouseY);
   }
 }

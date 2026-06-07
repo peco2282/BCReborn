@@ -24,23 +24,23 @@ import java.util.function.Function;
 
 public class ActionSingleEnergyPulse extends BCStatement implements IActionInternal {
 
-	public ActionSingleEnergyPulse() {
-		super("buildcraft:pulsar.single");
-	}
+  public ActionSingleEnergyPulse() {
+    super("buildcraft:pulsar.single");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.pulsar.single");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.pulsar.single");
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_single_pulsar"));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/action_single_pulsar"));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

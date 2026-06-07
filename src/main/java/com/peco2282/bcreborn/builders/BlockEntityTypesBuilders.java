@@ -30,13 +30,18 @@ public class BlockEntityTypesBuilders {
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {
     return REGISTRY.registerBlockEntityType(name, type);
-  }  public static final RegistryObject<BlockEntityType<QuarryBlockEntity>> QUARRY =
-    register("quarry", of(QuarryBlockEntity::new, BuildersBlock.QUARRY));
+  }
 
   @SafeVarargs
   private static <T extends BlockEntity> Supplier<BlockEntityType<T>> of(BlockEntityType.BlockEntitySupplier<T> supplier, Supplier<? extends Block>... validBlocks) {
     return () -> new BlockEntityType<>(supplier, CodingUtils.map2Set(Arrays.asList(validBlocks), Supplier::get), null);
-  }  public static final RegistryObject<BlockEntityType<BlueprintLibraryBlockEntity>> BLUEPRINT_LIBRARY = register(
+  }
+
+  public static final RegistryObject<BlockEntityType<QuarryBlockEntity>> QUARRY =
+    register("quarry", of(QuarryBlockEntity::new, BuildersBlock.QUARRY));
+
+
+  public static final RegistryObject<BlockEntityType<BlueprintLibraryBlockEntity>> BLUEPRINT_LIBRARY = register(
     "blueprint_library", of(BlueprintLibraryBlockEntity::new, BuildersBlock.BLUEPRINT_LIBRARY));
   public static final RegistryObject<BlockEntityType<ArchitectBlockEntity>> ARCHITECT =
     register("architect", of(ArchitectBlockEntity::new, BuildersBlock.ARCHITECT));
@@ -46,8 +51,6 @@ public class BlockEntityTypesBuilders {
     register("builder", of(BuilderBlockEntity::new, BuildersBlock.BUILDER));
   public static final RegistryObject<BlockEntityType<FillerBlockEntity>> FILLER =
     register("filler", of(FillerBlockEntity::new, BuildersBlock.FILLER));
-
-
 
 
 }

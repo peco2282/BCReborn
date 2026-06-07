@@ -26,30 +26,30 @@ import net.minecraft.world.phys.Vec3;
 
 public class StripesHandlerPlaceBlock implements IStripesHandler {
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return stack.getItem() instanceof BlockItem;
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return stack.getItem() instanceof BlockItem;
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
-		if (!world.isEmptyBlock(pos)) {
-			return false;
-		}
-		if (stack.getItem() instanceof BlockItem blockItem) {
-			BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, false);
-			if (blockItem.place(new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, stack, hitResult)).consumesAction()) {
-				if (!stack.isEmpty()) {
-					activator.sendItem(stack, direction.getOpposite());
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
+    if (!world.isEmptyBlock(pos)) {
+      return false;
+    }
+    if (stack.getItem() instanceof BlockItem blockItem) {
+      BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, false);
+      if (blockItem.place(new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, stack, hitResult)).consumesAction()) {
+        if (!stack.isEmpty()) {
+          activator.sendItem(stack, direction.getOpposite());
+        }
+        return true;
+      }
+    }
+    return false;
+  }
 }

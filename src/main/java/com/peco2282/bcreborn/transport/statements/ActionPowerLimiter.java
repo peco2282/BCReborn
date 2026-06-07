@@ -25,27 +25,27 @@ import java.util.function.Function;
 
 public class ActionPowerLimiter extends BCStatement implements IActionInternal {
 
-	public final PowerMode limit;
+  public final PowerMode limit;
 
-	public ActionPowerLimiter(PowerMode limit) {
-		super("buildcraft:power.limiter." + limit.name().toLowerCase(Locale.ENGLISH));
+  public ActionPowerLimiter(PowerMode limit) {
+    super("buildcraft:power.limiter." + limit.name().toLowerCase(Locale.ENGLISH));
 
-		this.limit = limit;
-	}
+    this.limit = limit;
+  }
 
-	@Override
-	public String getDescription() {
-		return limit.maxPower + " RF/t Limit";
-	}
+  @Override
+  public String getDescription() {
+    return limit.maxPower + " RF/t Limit";
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_limiter_" + limit.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_limiter_" + limit.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

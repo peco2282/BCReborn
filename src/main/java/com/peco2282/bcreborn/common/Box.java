@@ -32,6 +32,7 @@ public class Box implements IBox {
   public int xMin, yMin, zMin, xMax, yMax, zMax;
   public boolean initialized;
   public LaserData[] lasersData;
+
   public Box() {
     reset();
   }

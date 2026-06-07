@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.common.registry;
 
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IStatement;
-import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.builder.patterns.*;
 import net.minecraft.resources.ResourceKey;

@@ -22,11 +22,11 @@ import java.util.Map;
 
 public abstract class PipeManager {
 
-  public static List<IStripesHandler> stripesHandlers = new ArrayList<>();
-  public static ArrayList<Class<? extends PipePluggable>> pipePluggables = new ArrayList<>();
   private static final Map<String, Class<? extends PipePluggable>> pipePluggableNames = new HashMap<>();
   private static final Map<Class<? extends PipePluggable>, String> pipePluggableByNames = new HashMap<>();
   private static final Map<IStripesHandler, Integer> stripesHandlerPriorities = new HashMap<>();
+  public static List<IStripesHandler> stripesHandlers = new ArrayList<>();
+  public static ArrayList<Class<? extends PipePluggable>> pipePluggables = new ArrayList<>();
 
   @Deprecated
   public static boolean canExtractItems(Object extractor, Level world, BlockPos pos) {

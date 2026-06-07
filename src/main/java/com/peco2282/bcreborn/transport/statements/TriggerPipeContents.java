@@ -34,89 +34,89 @@ import java.util.function.Function;
 
 public class TriggerPipeContents extends BCStatement implements ITriggerInternal {
 
-	public enum PipeContents implements StringRepresentable {
-		empty,
-		containsItems,
-		containsFluids,
-		containsEnergy,
-		requestsEnergy,
-		tooMuchEnergy;
-		public ITriggerInternal trigger;
+  private final PipeContents kind;
+
+  public TriggerPipeContents(PipeContents kind) {
+    super("buildcraft:pipe.contents." + kind.name().toLowerCase(Locale.ENGLISH));
+    this.kind = kind;
+    kind.trigger = this;
+  }
+
+  @Override
+  public int maxParameters() {
+    return switch (kind) {
+      case containsItems, containsFluids -> 1;
+      default -> 0;
+    };
+  }
+
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.pipe." + kind.name());
+  }
+
+  @Override
+  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+    if (!(container instanceof Gate gate)) {
+      return false;
+    }
+
+    IPipe apiPipe = gate.getPipe();
+    if (apiPipe == null) {
+      return false;
+    }
+
+    PipeBlockEntity pipe;
+    if (apiPipe instanceof PipeBlockEntity) {
+      pipe = (PipeBlockEntity) apiPipe;
+    } else if (apiPipe.getTile() instanceof PipeBlockEntity) {
+      pipe = (PipeBlockEntity) apiPipe.getTile();
+    } else {
+      return false;
+    }
+
+    IStatementParameter parameter = parameters.length > 0 ? parameters[0] : null;
+
+    if (kind == PipeContents.empty) {
+      return pipe.getTravelingItems().isEmpty();
+    } else if (kind == PipeContents.containsItems) {
+      if (parameter != null && parameter.getItemStack() != null && !parameter.getItemStack().isEmpty()) {
+        for (TravelingItem item : pipe.getTravelingItems()) {
+          if (ItemStack.isSameItemSameTags(parameter.getItemStack(), item.getStack())) {
+            return true;
+          }
+        }
+      } else {
+        return !pipe.getTravelingItems().isEmpty();
+      }
+    }
+
+    return false;
+  }
+
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new StatementParameterItemStack(ItemStack.EMPTY);
+  }
+
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipecontents_" + kind.name().toLowerCase(Locale.ENGLISH)));
+  }
+
+  public enum PipeContents implements StringRepresentable {
+    empty,
+    containsItems,
+    containsFluids,
+    containsEnergy,
+    requestsEnergy,
+    tooMuchEnergy;
+    public ITriggerInternal trigger;
 
     @Override
     public String getSerializedName() {
       return name().toLowerCase(Locale.ENGLISH);
     }
   }
-
-	private PipeContents kind;
-
-	public TriggerPipeContents(PipeContents kind) {
-		super("buildcraft:pipe.contents." + kind.name().toLowerCase(Locale.ENGLISH));
-		this.kind = kind;
-		kind.trigger = this;
-	}
-
-	@Override
-	public int maxParameters() {
-    return switch (kind) {
-      case containsItems, containsFluids -> 1;
-      default -> 0;
-    };
-	}
-
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.pipe." + kind.name());
-	}
-
-	@Override
-	public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-		if (!(container instanceof Gate gate)) {
-			return false;
-		}
-
-		IPipe apiPipe = gate.getPipe();
-		if (apiPipe == null) {
-			return false;
-		}
-		
-		PipeBlockEntity pipe;
-		if (apiPipe instanceof PipeBlockEntity) {
-			pipe = (PipeBlockEntity) apiPipe;
-		} else if (apiPipe.getTile() instanceof PipeBlockEntity) {
-			pipe = (PipeBlockEntity) apiPipe.getTile();
-		} else {
-			return false;
-		}
-
-		IStatementParameter parameter = parameters.length > 0 ? parameters[0] : null;
-
-		if (kind == PipeContents.empty) {
-			return pipe.getTravelingItems().isEmpty();
-		} else if (kind == PipeContents.containsItems) {
-			if (parameter != null && parameter.getItemStack() != null && !parameter.getItemStack().isEmpty()) {
-				for (TravelingItem item : pipe.getTravelingItems()) {
-					if (ItemStack.isSameItemSameTags(parameter.getItemStack(), item.getStack())) {
-						return true;
-					}
-				}
-			} else {
-				return !pipe.getTravelingItems().isEmpty();
-			}
-		}
-
-		return false;
-	}
-
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new StatementParameterItemStack(ItemStack.EMPTY);
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipecontents_" + kind.name().toLowerCase(Locale.ENGLISH)));
-	}
 }

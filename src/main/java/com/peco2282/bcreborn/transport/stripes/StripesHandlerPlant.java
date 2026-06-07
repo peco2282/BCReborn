@@ -21,27 +21,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class StripesHandlerPlant implements IStripesHandler {
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return CropManager.isSeed(stack);
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return CropManager.isSeed(stack);
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
-		BlockPos target = pos.below();
-		if (CropManager.canSustainPlant(world, stack, target)) {
-			if (CropManager.plantCrop(world, player, stack, target)) {
-				if (!stack.isEmpty()) {
-					activator.sendItem(stack, direction.getOpposite());
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
+    BlockPos target = pos.below();
+    if (CropManager.canSustainPlant(world, stack, target)) {
+      if (CropManager.plantCrop(world, player, stack, target)) {
+        if (!stack.isEmpty()) {
+          activator.sendItem(stack, direction.getOpposite());
+        }
+        return true;
+      }
+    }
+    return false;
+  }
 }

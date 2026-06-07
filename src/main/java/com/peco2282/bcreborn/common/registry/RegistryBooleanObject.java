@@ -23,9 +23,11 @@ public class RegistryBooleanObject<V> extends HashMap<Boolean, RegistryObject<V>
     this.onTrue = onTrue;
     this.onFalse = onFalse;
   }
+
   public static <V> RegistryBooleanObject<V> create(RegistryObject<V> onTrue, RegistryObject<V> onFalse) {
     return new RegistryBooleanObject<>(onTrue, onFalse);
   }
+
   public RegistryObject<V> get(boolean key) {
     return key ? onTrue : onFalse;
   }
@@ -41,8 +43,8 @@ public class RegistryBooleanObject<V> extends HashMap<Boolean, RegistryObject<V>
   @Override
   public String toString() {
     return "RegistryBooleanObject{" +
-        "onTrue=" + onTrue +
-        ", onFalse=" + onFalse +
-        '}';
+      "onTrue=" + onTrue +
+      ", onFalse=" + onFalse +
+      '}';
   }
 }

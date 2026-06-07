@@ -26,22 +26,22 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public final class GateFactory {
 
-	/**
-	 * Deactivate constructor
-	 */
-	private GateFactory() {
-	}
+  /**
+   * Deactivate constructor
+   */
+  private GateFactory() {
+  }
 
-	public static Gate makeGate(IPipe pipe, GateMaterial material, GateLogic logic, Direction direction) {
-		return new Gate(pipe, material, logic, direction);
-	}
+  public static Gate makeGate(IPipe pipe, GateMaterial material, GateLogic logic, Direction direction) {
+    return new Gate(pipe, material, logic, direction);
+  }
 
-	public static Gate makeGate(IPipe pipe, ItemStack stack, Direction direction) {
-		if (stack.isEmpty() /* || !(stack.getItem() instanceof ItemGate) */) {
-			return null;
-		}
+  public static Gate makeGate(IPipe pipe, ItemStack stack, Direction direction) {
+    if (stack.isEmpty() /* || !(stack.getItem() instanceof ItemGate) */) {
+      return null;
+    }
 
-		// TODO: ItemGate
+    // TODO: ItemGate
 
 		/*
 		for (IGateExpansion expansion : ItemGate.getInstalledExpansions(stack)) {
@@ -49,46 +49,46 @@ public final class GateFactory {
 		}
 		*/
 
-		return makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction);
-	}
+    return makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction);
+  }
 
-	public static Gate makeGate(IPipe pipe, CompoundTag nbt) {
-		GateMaterial material = GateMaterial.REDSTONE;
-		GateLogic logic = GateLogic.AND;
-		Direction direction = Direction.UP;
+  public static Gate makeGate(IPipe pipe, CompoundTag nbt) {
+    GateMaterial material = GateMaterial.REDSTONE;
+    GateLogic logic = GateLogic.AND;
+    Direction direction = Direction.UP;
 
-		if (nbt.contains("material")) {
-			try {
-				material = GateMaterial.valueOf(nbt.getString("material"));
-			} catch (IllegalArgumentException ex) {
-				return null;
-			}
-		}
-		if (nbt.contains("logic")) {
-			try {
-				logic = GateLogic.valueOf(nbt.getString("logic"));
-			} catch (IllegalArgumentException ex) {
-				return null;
-			}
-		}
-		if (nbt.contains("direction")) {
-			direction = Direction.values()[nbt.getInt("direction")];
-		}
+    if (nbt.contains("material")) {
+      try {
+        material = GateMaterial.valueOf(nbt.getString("material"));
+      } catch (IllegalArgumentException ex) {
+        return null;
+      }
+    }
+    if (nbt.contains("logic")) {
+      try {
+        logic = GateLogic.valueOf(nbt.getString("logic"));
+      } catch (IllegalArgumentException ex) {
+        return null;
+      }
+    }
+    if (nbt.contains("direction")) {
+      direction = Direction.values()[nbt.getInt("direction")];
+    }
 
-		Gate gate = makeGate(pipe, material, logic, direction);
-		gate.readFromNBT(nbt);
+    Gate gate = makeGate(pipe, material, logic, direction);
+    gate.readFromNBT(nbt);
 
-		ListTag exList = nbt.getList("expansions", 10);
-		for (int i = 0; i < exList.size(); i++) {
-			CompoundTag conNBT = exList.getCompound(i);
-			IGateExpansion ex = GateExpansions.getExpansion(conNBT.getString("type"));
-			if (ex != null) {
-				GateExpansionController con = ex.makeController(pipe.getTile() instanceof BlockEntity be ? be : null);
-				con.readFromNBT(conNBT.getCompound("data"));
-				gate.expansions.put(ex, con);
-			}
-		}
+    ListTag exList = nbt.getList("expansions", 10);
+    for (int i = 0; i < exList.size(); i++) {
+      CompoundTag conNBT = exList.getCompound(i);
+      IGateExpansion ex = GateExpansions.getExpansion(conNBT.getString("type"));
+      if (ex != null) {
+        GateExpansionController con = ex.makeController(pipe.getTile() instanceof BlockEntity be ? be : null);
+        con.readFromNBT(conNBT.getCompound("data"));
+        gate.expansions.put(ex, con);
+      }
+    }
 
-		return gate;
-	}
+    return gate;
+  }
 }

@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.transport;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
-import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.world.level.block.Block;
@@ -22,8 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;

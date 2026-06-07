@@ -74,10 +74,9 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
   };
   private final Container inv = InventoryConcatenator.make().add(inputInv).add(resultInv).add(craftMatrix);
   private final ResultContainer craftResult = new ResultContainer();
-  public int progress = 0;
   private final int[] bindings = new int[9];
   private final int[] bindingCounts = new int[9];
-
+  public int progress = 0;
   private int update = Utils.RANDOM.nextInt();
 
   private boolean hasWork = false;

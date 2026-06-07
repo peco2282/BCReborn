@@ -18,8 +18,8 @@ import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotHarvest extends AIRobot {
 
-  private BlockIndex blockFound;
   private final int delay = 0;
+  private BlockIndex blockFound;
 
   public AIRobotHarvest(RobotEntityBase iRobot) {
     super(iRobot);

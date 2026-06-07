@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.crops.ICropHandler;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
-import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import net.minecraft.core.Registry;

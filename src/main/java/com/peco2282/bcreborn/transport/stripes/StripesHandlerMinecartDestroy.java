@@ -27,55 +27,55 @@ import java.util.List;
 
 public class StripesHandlerMinecartDestroy implements IStripesHandler {
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.BLOCK_BREAK;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.BLOCK_BREAK;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return true;
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return true;
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player,
-						  IStripesActivator activator) {
-		AABB box = new AABB(pos);
-		List<AbstractMinecart> minecarts = world.getEntitiesOfClass(AbstractMinecart.class, box);
-		if (minecarts.isEmpty()) {
-			return false;
-		}
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player,
+                        IStripesActivator activator) {
+    AABB box = new AABB(pos);
+    List<AbstractMinecart> minecarts = world.getEntitiesOfClass(AbstractMinecart.class, box);
+    if (minecarts.isEmpty()) {
+      return false;
+    }
 
-		Collections.shuffle(minecarts);
-		AbstractMinecart cart = minecarts.get(0);
-		if (cart instanceof Container container) {
-			for (int i = 0; i < container.getContainerSize(); i++) {
-				ItemStack s = container.getItem(i);
-				if (!s.isEmpty()) {
-					container.setItem(i, ItemStack.EMPTY);
-					if (container.getItem(i).isEmpty()) {
-						activator.sendItem(s, direction.getOpposite());
-					}
-				}
-			}
-		}
+    Collections.shuffle(minecarts);
+    AbstractMinecart cart = minecarts.get(0);
+    if (cart instanceof Container container) {
+      for (int i = 0; i < container.getContainerSize(); i++) {
+        ItemStack s = container.getItem(i);
+        if (!s.isEmpty()) {
+          container.setItem(i, ItemStack.EMPTY);
+          if (container.getItem(i).isEmpty()) {
+            activator.sendItem(s, direction.getOpposite());
+          }
+        }
+      }
+    }
 
-		ItemStack cartItem = cart.getPickResult();
-		if (cartItem == null || cartItem.isEmpty()) {
-			// In 1.20.1 AbstractMinecart doesn't have getCartItem(), pickResult should work
-			// if it fails we might need to check specific types or use a fallback.
-			// Using reflection as AT might not be picked up correctly in all environments
-			try {
-				java.lang.reflect.Method method = AbstractMinecart.class.getDeclaredMethod("getDropItem");
-				method.setAccessible(true);
-				cartItem = new ItemStack((net.minecraft.world.item.Item) method.invoke(cart));
-			} catch (Exception e) {
-				cartItem = ItemStack.EMPTY;
-			}
-		}
-		
-		cart.discard();
-		activator.sendItem(cartItem, direction.getOpposite());
-		return true;
-	}
+    ItemStack cartItem = cart.getPickResult();
+    if (cartItem == null || cartItem.isEmpty()) {
+      // In 1.20.1 AbstractMinecart doesn't have getCartItem(), pickResult should work
+      // if it fails we might need to check specific types or use a fallback.
+      // Using reflection as AT might not be picked up correctly in all environments
+      try {
+        java.lang.reflect.Method method = AbstractMinecart.class.getDeclaredMethod("getDropItem");
+        method.setAccessible(true);
+        cartItem = new ItemStack((net.minecraft.world.item.Item) method.invoke(cart));
+      } catch (Exception e) {
+        cartItem = ItemStack.EMPTY;
+      }
+    }
+
+    cart.discard();
+    activator.sendItem(cartItem, direction.getOpposite());
+    return true;
+  }
 }

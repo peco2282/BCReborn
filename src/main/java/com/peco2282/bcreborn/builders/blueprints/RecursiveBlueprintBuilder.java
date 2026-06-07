@@ -23,16 +23,16 @@ import java.util.ArrayList;
 public class RecursiveBlueprintBuilder {
 
   private final ArrayList<CompoundTag> subBlueprints;
-  private boolean returnedThis = false;
-  private BlueprintBase blueprint;
-  private RecursiveBlueprintBuilder current;
-  private int nextSubBlueprint = 0;
   private final int x;
   private final int y;
   private final int z;
   private final Direction dir;
   private final Level world;
   private final Box box = new Box();
+  private boolean returnedThis = false;
+  private BlueprintBase blueprint;
+  private RecursiveBlueprintBuilder current;
+  private int nextSubBlueprint = 0;
 
   public RecursiveBlueprintBuilder(BlueprintBase iBlueprint, Level iWorld, int iX, int iY, int iZ,
                                    Direction iDir) {

@@ -26,27 +26,27 @@ import java.util.function.Function;
 
 public class ActionExtractionPreset extends BCStatement implements IActionInternal {
 
-	public final EnumColor color;
+  public final EnumColor color;
 
-	public ActionExtractionPreset(EnumColor color) {
-		super("buildcraft:extraction.preset." + color.getTag());
+  public ActionExtractionPreset(EnumColor color) {
+    super("buildcraft:extraction.preset." + color.getTag());
 
-		this.color = color;
-	}
+    this.color = color;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.action.extraction"), color.getName());
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.action.extraction"), color.getName());
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/extraction_preset_" + color.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/extraction_preset_" + color.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

@@ -56,6 +56,7 @@ public class BCRebornCore implements BCReborn {
   public static int updateFactor = 10;
   public static int builderMaxPerItemFactor = 1024;
   public static long longUpdateFactor = 40;
+
   public BCRebornCore(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
 

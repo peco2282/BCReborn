@@ -14,34 +14,34 @@ package com.peco2282.bcreborn.api.core;
 import java.util.Locale;
 
 public enum EnumSignal {
-    RED,
-    BLUE,
-    GREEN,
-    YELLOW;
+  RED,
+  BLUE,
+  GREEN,
+  YELLOW;
 
-    public static final EnumSignal[] VALUES = values();
+  public static final EnumSignal[] VALUES = values();
 
-    public String getTag() {
-        return name().toLowerCase(Locale.ENGLISH);
+  public static EnumSignal fromId(int id) {
+    if (id < 0 || id >= VALUES.length) {
+      return RED;
     }
+    return VALUES[id];
+  }
 
-    public String getName() {
-        String name = name().toLowerCase(Locale.ENGLISH);
-        return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
-    }
+  public String getTag() {
+    return name().toLowerCase(Locale.ENGLISH);
+  }
 
-    public EnumSignal getNext() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
-    }
+  public String getName() {
+    String name = name().toLowerCase(Locale.ENGLISH);
+    return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+  }
 
-    public EnumSignal getPrevious() {
-        return VALUES[(ordinal() + VALUES.length - 1) % VALUES.length];
-    }
+  public EnumSignal getNext() {
+    return VALUES[(ordinal() + 1) % VALUES.length];
+  }
 
-    public static EnumSignal fromId(int id) {
-        if (id < 0 || id >= VALUES.length) {
-            return RED;
-        }
-        return VALUES[id];
-    }
+  public EnumSignal getPrevious() {
+    return VALUES[(ordinal() + VALUES.length - 1) % VALUES.length];
+  }
 }

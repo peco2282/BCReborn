@@ -47,6 +47,7 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
       return 5;
     }
   };
+
   public IronEngineMenu(int p_38852_, Inventory p_38853_) {
     this(p_38852_, p_38853_, new SimpleContainer(1));
   }

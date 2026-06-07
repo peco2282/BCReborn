@@ -15,8 +15,6 @@ import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +23,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 

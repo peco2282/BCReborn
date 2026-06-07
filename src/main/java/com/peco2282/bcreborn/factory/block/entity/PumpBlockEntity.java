@@ -33,17 +33,14 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
   public static final int REBUID_DELAY = 512;
   public static int MAX_LIQUID = 16000;
+  private final int tickPumped = -20;
+  private final SafeTimeTracker updateTracker = new SafeTimeTracker(16);
   public FluidTank tank = new FluidTank(MAX_LIQUID);
-
   private double tubeY = Double.NaN;
   private int aimY = 0;
-
   private int tick = 0;
-  private final int tickPumped = -20;
   private boolean powered = false;
-
   private int ledState;
-  private final SafeTimeTracker updateTracker = new SafeTimeTracker(16);
 
   public PumpBlockEntity(BlockPos pos, BlockState state) {
     super(FactoryBlockEntityTypes.PUMP.get(), pos, state);

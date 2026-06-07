@@ -20,17 +20,17 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import java.util.function.Consumer;
 
 public class HopperBlockItem extends BlockItem {
-    public HopperBlockItem(Block block, Properties properties) {
-        super(block, properties);
-    }
+  public HopperBlockItem(Block block, Properties properties) {
+    super(block, properties);
+  }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return HopperItemRenderer.INSTANCE;
-            }
-        });
-    }
+  @Override
+  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    consumer.accept(new IClientItemExtensions() {
+      @Override
+      public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+        return HopperItemRenderer.INSTANCE;
+      }
+    });
+  }
 }

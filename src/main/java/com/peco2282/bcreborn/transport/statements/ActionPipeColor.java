@@ -26,27 +26,27 @@ import java.util.function.Function;
 
 public class ActionPipeColor extends BCStatement implements IActionInternal {
 
-	public final EnumColor color;
+  public final EnumColor color;
 
-	public ActionPipeColor(EnumColor color) {
-		super("buildcraft:pipe.color." + color.getTag());
+  public ActionPipeColor(EnumColor color) {
+    super("buildcraft:pipe.color." + color.getTag());
 
-		this.color = color;
-	}
+    this.color = color;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.action.pipe.item.color"), color.getName());
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.action.pipe.item.color"), color.getName());
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("paintbrush/" + color.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("paintbrush/" + color.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

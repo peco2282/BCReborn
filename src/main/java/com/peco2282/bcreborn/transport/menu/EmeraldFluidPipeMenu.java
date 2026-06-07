@@ -46,6 +46,6 @@ public class EmeraldFluidPipeMenu extends BuildCraftMenu<EmeraldFluidPipeMenu> {
 
   @Override
   public boolean stillValid(Player p_38874_) {
-    return pipe != null && p_38874_.distanceToSqr((double)pipe.getBlockPos().getX() + 0.5D, (double)pipe.getBlockPos().getY() + 0.5D, (double)pipe.getBlockPos().getZ() + 0.5D) <= 64.0D;
+    return pipe != null && p_38874_.distanceToSqr((double) pipe.getBlockPos().getX() + 0.5D, (double) pipe.getBlockPos().getY() + 0.5D, (double) pipe.getBlockPos().getZ() + 0.5D) <= 64.0D;
   }
 }

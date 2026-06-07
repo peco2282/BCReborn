@@ -24,27 +24,27 @@ import java.util.function.Function;
 
 public class ActionRedstoneFaderOutput extends ActionRedstoneOutput implements IActionInternal {
 
-	public final int level;
+  public final int level;
 
-	public ActionRedstoneFaderOutput(int level) {
-		super(String.format("buildcraft:redstone.output.%02d", level));
+  public ActionRedstoneFaderOutput(int level) {
+    super(String.format("buildcraft:redstone.output.%02d", level));
 
-		this.level = level;
-	}
+    this.level = level;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.trigger.redstone.input.level"), level);
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.trigger.redstone.input.level"), level);
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
+  }
 
-	@Override
-	protected int getSignalLevel() {
-		return level;
-	}
+  @Override
+  protected int getSignalLevel() {
+    return level;
+  }
 }

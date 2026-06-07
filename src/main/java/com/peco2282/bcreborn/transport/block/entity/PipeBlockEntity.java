@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.transport.block.entity;
 
-import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
@@ -26,6 +25,7 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
+import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviourManager;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
@@ -39,10 +39,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -117,16 +117,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private DyeColor pipeColor = DyeColor.WHITE;
   private ExtractFilterMode extractFilterMode = ExtractFilterMode.WHITE_LIST;
 
-  public enum ExtractFilterMode {
-    WHITE_LIST,
-    BLACK_LIST,
-    ROUND_ROBIN;
-
-    public ExtractFilterMode next() {
-      return values()[(this.ordinal() + 1) % values().length];
-    }
-  }
-
   public PipeBlockEntity(BlockPos pos, BlockState state) {
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
   }
@@ -180,8 +170,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     this.behaviour = behaviour;
   }
 
-  // ---- アイテム輸送 ----
-
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
@@ -215,6 +203,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       }
     }
   }
+
+  // ---- アイテム輸送 ----
 
   private void tickItems(Level level, BlockPos pos) {
     itemTransportModule.tick(level, pos);
@@ -261,11 +251,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     itemTransportModule.dropItems();
   }
 
-  // ---- Fluid ----
-
   public List<TravelingItem> getTravelingItems() {
     return itemTransportModule.getTravelingItems();
   }
+
+  // ---- Fluid ----
 
   @Nullable
   public FluidTank getFluidTank() {
@@ -281,11 +271,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return fluidRoundRobinIndex;
   }
 
-  // ---- Energy ----
-
   public void advanceFluidRoundRobin(int size) {
     if (size > 0) fluidRoundRobinIndex = (fluidRoundRobinIndex + 1) % size;
   }
+
+  // ---- Energy ----
 
   @Nullable
   public EnergyTransportModule getEnergyTransportModule() {
@@ -297,11 +287,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return energyStorage;
   }
 
-  // ---- Wire signals ----
-
   public int getPipeEnergyStored() {
     return energyStorage != null ? energyStorage.getEnergyStored() : 0;
   }
+
+  // ---- Wire signals ----
 
   public void setWireSignal(DyeColor color, boolean signal) {
     int index = getWireIndex(color);
@@ -340,8 +330,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  // ---- Getters / Setters ----
-
   private int getWireIndex(DyeColor color) {
     if (color == null) return -1;
     return switch (color) {
@@ -352,6 +340,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       default -> -1;
     };
   }
+
+  // ---- Getters / Setters ----
 
   public PipeType getTransportType() {
     return transportType;
@@ -436,6 +426,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return pipeColor;
   }
 
+  public void setPipeColor(DyeColor color) {
+    this.pipeColor = color;
+    setChanged();
+    Level level = getLevel();
+    BlockPos pos = getBlockPos();
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
+    }
+  }
+
   public ExtractFilterMode getExtractFilterMode() {
     return extractFilterMode;
   }
@@ -449,16 +449,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   // ---- NBT ----
-
-  public void setPipeColor(DyeColor color) {
-    this.pipeColor = color;
-    setChanged();
-    Level level = getLevel();
-    BlockPos pos = getBlockPos();
-    if (level != null && !level.isClientSide) {
-      level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
-    }
-  }
 
   // --- Container Implementation ---
   @Override
@@ -506,7 +496,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public void clearContent() {
     getFilter(Direction.UP).clearContent();
   }
-  // --- End Container Implementation ---
 
   @Override
   public void load(CompoundTag tag) {
@@ -569,8 +558,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       energyStorage.deserializeNBT(tag.get("Energy"));
     }
   }
-
-  // ---- Capabilities ----
+  // --- End Container Implementation ---
 
   @Override
   protected void saveAdditional(CompoundTag tag) {
@@ -618,6 +606,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
+  // ---- Capabilities ----
+
   @NotNull
   @Override
   public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -636,8 +626,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return super.getCapability(cap, side);
   }
 
-  // ---- Network ----
-
   @Override
   public void invalidateCaps() {
     super.invalidateCaps();
@@ -645,6 +633,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     fluidHandlerCap.invalidate();
     energyCap.invalidate();
   }
+
+  // ---- Network ----
 
   @Nullable
   @Override
@@ -773,6 +763,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
     level.sendBlockUpdated(pos, state, state, 3);
     return true;
+  }
+
+  public enum ExtractFilterMode {
+    WHITE_LIST,
+    BLACK_LIST,
+    ROUND_ROBIN;
+
+    public ExtractFilterMode next() {
+      return values()[(this.ordinal() + 1) % values().length];
+    }
   }
 
   public static class SideProperties {

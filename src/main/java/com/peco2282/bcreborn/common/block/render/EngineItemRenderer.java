@@ -14,15 +14,11 @@ package com.peco2282.bcreborn.common.block.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.peco2282.bcreborn.common.block.EngineBlock;
-import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.common.block.entity.EngineTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -31,7 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 public class EngineItemRenderer extends BlockEntityWithoutLevelRenderer {
   public static final EngineItemRenderer INSTANCE = new EngineItemRenderer();
-
+  private static final ResourceLocation MISSING = ResourceLocation.withDefaultNamespace("missingno");
   private final EngineModel model;
 
   public EngineItemRenderer() {
@@ -87,6 +83,4 @@ public class EngineItemRenderer extends BlockEntityWithoutLevelRenderer {
     String modid = folder.contains("wood") ? "bcreborncore" : "bcrebornenergy";
     return ResourceLocation.fromNamespaceAndPath(modid, "textures/block/" + folder + "/" + name + ".png");
   }
-
-  private static final ResourceLocation MISSING = ResourceLocation.withDefaultNamespace("missingno");
 }

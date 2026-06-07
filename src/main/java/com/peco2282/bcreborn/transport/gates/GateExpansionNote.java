@@ -17,21 +17,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public final class GateExpansionNote extends GateExpansionBuildcraft implements IGateExpansion {
 
-	public static GateExpansionNote INSTANCE = new GateExpansionNote();
+  public static GateExpansionNote INSTANCE = new GateExpansionNote();
 
-	private GateExpansionNote() {
-		super("note");
-	}
+  private GateExpansionNote() {
+    super("note");
+  }
 
-	@Override
-	public GateExpansionController makeController(BlockEntity pipeTile) {
-		return new GateExpansionControllerNote(pipeTile);
-	}
+  @Override
+  public GateExpansionController makeController(BlockEntity pipeTile) {
+    return new GateExpansionControllerNote(pipeTile);
+  }
 
-	private class GateExpansionControllerNote extends GateExpansionController {
+  private class GateExpansionControllerNote extends GateExpansionController {
 
-		public GateExpansionControllerNote(BlockEntity pipeTile) {
-			super(GateExpansionNote.this, pipeTile);
-		}
-	}
+    public GateExpansionControllerNote(BlockEntity pipeTile) {
+      super(GateExpansionNote.this, pipeTile);
+    }
+  }
 }

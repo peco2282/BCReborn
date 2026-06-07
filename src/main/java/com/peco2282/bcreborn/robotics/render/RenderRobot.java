@@ -47,11 +47,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RenderRobot extends EntityRenderer<RobotEntity> {
+  public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(BCRebornRobotics.location("robot"), "main");
   private static final ResourceLocation OVERLAY_RED = BCRebornRobotics.location("textures/entities/overlay_side.png");
   private static final ResourceLocation OVERLAY_CYAN = BCRebornRobotics.location("textures/entities/overlay_bottom.png");
   private static final ResourceLocation LASER_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/laser.png");
-  public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(BCRebornRobotics.location("robot"), "main");
-
   private final ModelPart box;
   private final ModelPart skullOverlayBox;
   private final ItemRenderer itemRenderer;

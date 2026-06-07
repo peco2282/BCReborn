@@ -21,33 +21,33 @@ import java.util.List;
 
 public final class GateExpansionRedstoneFader extends GateExpansionBuildcraft implements IGateExpansion {
 
-	public static GateExpansionRedstoneFader INSTANCE = new GateExpansionRedstoneFader();
+  public static GateExpansionRedstoneFader INSTANCE = new GateExpansionRedstoneFader();
 
-	private GateExpansionRedstoneFader() {
-		super("fader");
-	}
+  private GateExpansionRedstoneFader() {
+    super("fader");
+  }
 
-	@Override
-	public GateExpansionController makeController(BlockEntity pipeTile) {
-		return new GateExpansionControllerRedstoneFader(pipeTile);
-	}
+  @Override
+  public GateExpansionController makeController(BlockEntity pipeTile) {
+    return new GateExpansionControllerRedstoneFader(pipeTile);
+  }
 
-	private class GateExpansionControllerRedstoneFader extends GateExpansionController {
+  private class GateExpansionControllerRedstoneFader extends GateExpansionController {
 
-		public GateExpansionControllerRedstoneFader(BlockEntity pipeTile) {
-			super(GateExpansionRedstoneFader.this, pipeTile);
-		}
+    public GateExpansionControllerRedstoneFader(BlockEntity pipeTile) {
+      super(GateExpansionRedstoneFader.this, pipeTile);
+    }
 
-		@Override
-		public void addTriggers(List<ITriggerInternal> list) {
-			super.addTriggers(list);
-			// TODO: Redstone level triggers
-		}
+    @Override
+    public void addTriggers(List<ITriggerInternal> list) {
+      super.addTriggers(list);
+      // TODO: Redstone level triggers
+    }
 
-		@Override
-		public void addActions(List<IActionInternal> list) {
-			super.addActions(list);
-			// TODO: Redstone level actions
-		}
-	}
+    @Override
+    public void addActions(List<IActionInternal> list) {
+      super.addActions(list);
+      // TODO: Redstone level actions
+    }
+  }
 }
