@@ -29,6 +29,9 @@ public class SiliconConfig {
   private static ForgeConfigSpec.BooleanValue libraryBlock;
   private static ForgeConfigSpec.BooleanValue zonePlan;
 
+  // power
+  private static ForgeConfigSpec.DoubleValue chipsetCostMultiplier;
+
   public static boolean isRedstoneChipset() {
     return redstoneChipset.get();
   }
@@ -73,6 +76,10 @@ public class SiliconConfig {
     return zonePlan.get();
   }
 
+  public static double chipsetCostMultiplier() {
+    return chipsetCostMultiplier.get();
+  }
+
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Silicon settings").push("silicon");
 
@@ -91,6 +98,11 @@ public class SiliconConfig {
     laserTableBlock = builder.define("laserTableBlock", true);
     libraryBlock = builder.define("libraryBlock", true);
     zonePlan = builder.define("zonePlan", true);
+    builder.pop();
+
+    builder.comment("Power settings").push("power");
+    chipsetCostMultiplier = builder.comment("The cost multiplier for Chipsets")
+      .defineInRange("chipsetCostMultiplier", 1.0, 0.0, Double.MAX_VALUE);
     builder.pop();
 
     builder.pop();

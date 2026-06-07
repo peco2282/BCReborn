@@ -80,9 +80,9 @@ public class BuildersConfig {
 
     builder.comment("Blueprint settings").push("blueprints");
     serverDatabaseDirectory = builder.comment("Location for the server blueprint database (used by the Electronic Library).")
-      .define("serverDatabaseDirectory", "$MINECRAFT/blueprints/server");
+      .define("serverDatabaseDirectory", "$MINECRAFT/config/buildcraft/blueprints/server");
     clientDatabaseDirectory = builder.comment("Location for the client blueprint database (used by the Electronic Library).")
-      .define("clientDatabaseDirectory", "$MINECRAFT/blueprints/client");
+      .define("clientDatabaseDirectory", "$MINECRAFT/blueprints");
     excludedBlocks = builder.comment("Blocks that should be excluded from the builder.")
       .defineList("excludedBlocks", List.of(), e -> e instanceof String);
     excludedMods = builder.comment("Mods that should be excluded from the builder.")

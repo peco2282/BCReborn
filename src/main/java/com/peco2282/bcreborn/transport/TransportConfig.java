@@ -24,6 +24,8 @@ public class TransportConfig {
   private static ForgeConfigSpec.BooleanValue facadeShowAllInCreative;
   private static ForgeConfigSpec.BooleanValue slimeballWaterproofRecipe;
   private static ForgeConfigSpec.ConfigValue<List<? extends String>> facadeBlacklist;
+  private static ForgeConfigSpec.DoubleValue gateCostMultiplier;
+  private static ForgeConfigSpec.BooleanValue kinesisPowerLossOnTravel;
 
   // pipes - item enable/disable
   private static ForgeConfigSpec.BooleanValue pipeItemsWood;
@@ -94,6 +96,14 @@ public class TransportConfig {
 
   public static List<? extends String> getFacadeBlacklist() {
     return facadeBlacklist.get();
+  }
+
+  public static double getGateCostMultiplier() {
+    return gateCostMultiplier.get();
+  }
+
+  public static boolean isKinesisPowerLossOnTravel() {
+    return kinesisPowerLossOnTravel.get();
   }
 
   public static boolean isPipeItemsWood() {
@@ -249,7 +259,7 @@ public class TransportConfig {
 
     builder.comment("Pipe settings").push("pipes");
     baseFluidRate = builder.comment("What should the base flow rate of a fluid pipe be?")
-      .defineInRange("baseFluidRate", 10, 1, Integer.MAX_VALUE);
+      .defineInRange("baseFluidRate", 10, 1, 40);
     pipeHardness = builder.comment("How hard to break should a pipe be?")
       .defineInRange("hardness", 0.25, 0.0, Double.MAX_VALUE);
     facadeBlacklistAsWhitelist = builder.comment("Should the blacklist be treated as a whitelist instead?")
@@ -260,6 +270,10 @@ public class TransportConfig {
       .define("facadeShowAllInCreative", true);
     slimeballWaterproofRecipe = builder.comment("Should I enable an alternate Waterproof recipe, based on slimeballs?")
       .define("slimeballWaterproofRecipe", false);
+    gateCostMultiplier = builder.comment("What should be the multiplier of all gate power costs?")
+      .defineInRange("gateCostMultiplier", 1.0, 0.0, Double.MAX_VALUE);
+    kinesisPowerLossOnTravel = builder.comment("Should kinesis pipes lose power over distance (think IC2 or BC pre-3.7)?")
+      .define("kinesisPowerLossOnTravel", false);
     facadeBlacklist = builder.comment("What block types should be blacklisted from being a facade?")
       .defineList("facadeBlacklist", List.of(
         "minecraft:end_portal_frame",
