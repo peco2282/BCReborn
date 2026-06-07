@@ -30,15 +30,15 @@ public abstract class RedstoneBoardNBT<T> {
   public static final int COST_HIGH = 128_000;
   public static final int COST_VERY_HIGH = 512_000;
   private static final Random rand = new Random();
-  private static Supplier<? extends RedstoneBoardNBT<?>> empty;
+  private static Supplier<? extends RedstoneBoardNBT<?>> emptyObject;
 
   public static Supplier<? extends RedstoneBoardNBT<?>> getEmpty() {
-    return empty;
+    return emptyObject != null ? emptyObject : () -> null;
   }
 
   public static void setEmpty(Supplier<? extends RedstoneBoardNBT<?>> empty) {
-    if (RedstoneBoardNBT.empty == null) {
-      RedstoneBoardNBT.empty = empty;
+    if (emptyObject == null) {
+      emptyObject = empty;
     } else {
       throw new IllegalStateException("RedstoneBoardNBT empty supplier is already set");
     }
