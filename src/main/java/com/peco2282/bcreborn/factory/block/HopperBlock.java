@@ -12,6 +12,8 @@
 package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.HopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,7 +52,7 @@ public class HopperBlock extends BuildCraftBlock {
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return null;
+    return createTickerHelper(type, FactoryBlockEntityTypes.HOPPER.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override
