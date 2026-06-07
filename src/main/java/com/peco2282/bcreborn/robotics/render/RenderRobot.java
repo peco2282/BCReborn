@@ -182,8 +182,8 @@ public class RenderRobot extends EntityRenderer<RobotEntity> {
       poseStack.translate(0.0f, -0.25f, 0.0f);
       poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-      @SuppressWarnings("unchecked") HumanoidModel<RobotEntity> armorModel = (HumanoidModel<RobotEntity>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
-      ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
+      @SuppressWarnings({"unchecked", "UnstableApiUsage"}) HumanoidModel<RobotEntity> armorModel = (HumanoidModel<RobotEntity>) ForgeHooksClient.getArmorModel(entity, wearable, EquipmentSlot.HEAD, new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RobotModelLayers.ARMOR_HELMET)));
+      @SuppressWarnings("UnstableApiUsage") ResourceLocation armorTexture = ResourceLocation.parse(ForgeHooksClient.getArmorTexture(entity, wearable, "layer1", EquipmentSlot.HEAD, null));
 
       VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(armorTexture));
       armorModel.renderToBuffer(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
