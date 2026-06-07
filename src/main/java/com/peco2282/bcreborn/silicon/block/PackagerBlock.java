@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.block.entity.PackagerBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class PackagerBlock extends BuildCraftBlock {
@@ -39,8 +41,8 @@ public class PackagerBlock extends BuildCraftBlock {
       return InteractionResult.SUCCESS;
     }
     BlockEntity tile = level.getBlockEntity(pos);
-    if (tile instanceof PackagerBlockEntity) {
-      // TODO: GUI opening logic
+    if (tile instanceof PackagerBlockEntity packager) {
+      NetworkHooks.openScreen((ServerPlayer) player, packager, pos);
       return InteractionResult.CONSUME;
     }
     return InteractionResult.PASS;

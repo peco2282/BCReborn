@@ -18,13 +18,18 @@ import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
 import com.peco2282.bcreborn.robotics.ZonePlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Container {
+public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuProvider, Container {
 
   public static final int RESOLUTION = 2048;
   public static final int CRAFT_TIME = 120;
@@ -213,5 +218,15 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements Contai
   @Override
   public void clearContent() {
     inv.clearContent();
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.literal("Zone Plan");
+  }
+
+  @Override
+  public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    return null;
   }
 }

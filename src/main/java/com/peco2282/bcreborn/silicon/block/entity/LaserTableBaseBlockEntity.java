@@ -21,13 +21,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity implements ILaserTarget, Container, IHasWork {
+public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILaserTarget, Container, IHasWork {
   public int clientRequiredEnergy = 0;
   protected SimpleInventory inv = new SimpleInventory(getContainerSize(), "inv", 64);
   private int energy = 0;
