@@ -17,8 +17,8 @@ import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
-import com.peco2282.bcreborn.robotics.IStationFilter;
-import com.peco2282.bcreborn.robotics.StackRequest;
+import com.peco2282.bcreborn.robotics.station.IStationFilter;
+import com.peco2282.bcreborn.robotics.station.StackRequest;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;

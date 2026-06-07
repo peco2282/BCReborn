@@ -15,7 +15,6 @@ import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.GateExpansions;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.transport.Gate;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateLogic;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateMaterial;
 import net.minecraft.core.Direction;

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
-import com.peco2282.bcreborn.robotics.ZonePlan;
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;

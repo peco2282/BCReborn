@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContain
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
 import com.peco2282.bcreborn.core.statements.StatementParameterRedstoneGateSideOnly;
-import com.peco2282.bcreborn.transport.Gate;
+import com.peco2282.bcreborn.transport.gates.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

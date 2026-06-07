@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
-import com.peco2282.bcreborn.transport.Gate;
+import com.peco2282.bcreborn.transport.gates.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 

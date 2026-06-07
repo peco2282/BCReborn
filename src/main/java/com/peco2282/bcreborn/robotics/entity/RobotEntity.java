@@ -35,7 +35,7 @@ import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.item.WrenchItem;
-import com.peco2282.bcreborn.robotics.RobotRegistry;
+import com.peco2282.bcreborn.robotics.registry.RobotRegistry;
 import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotMain;
