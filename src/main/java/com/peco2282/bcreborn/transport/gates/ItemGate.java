@@ -116,7 +116,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
 					return true;
 				}
 			}
-		} catch (RuntimeException error) {
+		} catch (RuntimeException ignored) {
 		}
 
 		return false;
@@ -139,7 +139,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
 					expansions.add(ex);
 				}
 			}
-		} catch (RuntimeException error) {
+		} catch (RuntimeException ignored) {
 		}
 
 		return expansions;

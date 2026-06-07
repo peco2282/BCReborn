@@ -45,8 +45,7 @@ public final class Utils {
     boolean cauldron = false;
     try {
       cauldron = Utils.class.getClassLoader().loadClass("org.spigotmc.SpigotConfig") != null;
-    } catch (ClassNotFoundException e) {
-
+    } catch (ClassNotFoundException ignored) {
     }
     CAULDRON_DETECTED = cauldron;
   }

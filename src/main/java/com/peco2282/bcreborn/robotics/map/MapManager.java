@@ -157,8 +157,7 @@ public class MapManager implements Runnable {
 
       try {
         Thread.sleep(4000);
-      } catch (Exception e) {
-
+      } catch (InterruptedException ignored) {
       }
     }
   }
