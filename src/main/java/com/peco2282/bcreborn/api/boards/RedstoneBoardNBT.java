@@ -30,7 +30,7 @@ public abstract class RedstoneBoardNBT<T> {
   public static final int COST_HIGH = 128_000;
   public static final int COST_VERY_HIGH = 512_000;
   private static final Random rand = new Random();
-  private static Supplier<? extends RedstoneBoardNBT<?>> emptySupplier;
+  private static Supplier<? extends RedstoneBoardNBT<?>> emptyObject;
 
   public static Supplier<? extends RedstoneBoardNBT<?>> getEmpty() {
     return emptyObject != null ? emptyObject : () -> null;

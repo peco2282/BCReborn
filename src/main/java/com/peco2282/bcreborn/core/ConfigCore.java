@@ -29,8 +29,6 @@ public class ConfigCore {
   private static ForgeConfigSpec.IntValue longUpdateFactor;
 
   // power
-  private static ForgeConfigSpec.DoubleValue chipsetCostMultiplier;
-  private static ForgeConfigSpec.DoubleValue gateCostMultiplier;
   private static ForgeConfigSpec.DoubleValue miningUsageMultiplier;
 
   public static int getItemLifespan() {
@@ -69,14 +67,6 @@ public class ConfigCore {
     return longUpdateFactor.get();
   }
 
-  public static double getChipsetCostMultiplier() {
-    return chipsetCostMultiplier.get();
-  }
-
-  public static double getGateCostMultiplier() {
-    return gateCostMultiplier.get();
-  }
-
   public static double getMiningUsageMultiplier() {
     return miningUsageMultiplier.get();
   }
@@ -86,9 +76,9 @@ public class ConfigCore {
 
     builder.comment("General settings").push("general");
     itemLifespan = builder.comment("How long, in seconds, should items stay on the ground? (Vanilla = 300, default = 60)")
-      .defineInRange("itemLifespan", 1200, 1, Integer.MAX_VALUE);
+      .defineInRange("itemLifespan", 1200, 5, Integer.MAX_VALUE);
     markerRange = builder.comment("Set the maximum marker range.")
-      .defineInRange("markerRange", 64, 1, 256);
+      .defineInRange("markerRange", 64, 8, 64);
     builderMaxIterationsPerItemFactor = builder.comment("Lower this number if BuildCraft builders/fillers are causing TPS lag. Raise it if you think they are being too slow.")
       .defineInRange("builderMaxIterationsPerItemFactor", 1024, 1, Integer.MAX_VALUE);
     canEnginesExplode = builder.comment("Should engines explode upon overheat?")
@@ -109,10 +99,6 @@ public class ConfigCore {
     builder.pop();
 
     builder.comment("Power settings").push("power");
-    chipsetCostMultiplier = builder.comment("The cost multiplier for Chipsets")
-      .defineInRange("chipsetCostMultiplier", 1.0, 0.0, Double.MAX_VALUE);
-    gateCostMultiplier = builder.comment("What should be the multiplier of all gate power costs?")
-      .defineInRange("gateCostMultiplier", 1.0, 0.0, Double.MAX_VALUE);
     miningUsageMultiplier = builder.comment("What should the multiplier of all mining-related power usage be?")
       .defineInRange("miningUsageMultiplier", 1.0, 0.0, Double.MAX_VALUE);
     builder.pop();

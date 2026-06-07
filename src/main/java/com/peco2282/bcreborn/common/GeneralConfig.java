@@ -23,9 +23,6 @@ public class GeneralConfig {
   private static ForgeConfigSpec.BooleanValue printFacadeList;
   private static ForgeConfigSpec.BooleanValue printBlueprintSchematicList;
 
-  // experimental
-  private static ForgeConfigSpec.BooleanValue kinesisPowerLossOnTravel;
-
   public static boolean isColorBlindMode() {
     return colorBlindMode.get();
   }
@@ -46,10 +43,6 @@ public class GeneralConfig {
     return printBlueprintSchematicList.get();
   }
 
-  public static boolean isKinesisPowerLossOnTravel() {
-    return kinesisPowerLossOnTravel.get();
-  }
-
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("General settings").push("general");
 
@@ -65,13 +58,8 @@ public class GeneralConfig {
     builder.comment("Debug settings").push("debug");
     printFacadeList = builder.comment("Print a list of all registered facades.")
       .define("printFacadeList", false);
-    printBlueprintSchematicList = builder
+    printBlueprintSchematicList = builder.comment("Print a list of all registered blueprint schematics.")
       .define("printBlueprintSchematicList", false);
-    builder.pop();
-
-    builder.comment("Experimental settings").push("experimental");
-    kinesisPowerLossOnTravel = builder.comment("Should kinesis pipes lose power over distance (think IC2 or BC pre-3.7)?")
-      .define("kinesisPowerLossOnTravel", false);
     builder.pop();
 
     builder.pop();

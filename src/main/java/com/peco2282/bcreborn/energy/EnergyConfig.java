@@ -21,8 +21,9 @@ public class EnergyConfig {
   private static ForgeConfigSpec.IntValue fuelOilCombustionEnergyOutput;
 
   // oil
-  private static ForgeConfigSpec.BooleanValue oilCanBurn;
-  private static ForgeConfigSpec.BooleanValue oilIsDense;
+  private static ForgeConfigSpec.BooleanValue canOilBurn;
+  private static ForgeConfigSpec.BooleanValue isOilDense;
+  private static ForgeConfigSpec.DoubleValue oilWellGenerationRate;
 
   // pump
   private static ForgeConfigSpec.BooleanValue pumpsConsumeWater;
@@ -32,7 +33,6 @@ public class EnergyConfig {
   // worldgen
   private static ForgeConfigSpec.BooleanValue worldgenEnable;
   private static ForgeConfigSpec.BooleanValue generateWaterSprings;
-  private static ForgeConfigSpec.DoubleValue oilWellGenerationRate;
   private static ForgeConfigSpec.BooleanValue spawnOilSprings;
 
   public static double getFuelFuelCombustion() {
@@ -51,12 +51,12 @@ public class EnergyConfig {
     return fuelOilCombustionEnergyOutput.get();
   }
 
-  public static boolean isOilCanBurn() {
-    return oilCanBurn.get();
+  public static boolean isOilBurn() {
+    return canOilBurn.get();
   }
 
-  public static boolean isOilIsDense() {
-    return oilIsDense.get();
+  public static boolean isOilDense() {
+    return isOilDense.get();
   }
 
   public static boolean isPumpsConsumeWater() {
@@ -90,25 +90,19 @@ public class EnergyConfig {
   public static ForgeConfigSpec.Builder load(ForgeConfigSpec.Builder builder) {
     builder.comment("Energy settings").push("energy");
 
-    builder.comment("Fuel settings").push("fuel");
+    builder.comment("General settings").push("general");
     fuelFuelCombustion = builder.comment("adjust energy value of Fuel in Combustion Engines")
-      .defineInRange("fuel.combustion.energyValue", 1.0, 0.0, Double.MAX_VALUE);
+      .defineInRange("fuel.fuel.combustion.value", 1.0, 0.0, Double.MAX_VALUE);
     fuelFuelCombustionEnergyOutput = builder.comment("adjust output energy by Fuel in Combustion Engines")
-      .defineInRange("fuel.combustion.energyOutput", 60, 1, Integer.MAX_VALUE);
+      .defineInRange("fuel.fuel.combustion.energyOutput", 60, 1, Integer.MAX_VALUE);
     fuelOilCombustion = builder.comment("adjust energy value of Oil in Combustion Engines")
-      .defineInRange("oil.combustion.energyValue", 1.0, 0.0, Double.MAX_VALUE);
+      .defineInRange("fuel.oil.combustion.value", 1.0, 0.0, Double.MAX_VALUE);
     fuelOilCombustionEnergyOutput = builder.comment("adjust output energy by Oil in Combustion Engines")
-      .defineInRange("oil.combustion.energyOutput", 30, 1, Integer.MAX_VALUE);
-    builder.pop();
-
-    builder.comment("Oil settings").push("oil");
-    oilCanBurn = builder.comment("Should oil burn when lit on fire?")
+      .defineInRange("fuel.oil.combustion.energyOutput", 30, 1, Integer.MAX_VALUE);
+    canOilBurn = builder.comment("Should oil burn when lit on fire?")
       .define("oilCanBurn", true);
-    oilIsDense = builder.comment("Should oil be dense and drag entities down?")
+    isOilDense = builder.comment("Should oil be dense and drag entities down?")
       .define("oilIsDense", true);
-    builder.pop();
-
-    builder.comment("Pump settings").push("pump");
     pumpsConsumeWater = builder.comment("Should pumps consume water? Enabling this might cause performance issues!")
       .define("pumpsConsumeWater", false);
     pumpsNeedRealPower = builder.comment("Do pumps need real (non-redstone) power?")
