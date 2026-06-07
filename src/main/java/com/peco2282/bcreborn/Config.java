@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.builders.BuildersConfig;
-import com.peco2282.bcreborn.common.ConfigGeneral;
+import com.peco2282.bcreborn.common.GeneralConfig;
 import com.peco2282.bcreborn.core.ConfigCore;
 import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.factory.FactoryConfig;
@@ -32,25 +32,17 @@ public class Config {
   public static final ForgeConfigSpec SPEC;
   private static final Logger LOGGER = BCReborn.createLogger();
   private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-  private static final ForgeConfigSpec.Builder GENERAL;
-  private static final ForgeConfigSpec.Builder CORE;
-  private static final ForgeConfigSpec.Builder ENERGY;
-  private static final ForgeConfigSpec.Builder TRANSPORT;
-  private static final ForgeConfigSpec.Builder BUILDERS;
-  private static final ForgeConfigSpec.Builder FACTORY;
-  private static final ForgeConfigSpec.Builder SILICON;
-  private static final ForgeConfigSpec.Builder ROBOTICS;
 
   static {
-    GENERAL = ConfigGeneral.load(BUILDER);
+    GeneralConfig.load(BUILDER);
 
-    CORE = ConfigCore.load(BUILDER); // Core settings
-    ENERGY = EnergyConfig.load(BUILDER); // Energy settings
-    TRANSPORT = TransportConfig.load(BUILDER); // Transport settings
-    BUILDERS = BuildersConfig.load(BUILDER); // Builders settings
-    FACTORY = FactoryConfig.load(BUILDER); // Factory settings
-    SILICON = SiliconConfig.load(BUILDER); // Silicon settings
-    ROBOTICS = RoboticsConfig.load(BUILDER); // Robotics settings
+    ConfigCore.load(BUILDER); // Core settings
+    EnergyConfig.load(BUILDER); // Energy settings
+    TransportConfig.load(BUILDER); // Transport settings
+    BuildersConfig.load(BUILDER); // Builders settings
+    FactoryConfig.load(BUILDER); // Factory settings
+    SiliconConfig.load(BUILDER); // Silicon settings
+    RoboticsConfig.load(BUILDER); // Robotics settings
 
     SPEC = BUILDER.build();
   }
