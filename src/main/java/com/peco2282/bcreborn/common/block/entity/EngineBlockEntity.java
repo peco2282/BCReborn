@@ -75,6 +75,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     return ForgeHooks.getBurnTime(stack, null);
   }
 
+  public Direction getOrientation() {
+    orientation = getBlockState().getValue(EngineBlock.FACING);
+    return orientation;
+  }
+
   public EnergyStage getEnergyStage() {
     return energyStage;
   }
