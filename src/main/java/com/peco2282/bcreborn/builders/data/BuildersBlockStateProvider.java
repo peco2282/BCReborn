@@ -14,9 +14,12 @@ package com.peco2282.bcreborn.builders.data;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.BuildersBlock;
+import com.peco2282.bcreborn.builders.block.*;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -83,11 +86,57 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
       .texture("top", createTexture("quarry", "top"))
       .getLocation();
 
-    simpleBlockWithItem(BuildersBlock.ARCHITECT.get(), models().getExistingFile(architect));
-    simpleBlockWithItem(BuildersBlock.BUILDER.get(), models().getExistingFile(builder));
-    simpleBlockWithItem(BuildersBlock.FILLER.get(), models().getExistingFile(filler));
-    simpleBlockWithItem(BuildersBlock.BLUEPRINT_LIBRARY.get(), models().getExistingFile(library));
-    simpleBlockWithItem(BuildersBlock.QUARRY.get(), models().getExistingFile(quarry));
+    getVariantBuilder(BuildersBlock.ARCHITECT.get())
+      .forAllStates(state -> {
+        Direction dir = state.getValue(ArchitectBlock.FACING);
+        return ConfiguredModel.builder()
+          .modelFile(models().getExistingFile(architect))
+          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .build();
+      });
+    getVariantBuilder(BuildersBlock.BUILDER.get())
+      .forAllStates(state -> {
+        Direction dir = state.getValue(BuilderBlock.FACING);
+        return ConfiguredModel.builder()
+          .modelFile(models().getExistingFile(builder))
+          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .build();
+      });
+    getVariantBuilder(BuildersBlock.FILLER.get())
+      .forAllStates(state -> {
+        Direction dir = state.getValue(FillerBlock.FACING);
+        return ConfiguredModel.builder()
+          .modelFile(models().getExistingFile(filler))
+          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .build();
+      });
+    getVariantBuilder(BuildersBlock.BLUEPRINT_LIBRARY.get())
+      .forAllStates(state -> {
+        Direction dir = state.getValue(BlueprintLibraryBlock.FACING);
+        return ConfiguredModel.builder()
+          .modelFile(models().getExistingFile(library))
+          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .build();
+      });
+    getVariantBuilder(BuildersBlock.QUARRY.get())
+      .forAllStates(state -> {
+        Direction dir = state.getValue(QuarryBlock.FACING);
+        return ConfiguredModel.builder()
+          .modelFile(models().getExistingFile(quarry))
+          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .build();
+      });
+
+    simpleBlockItem(BuildersBlock.ARCHITECT.get(), models().getExistingFile(architect));
+    simpleBlockItem(BuildersBlock.BUILDER.get(), models().getExistingFile(builder));
+    simpleBlockItem(BuildersBlock.FILLER.get(), models().getExistingFile(filler));
+    simpleBlockItem(BuildersBlock.BLUEPRINT_LIBRARY.get(), models().getExistingFile(filler));
+    simpleBlockItem(BuildersBlock.QUARRY.get(), models().getExistingFile(filler));
 
     simpleBlockWithItem(BuildersBlock.CONSTRUCTION_MARKER.get(), models().withExistingParent("construction_marker", mcLoc("block/template_torch")).texture("torch", "block/construction_marker_block/default").renderType(mcLoc("cutout")));
   }
