@@ -98,7 +98,7 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
 
   @Override
   public Component getDisplayName() {
-    return Component.translatable("tile.refineryBlock.name");
+    return Component.translatable("menu.bcrebornfactory.refinery");
   }
 
   @Nullable

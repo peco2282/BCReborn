@@ -48,7 +48,7 @@ public class IntegrationTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public Component getDisplayName() {
-    return Component.empty();
+    return Component.translatable("menu.bcrebornsilicon.integration_table");
   }
 
   @Override

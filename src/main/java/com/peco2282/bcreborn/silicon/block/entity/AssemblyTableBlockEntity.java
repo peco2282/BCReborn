@@ -48,7 +48,7 @@ public class AssemblyTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public Component getDisplayName() {
-    return Component.translatable("container.bcreborn.assembly_table");
+    return Component.translatable("menu.bcrebornsilicon.assembly_table");
   }
 
   @Override

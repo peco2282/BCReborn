@@ -48,7 +48,7 @@ public class AdvancedCraftingTableBlockEntity extends LaserTableBaseBlockEntity 
 
   @Override
   public Component getDisplayName() {
-    return Component.literal("Advanced Crafting Table");
+    return Component.translatable("menu.bcrebornsilicon.advanced_crafting_table");
   }
 
   @Override

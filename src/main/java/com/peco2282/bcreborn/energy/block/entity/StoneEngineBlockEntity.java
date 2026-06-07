@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
 import com.peco2282.bcreborn.energy.menu.StoneEngineMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -140,5 +141,10 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
   @Override
   public StoneEngineMenu createMenu(int p_58627_, Inventory p_58628_) {
     return new StoneEngineMenu(p_58627_, p_58628_, this);
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.translatable("menu.bcrebornenergy.stone_engine");
   }
 }

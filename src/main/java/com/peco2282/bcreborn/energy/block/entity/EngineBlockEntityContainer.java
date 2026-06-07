@@ -111,9 +111,4 @@ public abstract class EngineBlockEntityContainer<E extends EngineBlockEntityCont
   public boolean canTakeItemThroughFace(int p_19233_, ItemStack p_19234_, Direction p_19235_) {
     return p_19235_ != orientation;
   }
-
-  @Override
-  public Component getDisplayName() {
-    return Component.empty();
-  }
 }

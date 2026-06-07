@@ -189,7 +189,7 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   @Override
   public Component getDisplayName() {
-    return Component.translatable("container.bcreborn.requester");
+    return Component.translatable("menu.bcrebornrobotics.requester");
   }
 
   @Override

@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
 import com.peco2282.bcreborn.energy.menu.IronEngineMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -223,5 +224,10 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   @Override
   public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
     return FluidStack.EMPTY;
+  }
+
+  @Override
+  public Component getDisplayName() {
+    return Component.translatable("menu.bcrebornenergy.iron_engine");
   }
 }

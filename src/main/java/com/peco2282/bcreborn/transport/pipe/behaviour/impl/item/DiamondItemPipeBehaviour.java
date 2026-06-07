@@ -142,7 +142,7 @@ public class DiamondItemPipeBehaviour implements ItemPipeBehaviour {
     if (level.isClientSide) return InteractionResult.PASS;
     NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
       (id, inv, plyr) -> TransportMenuTypes.DIAMOND_PIPE_MENU.get().create(id, inv),
-      Component.empty()
+      Component.translatable("menu.bcreborntransport.diamond_pipe_menu")
       ), buf -> buf.writeBlockPos(pos)
     );
     return InteractionResult.SUCCESS;

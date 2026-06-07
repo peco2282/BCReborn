@@ -110,7 +110,7 @@ public class PackagerBlockEntity extends BuildCraftBlockEntity implements MenuPr
 
   @Override
   public Component getDisplayName() {
-    return Component.literal("Packager");
+    return Component.translatable("menu.bcrebornsilicon.packager");
   }
 
   @Override

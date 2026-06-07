@@ -48,7 +48,7 @@ public class ProgrammingTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public Component getDisplayName() {
-    return Component.empty();
+    return Component.translatable("menu.bcrebornsilicon.programming_table");
   }
 
   @Override
