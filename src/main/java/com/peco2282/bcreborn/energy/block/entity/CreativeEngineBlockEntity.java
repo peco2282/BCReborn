@@ -56,8 +56,17 @@ public class CreativeEngineBlockEntity extends EngineBlockEntity<CreativeEngineB
   @Override
   public void burning() {
     if (this.energyStorage != null) {
+      // 常に最大容量まで生成
       this.energyStorage.generateEnergy(this.energyStorage.getMaxEnergyStored(), false);
     }
-    setPumping(canPushEnergy());
+    // 常にピストンを動かす
+    setPumping(true);
+    // 常に赤段階の熱（最高速のため）
+    heat = 800;
+  }
+
+  @Override
+  protected void onPistonCycled() {
+    pushEnergyToNeighbor();
   }
 }

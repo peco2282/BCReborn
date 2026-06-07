@@ -93,19 +93,25 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
       // 発電（段階倍率を適用）
       if (this.energyStorage != null) {
         float mult = getOutputMultiplier();
-        int base = 20;
+        // オリジナル: 1 MJ/t = 10 FE/t
+        int base = 10;
         int gen = Math.max(0, Math.round(base * mult));
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
-      setPumping(energyStorage.getEnergyStored() > 0 && canPushEnergy());
+      setPumping(true); // 石エンジンは常にピストンを動かそうとする
     } else {
       burnItem = null;
       burnTime = 0;
-      double esum = 0;
       setActive(false);
       setPumping(false);
     }
+  }
+
+  @Override
+  protected void onPistonCycled() {
+    // ピストンが戻るタイミング（サイクル完了）でエネルギーを出力
+    pushEnergyToNeighbor();
   }
 
   @Override
