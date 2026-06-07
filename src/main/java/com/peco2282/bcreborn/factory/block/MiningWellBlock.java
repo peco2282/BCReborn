@@ -12,6 +12,8 @@
 package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -38,7 +40,7 @@ public class MiningWellBlock extends BuildCraftBlock {
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return null;
+    return createTickerHelper(type, FactoryBlockEntityTypes.MINING_WELL.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override
