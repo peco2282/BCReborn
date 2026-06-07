@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.core.list;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.common.gui.AdvancedSlot;
 import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
+import com.peco2282.bcreborn.common.gui.AdvancedSlot;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.core.item.ListItem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,9 +29,8 @@ import net.minecraft.world.item.ItemStack;
 public class ListOldScreen extends AdvancedInterfaceScreen<ListOldMenu> {
 
   private static final ResourceLocation TEXTURE_BASE = BCRebornCore.location("textures/gui/list.png");
-
-  private EditBox textField;
   private final Player player;
+  private EditBox textField;
 
   public ListOldScreen(ListOldMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);
@@ -209,9 +208,9 @@ public class ListOldScreen extends AdvancedInterfaceScreen<ListOldMenu> {
 
   private static class Button extends AdvancedSlot {
 
+    private final String desc;
     public int line;
     public int kind;
-    private final String desc;
 
     public Button(ListOldScreen gui, int x, int y, int iLine, int iKind, String iDesc) {
       super(gui, x, y);

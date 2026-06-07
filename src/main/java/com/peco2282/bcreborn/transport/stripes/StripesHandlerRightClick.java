@@ -26,23 +26,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StripesHandlerRightClick implements IStripesHandler {
-	public static final List<Item> items = new ArrayList<>();
+  public static final List<Item> items = new ArrayList<>();
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return stack.getItem() instanceof ThrowablePotionItem || items.contains(stack.getItem());
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return stack.getItem() instanceof ThrowablePotionItem || items.contains(stack.getItem());
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
-		ItemStack remainingStack = stack.use(world, player, InteractionHand.MAIN_HAND).getObject();
-		activator.sendItem(remainingStack, direction.getOpposite());
-		return true;
-	}
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
+    ItemStack remainingStack = stack.use(world, player, InteractionHand.MAIN_HAND).getObject();
+    activator.sendItem(remainingStack, direction.getOpposite());
+    return true;
+  }
 
 }

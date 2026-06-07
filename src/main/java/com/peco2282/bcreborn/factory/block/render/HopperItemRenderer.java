@@ -20,30 +20,30 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class HopperItemRenderer extends BlockEntityWithoutLevelRenderer {
-    public static final HopperItemRenderer INSTANCE = new HopperItemRenderer();
+  public static final HopperItemRenderer INSTANCE = new HopperItemRenderer();
 
-    private final RenderHopper renderer;
+  private final RenderHopper renderer;
 
-    public HopperItemRenderer() {
-        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        renderer = new RenderHopper(Minecraft.getInstance().getEntityModels());
-    }
+  public HopperItemRenderer() {
+    super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+    renderer = new RenderHopper(Minecraft.getInstance().getEntityModels());
+  }
 
-    @Override
-    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
+  @Override
+  public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    poseStack.pushPose();
 
-        // アイテムとしての微調整
-      poseStack.scale(1.2F, 1.2F, 1.2F);
+    // アイテムとしての微調整
+    poseStack.scale(1.2F, 1.2F, 1.2F);
 
-      poseStack.translate(0.62, 0.2, 0.2);
+    poseStack.translate(0.62, 0.2, 0.2);
 
-      poseStack.mulPose(Axis.YP.rotationDegrees(65F));
+    poseStack.mulPose(Axis.YP.rotationDegrees(65F));
 
-      poseStack.translate(-0.5, -0.5, -0.5);
+    poseStack.translate(-0.5, -0.5, -0.5);
 
-        renderer.renderInternal(poseStack, bufferSource, packedLight, packedOverlay);
+    renderer.renderInternal(poseStack, bufferSource, packedLight, packedOverlay);
 
-        poseStack.popPose();
-    }
+    poseStack.popPose();
+  }
 }

@@ -18,18 +18,7 @@ import java.util.EnumMap;
 import java.util.function.Supplier;
 
 public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> extends EnumMap<E, RegistryObject<V>> implements Supplier<RegistryObject<V>> {
-  public static <E extends Enum<E> & StringRepresentable, V> RegistryEnumObject<E, V> create(Class<E> keyType) {
-    return new RegistryEnumObject<>(keyType);
-  }
   private final Class<E> keyType;
-  @Override
-  public RegistryObject<V> get() {
-    return get(keyType.getEnumConstants()[0]);
-  }
-
-  public RegistryObject<V> get(E key) {
-    return super.get(key);
-  }
 
   private RegistryEnumObject(Class<E> keyType) {
     super(keyType);
@@ -43,6 +32,19 @@ public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> exte
       throw new IllegalArgumentException("Key type must have at least one enum constant");
     }
     this.keyType = keyType;
+  }
+
+  public static <E extends Enum<E> & StringRepresentable, V> RegistryEnumObject<E, V> create(Class<E> keyType) {
+    return new RegistryEnumObject<>(keyType);
+  }
+
+  @Override
+  public RegistryObject<V> get() {
+    return get(keyType.getEnumConstants()[0]);
+  }
+
+  public RegistryObject<V> get(E key) {
+    return super.get(key);
   }
 
   @Override

@@ -26,43 +26,43 @@ import java.util.function.Function;
 
 public class TriggerClockTimer extends BCStatement implements ITriggerInternal {
 
-	public enum Time implements StringRepresentable {
+  public final Time time;
 
-		SHORT(5), MEDIUM(10), LONG(15);
-		public static final Time[] VALUES = values();
-		public final int delay;
+  public TriggerClockTimer(Time time) {
+    super("buildcraft:timer." + time.name().toLowerCase(Locale.ENGLISH));
 
-		Time(int delay) {
-			this.delay = delay;
-		}
+    this.time = time;
+  }
+
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.trigger.timer"), time.delay);
+  }
+
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_timer_" + time.name().toLowerCase(Locale.ENGLISH)));
+  }
+
+  @Override
+  public boolean isTriggerActive(IStatementContainer source,
+                                 IStatementParameter[] parameters) {
+    return false;
+  }
+
+  public enum Time implements StringRepresentable {
+
+    SHORT(5), MEDIUM(10), LONG(15);
+    public static final Time[] VALUES = values();
+    public final int delay;
+
+    Time(int delay) {
+      this.delay = delay;
+    }
 
     @Override
     public String getSerializedName() {
       return name().toLowerCase(Locale.ENGLISH);
     }
   }
-
-	public final Time time;
-
-	public TriggerClockTimer(Time time) {
-		super("buildcraft:timer." + time.name().toLowerCase(Locale.ENGLISH));
-
-		this.time = time;
-	}
-
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.trigger.timer"), time.delay);
-	}
-
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_timer_" + time.name().toLowerCase(Locale.ENGLISH)));
-	}
-
-	@Override
-	public boolean isTriggerActive(IStatementContainer source,
-								   IStatementParameter[] parameters) {
-		return false;
-	}
 }

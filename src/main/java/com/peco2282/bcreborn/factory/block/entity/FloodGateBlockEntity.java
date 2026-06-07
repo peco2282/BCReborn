@@ -45,10 +45,10 @@ public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFlui
   private final Set<BlockIndex> visitedBlocks = new HashSet<>();
   private final FluidTank tank = new FluidTank(MAX_LIQUID);
   private final Deque<BlockIndex> fluidsFound = new LinkedList<>();
+  private final boolean[] blockedSides = new boolean[6];
   private int rebuildDelay;
   private int tick = Utils.RANDOM.nextInt();
   private boolean powered = false;
-  private final boolean[] blockedSides = new boolean[6];
 
   public FloodGateBlockEntity(BlockPos pos, BlockState state) {
     super(FactoryBlockEntityTypes.FLOOD_GATE.get(), pos, state);

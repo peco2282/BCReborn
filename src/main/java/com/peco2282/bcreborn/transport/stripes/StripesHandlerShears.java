@@ -29,40 +29,40 @@ import java.util.List;
 
 public class StripesHandlerShears implements IStripesHandler {
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return stack.getItem() instanceof ShearsItem;
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return stack.getItem() instanceof ShearsItem;
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
-		BlockState state = world.getBlockState(pos);
-		Block block = state.getBlock();
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
+    BlockState state = world.getBlockState(pos);
+    Block block = state.getBlock();
 
-		if (block instanceof IForgeShearable shearableBlock) {
-			if (shearableBlock.isShearable(stack, world, pos)) {
-				world.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1, 1);
-				List<ItemStack> drops = shearableBlock.onSheared(player, stack, world, pos, 0);
-				world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-				if (stack.hurt(1, world.random, null)) {
-					stack.shrink(1);
-				}
-				if (!stack.isEmpty()) {
-					activator.sendItem(stack, direction.getOpposite());
-				}
-				for (ItemStack dropStack : drops) {
-					activator.sendItem(dropStack, direction.getOpposite());
-				}
-				return true;
-			}
-		}
+    if (block instanceof IForgeShearable shearableBlock) {
+      if (shearableBlock.isShearable(stack, world, pos)) {
+        world.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1, 1);
+        List<ItemStack> drops = shearableBlock.onSheared(player, stack, world, pos, 0);
+        world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        if (stack.hurt(1, world.random, null)) {
+          stack.shrink(1);
+        }
+        if (!stack.isEmpty()) {
+          activator.sendItem(stack, direction.getOpposite());
+        }
+        for (ItemStack dropStack : drops) {
+          activator.sendItem(dropStack, direction.getOpposite());
+        }
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
 }

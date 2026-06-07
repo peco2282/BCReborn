@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.robotics.screen;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.peco2282.bcreborn.BCReborn;
-import com.peco2282.bcreborn.common.gui.AdvancedSlot;
 import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
+import com.peco2282.bcreborn.common.gui.AdvancedSlot;
 import com.peco2282.bcreborn.robotics.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
@@ -34,20 +34,17 @@ public class ZonePlanScreen extends AdvancedInterfaceScreen<ZonePlanMenu> {
   private final ZonePlanBlockEntity zonePlan;
   private final int mapWidth = WINDOWED_MAP_WIDTH;
   private final int mapHeight = WINDOWED_MAP_HEIGHT;
+  private final float blocksPerPixel = 1.0f;
+  private final int cx;
+  private final int cz;
+  private final float alpha = 0.8F;
   private DynamicTexture mapTexture;
   private NativeImage mapImage;
   private ResourceLocation mapTextureLocation;
   private DynamicTexture selectionTexture;
   private NativeImage selectionImage;
   private ResourceLocation selectionTextureLocation;
-
-  private final float blocksPerPixel = 1.0f;
-  private final int cx;
-  private final int cz;
-
   private AreaSlot colorSelected = null;
-
-  private final float alpha = 0.8F;
 
   public ZonePlanScreen(ZonePlanMenu menu, Inventory inventory, Component title) {
     super(menu, inventory, title);

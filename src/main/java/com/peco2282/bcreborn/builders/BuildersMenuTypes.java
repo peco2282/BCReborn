@@ -29,7 +29,9 @@ public class BuildersMenuTypes {
 
   private static <M extends AbstractContainerMenu> RegistryObject<MenuType<M>> register(String name, MenuType<M> menuType) {
     return REGISTRY.registerMenuType(name, () -> menuType);
-  }  public static final RegistryObject<MenuType<BuilderMenu>> BUILDER =
+  }
+
+  public static final RegistryObject<MenuType<BuilderMenu>> BUILDER =
     register("builder", IForgeMenuType.create(BuilderMenu::new));
 
   public static final RegistryObject<MenuType<ArchitectMenu>> ARCHITECT =

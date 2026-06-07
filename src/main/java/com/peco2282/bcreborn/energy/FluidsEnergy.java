@@ -103,8 +103,7 @@ public class FluidsEnergy {
           }
         });
       }
-    });  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
-    () -> new OilFluid.Source(oilProperties()));
+    });
 
   private static ForgeFlowingFluid.Properties oilProperties() {
     return new ForgeFlowingFluid.Properties(OIL_TYPE, OIL_SOURCE, OIL_FLOWING)
@@ -112,8 +111,8 @@ public class FluidsEnergy {
       .levelDecreasePerBlock(2)
       .block(OIL_BLOCK)
       .bucket(OIL_BUCKET);
-  }  public static final RegistryObject<OilFluid.Flowing> OIL_FLOWING = REGISTRY.registerFluid("flowing_oil",
-    () -> new OilFluid.Flowing(oilProperties()));
+  }  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
+    () -> new OilFluid.Source(oilProperties()));
 
   private static ForgeFlowingFluid.Properties fuelProperties() {
     return new ForgeFlowingFluid.Properties(FUEL_TYPE, FUEL_SOURCE, FUEL_FLOWING)
@@ -121,7 +120,16 @@ public class FluidsEnergy {
       .levelDecreasePerBlock(2)
       .block(FUEL_BLOCK)
       .bucket(FUEL_BUCKET);
-  }  public static final RegistryObject<LiquidBlock> OIL_BLOCK = REGISTRY.registerBlock("oil",
+  }
+
+  public static void registerFluidTypes(IEventBus bus) {
+    FLUID_TYPES.register(bus);
+  }  public static final RegistryObject<OilFluid.Flowing> OIL_FLOWING = REGISTRY.registerFluid("flowing_oil",
+    () -> new OilFluid.Flowing(oilProperties()));
+
+
+
+  public static final RegistryObject<LiquidBlock> OIL_BLOCK = REGISTRY.registerBlock("oil",
     () -> new LiquidBlock(OIL_SOURCE, BlockBehaviour.Properties.of()
       .mapColor(MapColor.COLOR_BLACK)
       .noCollission()
@@ -129,16 +137,15 @@ public class FluidsEnergy {
       .noLootTable()
     ));
 
-  public static void registerFluidTypes(IEventBus bus) {
-    FLUID_TYPES.register(bus);
-  }  public static final RegistryObject<BucketItem> OIL_BUCKET = REGISTRY.registerItem("oil_bucket",
+
+
+  public static final RegistryObject<BucketItem> OIL_BUCKET = REGISTRY.registerItem("oil_bucket",
     () -> new BucketItem(OIL_SOURCE, new Item.Properties()
       .craftRemainder(Items.BUCKET)
       .stacksTo(1)
     ));
 
   // --- Fuel (Gold Oil) ---
-
 
 
   public static final RegistryObject<FuelFluid.Source> FUEL_SOURCE = REGISTRY.registerFluid("fuel",
@@ -160,10 +167,6 @@ public class FluidsEnergy {
       .craftRemainder(Items.BUCKET)
       .stacksTo(1)
     ));
-
-
-
-
 
 
 }

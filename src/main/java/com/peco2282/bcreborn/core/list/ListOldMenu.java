@@ -22,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class ListOldMenu extends BuildCraftMenu<ListOldMenu> {
 
-  public ListHandlerOld.StackLine[] lines;
   private final Player player;
+  public ListHandlerOld.StackLine[] lines;
 
   public ListOldMenu(int containerId, Player iPlayer) {
     super(MenuTypesCore.LIST_OLD.get(), containerId, iPlayer.getInventory());

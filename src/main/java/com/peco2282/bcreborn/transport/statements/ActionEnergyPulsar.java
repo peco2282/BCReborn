@@ -25,23 +25,23 @@ import java.util.function.Function;
 
 public class ActionEnergyPulsar extends BCStatement implements IActionInternal {
 
-	public ActionEnergyPulsar() {
-		super("buildcraft:pulsar.constant");
-	}
+  public ActionEnergyPulsar() {
+    super("buildcraft:pulsar.constant");
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.action.pulsar.constant");
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.action.pulsar.constant");
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_pulsar"));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/action_pulsar"));
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
+  @Override
+  public void actionActivate(IStatementContainer source,
                              IStatementParameter[] parameters) {
 
-	}
+  }
 }

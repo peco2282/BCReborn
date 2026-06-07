@@ -28,73 +28,73 @@ import java.util.function.Function;
 
 public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
 
-	boolean active;
-	PipeWire color;
+  boolean active;
+  PipeWire color;
 
-	public TriggerPipeSignal(boolean active, PipeWire color) {
-		super("buildcraft:pipe.wire.input." + color.name().toLowerCase(Locale.ENGLISH) + (active ? ".active" : ".inactive"));
+  public TriggerPipeSignal(boolean active, PipeWire color) {
+    super("buildcraft:pipe.wire.input." + color.name().toLowerCase(Locale.ENGLISH) + (active ? ".active" : ".inactive"));
 
-		this.active = active;
-		this.color = color;
-	}
+    this.active = active;
+    this.color = color;
+  }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.trigger.pipe.wire." + (active ? "active" : "inactive")), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.trigger.pipe.wire." + (active ? "active" : "inactive")), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-		if (!(container instanceof Gate gate)) {
-			return false;
-		}
+  @Override
+  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+    if (!(container instanceof Gate gate)) {
+      return false;
+    }
 
-		IPipe pipe = gate.getPipe();
-		if (pipe == null) {
-			return false;
-		}
+    IPipe pipe = gate.getPipe();
+    if (pipe == null) {
+      return false;
+    }
 
-		if (active) {
-			if (!pipe.isWireActive(color)) {
-				return false;
-			}
-		} else {
-			if (pipe.isWireActive(color)) {
-				return false;
-			}
-		}
+    if (active) {
+      if (!pipe.isWireActive(color)) {
+        return false;
+      }
+    } else {
+      if (pipe.isWireActive(color)) {
+        return false;
+      }
+    }
 
-		for (IStatementParameter param : parameters) {
-			if (param instanceof TriggerParameterSignal signal) {
-				if (signal.color != null) {
-					if (signal.active) {
-						if (!pipe.isWireActive(signal.color)) {
-							return false;
-						}
-					} else {
-						if (pipe.isWireActive(signal.color)) {
-							return false;
-						}
-					}
-				}
-			}
-		}
+    for (IStatementParameter param : parameters) {
+      if (param instanceof TriggerParameterSignal signal) {
+        if (signal.color != null) {
+          if (signal.active) {
+            if (!pipe.isWireActive(signal.color)) {
+              return false;
+            }
+          } else {
+            if (pipe.isWireActive(signal.color)) {
+              return false;
+            }
+          }
+        }
+      }
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_" + color.name().toLowerCase(Locale.ENGLISH) + "_" + (active ? "active" : "inactive")));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_pipesignal_" + color.name().toLowerCase(Locale.ENGLISH) + "_" + (active ? "active" : "inactive")));
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new TriggerParameterSignal();
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new TriggerParameterSignal();
+  }
 }

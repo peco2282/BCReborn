@@ -28,56 +28,56 @@ import java.util.List;
 
 public class StripesHandlerEntityInteract implements IStripesHandler {
 
-	@Override
-	public StripesHandlerType getType() {
-		return StripesHandlerType.ITEM_USE;
-	}
+  @Override
+  public StripesHandlerType getType() {
+    return StripesHandlerType.ITEM_USE;
+  }
 
-	@Override
-	public boolean shouldHandle(ItemStack stack) {
-		return true;
-	}
+  @Override
+  public boolean shouldHandle(ItemStack stack) {
+    return true;
+  }
 
-	@Override
-	public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player,
-						  IStripesActivator activator) {
+  @Override
+  public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player,
+                        IStripesActivator activator) {
 
-		AABB box = new AABB(pos);
-		List<LivingEntity> livingEntities = world.getEntitiesOfClass(LivingEntity.class, box);
-		if (livingEntities.isEmpty()) {
-			return false;
-		}
+    AABB box = new AABB(pos);
+    List<LivingEntity> livingEntities = world.getEntitiesOfClass(LivingEntity.class, box);
+    if (livingEntities.isEmpty()) {
+      return false;
+    }
 
-		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+    player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 
-		boolean successful = false;
-		Collections.shuffle(livingEntities);
-		List<LivingEntity> targets = new LinkedList<>(livingEntities);
-		while (!targets.isEmpty()) {
-			LivingEntity entity = targets.remove(0);
+    boolean successful = false;
+    Collections.shuffle(livingEntities);
+    List<LivingEntity> targets = new LinkedList<>(livingEntities);
+    while (!targets.isEmpty()) {
+      LivingEntity entity = targets.remove(0);
 
-			if (player.interactOn(entity, InteractionHand.MAIN_HAND).consumesAction()) {
-				successful = true;
-				dropItemsExcept(stack, player, activator, direction);
-			}
-		}
-		if (!stack.isEmpty() && successful) {
-			activator.sendItem(stack, direction.getOpposite());
-		}
+      if (player.interactOn(entity, InteractionHand.MAIN_HAND).consumesAction()) {
+        successful = true;
+        dropItemsExcept(stack, player, activator, direction);
+      }
+    }
+    if (!stack.isEmpty() && successful) {
+      activator.sendItem(stack, direction.getOpposite());
+    }
 
-		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 
-		return successful;
-	}
+    return successful;
+  }
 
-	private void dropItemsExcept(ItemStack stack, Player player, IStripesActivator activator, Direction direction) {
-		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-			ItemStack invStack = player.getInventory().getItem(i);
-			if (!invStack.isEmpty() && invStack != stack) {
-				player.getInventory().setItem(i, ItemStack.EMPTY);
-				activator.sendItem(invStack, direction.getOpposite());
-			}
-		}
-	}
+  private void dropItemsExcept(ItemStack stack, Player player, IStripesActivator activator, Direction direction) {
+    for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+      ItemStack invStack = player.getInventory().getItem(i);
+      if (!invStack.isEmpty() && invStack != stack) {
+        player.getInventory().setItem(i, ItemStack.EMPTY);
+        activator.sendItem(invStack, direction.getOpposite());
+      }
+    }
+  }
 
 }

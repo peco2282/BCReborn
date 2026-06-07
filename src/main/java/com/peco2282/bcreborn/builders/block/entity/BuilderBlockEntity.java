@@ -20,8 +20,8 @@ import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.blueprint.BlueprintBase;
 import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
-import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
+import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
@@ -52,13 +52,12 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   private static final int POWER_ACTIVATION = 25;
 
   private final SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
+  private final List<BuildingItem> builders = new LinkedList<>();
   private List<RequirementItemStack> requiredToBuild = new ArrayList<>();
   private CompoundTag initNBT = null;
   private boolean done = true;
   private boolean isBuilding = false;
-
   private BptBuilderTemplate currentBuilder;
-  private final List<BuildingItem> builders = new LinkedList<>();
 
   public BuilderBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesBuilders.BUILDER.get(), p_155229_, p_155230_);

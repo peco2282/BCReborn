@@ -20,10 +20,6 @@ import java.util.Map;
 
 public abstract class RobotManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(RobotManager.class);
-
-  public static IRobotRegistryProvider registryProvider;
-  public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
-
   private static final Map<Class<? extends AIRobot>, String> aiRobotsNames;
   private static final Map<String, Class<? extends AIRobot>> aiRobotsByNames;
   private static final Map<String, Class<? extends AIRobot>> aiRobotsByLegacyClassNames;
@@ -32,6 +28,8 @@ public abstract class RobotManager {
   private static final Map<String, Class<? extends ResourceId>> resourceIdLegacyClassNames;
   private static final Map<Class<? extends DockingStation>, String> dockingStationNames;
   private static final Map<String, Class<? extends DockingStation>> dockingStationByNames;
+  public static IRobotRegistryProvider registryProvider;
+  public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
 
   static {
     aiRobotsByNames = new HashMap<>();

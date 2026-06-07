@@ -16,48 +16,48 @@ import net.minecraft.util.StringRepresentable;
 import java.util.Locale;
 
 public enum EnumColor implements StringRepresentable {
-    WHITE,
-    ORANGE,
-    MAGENTA,
-    LIGHT_BLUE,
-    YELLOW,
-    LIME,
-    PINK,
-    GRAY,
-    LIGHT_GRAY,
-    CYAN,
-    PURPLE,
-    BLUE,
-    BROWN,
-    GREEN,
-    RED,
-    BLACK;
+  WHITE,
+  ORANGE,
+  MAGENTA,
+  LIGHT_BLUE,
+  YELLOW,
+  LIME,
+  PINK,
+  GRAY,
+  LIGHT_GRAY,
+  CYAN,
+  PURPLE,
+  BLUE,
+  BROWN,
+  GREEN,
+  RED,
+  BLACK;
 
-    public static final EnumColor[] VALUES = values();
+  public static final EnumColor[] VALUES = values();
 
-    public String getTag() {
-        return name().toLowerCase(Locale.ENGLISH);
+  public static EnumColor fromId(int id) {
+    if (id < 0 || id >= VALUES.length) {
+      return WHITE;
     }
+    return VALUES[id];
+  }
 
-    public String getName() {
-        String name = name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
-        return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
-    }
+  public String getTag() {
+    return name().toLowerCase(Locale.ENGLISH);
+  }
 
-    public EnumColor getNext() {
-        return VALUES[(ordinal() + 1) % VALUES.length];
-    }
+  public String getName() {
+    String name = name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+    return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+  }
 
-    public EnumColor getPrevious() {
-        return VALUES[(ordinal() + VALUES.length - 1) % VALUES.length];
-    }
+  public EnumColor getNext() {
+    return VALUES[(ordinal() + 1) % VALUES.length];
+  }
 
-    public static EnumColor fromId(int id) {
-        if (id < 0 || id >= VALUES.length) {
-            return WHITE;
-        }
-        return VALUES[id];
-    }
+  public EnumColor getPrevious() {
+    return VALUES[(ordinal() + VALUES.length - 1) % VALUES.length];
+  }
 
   @Override
   public String getSerializedName() {

@@ -27,46 +27,46 @@ import java.util.function.Function;
 
 public class ActionSignalOutput extends BCStatement implements IActionInternal {
 
-	public final PipeWire color;
+  public final PipeWire color;
 
-	public ActionSignalOutput(PipeWire color) {
-		super("pipe.wire.output." + color.name().toLowerCase(Locale.ENGLISH));
+  public ActionSignalOutput(PipeWire color) {
+    super("pipe.wire.output." + color.name().toLowerCase(Locale.ENGLISH));
 
-		this.color = color;
-	}
+    this.color = color;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/action_signal_" + color.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/action_signal_" + color.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public int maxParameters() {
-		return 3;
-	}
+  @Override
+  public int maxParameters() {
+    return 3;
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		return new ActionParameterSignal();
-	}
+  @Override
+  public IStatementParameter createParameter(int index) {
+    return new ActionParameterSignal();
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
-		Gate gate = (Gate) container;
+  @Override
+  public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
+    Gate gate = (Gate) container;
 
-		gate.broadcastSignal(color);
+    gate.broadcastSignal(color);
 
-		for (IStatementParameter param : parameters) {
-			if (param instanceof ActionParameterSignal signal) {
-				if (signal.color != null) {
-					gate.broadcastSignal(signal.color);
-				}
-			}
-		}
-	}
+    for (IStatementParameter param : parameters) {
+      if (param instanceof ActionParameterSignal signal) {
+        if (signal.color != null) {
+          gate.broadcastSignal(signal.color);
+        }
+      }
+    }
+  }
 }

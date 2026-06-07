@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TankBlock extends BuildCraftBlock {
   public static final BooleanProperty IS_STACKED = BooleanProperty.create("is_stacked");
+
   public TankBlock() {
     super(Properties.of()
       .mapColor(MapColor.NONE)

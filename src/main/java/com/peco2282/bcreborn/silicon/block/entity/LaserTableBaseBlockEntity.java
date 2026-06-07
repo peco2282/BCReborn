@@ -29,11 +29,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILaserTarget, Container, IHasWork {
+  private final AverageInt recentEnergyAverageUtil = new AverageInt(20);
   public int clientRequiredEnergy = 0;
   protected SimpleInventory inv = new SimpleInventory(getContainerSize(), "inv", 64);
   private int energy = 0;
   private int recentEnergyAverage;
-  private final AverageInt recentEnergyAverageUtil = new AverageInt(20);
 
   public LaserTableBaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);

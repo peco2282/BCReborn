@@ -26,10 +26,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHandler {
   public final FluidTank tank = new FluidTank(16000);
+  private final int prevLightValue = 0;
   public boolean hasUpdate = false;
   public boolean hasNetworkUpdate = false;
   public SafeTimeTracker tracker = new SafeTimeTracker(20); // Placeholder
-  private final int prevLightValue = 0;
   private int cachedComparatorOverride = 0;
 
   public TankBlockEntity(BlockPos pos, BlockState state) {

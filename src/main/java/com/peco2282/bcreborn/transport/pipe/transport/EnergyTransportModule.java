@@ -43,6 +43,8 @@ public class EnergyTransportModule {
 
   private final PipeBlockEntity pipe;
   private final int[][] powerHistory = new int[6][AVERAGE_WINDOW];
+  // 抵抗値（損失率）— PipeMaterial から初期化
+  private final float powerResistance;
   public int[] nextPowerQuery = new int[6];
   // クライアント表示用移動平均（10tick窓）
   public short[] displayPower = new short[6];
@@ -52,16 +54,10 @@ public class EnergyTransportModule {
   // 需要バッファ: 現tick / 次tick
   private int[] powerQuery = new int[6];
   private int historyIndex = 0;
-
   // オーバーロードカウンタ
   private int overload = 0;
-
   // 最大容量 (RF/tick) — PipeMaterial から初期化
   private int maxPower;
-
-  // 抵抗値（損失率）— PipeMaterial から初期化
-  private final float powerResistance;
-
   // 最後にステップした worldTime（同一tick内の二重ステップ防止）
   private long currentDate = Long.MIN_VALUE;
 

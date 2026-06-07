@@ -29,58 +29,58 @@ import java.util.function.Function;
 
 public class TriggerRedstoneFaderInput extends BCStatement implements ITriggerInternal {
 
-	public final int level;
+  public final int level;
 
-	public TriggerRedstoneFaderInput(int level) {
-		super(String.format("buildcraft:redtone.input.%02d", level));
+  public TriggerRedstoneFaderInput(int level) {
+    super(String.format("buildcraft:redtone.input.%02d", level));
 
-		this.level = level;
-	}
+    this.level = level;
+  }
 
-	@Override
-	public String getDescription() {
-		return String.format(StringUtils.localize("gate.trigger.redstone.input.level"), level);
-	}
+  @Override
+  public String getDescription() {
+    return String.format(StringUtils.localize("gate.trigger.redstone.input.level"), level);
+  }
 
-	@Override
-	public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-		if (!(container instanceof IRedstoneStatementContainer redstoneContainer)) {
-			return false;
-		}
+  @Override
+  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+    if (!(container instanceof IRedstoneStatementContainer redstoneContainer)) {
+      return false;
+    }
 
     int inputLevel;
-		if (parameters.length > 0 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly sideOnly && sideOnly.isOn) {
-            if (container instanceof Gate gate) {
-                inputLevel = redstoneContainer.getRedstoneInput(gate.getSide());
-            } else {
-                inputLevel = redstoneContainer.getRedstoneInput(null);
-            }
-		} else {
-			inputLevel = redstoneContainer.getRedstoneInput(null);
-		}
+    if (parameters.length > 0 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly sideOnly && sideOnly.isOn) {
+      if (container instanceof Gate gate) {
+        inputLevel = redstoneContainer.getRedstoneInput(gate.getSide());
+      } else {
+        inputLevel = redstoneContainer.getRedstoneInput(null);
+      }
+    } else {
+      inputLevel = redstoneContainer.getRedstoneInput(null);
+    }
 
-		return inputLevel == level;
-	}
+    return inputLevel == level;
+  }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location(String.format("triggers/redstone_%02d", level)));
+  }
 
-	@Override
-	public IStatementParameter createParameter(int index) {
-		IStatementParameter param = null;
+  @Override
+  public IStatementParameter createParameter(int index) {
+    IStatementParameter param = null;
 
-		if (index == 0) {
-			param = new StatementParameterRedstoneGateSideOnly();
-		}
+    if (index == 0) {
+      param = new StatementParameterRedstoneGateSideOnly();
+    }
 
-		return param;
-	}
+    return param;
+  }
 
-	@Override
-	public int maxParameters() {
-		return 1;
-	}
+  @Override
+  public int maxParameters() {
+    return 1;
+  }
 }

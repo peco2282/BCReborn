@@ -89,6 +89,7 @@ public abstract class KeyedRegistryObject<V> implements Supplier<RegistryObject<
         map.put(k, registerer.apply(name, supplier));
       }
     }
+
     @Override
     public List<RegistryObject<V>> getAll() {
       return List.copyOf(map.values());

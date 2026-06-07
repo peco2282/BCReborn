@@ -38,11 +38,11 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
   private final byte[] previewColors = new byte[80];
   private final SimpleInventory inv = new SimpleInventory(3, "inv", 64);
   private final SafeTimeTracker previewRecalcTimer = new SafeTimeTracker(100);
+  private final ZonePlan[] selectedAreas = new ZonePlan[16];
   public int chunkStartX, chunkStartZ;
   public short progress = 0;
   public String mapName = "";
   private boolean previewColorsPushed = false;
-  private final ZonePlan[] selectedAreas = new ZonePlan[16];
 
   public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
     super(BlockEntityTypesRobotics.ZONE_PLAN.get(), pos, state);

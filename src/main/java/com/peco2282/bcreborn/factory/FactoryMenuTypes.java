@@ -33,21 +33,23 @@ public class FactoryMenuTypes {
     String name, IContainerFactory<M> supplier
   ) {
     return REGISTRY.registerMenuType(name, () -> IForgeMenuType.create(supplier));
+  }
+
+  private static <M extends BuildCraftMenu<M>> Supplier<MenuType<M>> of(IContainerFactory<M> supplier) {
+    return () -> IForgeMenuType.create(supplier);
   }  public static final RegistryObject<MenuType<AutoWorkbenchMenu>> AUTO_WORKBENCH = register(
     "auto_workbench", AutoWorkbenchMenu::new
   );
 
-  private static <M extends BuildCraftMenu<M>> Supplier<MenuType<M>> of(IContainerFactory<M> supplier) {
-    return () -> IForgeMenuType.create(supplier);
-  }  public static final RegistryObject<MenuType<HopperMenu>> HOPPER = register(
+
+
+  public static final RegistryObject<MenuType<HopperMenu>> HOPPER = register(
     "hopper", HopperMenu::new
   );
 
   public static final RegistryObject<MenuType<RefineryMenu>> REFINERY = register(
     "refinery", RefineryMenu::new
   );
-
-
 
 
 }

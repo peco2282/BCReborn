@@ -43,6 +43,12 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
     this.inventorySize = p_38853_.getContainerSize();
   }
 
+  @SuppressWarnings("unchecked")
+  protected static <BE extends BuildCraftBlockEntity> BE getBlockEntity(Inventory inventory, FriendlyByteBuf buf) {
+    Level level = inventory.player.level();
+    return (BE) level.getBlockEntity(buf.readBlockPos());
+  }
+
   public List<Widget> getWidgets() {
     return widgets;
   }
@@ -74,14 +80,6 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
     }
   }
 
-  @Override
-  public void addSlotListener(ContainerListener p_38894_) {
-    super.addSlotListener(p_38894_);
-    for (Widget widget : widgets) {
-      widget.initWidget(p_38894_);
-    }
-  }
-
 //  @Override
 //  public void addCraftingToCrafters(ICrafting player) {
 //    super.addCraftingToCrafters(player);
@@ -90,14 +88,11 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 //    }
 //  }
 
-
   @Override
-  public void broadcastChanges() {
-    super.broadcastChanges();
+  public void addSlotListener(ContainerListener p_38894_) {
+    super.addSlotListener(p_38894_);
     for (Widget widget : widgets) {
-      for (ContainerListener player : containerListeners) {
-        widget.updateWidget(player);
-      }
+      widget.initWidget(p_38894_);
     }
   }
 
@@ -111,6 +106,24 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 //    }
 //  }
 
+  @Override
+  public void broadcastChanges() {
+    super.broadcastChanges();
+    for (Widget widget : widgets) {
+      for (ContainerListener player : containerListeners) {
+        widget.updateWidget(player);
+      }
+    }
+  }
+
+//  @Override
+//  public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
+//    Slot slot = slotNum < 0 ? null : (Slot) this.inventorySlots.get(slotNum);
+//    if (slot instanceof IPhantomSlot) {
+//      return slotClickPhantom(slot, mouseButton, modifier, player);
+//    }
+//    return super.slotClick(slotNum, mouseButton, modifier, player);
+//  }
 
   @Override
   public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
@@ -126,15 +139,6 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 
     super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
   }
-
-//  @Override
-//  public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
-//    Slot slot = slotNum < 0 ? null : (Slot) this.inventorySlots.get(slotNum);
-//    if (slot instanceof IPhantomSlot) {
-//      return slotClickPhantom(slot, mouseButton, modifier, player);
-//    }
-//    return super.slotClick(slotNum, mouseButton, modifier, player);
-//  }
 
   protected void slotClickPhantom(Slot slot, int index, int mouseButton, ClickType clickType, Player player) {
     ItemStack stack = ItemStack.EMPTY;
@@ -307,11 +311,5 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 
   public int getInventorySize() {
     return inventorySize;
-  }
-
-  @SuppressWarnings("unchecked")
-  protected static <BE extends BuildCraftBlockEntity> BE getBlockEntity(Inventory inventory, FriendlyByteBuf buf) {
-    Level level = inventory.player.level();
-    return (BE) level.getBlockEntity(buf.readBlockPos());
   }
 }

@@ -22,8 +22,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class ListNewMenu extends BuildCraftMenu<ListNewMenu> {
-  public ListHandlerNew.Line[] lines;
   private final Player player;
+  public ListHandlerNew.Line[] lines;
 
   public ListNewMenu(int containerId, Player iPlayer) {
     super(MenuTypesCore.LIST_NEW.get(), containerId, iPlayer.getInventory());

@@ -40,175 +40,175 @@ import java.util.Set;
 
 public class ItemGate extends Item implements IPipePluggableItem {
 
-	protected static final String NBT_TAG_MAT = "mat";
-	protected static final String NBT_TAG_LOGIC = "logic";
-	protected static final String NBT_TAG_EX = "ex";
-	private static ArrayList<ItemStack> allGates;
+  protected static final String NBT_TAG_MAT = "mat";
+  protected static final String NBT_TAG_LOGIC = "logic";
+  protected static final String NBT_TAG_EX = "ex";
+  private static ArrayList<ItemStack> allGates;
 
-	public ItemGate() {
-		super(new Item.Properties());
-	}
+  public ItemGate() {
+    super(new Item.Properties());
+  }
 
-	private static CompoundTag getNBT(ItemStack stack) {
-		if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) {
-			return null;
-		} else {
-			return InvUtils.getItemData(stack);
-		}
-	}
+  private static CompoundTag getNBT(ItemStack stack) {
+    if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) {
+      return null;
+    } else {
+      return InvUtils.getItemData(stack);
+    }
+  }
 
-	public static void setMaterial(ItemStack stack, GateMaterial material) {
-		CompoundTag nbt = InvUtils.getItemData(stack);
-		nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
-	}
+  public static void setMaterial(ItemStack stack, GateMaterial material) {
+    CompoundTag nbt = InvUtils.getItemData(stack);
+    nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
+  }
 
-	public static GateMaterial getMaterial(ItemStack stack) {
-		CompoundTag nbt = getNBT(stack);
+  public static GateMaterial getMaterial(ItemStack stack) {
+    CompoundTag nbt = getNBT(stack);
 
-		if (nbt == null) {
-			return GateMaterial.REDSTONE;
-		} else {
-			return GateMaterial.fromOrdinal(nbt.getByte(NBT_TAG_MAT));
-		}
-	}
+    if (nbt == null) {
+      return GateMaterial.REDSTONE;
+    } else {
+      return GateMaterial.fromOrdinal(nbt.getByte(NBT_TAG_MAT));
+    }
+  }
 
-	public static GateLogic getLogic(ItemStack stack) {
-		CompoundTag nbt = getNBT(stack);
+  public static GateLogic getLogic(ItemStack stack) {
+    CompoundTag nbt = getNBT(stack);
 
-		if (nbt == null) {
-			return GateLogic.AND;
-		} else {
-			return GateLogic.fromOrdinal(nbt.getByte(NBT_TAG_LOGIC));
-		}
-	}
+    if (nbt == null) {
+      return GateLogic.AND;
+    } else {
+      return GateLogic.fromOrdinal(nbt.getByte(NBT_TAG_LOGIC));
+    }
+  }
 
-	public static void setLogic(ItemStack stack, GateLogic logic) {
-		CompoundTag nbt = InvUtils.getItemData(stack);
-		nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
-	}
+  public static void setLogic(ItemStack stack, GateLogic logic) {
+    CompoundTag nbt = InvUtils.getItemData(stack);
+    nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
+  }
 
-	public static void addGateExpansion(ItemStack stack, IGateExpansion expansion) {
-		CompoundTag nbt = getNBT(stack);
+  public static void addGateExpansion(ItemStack stack, IGateExpansion expansion) {
+    CompoundTag nbt = getNBT(stack);
 
-		if (nbt == null) {
-			return;
-		}
+    if (nbt == null) {
+      return;
+    }
 
-		ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-		expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier()));
-		nbt.put(NBT_TAG_EX, expansionList);
-	}
+    ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
+    expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier()));
+    nbt.put(NBT_TAG_EX, expansionList);
+  }
 
-	public static boolean hasGateExpansion(ItemStack stack, IGateExpansion expansion) {
-		CompoundTag nbt = getNBT(stack);
+  public static boolean hasGateExpansion(ItemStack stack, IGateExpansion expansion) {
+    CompoundTag nbt = getNBT(stack);
 
-		if (nbt == null) {
-			return false;
-		}
+    if (nbt == null) {
+      return false;
+    }
 
-		try {
-			ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
+    try {
+      ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
 
-			for (int i = 0; i < expansionList.size(); i++) {
-				String ex = expansionList.getString(i);
+      for (int i = 0; i < expansionList.size(); i++) {
+        String ex = expansionList.getString(i);
 
-				if (ex.equals(expansion.getUniqueIdentifier())) {
-					return true;
-				}
-			}
-		} catch (RuntimeException ignored) {
-		}
+        if (ex.equals(expansion.getUniqueIdentifier())) {
+          return true;
+        }
+      }
+    } catch (RuntimeException ignored) {
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	public static Set<IGateExpansion> getInstalledExpansions(ItemStack stack) {
-		Set<IGateExpansion> expansions = new HashSet<>();
-		CompoundTag nbt = getNBT(stack);
+  public static Set<IGateExpansion> getInstalledExpansions(ItemStack stack) {
+    Set<IGateExpansion> expansions = new HashSet<>();
+    CompoundTag nbt = getNBT(stack);
 
-		if (nbt == null) {
-			return expansions;
-		}
+    if (nbt == null) {
+      return expansions;
+    }
 
-		try {
-			ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-			for (int i = 0; i < expansionList.size(); i++) {
-				String exTag = expansionList.getString(i);
-				IGateExpansion ex = GateExpansions.getExpansion(exTag);
-				if (ex != null) {
-					expansions.add(ex);
-				}
-			}
-		} catch (RuntimeException ignored) {
-		}
+    try {
+      ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
+      for (int i = 0; i < expansionList.size(); i++) {
+        String exTag = expansionList.getString(i);
+        IGateExpansion ex = GateExpansions.getExpansion(exTag);
+        if (ex != null) {
+          expansions.add(ex);
+        }
+      }
+    } catch (RuntimeException ignored) {
+    }
 
-		return expansions;
-	}
+    return expansions;
+  }
 
-	public static ItemStack makeGateItem(GateMaterial material, GateLogic logic) {
-		// ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
-		ItemStack stack = ItemStack.EMPTY;
-		if (stack.isEmpty()) return stack;
-		CompoundTag nbt = InvUtils.getItemData(stack);
-		nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
-		nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
+  public static ItemStack makeGateItem(GateMaterial material, GateLogic logic) {
+    // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
+    ItemStack stack = ItemStack.EMPTY;
+    if (stack.isEmpty()) return stack;
+    CompoundTag nbt = InvUtils.getItemData(stack);
+    nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
+    nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
 
-		return stack;
-	}
+    return stack;
+  }
 
-	public static ItemStack makeGateItem(Gate gate) {
-		// ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
-		ItemStack stack = ItemStack.EMPTY;
-		if (stack.isEmpty()) return stack;
-		CompoundTag nbt = InvUtils.getItemData(stack);
-		nbt.putByte(NBT_TAG_MAT, (byte) gate.material.ordinal());
-		nbt.putByte(NBT_TAG_LOGIC, (byte) gate.logic.ordinal());
+  public static ItemStack makeGateItem(Gate gate) {
+    // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
+    ItemStack stack = ItemStack.EMPTY;
+    if (stack.isEmpty()) return stack;
+    CompoundTag nbt = InvUtils.getItemData(stack);
+    nbt.putByte(NBT_TAG_MAT, (byte) gate.material.ordinal());
+    nbt.putByte(NBT_TAG_LOGIC, (byte) gate.logic.ordinal());
 
-		for (IGateExpansion expansion : gate.expansions.keySet()) {
-			addGateExpansion(stack, expansion);
-		}
+    for (IGateExpansion expansion : gate.expansions.keySet()) {
+      addGateExpansion(stack, expansion);
+    }
 
-		return stack;
-	}
+    return stack;
+  }
 
-	@Override
-	public Component getName(ItemStack stack) {
-		return Component.literal(GateDefinition.getLocalizedName(getMaterial(stack), getLogic(stack)));
-	}
+  public static ArrayList<ItemStack> getAllGates() {
+    if (allGates == null) {
+      allGates = new ArrayList<>();
+      for (GateDefinition.GateMaterial m : GateDefinition.GateMaterial.VALUES) {
+        for (GateDefinition.GateLogic l : GateDefinition.GateLogic.VALUES) {
+          if (m == GateMaterial.REDSTONE && l == GateLogic.OR) {
+            continue;
+          }
 
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-		list.add(Component.literal(StringUtils.localize("tip.gate.wires")));
-		list.add(Component.literal(StringUtils.localize("tip.gate.wires." + getMaterial(stack).getTag())));
-		Set<IGateExpansion> expansions = getInstalledExpansions(stack);
+          allGates.add(ItemGate.makeGateItem(m, l));
+        }
+      }
+    }
+    return allGates;
+  }
 
-		if (!expansions.isEmpty()) {
-			list.add(Component.literal(StringUtils.localize("tip.gate.expansions")));
+  @Override
+  public Component getName(ItemStack stack) {
+    return Component.literal(GateDefinition.getLocalizedName(getMaterial(stack), getLogic(stack)));
+  }
 
-			for (IGateExpansion expansion : expansions) {
-				list.add(Component.literal(expansion.getDisplayName()));
-			}
-		}
-	}
+  @Override
+  public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
+    list.add(Component.literal(StringUtils.localize("tip.gate.wires")));
+    list.add(Component.literal(StringUtils.localize("tip.gate.wires." + getMaterial(stack).getTag())));
+    Set<IGateExpansion> expansions = getInstalledExpansions(stack);
 
-	@Override
-	public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
-		return new GatePluggable(GateFactory.makeGate(pipe, stack, side));
-	}
+    if (!expansions.isEmpty()) {
+      list.add(Component.literal(StringUtils.localize("tip.gate.expansions")));
 
-	public static ArrayList<ItemStack> getAllGates() {
-		if (allGates == null) {
-			allGates = new ArrayList<>();
-			for (GateDefinition.GateMaterial m : GateDefinition.GateMaterial.VALUES) {
-				for (GateDefinition.GateLogic l : GateDefinition.GateLogic.VALUES) {
-					if (m == GateMaterial.REDSTONE && l == GateLogic.OR) {
-						continue;
-					}
+      for (IGateExpansion expansion : expansions) {
+        list.add(Component.literal(expansion.getDisplayName()));
+      }
+    }
+  }
 
-					allGates.add(ItemGate.makeGateItem(m, l));
-				}
-			}
-		}
-		return allGates;
-	}
+  @Override
+  public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+    return new GatePluggable(GateFactory.makeGate(pipe, stack, side));
+  }
 }

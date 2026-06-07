@@ -27,14 +27,15 @@ public class SiliconMenuTypes {
 
   private static <M extends BuildCraftMenu<M>> RegistryObject<MenuType<M>> register(String name, IContainerFactory<M> supplier) {
     return REGISTRY.registerMenuType(name, () -> IForgeMenuType.create(supplier));
-  }  public static final RegistryObject<MenuType<AssemblyTableMenu>> ASSEMBLY_TABLE = register("assembly_table", AssemblyTableMenu::new);
+  }
+
+  public static final RegistryObject<MenuType<AssemblyTableMenu>> ASSEMBLY_TABLE = register("assembly_table", AssemblyTableMenu::new);
   public static final RegistryObject<MenuType<AdvancedCraftingTableMenu>> ADVANCED_CRAFTING_TABLE = register("advanced_crafting_table", AdvancedCraftingTableMenu::new);
   public static final RegistryObject<MenuType<IntegrationTableMenu>> INTEGRATION_TABLE = register("integration_table", IntegrationTableMenu::new);
   public static final RegistryObject<MenuType<ChargingTableMenu>> CHARGING_TABLE = register("charging_table", ChargingTableMenu::new);
   public static final RegistryObject<MenuType<ProgrammingTableMenu>> PROGRAMMING_TABLE = register("programming_table", ProgrammingTableMenu::new);
   public static final RegistryObject<MenuType<StampingTableMenu>> STAMPING_TABLE = register("stamping_table", StampingTableMenu::new);
   public static final RegistryObject<MenuType<PackagerMenu>> PACKAGER = register("packager", PackagerMenu::new);
-
 
 
 }

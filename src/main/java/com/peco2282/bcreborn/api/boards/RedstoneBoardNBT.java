@@ -11,20 +11,16 @@
  */
 package com.peco2282.bcreborn.api.boards;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class RedstoneBoardNBT<T> {
@@ -33,7 +29,7 @@ public abstract class RedstoneBoardNBT<T> {
   public static final int COST_MEDIUM = 32_000;
   public static final int COST_HIGH = 128_000;
   public static final int COST_VERY_HIGH = 512_000;
-
+  private static final Random rand = new Random();
   private static Supplier<? extends RedstoneBoardNBT<?>> empty;
 
   public static Supplier<? extends RedstoneBoardNBT<?>> getEmpty() {
@@ -47,8 +43,6 @@ public abstract class RedstoneBoardNBT<T> {
       throw new IllegalStateException("RedstoneBoardNBT empty supplier is already set");
     }
   }
-
-  private static final Random rand = new Random();
 
   public abstract int getEnergyCost();
 

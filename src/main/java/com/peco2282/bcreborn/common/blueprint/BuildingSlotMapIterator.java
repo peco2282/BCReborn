@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.common.blueprint;
 
 
+import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.common.builder.BuilderItemMetaPair;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
-import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

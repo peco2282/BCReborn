@@ -99,7 +99,7 @@ public class FilteredItemExtractionModule implements ExtractionModule {
                 break;
               }
             }
-            matches = (mode == PipeBlockEntity.ExtractFilterMode.WHITE_LIST) ? inFilter : !inFilter;
+            matches = (mode == PipeBlockEntity.ExtractFilterMode.WHITE_LIST) == inFilter;
           }
 
           if (matches) {

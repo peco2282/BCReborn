@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.common.utils;
 
 public class AverageInt {
+  private final int precise;
   private int[] data;
   private int pos;
-  private final int precise;
   private int averageRaw, tickValue;
 
   public AverageInt(int precise) {

@@ -10,7 +10,7 @@
  * See LICENSE for details.
  */
 package com.peco2282.bcreborn.robotics.map;
-    
+
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 

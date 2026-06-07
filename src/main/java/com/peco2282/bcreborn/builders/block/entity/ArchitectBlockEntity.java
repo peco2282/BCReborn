@@ -49,6 +49,7 @@ import java.util.ArrayList;
 
 public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, IBlockEntityContainer {
 
+  private final SimpleInventory inv = new SimpleInventory(2, "Architect", 1);
   public String currentAuthorName = "";
   public Mode mode = Mode.NONE;
   public Box box = new Box();
@@ -56,9 +57,9 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   public BlueprintReadConfiguration readConfiguration = new BlueprintReadConfiguration();
   public ArrayList<LaserData> subLasers = new ArrayList<>();
   public ArrayList<BlockIndex> subBlueprints = new ArrayList<>();
-  private final SimpleInventory inv = new SimpleInventory(2, "Architect", 1);
   private RecursiveBlueprintReader reader;
   private boolean clientIsWorking, initialized;
+
   public ArchitectBlockEntity(BlockPos pos, BlockState state) {
     super(BlockEntityTypesBuilders.ARCHITECT.get(), pos, state);
   }

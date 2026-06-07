@@ -20,27 +20,27 @@ import java.util.List;
 
 public final class GateExpansionLightSensor extends GateExpansionBuildcraft implements IGateExpansion {
 
-	public static GateExpansionLightSensor INSTANCE = new GateExpansionLightSensor();
+  public static GateExpansionLightSensor INSTANCE = new GateExpansionLightSensor();
 
-	private GateExpansionLightSensor() {
-		super("light_sensor");
-	}
+  private GateExpansionLightSensor() {
+    super("light_sensor");
+  }
 
-	@Override
-	public GateExpansionController makeController(BlockEntity pipeTile) {
-		return new GateExpansionControllerLightSensor(pipeTile);
-	}
+  @Override
+  public GateExpansionController makeController(BlockEntity pipeTile) {
+    return new GateExpansionControllerLightSensor(pipeTile);
+  }
 
-	private class GateExpansionControllerLightSensor extends GateExpansionController {
+  private class GateExpansionControllerLightSensor extends GateExpansionController {
 
-		public GateExpansionControllerLightSensor(BlockEntity pipeTile) {
-			super(GateExpansionLightSensor.this, pipeTile);
-		}
+    public GateExpansionControllerLightSensor(BlockEntity pipeTile) {
+      super(GateExpansionLightSensor.this, pipeTile);
+    }
 
-		@Override
-		public void addTriggers(List<ITriggerInternal> list) {
-			super.addTriggers(list);
-			// TODO: Light sensor triggers
-		}
-	}
+    @Override
+    public void addTriggers(List<ITriggerInternal> list) {
+      super.addTriggers(list);
+      // TODO: Light sensor triggers
+    }
+  }
 }

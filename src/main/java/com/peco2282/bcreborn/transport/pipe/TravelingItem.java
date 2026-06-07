@@ -110,10 +110,6 @@ public class TravelingItem {
     this.progress = progress;
   }
 
-  public void setPrevProgress(float prevProgress) {
-    this.prevProgress = prevProgress;
-  }
-
   public int getBoostedBlocksRemaining() {
     return boostedBlocksRemaining;
   }
@@ -167,6 +163,10 @@ public class TravelingItem {
 
   public float getPrevProgress() {
     return prevProgress;
+  }
+
+  public void setPrevProgress(float prevProgress) {
+    this.prevProgress = prevProgress;
   }
 
   public boolean isReached() {

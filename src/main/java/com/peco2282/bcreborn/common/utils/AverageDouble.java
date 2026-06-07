@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.common.utils;
 
 public class AverageDouble {
   private final double[] data;
-  private int pos;
   private final int precise;
+  private int pos;
   private double averageRaw, tickValue;
 
   public AverageDouble(int precise) {

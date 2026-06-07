@@ -33,12 +33,10 @@ public class PathFinding implements IIterableAlgorithm {
 
   private final Level world;
   private final BlockIndex end;
-  private double maxDistanceToEndSq = 0;
-  private float maxTotalDistanceSq = 0;
-
   private final HashMap<BlockIndex, Node> openList = new HashMap<>();
   private final HashMap<BlockIndex, Node> closedList = new HashMap<>();
-
+  private double maxDistanceToEndSq = 0;
+  private float maxTotalDistanceSq = 0;
   private Node nextIteration;
 
   private LinkedList<BlockIndex> result;

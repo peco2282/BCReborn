@@ -36,13 +36,11 @@ import org.jetbrains.annotations.Nullable;
 public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluidHandler, IHasWork, IEnergyStorage, MenuProvider {
 
   public static int LIQUID_PER_SLOT = 4000;
-
+  private final SafeTimeTracker updateNetworkTime = new SafeTimeTracker(20);
   public FluidTank[] tanks = {new FluidTank(LIQUID_PER_SLOT), new FluidTank(LIQUID_PER_SLOT)};
   public FluidTank result = new FluidTank(LIQUID_PER_SLOT);
-
   public float animationSpeed = 1;
   private short animationStage = 0;
-  private final SafeTimeTracker updateNetworkTime = new SafeTimeTracker(20);
   private boolean isActive;
 
   public RefineryBlockEntity(BlockPos pos, BlockState state) {

@@ -141,8 +141,8 @@ public class DiamondItemPipeBehaviour implements ItemPipeBehaviour {
   public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     if (level.isClientSide) return InteractionResult.PASS;
     NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-      (id, inv, plyr) -> TransportMenuTypes.DIAMOND_PIPE_MENU.get().create(id, inv),
-      Component.translatable("menu.bcreborntransport.diamond_pipe_menu")
+        (id, inv, plyr) -> TransportMenuTypes.DIAMOND_PIPE_MENU.get().create(id, inv),
+        Component.translatable("menu.bcreborntransport.diamond_pipe_menu")
       ), buf -> buf.writeBlockPos(pos)
     );
     return InteractionResult.SUCCESS;

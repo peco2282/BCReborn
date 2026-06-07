@@ -11,10 +11,10 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

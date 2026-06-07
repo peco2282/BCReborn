@@ -45,6 +45,28 @@ public class BCLanguageProvider extends LanguageProvider {
     super(output, modid, locale);
   }
 
+  public static String snake2Title(String value) {
+    if (value == null || value.isBlank()) {
+      return value;
+    }
+    StringBuilder result = new StringBuilder();
+    for (String part : value.split("_")) {
+      if (part.isEmpty()) {
+        continue;
+      }
+
+      if (!result.isEmpty()) {
+        result.append(' ');
+      }
+
+      result
+        .append(Character.toUpperCase(part.charAt(0)))
+        .append(part.substring(1).toLowerCase());
+    }
+
+    return result.toString();
+  }
+
   @Override
   protected void addTranslations() {
     add("itemGroup.bcreborn", "BCReborn");
@@ -126,7 +148,6 @@ public class BCLanguageProvider extends LanguageProvider {
     addMenu(FactoryMenuTypes.REFINERY, "Refinery");
   }
 
-
   private void addRobotics() {
     addBlock(RoboticsBlocks.REQUESTER, "Requester");
     addBlock(RoboticsBlocks.ZONE_PLAN, "Zone Plan");
@@ -138,7 +159,6 @@ public class BCLanguageProvider extends LanguageProvider {
     addMenu(MenuTypesRobotics.REQUESTER, "Requester");
     addMenu(MenuTypesRobotics.ZONE_PLAN, "Zone Plan");
   }
-
 
   private void addSilicon() {
     addBlock(SiliconBlocks.LASER, "Laser");
@@ -317,27 +337,5 @@ public class BCLanguageProvider extends LanguageProvider {
   private void addMenu(RegistryObject<? extends MenuType<? extends AbstractContainerMenu>> menuType, String name) {
     var res = menuType.getId();
     add("menu." + res.getNamespace() + "." + res.getPath(), name);
-  }
-
-  public static String snake2Title(String value) {
-    if (value == null || value.isBlank()) {
-      return value;
-    }
-    StringBuilder result = new StringBuilder();
-    for (String part : value.split("_")) {
-      if (part.isEmpty()) {
-        continue;
-      }
-
-      if (!result.isEmpty()) {
-        result.append(' ');
-      }
-
-      result
-        .append(Character.toUpperCase(part.charAt(0)))
-        .append(part.substring(1).toLowerCase());
-    }
-
-    return result.toString();
   }
 }

@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.core.block.entity;
 
 import com.peco2282.bcreborn.api.IRedstoneEngine;
-import com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.core.BlockEntityTypesCore;
@@ -23,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEntity> implements IRedstoneEngine {
-  private boolean hasSent = false;
+  private final boolean hasSent = false;
 
   public WoodEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BlockEntityTypesCore.WOODEN_ENGINE.get(), p_155229_, p_155230_);

@@ -49,6 +49,7 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
       return 5;
     }
   };
+
   public StoneEngineMenu(int id, Inventory inventory) {
     this(id, inventory, new SimpleContainer(1));
   }

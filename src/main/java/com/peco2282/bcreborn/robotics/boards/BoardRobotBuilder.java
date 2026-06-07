@@ -113,7 +113,6 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
     if (!requirementsToLookFor.isEmpty()) {
       startDelegateAI(new AIRobotGotoStationAndLoad(robot, new ArrayStackFilter(
         requirementsToLookFor.getFirst()), requirementsToLookFor.getFirst().getCount()));
-      return;
     } else {
 
 //    if (requirementsToLookFor.isEmpty()) {

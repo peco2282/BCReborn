@@ -26,32 +26,32 @@ import java.util.function.Function;
 
 public class ActionPipeDirection extends BCStatement implements IActionInternal {
 
-	public final Direction direction;
+  public final Direction direction;
 
-	public ActionPipeDirection(Direction direction) {
-		super("buildcraft:pipe.dir." + direction.name().toLowerCase(Locale.ENGLISH));
+  public ActionPipeDirection(Direction direction) {
+    super("buildcraft:pipe.dir." + direction.name().toLowerCase(Locale.ENGLISH));
 
-		this.direction = direction;
-	}
+    this.direction = direction;
+  }
 
-	@Override
-	public String getDescription() {
-		return direction.name().charAt(0) + direction.name().substring(1).toLowerCase(Locale.ENGLISH) + " Pipe Direction";
-	}
+  @Override
+  public String getDescription() {
+    return direction.name().charAt(0) + direction.name().substring(1).toLowerCase(Locale.ENGLISH) + " Pipe Direction";
+  }
 
-	@Override
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_dir_" + direction.name().toLowerCase(Locale.ENGLISH)));
-	}
+  @Override
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_dir_" + direction.name().toLowerCase(Locale.ENGLISH)));
+  }
 
-	@Override
-	public IStatement rotateLeft() {
-		return this; // TODO: Implement rotation properly if needed
-	}
+  @Override
+  public IStatement rotateLeft() {
+    return this; // TODO: Implement rotation properly if needed
+  }
 
-	@Override
-	public void actionActivate(IStatementContainer source,
-							   IStatementParameter[] parameters) {
+  @Override
+  public void actionActivate(IStatementContainer source,
+                             IStatementParameter[] parameters) {
 
-	}
+  }
 }

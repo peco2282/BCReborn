@@ -30,39 +30,39 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 public class TriggerLightSensor extends BCStatement implements ITriggerInternal {
-	private final boolean bright;
+  private final boolean bright;
 
-	public TriggerLightSensor(boolean bright) {
-		super("buildcraft:light_" + (bright ? "bright" : "dark"));
-		this.bright = bright;
-	}
+  public TriggerLightSensor(boolean bright) {
+    super("buildcraft:light_" + (bright ? "bright" : "dark"));
+    this.bright = bright;
+  }
 
-	@Override
-	public String getDescription() {
-		return StringUtils.localize("gate.trigger.light." + (bright ? "bright" : "dark"));
-	}
+  @Override
+  public String getDescription() {
+    return StringUtils.localize("gate.trigger.light." + (bright ? "bright" : "dark"));
+  }
 
-	@Override
-	public boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters) {
-		BlockEntity tile = source.getTile();
-		if (tile == null || tile.getLevel() == null) {
-			return false;
-		}
-		Level level = tile.getLevel();
-		BlockPos pos = tile.getBlockPos();
-		if (source instanceof ISidedStatementContainer sided) {
-			pos = pos.relative(sided.getSide());
-		}
+  @Override
+  public boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters) {
+    BlockEntity tile = source.getTile();
+    if (tile == null || tile.getLevel() == null) {
+      return false;
+    }
+    Level level = tile.getLevel();
+    BlockPos pos = tile.getBlockPos();
+    if (source instanceof ISidedStatementContainer sided) {
+      pos = pos.relative(sided.getSide());
+    }
 
-		int lightLevel = level.getBrightness(LightLayer.BLOCK, pos);
+    int lightLevel = level.getBrightness(LightLayer.BLOCK, pos);
 
-		return (lightLevel < 8) ^ bright;
-	}
+    return (lightLevel < 8) ^ bright;
+  }
 
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_light_" + (bright ? "bright" : "dark")));
-	}
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    icon = textureGetter.apply(BCRebornTransport.location("triggers/trigger_light_" + (bright ? "bright" : "dark")));
+  }
 }

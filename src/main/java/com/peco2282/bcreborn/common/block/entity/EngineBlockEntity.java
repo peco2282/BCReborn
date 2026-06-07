@@ -44,6 +44,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   public static final float MIN_HEAT = 20;
   public static final float IDEAL_HEAT = 100;
   public static final float MAX_HEAT = 250;
+  private final boolean checkOrientation = false;
   public boolean isRedstonePowered = false;
   public float progress;
   public float heat = 0;
@@ -55,10 +56,8 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   // Forge Energy capability
   protected EngineEnergyStorage<?> energyStorage;
   protected LazyOptional<IEnergyStorage> energyCap;
-
   protected int progressPart = 0;
   protected boolean isActive = false;
-  private final boolean checkOrientation = false;
   private boolean isPumping = false; // Used for SMP synch
 
   public EngineBlockEntity(BlockEntityType<T> p_155228_, BlockPos p_155229_, BlockState p_155230_) {

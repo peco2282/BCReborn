@@ -25,52 +25,52 @@ import java.util.Map;
 import java.util.Objects;
 
 public class PipeExtensionListener {
-	private static class PipeExtensionRequest {
-		public ItemStack stack;
-		public BlockPos pos;
-		public Direction o;
-		public IStripesActivator h;
+  private final Map<Level, HashSet<PipeExtensionRequest>> requests = new HashMap<>();
 
-		@Override
-		public boolean equals(Object o1) {
-			if (this == o1) return true;
-			if (o1 == null || getClass() != o1.getClass()) return false;
-			PipeExtensionRequest that = (PipeExtensionRequest) o1;
-			return Objects.equals(pos, that.pos) && o == that.o;
-		}
+  public void requestPipeExtension(ItemStack stack, Level world, BlockPos aPos, Direction direction, IStripesActivator activator) {
+    if (world.isClientSide) {
+      return;
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(pos, o);
-		}
-	}
+    requests.computeIfAbsent(world, k -> new HashSet<>()).add(new PipeExtensionRequest() {{
+      this.stack = stack.copy();
+      this.pos = aPos;
+      this.o = direction;
+      this.h = activator;
+    }});
+  }
 
-	private final Map<Level, HashSet<PipeExtensionRequest>> requests = new HashMap<>();
+  @SubscribeEvent
+  public void tick(TickEvent.LevelTickEvent event) {
+    if (event.phase == TickEvent.Phase.END && requests.containsKey(event.level)) {
+      HashSet<PipeExtensionRequest> rSet = requests.get(event.level);
+      Level w = event.level;
+      for (PipeExtensionRequest r : rSet) {
+        // TODO: Implement modern pipe extension logic
+        // For now, just send the item back to avoid errors
+        r.h.sendItem(r.stack, r.o.getOpposite());
+      }
+      rSet.clear();
+    }
+  }
 
-	public void requestPipeExtension(ItemStack stack, Level world, BlockPos aPos, Direction direction, IStripesActivator activator) {
-		if (world.isClientSide) {
-			return;
-		}
+  private static class PipeExtensionRequest {
+    public ItemStack stack;
+    public BlockPos pos;
+    public Direction o;
+    public IStripesActivator h;
 
-		requests.computeIfAbsent(world, k -> new HashSet<>()).add(new PipeExtensionRequest() {{
-			this.stack = stack.copy();
-			this.pos = aPos;
-			this.o = direction;
-			this.h = activator;
-		}});
-	}
+    @Override
+    public boolean equals(Object o1) {
+      if (this == o1) return true;
+      if (o1 == null || getClass() != o1.getClass()) return false;
+      PipeExtensionRequest that = (PipeExtensionRequest) o1;
+      return Objects.equals(pos, that.pos) && o == that.o;
+    }
 
-	@SubscribeEvent
-	public void tick(TickEvent.LevelTickEvent event) {
-		if (event.phase == TickEvent.Phase.END && requests.containsKey(event.level)) {
-			HashSet<PipeExtensionRequest> rSet = requests.get(event.level);
-			Level w = event.level;
-			for (PipeExtensionRequest r : rSet) {
-				// TODO: Implement modern pipe extension logic
-				// For now, just send the item back to avoid errors
-				r.h.sendItem(r.stack, r.o.getOpposite());
-			}
-			rSet.clear();
-		}
-	}
+    @Override
+    public int hashCode() {
+      return Objects.hash(pos, o);
+    }
+  }
 }

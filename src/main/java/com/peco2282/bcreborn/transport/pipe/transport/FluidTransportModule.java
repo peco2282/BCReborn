@@ -45,6 +45,7 @@ public class FluidTransportModule {
   private final short[] inputTTL = new short[6];
   private final short[] outputTTL = new short[6];
   private final short[] outputCooldown = new short[6];
+
   public FluidTransportModule(PipeBlockEntity pipe) {
     this.pipe = pipe;
     for (int i = 0; i < 6; i++) {

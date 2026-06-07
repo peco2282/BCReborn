@@ -21,41 +21,41 @@ import java.util.function.Function;
 
 public abstract class GateExpansionBuildcraft implements IGateExpansion {
 
-	private final String tag;
-	private TextureAtlasSprite iconBlock;
-	private TextureAtlasSprite iconItem;
+  private final String tag;
+  private TextureAtlasSprite iconBlock;
+  private TextureAtlasSprite iconItem;
 
-	public GateExpansionBuildcraft(String tag) {
-		this.tag = tag;
-	}
+  public GateExpansionBuildcraft(String tag) {
+    this.tag = tag;
+  }
 
-	@Override
-	public String getUniqueIdentifier() {
-		return "bcreborntransport:" + tag;
-	}
+  @Override
+  public String getUniqueIdentifier() {
+    return "bcreborntransport:" + tag;
+  }
 
-	@Override
-	public String getDisplayName() {
-		return StringUtils.localize("gate.expansion." + tag);
-	}
+  @Override
+  public String getDisplayName() {
+    return StringUtils.localize("gate.expansion." + tag);
+  }
 
-	@Override
-	public void registerBlockOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		iconBlock = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
-	}
+  @Override
+  public void registerBlockOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    iconBlock = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
+  }
 
-	@Override
-	public void registerItemOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-		iconItem = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
-	}
+  @Override
+  public void registerItemOverlay(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
+    iconItem = textureGetter.apply(BCRebornTransport.location("gates/gate_expansion_" + tag));
+  }
 
-	@Override
-	public TextureAtlasSprite getOverlayBlock() {
-		return iconBlock;
-	}
+  @Override
+  public TextureAtlasSprite getOverlayBlock() {
+    return iconBlock;
+  }
 
-	@Override
-	public TextureAtlasSprite getOverlayItem() {
-		return iconItem;
-	}
+  @Override
+  public TextureAtlasSprite getOverlayItem() {
+    return iconItem;
+  }
 }
