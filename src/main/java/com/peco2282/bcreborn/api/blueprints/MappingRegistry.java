@@ -19,6 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,8 +37,8 @@ public class MappingRegistry {
   public Object2IntMap<Item> itemToId = new Object2IntOpenHashMap<>();
   public ArrayList<Item> idToItem = new ArrayList<>();
 
-  public Object2IntMap<Class<? extends Entity>> entityToId = new Object2IntOpenHashMap<>();
-  public ArrayList<Class<? extends Entity>> idToEntity = new ArrayList<>();
+  public Object2IntMap<EntityType<? extends Entity>> entityToId = new Object2IntOpenHashMap<>();
+  public ArrayList<EntityType<? extends Entity>> idToEntity = new ArrayList<>();
 
   private void registerItem(Item item) {
     if (!itemToId.containsKey(item)) {
@@ -53,7 +54,7 @@ public class MappingRegistry {
     }
   }
 
-  private void registerEntity(Class<? extends Entity> entityClass) {
+  private void registerEntity(EntityType<? extends Entity> entityClass) {
     if (!entityToId.containsKey(entityClass)) {
       idToEntity.add(entityClass);
       entityToId.put(entityClass, idToEntity.size() - 1);
@@ -128,12 +129,12 @@ public class MappingRegistry {
     return BuiltInRegistries.BLOCK.getId(block);
   }
 
-  public Class<? extends Entity> getEntityForId(int id) throws MappingNotFoundException {
+  public EntityType<? extends Entity> getEntityForId(int id) throws MappingNotFoundException {
     if (id >= idToEntity.size()) {
       throw new MappingNotFoundException("no entity mapping at position " + id);
     }
 
-    Class<? extends Entity> result = idToEntity.get(id);
+    EntityType<? extends Entity> result = idToEntity.get(id);
 
     if (result == null) {
       throw new MappingNotFoundException("no entity mapping at position " + id);
@@ -142,7 +143,7 @@ public class MappingRegistry {
     }
   }
 
-  public int getIdForEntity(Class<? extends Entity> entity) {
+  public int getIdForEntity(EntityType<? extends Entity> entity) {
     if (!entityToId.containsKey(entity)) {
       registerEntity(entity);
     }
@@ -299,9 +300,9 @@ public class MappingRegistry {
 
     ListTag entitiesMapping = new ListTag();
 
-    for (Class<? extends Entity> e : idToEntity) {
+    for (EntityType<? extends Entity> e : idToEntity) {
       CompoundTag sub = new CompoundTag();
-      sub.putString("name", e.getCanonicalName());
+      sub.putString("name", EntityType.getKey(e).toString());
       entitiesMapping.add(sub);
     }
 
@@ -356,21 +357,14 @@ public class MappingRegistry {
     for (int i = 0; i < entitiesMapping.size(); ++i) {
       CompoundTag sub = entitiesMapping.getCompound(i);
       String name = sub.getString("name");
-      Class<? extends Entity> e = null;
 
-      try {
-        //noinspection unchecked
-        e = (Class<? extends Entity>) Class.forName(name);
-      } catch (ClassNotFoundException e1) {
-        e1.printStackTrace();
-      }
-
-      if (e != null) {
-        registerEntity(e);
-      } else {
-        idToEntity.add(null);
-        BCLog.logger.warn("Can't load entity " + name);
-      }
+      EntityType.byString(name).ifPresentOrElse(
+        this::registerEntity,
+        () -> {
+          idToEntity.add(null);
+          BCLog.logger.warn("Can't load entity " + name);
+        }
+      );
     }
   }
 }
