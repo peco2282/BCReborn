@@ -53,7 +53,7 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
     );
 
     // --- 向きに応じた回転 ---
-    Direction facing = engine.orientation;
+    Direction facing = engine.getOrientation();
     applyFacingRotation(poseStack, facing);
 
     // --- ピストンアニメーション（partialTick補間） ---
@@ -89,10 +89,10 @@ public class EngineBlockRenderer<E extends EngineBlockEntity<E>> implements Bloc
         // デフォルト（回転なし）
       }
       case DOWN -> poseStack.mulPose(Axis.XP.rotationDegrees(180));
-      case NORTH -> poseStack.mulPose(Axis.XP.rotationDegrees(90));
-      case SOUTH -> poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-      case WEST -> poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
-      case EAST -> poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+      case NORTH -> poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+      case SOUTH -> poseStack.mulPose(Axis.XP.rotationDegrees(90));
+      case WEST -> poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+      case EAST -> poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
     }
     poseStack.translate(-0.5, -0.5, -0.5);
   }
