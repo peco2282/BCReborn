@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.transport.event;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import com.peco2282.bcreborn.transport.block.render.EnergyPipeRenderer;
 import com.peco2282.bcreborn.transport.block.render.FluidPipeRenderer;
@@ -35,7 +35,7 @@ public class BCRebornTransportEvent {
   @SuppressWarnings("removal")
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> {
-      BlocksTransport.pipesForEach((type, material, block) -> {
+      TransportBlocks.pipesForEach((type, material, block) -> {
         if (block != null) {
           ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
         }
@@ -52,8 +52,8 @@ public class BCRebornTransportEvent {
 
   @SubscribeEvent
   public static void onRegisterBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-    event.registerBlockEntityRenderer(BlockEntityTypesTransport.ITEM_PIPE.get(), ItemPipeRenderer::new);
-    event.registerBlockEntityRenderer(BlockEntityTypesTransport.FLUID_PIPE.get(), FluidPipeRenderer::new);
-    event.registerBlockEntityRenderer(BlockEntityTypesTransport.ENERGY_PIPE.get(), EnergyPipeRenderer::new);
+    event.registerBlockEntityRenderer(TransportBlockEntityTypes.ITEM_PIPE.get(), ItemPipeRenderer::new);
+    event.registerBlockEntityRenderer(TransportBlockEntityTypes.FLUID_PIPE.get(), FluidPipeRenderer::new);
+    event.registerBlockEntityRenderer(TransportBlockEntityTypes.ENERGY_PIPE.get(), EnergyPipeRenderer::new);
   }
 }

@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.energy.menu;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import com.peco2282.bcreborn.energy.MenuTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyMenuTypes;
 import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -55,7 +55,7 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
   }
 
   public StoneEngineMenu(int id, Inventory inventory, Container engine) {
-    super(MenuTypesEnergy.STONE_ENGINE.get(), id, inventory);
+    super(EnergyMenuTypes.STONE_ENGINE.get(), id, inventory);
     if (engine instanceof StoneEngineBlockEntity) {
       this.engine = (StoneEngineBlockEntity) engine;
     }

@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.core.item;
 
 import com.peco2282.bcreborn.api.items.IList;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.core.MenuTypesCore;
+import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.core.CoreMenuTypes;
 import com.peco2282.bcreborn.core.list.ListHandlerNew;
 import com.peco2282.bcreborn.core.list.ListHandlerOld;
 import net.minecraft.ChatFormatting;
@@ -51,11 +51,11 @@ public class ListItem extends BuildCraftItem implements IList {
   @Override
   public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
     ItemStack stack = player.getMainHandItem();
-    if (!world.isClientSide && stack.is(ItemsCore.LIST.get())) {
+    if (!world.isClientSide && stack.is(CoreItems.LIST.get())) {
       // TODO: Implement GUI opening based on item metadata
       // Modern Minecraft requires different approach for GUI handling
       // Reference: stack.getItemDamage() == 1 ? GuiIds.LIST_NEW : GuiIds.LIST_OLD
-      var menuType = (stack.getDamageValue() == 1 ? MenuTypesCore.LIST_NEW : MenuTypesCore.LIST_OLD).get();
+      var menuType = (stack.getDamageValue() == 1 ? CoreMenuTypes.LIST_NEW : CoreMenuTypes.LIST_OLD).get();
       NetworkHooks.openScreen(
         (ServerPlayer) player,
         new SimpleMenuProvider(

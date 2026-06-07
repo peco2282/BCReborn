@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.core.list;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
-import com.peco2282.bcreborn.core.MenuTypesCore;
+import com.peco2282.bcreborn.core.CoreMenuTypes;
 import com.peco2282.bcreborn.core.item.ListItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +26,7 @@ public class ListOldMenu extends BuildCraftMenu<ListOldMenu> {
   public ListHandlerOld.StackLine[] lines;
 
   public ListOldMenu(int containerId, Player iPlayer) {
-    super(MenuTypesCore.LIST_OLD.get(), containerId, iPlayer.getInventory());
+    super(CoreMenuTypes.LIST_OLD.get(), containerId, iPlayer.getInventory());
 
     player = iPlayer;
 

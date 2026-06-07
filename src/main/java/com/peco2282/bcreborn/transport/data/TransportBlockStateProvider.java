@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.transport.data;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -38,7 +38,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
 
   @Override
   protected void registerStatesAndModels() {
-    BlocksTransport.pipesForEach((type, material, block) -> generatePipeBlockState(material, type, block));
+    TransportBlocks.pipesForEach((type, material, block) -> generatePipeBlockState(material, type, block));
   }
 
   private void generatePipeBlockState(PipeMaterial material, PipeType type, RegistryObject<PipeBlock> block) {

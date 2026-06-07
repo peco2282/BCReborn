@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.block.entity;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -27,7 +27,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
   private final SimpleInventory inv = new SimpleInventory(0, "Quarry", 64);
 
   public QuarryBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesBuilders.QUARRY.get(), pos, state);
+    super(BuildersBlockEntityTypes.QUARRY.get(), pos, state);
   }
 
   @Override

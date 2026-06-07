@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.core.data;
 
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -28,7 +28,7 @@ public class CoreRecipeProvider extends RecipeProvider {
   @Override
   protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
 
-    shaped(RecipeCategory.MISC, ItemsCore.WOODEN_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.WOODEN_GEAR.get())
       .pattern(" S ")
       .pattern("S S")
       .pattern(" S ")
@@ -36,49 +36,49 @@ public class CoreRecipeProvider extends RecipeProvider {
       .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, ItemsCore.STONE_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.STONE_GEAR.get())
       .pattern(" C ")
       .pattern("CGC")
       .pattern(" C ")
       .define('C', Items.COBBLESTONE)
-      .define('G', ItemsCore.WOODEN_GEAR.get())
-      .unlockedBy(getHasName(ItemsCore.WOODEN_GEAR.get()), inventoryTrigger(get(Items.COBBLESTONE, ItemsCore.WOODEN_GEAR.get())))
+      .define('G', CoreItems.WOODEN_GEAR.get())
+      .unlockedBy(getHasName(CoreItems.WOODEN_GEAR.get()), inventoryTrigger(get(Items.COBBLESTONE, CoreItems.WOODEN_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, ItemsCore.IRON_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.IRON_GEAR.get())
       .pattern(" I ")
       .pattern("IGI")
       .pattern(" I ")
       .define('I', Items.IRON_INGOT)
-      .define('G', ItemsCore.STONE_GEAR.get())
-      .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
+      .define('G', CoreItems.STONE_GEAR.get())
+      .unlockedBy(getHasName(CoreItems.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, CoreItems.STONE_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, ItemsCore.GOLD_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.GOLD_GEAR.get())
       .pattern(" G ")
       .pattern("GIG")
       .pattern(" G ")
       .define('G', Items.GOLD_INGOT)
-      .define('I', ItemsCore.IRON_GEAR.get())
-      .unlockedBy(getHasName(ItemsCore.IRON_GEAR.get()), inventoryTrigger(get(Items.GOLD_INGOT, ItemsCore.IRON_GEAR.get())))
+      .define('I', CoreItems.IRON_GEAR.get())
+      .unlockedBy(getHasName(CoreItems.IRON_GEAR.get()), inventoryTrigger(get(Items.GOLD_INGOT, CoreItems.IRON_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, ItemsCore.DIAMOND_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.DIAMOND_GEAR.get())
       .pattern(" D ")
       .pattern("DGD")
       .pattern(" D ")
       .define('D', Items.DIAMOND)
-      .define('G', ItemsCore.GOLD_GEAR.get())
-      .unlockedBy(getHasName(ItemsCore.GOLD_GEAR.get()), inventoryTrigger(get(Items.DIAMOND, ItemsCore.GOLD_GEAR.get())))
+      .define('G', CoreItems.GOLD_GEAR.get())
+      .unlockedBy(getHasName(CoreItems.GOLD_GEAR.get()), inventoryTrigger(get(Items.DIAMOND, CoreItems.GOLD_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, ItemsCore.WRENCH.get())
+    shaped(RecipeCategory.MISC, CoreItems.WRENCH.get())
       .pattern("I I")
       .pattern(" S ")
       .pattern(" I ")
       .define('I', Items.IRON_INGOT)
-      .define('S', ItemsCore.STONE_GEAR.get())
-      .unlockedBy(getHasName(ItemsCore.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, ItemsCore.STONE_GEAR.get())))
+      .define('S', CoreItems.STONE_GEAR.get())
+      .unlockedBy(getHasName(CoreItems.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, CoreItems.STONE_GEAR.get())))
       .save(p_251297_);
   }
 

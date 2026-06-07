@@ -17,7 +17,7 @@ import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
 import com.peco2282.bcreborn.common.packet.PacketController;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.worldgen.SpringPopulate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -70,10 +70,10 @@ public class BCRebornCore implements BCReborn {
     processor.initRegister();
 //    REGISTRY
 //        .addRunner(BlocksCore::init)
-//        .addRunner(BlockEntityTypesCore::init)
+//        .addRunner(CoreBlockEntityTypes::init)
 //    ;
-    // Touch ItemsCore to trigger static field initialization
-    var ignored = ItemsCore.WRENCH;
+    // Touch CoreItems to trigger static field initialization
+    var ignored = CoreItems.WRENCH;
     REGISTRY.register(modEventBus);
     PacketController.init();
     modEventBus.register(DataGatherEvent.class);

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.menu;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
-import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
 import com.peco2282.bcreborn.robotics.block.entity.RequesterBlockEntity;
 import com.peco2282.bcreborn.robotics.screen.RequesterScreen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,7 +31,7 @@ public class RequesterMenu extends BuildCraftMenu<RequesterMenu> {
   public ItemStack[] requests = new ItemStack[RequesterBlockEntity.NB_ITEMS];
 
   public RequesterMenu(int id, Inventory playerInventory, RequesterBlockEntity iRequester) {
-    super(MenuTypesRobotics.REQUESTER.get(), id, playerInventory);
+    super(RoboticsMenuTypes.REQUESTER.get(), id, playerInventory);
     this.requester = iRequester;
     if (this.requester == null) {
       throw new IllegalArgumentException("RequesterBlockEntity is null at pos");

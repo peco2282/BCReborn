@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.s2c;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ public record SetItemRequirementsPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BUILDER.get())
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BUILDER.get())
       .ifPresent(be -> be.setItemRequirements(requirements)));
     ctx.setPacketHandled(true);
   }

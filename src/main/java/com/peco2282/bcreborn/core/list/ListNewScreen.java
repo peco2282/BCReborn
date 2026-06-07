@@ -20,7 +20,7 @@ import com.peco2282.bcreborn.common.gui.buttons.IButtonClickEventListener;
 import com.peco2282.bcreborn.common.gui.buttons.IButtonClickEventTrigger;
 import com.peco2282.bcreborn.common.gui.buttons.ImageButton;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.item.ListItem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -118,7 +118,7 @@ public class ListNewScreen extends AdvancedInterfaceScreen<ListNewMenu> implemen
 
     textField = new EditBox(this.font, leftPos + 10, topPos + 10, 156, 12, Component.empty());
     textField.setMaxLength(32);
-    textField.setValue(ItemsCore.LIST.get().getLabel(minecraft.player.getMainHandItem()));
+    textField.setValue(CoreItems.LIST.get().getLabel(minecraft.player.getMainHandItem()));
     textField.setFocused(false);
     addRenderableWidget(textField);
   }

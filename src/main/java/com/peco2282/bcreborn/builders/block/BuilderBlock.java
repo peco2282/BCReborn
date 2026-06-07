@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.block;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
 import com.peco2282.bcreborn.builders.item.ConstructionMarkerBlockItem;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
@@ -57,13 +57,13 @@ public class BuilderBlock extends BuildCraftBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return BlockEntityTypesBuilders.BUILDER.get().create(pos, state);
+    return BuildersBlockEntityTypes.BUILDER.get().create(pos, state);
   }
 
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return createTickerHelper(type, BlockEntityTypesBuilders.BUILDER.get(), BuildCraftBlockEntity.ticker());
+    return createTickerHelper(type, BuildersBlockEntityTypes.BUILDER.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override

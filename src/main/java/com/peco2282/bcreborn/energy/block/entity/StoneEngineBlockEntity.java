@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.energy.block.entity;
 
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
-import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import com.peco2282.bcreborn.energy.menu.StoneEngineMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +37,7 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
   private ItemStack burnItem;
 
   public StoneEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    super(BlockEntityTypesEnergy.STONE_ENGINE.get(), p_155229_, p_155230_, 1);
+    super(EnergyBlockEntityTypes.STONE_ENGINE.get(), p_155229_, p_155230_, 1);
     // 中容量・中出力
     configureEnergy(20000, 80);
   }

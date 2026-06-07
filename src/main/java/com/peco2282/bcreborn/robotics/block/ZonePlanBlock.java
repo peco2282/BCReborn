@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,7 +61,7 @@ public class ZonePlanBlock extends BuildCraftBlock {
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return createTickerHelper(type, BlockEntityTypesRobotics.ZONE_PLAN.get(), BuildCraftBlockEntity.ticker());
+    return createTickerHelper(type, RoboticsBlockEntityTypes.ZONE_PLAN.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override

@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.energy.block;
 
 import com.peco2282.bcreborn.common.block.EngineBlock;
-import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import com.peco2282.bcreborn.energy.block.entity.IronEngineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class IronEngineBlock extends EngineBlock {
   @Override
   public IronEngineBlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-    return BlockEntityTypesEnergy.IRON_ENGINE.get().create(p_153215_, p_153216_);
+    return EnergyBlockEntityTypes.IRON_ENGINE.get().create(p_153215_, p_153216_);
   }
 
 

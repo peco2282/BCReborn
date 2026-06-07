@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.block.entity;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +45,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
   private boolean previewColorsPushed = false;
 
   public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesRobotics.ZONE_PLAN.get(), pos, state);
+    super(RoboticsBlockEntityTypes.ZONE_PLAN.get(), pos, state);
   }
 
   public byte[] getPreviewTexture(boolean force) {

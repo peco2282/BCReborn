@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.transport.test;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -38,8 +38,8 @@ public class TransportGameTests {
     BlockPos pos2 = new BlockPos(1, 1, 1);
 
     // パイプを設置
-    helper.setBlock(pos1, BlocksTransport.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
-    helper.setBlock(pos2, BlocksTransport.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
+    helper.setBlock(pos1, TransportBlocks.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
+    helper.setBlock(pos2, TransportBlocks.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
 
     // チェストを設置（目的地）
     BlockPos chestPos = new BlockPos(2, 1, 1);

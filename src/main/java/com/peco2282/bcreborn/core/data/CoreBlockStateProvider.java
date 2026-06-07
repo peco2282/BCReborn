@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.MarkerBlock;
 import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
 import com.peco2282.bcreborn.core.BlocksCore;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -119,11 +119,11 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
 
     // Item models
 
-    basicItem(ItemsCore.WOODEN_GEAR.get());
-    basicItem(ItemsCore.STONE_GEAR.get());
-    basicItem(ItemsCore.IRON_GEAR.get());
-    basicItem(ItemsCore.GOLD_GEAR.get());
-    basicItem(ItemsCore.DIAMOND_GEAR.get());
+    basicItem(CoreItems.WOODEN_GEAR.get());
+    basicItem(CoreItems.STONE_GEAR.get());
+    basicItem(CoreItems.IRON_GEAR.get());
+    basicItem(CoreItems.GOLD_GEAR.get());
+    basicItem(CoreItems.DIAMOND_GEAR.get());
 
     getItemBuilder("list")
       .parent(getExistingFile(mcLoc("item/generated")))
@@ -135,7 +135,7 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
         .texture("layer0", "item/list/used"))
       .end();
 
-    // basicItem(ItemsCore.LIST.get()); // Removed as it was causing the error and replaced with the builder above
+    // basicItem(CoreItems.LIST.get()); // Removed as it was causing the error and replaced with the builder above
 
     var paintbrushBuilder = getItemBuilder("paintbrush")
       .parent(getExistingFile(mcLoc("item/generated")))

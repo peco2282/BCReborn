@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.core.Position;
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.ConstructionMarkerBlock;
 import com.peco2282.bcreborn.builders.item.BlueprintItem;
 import com.peco2282.bcreborn.common.Box;
@@ -53,7 +53,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
   private CompoundTag initNBT;
 
   public ConstructionMarkerBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), pos, state);
+    super(BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get(), pos, state);
   }
 
   public Direction getDirection() {

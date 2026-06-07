@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.api.fuels.ICoolant;
 import com.peco2282.bcreborn.api.fuels.IFuel;
 import com.peco2282.bcreborn.common.ResourceBuilder;
-import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import com.peco2282.bcreborn.energy.fluids.TankManager;
 import com.peco2282.bcreborn.energy.menu.IronEngineMenu;
@@ -51,7 +51,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   private IFuel currentFuel;
 
   public IronEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    super(BlockEntityTypesEnergy.IRON_ENGINE.get(), p_155229_, p_155230_, 1);
+    super(EnergyBlockEntityTypes.IRON_ENGINE.get(), p_155229_, p_155230_, 1);
     configureEnergy(100000, 100);
   }
 

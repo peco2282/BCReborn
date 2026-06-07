@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.energy.fluids;
 
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -25,17 +25,17 @@ public abstract class FuelFluid extends ForgeFlowingFluid {
 
   @Override
   public Fluid getFlowing() {
-    return FluidsEnergy.FUEL_FLOWING.get();
+    return EnergyFluids.FUEL_FLOWING.get();
   }
 
   @Override
   public Fluid getSource() {
-    return FluidsEnergy.FUEL_SOURCE.get();
+    return EnergyFluids.FUEL_SOURCE.get();
   }
 
   @Override
   public boolean isSame(Fluid fluid) {
-    return fluid == FluidsEnergy.FUEL_SOURCE.get() || fluid == FluidsEnergy.FUEL_FLOWING.get();
+    return fluid == EnergyFluids.FUEL_SOURCE.get() || fluid == EnergyFluids.FUEL_FLOWING.get();
   }
 
   public static class Source extends FuelFluid {

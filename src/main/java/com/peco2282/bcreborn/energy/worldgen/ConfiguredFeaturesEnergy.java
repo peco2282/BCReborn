@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.energy.worldgen;
 
 import com.peco2282.bcreborn.BCRebornEnergy;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -32,7 +32,7 @@ public class ConfiguredFeaturesEnergy {
         Feature.LAKE,
         new LakeFeature.Configuration(
           BlockStateProvider.simple(
-            FluidsEnergy.OIL_BLOCK.get()
+            EnergyFluids.OIL_BLOCK.get()
           ),
           BlockStateProvider.simple(
             Blocks.SAND

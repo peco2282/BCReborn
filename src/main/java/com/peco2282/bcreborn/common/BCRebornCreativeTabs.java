@@ -15,14 +15,14 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.core.BlocksCore;
-import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.energy.BlocksEnergy;
+import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
 import com.peco2282.bcreborn.robotics.RoboticsBlocks;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.registries.Registries;
@@ -46,7 +46,7 @@ public class BCRebornCreativeTabs {
     .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
     .displayItems((param, output) -> {
       BlocksCore.registerCreativeTab(param, output);
-      ItemsCore.registerCreativeTab(param, output);
+      CoreItems.registerCreativeTab(param, output);
     })
     .build()
   );
@@ -59,15 +59,15 @@ public class BCRebornCreativeTabs {
   );
   public static final RegistryObject<CreativeModeTab> ENERGY = register("energy", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Energy"))
-      .icon(() -> new ItemStack(BlocksEnergy.CREATIVE_ENGINE.get()))
-      .displayItems(BlocksEnergy::registerCreativeTab)
+      .icon(() -> new ItemStack(EnergyBlocks.CREATIVE_ENGINE.get()))
+      .displayItems(EnergyBlocks::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );
   public static final RegistryObject<CreativeModeTab> TRANSPORT = register("transport", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Transport"))
-      .icon(() -> new ItemStack(BlocksTransport.get(PipeType.ITEM, PipeMaterial.WOOD).get()))
-      .displayItems(BlocksTransport::registerCreativeTab)
+      .icon(() -> new ItemStack(TransportBlocks.get(PipeType.ITEM, PipeMaterial.WOOD).get()))
+      .displayItems(TransportBlocks::registerCreativeTab)
 //      .withTabsAfter(CORE_ID)
       .build()
   );

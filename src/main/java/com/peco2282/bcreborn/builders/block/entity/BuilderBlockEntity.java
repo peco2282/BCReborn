@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.IControllable;
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.BuilderBlock;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
 import com.peco2282.bcreborn.common.SimpleInventory;
@@ -60,7 +60,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   private BptBuilderTemplate currentBuilder;
 
   public BuilderBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    super(BlockEntityTypesBuilders.BUILDER.get(), p_155229_, p_155230_);
+    super(BuildersBlockEntityTypes.BUILDER.get(), p_155229_, p_155230_);
     setBattery(new EnergyStorage(10000, 1000, 1000));
   }
 

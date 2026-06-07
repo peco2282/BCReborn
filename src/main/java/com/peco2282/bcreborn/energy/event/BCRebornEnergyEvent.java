@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.energy.event;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornEnergy;
 import com.peco2282.bcreborn.common.block.render.EngineBlockRenderer;
-import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
-import com.peco2282.bcreborn.energy.MenuTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
+import com.peco2282.bcreborn.energy.EnergyMenuTypes;
 import com.peco2282.bcreborn.energy.screen.IronEngineScreen;
 import com.peco2282.bcreborn.energy.screen.StoneEngineScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -33,8 +33,8 @@ public class BCRebornEnergyEvent {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> {
-      MenuScreens.register(MenuTypesEnergy.STONE_ENGINE.get(), StoneEngineScreen::new);
-      MenuScreens.register(MenuTypesEnergy.IRON_ENGINE.get(), IronEngineScreen::new);
+      MenuScreens.register(EnergyMenuTypes.STONE_ENGINE.get(), StoneEngineScreen::new);
+      MenuScreens.register(EnergyMenuTypes.IRON_ENGINE.get(), IronEngineScreen::new);
     });
   }
 
@@ -42,9 +42,9 @@ public class BCRebornEnergyEvent {
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     logger.info("Registering `Energy` renderers");
-    event.registerBlockEntityRenderer(BlockEntityTypesEnergy.CREATIVE_ENGINE.get(), EngineBlockRenderer::new);
-    event.registerBlockEntityRenderer(BlockEntityTypesEnergy.STONE_ENGINE.get(), EngineBlockRenderer::new);
-    event.registerBlockEntityRenderer(BlockEntityTypesEnergy.IRON_ENGINE.get(), EngineBlockRenderer::new);
+    event.registerBlockEntityRenderer(EnergyBlockEntityTypes.CREATIVE_ENGINE.get(), EngineBlockRenderer::new);
+    event.registerBlockEntityRenderer(EnergyBlockEntityTypes.STONE_ENGINE.get(), EngineBlockRenderer::new);
+    event.registerBlockEntityRenderer(EnergyBlockEntityTypes.IRON_ENGINE.get(), EngineBlockRenderer::new);
     logger.info("Registered `Energy` renderers");
   }
 

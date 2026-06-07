@@ -17,7 +17,7 @@ import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -68,7 +68,7 @@ public class SchematicPipe extends SchematicTile {
       typeField.setAccessible(true);
       PipeType type = (PipeType) typeField.get(pipe);
 
-      RegistryObject<PipeBlock> block = BlocksTransport.get(type, material);
+      RegistryObject<PipeBlock> block = TransportBlocks.get(type, material);
       if (block != null) {
         return block.get().asItem();
       }

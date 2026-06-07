@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.builders.block;
 
 import com.peco2282.bcreborn.api.IToolWrench;
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
 import com.peco2282.bcreborn.builders.item.BlueprintItem;
 import com.peco2282.bcreborn.builders.item.ConstructionMarkerBlockItem;
@@ -61,13 +61,13 @@ public class ConstructionMarkerBlock extends MarkerBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get().create(pos, state);
+    return BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get().create(pos, state);
   }
 
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return createTickerHelper(type, BlockEntityTypesBuilders.CONSTRUCTION_MARKER.get(), BuildCraftBlockEntity.ticker());
+    return createTickerHelper(type, BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override
