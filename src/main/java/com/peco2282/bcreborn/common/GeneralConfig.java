@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ConfigGeneral {
+public class GeneralConfig {
   // display
   private static ForgeConfigSpec.BooleanValue colorBlindMode;
   private static ForgeConfigSpec.BooleanValue hideFluidValues;
