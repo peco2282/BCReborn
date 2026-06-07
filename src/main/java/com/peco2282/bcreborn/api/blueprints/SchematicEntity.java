@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 public class SchematicEntity extends Schematic {
-  public Class<? extends Entity> entity;
+  public EntityType<? extends Entity> entity;
 
   /**
    * This tree contains additional data to be stored in the blueprint. By

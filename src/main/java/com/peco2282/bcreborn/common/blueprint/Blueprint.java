@@ -18,9 +18,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import java.util.LinkedList;
@@ -73,8 +75,10 @@ public class Blueprint extends BlueprintBase {
       return;
     }
 
+    BlockState state = context.world().getBlockState(pos);
+
     SchematicBlock slot = SchematicRegistry.INSTANCE.createSchematicBlock(
-      context.world().getBlockState(pos).getBlock(), 0);
+      context.world().getBlockState(pos).getBlock(), state);
 
     if (slot == null) {
       return;
@@ -84,9 +88,9 @@ public class Blueprint extends BlueprintBase {
     int posY = (int) (y - context.surroundingBox().pMin().y);
     int posZ = (int) (z - context.surroundingBox().pMin().z);
 
-    slot.block = context.world().getBlockState(pos).getBlock();
+    slot.state = state;
 
-    if (!SchematicRegistry.INSTANCE.isSupported(slot.block, 0)) {
+    if (!SchematicRegistry.INSTANCE.isSupported(slot.block, state)) {
       return;
     }
 
@@ -138,7 +142,7 @@ public class Blueprint extends BlueprintBase {
     );
 
     for (Entity e : entitiesInBox) {
-      SchematicEntity s = SchematicRegistry.INSTANCE.createSchematicEntity(e.getClass());
+      SchematicEntity s = SchematicRegistry.INSTANCE.createSchematicEntity(e.getType());
       if (s != null) {
         s.readFromWorld(context, e);
         switch (s.getBuildingPermission()) {
@@ -218,7 +222,7 @@ public class Blueprint extends BlueprintBase {
             }
 
             if (block != null) {
-              SchematicBlockBase schematic = SchematicRegistry.INSTANCE.createSchematicBlock(block, 0);
+              SchematicBlockBase schematic = SchematicRegistry.INSTANCE.createSchematicBlock(block);
               if (schematic != null) {
                 schematic.readSchematicFromNBT(cpt, mapping);
                 if (!schematic.doNotUse()) {
@@ -256,7 +260,7 @@ public class Blueprint extends BlueprintBase {
     for (int i = 0; i < entitiesNBT.size(); ++i) {
       CompoundTag cpt = entitiesNBT.getCompound(i);
       if (cpt.contains("entityId")) {
-        Class<? extends Entity> entityClass;
+        EntityType<? extends Entity> entityClass;
         try {
           entityClass = mapping.getEntityForId(cpt.getInt("entityId"));
         } catch (MappingNotFoundException e) {

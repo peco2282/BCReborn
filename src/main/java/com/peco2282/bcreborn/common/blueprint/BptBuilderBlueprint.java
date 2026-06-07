@@ -77,11 +77,11 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 
             if (slot == null) {
               slot = new SchematicBlock();
-              slot.meta = 0;
+              slot.state = Blocks.AIR.defaultBlockState();
               slot.block = Blocks.AIR;
             }
 
-            if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.meta)) {
+            if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.state)) {
               continue;
             }
 
@@ -121,7 +121,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
             continue;
           }
 
-          if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.meta)) {
+          if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.state)) {
             continue;
           }
 

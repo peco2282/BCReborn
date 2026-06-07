@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -155,7 +156,7 @@ public abstract class FillerPattern implements IFillerPattern {
 
   public abstract Template getTemplate(Box box, Level world, IStatementParameter[] parameters);
 
-  public Blueprint getBlueprint(Box box, Level world, IStatementParameter[] parameters, Block block, int meta) {
+  public Blueprint getBlueprint(Box box, Level world, IStatementParameter[] parameters, Block block, BlockState meta) {
     Blueprint result = new Blueprint(box.sizeX(), box.sizeY(), box.sizeZ());
 
     try {
