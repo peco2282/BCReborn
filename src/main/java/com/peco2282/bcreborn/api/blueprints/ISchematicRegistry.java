@@ -13,21 +13,25 @@ package com.peco2282.bcreborn.api.blueprints;
 
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface ISchematicRegistry {
-  void registerSchematicBlock(Block block, Class<? extends Schematic> clazz, Object... params);
+  default void registerSchematicBlock(Block block, SchematicFactory<? extends SchematicBlock> factory) {
+    registerSchematicBlock(block, block.defaultBlockState(), factory);
+  }
 
-  void registerSchematicBlock(Block block, int meta, Class<? extends Schematic> clazz, Object... params);
-
-  void registerSchematicBlock(Block block, BlockState state, Class<? extends Schematic> clazz, Object... params);
+  void registerSchematicBlock(Block block, BlockState state, SchematicFactory<? extends SchematicBlock> factory);
 
   void registerSchematicEntity(
-    Class<? extends Entity> entityClass,
-    Class<? extends SchematicEntity> schematicClass, Object... params);
-
-  boolean isSupported(Block block, int metadata);
+    EntityType<? extends Entity> entityClass,
+    SchematicFactory<? extends SchematicEntity> factory);
 
   boolean isSupported(Block block, BlockState state);
+
+  @FunctionalInterface
+  interface SchematicFactory<T extends Schematic> {
+    T create();
+  }
 }
