@@ -115,6 +115,17 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
 //  private int pipeColor = 0;
   private DyeColor pipeColor = DyeColor.WHITE;
+  private ExtractFilterMode extractFilterMode = ExtractFilterMode.WHITE_LIST;
+
+  public enum ExtractFilterMode {
+    WHITE_LIST,
+    BLACK_LIST,
+    ROUND_ROBIN;
+
+    public ExtractFilterMode next() {
+      return values()[(this.ordinal() + 1) % values().length];
+    }
+  }
 
   public PipeBlockEntity(BlockPos pos, BlockState state) {
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
@@ -425,6 +436,18 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return pipeColor;
   }
 
+  public ExtractFilterMode getExtractFilterMode() {
+    return extractFilterMode;
+  }
+
+  public void setExtractFilterMode(ExtractFilterMode extractFilterMode) {
+    this.extractFilterMode = extractFilterMode;
+    setChanged();
+    if (level != null && !level.isClientSide) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+  }
+
   // ---- NBT ----
 
   public void setPipeColor(DyeColor color) {
@@ -516,6 +539,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (tag.contains("PipeColor")) {
       this.pipeColor = DyeColor.byId(tag.getInt("PipeColor"));
     }
+    if (tag.contains("ExtractFilterMode")) {
+      this.extractFilterMode = ExtractFilterMode.values()[tag.getInt("ExtractFilterMode")];
+    }
     if (tag.contains("Filters")) {
       ListTag filtersTag = tag.getList("Filters", Tag.TAG_COMPOUND);
       for (int i = 0; i < filtersTag.size(); i++) {
@@ -566,6 +592,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     tag.put("Filters", filtersTag);
     tag.putLong("usedFilters", usedFilters);
     tag.putInt("PipeColor", pipeColor.getId());
+    tag.putInt("ExtractFilterMode", extractFilterMode.ordinal());
 
     byte[] wires = new byte[wireSignals.length];
     for (int i = 0; i < wireSignals.length; i++) {
