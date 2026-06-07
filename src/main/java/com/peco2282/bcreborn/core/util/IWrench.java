@@ -9,12 +9,12 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.robotics;
+package com.peco2282.bcreborn.core.util;
 
+import net.minecraft.world.entity.player.Player;
 
-import com.peco2282.bcreborn.api.robots.DockingStation;
+public interface IWrench {
+  boolean canWrench(Player player, int x, int y, int z);
 
-public interface IStationFilter {
-
-  boolean matches(DockingStation station);
+  void wrenchUsed(Player player, int x, int y, int z);
 }

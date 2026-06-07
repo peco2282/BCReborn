@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.core.IWrench;
+import com.peco2282.bcreborn.core.util.IWrench;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;

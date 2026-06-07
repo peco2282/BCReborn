@@ -18,7 +18,7 @@ import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
-import com.peco2282.bcreborn.robotics.ZonePlan;
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;

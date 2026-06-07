@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.transport.gates;
 
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.transport.Gate;
 import net.minecraft.core.Direction;
 
 import java.util.Iterator;

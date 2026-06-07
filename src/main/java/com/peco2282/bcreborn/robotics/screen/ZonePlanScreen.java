@@ -15,7 +15,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.robotics.ZonePlan;
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
 import net.minecraft.client.gui.GuiGraphics;

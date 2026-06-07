@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.ZonePlan;
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

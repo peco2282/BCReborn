@@ -18,7 +18,6 @@ import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.utils.StringUtils;
-import com.peco2282.bcreborn.transport.Gate;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateLogic;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateMaterial;
 import net.minecraft.core.Direction;

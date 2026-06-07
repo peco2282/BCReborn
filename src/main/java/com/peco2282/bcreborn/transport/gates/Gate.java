@@ -9,7 +9,7 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.transport;
+package com.peco2282.bcreborn.transport.gates;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -22,7 +22,6 @@ import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContain
 import com.peco2282.bcreborn.api.statements.containers.ISidedStatementContainer;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.PipeWire;
-import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

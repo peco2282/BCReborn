@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.transport.event;
 
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.transport.TransportGameTests;
+import com.peco2282.bcreborn.transport.test.TransportGameTests;
 import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

@@ -23,7 +23,7 @@ import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
-import com.peco2282.bcreborn.robotics.RobotUtils;
+import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGoAndLinkToDock;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

@@ -18,7 +18,7 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.gui.StatementParameterSlot;
 import com.peco2282.bcreborn.common.gui.StatementSlot;
-import com.peco2282.bcreborn.transport.Gate;
+import com.peco2282.bcreborn.transport.gates.Gate;
 import com.peco2282.bcreborn.transport.menu.GateInterfaceMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;

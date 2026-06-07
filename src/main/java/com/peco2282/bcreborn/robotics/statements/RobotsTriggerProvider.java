@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.ITriggerExternal;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
 import com.peco2282.bcreborn.api.statements.ITriggerProvider;
-import com.peco2282.bcreborn.robotics.RobotUtils;
+import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 

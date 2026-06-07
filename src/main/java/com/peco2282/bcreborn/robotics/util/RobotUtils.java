@@ -9,7 +9,7 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.robotics;
+package com.peco2282.bcreborn.robotics.util;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;

@@ -18,7 +18,6 @@ import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableDynamicRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
-import com.peco2282.bcreborn.transport.Gate;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

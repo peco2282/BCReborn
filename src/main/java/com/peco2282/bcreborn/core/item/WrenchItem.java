@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.core.item;
 
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.core.IWrench;
+import com.peco2282.bcreborn.core.util.IWrench;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 

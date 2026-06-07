@@ -9,9 +9,10 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.transport;
+package com.peco2282.bcreborn.transport.test;
 
 import com.peco2282.bcreborn.BCRebornTransport;
+import com.peco2282.bcreborn.transport.BlocksTransport;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;

@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.menu;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
-import com.peco2282.bcreborn.robotics.ZonePlan;
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.screen.ZonePlanScreen;
 import net.minecraft.network.FriendlyByteBuf;
