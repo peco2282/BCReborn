@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("deprecation")
 public interface RegistryUtil {
   /**
    * Retrieves a named holder set of blocks matching the specified tag key.

@@ -49,18 +49,6 @@ public class SafeTimeTracker {
   }
 
   public boolean markTimeIfDelay(Level world) {
-    return markTimeIfDelay(world, internalDelay);
-  }
-
-  /**
-   * Return true if a given delay has passed since last time marked was called
-   * successfully.
-   *
-   * @deprecated should use the constructor with a delay instead, and call
-   * this function without a parameter
-   */
-  @Deprecated
-  public boolean markTimeIfDelay(Level world, long delay) {
     if (world == null) {
       return false;
     }
@@ -70,7 +58,7 @@ public class SafeTimeTracker {
     if (currentTime < lastMark) {
       lastMark = currentTime;
       return false;
-    } else if (lastMark + delay + lastRandomDelay <= currentTime) {
+    } else if (lastMark + internalDelay + lastRandomDelay <= currentTime) {
       duration = currentTime - lastMark;
       lastMark = currentTime;
       lastRandomDelay = (int) (Math.random() * randomRange);

@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.api.blueprints;
 
 
 import com.peco2282.bcreborn.api.core.BCLog;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -23,18 +25,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class MappingRegistry {
 
-  public HashMap<Block, Integer> blockToId = new HashMap<>();
+  public Object2IntMap<Block> blockToId = new Object2IntOpenHashMap<>();
   public ArrayList<Block> idToBlock = new ArrayList<>();
 
-  public HashMap<Item, Integer> itemToId = new HashMap<>();
+  public Object2IntMap<Item> itemToId = new Object2IntOpenHashMap<>();
   public ArrayList<Item> idToItem = new ArrayList<>();
 
-  public HashMap<Class<? extends Entity>, Integer> entityToId = new HashMap<>();
+  public Object2IntMap<Class<? extends Entity>> entityToId = new Object2IntOpenHashMap<>();
   public ArrayList<Class<? extends Entity>> idToEntity = new ArrayList<>();
 
   private void registerItem(Item item) {
@@ -77,7 +79,7 @@ public class MappingRegistry {
       registerItem(item);
     }
 
-    return itemToId.get(item);
+    return itemToId.getInt(item);
   }
 
   public int itemIdToRegistry(int id) {
@@ -111,7 +113,7 @@ public class MappingRegistry {
       registerBlock(block);
     }
 
-    return blockToId.get(block);
+    return blockToId.getInt(block);
   }
 
   public int blockIdToRegistry(int id) {
@@ -145,7 +147,7 @@ public class MappingRegistry {
       registerEntity(entity);
     }
 
-    return entityToId.get(entity);
+    return entityToId.getInt(entity);
   }
 
   /**

@@ -20,7 +20,6 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import java.util.List;
 
 public interface IGate extends ISidedStatementContainer {
-  @Deprecated
   void setPulsing(boolean pulse);
 
   IPipe getPipe();
