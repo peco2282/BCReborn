@@ -77,7 +77,7 @@ public class BCLanguageProvider extends LanguageProvider {
 
     addMenu(BuildersMenuTypes.ARCHITECT, "Architect");
     addMenu(BuildersMenuTypes.BUILDER, "Builder");
-    addMenu(BuildersMenuTypes.BLUEPRINT_LIBRARY, "Blueprint Library");
+    addMenu(BuildersMenuTypes.BLUEPRINT_LIBRARY, "Electronic Library");
     addMenu(BuildersMenuTypes.FILLER, "Filler");
   }
 
