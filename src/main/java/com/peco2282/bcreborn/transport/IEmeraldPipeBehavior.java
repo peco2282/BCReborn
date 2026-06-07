@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.transport;
 
 import net.minecraft.nbt.CompoundTag;
 
-public interface IEmeraldPipeBehaviorBehavior extends IFilteredPipeBehavior {
+public interface IEmeraldPipeBehavior extends IFilteredPipeBehavior {
 
 	enum FilterMode {
 		WHITE_LIST, BLACK_LIST, ROUND_ROBIN
