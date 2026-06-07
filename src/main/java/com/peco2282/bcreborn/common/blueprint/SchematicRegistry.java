@@ -71,6 +71,13 @@ public final class SchematicRegistry implements ISchematicRegistry {
       BCLog.logger.warn("Builder: Could not register schematic for entity " + EntityType.getKey(type) + ": " + e.getMessage());
     }
   }
+  public SchematicBlock createSchematicBlock(Block block) {
+    return createSchematicBlock(block, block.defaultBlockState());
+  }
+
+  public SchematicBlock createSchematicBlock(BlockState state) {
+    return createSchematicBlock(state.getBlock(), state);
+  }
 
   public SchematicBlock createSchematicBlock(Block block, BlockState state) {
     if (block == null) return null;
