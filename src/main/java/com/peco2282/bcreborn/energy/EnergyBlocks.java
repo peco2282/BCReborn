@@ -25,7 +25,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornEnergy.MODID)
-public class BlocksEnergy {
+public class EnergyBlocks {
   private static final BCRegistry REGISTRY = BCRebornEnergy.getRegistry();
 
   public static final RegistryObject<CreativeEngineBlock> CREATIVE_ENGINE = REGISTRY.registerBlockItem("creative_engine", EngineBlockItem::new, CreativeEngineBlock::new);

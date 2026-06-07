@@ -25,7 +25,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornCore.MODID)
-public class StatementParametersCore {
+public class CoreStatementParameters {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   public static final RegistryObject<StatementParameterItemStack> STACK_TRIGGER = register("stack_trigger", () -> new StatementParameterItemStack(BCReborn.getBasedLocation("stack_trigger")));

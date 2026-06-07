@@ -22,7 +22,7 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
 @InitRegister(modId = BCRebornCore.MODID, priority = 1)
-public class MenuTypesCore {
+public class CoreMenuTypes {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   public static final RegistryObject<MenuType<ListNewMenu>> LIST_NEW = register("list_new", IForgeMenuType.create((windowId, inv, data) -> new ListNewMenu(windowId, inv.player)));

@@ -15,7 +15,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
 
-public class ConfigRobotics {
+public class RoboticsConfig {
   // items
   private static ForgeConfigSpec.BooleanValue robot;
   private static ForgeConfigSpec.BooleanValue robotStation;

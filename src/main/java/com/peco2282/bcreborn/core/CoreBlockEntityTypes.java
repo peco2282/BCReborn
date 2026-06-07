@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @InitRegister(modId = BCRebornCore.MODID, priority = 1)
-public class BlockEntityTypesCore {
+public class CoreBlockEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, Supplier<BlockEntityType<T>> type) {

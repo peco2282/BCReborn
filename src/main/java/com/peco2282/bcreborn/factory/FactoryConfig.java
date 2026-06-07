@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.factory;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ConfigFactory {
+public class FactoryConfig {
   // blocks
   private static ForgeConfigSpec.BooleanValue autoWorkbenchBlock;
   private static ForgeConfigSpec.BooleanValue filteredBufferBlock;
