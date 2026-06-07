@@ -223,7 +223,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
 
   @Override
   public @NotNull Component getDisplayName() {
-    return Component.translatable("container.bcrebornbuilders.builder");
+    return Component.translatable("menu.bcrebornbuilders.builder");
   }
 
   @Override

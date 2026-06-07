@@ -102,7 +102,7 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
 
   @Override
   public Component getDisplayName() {
-    return Component.literal(inv.getName());
+    return Component.translatable("menu.bcrebornbuilders.blueprint_library");
   }
 
   @Override

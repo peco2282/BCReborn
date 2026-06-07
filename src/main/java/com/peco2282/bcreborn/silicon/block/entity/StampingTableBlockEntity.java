@@ -48,7 +48,7 @@ public class StampingTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public Component getDisplayName() {
-    return Component.literal("Stamping Table");
+    return Component.translatable("menu.bcrebornsilicon.stamping_table");
   }
 
   @Override

@@ -179,7 +179,7 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
 
   @Override
   public Component getDisplayName() {
-    return Component.translatable("tile.hopperBlock.name");
+    return Component.translatable("menu.bcrebornfactory.hopper");
   }
 
   @Nullable

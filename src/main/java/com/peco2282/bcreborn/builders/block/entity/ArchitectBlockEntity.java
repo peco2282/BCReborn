@@ -286,7 +286,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   @Override
   public @NotNull Component getDisplayName() {
-    return Component.literal(name.isEmpty() ? "Architect" : name);
+    return name.isEmpty() ? Component.translatable("menu.bcrebornbuilders.architect") : Component.literal(name);
   }
 
   @Override

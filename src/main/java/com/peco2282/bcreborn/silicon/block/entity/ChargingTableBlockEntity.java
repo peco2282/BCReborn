@@ -48,7 +48,7 @@ public class ChargingTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public Component getDisplayName() {
-    return Component.empty();
+    return Component.translatable("menu.bcrebornsilicon.charging_table");
   }
 
   @Override

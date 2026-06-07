@@ -222,7 +222,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
 
   @Override
   public Component getDisplayName() {
-    return Component.literal("Zone Plan");
+    return Component.translatable("menu.bcrebornrobotics.zone_plan");
   }
 
   @Override

@@ -109,7 +109,7 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
 
   @Override
   public Component getDisplayName() {
-    return Component.translatable("tile.autoWorkbenchBlock.name");
+    return Component.translatable("menu.bcrebornfactory.auto_workbench");
   }
 
   @Nullable

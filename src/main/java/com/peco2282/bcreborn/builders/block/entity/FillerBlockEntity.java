@@ -256,7 +256,7 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
 
   @Override
   public @NotNull Component getDisplayName() {
-    return Component.translatable("container.bcrebornbuilders.filler");
+    return Component.translatable("menu.bcrebornbuilders.filler");
   }
 
   @Override
