@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.menu;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
-import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.screen.ZonePlanScreen;
@@ -28,7 +28,7 @@ public class ZonePlanMenu extends BuildCraftMenu<ZonePlanMenu> {
   public ZonePlanScreen gui;
 
   public ZonePlanMenu(int id, Inventory playerInventory, ZonePlanBlockEntity iZonePlan) {
-    super(MenuTypesRobotics.ZONE_PLAN.get(), id, playerInventory);
+    super(RoboticsMenuTypes.ZONE_PLAN.get(), id, playerInventory);
     this.map = iZonePlan;
     if (this.map == null) {
       throw new IllegalArgumentException("ZonePlanBlockEntity is null at pos");

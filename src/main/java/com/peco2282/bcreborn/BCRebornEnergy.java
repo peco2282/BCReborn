@@ -15,7 +15,7 @@ import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import com.peco2282.bcreborn.energy.fuel.CoolantManager;
 import com.peco2282.bcreborn.energy.fuel.FuelManager;
 import net.minecraft.resources.ResourceLocation;
@@ -52,8 +52,8 @@ public class BCRebornEnergy implements BCReborn {
 //    MinecraftForge.EVENT_BUS.register(OilPopulate.INSTANCE);
     processor.initRegister();
 
-    var ignoredFluids = FluidsEnergy.OIL_SOURCE;
-    FluidsEnergy.registerFluidTypes(modEventBus);
+    var ignoredFluids = EnergyFluids.OIL_SOURCE;
+    EnergyFluids.registerFluidTypes(modEventBus);
     REGISTRY.register(modEventBus);
   }
 
@@ -70,7 +70,7 @@ public class BCRebornEnergy implements BCReborn {
       FuelManager.INSTANCE
     );
 
-    BuildcraftFuelRegistry.getFuelManager().addFuel(FluidsEnergy.OIL_SOURCE.get(), 1, 1);
+    BuildcraftFuelRegistry.getFuelManager().addFuel(EnergyFluids.OIL_SOURCE.get(), 1, 1);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {

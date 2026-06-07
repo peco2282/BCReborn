@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.common.data;
 
 import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
-import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import net.minecraft.core.HolderLookup;
@@ -40,7 +40,7 @@ public class BCItemTagsProvider extends ItemTagsProvider {
 
     tag(CommonItemTags.BUILDERS);
     tag(CommonItemTags.CORE)
-      .addTag(CommonItemTags.GEAR).add(ItemsCore.LIST.get(), ItemsCore.MAP_LOCATION.get(), ItemsCore.PAINTBRUSH.get(), ItemsCore.WRENCH.get());
+      .addTag(CommonItemTags.GEAR).add(CoreItems.LIST.get(), CoreItems.MAP_LOCATION.get(), CoreItems.PAINTBRUSH.get(), CoreItems.WRENCH.get());
     tag(CommonItemTags.ENERGY)
       .addTag(CommonItemTags.FUEL_BUCKET);
     tag(CommonItemTags.FACTORY);
@@ -54,7 +54,7 @@ public class BCItemTagsProvider extends ItemTagsProvider {
 
   private void fuelBucketTag() {
     tag(CommonItemTags.FUEL_BUCKET)
-      .add(FluidsEnergy.OIL_BUCKET.get(), FluidsEnergy.FUEL_BUCKET.get());
+      .add(EnergyFluids.OIL_BUCKET.get(), EnergyFluids.FUEL_BUCKET.get());
   }
 
   private void chipsetTag() {
@@ -64,6 +64,6 @@ public class BCItemTagsProvider extends ItemTagsProvider {
 
   private void gearTag() {
     tag(CommonItemTags.GEAR)
-      .add(ItemsCore.WOODEN_GEAR.get(), ItemsCore.IRON_GEAR.get(), ItemsCore.GOLD_GEAR.get(), ItemsCore.DIAMOND_GEAR.get());
+      .add(CoreItems.WOODEN_GEAR.get(), CoreItems.IRON_GEAR.get(), CoreItems.GOLD_GEAR.get(), CoreItems.DIAMOND_GEAR.get());
   }
 }

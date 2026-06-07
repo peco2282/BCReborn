@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.transport.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
-import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
+import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -122,7 +122,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     BlockEntity be = level.getBlockEntity(pos);
     if (be instanceof PipeBlockEntity pipeBE && pipeBE.getBehaviour() != null && !player.isShiftKeyDown()) {
-      if (player.getItemInHand(hand).is(ItemsCore.WRENCH.get())) {
+      if (player.getItemInHand(hand).is(CoreItems.WRENCH.get())) {
         return pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);
       } else {
         return pipeBE.getBehaviour().onUse(pipeBE, level, pos, player, hand, hit);
@@ -161,7 +161,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     }
 
     // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
-    level.getBlockEntity(currentPos, BlockEntityTypesTransport.PIPE.get()).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
+    level.getBlockEntity(currentPos, TransportBlockEntityTypes.PIPE.get()).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
 
     BlockState newState = state;
     for (Direction dir : Direction.values()) {

@@ -11,14 +11,14 @@
  */
 package com.peco2282.bcreborn;
 
-import com.peco2282.bcreborn.builders.ConfigBuilders;
+import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.common.ConfigGeneral;
 import com.peco2282.bcreborn.core.ConfigCore;
-import com.peco2282.bcreborn.energy.ConfigEnergy;
-import com.peco2282.bcreborn.factory.ConfigFactory;
-import com.peco2282.bcreborn.robotics.ConfigRobotics;
-import com.peco2282.bcreborn.silicon.ConfigSilicon;
-import com.peco2282.bcreborn.transport.ConfigTransport;
+import com.peco2282.bcreborn.energy.EnergyConfig;
+import com.peco2282.bcreborn.factory.FactoryConfig;
+import com.peco2282.bcreborn.robotics.RoboticsConfig;
+import com.peco2282.bcreborn.silicon.SiliconConfig;
+import com.peco2282.bcreborn.transport.TransportConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -45,12 +45,12 @@ public class Config {
     GENERAL = ConfigGeneral.load(BUILDER);
 
     CORE = ConfigCore.load(BUILDER); // Core settings
-    ENERGY = ConfigEnergy.load(BUILDER); // Energy settings
-    TRANSPORT = ConfigTransport.load(BUILDER); // Transport settings
-    BUILDERS = ConfigBuilders.load(BUILDER); // Builders settings
-    FACTORY = ConfigFactory.load(BUILDER); // Factory settings
-    SILICON = ConfigSilicon.load(BUILDER); // Silicon settings
-    ROBOTICS = ConfigRobotics.load(BUILDER); // Robotics settings
+    ENERGY = EnergyConfig.load(BUILDER); // Energy settings
+    TRANSPORT = TransportConfig.load(BUILDER); // Transport settings
+    BUILDERS = BuildersConfig.load(BUILDER); // Builders settings
+    FACTORY = FactoryConfig.load(BUILDER); // Factory settings
+    SILICON = SiliconConfig.load(BUILDER); // Silicon settings
+    ROBOTICS = RoboticsConfig.load(BUILDER); // Robotics settings
 
     SPEC = BUILDER.build();
   }

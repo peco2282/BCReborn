@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,7 +39,7 @@ public record RequestZonePlanLoadAreaPacket(BlockPos pos, int index) implements 
     ctx.enqueueWork(() -> {
       ServerPlayer player = ctx.getSender();
       if (player == null) return;
-      getBlockEntity(ctx, pos, BlockEntityTypesRobotics.ZONE_PLAN.get())
+      getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
         .ifPresent(be -> {
           ZonePlan plan = be.selectArea(index);
           BCNetworkManager.sendSyncZonePlanAreaLoaded(player, pos, plan);

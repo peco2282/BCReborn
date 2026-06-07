@@ -33,7 +33,7 @@ import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.item.WrenchItem;
 import com.peco2282.bcreborn.robotics.registry.RobotRegistry;
 import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
@@ -1096,7 +1096,7 @@ public class RobotEntity extends RobotEntityBase implements
       return InteractionResult.FAIL;
     }
 
-    if (player.isShiftKeyDown() && stack.getItem() == ItemsCore.WRENCH.get()) {
+    if (player.isShiftKeyDown() && stack.getItem() == CoreItems.WRENCH.get()) {
       RobotEvent.Dismantle robotDismantleEvent = new RobotEvent.Dismantle(this, player);
       MinecraftForge.EVENT_BUS.post(robotDismantleEvent);
       if (robotDismantleEvent.isCanceled()) {

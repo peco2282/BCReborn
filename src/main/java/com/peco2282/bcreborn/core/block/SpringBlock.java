@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.core.block;
 
 import com.peco2282.bcreborn.common.XorShift128Random;
-import com.peco2282.bcreborn.energy.ConfigEnergy;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyConfig;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -92,8 +92,8 @@ public class SpringBlock extends Block {
     WATER(5, -1, () -> Blocks.WATER),
     OIL(6000, 8, () ->
     {
-      if (ConfigEnergy.isSpawnOilSprings()) {
-        return FluidsEnergy.OIL_BLOCK.get();
+      if (EnergyConfig.isSpawnOilSprings()) {
+        return EnergyFluids.OIL_BLOCK.get();
       }
       return null;
     }); // Set in BuildCraftEnergy
@@ -120,7 +120,7 @@ public class SpringBlock extends Block {
     }
 
     public boolean canGen() {
-      return this != OIL || ConfigEnergy.isSpawnOilSprings();
+      return this != OIL || EnergyConfig.isSpawnOilSprings();
     }
 
     @Override

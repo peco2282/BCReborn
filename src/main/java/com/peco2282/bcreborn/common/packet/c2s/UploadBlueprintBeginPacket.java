@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
@@ -43,7 +43,7 @@ public record UploadBlueprintBeginPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get()).ifPresent(be -> be.setBlueprintDownloadAndId(libraryId, new byte[BlueprintLibraryBlockEntity.CHUNK_SIZE * chunk])));
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(be -> be.setBlueprintDownloadAndId(libraryId, new byte[BlueprintLibraryBlockEntity.CHUNK_SIZE * chunk])));
     ctx.setPacketHandled(true);
   }
 }

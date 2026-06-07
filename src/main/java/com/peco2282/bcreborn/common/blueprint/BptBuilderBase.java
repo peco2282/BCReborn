@@ -24,7 +24,7 @@ import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.builder.*;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -202,7 +202,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
     int hardness = (int) Math.ceil((double) getBlockBreakEnergy(slot) / BuilderAPI.BREAK_ENERGY);
 
     for (int i = 0; i < hardness; ++i) {
-      slot.addStackConsumed(new ItemStack(ItemsCore.BUILD_TOOL_BOX.get()));
+      slot.addStackConsumed(new ItemStack(CoreItems.BUILD_TOOL_BOX.get()));
     }
   }
 

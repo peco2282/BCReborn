@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.core.block.entity;
 import com.peco2282.bcreborn.api.IRedstoneEngine;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
-import com.peco2282.bcreborn.core.BlockEntityTypesCore;
+import com.peco2282.bcreborn.core.CoreBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +25,7 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
   private final boolean hasSent = false;
 
   public WoodEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-    super(BlockEntityTypesCore.WOODEN_ENGINE.get(), p_155229_, p_155230_);
+    super(CoreBlockEntityTypes.WOODEN_ENGINE.get(), p_155229_, p_155230_);
     // 小容量・小出力
     configureEnergy(5000, 40);
   }

@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,7 +38,7 @@ public record SetArchitectNamePacket(
     NetworkEvent.Context ctx = supplier.get();
 
     ctx.enqueueWork(() ->
-      getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
+      getBlockEntity(ctx, pos, BuildersBlockEntityTypes.ARCHITECT.get())
         .ifPresent(be -> be.setName(name)));
   }
 }

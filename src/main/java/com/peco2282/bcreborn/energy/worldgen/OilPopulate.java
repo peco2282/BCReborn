@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.energy.worldgen;
 
-import com.peco2282.bcreborn.energy.ConfigEnergy;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyConfig;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -50,7 +50,7 @@ public final class OilPopulate {
   }
 
   private static BlockState getOilBlockState() {
-    return FluidsEnergy.OIL_BLOCK.get().defaultBlockState();
+    return EnergyFluids.OIL_BLOCK.get().defaultBlockState();
   }
 
   @SubscribeEvent
@@ -66,7 +66,7 @@ public final class OilPopulate {
     if (!(levelAccessor instanceof Level level)) {
       return;
     }
-    if (!ConfigEnergy.isWorldgenEnable()) {
+    if (!EnergyConfig.isWorldgenEnable()) {
       return;
     }
 
@@ -94,7 +94,7 @@ public final class OilPopulate {
     Biome biome = level.getBiome(pos).value();
 
     double bonus = 1.0;
-    bonus *= ConfigEnergy.getOilWellGenerationRate();
+    bonus *= EnergyConfig.getOilWellGenerationRate();
 
     GenType type = GenType.NONE;
     if (rand.nextDouble() <= 0.0004 * bonus) {
@@ -165,7 +165,7 @@ public final class OilPopulate {
       }
       generateSurfaceDeposit(level, rand, x, groundLevel, z, lakeRadius);
 
-      boolean makeSpring = type == GenType.LARGE && ConfigEnergy.isSpawnOilSprings();
+      boolean makeSpring = type == GenType.LARGE && EnergyConfig.isSpawnOilSprings();
 
       int baseY = makeSpring ? level.getMinBuildHeight() : wellY;
 
@@ -244,7 +244,7 @@ public final class OilPopulate {
 
   private boolean isOil(Level level, int x, int y, int z) {
     BlockState state = level.getBlockState(new BlockPos(x, y, z));
-    return state.getBlock() == FluidsEnergy.OIL_BLOCK.get();
+    return state.getBlock() == EnergyFluids.OIL_BLOCK.get();
   }
 
   private boolean isReplaceableForLake(Level level, int x, int y, int z) {

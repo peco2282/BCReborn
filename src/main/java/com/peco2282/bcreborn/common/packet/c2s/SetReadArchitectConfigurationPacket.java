@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
@@ -40,7 +40,7 @@ public record SetReadArchitectConfigurationPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesBuilders.ARCHITECT.get())
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.ARCHITECT.get())
       .ifPresent(be -> {
         be.setReadConfiguration(config);
         be.getUpdatePacket();

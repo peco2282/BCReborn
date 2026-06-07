@@ -16,7 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
-import com.peco2282.bcreborn.core.ItemsCore;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.item.ListItem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -58,7 +58,7 @@ public class ListOldScreen extends AdvancedInterfaceScreen<ListOldMenu> {
 
     textField = new EditBox(this.font, 10, 10, 156, 12, Component.empty());
     textField.setMaxLength(32);
-    textField.setValue(ItemsCore.LIST.get().getLabel(player.getMainHandItem()));
+    textField.setValue(CoreItems.LIST.get().getLabel(player.getMainHandItem()));
     textField.setFocused(false);
   }
 

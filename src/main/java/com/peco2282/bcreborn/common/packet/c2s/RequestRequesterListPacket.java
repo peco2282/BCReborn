@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +38,7 @@ public record RequestRequesterListPacket(BlockPos pos) implements CustomPacket {
     ctx.enqueueWork(() -> {
       ServerPlayer player = ctx.getSender();
       if (player == null) return;
-      getBlockEntity(ctx, pos, BlockEntityTypesRobotics.REQUESTER.get())
+      getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.REQUESTER.get())
         .ifPresent(be -> {
           ItemStack[] stacks = new ItemStack[be.getRequestsCount()];
           for (int i = 0; i < stacks.length; i++) {

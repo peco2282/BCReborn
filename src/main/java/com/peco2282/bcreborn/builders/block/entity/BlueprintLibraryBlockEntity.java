@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.library.LibraryTypeHandler;
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.menu.BlueprintLibraryMenu;
 import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.SimpleInventory;
@@ -46,7 +46,7 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
   private byte[] blueprintDownload;
 
   public BlueprintLibraryBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get(), pos, state);
+    super(BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get(), pos, state);
   }
 
   public void refresh() {

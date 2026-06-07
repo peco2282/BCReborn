@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.energy.menu;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import com.peco2282.bcreborn.energy.MenuTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyMenuTypes;
 import com.peco2282.bcreborn.energy.block.entity.IronEngineBlockEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -53,7 +53,7 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
   }
 
   public IronEngineMenu(int p_38852_, Inventory p_38853_, Container engine) {
-    super(MenuTypesEnergy.IRON_ENGINE.get(), p_38852_, p_38853_);
+    super(EnergyMenuTypes.IRON_ENGINE.get(), p_38852_, p_38853_);
     if (engine instanceof IronEngineBlockEntity) {
       this.engine = (IronEngineBlockEntity) engine;
     }

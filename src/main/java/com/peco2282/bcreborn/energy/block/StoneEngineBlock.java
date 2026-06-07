@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.energy.block;
 
 import com.peco2282.bcreborn.common.block.EngineBlock;
-import com.peco2282.bcreborn.energy.BlockEntityTypesEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class StoneEngineBlock extends EngineBlock {
   @Override
   public StoneEngineBlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-    return BlockEntityTypesEnergy.STONE_ENGINE.get().create(p_153215_, p_153216_);
+    return EnergyBlockEntityTypes.STONE_ENGINE.get().create(p_153215_, p_153216_);
   }
 
   @Override

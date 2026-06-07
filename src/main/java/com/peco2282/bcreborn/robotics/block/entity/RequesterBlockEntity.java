@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.menu.RequesterMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +37,7 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
   private final SimpleInventory requests = new SimpleInventory(NB_ITEMS, "requests", 64);
 
   public RequesterBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesRobotics.REQUESTER.get(), pos, state);
+    super(RoboticsBlockEntityTypes.REQUESTER.get(), pos, state);
   }
 
   public void setRequest(int index, ItemStack stack) {

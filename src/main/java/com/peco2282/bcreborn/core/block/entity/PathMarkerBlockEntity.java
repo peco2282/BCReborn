@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.core.IPathProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.common.block.entity.MarkerBlockEntity;
-import com.peco2282.bcreborn.core.BlockEntityTypesCore;
+import com.peco2282.bcreborn.core.CoreBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -40,7 +40,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   private BlockPos loadLink1Pos = BlockPos.ZERO;
 
   public PathMarkerBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesCore.PATH_MARKER.get(), pos, state);
+    super(CoreBlockEntityTypes.PATH_MARKER.get(), pos, state);
   }
 
   // -----------------------------------------------------------------------

@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.energy.data;
 
 import com.peco2282.bcreborn.BCRebornEnergy;
 import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
-import com.peco2282.bcreborn.energy.BlocksEnergy;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.EnergyBlocks;
+import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -35,16 +35,16 @@ public class EnergyBlockStateProvider extends BCBlockStateHelper {
   protected void registerStatesAndModels() {
 
     // creative_engine / stone_engine / iron_engine（エネルギー）
-    simpleEngine(BlocksEnergy.CREATIVE_ENGINE.get());
-    simpleEngine(BlocksEnergy.STONE_ENGINE.get());
-    simpleEngine(BlocksEnergy.IRON_ENGINE.get());
+    simpleEngine(EnergyBlocks.CREATIVE_ENGINE.get());
+    simpleEngine(EnergyBlocks.STONE_ENGINE.get());
+    simpleEngine(EnergyBlocks.IRON_ENGINE.get());
 
 
-    liquidBlock(FluidsEnergy.OIL_BLOCK.get(), modLoc("block/fluids/oil_still"));
-    liquidBlock(FluidsEnergy.FUEL_BLOCK.get(), modLoc("block/fluids/fuel_still"));
+    liquidBlock(EnergyFluids.OIL_BLOCK.get(), modLoc("block/fluids/oil_still"));
+    liquidBlock(EnergyFluids.FUEL_BLOCK.get(), modLoc("block/fluids/fuel_still"));
 
-    basicItem(FluidsEnergy.OIL_BUCKET.get());
-    basicItem(FluidsEnergy.FUEL_BUCKET.get());
+    basicItem(EnergyFluids.OIL_BUCKET.get());
+    basicItem(EnergyFluids.FUEL_BUCKET.get());
 
     getItemBuilder("creative_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
     getItemBuilder("iron_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));

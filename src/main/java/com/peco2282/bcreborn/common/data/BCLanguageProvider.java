@@ -15,19 +15,19 @@ import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersItems;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.core.BlocksCore;
-import com.peco2282.bcreborn.core.ItemsCore;
-import com.peco2282.bcreborn.energy.BlocksEnergy;
-import com.peco2282.bcreborn.energy.FluidsEnergy;
-import com.peco2282.bcreborn.energy.MenuTypesEnergy;
+import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.energy.EnergyBlocks;
+import com.peco2282.bcreborn.energy.EnergyFluids;
+import com.peco2282.bcreborn.energy.EnergyMenuTypes;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
 import com.peco2282.bcreborn.factory.FactoryMenuTypes;
-import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
 import com.peco2282.bcreborn.robotics.RoboticsBlocks;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -110,27 +110,27 @@ public class BCLanguageProvider extends LanguageProvider {
     addBlock(BlocksCore.BLUE_MARKER, "Blue Marker");
     addBlock(BlocksCore.BUILD_TOOL, "Build Tool");
 
-    addItem(ItemsCore.WRENCH, "Wrench");
-    addItem(ItemsCore.WOODEN_GEAR, "Wooden Gear");
-    addItem(ItemsCore.STONE_GEAR, "Stone Gear");
-    addItem(ItemsCore.IRON_GEAR, "Iron Gear");
-    addItem(ItemsCore.GOLD_GEAR, "Golden Gear");
-    addItem(ItemsCore.DIAMOND_GEAR, "Diamond Gear");
-    addItem(ItemsCore.BUILD_TOOL_BOX, "Build Tool Box");
+    addItem(CoreItems.WRENCH, "Wrench");
+    addItem(CoreItems.WOODEN_GEAR, "Wooden Gear");
+    addItem(CoreItems.STONE_GEAR, "Stone Gear");
+    addItem(CoreItems.IRON_GEAR, "Iron Gear");
+    addItem(CoreItems.GOLD_GEAR, "Golden Gear");
+    addItem(CoreItems.DIAMOND_GEAR, "Diamond Gear");
+    addItem(CoreItems.BUILD_TOOL_BOX, "Build Tool Box");
   }
 
   private void addEnergy() {
-    addBlock(BlocksEnergy.STONE_ENGINE, "Stone Engine");
-    addBlock(BlocksEnergy.IRON_ENGINE, "Iron Engine");
-    addBlock(BlocksEnergy.CREATIVE_ENGINE, "Creative Engine");
-    addBlock(FluidsEnergy.FUEL_BLOCK, "Fuel Block");
-    addBlock(FluidsEnergy.OIL_BLOCK, "Oil Block");
+    addBlock(EnergyBlocks.STONE_ENGINE, "Stone Engine");
+    addBlock(EnergyBlocks.IRON_ENGINE, "Iron Engine");
+    addBlock(EnergyBlocks.CREATIVE_ENGINE, "Creative Engine");
+    addBlock(EnergyFluids.FUEL_BLOCK, "Fuel Block");
+    addBlock(EnergyFluids.OIL_BLOCK, "Oil Block");
 
-    addItem(FluidsEnergy.FUEL_BUCKET, "Fuel Bucket");
-    addItem(FluidsEnergy.OIL_BUCKET, "Oil Bucket");
+    addItem(EnergyFluids.FUEL_BUCKET, "Fuel Bucket");
+    addItem(EnergyFluids.OIL_BUCKET, "Oil Bucket");
 
-    addMenu(MenuTypesEnergy.STONE_ENGINE, "Stone Engine");
-    addMenu(MenuTypesEnergy.IRON_ENGINE, "Iron Engine");
+    addMenu(EnergyMenuTypes.STONE_ENGINE, "Stone Engine");
+    addMenu(EnergyMenuTypes.IRON_ENGINE, "Iron Engine");
   }
 
   private void addFactory() {
@@ -156,8 +156,8 @@ public class BCLanguageProvider extends LanguageProvider {
     addItem(RoboticsItems.ROBOT_STATION, "Robot Station");
     RoboticsItems.REDSTONE_BOARDS.getMap().forEach((name, item) -> addItem(item, snake2Title(name)));
 
-    addMenu(MenuTypesRobotics.REQUESTER, "Requester");
-    addMenu(MenuTypesRobotics.ZONE_PLAN, "Zone Plan");
+    addMenu(RoboticsMenuTypes.REQUESTER, "Requester");
+    addMenu(RoboticsMenuTypes.ZONE_PLAN, "Zone Plan");
   }
 
   private void addSilicon() {
@@ -190,7 +190,7 @@ public class BCLanguageProvider extends LanguageProvider {
   }
 
   private void addTransport() {
-    BlocksTransport.getPipeList().forEach(block -> {
+    TransportBlocks.getPipeList().forEach(block -> {
       var key = block.getId().getPath().replace("pipe_", "");
 
       addBlock(block, snake2Title(key) + " Pipe");

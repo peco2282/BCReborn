@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.block.entity.RequesterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,7 +61,7 @@ public class RequesterBlock extends BuildCraftBlock {
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-    return createTickerHelper(type, BlockEntityTypesRobotics.REQUESTER.get(), BuildCraftBlockEntity.ticker());
+    return createTickerHelper(type, RoboticsBlockEntityTypes.REQUESTER.get(), BuildCraftBlockEntity.ticker());
   }
 
   @Override

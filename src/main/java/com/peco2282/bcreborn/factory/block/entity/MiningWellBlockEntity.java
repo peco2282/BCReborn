@@ -19,7 +19,7 @@ import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
 import com.peco2282.bcreborn.api.transport.IPipeConnection;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
-import com.peco2282.bcreborn.builders.ConfigBuilders;
+import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
@@ -82,7 +82,7 @@ public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHas
         depth = depth - 1;
       }
 
-      if (depth < level.getMinBuildHeight() || depth < getBlockPos().getY() - ConfigBuilders.getMiningDepth() || !BlockUtils.canChangeBlock(level, getBlockPos().atY(depth))) {
+      if (depth < level.getMinBuildHeight() || depth < getBlockPos().getY() - BuildersConfig.getMiningDepth() || !BlockUtils.canChangeBlock(level, getBlockPos().atY(depth))) {
         isDigging = false;
         // Drain energy, because at 0 energy this will stop doing calculations.
         getBattery().useEnergy(0, 10, false);

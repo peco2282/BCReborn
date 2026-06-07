@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
@@ -36,6 +36,6 @@ public record UploadBlueprintEndPacket(
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     // TODO: implement when LibraryAPI is available
-    getBlockEntity(ctx, pos, BlockEntityTypesBuilders.BLUEPRINT_LIBRARY.get()).ifPresent(BlueprintLibraryBlockEntity::completeDownload);
+    getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(BlueprintLibraryBlockEntity::completeDownload);
   }
 }

@@ -19,8 +19,8 @@ import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
-import com.peco2282.bcreborn.transport.BlockEntityTypesTransport;
-import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
+import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -148,9 +148,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
     return switch (type) {
-      case ITEM -> BlockEntityTypesTransport.ITEM_PIPE.get();
-      case FLUID -> BlockEntityTypesTransport.FLUID_PIPE.get();
-      case ENERGY -> BlockEntityTypesTransport.ENERGY_PIPE.get();
+      case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
+      case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
+      case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
     };
   }
 
@@ -648,7 +648,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public Item getPipeItem() {
-    RegistryObject<PipeBlock> block = BlocksTransport.PIPES.get(transportType, pipeMaterial);
+    RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
     if (block != null) {
       return block.get().asItem();
     }

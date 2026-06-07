@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.Position;
-import com.peco2282.bcreborn.builders.BlockEntityTypesBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.blueprints.RecursiveBlueprintReader;
 import com.peco2282.bcreborn.builders.menu.ArchitectMenu;
 import com.peco2282.bcreborn.common.Box;
@@ -61,7 +61,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   private boolean clientIsWorking, initialized;
 
   public ArchitectBlockEntity(BlockPos pos, BlockState state) {
-    super(BlockEntityTypesBuilders.ARCHITECT.get(), pos, state);
+    super(BuildersBlockEntityTypes.ARCHITECT.get(), pos, state);
   }
 
   public Box getBox() {

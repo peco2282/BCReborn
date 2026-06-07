@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import com.peco2282.bcreborn.robotics.BlockEntityTypesRobotics;
+import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,7 +39,7 @@ public record RequestZonePlanSaveAreaPacket(BlockPos pos, int index, ZonePlan pl
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BlockEntityTypesRobotics.ZONE_PLAN.get())
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
       .ifPresent(be -> be.setArea(index, plan)));
     ctx.setPacketHandled(true);
   }
