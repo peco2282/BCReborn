@@ -13,18 +13,27 @@ package com.peco2282.bcreborn.common.data;
 
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersItems;
+import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.core.BlocksCore;
 import com.peco2282.bcreborn.core.ItemsCore;
 import com.peco2282.bcreborn.energy.BlocksEnergy;
 import com.peco2282.bcreborn.energy.FluidsEnergy;
+import com.peco2282.bcreborn.energy.MenuTypesEnergy;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.factory.FactoryMenuTypes;
+import com.peco2282.bcreborn.robotics.MenuTypesRobotics;
 import com.peco2282.bcreborn.robotics.RoboticsBlocks;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
+import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.transport.BlocksTransport;
+import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +74,11 @@ public class BCLanguageProvider extends LanguageProvider {
 
     addItem(BuildersItems.BLUEPRINT_STANDARD, "Blueprint Standard");
     addItem(BuildersItems.BLUEPRINT_TEMPLATE, "Blueprint Template");
+
+    addMenu(BuildersMenuTypes.ARCHITECT, "Architect");
+    addMenu(BuildersMenuTypes.BUILDER, "Builder");
+    addMenu(BuildersMenuTypes.BLUEPRINT_LIBRARY, "Blueprint Library");
+    addMenu(BuildersMenuTypes.FILLER, "Filler");
   }
 
   private void addCore() {
@@ -92,6 +106,9 @@ public class BCLanguageProvider extends LanguageProvider {
 
     addItem(FluidsEnergy.FUEL_BUCKET, "Fuel Bucket");
     addItem(FluidsEnergy.OIL_BUCKET, "Oil Bucket");
+
+    addMenu(MenuTypesEnergy.STONE_ENGINE, "Stone Engine");
+    addMenu(MenuTypesEnergy.IRON_ENGINE, "Iron Engine");
   }
 
   private void addFactory() {
@@ -103,6 +120,10 @@ public class BCLanguageProvider extends LanguageProvider {
     addBlock(FactoryBlocks.PUMP, "Pump");
     addBlock(FactoryBlocks.REFINERY, "Refinery");
     addBlock(FactoryBlocks.TANK, "Tank");
+
+    addMenu(FactoryMenuTypes.AUTO_WORKBENCH, "Auto Workbench");
+    addMenu(FactoryMenuTypes.HOPPER, "Hopper");
+    addMenu(FactoryMenuTypes.REFINERY, "Refinery");
   }
 
 
@@ -113,6 +134,9 @@ public class BCLanguageProvider extends LanguageProvider {
     addItem(RoboticsItems.ROBOT, "Robot");
     addItem(RoboticsItems.ROBOT_STATION, "Robot Station");
     RoboticsItems.REDSTONE_BOARDS.getMap().forEach((name, item) -> addItem(item, snake2Title(name)));
+
+    addMenu(MenuTypesRobotics.REQUESTER, "Requester");
+    addMenu(MenuTypesRobotics.ZONE_PLAN, "Zone Plan");
   }
 
 
@@ -135,6 +159,14 @@ public class BCLanguageProvider extends LanguageProvider {
     addItem(SiliconItems.COMP_CHIPSET, "Comp Chipset");
     addItem(SiliconItems.EMERALD_CHIPSET, "Emerald Chipset");
     addItem(SiliconItems.PACKAGE_ITEM, "Package");
+
+    addMenu(SiliconMenuTypes.ADVANCED_CRAFTING_TABLE, "Advanced Crafting Table");
+    addMenu(SiliconMenuTypes.ASSEMBLY_TABLE, "Assembly Table");
+    addMenu(SiliconMenuTypes.CHARGING_TABLE, "Charging Table");
+    addMenu(SiliconMenuTypes.INTEGRATION_TABLE, "Integration Table");
+    addMenu(SiliconMenuTypes.PACKAGER, "Packager");
+    addMenu(SiliconMenuTypes.PROGRAMMING_TABLE, "Programming Table");
+    addMenu(SiliconMenuTypes.STAMPING_TABLE, "Stamping Table");
   }
 
   private void addTransport() {
@@ -143,6 +175,13 @@ public class BCLanguageProvider extends LanguageProvider {
 
       addBlock(block, snake2Title(key) + " Pipe");
     });
+
+    addMenu(TransportMenuTypes.DIAMOND_PIPE_MENU, "Diamond Pipe");
+    addMenu(TransportMenuTypes.EMERALD_FLUID_PIPE_MENU, "Emerald Fluid Pipe");
+    addMenu(TransportMenuTypes.EMERALD_PIPE_MENU, "Emerald Pipe");
+    addMenu(TransportMenuTypes.EMZULI_PIPE_MENU, "Emzuli Pipe");
+    addMenu(TransportMenuTypes.FILTERED_BUFFER_MENU, "Filtered Buffer");
+    addMenu(TransportMenuTypes.GATE_INTERFACE_MENU, "Gate Interface");
   }
 
   private void addGates() {
