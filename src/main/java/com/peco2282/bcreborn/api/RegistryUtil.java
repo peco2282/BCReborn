@@ -104,6 +104,7 @@ public interface RegistryUtil {
       .toList();
   }
 
+  @SuppressWarnings("UnstableApiUsage")
   @Contract(value = "null->fail; _->!null", pure = true)
   static <T> IForgeRegistry<T> getRegistry(ResourceKey<Registry<T>> key) {
     if (key == null) {

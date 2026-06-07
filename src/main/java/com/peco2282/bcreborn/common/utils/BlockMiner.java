@@ -125,7 +125,7 @@ public class BlockMiner {
         hasFailed = true;
       }
     } else {
-      world.destroyBlockProgress(minerId, pos, MathUtils.clamp((int) Math.floor(energyAccepted * 10 / energyRequired), 0, 9));
+      world.destroyBlockProgress(minerId, pos, MathUtils.clamp((int) Math.floor((double) (energyAccepted * 10) / energyRequired), 0, 9));
     }
     return usedAmount;
   }

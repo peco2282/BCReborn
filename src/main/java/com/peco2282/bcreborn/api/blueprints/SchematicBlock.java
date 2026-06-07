@@ -117,9 +117,7 @@ public class SchematicBlock extends SchematicBlockBase {
       pos,
       context.world().getBlockEntity(pos));
 
-    if (req != null) {
-      storedRequirements = req.toArray(new ItemStack[0]);
-    }
+    storedRequirements = req.toArray(new ItemStack[0]);
   }
 
   @Override
