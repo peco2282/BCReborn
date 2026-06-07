@@ -37,9 +37,6 @@ public final class SchematicRegistry implements ISchematicRegistry {
   public final HashMap<BlockState, SchematicFactory<? extends SchematicBlock>> schematicBlocks = new HashMap<>();
   public final HashMap<EntityType<? extends Entity>, SchematicFactory<? extends SchematicEntity>> schematicEntities = new HashMap<>();
 
-  private final HashSet<String> modsForbidden = new HashSet<>();
-  private final HashSet<String> blocksForbidden = new HashSet<>();
-
   static {
     INSTANCE = new SchematicRegistry();
     BuilderAPI.schematicRegistry = INSTANCE;
@@ -108,15 +105,6 @@ public final class SchematicRegistry implements ISchematicRegistry {
     SchematicEntity s = c.create();
     s.entity = type;
     return s;
-  }
-
-  public boolean isAllowedForBuilding(Block block, BlockState state) {
-    ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
-    String nameStr = name.toString();
-    String modId = name.getNamespace();
-    return isSupported(block, state)
-      && !blocksForbidden.contains(nameStr)
-      && !modsForbidden.contains(modId);
   }
 
   @Override
