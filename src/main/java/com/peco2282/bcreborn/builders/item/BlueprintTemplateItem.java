@@ -15,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class BlueprintTemplateItem extends BlueprintItem {
 
-  protected BlueprintTemplateItem(Properties properties) {
-    super(properties);
+  public BlueprintTemplateItem() {
+    super(new Properties());
   }
 
   @Override

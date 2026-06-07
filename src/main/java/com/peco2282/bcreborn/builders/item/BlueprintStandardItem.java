@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.builders.item;
 import net.minecraft.world.item.ItemStack;
 
 public class BlueprintStandardItem extends BlueprintItem {
-  public BlueprintStandardItem(Properties properties) {
-    super(properties);
+  public BlueprintStandardItem() {
+    super(new Properties());
   }
 
   @Override
