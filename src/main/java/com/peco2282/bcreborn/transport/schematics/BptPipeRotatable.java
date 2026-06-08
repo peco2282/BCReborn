@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.transport.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicTile;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Rotation;
 
 public class BptPipeRotatable extends BptPipeExtension {
 
@@ -25,10 +25,7 @@ public class BptPipeRotatable extends BptPipeExtension {
 
   @Override
   public void rotateLeft(SchematicTile slot, IBuilderContext context) {
-    int orientation = slot.meta & 7;
-    int others = slot.meta - orientation;
-
-    slot.meta = (byte) (Direction.values()[orientation].getClockWise(Direction.Axis.Y).ordinal() + others);
+    slot.state = slot.state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
 }
