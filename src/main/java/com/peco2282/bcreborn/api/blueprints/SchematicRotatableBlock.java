@@ -1,12 +1,10 @@
 package com.peco2282.bcreborn.api.blueprints;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SchematicRotatableBlock extends SchematicBlock {
   public SchematicRotatableBlock(BlockState state) {
-    this.block = state.getBlock();
     this.state = state;
   }
 

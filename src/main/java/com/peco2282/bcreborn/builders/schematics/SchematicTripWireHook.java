@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.builders.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
 
@@ -32,13 +31,4 @@ public class SchematicTripWireHook extends SchematicBlock {
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
     super.placeInWorld(context, x, y, z, stacks);
   }
-
-  @Override
-  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    if (state != null) {
-      return state.getBlock() == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-    }
-    return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
-  }
-
 }

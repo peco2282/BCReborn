@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.common.builder.schematics.SchematicBlockFloored;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.LinkedList;
 
@@ -31,15 +30,6 @@ public class SchematicRail extends SchematicBlockFloored {
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
     super.placeInWorld(context, x, y, z, stacks);
-  }
-
-  @Override
-  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-    if (state != null) {
-      return worldState.getBlock() == state.getBlock();
-    }
-    return worldState.getBlock() == block;
   }
 
   @Override

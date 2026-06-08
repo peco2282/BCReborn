@@ -50,7 +50,7 @@ public class SchematicFactoryBlock extends SchematicFactory<SchematicBlock> {
   public void saveSchematicToWorldNBT(CompoundTag nbt, SchematicBlock object, MappingRegistry registry) {
     super.saveSchematicToWorldNBT(nbt, object, registry);
 
-    Block b = object.state != null ? object.state.getBlock() : object.block;
+    Block b = object.state.getBlock();
     nbt.putInt("blockId", registry.getIdForBlock(b));
     object.writeSchematicToNBT(nbt, registry);
   }

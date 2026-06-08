@@ -78,7 +78,6 @@ public class BptBuilderBlueprint extends BptBuilderBase {
             if (slot == null) {
               slot = new SchematicBlock();
               slot.state = Blocks.AIR.defaultBlockState();
-              slot.block = Blocks.AIR;
             }
 
             if (!SchematicRegistry.INSTANCE.isSupported(slot.state)) {
