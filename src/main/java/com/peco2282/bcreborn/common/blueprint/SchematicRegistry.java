@@ -113,15 +113,11 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   public static void init() {
-    BuilderAPI.schematicRegistry = INSTANCE;
-
-
     ISchematicRegistry schemes = INSTANCE;
     schemes.registerSchematicBlock(Blocks.AIR, SchematicAir::new);
 
     schemes.registerSchematicBlock(Blocks.SNOW, SchematicIgnore::new);
     schemes.registerSchematicBlock(Blocks.TALL_GRASS, SchematicIgnore::new);
-//    schemes.registerSchematicBlock(Blocks.DOUBLE_PLANT, SchematicIgnore::new);
     schemes.registerSchematicBlock(Blocks.ICE, SchematicIgnore::new);
     schemes.registerSchematicBlock(Blocks.PISTON_HEAD, SchematicIgnore::new);
 
@@ -141,42 +137,15 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(Blocks.TRIPWIRE, SchematicTripwire::new);
     schemes.registerSchematicBlock(Blocks.TRIPWIRE_HOOK, SchematicTripWireHook::new);
 
-//    schemes.registerSchematicBlock(Blocks.SKULL, SchematicSkull::new);
-
-//    schemes.registerSchematicBlock(Blocks.LADDER, SchematicRotateMetaSupported::new);
-//    schemes.registerSchematicBlock(Blocks.FENCE_GATE, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.LOG, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.LOG2, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.HAY_BLOCK, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.QUARTZ_BLOCK, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.HOPPER, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.ANVIL, SchematicRotateMeta::new);
-
-//    schemes.registerSchematicBlock(Blocks.FURNACE, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.LIT_FURNACE, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.CHEST, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.TRAPPED_CHEST, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.DISPENSER, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.DROPPER, SchematicRotateMeta::new);
 
     schemes.registerSchematicBlock(Blocks.ENDER_CHEST, SchematicEnderChest::new);
-
-//    schemes.registerSchematicBlock(Blocks.VINE, SchematicRotateMeta::new);
-//    schemes.registerSchematicBlock(Blocks.TRAPDOOR, SchematicRotateMeta::new);
 
     schemes.registerSchematicBlock(Blocks.STONE, SchematicStone::new);
     schemes.registerSchematicBlock(Blocks.COAL_ORE, SchematicStone::new);
     schemes.registerSchematicBlock(Blocks.LAPIS_ORE, SchematicStone::new);
     schemes.registerSchematicBlock(Blocks.DIAMOND_ORE, SchematicStone::new);
     schemes.registerSchematicBlock(Blocks.REDSTONE_ORE, SchematicStone::new);
-//    schemes.registerSchematicBlock(Blocks.LIT_REDSTONE_ORE, SchematicStone::new);
     schemes.registerSchematicBlock(Blocks.EMERALD_ORE, SchematicStone::new);
-
-//    schemes.registerSchematicBlock(Blocks.LEAVES, SchematicMetadataMask::new, 3);
-//    schemes.registerSchematicBlock(Blocks.LEAVES2, SchematicMetadataMask::new, 3);
-//    schemes.registerSchematicBlock(Blocks.SAPLING, SchematicMetadataMask::new, 7);
-//
-//    schemes.registerSchematicBlock(Blocks.MONSTER_EGG, SchematicSilverfish::new);
 
     schemes.registerSchematicBlock(Blocks.GRAVEL, SchematicGravel::new);
 
@@ -185,33 +154,20 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(Blocks.GLOWSTONE, () -> new SchematicCustomStack(new ItemStack(Blocks.GLOWSTONE)));
 
     schemes.registerSchematicBlock(Blocks.REPEATER, () -> new SchematicRedstoneDiode(Items.REPEATER));
-//    schemes.registerSchematicBlock(Blocks.UNPOWERED_REPEATER, () -> new SchematicRedstoneDiode(Items.REPEATER));
     schemes.registerSchematicBlock(Blocks.COMPARATOR, () -> new SchematicRedstoneDiode(Items.COMPARATOR));
-//    schemes.registerSchematicBlock(Blocks.UNPOWERED_COMPARATOR, () -> new SchematicRedstoneDiode(Items.COMPARATOR));
 
     schemes.registerSchematicBlock(Blocks.DAYLIGHT_DETECTOR, SchematicTile::new);
     schemes.registerSchematicBlock(Blocks.JUKEBOX, SchematicJukebox::new);
     schemes.registerSchematicBlock(Blocks.NOTE_BLOCK, SchematicTile::new);
 
     schemes.registerSchematicBlock(Blocks.REDSTONE_LAMP, SchematicRedstoneLamp::new);
-//    schemes.registerSchematicBlock(Blocks.LIT_REDSTONE_LAMP, SchematicRedstoneLamp::new);
 
     schemes.registerSchematicBlock(Blocks.GLASS_PANE, SchematicGlassPane::new);
-//    schemes.registerSchematicBlock(Blocks.STAINED_GLASS_PANE, SchematicGlassPane::new);
 
     schemes.registerSchematicBlock(Blocks.PISTON, SchematicPiston::new);
-//    schemes.registerSchematicBlock(Blocks.PISTON_EXTENSION, SchematicPiston::new);
     schemes.registerSchematicBlock(Blocks.STICKY_PISTON, SchematicPiston::new);
 
-//    schemes.registerSchematicBlock(Blocks.LIT_PUMPKIN, SchematicPumpkin::new);
-
-//    schemes.registerSchematicBlock(Blocks.WOODEN_DOOR, () -> new SchematicDoor(new ItemStack(Items.WOODEN_DOOR)));
     schemes.registerSchematicBlock(Blocks.IRON_DOOR, () -> new SchematicDoor(new ItemStack(Items.IRON_DOOR)));
-
-//    schemes.registerSchematicBlock(Blocks.BED, SchematicBed::new);
-
-//    schemes.registerSchematicBlock(Blocks.WALL_SIGN, () -> new SchematicSign(true));
-//    schemes.registerSchematicBlock(Blocks.STANDING_SIGN, () -> new SchematicSign(false));
 
     schemes.registerSchematicBlock(Blocks.NETHER_PORTAL, SchematicPortal::new);
     schemes.registerSchematicBlock(Blocks.END_PORTAL, SchematicPortal::new);
@@ -244,11 +200,9 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicEntity(EntityType.PAINTING, () -> new SchematicHanging(Items.PAINTING));
     schemes.registerSchematicEntity(EntityType.ITEM_FRAME, () -> new SchematicHanging(Items.ITEM_FRAME));
 
-//    // BuildCraft blocks
-//    schemes.registerSchematicBlock(architectBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
+    // BuildCraft blocks
     schemes.registerSchematicBlock(BuildersBlock.BUILDER.get(), SchematicBuilderLike::new);
     schemes.registerSchematicBlock(BuildersBlock.FILLER.get(), SchematicBuilderLike::new);
-//    schemes.registerSchematicBlock(libraryBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
     schemes.registerSchematicBlock(BuildersBlock.QUARRY.get(), SchematicBuilderLike::new);
     schemes.registerSchematicBlock(BuildersBlock.CONSTRUCTION_MARKER.get(), SchematicIgnore::new);
     schemes.registerSchematicBlock(BuildersBlock.FRAME.get(), SchematicFree::new);
