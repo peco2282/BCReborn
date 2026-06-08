@@ -19,10 +19,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
@@ -37,8 +34,6 @@ public class SchematicBlock extends SchematicBlockBase {
     new BlockIndex(1, 0, 0),
   };
   public Direction facing = Direction.UP;
-  @Deprecated
-  public int meta = 0;
 
   @Deprecated
   public Block block = Blocks.AIR;
@@ -87,7 +82,6 @@ public class SchematicBlock extends SchematicBlockBase {
     BlockPos pos = new BlockPos(x, y, z);
     state = context.world().getBlockState(pos);
     block = state.getBlock();
-    meta = 0; // No longer used, but keeping it at 0
   }
 
   @Override
@@ -234,6 +228,17 @@ public class SchematicBlock extends SchematicBlockBase {
       }
 
       nbt.put("rq", rq);
+    }
+  }
+
+  @Override
+  public void rotateLeft(IBuilderContext context) {
+    if (state != null) {
+      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
+      return;
+    }
+    if (block != null) {
+      block.rotate(state, Rotation.COUNTERCLOCKWISE_90);
     }
   }
 }

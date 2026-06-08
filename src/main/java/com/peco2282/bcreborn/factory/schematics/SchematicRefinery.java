@@ -15,8 +15,8 @@ package com.peco2282.bcreborn.factory.schematics;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicTile;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Rotation;
 
 import java.util.LinkedList;
 
@@ -34,7 +34,7 @@ public class SchematicRefinery extends SchematicTile {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    meta = Direction.values()[meta].get2DDataValue();
+    state = state.rotate( Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override
