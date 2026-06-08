@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FluidState;
 
 import java.util.LinkedList;
 
@@ -23,8 +24,13 @@ public class SchematicFluid extends SchematicBlock {
   private final ItemStack fluidItem;
 
   public SchematicFluid(Block fluidBlock) {
-    this.block = fluidBlock;
+    this.state = fluidBlock.defaultBlockState();
     this.fluidItem = new ItemStack(fluidBlock);
+  }
+
+  public SchematicFluid(FluidState state) {
+    this.state = state.createLegacyBlock();
+    this.fluidItem = new ItemStack(this.state.getBlock());
   }
 
   @Override
@@ -38,13 +44,6 @@ public class SchematicFluid extends SchematicBlock {
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
     // cancel requirements reading
   }
-
-  @Override
-  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    BlockPos pos = new BlockPos(x, y, z);
-    return block == context.world().getBlockState(pos).getBlock();
-  }
-
   @Override
   public void rotateLeft(IBuilderContext context) {
 
@@ -61,14 +60,14 @@ public class SchematicFluid extends SchematicBlock {
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
     if (!doNotBuild()) {
-      context.world().setBlock(new BlockPos(x, y, z), state != null ? state : block.defaultBlockState(), 3);
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
     }
   }
 
   @Override
   public void postProcessing(IBuilderContext context, int x, int y, int z) {
     if (doNotBuild()) {
-      context.world().setBlock(new BlockPos(x, y, z), state != null ? state : block.defaultBlockState(), 3);
+      context.world().setBlock(new BlockPos(x, y, z), state, 3);
     }
   }
 

@@ -37,11 +37,6 @@ public class SchematicRedstoneWire extends SchematicBlockFloored {
 
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
-  }
-
-  @Override
-  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    return block == context.world().getBlockState(new BlockPos(x, y, z)).getBlock();
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 }

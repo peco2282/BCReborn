@@ -35,8 +35,6 @@ public class SchematicBlock extends SchematicBlockBase {
   };
   public Direction facing = Direction.UP;
 
-  @Deprecated
-  public Block block = Blocks.AIR;
   public BlockState state = Blocks.AIR.defaultBlockState();
   public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
@@ -67,12 +65,6 @@ public class SchematicBlock extends SchematicBlockBase {
       } else {
         requirements.add(new ItemStack(state.getBlock()));
       }
-    } else if (block != null) {
-      if (storedRequirements.length != 0) {
-        Collections.addAll(requirements, storedRequirements);
-      } else {
-        requirements.add(new ItemStack(block));
-      }
     }
   }
 
@@ -81,16 +73,11 @@ public class SchematicBlock extends SchematicBlockBase {
     super.initializeFromObjectAt(context, x, y, z);
     BlockPos pos = new BlockPos(x, y, z);
     state = context.world().getBlockState(pos);
-    block = state.getBlock();
   }
 
   @Override
   public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-    if (state != null) {
-      return state == worldState;
-    }
-    return block == worldState.getBlock();
+    return state != null && state == context.world().getBlockState(new BlockPos(x, y, z));
   }
 
   @Override
@@ -139,7 +126,7 @@ public class SchematicBlock extends SchematicBlockBase {
    */
   public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
     Set<BlockIndex> indexes = new HashSet<>();
-    if (block instanceof FallingBlock) {
+    if (state.getBlock() instanceof FallingBlock) {
       indexes.add(RELATIVE_INDEXES[1]); // DOWN index
     }
     return indexes;
@@ -147,7 +134,7 @@ public class SchematicBlock extends SchematicBlockBase {
 
   @Override
   public BuildingStage getBuildStage() {
-    if (block instanceof LiquidBlock) {
+    if (state.getBlock() instanceof LiquidBlock) {
       return BuildingStage.EXPANDING;
     } else {
       return BuildingStage.STANDALONE;
@@ -163,8 +150,6 @@ public class SchematicBlock extends SchematicBlockBase {
   protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
     if (state != null) {
       context.world().setBlock(new BlockPos(x, y, z), state, 3);
-    } else if (block != null) {
-      context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
     }
   }
 
@@ -175,7 +160,6 @@ public class SchematicBlock extends SchematicBlockBase {
   protected void readBlockFromNBT(CompoundTag nbt, MappingRegistry registry) {
     try {
       state = registry.readBlockStateFromNBT(nbt);
-      block = state.getBlock();
     } catch (MappingNotFoundException e) {
       doNotUse = true;
     }
@@ -235,10 +219,6 @@ public class SchematicBlock extends SchematicBlockBase {
   public void rotateLeft(IBuilderContext context) {
     if (state != null) {
       state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-      return;
-    }
-    if (block != null) {
-      block.rotate(state, Rotation.COUNTERCLOCKWISE_90);
     }
   }
 }

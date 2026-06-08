@@ -23,7 +23,7 @@ public class SchematicTileIgnoreState extends SchematicTile {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    requirements.add(new ItemStack(block));
+    requirements.add(new ItemStack(state.getBlock()));
   }
 
   @Override
@@ -38,7 +38,7 @@ public class SchematicTileIgnoreState extends SchematicTile {
 
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-    context.world().setBlock(new BlockPos(x, y, z), block.defaultBlockState(), 3);
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 
   @Override
