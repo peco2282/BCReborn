@@ -90,7 +90,7 @@ public class Blueprint extends BlueprintBase {
 
     slot.state = state;
 
-    if (!SchematicRegistry.INSTANCE.isSupported(slot.block, state)) {
+    if (!SchematicRegistry.INSTANCE.isSupported(state)) {
       return;
     }
 

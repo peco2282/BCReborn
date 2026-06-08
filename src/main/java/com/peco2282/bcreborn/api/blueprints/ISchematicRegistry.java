@@ -28,7 +28,8 @@ public interface ISchematicRegistry {
     EntityType<? extends Entity> entityClass,
     SchematicFactory<? extends SchematicEntity> factory);
 
-  boolean isSupported(Block block, BlockState state);
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+  boolean isSupported(BlockState state);
 
   @FunctionalInterface
   interface SchematicFactory<T extends Schematic> {

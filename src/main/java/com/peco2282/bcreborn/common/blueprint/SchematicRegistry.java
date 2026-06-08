@@ -108,7 +108,7 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   @Override
-  public boolean isSupported(Block block, BlockState state) {
+  public boolean isSupported(BlockState state) {
     return schematicBlocks.containsKey(state);
   }
 
