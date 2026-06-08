@@ -30,57 +30,28 @@ import java.util.Map;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class MappingRegistry {
-
-  public Object2IntMap<Block> blockToId = new Object2IntOpenHashMap<>();
-  public ArrayList<Block> idToBlock = new ArrayList<>();
-
-  public Object2IntMap<Item> itemToId = new Object2IntOpenHashMap<>();
-  public ArrayList<Item> idToItem = new ArrayList<>();
-
-  public Object2IntMap<EntityType<? extends Entity>> entityToId = new Object2IntOpenHashMap<>();
-  public ArrayList<EntityType<? extends Entity>> idToEntity = new ArrayList<>();
+  private final MappingTable<Block> BLOCK = new MappingTable<>();
+  private final MappingTable<Item> ITEM = new MappingTable<>();
+  private final MappingTable<EntityType<? extends Entity>> ENTITY = new MappingTable<>();
 
   private void registerItem(Item item) {
-    if (!itemToId.containsKey(item)) {
-      idToItem.add(item);
-      itemToId.put(item, idToItem.size() - 1);
-    }
+    ITEM.register(item);
   }
 
   private void registerBlock(Block block) {
-    if (!blockToId.containsKey(block)) {
-      idToBlock.add(block);
-      blockToId.put(block, idToBlock.size() - 1);
-    }
+    BLOCK.register(block);
   }
 
   private void registerEntity(EntityType<? extends Entity> entityClass) {
-    if (!entityToId.containsKey(entityClass)) {
-      idToEntity.add(entityClass);
-      entityToId.put(entityClass, idToEntity.size() - 1);
-    }
+    ENTITY.register(entityClass);
   }
 
   public Item getItemForId(int id) throws MappingNotFoundException {
-    if (id >= idToItem.size()) {
-      throw new MappingNotFoundException("no item mapping at position " + id);
-    }
-
-    Item result = idToItem.get(id);
-
-    if (result == null) {
-      throw new MappingNotFoundException("no item mapping at position " + id);
-    } else {
-      return result;
-    }
+    return ITEM.get(id);
   }
 
   public int getIdForItem(Item item) {
-    if (!itemToId.containsKey(item)) {
-      registerItem(item);
-    }
-
-    return itemToId.getInt(item);
+    return ITEM.getId(item);
   }
 
   public int itemIdToRegistry(int id) {
@@ -96,25 +67,11 @@ public class MappingRegistry {
   }
 
   public Block getBlockForId(int id) throws MappingNotFoundException {
-    if (id >= idToBlock.size()) {
-      throw new MappingNotFoundException("no block mapping at position " + id);
-    }
-
-    Block result = idToBlock.get(id);
-
-    if (result == null) {
-      throw new MappingNotFoundException("no block mapping at position " + id);
-    } else {
-      return result;
-    }
+    return BLOCK.get(id);
   }
 
   public int getIdForBlock(Block block) {
-    if (!blockToId.containsKey(block)) {
-      registerBlock(block);
-    }
-
-    return blockToId.getInt(block);
+    return BLOCK.getId(block);
   }
 
   public int blockIdToRegistry(int id) {
@@ -124,31 +81,17 @@ public class MappingRegistry {
   }
 
   public int blockIdToWorld(int id) throws MappingNotFoundException {
-    Block block = getBlockForId(id);
+    Block block = BLOCK.get(id);
 
     return BuiltInRegistries.BLOCK.getId(block);
   }
 
   public EntityType<? extends Entity> getEntityForId(int id) throws MappingNotFoundException {
-    if (id >= idToEntity.size()) {
-      throw new MappingNotFoundException("no entity mapping at position " + id);
-    }
-
-    EntityType<? extends Entity> result = idToEntity.get(id);
-
-    if (result == null) {
-      throw new MappingNotFoundException("no entity mapping at position " + id);
-    } else {
-      return result;
-    }
+    return ENTITY.get(id);
   }
 
   public int getIdForEntity(EntityType<? extends Entity> entity) {
-    if (!entityToId.containsKey(entity)) {
-      registerEntity(entity);
-    }
-
-    return entityToId.getInt(entity);
+    return ENTITY.getId(entity);
   }
 
   /**
@@ -266,15 +209,11 @@ public class MappingRegistry {
   public void write(CompoundTag nbt) {
     ListTag blocksMapping = new ListTag();
 
-    for (Block b : idToBlock) {
+    for (Block b : BLOCK.values()) {
       CompoundTag sub = new CompoundTag();
       if (b != null) {
         ResourceLocation name = BuiltInRegistries.BLOCK.getKey(b);
-        if (name == null) {
-          BCLog.logger.error("Block " + b.getName().getString() + " (" + b.getClass().getName() + ") has an empty registry name! This is a bug!");
-        } else {
-          sub.putString("name", name.toString());
-        }
+        sub.putString("name", name.toString());
       }
       blocksMapping.add(sub);
     }
@@ -283,15 +222,11 @@ public class MappingRegistry {
 
     ListTag itemsMapping = new ListTag();
 
-    for (Item i : idToItem) {
+    for (Item i : ITEM.values()) {
       CompoundTag sub = new CompoundTag();
       if (i != null) {
         ResourceLocation name = BuiltInRegistries.ITEM.getKey(i);
-        if (name == null) {
-          BCLog.logger.error("Item " + i.getDescriptionId() + " (" + i.getClass().getName() + ") has an empty registry name! This is a bug!");
-        } else {
-          sub.putString("name", name.toString());
-        }
+        sub.putString("name", name.toString());
       }
       itemsMapping.add(sub);
     }
@@ -300,7 +235,7 @@ public class MappingRegistry {
 
     ListTag entitiesMapping = new ListTag();
 
-    for (EntityType<? extends Entity> e : idToEntity) {
+    for (EntityType<? extends Entity> e : ENTITY.values()) {
       CompoundTag sub = new CompoundTag();
       sub.putString("name", EntityType.getKey(e).toString());
       entitiesMapping.add(sub);
@@ -315,7 +250,7 @@ public class MappingRegistry {
     for (int i = 0; i < blocksMapping.size(); ++i) {
       CompoundTag sub = blocksMapping.getCompound(i);
       if (!sub.contains("name")) {
-        idToBlock.add(null);
+        BLOCK.register(null);
         BCLog.logger.warn("Can't load a block - corrupt blueprint!");
         continue;
       }
@@ -324,9 +259,9 @@ public class MappingRegistry {
       Block b = rl != null ? BuiltInRegistries.BLOCK.get(rl) : null;
 
       if (b != null) {
-        registerBlock(b);
+        BLOCK.register(b);
       } else {
-        idToBlock.add(null);
+        BLOCK.register(null);
         BCLog.logger.warn("Can't load block " + name);
       }
     }
@@ -336,7 +271,7 @@ public class MappingRegistry {
     for (int i = 0; i < itemsMapping.size(); ++i) {
       CompoundTag sub = itemsMapping.getCompound(i);
       if (!sub.contains("name")) {
-        idToItem.add(null);
+        ITEM.register(null);
         BCLog.logger.warn("Can't load an item - corrupt blueprint!");
         continue;
       }
@@ -345,9 +280,9 @@ public class MappingRegistry {
       Item item = rl != null ? BuiltInRegistries.ITEM.get(rl) : null;
 
       if (item != null) {
-        registerItem(item);
+        ITEM.register(item);
       } else {
-        idToItem.add(null);
+        ITEM.register(null);
         BCLog.logger.warn("Can't load item " + name);
       }
     }
@@ -361,7 +296,7 @@ public class MappingRegistry {
       EntityType.byString(name).ifPresentOrElse(
         this::registerEntity,
         () -> {
-          idToEntity.add(null);
+          ENTITY.register(null);
           BCLog.logger.warn("Can't load entity " + name);
         }
       );
