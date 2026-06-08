@@ -81,7 +81,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               slot.block = Blocks.AIR;
             }
 
-            if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.state)) {
+            if (!SchematicRegistry.INSTANCE.isSupported(slot.block, slot.state)) {
               continue;
             }
 
@@ -121,7 +121,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
             continue;
           }
 
-          if (!SchematicRegistry.INSTANCE.isAllowedForBuilding(slot.block, slot.state)) {
+          if (!SchematicRegistry.INSTANCE.isSupported(slot.block, slot.state)) {
             continue;
           }
 
