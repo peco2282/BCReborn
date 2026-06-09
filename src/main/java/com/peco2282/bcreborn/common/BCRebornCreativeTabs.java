@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.common.bean.InitRegister;
-import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
@@ -43,9 +43,9 @@ public class BCRebornCreativeTabs {
   public static final ResourceKey<CreativeModeTab> BUILDERS_ID = create(BCRebornCore.location("builders"));
   public static final RegistryObject<CreativeModeTab> CORE = register("core", () -> CreativeModeTab.builder()
     .title(Component.literal("BCReborn Core"))
-    .icon(() -> new ItemStack(BlocksCore.WOODEN_ENGINE.get()))
+    .icon(() -> new ItemStack(CoreBlocks.WOODEN_ENGINE.get()))
     .displayItems((param, output) -> {
-      BlocksCore.registerCreativeTab(param, output);
+      CoreBlocks.registerCreativeTab(param, output);
       CoreItems.registerCreativeTab(param, output);
     })
     .build()

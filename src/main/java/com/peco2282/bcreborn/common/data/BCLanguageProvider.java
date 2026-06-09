@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.data;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersItems;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
-import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.energy.EnergyFluids;
@@ -104,11 +104,11 @@ public class BCLanguageProvider extends LanguageProvider {
   }
 
   private void addCore() {
-    addBlock(BlocksCore.WOODEN_ENGINE, "Wooden Engine");
-    addBlock(BlocksCore.PATH_MARKER, "Path Marker");
-    addBlock(BlocksCore.SPRING, "Spring");
-    addBlock(BlocksCore.BLUE_MARKER, "Blue Marker");
-    addBlock(BlocksCore.BUILD_TOOL, "Build Tool");
+    addBlock(CoreBlocks.WOODEN_ENGINE, "Wooden Engine");
+    addBlock(CoreBlocks.PATH_MARKER, "Path Marker");
+    addBlock(CoreBlocks.SPRING, "Spring");
+    addBlock(CoreBlocks.BLUE_MARKER, "Blue Marker");
+    addBlock(CoreBlocks.BUILD_TOOL, "Build Tool");
 
     addItem(CoreItems.WRENCH, "Wrench");
     addItem(CoreItems.WOODEN_GEAR, "Wooden Gear");

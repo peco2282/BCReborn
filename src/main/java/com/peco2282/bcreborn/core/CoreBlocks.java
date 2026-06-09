@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornCore.MODID)
-public class BlocksCore {
+public class CoreBlocks {
   private static final BCRegistry REGISTRY = BCRebornCore.getRegistry();
 
   public static final RegistryObject<WoodEngineBlock> WOODEN_ENGINE = REGISTRY.registerBlockItem("wood_engine", EngineBlockItem::new, WoodEngineBlock::new);
