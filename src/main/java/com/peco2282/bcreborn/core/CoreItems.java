@@ -45,7 +45,8 @@ public class CoreItems {
 
 
   public static final RegistryObject<ListItem> LIST = register("list", ListItem::new);
-  public static final RegistryEnumObject<DyeColor, PaintbrushItem> PAINTBRUSH = RegistryEnumObject.create(
+  public static final RegistryObject<PaintbrushItem> PAINTBRUSH = register("paintbrush", () -> new PaintbrushItem(null));
+  public static final RegistryEnumObject<DyeColor, PaintbrushItem> COLORED_PAINTBRUSH = RegistryEnumObject.create(
     DyeColor.class,
     e -> "paintbrush_" + e.getSerializedName().toLowerCase(Locale.ENGLISH),
     PaintbrushItem::new,
@@ -68,7 +69,7 @@ public class CoreItems {
     output.accept(BUILD_TOOL_BOX.get());
     output.accept(LIST.get());
 
-    output.acceptAll(PAINTBRUSH.values().stream().map(RegistryObject::get).map(ItemStack::new).toList());
+    output.acceptAll(COLORED_PAINTBRUSH.values().stream().map(RegistryObject::get).map(ItemStack::new).toList());
     output.accept(MAP_LOCATION.get());
   }
 }
