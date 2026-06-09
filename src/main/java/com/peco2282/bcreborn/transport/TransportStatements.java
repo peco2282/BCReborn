@@ -65,11 +65,12 @@ public class TransportStatements {
   }
 
   private static <S extends IStatement, E extends Enum<E> & StringRepresentable> RegistryEnumObject<E, S> registerEnum(String name, Function<E, S> mapper, Class<E> enumClass) {
-    RegistryEnumObject<E, S> map = RegistryEnumObject.create(enumClass);
-    for (E e : enumClass.getEnumConstants()) {
-      map.put(e, register(name + "_" + e.getSerializedName().toLowerCase(Locale.ENGLISH), () -> mapper.apply(e)));
-    }
-    return map;
+    return RegistryEnumObject.create(
+      enumClass,
+      e -> name + "_" + e.getSerializedName().toLowerCase(Locale.ENGLISH),
+      mapper,
+      TransportStatements::register
+    );
   }
 
   private static <S extends IStatement> RegistrySizedObject<S> registerSized(String name, IntFunction<S> supplier, int size) {
