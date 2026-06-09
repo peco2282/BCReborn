@@ -111,8 +111,7 @@ public class EnergyFluids {
       .levelDecreasePerBlock(2)
       .block(OIL_BLOCK)
       .bucket(OIL_BUCKET);
-  }  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
-    () -> new OilFluid.Source(oilProperties()));
+  }
 
   private static ForgeFlowingFluid.Properties fuelProperties() {
     return new ForgeFlowingFluid.Properties(FUEL_TYPE, FUEL_SOURCE, FUEL_FLOWING)
@@ -120,13 +119,17 @@ public class EnergyFluids {
       .levelDecreasePerBlock(2)
       .block(FUEL_BLOCK)
       .bucket(FUEL_BUCKET);
-  }
+  }  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
+    () -> new OilFluid.Source(oilProperties()));
 
   public static void registerFluidTypes(IEventBus bus) {
     FLUID_TYPES.register(bus);
-  }  public static final RegistryObject<OilFluid.Flowing> OIL_FLOWING = REGISTRY.registerFluid("flowing_oil",
-    () -> new OilFluid.Flowing(oilProperties()));
+  }
 
+
+
+  public static final RegistryObject<OilFluid.Flowing> OIL_FLOWING = REGISTRY.registerFluid("flowing_oil",
+    () -> new OilFluid.Flowing(oilProperties()));
 
 
   public static final RegistryObject<LiquidBlock> OIL_BLOCK = REGISTRY.registerBlock("oil",
@@ -136,7 +139,6 @@ public class EnergyFluids {
       .strength(100.0F)
       .noLootTable()
     ));
-
 
 
   public static final RegistryObject<BucketItem> OIL_BUCKET = REGISTRY.registerItem("oil_bucket",

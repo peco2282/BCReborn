@@ -27,7 +27,9 @@ public class RoboticsMenuTypes {
 
   private static <M extends AbstractContainerMenu> RegistryObject<MenuType<M>> register(String name, MenuType<M> menuType) {
     return REGISTRY.registerMenuType(name, () -> menuType);
-  }  public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register("requester", IForgeMenuType.create(RequesterMenu::new));
+  }
+
+  public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register("requester", IForgeMenuType.create(RequesterMenu::new));
   public static final RegistryObject<MenuType<ZonePlanMenu>> ZONE_PLAN = register("zone_plan", IForgeMenuType.create(ZonePlanMenu::new));
 
 

@@ -37,8 +37,9 @@ public class EnergyBlockEntityTypes {
   @SafeVarargs
   private static <T extends BlockEntity> Supplier<BlockEntityType<T>> of(BlockEntityType.BlockEntitySupplier<T> supplier, Supplier<? extends Block>... validBlocks) {
     return () -> new BlockEntityType<>(supplier, CodingUtils.map2Set(Arrays.asList(validBlocks), Supplier::get), null);
-  }  public static final RegistryObject<BlockEntityType<StoneEngineBlockEntity>> STONE_ENGINE = register("stone_engine", of(StoneEngineBlockEntity::new, EnergyBlocks.STONE_ENGINE));
+  }
 
+  public static final RegistryObject<BlockEntityType<StoneEngineBlockEntity>> STONE_ENGINE = register("stone_engine", of(StoneEngineBlockEntity::new, EnergyBlocks.STONE_ENGINE));
 
 
   public static final RegistryObject<BlockEntityType<CreativeEngineBlockEntity>> CREATIVE_ENGINE = register("creative_engine", of(CreativeEngineBlockEntity::new, EnergyBlocks.CREATIVE_ENGINE));

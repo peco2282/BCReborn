@@ -39,6 +39,7 @@ public class GatePluggable extends PipePluggable {
   public boolean isLit, isPulsing;
   public Gate realGate, instantiatedGate;
   private float pulseStage;
+
   public GatePluggable() {
   }
 

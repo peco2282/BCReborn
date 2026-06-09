@@ -34,7 +34,7 @@ public class SchematicRefinery extends SchematicTile {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    state = state.rotate( Rotation.COUNTERCLOCKWISE_90);
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override

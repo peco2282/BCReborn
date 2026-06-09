@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.builders.event;
 
 import com.peco2282.bcreborn.BCRebornBuilders;
-import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.BuildersConfig;
+import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.screen.ArchitectScreen;
 import com.peco2282.bcreborn.builders.screen.BlueprintLibraryScreen;
 import com.peco2282.bcreborn.builders.screen.BuilderScreen;

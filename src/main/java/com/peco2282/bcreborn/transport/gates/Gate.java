@@ -48,6 +48,8 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   public final GateDefinition.GateMaterial material;
   public final GateDefinition.GateLogic logic;
   public final BiMap<IGateExpansion, GateExpansionController> expansions = HashBiMap.create();
+  private final HashMultiset<IStatement> statementCounts = HashMultiset.create();
+  private final int[] actionGroups = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
   public IStatement[] triggers = new IStatement[MAX_STATEMENTS];
   public IStatementParameter[][] triggerParameters = new IStatementParameter[MAX_STATEMENTS][MAX_PARAMETERS];
   public IStatement[] actions = new IStatement[MAX_STATEMENTS];
@@ -64,8 +66,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
    */
   public boolean isPulsing = false;
   private Direction direction;
-  private final HashMultiset<IStatement> statementCounts = HashMultiset.create();
-  private final int[] actionGroups = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+
   // / CONSTRUCTOR
   public Gate(IPipe pipe, GateDefinition.GateMaterial material, GateDefinition.GateLogic logic, Direction direction) {
     this.pipe = pipe;

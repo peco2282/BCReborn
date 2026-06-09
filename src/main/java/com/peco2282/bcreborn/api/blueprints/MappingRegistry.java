@@ -13,8 +13,6 @@ package com.peco2282.bcreborn.api.blueprints;
 
 
 import com.peco2282.bcreborn.api.core.BCLog;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +23,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "deprecation"})

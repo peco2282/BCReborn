@@ -17,9 +17,9 @@ import com.peco2282.bcreborn.api.items.IList;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.statements.*;
 import com.peco2282.bcreborn.common.inventory.StackHelper;
-import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
+import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
