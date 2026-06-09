@@ -209,7 +209,7 @@ public class MappingRegistry {
   public void write(CompoundTag nbt) {
     ListTag blocksMapping = new ListTag();
 
-    for (Block b : BLOCK.values()) {
+    for (Block b : BLOCK) {
       CompoundTag sub = new CompoundTag();
       if (b != null) {
         ResourceLocation name = BuiltInRegistries.BLOCK.getKey(b);
@@ -222,7 +222,7 @@ public class MappingRegistry {
 
     ListTag itemsMapping = new ListTag();
 
-    for (Item i : ITEM.values()) {
+    for (Item i : ITEM) {
       CompoundTag sub = new CompoundTag();
       if (i != null) {
         ResourceLocation name = BuiltInRegistries.ITEM.getKey(i);
@@ -235,7 +235,7 @@ public class MappingRegistry {
 
     ListTag entitiesMapping = new ListTag();
 
-    for (EntityType<? extends Entity> e : ENTITY.values()) {
+    for (EntityType<? extends Entity> e : ENTITY) {
       CompoundTag sub = new CompoundTag();
       sub.putString("name", EntityType.getKey(e).toString());
       entitiesMapping.add(sub);
@@ -250,7 +250,7 @@ public class MappingRegistry {
     for (int i = 0; i < blocksMapping.size(); ++i) {
       CompoundTag sub = blocksMapping.getCompound(i);
       if (!sub.contains("name")) {
-        BLOCK.register(null);
+        BLOCK.addMissing();
         BCLog.logger.warn("Can't load a block - corrupt blueprint!");
         continue;
       }
@@ -261,7 +261,7 @@ public class MappingRegistry {
       if (b != null) {
         BLOCK.register(b);
       } else {
-        BLOCK.register(null);
+        BLOCK.addMissing();
         BCLog.logger.warn("Can't load block " + name);
       }
     }
@@ -271,7 +271,7 @@ public class MappingRegistry {
     for (int i = 0; i < itemsMapping.size(); ++i) {
       CompoundTag sub = itemsMapping.getCompound(i);
       if (!sub.contains("name")) {
-        ITEM.register(null);
+        ITEM.addMissing();
         BCLog.logger.warn("Can't load an item - corrupt blueprint!");
         continue;
       }
@@ -282,7 +282,7 @@ public class MappingRegistry {
       if (item != null) {
         ITEM.register(item);
       } else {
-        ITEM.register(null);
+        ITEM.addMissing();
         BCLog.logger.warn("Can't load item " + name);
       }
     }
@@ -296,7 +296,7 @@ public class MappingRegistry {
       EntityType.byString(name).ifPresentOrElse(
         this::registerEntity,
         () -> {
-          ENTITY.register(null);
+          ENTITY.addMissing();
           BCLog.logger.warn("Can't load entity " + name);
         }
       );

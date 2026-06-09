@@ -2,20 +2,38 @@ package com.peco2282.bcreborn.api.blueprints;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.core.IdMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public final class MappingTable<T> {
+public final class MappingTable<T> implements IdMap<T> {
 
   private final Object2IntMap<T> toId = new Object2IntOpenHashMap<>();
   private final List<T> toObject = new ArrayList<>();
 
-  public int getId(T value) {
+  @Override
+  public int getId(@NotNull T value) {
     if (!toId.containsKey(value)) {
       register(value);
     }
     return toId.getInt(value);
+  }
+
+  @Override
+  public T byId(int p_122651_) {
+    try {
+      return get(p_122651_);
+    } catch (MappingNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public int size() {
+    return toObject.size();
   }
 
   public T get(int id) throws MappingNotFoundException {
@@ -37,7 +55,7 @@ public final class MappingTable<T> {
   }
 
   public void addMissing() {
-    toObject.add(null);
+    register(null);
   }
 
   public void register(T value) {
@@ -47,5 +65,10 @@ public final class MappingTable<T> {
 
   public List<T> values() {
     return toObject;
+  }
+
+  @Override
+  public @NotNull Iterator<T> iterator() {
+    return toObject.iterator();
   }
 }
