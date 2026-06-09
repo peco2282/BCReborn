@@ -15,9 +15,10 @@ import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.schematics.*;
-import com.peco2282.bcreborn.common.builder.schematics.*;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import com.peco2282.bcreborn.common.builder.schematics.SchematicBlockCreative;
+import com.peco2282.bcreborn.common.builder.schematics.SchematicFree;
+import com.peco2282.bcreborn.common.builder.schematics.SchematicIgnore;
+import com.peco2282.bcreborn.common.builder.schematics.SchematicTileCreative;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -26,90 +27,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public final class SchematicRegistry implements ISchematicRegistry {
 
   public static final SchematicRegistry INSTANCE;
 
-  public final HashMap<BlockState, SchematicFactory<? extends SchematicBlock>> schematicBlocks = new HashMap<>();
-  public final HashMap<EntityType<? extends Entity>, SchematicFactory<? extends SchematicEntity>> schematicEntities = new HashMap<>();
-
   static {
     INSTANCE = new SchematicRegistry();
     BuilderAPI.schematicRegistry = INSTANCE;
   }
+
+  public final HashMap<BlockState, SchematicFactory<? extends SchematicBlock>> schematicBlocks = new HashMap<>();
+  public final HashMap<EntityType<? extends Entity>, SchematicFactory<? extends SchematicEntity>> schematicEntities = new HashMap<>();
+
   private SchematicRegistry() {
-  }
-
-  @Override
-  public void registerSchematicBlock(Block block, BlockState state, SchematicFactory<? extends SchematicBlock> factory) {
-    if (block == null) {
-      BCLog.logger.warn("Builder: Mod tried to register a null block schematic! Ignoring.");
-      return;
-    }
-    if (schematicBlocks.containsKey(state)) {
-      BCLog.logger.warn("Builder: BlockState " + state + " is already associated with a schematic. Skipping.");
-      return;
-    }
-    try {
-      schematicBlocks.put(state, factory);
-    } catch (IllegalArgumentException e) {
-      BCLog.logger.warn("Builder: Could not register schematic for blockstate " + state + ": " + e.getMessage());
-    }
-  }
-
-  @Override
-  public void registerSchematicEntity(
-    EntityType<? extends Entity> type,
-    SchematicFactory<? extends SchematicEntity> factory) {
-    if (schematicEntities.containsKey(type)) {
-      BCLog.logger.warn("Builder: Entity " + EntityType.getKey(type) + " is already associated with a schematic. Skipping.");
-      return;
-    }
-    try {
-      schematicEntities.put(type, factory);
-    } catch (IllegalArgumentException e) {
-      BCLog.logger.warn("Builder: Could not register schematic for entity " + EntityType.getKey(type) + ": " + e.getMessage());
-    }
-  }
-  public SchematicBlock createSchematicBlock(Block block) {
-    return createSchematicBlock(block, block.defaultBlockState());
-  }
-
-  public SchematicBlock createSchematicBlock(BlockState state) {
-    return createSchematicBlock(state.getBlock(), state);
-  }
-
-  public SchematicBlock createSchematicBlock(Block block, BlockState state) {
-    if (block == null) return null;
-
-    SchematicFactory<? extends SchematicBlock> factory = schematicBlocks.get(state);
-    if (factory == null) {
-      // Fall back to meta 0
-      factory = schematicBlocks.get(state);
-    }
-    if (factory == null) return new SchematicRotatableBlock(state);
-
-    SchematicBlock s = factory.create();
-    s.state = state;
-    return s;
-  }
-
-  public SchematicEntity createSchematicEntity(EntityType<? extends Entity> type) {
-    if (!schematicEntities.containsKey(type)) return null;
-
-    SchematicFactory<? extends SchematicEntity> c = schematicEntities.get(type);
-    SchematicEntity s = c.create();
-    s.entity = type;
-    return s;
-  }
-
-  @Override
-  public boolean isSupported(BlockState state) {
-    return schematicBlocks.containsKey(state);
   }
 
   public static void init() {
@@ -207,5 +139,74 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(BuildersBlock.CONSTRUCTION_MARKER.get(), SchematicIgnore::new);
     schemes.registerSchematicBlock(BuildersBlock.FRAME.get(), SchematicFree::new);
 
+  }
+
+  @Override
+  public void registerSchematicBlock(Block block, BlockState state, SchematicFactory<? extends SchematicBlock> factory) {
+    if (block == null) {
+      BCLog.logger.warn("Builder: Mod tried to register a null block schematic! Ignoring.");
+      return;
+    }
+    if (schematicBlocks.containsKey(state)) {
+      BCLog.logger.warn("Builder: BlockState " + state + " is already associated with a schematic. Skipping.");
+      return;
+    }
+    try {
+      schematicBlocks.put(state, factory);
+    } catch (IllegalArgumentException e) {
+      BCLog.logger.warn("Builder: Could not register schematic for blockstate " + state + ": " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void registerSchematicEntity(
+    EntityType<? extends Entity> type,
+    SchematicFactory<? extends SchematicEntity> factory) {
+    if (schematicEntities.containsKey(type)) {
+      BCLog.logger.warn("Builder: Entity " + EntityType.getKey(type) + " is already associated with a schematic. Skipping.");
+      return;
+    }
+    try {
+      schematicEntities.put(type, factory);
+    } catch (IllegalArgumentException e) {
+      BCLog.logger.warn("Builder: Could not register schematic for entity " + EntityType.getKey(type) + ": " + e.getMessage());
+    }
+  }
+
+  public SchematicBlock createSchematicBlock(Block block) {
+    return createSchematicBlock(block, block.defaultBlockState());
+  }
+
+  public SchematicBlock createSchematicBlock(BlockState state) {
+    return createSchematicBlock(state.getBlock(), state);
+  }
+
+  public SchematicBlock createSchematicBlock(Block block, BlockState state) {
+    if (block == null) return null;
+
+    SchematicFactory<? extends SchematicBlock> factory = schematicBlocks.get(state);
+    if (factory == null) {
+      // Fall back to meta 0
+      factory = schematicBlocks.get(state);
+    }
+    if (factory == null) return new SchematicRotatableBlock(state);
+
+    SchematicBlock s = factory.create();
+    s.state = state;
+    return s;
+  }
+
+  public SchematicEntity createSchematicEntity(EntityType<? extends Entity> type) {
+    if (!schematicEntities.containsKey(type)) return null;
+
+    SchematicFactory<? extends SchematicEntity> c = schematicEntities.get(type);
+    SchematicEntity s = c.create();
+    s.entity = type;
+    return s;
+  }
+
+  @Override
+  public boolean isSupported(BlockState state) {
+    return schematicBlocks.containsKey(state);
   }
 }

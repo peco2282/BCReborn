@@ -44,6 +44,7 @@ public class SchematicFluid extends SchematicBlock {
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
     // cancel requirements reading
   }
+
   @Override
   public void rotateLeft(IBuilderContext context) {
 

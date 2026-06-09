@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlueprintLibraryBlock extends BuildCraftBlock {
   public static final DirectionProperty FACING = DirectionProperty.create("facing");
+
   public BlueprintLibraryBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 0).strength(5.0F));
     this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));

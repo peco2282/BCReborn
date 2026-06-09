@@ -37,10 +37,11 @@ public class FactoryMenuTypes {
 
   private static <M extends BuildCraftMenu<M>> Supplier<MenuType<M>> of(IContainerFactory<M> supplier) {
     return () -> IForgeMenuType.create(supplier);
-  }  public static final RegistryObject<MenuType<AutoWorkbenchMenu>> AUTO_WORKBENCH = register(
+  }
+
+  public static final RegistryObject<MenuType<AutoWorkbenchMenu>> AUTO_WORKBENCH = register(
     "auto_workbench", AutoWorkbenchMenu::new
   );
-
 
 
   public static final RegistryObject<MenuType<HopperMenu>> HOPPER = register(

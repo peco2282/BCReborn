@@ -35,8 +35,9 @@ public class FactoryBlockEntityTypes {
   @SafeVarargs
   static <T extends BlockEntity> Supplier<BlockEntityType<T>> of(BlockEntityType.BlockEntitySupplier<T> supplier, RegistryObject<? extends Block>... blocks) {
     return () -> new BlockEntityType<>(supplier, Arrays.stream(blocks).map(RegistryObject::get).collect(Collectors.toUnmodifiableSet()), null);
-  }  public static final RegistryObject<BlockEntityType<AutoWorkbenchBlockEntity>> AUTO_WORKBENCH = register("auto_workbench", of(AutoWorkbenchBlockEntity::new, FactoryBlocks.AUTO_WORKBENCH));
+  }
 
+  public static final RegistryObject<BlockEntityType<AutoWorkbenchBlockEntity>> AUTO_WORKBENCH = register("auto_workbench", of(AutoWorkbenchBlockEntity::new, FactoryBlocks.AUTO_WORKBENCH));
 
 
   public static final RegistryObject<BlockEntityType<FloodGateBlockEntity>> FLOOD_GATE = register("flood_gate", of(FloodGateBlockEntity::new, FactoryBlocks.FLOOD_GATE));
