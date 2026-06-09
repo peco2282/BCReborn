@@ -40,7 +40,7 @@ public class BCItemTagsProvider extends ItemTagsProvider {
 
     tag(CommonItemTags.BUILDERS);
     tag(CommonItemTags.CORE)
-      .addTag(CommonItemTags.GEAR).add(CoreItems.LIST.get(), CoreItems.MAP_LOCATION.get(), CoreItems.PAINTBRUSH.get(), CoreItems.WRENCH.get());
+      .addTag(CommonItemTags.GEAR).add(CoreItems.LIST.get(), CoreItems.MAP_LOCATION.get(), CoreItems.WRENCH.get()).add(CoreItems.PAINTBRUSH.get()).add(CoreItems.COLORED_PAINTBRUSH.values().stream().map(RegistryObject::get).toArray(Item[]::new));
     tag(CommonItemTags.ENERGY)
       .addTag(CommonItemTags.FUEL_BUCKET);
     tag(CommonItemTags.FACTORY);
