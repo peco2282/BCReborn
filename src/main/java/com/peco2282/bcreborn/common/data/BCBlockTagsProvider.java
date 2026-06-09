@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.data;
 
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.common.data.tag.CommonBlockTags;
-import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.energy.EnergyFluids;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
@@ -45,7 +45,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
 
     tag(CommonBlockTags.BUILDERS).add(BuildersBlock.ARCHITECT.get(), BuildersBlock.BUILDER.get(), BuildersBlock.FRAME.get(), BuildersBlock.CONSTRUCTION_MARKER.get(), BuildersBlock.BLUEPRINT_LIBRARY.get(), BuildersBlock.QUARRY.get(), BuildersBlock.FILLER.get());
     tag(CommonBlockTags.CORE)
-      .add(BlocksCore.WOODEN_ENGINE.get(), BlocksCore.SPRING.get(), BlocksCore.BLUE_MARKER.get(), BlocksCore.PATH_MARKER.get(), BlocksCore.BUILD_TOOL.get());
+      .add(CoreBlocks.WOODEN_ENGINE.get(), CoreBlocks.SPRING.get(), CoreBlocks.BLUE_MARKER.get(), CoreBlocks.PATH_MARKER.get(), CoreBlocks.BUILD_TOOL.get());
     tag(CommonBlockTags.ENERGY).add(EnergyBlocks.STONE_ENGINE.get(), EnergyBlocks.IRON_ENGINE.get(), EnergyBlocks.CREATIVE_ENGINE.get()).addTag(CommonBlockTags.FUEL);
     tag(CommonBlockTags.FACTORY)
       .add(FactoryBlocks.AUTO_WORKBENCH.get(), FactoryBlocks.HOPPER.get(), FactoryBlocks.FLOOD_GATE.get(), FactoryBlocks.MINING_WELL.get(), FactoryBlocks.PLAIN_PIPE.get(), FactoryBlocks.PUMP.get(), FactoryBlocks.REFINERY.get(), FactoryBlocks.TANK.get());
@@ -65,7 +65,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
 
   void engineTag() {
     tag(CommonBlockTags.ENGINES)
-      .add(BlocksCore.WOODEN_ENGINE.get())
+      .add(CoreBlocks.WOODEN_ENGINE.get())
       .add(EnergyBlocks.STONE_ENGINE.get())
       .add(EnergyBlocks.IRON_ENGINE.get())
       .add(EnergyBlocks.CREATIVE_ENGINE.get());

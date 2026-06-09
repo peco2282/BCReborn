@@ -11,12 +11,16 @@
  */
 package com.peco2282.bcreborn.core.data;
 
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -100,5 +104,9 @@ public class CoreRecipeProvider extends RecipeProvider {
 
   ItemPredicate get(ItemLike... items) {
     return ItemPredicate.Builder.item().of(items).build();
+  }
+
+  ItemPredicate get(TagKey<Item> item) {
+    return ItemPredicate.Builder.item().of(item).build();
   }
 }

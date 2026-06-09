@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.core.worldgen;
 
-import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.block.SpringBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
@@ -84,7 +84,7 @@ public class SpringPopulate {
       int y = i > 0 ? i : i - 1;
       BlockPos springPos = new BlockPos(x, y + 1, z);
 
-      level.setBlock(springPos, BlocksCore.SPRING.get().defaultBlockState()
+      level.setBlock(springPos, CoreBlocks.SPRING.get().defaultBlockState()
         .setValue(SpringBlock.TYPE, SpringBlock.EnumSpring.WATER), 3);
 
       // Fill non-air blocks above the spring with water up to the surface

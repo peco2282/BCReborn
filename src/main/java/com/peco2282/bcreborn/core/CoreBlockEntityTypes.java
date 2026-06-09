@@ -39,11 +39,11 @@ public class CoreBlockEntityTypes {
     return () -> new BlockEntityType<>(supplier, Arrays.stream(validBlocks).map(Supplier::get).collect(Collectors.toSet()), null);
   }
 
-  public static final RegistryObject<BlockEntityType<WoodEngineBlockEntity>> WOODEN_ENGINE = register("wood_engine", of(WoodEngineBlockEntity::new, BlocksCore.WOODEN_ENGINE));
+  public static final RegistryObject<BlockEntityType<WoodEngineBlockEntity>> WOODEN_ENGINE = register("wood_engine", of(WoodEngineBlockEntity::new, CoreBlocks.WOODEN_ENGINE));
 
 
-  public static final RegistryObject<BlockEntityType<PathMarkerBlockEntity>> PATH_MARKER = register("path_marker", of(PathMarkerBlockEntity::new, BlocksCore.PATH_MARKER));
-  public static final RegistryObject<BlockEntityType<BlueMarkerBlockEntity>> BLUE_MARKER = register("blue_marker", of(BlueMarkerBlockEntity::new, BlocksCore.BLUE_MARKER));
+  public static final RegistryObject<BlockEntityType<PathMarkerBlockEntity>> PATH_MARKER = register("path_marker", of(PathMarkerBlockEntity::new, CoreBlocks.PATH_MARKER));
+  public static final RegistryObject<BlockEntityType<BlueMarkerBlockEntity>> BLUE_MARKER = register("blue_marker", of(BlueMarkerBlockEntity::new, CoreBlocks.BLUE_MARKER));
 
 
 }

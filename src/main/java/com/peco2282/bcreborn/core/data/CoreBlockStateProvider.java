@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.core.data;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.MarkerBlock;
 import com.peco2282.bcreborn.common.data.BCBlockStateHelper;
-import com.peco2282.bcreborn.core.BlocksCore;
+import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -38,7 +38,7 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
 
   @Override
   protected void registerStatesAndModels() {
-    simpleEngine(BlocksCore.WOODEN_ENGINE.get());
+    simpleEngine(CoreBlocks.WOODEN_ENGINE.get());
 //    simpleBlockWithItem(BlocksCore.BLUE_MARKER.get(), models().withExistingItemParent("blue_marker", mcLoc("block/template_torch")).texture("torch", "block/marker_block/default").renderType(mcLoc("cutout")));
     ModelFile model = models()
       .getBuilder("blue_marker")
@@ -90,7 +90,7 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
       .texture("#torch")
       .end()
       .end();
-    getVariantBuilder(BlocksCore.BLUE_MARKER.get())
+    getVariantBuilder(CoreBlocks.BLUE_MARKER.get())
       .forAllStates(state -> {
         Direction dir = state.getValue(MarkerBlock.FACING);
 
@@ -115,7 +115,7 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
           .build();
       });
 
-    itemModels().withExistingParent(getName(BlocksCore.BLUE_MARKER.get()), mcLoc("item/generated"));
+    itemModels().withExistingParent(getName(CoreBlocks.BLUE_MARKER.get()), mcLoc("item/generated"));
 
     // Item models
 
