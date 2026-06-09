@@ -15,12 +15,14 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.EnumMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> extends EnumMap<E, RegistryObject<V>> implements Supplier<RegistryObject<V>> {
   private final Class<E> keyType;
 
-  private RegistryEnumObject(Class<E> keyType) {
+  private RegistryEnumObject(Class<E> keyType, Function<E, String> nameMaker, Function<E, V> valueMaker, BiFunction<String, Supplier<V>, RegistryObject<V>> registerer) {
     super(keyType);
     if (keyType == null) {
       throw new IllegalArgumentException("Key type cannot be null");
@@ -32,10 +34,19 @@ public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> exte
       throw new IllegalArgumentException("Key type must have at least one enum constant");
     }
     this.keyType = keyType;
+
+    for (E key : keyType.getEnumConstants()) {
+      put(key, registerer.apply(nameMaker.apply(key), () -> valueMaker.apply(key)));
+    }
   }
 
-  public static <E extends Enum<E> & StringRepresentable, V> RegistryEnumObject<E, V> create(Class<E> keyType) {
-    return new RegistryEnumObject<>(keyType);
+  public static <E extends Enum<E> & StringRepresentable, V> RegistryEnumObject<E, V> create(
+    Class<E> keyType,
+    Function<E, String> nameMaker,
+    Function<E, V> valueMaker,
+    BiFunction<String, Supplier<V>, RegistryObject<V>> registerer
+  ) {
+    return new RegistryEnumObject<>(keyType, nameMaker, valueMaker, registerer);
   }
 
   @Override
