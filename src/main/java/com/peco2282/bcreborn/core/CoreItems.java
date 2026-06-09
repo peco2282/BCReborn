@@ -23,8 +23,10 @@ import com.peco2282.bcreborn.core.item.WrenchItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornCore.MODID)
