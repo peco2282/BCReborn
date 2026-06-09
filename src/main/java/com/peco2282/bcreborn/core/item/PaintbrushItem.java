@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -34,43 +35,26 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PaintbrushItem extends BuildCraftItem {
-  public static final String TAG_COLOR = "color";
+  private final DyeColor color;
 
   public PaintbrushItem() {
     super(new Properties().stacksTo(1).durability(63));
+    this.color = DyeColor.WHITE;
   }
 
-  public static int getColor(ItemStack stack) {
-    CompoundTag tag = stack.getTag();
-    return tag != null && tag.contains(TAG_COLOR) ? tag.getByte(TAG_COLOR) : -1;
-  }
-
-  public static void setColor(ItemStack stack, int color) {
-    if (color < 0) {
-      stack.removeTagKey(TAG_COLOR);
-    } else {
-      stack.getOrCreateTag().putByte(TAG_COLOR, (byte) color);
-    }
+  public PaintbrushItem(DyeColor color) {
+    super(new Properties().stacksTo(1).durability(63));
+    this.color = color;
   }
 
   @Override
   public Component getName(ItemStack stack) {
-    Component base = super.getName(stack);
-    int color = getColor(stack);
-
-    if (color >= 0) {
-      return Component.literal(base.getString() + " (" + DyeColor.byId(color) + ")");
-    }
-
-    return base;
+    return ((MutableComponent)super.getName(stack)).append(" (" + color.getSerializedName() + ")");
   }
 
   @Override
   public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-    int color = getColor(stack);
-    if (color >= 0) {
-      tooltip.add(Component.translatable("color.minecraft." + DyeColor.byId(15 - color).getName()));
-    }
+    tooltip.add(Component.translatable("color.minecraft." + color.getSerializedName()));
   }
 
   @Override
@@ -80,34 +64,24 @@ public class PaintbrushItem extends BuildCraftItem {
     BlockPos pos = context.getClickedPos();
     Direction side = context.getClickedFace();
 
-    int color = getColor(stack);
+//    int color = getColor(stack);
     BlockState state = level.getBlockState(pos);
     Block block = state.getBlock();
 
-    if (color >= 0) {
-      DyeColor dyeColor = DyeColor.byId(15 - color);
-      if (block instanceof IColoredBlock colored) {
+    DyeColor dyeColor = color;
+    if (block instanceof IColoredBlock colored) {
 
-        if (colored.recolorBlock(state, level, pos, side, dyeColor)) {
-          if (!level.isClientSide) {
-            stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
-          }
-
-          if (context.getPlayer() != null) {
-            context.getPlayer().swing(context.getHand());
-          }
-
-          return InteractionResult.sidedSuccess(level.isClientSide);
-        } else {
-          return InteractionResult.sidedSuccess(level.isClientSide);
+      if (colored.recolorBlock(state, level, pos, side, dyeColor)) {
+        if (!level.isClientSide) {
+          stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
         }
-      }
-    } else if (block instanceof IColorRemovable removable) {
-      if (removable.removeColorFromBlock(level, pos.getX(), pos.getY(), pos.getZ(), side)) {
+
         if (context.getPlayer() != null) {
           context.getPlayer().swing(context.getHand());
         }
 
+        return InteractionResult.sidedSuccess(level.isClientSide);
+      } else {
         return InteractionResult.sidedSuccess(level.isClientSide);
       }
     }
