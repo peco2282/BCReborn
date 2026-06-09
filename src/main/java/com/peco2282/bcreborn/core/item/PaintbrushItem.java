@@ -37,14 +37,13 @@ import java.util.List;
 public class PaintbrushItem extends BuildCraftItem {
   private final DyeColor color;
 
-  public PaintbrushItem() {
-    super(new Properties().stacksTo(1).durability(63));
-    this.color = DyeColor.WHITE;
-  }
-
   public PaintbrushItem(DyeColor color) {
     super(new Properties().stacksTo(1).durability(63));
     this.color = color;
+  }
+
+  public DyeColor getColor() {
+    return color;
   }
 
   @Override
