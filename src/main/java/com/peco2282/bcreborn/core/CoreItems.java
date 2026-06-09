@@ -15,11 +15,13 @@ import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
+import com.peco2282.bcreborn.common.registry.RegistryEnumObject;
 import com.peco2282.bcreborn.core.item.ListItem;
 import com.peco2282.bcreborn.core.item.MapLocationItem;
 import com.peco2282.bcreborn.core.item.PaintbrushItem;
 import com.peco2282.bcreborn.core.item.WrenchItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -41,7 +43,12 @@ public class CoreItems {
 
 
   public static final RegistryObject<ListItem> LIST = register("list", ListItem::new);
-  public static final RegistryObject<PaintbrushItem> PAINTBRUSH = register("paintbrush", PaintbrushItem::new);
+  public static final RegistryEnumObject<DyeColor, PaintbrushItem> PAINTBRUSH = RegistryEnumObject.create(
+    DyeColor.class,
+    e -> "paintbrush_" + e.getSerializedName().toLowerCase(Locale.ENGLISH),
+    PaintbrushItem::new,
+    CoreItems::register
+  );
   public static final RegistryObject<MapLocationItem> MAP_LOCATION = register("map_location", MapLocationItem::new);
 
 
@@ -58,7 +65,8 @@ public class CoreItems {
     output.accept(DIAMOND_GEAR.get());
     output.accept(BUILD_TOOL_BOX.get());
     output.accept(LIST.get());
-    output.accept(PAINTBRUSH.get());
+
+    output.acceptAll(PAINTBRUSH.values().stream().map(RegistryObject::get).map(ItemStack::new).toList());
     output.accept(MAP_LOCATION.get());
   }
 }
