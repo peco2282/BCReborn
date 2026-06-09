@@ -20,7 +20,6 @@ import com.peco2282.bcreborn.core.CoreMenuTypes;
 import com.peco2282.bcreborn.core.block.render.MarkerBlockEntityRenderer;
 import com.peco2282.bcreborn.core.item.ListItem;
 import com.peco2282.bcreborn.core.item.MapLocationItem;
-import com.peco2282.bcreborn.core.item.PaintbrushItem;
 import com.peco2282.bcreborn.core.list.ListNewScreen;
 import com.peco2282.bcreborn.core.list.ListOldScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -60,9 +59,6 @@ public class BCRebornCoreEvent {
 
       ItemProperties.register(CoreItems.LIST.get(), BCRebornCore.location(ListItem.TAG_WRITTEN),
         (stack, level, entity, seed) -> stack.getOrCreateTag().getBoolean(ListItem.TAG_WRITTEN) ? 1.0F : 0.0F);
-
-      ItemProperties.register(CoreItems.PAINTBRUSH.get(), BCRebornCore.location(PaintbrushItem.TAG_COLOR),
-        (stack, level, entity, seed) -> PaintbrushItem.getColor(stack) + 1);
 
       ItemProperties.register(CoreItems.MAP_LOCATION.get(), BCRebornCore.location(MapLocationItem.TAG_KIND),
         (stack, level, entity, seed) -> {
