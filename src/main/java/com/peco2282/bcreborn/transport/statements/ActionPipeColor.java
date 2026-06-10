@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport.statements;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.api.core.EnumColor;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -20,16 +19,17 @@ import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.core.statements.BCStatement;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 
 import java.util.Locale;
 import java.util.function.Function;
 
 public class ActionPipeColor extends BCStatement implements IActionInternal {
 
-  public final EnumColor color;
+  public final DyeColor color;
 
-  public ActionPipeColor(EnumColor color) {
-    super("buildcraft:pipe.color." + color.getTag());
+  public ActionPipeColor(DyeColor color) {
+    super("buildcraft:pipe.color." + color.getSerializedName());
 
     this.color = color;
   }
