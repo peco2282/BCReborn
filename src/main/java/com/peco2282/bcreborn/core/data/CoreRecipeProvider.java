@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.data;
 
+import com.peco2282.bcreborn.common.data.BCRecipeHelper;
 import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -25,7 +26,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class CoreRecipeProvider extends RecipeProvider {
+public class CoreRecipeProvider extends BCRecipeHelper {
   public CoreRecipeProvider(PackOutput p_248933_) {
     super(p_248933_);
   }
@@ -150,27 +151,5 @@ public class CoreRecipeProvider extends RecipeProvider {
     });
   }
 
-  ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike item) {
-    return shaped(category, item, 1);
-  }
 
-  ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike item, int count) {
-    return ShapedRecipeBuilder.shaped(category, item, count);
-  }
-
-  ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike item) {
-    return shapeless(category, item, 1);
-  }
-
-  ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike item, int count) {
-    return ShapelessRecipeBuilder.shapeless(category, item, count);
-  }
-
-  ItemPredicate get(ItemLike... items) {
-    return ItemPredicate.Builder.item().of(items).build();
-  }
-
-  ItemPredicate get(TagKey<Item> item) {
-    return ItemPredicate.Builder.item().of(item).build();
-  }
 }
