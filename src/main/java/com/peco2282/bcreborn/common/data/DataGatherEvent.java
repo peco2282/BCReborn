@@ -15,7 +15,6 @@ import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.builders.data.BuildersBlockStateProvider;
 import com.peco2282.bcreborn.core.data.CoreBlockStateProvider;
-import com.peco2282.bcreborn.core.data.CoreRecipeProvider;
 import com.peco2282.bcreborn.energy.data.EnergyBlockStateProvider;
 import com.peco2282.bcreborn.factory.data.FactoryBlockStateProvider;
 import com.peco2282.bcreborn.robotics.data.RoboticsBlockStateProvider;
@@ -45,9 +44,9 @@ public class DataGatherEvent {
     generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, "en_us"));
     generator.addProvider(true, new BCBlockStateProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, helper));
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
+    generator.addProvider(true, new BCRecipeProvider(generator.getPackOutput()));
 
     generator.addProvider(true, new CoreBlockStateProvider(generator.getPackOutput(), helper));
-    generator.addProvider(true, new CoreRecipeProvider(generator.getPackOutput()));
 
     generator.addProvider(true, new BuildersBlockStateProvider(generator.getPackOutput(), helper));
 
