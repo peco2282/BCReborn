@@ -14,26 +14,16 @@ package com.peco2282.bcreborn.core.data;
 import com.peco2282.bcreborn.common.data.BCRecipeHelper;
 import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.CoreItems;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class CoreRecipeProvider extends BCRecipeHelper {
-  public CoreRecipeProvider(PackOutput p_248933_) {
-    super(p_248933_);
-  }
-
-  @Override
-  protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
-
+public class CoreRecipe extends BCRecipeHelper {
+  public static void build(Consumer<FinishedRecipe> p_251297_) {
     shaped(RecipeCategory.MISC, CoreItems.WOODEN_GEAR)
       .pattern(" S ")
       .pattern("S S")
