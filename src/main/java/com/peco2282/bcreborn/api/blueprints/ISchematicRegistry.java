@@ -16,23 +16,26 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 
 public interface ISchematicRegistry {
-  default void registerSchematicBlock(Block block, SchematicFactory<? extends SchematicBlock> factory) {
+  default void registerSchematicBlock(@NotNull Block block, @NotNull SchematicFactory<? extends SchematicBlock> factory) {
     registerSchematicBlock(block, block.defaultBlockState(), factory);
   }
 
-  void registerSchematicBlock(Block block, BlockState state, SchematicFactory<? extends SchematicBlock> factory);
+  void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, @NotNull SchematicFactory<? extends SchematicBlock> factory);
 
   void registerSchematicEntity(
-    EntityType<? extends Entity> entityClass,
-    SchematicFactory<? extends SchematicEntity> factory);
+    @NotNull EntityType<? extends Entity> entityClass,
+    @NotNull SchematicFactory<? extends SchematicEntity> factory);
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-  boolean isSupported(BlockState state);
+  boolean isSupported(@NotNull BlockState state);
 
   @FunctionalInterface
   interface SchematicFactory<T extends Schematic> {
-    T create();
+    @NotNull T create();
   }
 }
