@@ -34,7 +34,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
   @Override
   protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
 
-    shaped(RecipeCategory.MISC, CoreItems.WOODEN_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.WOODEN_GEAR)
       .pattern(" S ")
       .pattern("S S")
       .pattern(" S ")
@@ -42,7 +42,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.STONE_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.STONE_GEAR)
       .pattern(" C ")
       .pattern("CGC")
       .pattern(" C ")
@@ -51,7 +51,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(CoreItems.WOODEN_GEAR.get()), inventoryTrigger(get(Items.COBBLESTONE, CoreItems.WOODEN_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.IRON_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.IRON_GEAR)
       .pattern(" I ")
       .pattern("IGI")
       .pattern(" I ")
@@ -60,7 +60,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(CoreItems.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, CoreItems.STONE_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.GOLD_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.GOLD_GEAR)
       .pattern(" G ")
       .pattern("GIG")
       .pattern(" G ")
@@ -69,7 +69,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(CoreItems.IRON_GEAR.get()), inventoryTrigger(get(Items.GOLD_INGOT, CoreItems.IRON_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.DIAMOND_GEAR.get())
+    shaped(RecipeCategory.MISC, CoreItems.DIAMOND_GEAR)
       .pattern(" D ")
       .pattern("DGD")
       .pattern(" D ")
@@ -78,7 +78,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(CoreItems.GOLD_GEAR.get()), inventoryTrigger(get(Items.DIAMOND, CoreItems.GOLD_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.WRENCH.get())
+    shaped(RecipeCategory.MISC, CoreItems.WRENCH)
       .pattern("I I")
       .pattern(" S ")
       .pattern(" I ")
@@ -87,7 +87,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy(getHasName(CoreItems.STONE_GEAR.get()), inventoryTrigger(get(Items.IRON_INGOT, CoreItems.STONE_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.MAP_LOCATION.get())
+    shaped(RecipeCategory.MISC, CoreItems.MAP_LOCATION)
       .pattern("PPP")
       .pattern("PYP")
       .pattern("PPP")
@@ -97,7 +97,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy("has_yellow_dye", inventoryTrigger(get(Items.YELLOW_DYE)))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreBlocks.WOODEN_ENGINE.get())
+    shaped(RecipeCategory.MISC, CoreBlocks.WOODEN_ENGINE)
       .pattern("PPP")
       .pattern(" G ")
       .pattern("WPW")
@@ -109,7 +109,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy("has_wooden_gear", inventoryTrigger(get(CoreItems.WOODEN_GEAR.get())))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreBlocks.BLUE_MARKER.get())
+    shaped(RecipeCategory.MISC, CoreBlocks.BLUE_MARKER)
       .pattern("B")
       .pattern("R")
       .define('B', Items.BLUE_DYE)
@@ -118,7 +118,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy("has_redstone_torch", inventoryTrigger(get(Items.REDSTONE_TORCH)))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreBlocks.PATH_MARKER.get())
+    shaped(RecipeCategory.MISC, CoreBlocks.PATH_MARKER)
       .pattern("G")
       .pattern("R")
       .define('G', Items.GREEN_DYE)
@@ -127,7 +127,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
       .unlockedBy("has_redstone_torch", inventoryTrigger(get(Items.REDSTONE_TORCH)))
       .save(p_251297_);
 
-    shaped(RecipeCategory.MISC, CoreItems.PAINTBRUSH.get())
+    shaped(RecipeCategory.MISC, CoreItems.PAINTBRUSH)
       .pattern(" SW")
       .pattern(" GS")
       .pattern("T  ")
@@ -142,7 +142,7 @@ public class CoreRecipeProvider extends BCRecipeHelper {
 
     CoreItems.COLORED_PAINTBRUSH.forEach((key, value) -> {
       //noinspection DataFlowIssue
-      shapeless(RecipeCategory.MISC, value.get())
+      shapeless(RecipeCategory.MISC, value)
         .requires(value.get().getColoredItem())
         .requires(CoreItems.PAINTBRUSH.get())
         .unlockedBy("has_" + key.getSerializedName().toLowerCase(Locale.ROOT) + "_dye", inventoryTrigger(get(value.get().getColoredItem())))
