@@ -1,9 +1,11 @@
 package com.peco2282.bcreborn.common.data;
 
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.PackOutput;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
@@ -12,32 +14,49 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
-public abstract class BCRecipeHelper extends RecipeProvider {
-  public BCRecipeHelper(PackOutput p_248933_) {
-    super(p_248933_);
+public abstract class BCRecipeHelper {
+
+  protected static InventoryChangeTrigger.TriggerInstance inventoryTrigger(ItemPredicate... predicate) {
+    return new InventoryChangeTrigger.TriggerInstance(ContextAwarePredicate.ANY, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, predicate);
   }
 
-  protected ShapedRecipeBuilder shaped(RecipeCategory category, Supplier<? extends ItemLike> item) {
+  protected static String getHasName(ItemLike item) {
+    return "has_" + getItemName(item);
+  }
+
+  protected static String getItemName(ItemLike item) {
+    return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
+  }
+
+  protected static InventoryChangeTrigger.TriggerInstance has(ItemLike p_125978_) {
+    return inventoryTrigger(ItemPredicate.Builder.item().of(p_125978_).build());
+  }
+
+  protected static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
+    return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
+  }
+
+  protected static ShapedRecipeBuilder shaped(RecipeCategory category, Supplier<? extends ItemLike> item) {
     return shaped(category, item, 1);
   }
 
-  protected ShapedRecipeBuilder shaped(RecipeCategory category, Supplier<? extends ItemLike> item, int count) {
+  protected static ShapedRecipeBuilder shaped(RecipeCategory category, Supplier<? extends ItemLike> item, int count) {
     return ShapedRecipeBuilder.shaped(category, item.get(), count);
   }
 
-  protected ShapelessRecipeBuilder shapeless(RecipeCategory category, Supplier<? extends ItemLike> item) {
+  protected static ShapelessRecipeBuilder shapeless(RecipeCategory category, Supplier<? extends ItemLike> item) {
     return shapeless(category, item, 1);
   }
 
-  protected ShapelessRecipeBuilder shapeless(RecipeCategory category, Supplier<? extends ItemLike> item, int count) {
+  protected static ShapelessRecipeBuilder shapeless(RecipeCategory category, Supplier<? extends ItemLike> item, int count) {
     return ShapelessRecipeBuilder.shapeless(category, item.get(), count);
   }
 
-  protected ItemPredicate get(ItemLike... items) {
+  protected static ItemPredicate get(ItemLike... items) {
     return ItemPredicate.Builder.item().of(items).build();
   }
 
-  protected ItemPredicate get(TagKey<Item> item) {
+  protected static ItemPredicate get(TagKey<Item> item) {
     return ItemPredicate.Builder.item().of(item).build();
   }
 }
