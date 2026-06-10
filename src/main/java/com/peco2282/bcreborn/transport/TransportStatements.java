@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.api.core.EnumColor;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.api.transport.PowerMode;
@@ -25,6 +24,7 @@ import com.peco2282.bcreborn.common.registry.RegistrySizedObject;
 import com.peco2282.bcreborn.transport.statements.*;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
@@ -39,8 +39,8 @@ public class TransportStatements {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
   public static final RegistryObject<ActionEnergyPulsar> ACTION_ENERGY_PULSAR = register("action_energy_pulsar", ActionEnergyPulsar::new);
-  public static final RegistryEnumObject<EnumColor, ActionExtractionPreset> ACTION_EXTRACTION_PRESET = registerEnum("action_extraction_preset", ActionExtractionPreset::new, EnumColor.class);
-  public static final RegistryEnumObject<EnumColor, ActionPipeColor> ACTION_PARAMETER_SIGNAL = registerEnum("action_parameter_signal", ActionPipeColor::new, EnumColor.class);
+  public static final RegistryEnumObject<DyeColor, ActionExtractionPreset> ACTION_EXTRACTION_PRESET = registerEnum("action_extraction_preset", ActionExtractionPreset::new, DyeColor.class);
+  public static final RegistryEnumObject<DyeColor, ActionPipeColor> ACTION_PARAMETER_SIGNAL = registerEnum("action_parameter_signal", ActionPipeColor::new, DyeColor.class);
   public static final RegistryEnumObject<Direction, ActionPipeDirection> ACTION_PIPE_DIRECTION = registerEnum("action_pipe_direction", ActionPipeDirection::new, Direction.class);
   public static final RegistryEnumObject<PowerMode, ActionPowerLimiter> ACTION_POWER_LIMITER = registerEnum("action_power_limiter", ActionPowerLimiter::new, PowerMode.class);
   public static final RegistrySizedObject<ActionRedstoneFaderOutput> ACTION_REDSTONE_FADER_OUTPUT = registerSized("action_redstone_fader_output", ActionRedstoneFaderOutput::new, 15);
