@@ -104,7 +104,7 @@ public class BuildersRecipe extends BCRecipeHelper {
       .define('M', CoreBlocks.BLUE_MARKER.get())
       .define('Y', Items.YELLOW_DYE)
       .define('C', Items.CRAFTING_TABLE)
-      .define('G', CoreItems.GOLD_GEAR.get())
+      .define('D', CoreItems.DIAMOND_GEAR.get())
       .define('T', BuildersItems.BLUEPRINT_TEMPLATE.get())
       .unlockedBy("has_black_dye", inventoryTrigger(get(Items.BLACK_DYE)))
       .unlockedBy("has_blue_marker", inventoryTrigger(get(CoreBlocks.BLUE_MARKER.get())))
