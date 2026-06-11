@@ -13,15 +13,28 @@ package com.peco2282.bcreborn.robotics.item;
 
 import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
+import com.peco2282.bcreborn.api.robots.DockingStation;
+import com.peco2282.bcreborn.api.robots.IRobotRegistry;
+import com.peco2282.bcreborn.api.robots.RobotManager;
+import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
+import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -95,5 +108,59 @@ public class RobotItem extends BuildCraftItem {
       // TODO: Add energy information when MAX_ENERGY is available
       tooltip.add(Component.literal("Energy: " + energy));
     }
+  }
+
+  @Override
+  public InteractionResult useOn(UseOnContext context) {
+    Level level = context.getLevel();
+    if (level.isClientSide) {
+      return InteractionResult.PASS;
+    }
+
+    BlockEntity tile = level.getBlockEntity(context.getClickedPos());
+    if (!(tile instanceof PipeBlockEntity pipe)) {
+      return InteractionResult.PASS;
+    }
+
+    Direction side = context.getClickedFace();
+    PipePluggable pluggable = pipe.sideProperties.pluggables[side.ordinal()];
+    if (!(pluggable instanceof RobotStationPluggable stationPluggable)) {
+      return InteractionResult.PASS;
+    }
+
+    DockingStation station = stationPluggable.getStation();
+    if (station == null || station.isTaken()) {
+      return InteractionResult.PASS;
+    }
+
+    ItemStack stack = context.getItemInHand();
+    CompoundTag cpt = getNBT(stack);
+    RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
+
+    if (boardNBT instanceof RedstoneBoardRobotEmptyNBT) {
+      return InteractionResult.PASS;
+    }
+
+    IRobotRegistry registry = RobotManager.registryProvider.getRegistry(level);
+    if (registry == null) {
+      return InteractionResult.PASS;
+    }
+
+    RobotEntity robot = new RobotEntity(level, boardNBT);
+    robot.setUniqueRobotId(registry.getNextRobotId());
+    robot.setPos(station.x() + 0.5, station.y() + 0.5, station.z() + 0.5);
+    robot.setMainStation(station);
+    robot.getBattery().receiveEnergy(getEnergy(cpt), false);
+
+    if (level.addFreshEntity(robot)) {
+      robot.dock(station);
+      Player player = context.getPlayer();
+      if (player == null || !player.getAbilities().instabuild) {
+        stack.shrink(1);
+      }
+      return InteractionResult.SUCCESS;
+    }
+
+    return InteractionResult.PASS;
   }
 }
