@@ -2,6 +2,7 @@ package com.peco2282.bcreborn.common.data;
 
 import com.peco2282.bcreborn.builders.data.BuildersRecipe;
 import com.peco2282.bcreborn.core.data.CoreRecipe;
+import com.peco2282.bcreborn.energy.data.EnergyRecipe;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -17,5 +18,6 @@ public class BCRecipeProvider extends RecipeProvider {
   protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
     CoreRecipe.build(p_251297_);
     BuildersRecipe.build(p_251297_);
+    EnergyRecipe.build(p_251297_);
   }
 }
