@@ -25,7 +25,6 @@ public final class BuildCraftAPI {
 
   public static final Set<Block> softBlocks = new HashSet<>();
   public static final HashMap<String, IWorldProperty> worldProperties = new HashMap<>();
-  public static ICoreProxy proxy;
 
   /**
    * Deactivate constructor

@@ -12,14 +12,12 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
-import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class AIRobotUseToolOnBlock extends AIRobot {
@@ -50,8 +48,6 @@ public class AIRobotUseToolOnBlock extends AIRobot {
     if (useCycles > 40) {
       ItemStack stack = robot.getMainHandItem();
 
-      Player player = BuildCraftAPI.proxy.getBuildCraftPlayer((ServerLevel) robot.level())
-        .get();
       BlockPos pos = useToBlock.toBlockPos();
       if (BlockUtils.harvestBlock((ServerLevel) robot.level(), pos, stack)) {
         if (stack.isDamageableItem()) {
