@@ -33,14 +33,7 @@ public abstract class WorldProperty implements IWorldProperty {
 	private DimensionProperty getDimension(Level world) {
 		ResourceKey<Level> key = world.dimension();
 
-		DimensionProperty result = properties.get(key);
-
-		if (result == null) {
-			result = new DimensionProperty(world, this);
-			properties.put(key, result);
-		}
-
-		return result;
+    return properties.putIfAbsent(key, new DimensionProperty(world, this));
 	}
 
 	@Override
