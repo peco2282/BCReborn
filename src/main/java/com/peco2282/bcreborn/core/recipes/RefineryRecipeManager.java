@@ -11,73 +11,64 @@
  */
 package com.peco2282.bcreborn.core.recipes;
 
-import com.peco2282.bcreborn.api.recipes.IFlexibleRecipe;
+import com.google.gson.JsonElement;
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.recipes.IRefineryRecipeManager;
-import net.minecraftforge.fluids.FluidStack;
+import com.peco2282.bcreborn.api.recipes.RefineryRecipe;
+import com.peco2282.bcreborn.api.recipes.RefineryRecipeProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
 public final class RefineryRecipeManager implements IRefineryRecipeManager {
+  public static final RefineryRecipeManager INSTANCE = new RefineryRecipeManager();
+  private final Map<ResourceLocation, RefineryRecipe> recipes = new ConcurrentHashMap<>();
 
-	public static final RefineryRecipeManager INSTANCE = new RefineryRecipeManager();
-	private HashMap<String, IFlexibleRecipe<FluidStack>> recipes = new HashMap<String, IFlexibleRecipe<FluidStack>>();
-	private ArrayList<FluidStack> validFluids1 = new ArrayList<FluidStack>();
-	private ArrayList<FluidStack> validFluids2 = new ArrayList<FluidStack>();
+  private RefineryRecipeManager() {
+  }
 
-	private RefineryRecipeManager() {
-	}
+  @SubscribeEvent
+  public static void onAddReloadListener(AddReloadListenerEvent event) {
+    event.addListener(new RefineryRecipeLoader());
+  }
 
-	@Override
-	public void addRecipe(String id, FluidStack ingredient, FluidStack result, int energy, int delay) {
-		FlexibleRecipe<FluidStack> recipe = new FlexibleRecipe<FluidStack>(id, result, energy, delay, ingredient);
-		recipes.put(id, recipe);
-		validFluids1.add(ingredient);
-		validFluids2.add(ingredient);
-	}
+  @Override
+  public @Nullable RefineryRecipe getRecipe(ResourceLocation id) {
+    return recipes.get(id);
+  }
 
-	@Override
-	public void addRecipe(String id, FluidStack ingredient1, FluidStack ingredient2, FluidStack result, int energy,
-						  int delay) {
+  @Override
+  public Collection<RefineryRecipe> getRecipes() {
+    return Collections.unmodifiableCollection(recipes.values());
+  }
 
-		if (ingredient1 == null || ingredient2 == null || result == null) {
-			// BCLog.logger.warn("Rejected refinery recipe " + id + " due to a null FluidStack!");
-		}
+  @Override
+  public boolean contains(ResourceLocation id) {
+    return recipes.containsKey(id);
+  }
 
-		FlexibleRecipe<FluidStack> recipe = new FlexibleRecipe<FluidStack>(id, result, energy, delay, ingredient1,
-				ingredient2);
-		recipes.put(id, recipe);
-		validFluids1.add(ingredient1);
-		validFluids2.add(ingredient2);
-	}
+  public static class RefineryRecipeLoader extends LoaderHelper<RefineryRecipe> {
+    public RefineryRecipeLoader() {
+      super(RefineryRecipeProvider.DIRECTORY);
+    }
 
-	@Override
-	public Collection<IFlexibleRecipe<FluidStack>> getRecipes() {
-		return Collections.unmodifiableCollection(recipes.values());
-	}
-
-	@Override
-	public IFlexibleRecipe<FluidStack> getRecipe(String id) {
-		return recipes.get(id);
-	}
-
-	@Override
-	public void removeRecipe(IFlexibleRecipe<FluidStack> recipe) {
-		removeRecipe(recipe.getId());
-	}
-
-	@Override
-	public void removeRecipe(String id) {
-		recipes.remove(id);
-	}
-
-	public ArrayList<FluidStack> getValidFluidStacks1() {
-		return validFluids1;
-	}
-
-	public ArrayList<FluidStack> getValidFluidStacks2() {
-		return validFluids2;
-	}
+    @Override
+    protected void apply(
+      Map<ResourceLocation, JsonElement> jsons,
+      ResourceManager resourceManager,
+      ProfilerFiller profiler
+    ) {
+      doReload(jsons, profiler, RefineryRecipe.CODEC, INSTANCE.recipes);
+    }
+  }
 }

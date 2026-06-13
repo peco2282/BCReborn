@@ -11,51 +11,61 @@
  */
 package com.peco2282.bcreborn.core.recipes;
 
-import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
+import com.google.gson.JsonElement;
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipeManager;
+import com.peco2282.bcreborn.api.recipes.ProgrammingRecipe;
+import com.peco2282.bcreborn.api.recipes.ProgrammingRecipeProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
 public class ProgrammingRecipeManager implements IProgrammingRecipeManager {
-	public static final ProgrammingRecipeManager INSTANCE = new ProgrammingRecipeManager();
-	private final HashMap<String, IProgrammingRecipe> recipes = new HashMap<String, IProgrammingRecipe>();
+  public static final ProgrammingRecipeManager INSTANCE = new ProgrammingRecipeManager();
+  private final Map<ResourceLocation, ProgrammingRecipe> recipes = new ConcurrentHashMap<>();
 
-	@Override
-	public void addRecipe(IProgrammingRecipe recipe) {
-		if (recipe == null || recipe.getId() == null) {
-			return;
-		}
+  @SubscribeEvent
+  public static void onAddReloadListener(AddReloadListenerEvent event) {
+    event.addListener(new ProgrammingRecipeLoader());
+  }
 
-		if (!recipes.containsKey(recipe.getId())) {
-			recipes.put(recipe.getId(), recipe);
-		} else {
-			// BCLog.logger.warn("Programming Table Recipe '" + recipe.getId() + "' seems to be duplicated! This is a bug!");
-		}
-	}
+  @Override
+  public @Nullable ProgrammingRecipe getRecipe(ResourceLocation id) {
+    return recipes.get(id);
+  }
 
-	@Override
-	public void removeRecipe(String id) {
-		recipes.remove(id);
-	}
+  @Override
+  public Collection<ProgrammingRecipe> getRecipes() {
+    return Collections.unmodifiableCollection(recipes.values());
+  }
 
-	@Override
-	public void removeRecipe(IProgrammingRecipe recipe) {
-		if (recipe == null || recipe.getId() == null) {
-			return;
-		}
+  @Override
+  public boolean contains(ResourceLocation id) {
+    return recipes.containsKey(id);
+  }
 
-		recipes.remove(recipe.getId());
-	}
+  private static class ProgrammingRecipeLoader extends LoaderHelper<ProgrammingRecipe> {
+    public ProgrammingRecipeLoader() {
+      super(ProgrammingRecipeProvider.DIRECTORY);
+    }
 
-	@Override
-	public Collection<IProgrammingRecipe> getRecipes() {
-		return Collections.unmodifiableCollection(recipes.values());
-	}
-
-	@Override
-	public IProgrammingRecipe getRecipe(String id) {
-		return recipes.get(id);
-	}
+    @Override
+    protected void apply(
+      Map<ResourceLocation, JsonElement> jsons,
+      ResourceManager resourceManager,
+      ProfilerFiller profiler
+    ) {
+      doReload(jsons, profiler, ProgrammingRecipe.CODEC, INSTANCE.recipes);
+    }
+  }
 }
