@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -25,4 +27,12 @@ public record RefineryRecipe(
   int energy,
   int delay
 ) {
+  public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    ResourceLocation.CODEC.fieldOf("id").forGetter(RefineryRecipe::id),
+    Codecs.INGREDIENT_CODEC.fieldOf("primary").forGetter(RefineryRecipe::primary),
+    Codecs.INGREDIENT_CODEC.optionalFieldOf("secondary").forGetter(RefineryRecipe::secondary),
+    FluidStack.CODEC.fieldOf("result").forGetter(RefineryRecipe::result),
+    Codec.INT.fieldOf("energy").forGetter(RefineryRecipe::energy),
+    Codec.INT.fieldOf("delay").forGetter(RefineryRecipe::delay)
+  ).apply(instance, RefineryRecipe::new));
 }

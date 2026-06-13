@@ -13,7 +13,8 @@ package com.peco2282.bcreborn.common.recipes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipe;
@@ -54,19 +55,7 @@ public final class RecipeLoaders {
       var loadedRecipes = new HashMap<ResourceLocation, AssemblyRecipe>();
 
       for (var entry : jsons.entrySet()) {
-        ResourceLocation id = entry.getKey();
-
-        try {
-          JsonObject json = entry.getValue().getAsJsonObject();
-
-          AssemblyRecipe recipe =
-            RecipeSerializers.AssemblyRecipeSerializer.fromJson(id, json);
-
-          loadedRecipes.put(id, recipe);
-
-        } catch (Exception e) {
-          LOGGER.error("Failed to load assembly recipe {}", id, e);
-        }
+        loadedRecipes.put(entry.getKey(), parse(AssemblyRecipe.CODEC, entry.getValue()));
       }
 
       this.recipes = Map.copyOf(loadedRecipes);
@@ -97,19 +86,7 @@ public final class RecipeLoaders {
       var loadedRecipes = new HashMap<ResourceLocation, IntegrationRecipe>();
 
       for (var entry : jsons.entrySet()) {
-        ResourceLocation id = entry.getKey();
-
-        try {
-          JsonObject json = entry.getValue().getAsJsonObject();
-
-          IntegrationRecipe recipe =
-            RecipeSerializers.IntegrationRecipeSerializer.fromJson(id, json);
-
-          loadedRecipes.put(id, recipe);
-
-        } catch (Exception e) {
-          LOGGER.error("Failed to load integration recipe {}", id, e);
-        }
+        loadedRecipes.put(entry.getKey(), parse(IntegrationRecipe.CODEC, entry.getValue()));
       }
 
       this.recipes = Map.copyOf(loadedRecipes);
@@ -139,19 +116,7 @@ public final class RecipeLoaders {
       var loadedRecipes = new HashMap<ResourceLocation, ProgrammingRecipe>();
 
       for (var entry : jsons.entrySet()) {
-        ResourceLocation id = entry.getKey();
-
-        try {
-          JsonObject json = entry.getValue().getAsJsonObject();
-
-          ProgrammingRecipe recipe =
-            RecipeSerializers.ProgrammingRecipeSerializer.fromJson(id, json);
-
-          loadedRecipes.put(id, recipe);
-
-        } catch (Exception e) {
-          LOGGER.error("Failed to load programming recipe {}", id, e);
-        }
+        loadedRecipes.put(entry.getKey(), parse(ProgrammingRecipe.CODEC, entry.getValue()));
       }
 
       this.recipes = Map.copyOf(loadedRecipes);
@@ -181,19 +146,7 @@ public final class RecipeLoaders {
       var loadedRecipes = new HashMap<ResourceLocation, RefineryRecipe>();
 
       for (var entry : jsons.entrySet()) {
-        ResourceLocation id = entry.getKey();
-
-        try {
-          JsonObject json = entry.getValue().getAsJsonObject();
-
-          RefineryRecipe recipe =
-            RecipeSerializers.RefineryRecipeSerializer.fromJson(id, json);
-
-          loadedRecipes.put(id, recipe);
-
-        } catch (Exception e) {
-          LOGGER.error("Failed to load refinery recipe {}", id, e);
-        }
+        loadedRecipes.put(entry.getKey(), parse(RefineryRecipe.CODEC, entry.getValue()));
       }
 
       this.recipes = Map.copyOf(loadedRecipes);
@@ -208,12 +161,16 @@ public final class RecipeLoaders {
     }
   }
 
+  private static <T> T parse(Codec<T> codec, JsonElement json) {
+    return codec.parse(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error);
+  }
+
   @SubscribeEvent
   public static void onAddReloadListener(AddReloadListenerEvent event) {
     LOGGER.info("Registering recipe loaders");
     event.addListener(new AssemblyRecipeLoader());
     event.addListener(new IntegrationRecipeLoader());
-    event.addListener(new ProgrammingRecipeSerializer());
+    event.addListener(new ProgrammingRecipeLoader());
     event.addListener(new RefineryRecipeLoader());
     LOGGER.info("Registered recipe loaders");
   }
