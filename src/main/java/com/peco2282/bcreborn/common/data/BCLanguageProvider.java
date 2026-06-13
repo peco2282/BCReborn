@@ -28,6 +28,7 @@ import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.transport.TransportBlocks;
+import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -195,6 +196,16 @@ public class BCLanguageProvider extends LanguageProvider {
 
       addBlock(block, snake2Title(key) + " Pipe");
     });
+
+    var res = TransportItems.FACADE.getId();
+    var name = res.getNamespace() + "." + res.getPath();
+    addItem(TransportItems.FACADE, "Facade");
+    add("item." + name + ".facade_basic_format", "%s Facade");
+    add("item." + name + ".state_hollow_format", "Hollow %s");
+    add("item." + name + ".name", "Phased Facade");
+    add("item." + name + ".state_transparent", "Transparent");
+    add("item." + name + ".state", "%s: %s");
+    add("item." + name + ".state_default", "Default: %s");
 
     addMenu(TransportMenuTypes.DIAMOND_PIPE_MENU, "Diamond Pipe");
     addMenu(TransportMenuTypes.EMERALD_FLUID_PIPE_MENU, "Emerald Fluid Pipe");
