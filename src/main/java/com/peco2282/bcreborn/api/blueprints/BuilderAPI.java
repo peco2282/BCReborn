@@ -11,12 +11,20 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
+import org.jetbrains.annotations.ApiStatus;
+
 public final class BuilderAPI {
   public static final int BREAK_ENERGY = 160;
   public static final int BUILD_ENERGY = 240;
 
-  public static ISchematicRegistry schematicRegistry;
-  public static ISchematicHelper schematicHelper;
+  public static ISchematicRegistry schematic() { return schematicRegistry; }
+
+  private static ISchematicRegistry schematicRegistry;
+
+  @ApiStatus.Internal
+  public static void schematic(ISchematicRegistry registry) {
+    schematicRegistry = registry;
+  }
 
   private BuilderAPI() {
   }
