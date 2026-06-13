@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.core.recipes;
 
 import com.google.gson.JsonElement;
-import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipe;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipeProvider;
@@ -24,7 +23,6 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.Collections;

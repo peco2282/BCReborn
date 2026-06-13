@@ -23,7 +23,6 @@ import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
-import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

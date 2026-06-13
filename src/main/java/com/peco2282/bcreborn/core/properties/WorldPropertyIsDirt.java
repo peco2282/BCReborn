@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.core.properties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsDirt extends WorldProperty {

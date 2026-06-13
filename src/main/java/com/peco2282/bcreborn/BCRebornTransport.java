@@ -29,7 +29,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
-import static com.peco2282.bcreborn.api.transport.PipeManager.*;
+import static com.peco2282.bcreborn.api.transport.PipeManager.registerPipePluggable;
 
 @Mod(BCRebornTransport.MODID)
 public class BCRebornTransport implements BCReborn {
