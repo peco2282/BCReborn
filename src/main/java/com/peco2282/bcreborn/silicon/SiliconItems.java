@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.silicon;
 import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
+import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.silicon.item.PackageItem;
 import com.peco2282.bcreborn.silicon.item.RedstoneChipsetItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -35,6 +36,8 @@ public class SiliconItems {
   public static final RegistryObject<RedstoneChipsetItem> QUARTZ_CHIPSET = register("quartz_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.QUARTZ));
   public static final RegistryObject<RedstoneChipsetItem> COMP_CHIPSET = register("comp_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.COMP));
   public static final RegistryObject<RedstoneChipsetItem> EMERALD_CHIPSET = register("emerald_chipset", () -> new RedstoneChipsetItem(RedstoneChipsetItem.Chipset.EMERALD));
+
+  public static final RegistryObject<BuildCraftItem> REDSTONE_CRYSTAL = register("redstone_crystal", () -> new BuildCraftItem());
 
   public static final RegistryObject<PackageItem> PACKAGE_ITEM = register("package", PackageItem::new);
 
