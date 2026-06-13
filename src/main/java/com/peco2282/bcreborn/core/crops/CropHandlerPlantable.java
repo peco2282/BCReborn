@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CropHandlerPlantable implements ICropHandler {
+  public static final CropHandlerPlantable INSTANCE = new CropHandlerPlantable();
+  private CropHandlerPlantable() {}
 
 	private static final Set<Block> FORBIDDEN_BLOCKS = new HashSet<Block>();
 
