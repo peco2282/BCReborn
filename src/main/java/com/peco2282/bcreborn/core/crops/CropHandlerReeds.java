@@ -26,6 +26,8 @@ import net.minecraftforge.common.IPlantable;
 import java.util.List;
 
 public class CropHandlerReeds implements ICropHandler {
+  public static final CropHandlerReeds INSTANCE = new CropHandlerReeds();
+  private CropHandlerReeds() {}
 
 	@Override
 	public boolean isSeed(ItemStack stack) {
@@ -42,7 +44,7 @@ public class CropHandlerReeds implements ICropHandler {
 
 	@Override
 	public boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos) {
-		return CropManager.getDefaultHandler().plantCrop(world, player, seed, pos);
+		return CropManager.plantCrop(world, player, seed, pos);
 	}
 
 	@Override

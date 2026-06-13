@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
@@ -19,6 +20,8 @@ import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
 import com.peco2282.bcreborn.common.packet.PacketController;
 import com.peco2282.bcreborn.core.CoreItems;
+import com.peco2282.bcreborn.core.crops.CropHandlerPlantable;
+import com.peco2282.bcreborn.core.crops.CropHandlerReeds;
 import com.peco2282.bcreborn.core.recipes.AssemblyRecipeManager;
 import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
 import com.peco2282.bcreborn.core.recipes.ProgrammingRecipeManager;
@@ -105,6 +108,9 @@ public class BCRebornCore implements BCReborn {
     BuildcraftRecipeRegistry.integration(IntegrationRecipeManager.INSTANCE);
     BuildcraftRecipeRegistry.refinery(RefineryRecipeManager.INSTANCE);
     BuildcraftRecipeRegistry.programming(ProgrammingRecipeManager.INSTANCE);
+
+    CropManager.register(CropHandlerReeds.INSTANCE);
+    CropManager.register(CropHandlerPlantable.INSTANCE);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call
