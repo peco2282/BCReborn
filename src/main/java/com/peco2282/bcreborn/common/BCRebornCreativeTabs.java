@@ -23,6 +23,7 @@ import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import com.peco2282.bcreborn.transport.TransportBlocks;
+import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.registries.Registries;
@@ -67,7 +68,10 @@ public class BCRebornCreativeTabs {
   public static final RegistryObject<CreativeModeTab> TRANSPORT = register("transport", () -> CreativeModeTab.builder()
       .title(Component.literal("BCReborn Transport"))
       .icon(() -> new ItemStack(TransportBlocks.get(PipeType.ITEM, PipeMaterial.WOOD).get()))
-      .displayItems(TransportBlocks::registerCreativeTab)
+      .displayItems((param, output) -> {
+        TransportBlocks.registerCreativeTab(param, output);
+        TransportItems.registerCreativeTab(param, output);
+      })
 //      .withTabsAfter(CORE_ID)
       .build()
   );
