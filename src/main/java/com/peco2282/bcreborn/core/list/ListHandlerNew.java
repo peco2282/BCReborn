@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.core.list;
 
+import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.lists.ListMatchHandler;
 import com.peco2282.bcreborn.api.lists.ListRegistry;
-import com.peco2282.bcreborn.api.StackHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
