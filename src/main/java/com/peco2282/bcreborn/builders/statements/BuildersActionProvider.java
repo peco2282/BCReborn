@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.statements;
 
-import com.peco2282.bcreborn.api.filler.FillerManager;
+import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class BuildersActionProvider implements IActionProvider {
   private final HashMap<ResourceLocation, ActionFiller> actionMap = new HashMap<>();
@@ -39,7 +40,7 @@ public class BuildersActionProvider implements IActionProvider {
   public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
     LinkedList<IActionExternal> actions = new LinkedList<>();
     if (tile instanceof FillerBlockEntity) {
-      for (IFillerPattern p : FillerManager.registry.getPatterns()) {
+      for (IFillerPattern p : RegistryUtil.getFillerPatterns().stream().map(Map.Entry::getValue).toList()) {
         if (p instanceof FillerPattern) {
           if (!actionMap.containsKey(p.getUniqueTag())) {
             actionMap.put(p.getUniqueTag(), new ActionFiller((FillerPattern) p));
