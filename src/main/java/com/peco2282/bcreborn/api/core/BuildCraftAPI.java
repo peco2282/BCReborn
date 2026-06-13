@@ -16,26 +16,48 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Main entry point for the BuildCraft API.
+ * Provides access to global registries and utility methods.
+ */
 public final class BuildCraftAPI {
 
+  /**
+   * Set of blocks that are considered "soft" (easily breakable by machines).
+   */
   public static final Set<Block> softBlocks = new HashSet<>();
+
+  /**
+   * Map of world properties, used to query various states of the world at specific positions.
+   */
   public static final HashMap<String, IWorldProperty> worldProperties = new HashMap<>();
 
   /**
-   * Deactivate constructor
+   * Private constructor to prevent instantiation.
    */
   private BuildCraftAPI() {
   }
 
+  /**
+   * Gets a world property by name.
+   *
+   * @param name The name of the property.
+   * @return The {@link IWorldProperty}, or null if not found.
+   */
   public static IWorldProperty getWorldProperty(String name) {
     return worldProperties.get(name);
   }
 
+  /**
+   * Registers a world property.
+   *
+   * @param name     The name of the property.
+   * @param property The {@link IWorldProperty} implementation.
+   */
   public static void registerWorldProperty(String name, IWorldProperty property) {
     if (worldProperties.containsKey(name)) {
       BCLog.logger.warn("The WorldProperty key '" + name + "' is being overidden with " + property.getClass().getSimpleName() + "!");
@@ -43,11 +65,27 @@ public final class BuildCraftAPI {
     worldProperties.put(name, property);
   }
 
+  /**
+   * Checks if a block at the given position is "soft".
+   *
+   * @param world The world.
+   * @param pos   The position.
+   * @return True if it is a soft block.
+   */
   public static boolean isSoftBlock(Level world, BlockPos pos) {
     IWorldProperty soft = worldProperties.get("soft");
     return soft != null && soft.get(world, pos);
   }
 
+  /**
+   * Checks if a block at the given coordinates is "soft".
+   *
+   * @param world The world.
+   * @param x     The x-coordinate.
+   * @param y     The y-coordinate.
+   * @param z     The z-coordinate.
+   * @return True if it is a soft block.
+   */
   public static boolean isSoftBlock(Level world, int x, int y, int z) {
     return isSoftBlock(world, new BlockPos(x, y, z));
   }

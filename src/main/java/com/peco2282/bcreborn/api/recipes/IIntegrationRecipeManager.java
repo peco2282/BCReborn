@@ -16,10 +16,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Interface for managing integration recipes.
+ * Provides methods to retrieve, query, and manage integration recipes by their resource location.
+ */
 public interface IIntegrationRecipeManager {
+  /**
+   * Retrieves an integration recipe by its resource location.
+   *
+   * @param id The resource location of the recipe.
+   * @return The integration recipe, or null if not found.
+   */
   @Nullable IntegrationRecipe getRecipe(ResourceLocation id);
 
+  /**
+   * Gets all registered integration recipes.
+   *
+   * @return A collection of all integration recipes.
+   */
   Collection<IntegrationRecipe> getRecipes();
 
+  /**
+   * Checks if a recipe with the specified resource location exists.
+   *
+   * @param id The resource location to check.
+   * @return True if the recipe exists, false otherwise.
+   */
   boolean contains(ResourceLocation id);
 }

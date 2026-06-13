@@ -12,5 +12,8 @@
 package com.peco2282.bcreborn.api;
 
 
+/**
+ * Interface representing a connection point for pipes.
+ */
 public interface IPipeConnection {
 }

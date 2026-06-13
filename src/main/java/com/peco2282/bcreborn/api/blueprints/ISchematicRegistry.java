@@ -20,22 +20,60 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
+/**
+ * Registry for associating blocks and entities with their corresponding schematic factories.
+ */
 public interface ISchematicRegistry {
+  /**
+   * Registers a schematic factory for a specific block.
+   *
+   * @param block   The block.
+   * @param factory The schematic factory.
+   */
   default void registerSchematicBlock(@NotNull Block block, @NotNull SchematicFactory<? extends SchematicBlock> factory) {
     registerSchematicBlock(block, block.defaultBlockState(), factory);
   }
 
+  /**
+   * Registers a schematic factory for a specific block state or block.
+   *
+   * @param block   The block.
+   * @param state   The block state.
+   * @param factory The schematic factory.
+   */
   void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, @NotNull SchematicFactory<? extends SchematicBlock> factory);
 
+  /**
+   * Registers a schematic factory for a specific entity type.
+   *
+   * @param entityClass The entity type.
+   * @param factory     The schematic factory.
+   */
   void registerSchematicEntity(
     @NotNull EntityType<? extends Entity> entityClass,
     @NotNull SchematicFactory<? extends SchematicEntity> factory);
 
+  /**
+   * Checks if a schematic is registered for the given block state.
+   *
+   * @param state The block state.
+   * @return True if supported.
+   */
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   boolean isSupported(@NotNull BlockState state);
 
+  /**
+   * Factory interface for creating schematic instances.
+   *
+   * @param <T> The type of schematic.
+   */
   @FunctionalInterface
   interface SchematicFactory<T extends Schematic> {
+    /**
+     * Creates a new schematic instance.
+     *
+     * @return The schematic.
+     */
     @NotNull T create();
   }
 }

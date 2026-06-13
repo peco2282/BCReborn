@@ -20,6 +20,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A table that maps objects to integer IDs and vice versa.
+ * Implements {@link IdMap}.
+ *
+ * @param <T> The type of objects in the table.
+ */
 public final class MappingTable<T> implements IdMap<T> {
 
   private final Object2IntMap<T> toId = new Object2IntOpenHashMap<>();
@@ -47,6 +53,13 @@ public final class MappingTable<T> implements IdMap<T> {
     return toObject.size();
   }
 
+  /**
+   * Gets the object associated with the specified ID.
+   *
+   * @param id The ID.
+   * @return The object.
+   * @throws MappingNotFoundException if no mapping exists for the ID.
+   */
   public T get(int id) throws MappingNotFoundException {
     if (id < 0 || id >= toObject.size()) {
       throw new MappingNotFoundException(
@@ -65,15 +78,28 @@ public final class MappingTable<T> implements IdMap<T> {
     return value;
   }
 
+  /**
+   * Adds a missing entry (null) to the mapping table.
+   */
   public void addMissing() {
     register(null);
   }
 
+  /**
+   * Registers an object in the table and assigns it a new ID.
+   *
+   * @param value The object to register.
+   */
   public void register(T value) {
     toObject.add(value);
     toId.put(value, toObject.size() - 1);
   }
 
+  /**
+   * Gets all objects in the mapping table.
+   *
+   * @return A list of objects.
+   */
   public List<T> values() {
     return toObject;
   }

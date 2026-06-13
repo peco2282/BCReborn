@@ -261,6 +261,11 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 // Configure unit tests to use JUnit Platform (Jupiter)
 tasks.named('test', Test).configure {
     useJUnitPlatform()

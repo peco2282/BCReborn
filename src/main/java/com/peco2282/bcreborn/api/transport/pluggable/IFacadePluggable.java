@@ -13,12 +13,36 @@ package com.peco2282.bcreborn.api.transport.pluggable;
 
 import net.minecraft.world.level.block.Block;
 
+/**
+ * Interface for pluggables that act as facades.
+ */
 public interface IFacadePluggable {
+
+  /**
+   * Gets the block that this facade is mimicking.
+   *
+   * @return The mimicking {@link Block}.
+   */
   Block getCurrentBlock();
 
+  /**
+   * Gets the metadata/state identifier of the mimicking block.
+   *
+   * @return The metadata value.
+   */
   int getCurrentMetadata();
 
+  /**
+   * Checks if the facade is transparent.
+   *
+   * @return True if transparent.
+   */
   boolean isTransparent();
 
+  /**
+   * Checks if the facade is hollow.
+   *
+   * @return True if hollow.
+   */
   boolean isHollow();
 }

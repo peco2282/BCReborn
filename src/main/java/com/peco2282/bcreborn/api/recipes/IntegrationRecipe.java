@@ -19,6 +19,21 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 
+/**
+ * Represents an integration recipe used in BuildCraft Reborn.
+ * Integration recipes combine an input ingredient with optional expansion ingredients
+ * to produce a result item, consuming energy in the process.
+ * <p>
+ * This record encapsulates all data required for processing integration operations,
+ * including energy requirements and expansion limits.
+ *
+ * @param id                The unique identifier for this recipe.
+ * @param input             The primary input ingredient required for the recipe.
+ * @param expansions        List of optional expansion ingredients that can be added.
+ * @param result            The output item stack produced by this recipe.
+ * @param energy            The amount of energy required to complete this recipe.
+ * @param maxExpansionCount The maximum number of expansion ingredients that can be used.
+ */
 public record IntegrationRecipe(
   ResourceLocation id,
   Ingredient input,
@@ -27,6 +42,10 @@ public record IntegrationRecipe(
   int energy,
   int maxExpansionCount
 ) implements BCRecipe {
+  /**
+   * Codec for serialization and deserialization of IntegrationRecipe instances.
+   * Uses Mojang's serialization system to encode/decode recipe data.
+   */
   public static final Codec<IntegrationRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(IntegrationRecipe::id),
     Codecs.INGREDIENT_CODEC.fieldOf("input").forGetter(IntegrationRecipe::input),

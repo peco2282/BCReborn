@@ -17,6 +17,11 @@ import java.util.List;
  * To be implemented by TileEntities able to provide a path on the world, typically BuildCraft path markers.
  */
 public interface IPathProvider {
+  /**
+   * Gets the list of block positions that define the path.
+   *
+   * @return A list of {@link BlockIndex}.
+   */
   List<BlockIndex> getPath();
 
   /**

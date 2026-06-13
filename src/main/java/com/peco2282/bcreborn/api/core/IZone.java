@@ -15,18 +15,53 @@ import net.minecraft.core.BlockPos;
 
 import java.util.Random;
 
+/**
+ * Interface representing a 3D zone in the world.
+ */
 public interface IZone {
 
+  /**
+   * Calculates the distance to a given block index.
+   *
+   * @param index The block index.
+   * @return The distance.
+   */
   double distanceTo(BlockIndex index);
 
+  /**
+   * Calculates the squared distance to a given block index.
+   *
+   * @param index The block index.
+   * @return The squared distance.
+   */
   double distanceToSquared(BlockIndex index);
 
+  /**
+   * Checks if the zone contains the specified coordinates.
+   *
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @param z The z-coordinate.
+   * @return True if the zone contains the point.
+   */
   boolean contains(double x, double y, double z);
 
+  /**
+   * Checks if the zone contains the specified block position.
+   *
+   * @param pos The block position.
+   * @return True if the zone contains the point.
+   */
   default boolean contains(BlockPos pos) {
     return contains(pos.getX(), pos.getY(), pos.getZ());
   }
 
+  /**
+   * Gets a random block index within the zone.
+   *
+   * @param rand The random instance to use.
+   * @return A random {@link BlockIndex}.
+   */
   BlockIndex getRandomBlockIndex(Random rand);
 
 }

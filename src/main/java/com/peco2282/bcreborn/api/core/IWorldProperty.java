@@ -14,8 +14,21 @@ package com.peco2282.bcreborn.api.core;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+/**
+ * Interface representing a property of a block in the world.
+ */
 public interface IWorldProperty {
+  /**
+   * Checks if the property is true at the given position.
+   *
+   * @param world The world.
+   * @param pos   The position.
+   * @return True if the property is satisfied.
+   */
   boolean get(Level world, BlockPos pos);
 
+  /**
+   * Clears any cached data related to this property.
+   */
   void clear();
 }

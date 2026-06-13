@@ -16,10 +16,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Manager interface for assembly recipes.
+ * Provides methods to retrieve and query assembly recipes by their resource location.
+ */
 public interface IAssemblyRecipeManager {
+  /**
+   * Gets an assembly recipe by its resource location ID.
+   *
+   * @param id The resource location identifier of the recipe.
+   * @return The assembly recipe, or null if not found.
+   */
   @Nullable AssemblyRecipe getRecipe(ResourceLocation id);
 
+  /**
+   * Gets all registered assembly recipes.
+   *
+   * @return A collection of all assembly recipes.
+   */
   Collection<AssemblyRecipe> getRecipes();
 
+  /**
+   * Checks if a recipe with the given ID exists.
+   *
+   * @param id The resource location identifier of the recipe.
+   * @return True if the recipe exists, false otherwise.
+   */
   boolean contains(ResourceLocation id);
 }

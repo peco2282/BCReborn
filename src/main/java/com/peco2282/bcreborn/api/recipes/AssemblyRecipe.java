@@ -19,6 +19,20 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 
+/**
+ * Represents a recipe for assembly table operations in BuildCraft.
+ * <p>
+ * Assembly recipes define how items are crafted in assembly tables,
+ * specifying the required ingredients, energy cost, crafting time,
+ * and the resulting item stack.
+ * </p>
+ *
+ * @param id           The unique identifier for this recipe
+ * @param ingredients  The list of ingredients required for this recipe
+ * @param result       The resulting item stack produced by this recipe
+ * @param energy       The amount of energy (in FE) required to complete this recipe
+ * @param craftingTime The time (in ticks) required to complete this recipe
+ */
 public record AssemblyRecipe(
   ResourceLocation id,
   List<Ingredient> ingredients,
@@ -26,6 +40,10 @@ public record AssemblyRecipe(
   int energy,
   int craftingTime
 ) implements BCRecipe {
+  /**
+   * Codec for serializing and deserializing AssemblyRecipe instances.
+   * Used for reading recipes from JSON files and network synchronization.
+   */
   public static final Codec<AssemblyRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(AssemblyRecipe::id),
     Codecs.INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter(AssemblyRecipe::ingredients),

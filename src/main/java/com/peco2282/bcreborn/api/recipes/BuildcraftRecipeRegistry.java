@@ -13,16 +13,66 @@ package com.peco2282.bcreborn.api.recipes;
 
 import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * Central registry for Buildcraft recipe managers.
+ * <p>
+ * Provides access to recipe managers for assembly tables, integration tables,
+ * refineries, and programming tables.
+ */
 public final class BuildcraftRecipeRegistry {
 
+  /**
+   * The assembly table recipe manager.
+   */
   public static IAssemblyRecipeManager assemblyTable;
+
+  /**
+   * The integration table recipe manager.
+   */
   public static IIntegrationRecipeManager integrationTable;
+
+  /**
+   * The refinery recipe manager.
+   */
   public static IRefineryRecipeManager refinery;
+
+  /**
+   * The programming table recipe manager.
+   */
   public static IProgrammingRecipeManager programmingTable;
 
-  public static IAssemblyRecipeManager assembly() { return assemblyTable; }
-  public static IIntegrationRecipeManager integration() { return integrationTable; }
-  public static IRefineryRecipeManager refinery() { return refinery; }
+  /**
+   * Gets the assembly table recipe manager.
+   *
+   * @return The assembly table recipe manager.
+   */
+  public static IAssemblyRecipeManager assembly() {
+    return assemblyTable;
+  }
+
+  /**
+   * Gets the integration table recipe manager.
+   *
+   * @return The integration table recipe manager.
+   */
+  public static IIntegrationRecipeManager integration() {
+    return integrationTable;
+  }
+
+  /**
+   * Gets the refinery recipe manager.
+   *
+   * @return The refinery recipe manager.
+   */
+  public static IRefineryRecipeManager refinery() {
+    return refinery;
+  }
+
+  /**
+   * Gets the programming table recipe manager.
+   *
+   * @return The programming table recipe manager.
+   */
   public static IProgrammingRecipeManager programming() { return programmingTable; }
 
   @ApiStatus.Internal

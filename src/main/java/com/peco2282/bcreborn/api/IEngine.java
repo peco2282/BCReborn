@@ -12,6 +12,9 @@
 package com.peco2282.bcreborn.api;
 
 
+/**
+ * Interface representing an engine that can produce power.
+ */
 public interface IEngine {
 
 }

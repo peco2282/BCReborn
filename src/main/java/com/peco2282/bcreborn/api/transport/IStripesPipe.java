@@ -13,5 +13,9 @@ package com.peco2282.bcreborn.api.transport;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
+/**
+ * Interface representing a Stripes Pipe.
+ * Combines {@link IPipe}, {@link IStripesActivator}, and {@link IEnergyStorage}.
+ */
 public interface IStripesPipe extends IPipe, IStripesActivator, IEnergyStorage {
 }

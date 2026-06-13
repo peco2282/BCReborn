@@ -13,10 +13,34 @@ package com.peco2282.bcreborn.api.transport;
 
 import net.minecraft.core.Direction;
 
+/**
+ * Interface that allows blocks to override their connection behavior with pipes.
+ */
 public interface IPipeConnection {
+  /**
+   * Determines if a pipe should connect to this block.
+   *
+   * @param type The type of the pipe.
+   * @param with The direction of the connection.
+   * @return A {@link ConnectOverride} value.
+   */
   ConnectOverride overridePipeConnection(IPipeTile.PipeType type, Direction with);
 
+  /**
+   * Represents connection override options.
+   */
   enum ConnectOverride {
-    CONNECT, DISCONNECT, DEFAULT
+    /**
+     * Force connection.
+     */
+    CONNECT,
+    /**
+     * Force disconnection.
+     */
+    DISCONNECT,
+    /**
+     * Use default connection logic.
+     */
+    DEFAULT
   }
 }

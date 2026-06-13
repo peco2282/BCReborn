@@ -15,8 +15,18 @@ package com.peco2282.bcreborn.api.blueprints;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 
+/**
+ * Interface for the Builder BlockEntity.
+ * Extends {@link Container} and {@link Nameable}.
+ */
 public interface ITileBuilder extends Container, Nameable {
 
+  /**
+   * Checks if the specified slot index is designated for building materials.
+   *
+   * @param i The slot index.
+   * @return True if it is a building material slot.
+   */
   boolean isBuildingMaterialSlot(int i);
 
 }

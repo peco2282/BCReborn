@@ -13,11 +13,20 @@ package com.peco2282.bcreborn.api.robots;
 
 import net.minecraft.nbt.CompoundTag;
 
+/**
+ * Base class for resource identifiers used by robots.
+ */
 public abstract class ResourceId {
 
   protected ResourceId() {
   }
 
+  /**
+   * Loads a ResourceId instance from NBT.
+   *
+   * @param nbt The NBT tag.
+   * @return The loaded ResourceId, or {@code null} if loading failed.
+   */
   public static ResourceId load(CompoundTag nbt) {
     try {
       Class<?> cls;
@@ -38,10 +47,20 @@ public abstract class ResourceId {
     return null;
   }
 
+  /**
+   * Writes the resource ID to NBT.
+   *
+   * @param nbt The NBT tag.
+   */
   public void writeToNBT(CompoundTag nbt) {
     nbt.putString("resourceName", RobotManager.getResourceIdName(getClass()));
   }
 
+  /**
+   * Reads the resource ID from NBT.
+   *
+   * @param nbt The NBT tag.
+   */
   protected void readFromNBT(CompoundTag nbt) {
   }
 }

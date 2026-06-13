@@ -15,19 +15,25 @@ package com.peco2282.bcreborn.api;
 import com.peco2282.bcreborn.api.items.IList;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Utility class for {@link ItemStack} operations, including merging and comparison.
+ */
 public class StackHelper {
 
+  /**
+   * Protected constructor to prevent instantiation from other packages.
+   */
   protected StackHelper() {
   }
 
   /* STACK MERGING */
 
   /**
-   * Checks if two ItemStacks are identical enough to be merged
+   * Checks if two ItemStacks are identical enough to be merged.
    *
-   * @param stack1 - The first stack
-   * @param stack2 - The second stack
-   * @return true if stacks can be merged, false otherwise
+   * @param stack1 The first stack.
+   * @param stack2 The second stack.
+   * @return True if stacks can be merged.
    */
   public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
     if (stack1 == null || stack2 == null) {
@@ -40,6 +46,13 @@ public class StackHelper {
 
   }
 
+  /**
+   * Checks if two ItemStacks (or {@link IList} items) can be merged.
+   *
+   * @param stack1 The first stack.
+   * @param stack2 The second stack.
+   * @return True if they can be merged.
+   */
   public static boolean canStacksOrListsMerge(ItemStack stack1, ItemStack stack2) {
     if (stack1 == null || stack2 == null) {
       return false;
@@ -59,14 +72,12 @@ public class StackHelper {
   }
 
   /**
-   * Merges mergeSource into mergeTarget
+   * Merges the source stack into the target stack.
    *
-   * @param mergeSource - The stack to merge into mergeTarget, this stack is
-   *                    not modified
-   * @param mergeTarget - The target merge, this stack is modified if doMerge
-   *                    is set
-   * @param doMerge     - To actually do the merge
-   * @return The number of items that was successfully merged.
+   * @param mergeSource The stack to merge from. This stack is not modified.
+   * @param mergeTarget The stack to merge into. This stack is modified if {@code doMerge} is true.
+   * @param doMerge     Whether to perform the actual merge.
+   * @return The number of items that were successfully merged.
    */
   public static int mergeStacks(ItemStack mergeSource, ItemStack mergeTarget, boolean doMerge) {
     if (!canStacksMerge(mergeSource, mergeTarget)) {
@@ -85,23 +96,33 @@ public class StackHelper {
   /* ITEM COMPARISONS */
 
   /**
-   * Determines whether the given ItemStack should be considered equivalent
-   * for crafting purposes.
+   * Determines whether the given ItemStack should be considered equivalent for crafting purposes.
    *
    * @param base          The stack to compare to.
    * @param comparison    The stack to compare.
-   * @param oreDictionary true to take the Forge OreDictionary into account.
-   * @return true if comparison should be considered a crafting equivalent for
-   * base.
+   * @param oreDictionary Whether to take the Forge OreDictionary into account (currently not implemented).
+   * @return True if they are considered equivalent.
    */
   public static boolean isCraftingEquivalent(ItemStack base, ItemStack comparison, boolean oreDictionary) {
     return isMatchingItem(base, comparison, true, false);
   }
 
+  /**
+   * @param oreIDs     Ore IDs to check.
+   * @param comparison The stack to compare.
+   * @return False (currently not implemented).
+   */
   public static boolean isCraftingEquivalent(int[] oreIDs, ItemStack comparison) {
     return false;
   }
 
+  /**
+   * Checks if two stacks (or lists) match.
+   *
+   * @param a The first stack.
+   * @param b The second stack.
+   * @return True if they match.
+   */
   public static boolean isMatchingItemOrList(final ItemStack a, final ItemStack b) {
     if (a.isEmpty() || b.isEmpty()) {
       return a.isEmpty() && b.isEmpty();
@@ -111,33 +132,35 @@ public class StackHelper {
   }
 
   /**
-   * Compares item id, damage and NBT. Accepts wildcard damage. Ignores damage
-   * entirely if the item doesn't have subtypes.
+   * Compares item, damage, and NBT.
    *
    * @param base       The stack to compare to.
    * @param comparison The stack to compare.
-   * @return true if id, damage and NBT match.
+   * @return True if they match.
    */
   public static boolean isMatchingItem(final ItemStack base, final ItemStack comparison) {
     return isMatchingItem(base, comparison, true, true);
   }
 
   /**
-   * This variant also checks damage for damaged items.
+   * Variant that checks damage for damaged items.
+   *
+   * @param a The first stack.
+   * @param b The second stack.
+   * @return True if they are equal.
    */
   public static boolean isEqualItem(final ItemStack a, final ItemStack b) {
     return isMatchingItem(a, b, false, true);
   }
 
   /**
-   * Compares item id, and optionally damage and NBT. Accepts wildcard damage.
-   * Ignores damage entirely if the item doesn't have subtypes.
+   * Compares ItemStacks with optional damage and NBT matching.
    *
-   * @param a           ItemStack
-   * @param b           ItemStack
-   * @param matchDamage
-   * @param matchNBT
-   * @return true if matches
+   * @param a           First ItemStack.
+   * @param b           Second ItemStack.
+   * @param matchDamage Whether to match damage.
+   * @param matchNBT    Whether to match NBT.
+   * @return True if they match.
    */
   public static boolean isMatchingItem(final ItemStack a, final ItemStack b, final boolean matchDamage,
                                        final boolean matchNBT) {
@@ -156,10 +179,18 @@ public class StackHelper {
     return true;
   }
 
+  /**
+   * @param stack The stack to check.
+   * @return False (currently not implemented).
+   */
   public static boolean isWildcard(ItemStack stack) {
     return false;
   }
 
+  /**
+   * @param damage The damage value.
+   * @return True if the damage is -1.
+   */
   public static boolean isWildcard(int damage) {
     return damage == -1;
   }

@@ -19,12 +19,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.Map;
 
+/**
+ * Registry that manages the mapping of blocks, items, and entities between a blueprint and the world.
+ * This handles coordinate and ID translations.
+ */
 @SuppressWarnings({"unused", "deprecation"})
 public class MappingRegistry {
   private final MappingTable<Block> BLOCK = new MappingTable<>();
@@ -43,57 +48,123 @@ public class MappingRegistry {
     ENTITY.register(entityClass);
   }
 
+  /**
+   * Gets the item for a specific mapping ID.
+   *
+   * @param id The mapping ID.
+   * @return The {@link Item}.
+   * @throws MappingNotFoundException if the mapping does not exist.
+   */
   public Item getItemForId(int id) throws MappingNotFoundException {
     return ITEM.get(id);
   }
 
+  /**
+   * Gets the mapping ID for a specific item.
+   *
+   * @param item The item.
+   * @return The mapping ID.
+   */
   public int getIdForItem(Item item) {
     return ITEM.getId(item);
   }
 
+  /**
+   * Translates a world item ID to a registry mapping ID.
+   *
+   * @param id The world item ID.
+   * @return The registry mapping ID.
+   */
   public int itemIdToRegistry(int id) {
     Item item = Item.byId(id);
 
     return getIdForItem(item);
   }
 
+  /**
+   * Translates a registry mapping ID to a world item ID.
+   *
+   * @param id The registry mapping ID.
+   * @return The world item ID.
+   * @throws MappingNotFoundException if the mapping does not exist.
+   */
   public int itemIdToWorld(int id) throws MappingNotFoundException {
     Item item = getItemForId(id);
 
     return Item.getId(item);
   }
 
+  /**
+   * Gets the block for a specific mapping ID.
+   *
+   * @param id The mapping ID.
+   * @return The {@link Block}.
+   * @throws MappingNotFoundException if the mapping does not exist.
+   */
   public Block getBlockForId(int id) throws MappingNotFoundException {
     return BLOCK.get(id);
   }
 
+  /**
+   * Gets the mapping ID for a specific block.
+   *
+   * @param block The block.
+   * @return The mapping ID.
+   */
   public int getIdForBlock(Block block) {
     return BLOCK.getId(block);
   }
 
+  /**
+   * Translates a world block ID to a registry mapping ID.
+   *
+   * @param id The world block ID.
+   * @return The registry mapping ID.
+   */
   public int blockIdToRegistry(int id) {
     Block block = BuiltInRegistries.BLOCK.byId(id);
 
     return getIdForBlock(block);
   }
 
+  /**
+   * Translates a registry mapping ID to a world block ID.
+   *
+   * @param id The registry mapping ID.
+   * @return The world block ID.
+   * @throws MappingNotFoundException if the mapping does not exist.
+   */
   public int blockIdToWorld(int id) throws MappingNotFoundException {
     Block block = BLOCK.get(id);
 
     return BuiltInRegistries.BLOCK.getId(block);
   }
 
+  /**
+   * Gets the entity type for a specific mapping ID.
+   *
+   * @param id The mapping ID.
+   * @return The {@link EntityType}.
+   * @throws MappingNotFoundException if the mapping does not exist.
+   */
   public EntityType<? extends Entity> getEntityForId(int id) throws MappingNotFoundException {
     return ENTITY.get(id);
   }
 
+  /**
+   * Gets the mapping ID for a specific entity type.
+   *
+   * @param entity The entity type.
+   * @return The mapping ID.
+   */
   public int getIdForEntity(EntityType<? extends Entity> entity) {
     return ENTITY.getId(entity);
   }
 
   /**
-   * Relocates a stack nbt from the world referential to the registry
-   * referential.
+   * Translates an {@link ItemStack} NBT tag from the world referential to the registry referential.
+   *
+   * @param nbt The NBT tag to modify.
    */
   public void stackToRegistry(CompoundTag nbt) {
     Item item = Item.byId(nbt.getShort("id"));
@@ -101,8 +172,10 @@ public class MappingRegistry {
   }
 
   /**
-   * Relocates a stack nbt from the registry referential to the world
-   * referential.
+   * Translates an {@link ItemStack} NBT tag from the registry referential to the world referential.
+   *
+   * @param nbt The NBT tag to modify.
+   * @throws MappingNotFoundException if the mapping does not exist.
    */
   public void stackToWorld(CompoundTag nbt) throws MappingNotFoundException {
     Item item = getItemForId(nbt.getShort("id"));
@@ -118,6 +191,11 @@ public class MappingRegistry {
       nbt.get("Damage") instanceof ShortTag;
   }
 
+  /**
+   * Scans an NBT tag and translates all item stacks found within to the registry referential.
+   *
+   * @param nbt The NBT tag to scan and modify.
+   */
   public void scanAndTranslateStacksToRegistry(CompoundTag nbt) {
     if (isStackLayout(nbt)) {
       stackToRegistry(nbt);
@@ -138,6 +216,12 @@ public class MappingRegistry {
     }
   }
 
+  /**
+   * Scans an NBT tag and translates all item stacks found within to the world referential.
+   *
+   * @param nbt The NBT tag to scan and modify.
+   * @throws MappingNotFoundException if any mapping is not found.
+   */
   public void scanAndTranslateStacksToWorld(CompoundTag nbt) throws MappingNotFoundException {
     if (isStackLayout(nbt)) {
       stackToWorld(nbt);
@@ -166,6 +250,12 @@ public class MappingRegistry {
     }
   }
 
+  /**
+   * Writes a {@link BlockState} to an NBT tag using registry mapping.
+   *
+   * @param nbt   The NBT tag.
+   * @param state The block state.
+   */
   public void writeBlockStateToNBT(CompoundTag nbt, BlockState state) {
     if (state == null) {
       return;
@@ -184,6 +274,13 @@ public class MappingRegistry {
     return prop.getName((T) value);
   }
 
+  /**
+   * Reads a {@link BlockState} from an NBT tag using registry mapping.
+   *
+   * @param nbt The NBT tag.
+   * @return The block state.
+   * @throws MappingNotFoundException if the block mapping is not found.
+   */
   public BlockState readBlockStateFromNBT(CompoundTag nbt) throws MappingNotFoundException {
     Block block = getBlockForId(nbt.getInt("blockId"));
     BlockState state = block.defaultBlockState();
@@ -203,6 +300,11 @@ public class MappingRegistry {
     return prop.getValue(valueName).map(t -> state.setValue(prop, t)).orElse(state);
   }
 
+  /**
+   * Writes the entire mapping registry to an NBT tag.
+   *
+   * @param nbt The NBT tag.
+   */
   public void write(CompoundTag nbt) {
     ListTag blocksMapping = new ListTag();
 
@@ -241,6 +343,11 @@ public class MappingRegistry {
     nbt.put("entitiesMapping", entitiesMapping);
   }
 
+  /**
+   * Reads the entire mapping registry from an NBT tag.
+   *
+   * @param nbt The NBT tag.
+   */
   public void read(CompoundTag nbt) {
     ListTag blocksMapping = nbt.getList("blocksMapping", Tag.TAG_COMPOUND);
 

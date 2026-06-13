@@ -14,20 +14,22 @@ package com.peco2282.bcreborn.api.core;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
- * Implemented by classes representing serializable packet state
+ * Implemented by classes that can be serialized to and from a {@link FriendlyByteBuf}.
+ * This is typically used for network packet synchronization.
  */
 public interface ISerializable {
+
   /**
-   * Serializes the state to the stream
+   * Serializes the object's state to the buffer.
    *
-   * @param data
+   * @param data The buffer to write to.
    */
   void writeData(FriendlyByteBuf data);
 
   /**
-   * Deserializes the state from the stream
+   * Deserializes the object's state from the buffer.
    *
-   * @param data
+   * @param data The buffer to read from.
    */
   void readData(FriendlyByteBuf data);
 }

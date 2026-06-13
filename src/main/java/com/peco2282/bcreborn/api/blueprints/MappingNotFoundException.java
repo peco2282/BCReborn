@@ -13,10 +13,18 @@ package com.peco2282.bcreborn.api.blueprints;
 
 import java.io.Serial;
 
+/**
+ * Exception thrown when a block, item, or entity mapping cannot be found in the registry.
+ */
 public class MappingNotFoundException extends Exception {
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Constructs a new MappingNotFoundException with the specified message.
+   *
+   * @param msg The detail message.
+   */
   public MappingNotFoundException(String msg) {
     super(msg);
   }
