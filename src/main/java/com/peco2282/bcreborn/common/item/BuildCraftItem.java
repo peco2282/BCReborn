@@ -24,6 +24,10 @@ public class BuildCraftItem extends Item {
     super(properties);
   }
 
+  public BuildCraftItem() {
+    this(new Properties());
+  }
+
 
   public Item setPassSneakClick(boolean passClick) {
     this.passSneakClick = passClick;
