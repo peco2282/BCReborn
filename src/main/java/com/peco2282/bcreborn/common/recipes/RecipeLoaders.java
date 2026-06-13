@@ -123,10 +123,10 @@ public final class RecipeLoaders {
       return recipes.get(id);
     }
   }
-  public static class ProgrammingRecipeSerializer extends SimpleJsonResourceReloadListener {
+  public static class ProgrammingRecipeLoader extends SimpleJsonResourceReloadListener {
     private Map<ResourceLocation, ProgrammingRecipe> recipes = Map.of();
 
-    public ProgrammingRecipeSerializer() {
+    public ProgrammingRecipeLoader() {
       super(new Gson(), "programming");
     }
 
