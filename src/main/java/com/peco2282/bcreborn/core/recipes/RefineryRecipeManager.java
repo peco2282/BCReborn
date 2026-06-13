@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
 public final class RefineryRecipeManager implements IRefineryRecipeManager {
   public static final RefineryRecipeManager INSTANCE = new RefineryRecipeManager();
+  private static final RefineryRecipeLoader LOADER = new RefineryRecipeLoader();
   private final Map<ResourceLocation, RefineryRecipe> recipes = new ConcurrentHashMap<>();
 
   private RefineryRecipeManager() {
@@ -39,7 +40,7 @@ public final class RefineryRecipeManager implements IRefineryRecipeManager {
 
   @SubscribeEvent
   public static void onAddReloadListener(AddReloadListenerEvent event) {
-    event.addListener(new RefineryRecipeLoader());
+    event.addListener(LOADER);
   }
 
   @Override
@@ -57,7 +58,7 @@ public final class RefineryRecipeManager implements IRefineryRecipeManager {
     return recipes.containsKey(id);
   }
 
-  public static class RefineryRecipeLoader extends LoaderHelper<RefineryRecipe> {
+  private static class RefineryRecipeLoader extends LoaderHelper<RefineryRecipe> {
     public RefineryRecipeLoader() {
       super(RefineryRecipeProvider.DIRECTORY);
     }

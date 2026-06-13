@@ -30,13 +30,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
-public class ProgrammingRecipeManager implements IProgrammingRecipeManager {
+public final class ProgrammingRecipeManager implements IProgrammingRecipeManager {
   public static final ProgrammingRecipeManager INSTANCE = new ProgrammingRecipeManager();
+  private static final ProgrammingRecipeLoader LOADER = new ProgrammingRecipeLoader();
   private final Map<ResourceLocation, ProgrammingRecipe> recipes = new ConcurrentHashMap<>();
+
+  private ProgrammingRecipeManager() {
+  }
 
   @SubscribeEvent
   public static void onAddReloadListener(AddReloadListenerEvent event) {
-    event.addListener(new ProgrammingRecipeLoader());
+    event.addListener(LOADER);
   }
 
   @Override
