@@ -23,7 +23,7 @@ public record ProgrammingRecipe(
   Ingredient option,
   ItemStack result,
   int energy
-) {
+) implements BCRecipe {
   public static final Codec<ProgrammingRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(ProgrammingRecipe::id),
     Codecs.INGREDIENT_CODEC.fieldOf("input").forGetter(ProgrammingRecipe::input),
