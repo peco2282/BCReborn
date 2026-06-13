@@ -11,12 +11,13 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public interface IProgrammingRecipe {
-  String getId();
+  ResourceLocation getId();
 
   List<ItemStack> getOptions(int width, int height);
 
