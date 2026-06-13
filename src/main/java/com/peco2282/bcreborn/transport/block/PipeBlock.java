@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -224,6 +226,13 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       BlockEntity blockEntity = level.getBlockEntity(pos);
       if (blockEntity instanceof PipeBlockEntity pipeBE) {
         pipeBE.dropItems();
+        for (PipePluggable pluggable : pipeBE.sideProperties.pluggables) {
+          if (pluggable != null) {
+            for (ItemStack stack : pluggable.getDropItems(null)) {
+              popResource(level, pos, stack);
+            }
+          }
+        }
       }
       super.onRemove(state, level, pos, newState, isMoving);
     }

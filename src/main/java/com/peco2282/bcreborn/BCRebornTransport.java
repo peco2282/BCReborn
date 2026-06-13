@@ -12,8 +12,11 @@
 package com.peco2282.bcreborn;
 
 import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.api.facades.FacadeAPI;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.transport.TransportItems;
+import com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,6 +28,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
+
+import static com.peco2282.bcreborn.api.transport.PipeManager.*;
 
 @Mod(BCRebornTransport.MODID)
 public class BCRebornTransport implements BCReborn {
@@ -60,6 +65,10 @@ public class BCRebornTransport implements BCReborn {
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+
+    registerPipePluggable(FacadePluggable.class, "facade");
+
+    FacadeAPI.facadeItem(TransportItems.FACADE.get());
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call
