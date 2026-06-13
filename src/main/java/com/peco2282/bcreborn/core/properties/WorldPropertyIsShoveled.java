@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsShoveled extends WorldProperty {
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		return state.is(BlockTags.MINEABLE_WITH_SHOVEL);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    return state.is(BlockTags.MINEABLE_WITH_SHOVEL);
+  }
 }

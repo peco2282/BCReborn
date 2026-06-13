@@ -35,78 +35,75 @@ import java.util.Set;
 
 public class CropHandlerPlantable implements ICropHandler {
   public static final CropHandlerPlantable INSTANCE = new CropHandlerPlantable();
-  private CropHandlerPlantable() {}
+  private static final Set<Block> FORBIDDEN_BLOCKS = new HashSet<Block>();
 
-	private static final Set<Block> FORBIDDEN_BLOCKS = new HashSet<Block>();
+  private CropHandlerPlantable() {
+  }
 
-	public static void forbidBlock(Block b) {
-		FORBIDDEN_BLOCKS.add(b);
-	}
+  public static void forbidBlock(Block b) {
+    FORBIDDEN_BLOCKS.add(b);
+  }
 
-	@Override
-	public boolean isSeed(ItemStack stack) {
-		if (stack.getItem() instanceof IPlantable) {
-			return true;
-		}
+  @Override
+  public boolean isSeed(ItemStack stack) {
+    if (stack.getItem() instanceof IPlantable) {
+      return true;
+    }
 
-		if (stack.getItem() instanceof BlockItem item) {
-			Block block = item.getBlock();
+    if (stack.getItem() instanceof BlockItem item) {
+      Block block = item.getBlock();
       return block instanceof IPlantable && !FORBIDDEN_BLOCKS.contains(block);
-		}
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	@Override
-	public boolean canSustainPlant(Level world, ItemStack seed, BlockPos pos) {
-		if (seed.getItem() instanceof IPlantable) {
-			return world.getBlockState(pos).canSustainPlant(world, pos, Direction.UP,
-					(IPlantable) seed.getItem())
-					&& world.getBlockState(pos.above()).isAir();
-		} else if (seed.getItem() instanceof BlockItem item && item.getBlock() instanceof IPlantable plantable) {
-			BlockState state = world.getBlockState(pos);
-			return state.canSustainPlant(world, pos, Direction.UP, plantable)
-					&& state.getBlock() != item.getBlock()
-					&& world.getBlockState(pos.above()).isAir();
-		}
-		return false;
-	}
+  @Override
+  public boolean canSustainPlant(Level world, ItemStack seed, BlockPos pos) {
+    if (seed.getItem() instanceof IPlantable) {
+      return world.getBlockState(pos).canSustainPlant(world, pos, Direction.UP,
+        (IPlantable) seed.getItem())
+        && world.getBlockState(pos.above()).isAir();
+    } else if (seed.getItem() instanceof BlockItem item && item.getBlock() instanceof IPlantable plantable) {
+      BlockState state = world.getBlockState(pos);
+      return state.canSustainPlant(world, pos, Direction.UP, plantable)
+        && state.getBlock() != item.getBlock()
+        && world.getBlockState(pos.above()).isAir();
+    }
+    return false;
+  }
 
-	@Override
-	public boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos) {
-		return seed.useOn(new UseOnContext(player, player.getUsedItemHand(), new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false))).consumesAction();
-	}
+  @Override
+  public boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos) {
+    return seed.useOn(new UseOnContext(player, player.getUsedItemHand(), new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false))).consumesAction();
+  }
 
-	@Override
-	public boolean isMature(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		Block block = state.getBlock();
-		if (block == null || FORBIDDEN_BLOCKS.contains(block)) {
-			return false;
-		} else if (block instanceof TallGrassBlock
-				|| block instanceof MelonBlock
-				|| block instanceof MushroomBlock
-				|| block instanceof DoublePlantBlock
-				|| block == Blocks.PUMPKIN) {
-			return true;
-		} else if (block instanceof CropBlock crop) {
-			return crop.isMaxAge(state);
-		} else if (block instanceof NetherWartBlock) {
-			return state.getValue(NetherWartBlock.AGE) == 3;
-		} else if (block instanceof IPlantable) {
-			if (pos.getY() > 0 && blockAccess.getBlockState(pos.below()).is(block)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean isMature(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    Block block = state.getBlock();
+    if (block == null || FORBIDDEN_BLOCKS.contains(block)) {
+      return false;
+    } else if (block instanceof TallGrassBlock
+      || block instanceof MelonBlock
+      || block instanceof MushroomBlock
+      || block instanceof DoublePlantBlock
+      || block == Blocks.PUMPKIN) {
+      return true;
+    } else if (block instanceof CropBlock crop) {
+      return crop.isMaxAge(state);
+    } else if (block instanceof NetherWartBlock) {
+      return state.getValue(NetherWartBlock.AGE) == 3;
+    } else if (block instanceof IPlantable) {
+      return pos.getY() > 0 && blockAccess.getBlockState(pos.below()).is(block);
+    }
+    return false;
+  }
 
-	@Override
-	public boolean harvestCrop(Level world, BlockPos pos, List<ItemStack> drops) {
-		if (!world.isClientSide) {
-			if (BlockUtils.breakBlock((ServerLevel) world, pos, drops)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean harvestCrop(Level world, BlockPos pos, List<ItemStack> drops) {
+    if (!world.isClientSide) {
+      return BlockUtils.breakBlock((ServerLevel) world, pos, drops);
+    }
+    return false;
+  }
 }

@@ -44,6 +44,31 @@ import java.util.stream.Collectors;
 
 public class FacadeItem extends BuildCraftItem implements IFacadeItem {
 
+  public FacadeItem(Properties properties) {
+    super(properties);
+  }
+
+  public static FacadeState[] getStates(ItemStack stack) {
+    if (stack.getItem() instanceof FacadeItem facade) {
+      return facade.getFacadeStates(stack);
+    }
+    return new FacadeState[0];
+  }
+
+  public static FacadeType getType(ItemStack stack) {
+    if (stack.getItem() instanceof FacadeItem facade) {
+      return facade.getFacadeType(stack);
+    }
+    return FacadeType.Basic;
+  }
+
+  public static boolean isBlockValidForFacade(BlockState state) {
+    Block block = state.getBlock();
+    if (block == Blocks.AIR) return false;
+    if (!state.isSolid()) return false;
+    return state.getRenderShape() != RenderShape.INVISIBLE;
+  }
+
   @Override
   public InteractionResult useOn(UseOnContext context) {
     Level level = context.getLevel();
@@ -69,59 +94,6 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     }
 
     return super.useOn(context);
-  }
-
-  public record FacadeState(
-    @Nullable BlockState state,
-    @Nullable PipeWire wire,
-    boolean hollow
-  ) {
-    public static FacadeState fromNbt(CompoundTag nbt) {
-      BlockState state = null;
-      if (nbt.contains("block", Tag.TAG_STRING)) {
-        try {
-          String stateStr = nbt.getString("block");
-          if (nbt.contains("metadata")) {
-              // Legacy support: Convert old block + metadata to state
-              Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(stateStr));
-              state = block.defaultBlockState();
-          } else {
-              var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), stateStr, true);
-              state = result.blockState();
-          }
-        } catch (Exception ignored) {}
-      }
-      PipeWire wire = nbt.contains("wire") ? PipeWire.fromOrdinal(nbt.getByte("wire")) : null;
-      boolean hollow = nbt.getBoolean("hollow");
-      return new FacadeState(state, wire, hollow);
-    }
-
-    public void writeToNbt(CompoundTag nbt) {
-      if (state != null) {
-        nbt.putString("block", BlockStateParser.serialize(state));
-      }
-      if (wire != null) {
-        nbt.putByte("wire", (byte) wire.ordinal());
-      }
-      if (hollow) {
-        nbt.putBoolean("hollow", true);
-      }
-    }
-
-    public Component getDisplayName() {
-      if (state == null) {
-        return Component.translatable("item.bcreborntransport.facade.state_transparent");
-      }
-      Component name = state.getBlock().getName();
-      if (hollow) {
-        return Component.translatable("item.bcreborntransport.facade.state_hollow_format", name);
-      }
-      return name;
-    }
-  }
-
-  public FacadeItem(Properties properties) {
-    super(properties);
   }
 
   @Override
@@ -219,24 +191,53 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     }
   }
 
-  public static FacadeState[] getStates(ItemStack stack) {
-    if (stack.getItem() instanceof FacadeItem facade) {
-      return facade.getFacadeStates(stack);
+  public record FacadeState(
+    @Nullable BlockState state,
+    @Nullable PipeWire wire,
+    boolean hollow
+  ) {
+    public static FacadeState fromNbt(CompoundTag nbt) {
+      BlockState state = null;
+      if (nbt.contains("block", Tag.TAG_STRING)) {
+        try {
+          String stateStr = nbt.getString("block");
+          if (nbt.contains("metadata")) {
+            // Legacy support: Convert old block + metadata to state
+            Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(stateStr));
+            state = block.defaultBlockState();
+          } else {
+            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), stateStr, true);
+            state = result.blockState();
+          }
+        } catch (Exception ignored) {
+        }
+      }
+      PipeWire wire = nbt.contains("wire") ? PipeWire.fromOrdinal(nbt.getByte("wire")) : null;
+      boolean hollow = nbt.getBoolean("hollow");
+      return new FacadeState(state, wire, hollow);
     }
-    return new FacadeState[0];
-  }
 
-  public static FacadeType getType(ItemStack stack) {
-    if (stack.getItem() instanceof FacadeItem facade) {
-      return facade.getFacadeType(stack);
+    public void writeToNbt(CompoundTag nbt) {
+      if (state != null) {
+        nbt.putString("block", BlockStateParser.serialize(state));
+      }
+      if (wire != null) {
+        nbt.putByte("wire", (byte) wire.ordinal());
+      }
+      if (hollow) {
+        nbt.putBoolean("hollow", true);
+      }
     }
-    return FacadeType.Basic;
-  }
 
-  public static boolean isBlockValidForFacade(BlockState state) {
-    Block block = state.getBlock();
-    if (block == Blocks.AIR) return false;
-    if (!state.isSolid()) return false;
-    return state.getRenderShape() != RenderShape.INVISIBLE;
+    public Component getDisplayName() {
+      if (state == null) {
+        return Component.translatable("item.bcreborntransport.facade.state_transparent");
+      }
+      Component name = state.getBlock().getName();
+      if (hollow) {
+        return Component.translatable("item.bcreborntransport.facade.state_hollow_format", name);
+      }
+      return name;
+    }
   }
 }

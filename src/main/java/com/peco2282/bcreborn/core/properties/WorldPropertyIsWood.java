@@ -18,14 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsWood extends WorldProperty {
 
-	public WorldPropertyIsWood() {
-	}
+  public WorldPropertyIsWood() {
+  }
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		if (state == null) {
-			return false;
-		}
-		return state.is(BlockTags.LOGS);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    if (state == null) {
+      return false;
+    }
+    return state.is(BlockTags.LOGS);
+  }
 }

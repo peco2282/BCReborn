@@ -41,6 +41,9 @@ public final class BuildcraftRecipeRegistry {
    */
   public static IProgrammingRecipeManager programmingTable;
 
+  private BuildcraftRecipeRegistry() {
+  }
+
   /**
    * Gets the assembly table recipe manager.
    *
@@ -73,17 +76,27 @@ public final class BuildcraftRecipeRegistry {
    *
    * @return The programming table recipe manager.
    */
-  public static IProgrammingRecipeManager programming() { return programmingTable; }
+  public static IProgrammingRecipeManager programming() {
+    return programmingTable;
+  }
 
   @ApiStatus.Internal
-  public static void assembly(IAssemblyRecipeManager manager) { assemblyTable = manager; }
-  @ApiStatus.Internal
-  public static void integration(IIntegrationRecipeManager manager) { integrationTable = manager; }
-  @ApiStatus.Internal
-  public static void refinery(IRefineryRecipeManager manager) { refinery = manager; }
-  @ApiStatus.Internal
-  public static void programming(IProgrammingRecipeManager manager) { programmingTable = manager; }
+  public static void assembly(IAssemblyRecipeManager manager) {
+    assemblyTable = manager;
+  }
 
-  private BuildcraftRecipeRegistry() {
+  @ApiStatus.Internal
+  public static void integration(IIntegrationRecipeManager manager) {
+    integrationTable = manager;
+  }
+
+  @ApiStatus.Internal
+  public static void refinery(IRefineryRecipeManager manager) {
+    refinery = manager;
+  }
+
+  @ApiStatus.Internal
+  public static void programming(IProgrammingRecipeManager manager) {
+    programmingTable = manager;
   }
 }

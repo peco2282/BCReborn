@@ -18,14 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsLeaf extends WorldProperty {
 
-	public WorldPropertyIsLeaf() {
-	}
+  public WorldPropertyIsLeaf() {
+  }
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		if (state == null) {
-			return false;
-		}
-		return state.is(BlockTags.LEAVES);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    if (state == null) {
+      return false;
+    }
+    return state.is(BlockTags.LEAVES);
+  }
 }

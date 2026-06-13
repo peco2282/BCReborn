@@ -20,8 +20,8 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class WorldPropertyIsFluidSource extends WorldProperty {
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		return (state.getBlock() instanceof LiquidBlock || state.getBlock() instanceof IFluidBlock);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    return (state.getBlock() instanceof LiquidBlock || state.getBlock() instanceof IFluidBlock);
+  }
 }

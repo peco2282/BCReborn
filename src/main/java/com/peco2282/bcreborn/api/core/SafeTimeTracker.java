@@ -84,7 +84,7 @@ public class SafeTimeTracker {
    * more ticks to run.
    * </p>
    *
-   * @param delay The base delay in ticks that must pass before marking time again.
+   * @param delay  The base delay in ticks that must pass before marking time again.
    * @param random The range in ticks for random delay variation (0 to random-1).
    */
   public SafeTimeTracker(long delay, long random) {

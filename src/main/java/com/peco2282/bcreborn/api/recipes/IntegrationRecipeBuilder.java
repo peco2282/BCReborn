@@ -23,8 +23,8 @@ import java.util.List;
  * Provides a fluent API for configuring integration recipe parameters.
  */
 public final class IntegrationRecipeBuilder extends BCRecipeBuilder<IntegrationRecipe> {
-  private Ingredient input;
   private final List<Ingredient> expansions = new ArrayList<>();
+  private Ingredient input;
   private ItemStack result;
   private int energy;
   private int maxExpansionCount;
@@ -36,6 +36,16 @@ public final class IntegrationRecipeBuilder extends BCRecipeBuilder<IntegrationR
    */
   private IntegrationRecipeBuilder(ResourceLocation id) {
     super(id);
+  }
+
+  /**
+   * Creates a new builder instance with the specified recipe identifier.
+   *
+   * @param id The recipe identifier.
+   * @return A new IntegrationRecipeBuilder instance.
+   */
+  public static IntegrationRecipeBuilder create(ResourceLocation id) {
+    return new IntegrationRecipeBuilder(id);
   }
 
   /**
@@ -91,16 +101,6 @@ public final class IntegrationRecipeBuilder extends BCRecipeBuilder<IntegrationR
   public IntegrationRecipeBuilder setMaxExpansionCount(int maxExpansionCount) {
     this.maxExpansionCount = maxExpansionCount;
     return this;
-  }
-
-  /**
-   * Creates a new builder instance with the specified recipe identifier.
-   *
-   * @param id The recipe identifier.
-   * @return A new IntegrationRecipeBuilder instance.
-   */
-  public static IntegrationRecipeBuilder create(ResourceLocation id) {
-    return new IntegrationRecipeBuilder(id);
   }
 
   /**

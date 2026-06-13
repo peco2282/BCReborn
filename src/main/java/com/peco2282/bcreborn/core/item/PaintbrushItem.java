@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 public class PaintbrushItem extends BuildCraftItem {
-  private @Nullable final DyeColor color;
   public static final Map<DyeColor, Item> COLORED = ImmutableMap.<DyeColor, Item>builder()
     .put(DyeColor.WHITE, Items.WHITE_DYE)
     .put(DyeColor.ORANGE, Items.ORANGE_DYE)
@@ -52,6 +51,8 @@ public class PaintbrushItem extends BuildCraftItem {
     .put(DyeColor.RED, Items.RED_DYE)
     .put(DyeColor.BLACK, Items.BLACK_DYE)
     .build();
+  private @Nullable
+  final DyeColor color;
 
   public PaintbrushItem(@Nullable DyeColor color) {
     super(new Properties().stacksTo(1).durability(63));
@@ -69,7 +70,7 @@ public class PaintbrushItem extends BuildCraftItem {
   @Override
   public Component getName(ItemStack stack) {
     if (color == null) return super.getName(stack);
-    return ((MutableComponent)super.getName(stack)).append(" (" + color.getSerializedName() + ")");
+    return ((MutableComponent) super.getName(stack)).append(" (" + color.getSerializedName() + ")");
   }
 
   @Override

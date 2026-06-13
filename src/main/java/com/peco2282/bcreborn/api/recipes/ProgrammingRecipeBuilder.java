@@ -49,6 +49,18 @@ public class ProgrammingRecipeBuilder extends BCRecipeBuilder<ProgrammingRecipe>
   }
 
   /**
+   * Creates a new ProgrammingRecipeBuilder instance with the specified recipe identifier.
+   * <p>
+   * This is a convenience factory method that provides an alternative to using the constructor directly.
+   *
+   * @param id The unique resource location identifier for this recipe.
+   * @return A new ProgrammingRecipeBuilder instance.
+   */
+  public static ProgrammingRecipeBuilder create(ResourceLocation id) {
+    return new ProgrammingRecipeBuilder(id);
+  }
+
+  /**
    * Sets the input ingredient required for this programming recipe.
    *
    * @param input The ingredient that serves as the primary input for the recipe.
@@ -90,18 +102,6 @@ public class ProgrammingRecipeBuilder extends BCRecipeBuilder<ProgrammingRecipe>
   public ProgrammingRecipeBuilder setEnergy(int energy) {
     this.energy = energy;
     return this;
-  }
-
-  /**
-   * Creates a new ProgrammingRecipeBuilder instance with the specified recipe identifier.
-   * <p>
-   * This is a convenience factory method that provides an alternative to using the constructor directly.
-   *
-   * @param id The unique resource location identifier for this recipe.
-   * @return A new ProgrammingRecipeBuilder instance.
-   */
-  public static ProgrammingRecipeBuilder create(ResourceLocation id) {
-    return new ProgrammingRecipeBuilder(id);
   }
 
   /**

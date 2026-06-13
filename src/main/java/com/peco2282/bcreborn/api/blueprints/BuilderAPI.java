@@ -25,6 +25,10 @@ public final class BuilderAPI {
    * Energy cost to build a block.
    */
   public static final int BUILD_ENERGY = 240;
+  private static ISchematicRegistry schematicRegistry;
+
+  private BuilderAPI() {
+  }
 
   /**
    * Gets the schematic registry.
@@ -35,8 +39,6 @@ public final class BuilderAPI {
     return schematicRegistry;
   }
 
-  private static ISchematicRegistry schematicRegistry;
-
   /**
    * Sets the schematic registry.
    *
@@ -45,8 +47,5 @@ public final class BuilderAPI {
   @ApiStatus.Internal
   public static void schematic(ISchematicRegistry registry) {
     schematicRegistry = registry;
-  }
-
-  private BuilderAPI() {
   }
 }
