@@ -12,9 +12,11 @@
 package com.peco2282.bcreborn.api.facades;
 
 public final class FacadeAPI {
-  public static IFacadeItem facadeItem;
+  private static IFacadeItem facadeItem;
+
+  public static IFacadeItem facadeItem() { return facadeItem; }
+  public static void facadeItem(IFacadeItem facade) { facadeItem = facade; }
 
   private FacadeAPI() {
-
   }
 }
