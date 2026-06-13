@@ -42,7 +42,6 @@ public class BCRebornBuilders implements BCReborn {
 
   private static final BlueprintServerDatabase serverDB = new BlueprintServerDatabase();
   private static final LibraryDatabase clientDB = new LibraryDatabase();
-  private static final ContextProcessor PROCESSOR = ContextProcessor.create(MODID);
 
   public BCRebornBuilders(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
