@@ -28,7 +28,7 @@ import java.util.Map;
 public abstract class LoaderHelper<R extends BCRecipe> extends SimpleJsonResourceReloadListener {
   private static final Logger LOGGER = BCReborn.createLogger();
 
-  public LoaderHelper(String p_10769_) {
+  protected LoaderHelper(String p_10769_) {
     super(new Gson(), p_10769_);
   }
 

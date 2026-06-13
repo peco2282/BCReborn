@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
-public class AssemblyRecipeManager implements IAssemblyRecipeManager {
+public final class AssemblyRecipeManager implements IAssemblyRecipeManager {
   public static final AssemblyRecipeManager INSTANCE = new AssemblyRecipeManager();
-  private static final Logger LOGGER = BCReborn.createLogger();
+  private static final AssemblyRecipeLoader LOADER = new AssemblyRecipeLoader();
   private final Map<ResourceLocation, AssemblyRecipe> recipes = new ConcurrentHashMap<>();
 
   private AssemblyRecipeManager() {
@@ -42,9 +42,7 @@ public class AssemblyRecipeManager implements IAssemblyRecipeManager {
 
   @SubscribeEvent
   public static void onAddReloadListener(AddReloadListenerEvent event) {
-    LOGGER.info("Registering Assembly recipe loaders");
-    event.addListener(new AssemblyRecipeLoader());
-    LOGGER.info("Registered Assembly recipe loaders");
+    event.addListener(LOADER);
   }
 
   @Override
