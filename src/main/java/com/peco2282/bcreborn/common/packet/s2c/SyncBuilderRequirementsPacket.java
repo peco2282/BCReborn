@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public record SyncBuilderRequirementsPacket(BlockPos pos,
     int size = buffer.readInt();
     List<RequirementItemStack> requirements = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
-      RequirementItemStack req = new RequirementItemStack(null, 0); // Temporary stack will be overwritten
+      RequirementItemStack req = new RequirementItemStack(ItemStack.EMPTY, 0); // Temporary stack will be overwritten
       req.readData(buffer);
       requirements.add(req);
     }
