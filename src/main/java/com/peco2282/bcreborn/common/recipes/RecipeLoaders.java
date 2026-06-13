@@ -17,10 +17,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.api.recipes.AssemblyRecipe;
-import com.peco2282.bcreborn.api.recipes.IntegrationRecipe;
-import com.peco2282.bcreborn.api.recipes.ProgrammingRecipe;
-import com.peco2282.bcreborn.api.recipes.RefineryRecipe;
+import com.peco2282.bcreborn.api.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -43,7 +40,7 @@ public final class RecipeLoaders {
     private Map<ResourceLocation, AssemblyRecipe> recipes = Map.of();
 
     public AssemblyRecipeLoader() {
-      super(new Gson(), "assembly");
+      super(new Gson(), AssemblyRecipeProvider.DIRECTORY);
     }
 
     @Override
@@ -74,7 +71,7 @@ public final class RecipeLoaders {
     private Map<ResourceLocation, IntegrationRecipe> recipes = Map.of();
 
     public IntegrationRecipeLoader() {
-      super(new Gson(), "integration");
+      super(new Gson(), IntegrationRecipeProvider.DIRECTORY);
     }
 
     @Override
@@ -104,7 +101,7 @@ public final class RecipeLoaders {
     private Map<ResourceLocation, ProgrammingRecipe> recipes = Map.of();
 
     public ProgrammingRecipeLoader() {
-      super(new Gson(), "programming");
+      super(new Gson(), ProgrammingRecipeProvider.DIRECTORY);
     }
 
     @Override
@@ -134,7 +131,7 @@ public final class RecipeLoaders {
     private Map<ResourceLocation, RefineryRecipe> recipes = Map.of();
 
     public RefineryRecipeLoader() {
-      super(new Gson(), "refinery");
+      super(new Gson(), RefineryRecipeProvider.DIRECTORY);
     }
 
     @Override
