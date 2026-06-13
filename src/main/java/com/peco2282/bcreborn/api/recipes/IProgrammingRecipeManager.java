@@ -17,7 +17,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public interface IProgrammingRecipeManager {
-  @Nullable ProgrammingRecipe getRecipe(ResourceLocation id);
-  Collection<ProgrammingRecipe> getRecipes();
+  @Nullable IProgrammingRecipe getRecipe(ResourceLocation id);
+
+  Collection<IProgrammingRecipe> getRecipes();
+
   boolean contains(ResourceLocation id);
+
+  // Dynamic registration
+  void register(IProgrammingRecipe recipe);
 }

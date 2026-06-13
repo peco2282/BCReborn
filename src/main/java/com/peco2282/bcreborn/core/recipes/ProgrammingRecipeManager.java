@@ -13,9 +13,11 @@ package com.peco2282.bcreborn.core.recipes;
 
 import com.google.gson.JsonElement;
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipeManager;
 import com.peco2282.bcreborn.api.recipes.ProgrammingRecipe;
 import com.peco2282.bcreborn.api.recipes.ProgrammingRecipeProvider;
+import com.peco2282.bcreborn.robotics.recipe.StaticProgrammingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -24,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -33,7 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ProgrammingRecipeManager implements IProgrammingRecipeManager {
   public static final ProgrammingRecipeManager INSTANCE = new ProgrammingRecipeManager();
   private static final ProgrammingRecipeLoader LOADER = new ProgrammingRecipeLoader();
-  private final Map<ResourceLocation, ProgrammingRecipe> recipes = new ConcurrentHashMap<>();
+  private final Map<ResourceLocation, IProgrammingRecipe> datapack = new ConcurrentHashMap<>();
+  private final Map<ResourceLocation, IProgrammingRecipe> dynamic = new ConcurrentHashMap<>();
 
   private ProgrammingRecipeManager() {
   }
@@ -44,18 +48,28 @@ public final class ProgrammingRecipeManager implements IProgrammingRecipeManager
   }
 
   @Override
-  public @Nullable ProgrammingRecipe getRecipe(ResourceLocation id) {
-    return recipes.get(id);
+  public @Nullable IProgrammingRecipe getRecipe(ResourceLocation id) {
+    var data = datapack.get(id);
+    if (data != null) return data;
+    return dynamic.get(id);
   }
 
   @Override
-  public Collection<ProgrammingRecipe> getRecipes() {
-    return Collections.unmodifiableCollection(recipes.values());
+  public Collection<IProgrammingRecipe> getRecipes() {
+    var allIn = new ArrayList<IProgrammingRecipe>();
+    allIn.addAll(datapack.values());
+    allIn.addAll(dynamic.values());
+    return Collections.unmodifiableCollection(allIn);
   }
 
   @Override
   public boolean contains(ResourceLocation id) {
-    return recipes.containsKey(id);
+    return datapack.containsKey(id) || dynamic.containsKey(id);
+  }
+
+  @Override
+  public void register(IProgrammingRecipe recipe) {
+    dynamic.put(recipe.getId(), recipe);
   }
 
   private static class ProgrammingRecipeLoader extends LoaderHelper<ProgrammingRecipe> {
@@ -69,7 +83,10 @@ public final class ProgrammingRecipeManager implements IProgrammingRecipeManager
       ResourceManager resourceManager,
       ProfilerFiller profiler
     ) {
-      doReload(jsons, profiler, ProgrammingRecipe.CODEC, INSTANCE.recipes);
+      var data = new ConcurrentHashMap<ResourceLocation, ProgrammingRecipe>();
+      doReload(jsons, profiler, ProgrammingRecipe.CODEC, data);
+      INSTANCE.datapack.clear();
+      data.forEach((key, value) -> INSTANCE.datapack.put(key, new StaticProgrammingRecipe(value)));
     }
   }
 }
