@@ -15,11 +15,9 @@ import net.minecraft.data.PackOutput;
 
 public abstract class RefineryRecipeProvider extends BCRecipeProvider<RefineryRecipe, RefineryRecipeBuilder> {
   public static final String DIRECTORY = kind("refinery");
-  private final String modId;
 
   public RefineryRecipeProvider(PackOutput output, String modId) {
-    super(output.createPathProvider(PackOutput.Target.DATA_PACK, DIRECTORY), RefineryRecipe.CODEC);
-    this.modId = modId;
+    super(output.createPathProvider(PackOutput.Target.DATA_PACK, DIRECTORY), RefineryRecipe.CODEC, modId);
   }
 
   @Override

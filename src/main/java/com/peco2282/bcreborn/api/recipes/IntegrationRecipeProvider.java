@@ -15,11 +15,9 @@ import net.minecraft.data.PackOutput;
 
 public abstract class IntegrationRecipeProvider extends BCRecipeProvider<IntegrationRecipe, IntegrationRecipeBuilder> {
   public static final String DIRECTORY = kind("integration");
-  private final String modId;
 
   public IntegrationRecipeProvider(PackOutput output, String modId) {
-    super(output.createPathProvider(PackOutput.Target.DATA_PACK, DIRECTORY), IntegrationRecipe.CODEC);
-    this.modId = modId;
+    super(output.createPathProvider(PackOutput.Target.DATA_PACK, DIRECTORY), IntegrationRecipe.CODEC, modId);
   }
 
   @Override

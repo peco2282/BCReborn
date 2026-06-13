@@ -29,14 +29,16 @@ public abstract class BCRecipeProvider<R extends BCRecipe, B extends BCRecipeBui
   protected final PackOutput.PathProvider output;
   private final Codec<R> codec;
   protected final ArrayList<R> recipes = new ArrayList<>();
+  protected final String modId;
 
   protected static String kind(String type) {
     return "bcreborn/" + type;
   }
 
-  public BCRecipeProvider(PackOutput.PathProvider output, Codec<R> codec) {
+  public BCRecipeProvider(PackOutput.PathProvider output, Codec<R> codec, String modId) {
     this.output = output;
     this.codec = codec;
+    this.modId = modId;
   }
 
   public abstract void create();
@@ -77,5 +79,9 @@ public abstract class BCRecipeProvider<R extends BCRecipe, B extends BCRecipeBui
 
   protected final void addRecipe(Supplier<R> recipe) {
     addRecipe(recipe.get());
+  }
+
+  protected ResourceLocation loc(String path) {
+    return ResourceLocation.fromNamespaceAndPath(modId, path);
   }
 }
