@@ -11,57 +11,69 @@
  */
 package com.peco2282.bcreborn.core.recipes;
 
+import com.google.gson.JsonElement;
+import com.peco2282.bcreborn.BCReborn;
+import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.api.recipes.AssemblyRecipe;
+import com.peco2282.bcreborn.api.recipes.AssemblyRecipeProvider;
 import com.peco2282.bcreborn.api.recipes.IAssemblyRecipeManager;
-import com.peco2282.bcreborn.api.recipes.IFlexibleRecipe;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
 public class AssemblyRecipeManager implements IAssemblyRecipeManager {
+  public static final AssemblyRecipeManager INSTANCE = new AssemblyRecipeManager();
+  private static final Logger LOGGER = BCReborn.createLogger();
+  private final Map<ResourceLocation, AssemblyRecipe> recipes = new ConcurrentHashMap<>();
 
-	public static final AssemblyRecipeManager INSTANCE = new AssemblyRecipeManager();
-	private Map<String, IFlexibleRecipe<ItemStack>> assemblyRecipes = new HashMap<String, IFlexibleRecipe<ItemStack>>();
+  private AssemblyRecipeManager() {
+  }
 
-	@Override
-	public void addRecipe(String id, int energyCost, ItemStack output, Object... input) {
-		addRecipe(id, new FlexibleRecipe<ItemStack>(id, output, energyCost, 0, input));
-	}
+  @SubscribeEvent
+  public static void onAddReloadListener(AddReloadListenerEvent event) {
+    LOGGER.info("Registering Assembly recipe loaders");
+    event.addListener(new AssemblyRecipeLoader());
+    LOGGER.info("Registered Assembly recipe loaders");
+  }
 
-	@Override
-	public void addRecipe(IFlexibleRecipe<ItemStack> recipe) {
-		addRecipe(recipe.getId(), recipe);
-	}
+  @Override
+  public @Nullable AssemblyRecipe getRecipe(ResourceLocation id) {
+    return recipes.get(id);
+  }
 
-	private void addRecipe(String id, IFlexibleRecipe<ItemStack> recipe) {
-		if (recipe == null) {
-			throw new RuntimeException("Recipe \"" + id + "\" is null!");
-		}
+  @Override
+  public Collection<AssemblyRecipe> getRecipes() {
+    return Collections.unmodifiableCollection(recipes.values());
+  }
 
-		if (assemblyRecipes.containsKey(id)) {
-			throw new RuntimeException("Recipe \"" + id + "\" already registered");
-		}
+  @Override
+  public boolean contains(ResourceLocation id) {
+    return recipes.containsKey(id);
+  }
 
-		assemblyRecipes.put(recipe.getId(), recipe);
-	}
+  private static class AssemblyRecipeLoader extends LoaderHelper<AssemblyRecipe> {
+    public AssemblyRecipeLoader() {
+      super(AssemblyRecipeProvider.DIRECTORY);
+    }
 
-	@Override
-	public Collection<IFlexibleRecipe<ItemStack>> getRecipes() {
-		return assemblyRecipes.values();
-	}
-
-	public IFlexibleRecipe<ItemStack> getRecipe(String id) {
-		return assemblyRecipes.get(id);
-	}
-
-	@Override
-	public void removeRecipe(IFlexibleRecipe<ItemStack> recipe) {
-		removeRecipe(recipe.getId());
-	}
-
-	@Override
-	public void removeRecipe(String id) {
-		assemblyRecipes.remove(id);
-	}
+    @Override
+    protected void apply(
+      Map<ResourceLocation, JsonElement> jsons,
+      ResourceManager resourceManager,
+      ProfilerFiller profiler
+    ) {
+      doReload(jsons, profiler, AssemblyRecipe.CODEC, INSTANCE.recipes);
+    }
+  }
 }
