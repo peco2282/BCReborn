@@ -37,7 +37,6 @@ public final class SchematicRegistry implements ISchematicRegistry {
 
   static {
     INSTANCE = new SchematicRegistry();
-    BuilderAPI.schematic(INSTANCE);
   }
 
   public final HashMap<BlockState, SchematicFactory<? extends SchematicBlock>> schematicBlocks = new HashMap<>();
