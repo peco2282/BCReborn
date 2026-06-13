@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.robotics.block.entity;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.menu.RequesterMenu;
 import net.minecraft.core.BlockPos;

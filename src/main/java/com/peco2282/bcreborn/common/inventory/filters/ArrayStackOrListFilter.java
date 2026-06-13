@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.inventory.filters;
 
-import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.api.StackHelper;
 import net.minecraft.world.item.ItemStack;
 
 /**

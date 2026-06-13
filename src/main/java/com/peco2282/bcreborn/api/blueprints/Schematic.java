@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
+import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
@@ -44,7 +45,7 @@ public abstract class Schematic {
    * itself might have been filtered out by previously running code.
    */
   public boolean isItemMatchingRequirement(ItemStack suppliedStack, ItemStack requiredStack) {
-    return BuilderAPI.schematicHelper.isEqualItem(suppliedStack, requiredStack);
+    return StackHelper.isEqualItem(suppliedStack, requiredStack);
   }
 
   /**
