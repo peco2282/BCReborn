@@ -25,7 +25,7 @@ public record AssemblyRecipe(
   ItemStack result,
   int energy,
   int craftingTime
-) {
+) implements BCRecipe {
   public static final Codec<AssemblyRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(AssemblyRecipe::id),
     Codecs.INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter(AssemblyRecipe::ingredients),

@@ -26,7 +26,7 @@ public record RefineryRecipe(
   FluidStack result,
   int energy,
   int delay
-) {
+) implements BCRecipe {
   public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(RefineryRecipe::id),
     Codecs.INGREDIENT_CODEC.fieldOf("primary").forGetter(RefineryRecipe::primary),

@@ -26,7 +26,7 @@ public record IntegrationRecipe(
   ItemStack result,
   int energy,
   int maxExpansionCount
-) {
+) implements BCRecipe {
   public static final Codec<IntegrationRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(IntegrationRecipe::id),
     Codecs.INGREDIENT_CODEC.fieldOf("input").forGetter(IntegrationRecipe::input),
