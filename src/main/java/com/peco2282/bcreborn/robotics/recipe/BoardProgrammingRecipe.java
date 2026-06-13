@@ -11,11 +11,13 @@
  */
 package com.peco2282.bcreborn.robotics.recipe;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.recipes.IProgrammingRecipe;
 import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -25,8 +27,8 @@ import java.util.List;
 
 public class BoardProgrammingRecipe implements IProgrammingRecipe {
   @Override
-  public String getId() {
-    return "buildcraft:redstone_board";
+  public ResourceLocation getId() {
+    return BCReborn.getLocation("redstone_board");
   }
 
   @Override
