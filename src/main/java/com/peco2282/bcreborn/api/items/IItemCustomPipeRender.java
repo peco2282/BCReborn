@@ -15,11 +15,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * Interface for items that require custom rendering when traveling through a pipe.
+ */
 public interface IItemCustomPipeRender {
+
+  /**
+   * Gets the scale at which the item should be rendered in the pipe.
+   *
+   * @param stack The item stack.
+   * @return The rendering scale.
+   */
   float getPipeRenderScale(ItemStack stack);
 
   /**
-   * @return False to use the default renderer, true otherwise.
+   * Performs custom rendering for the item in the pipe.
+   *
+   * @param stack The item stack.
+   * @param x     The x-coordinate.
+   * @param y     The y-coordinate.
+   * @param z     The z-coordinate.
+   * @return True if custom rendering was performed, false to use the default renderer.
    */
   @OnlyIn(Dist.CLIENT)
   boolean renderItemInPipe(ItemStack stack, double x, double y, double z);

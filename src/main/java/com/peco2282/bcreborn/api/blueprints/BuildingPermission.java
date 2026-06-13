@@ -12,30 +12,23 @@
 package com.peco2282.bcreborn.api.blueprints;
 
 /**
- * Schematics recorded in the blueprints can restrict situations where a
- * blueprint can be used. A same schematic class can have different
- * permissions depending on its contents. It's particularly useful when
- * fixing a schematic, if blueprints that saved the previous version should
- * not be built because of a bug (such as dupe bug on inventories).
+ * Defines the permissions for building a schematic in different contexts.
  */
 public enum BuildingPermission {
   /**
-   * No restrictions, blueprints using this schematic are good in all
-   * contexts.
+   * No restrictions; blueprints containing this schematic can be built in all contexts.
    */
   ALL,
 
   /**
-   * This blueprints containing this schematic can only be used in
-   * creative. Maybe the block can't be crafted in survival in the first
-   * place, or the content of the schematic is known to have dupe bugs.
+   * Blueprints containing this schematic can only be built in creative mode.
+   * This may be due to the block being uncraftable in survival or known issues with survival building.
    */
   CREATIVE_ONLY,
 
   /**
-   * Blueprints containing this schematic should not be built. This is
-   * typically used when a critical problems have been fixed, but older
-   * versions of the schematic are too badly broken to be retreived.
+   * Blueprints containing this schematic cannot be built at all.
+   * Typically used for legacy blueprints that are too broken to be placed.
    */
   NONE,
 }

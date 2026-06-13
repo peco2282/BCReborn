@@ -17,12 +17,28 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
+/**
+ * Represents different colors of pipe wires.
+ */
 public enum PipeWire implements StringRepresentable {
   RED, BLUE, GREEN, YELLOW;
 
+  /**
+   * Cache of all possible pipe wire values.
+   */
   public static final PipeWire[] VALUES = values();
+
+  /**
+   * The item representing the pipe wire.
+   */
   public static Item item;
 
+  /**
+   * Gets a pipe wire from its ordinal ID.
+   *
+   * @param ordinal The ordinal ID.
+   * @return The pipe wire, or {@link #RED} if out of bounds.
+   */
   public static PipeWire fromOrdinal(int ordinal) {
     if (ordinal < 0 || ordinal >= VALUES.length) {
       return RED;
@@ -31,6 +47,9 @@ public enum PipeWire implements StringRepresentable {
     }
   }
 
+  /**
+   * @return The "reverse" color of the wire.
+   */
   public PipeWire reverse() {
     return switch (this) {
       case RED -> YELLOW;
@@ -40,20 +59,35 @@ public enum PipeWire implements StringRepresentable {
     };
   }
 
+  /**
+   * @return The lowercase name of the wire with "PipeWire" suffix, suitable for tags.
+   */
   public String getTag() {
     return name().toLowerCase(Locale.ENGLISH) + "PipeWire";
   }
 
+  /**
+   * @return The capitalized name of the color (e.g., "Red").
+   */
   public String getColor() {
     String name = this.toString().toLowerCase(Locale.ENGLISH);
     char first = Character.toUpperCase(name.charAt(0));
     return first + name.substring(1);
   }
 
+  /**
+   * @return An {@link ItemStack} of this pipe wire with a count of 1.
+   */
   public ItemStack getStack() {
     return getStack(1);
   }
 
+  /**
+   * Gets an {@link ItemStack} of this pipe wire with the specified quantity.
+   *
+   * @param qty The quantity.
+   * @return The stack, or {@link ItemStack#EMPTY} if the item is not registered.
+   */
   public ItemStack getStack(int qty) {
     if (item == null) {
       return ItemStack.EMPTY;
@@ -62,6 +96,12 @@ public enum PipeWire implements StringRepresentable {
     }
   }
 
+  /**
+   * Checks if the given stack is a pipe wire item.
+   *
+   * @param stack The stack to check.
+   * @return True if it is a pipe wire.
+   */
   public boolean isPipeWire(ItemStack stack) {
     if (stack == null || stack.isEmpty()) {
       return false;

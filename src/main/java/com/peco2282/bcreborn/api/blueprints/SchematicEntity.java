@@ -23,23 +23,29 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Optional;
 
+/**
+ * Schematic implementation for entities.
+ */
 public class SchematicEntity extends Schematic {
+
+  /**
+   * The type of the entity.
+   */
   public EntityType<? extends Entity> entity;
 
   /**
-   * This tree contains additional data to be stored in the blueprint. By
-   * default, it will be initialized from Schematic.readFromWord with the
-   * standard readNBT function of the corresponding tile (if any) and will be
-   * loaded from BptBlock.writeToWorld using the standard writeNBT function.
+   * The NBT data of the entity.
    */
   public CompoundTag entityNBT = new CompoundTag();
 
   /**
-   * This field contains requirements for a given block when stored in the
-   * blueprint. Modders can either rely on this list or compute their own int
-   * Schematic.
+   * Requirements for the entity when stored in a blueprint.
    */
   public ItemStack[] storedRequirements = new ItemStack[0];
+
+  /**
+   * The default building permission for this entity.
+   */
   public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
   @Override
@@ -47,11 +53,22 @@ public class SchematicEntity extends Schematic {
     Collections.addAll(requirements, storedRequirements);
   }
 
+  /**
+   * Spawns the entity in the world based on the stored NBT data.
+   *
+   * @param context The builder context.
+   */
   public void writeToWorld(IBuilderContext context) {
     Optional<Entity> e = EntityType.create(entityNBT, context.world());
     e.ifPresent(context.world()::addFreshEntity);
   }
 
+  /**
+   * Initializes the schematic from an existing entity in the world.
+   *
+   * @param context The builder context.
+   * @param entity  The entity to read from.
+   */
   public void readFromWorld(IBuilderContext context, Entity entity) {
     entity.save(entityNBT);
   }
@@ -154,6 +171,12 @@ public class SchematicEntity extends Schematic {
     storedRequirements = rqs.toArray(new ItemStack[0]);
   }
 
+  /**
+   * Creates an NBT list of doubles.
+   *
+   * @param values The double values.
+   * @return The {@link ListTag}.
+   */
   protected ListTag newDoubleNBTList(double... values) {
     ListTag nbttaglist = new ListTag();
     for (double d : values) {
@@ -162,6 +185,12 @@ public class SchematicEntity extends Schematic {
     return nbttaglist;
   }
 
+  /**
+   * Creates an NBT list of floats.
+   *
+   * @param values The float values.
+   * @return The {@link ListTag}.
+   */
   protected ListTag newFloatNBTList(float... values) {
     ListTag nbttaglist = new ListTag();
     for (float f : values) {
@@ -170,6 +199,12 @@ public class SchematicEntity extends Schematic {
     return nbttaglist;
   }
 
+  /**
+   * Checks if the entity is already present in the world near its intended position.
+   *
+   * @param context The builder context.
+   * @return True if the entity exists.
+   */
   public boolean isAlreadyBuilt(IBuilderContext context) {
     ListTag nbttaglist = entityNBT.getList("Pos", Tag.TAG_DOUBLE);
     Position newPosition = new Position(nbttaglist.getDouble(0),

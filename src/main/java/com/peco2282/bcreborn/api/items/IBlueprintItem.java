@@ -13,9 +13,23 @@ package com.peco2282.bcreborn.api.items;
 
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Interface for items that represent blueprints or templates.
+ * Extends {@link INamedItem}.
+ */
 public interface IBlueprintItem extends INamedItem {
+
+  /**
+   * Gets the type of the blueprint item.
+   *
+   * @param stack The item stack.
+   * @return The {@link Type}.
+   */
   Type getType(ItemStack stack);
 
+  /**
+   * Represents the type of blueprint item.
+   */
   enum Type {
     TEMPLATE, BLUEPRINT
   }

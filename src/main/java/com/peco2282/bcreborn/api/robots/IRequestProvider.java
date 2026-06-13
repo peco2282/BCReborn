@@ -13,10 +13,31 @@ package com.peco2282.bcreborn.api.robots;
 
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Interface for objects that can provide and fulfill item requests.
+ */
 public interface IRequestProvider {
+  /**
+   * Returns the number of requests available.
+   *
+   * @return The request count.
+   */
   int getRequestsCount();
 
+  /**
+   * Returns the requested item in the specified slot.
+   *
+   * @param slot The slot index.
+   * @return The requested item stack.
+   */
   ItemStack getRequest(int slot);
 
+  /**
+   * Offers an item to fulfill a request in the specified slot.
+   *
+   * @param slot  The slot index.
+   * @param stack The item stack being offered.
+   * @return The remaining item stack after the offer is processed.
+   */
   ItemStack offerItem(int slot, ItemStack stack);
 }

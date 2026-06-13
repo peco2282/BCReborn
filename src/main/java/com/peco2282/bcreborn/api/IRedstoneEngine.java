@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.api;
 
+/**
+ * Marker interface for Redstone Engines.
+ */
 @MarkerInterface
 public interface IRedstoneEngine {
 }

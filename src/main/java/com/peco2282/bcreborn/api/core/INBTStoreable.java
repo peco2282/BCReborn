@@ -13,8 +13,21 @@ package com.peco2282.bcreborn.api.core;
 
 import net.minecraft.nbt.CompoundTag;
 
+/**
+ * Interface for objects that can be saved to and loaded from NBT.
+ */
 public interface INBTStoreable {
+  /**
+   * Reads the object's state from the given NBT tag.
+   *
+   * @param tag The NBT tag to read from.
+   */
   void readFromNBT(CompoundTag tag);
 
+  /**
+   * Writes the object's state to the given NBT tag.
+   *
+   * @param tag The NBT tag to write to.
+   */
   void writeToNBT(CompoundTag tag);
 }

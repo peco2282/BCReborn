@@ -18,21 +18,51 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
+/**
+ * Resource identifier for a specific block and side.
+ */
 public class ResourceIdBlock extends ResourceId {
+  /**
+   * The block position.
+   */
   public BlockPos index = BlockPos.ZERO;
+
+  /**
+   * The side of the block.
+   */
   public Direction side = null;
 
+  /**
+   * Default constructor for NBT loading.
+   */
   public ResourceIdBlock() {
   }
 
+  /**
+   * Constructs a ResourceIdBlock for the specified coordinates.
+   *
+   * @param x The X coordinate.
+   * @param y The Y coordinate.
+   * @param z The Z coordinate.
+   */
   public ResourceIdBlock(int x, int y, int z) {
     index = new BlockPos(x, y, z);
   }
 
+  /**
+   * Constructs a ResourceIdBlock for the specified block position.
+   *
+   * @param iIndex The block position.
+   */
   public ResourceIdBlock(BlockPos iIndex) {
     index = iIndex;
   }
 
+  /**
+   * Constructs a ResourceIdBlock for the specified block entity.
+   *
+   * @param tile The block entity.
+   */
   public ResourceIdBlock(BlockEntity tile) {
     index = tile.getBlockPos();
   }

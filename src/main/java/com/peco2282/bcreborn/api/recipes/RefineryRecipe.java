@@ -19,6 +19,20 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
 
+/**
+ * Represents a refinery recipe in BuildCraft Reborn.
+ * <p>
+ * A refinery recipe defines how fluids are processed in a refinery, including the primary
+ * and optional secondary ingredients, the resulting fluid output, energy requirements,
+ * and processing delay.
+ *
+ * @param id        The unique identifier for this recipe.
+ * @param primary   The primary ingredient required for this recipe.
+ * @param secondary An optional secondary ingredient required for this recipe.
+ * @param result    The fluid stack produced by this recipe.
+ * @param energy    The energy cost (in MJ) required to process this recipe.
+ * @param delay     The processing time delay (in ticks) for this recipe.
+ */
 public record RefineryRecipe(
   ResourceLocation id,
   Ingredient primary,
@@ -27,6 +41,9 @@ public record RefineryRecipe(
   int energy,
   int delay
 ) implements BCRecipe {
+  /**
+   * Codec for serializing and deserializing RefineryRecipe instances.
+   */
   public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     ResourceLocation.CODEC.fieldOf("id").forGetter(RefineryRecipe::id),
     Codecs.INGREDIENT_CODEC.fieldOf("primary").forGetter(RefineryRecipe::primary),

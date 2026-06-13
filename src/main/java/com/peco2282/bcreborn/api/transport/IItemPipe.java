@@ -12,7 +12,8 @@
 package com.peco2282.bcreborn.api.transport;
 
 /**
- * To be implemented by the real item pipe in Transport mod, but leaves knowledge for classes that do not have direct dependency on transport.
+ * Marker interface for item-transporting pipes.
+ * This allows other modules to identify item pipes without a direct dependency on the transport implementation.
  */
 public interface IItemPipe {
 

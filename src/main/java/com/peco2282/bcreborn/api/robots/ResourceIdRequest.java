@@ -17,14 +17,26 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.Objects;
 
+/**
+ * Resource identifier for a request at a specific docking station and slot.
+ */
 public class ResourceIdRequest extends ResourceId {
   private BlockPos index;
   private Direction side;
   private int slot;
 
+  /**
+   * Default constructor for NBT loading.
+   */
   public ResourceIdRequest() {
   }
 
+  /**
+   * Constructs a ResourceIdRequest for the specified docking station and slot.
+   *
+   * @param station The docking station.
+   * @param slot    The slot index.
+   */
   public ResourceIdRequest(DockingStation station, int slot) {
     index = station.index().toBlockPos();
     side = station.side();

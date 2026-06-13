@@ -13,6 +13,9 @@ package com.peco2282.bcreborn.api.transport;
 
 import net.minecraft.util.StringRepresentable;
 
+/**
+ * Represents different power levels for transport systems.
+ */
 public enum PowerMode implements StringRepresentable {
   OFF(0),
   LOW(10),
@@ -20,6 +23,9 @@ public enum PowerMode implements StringRepresentable {
   HIGH(1000),
   MAX(10000);
 
+  /**
+   * The maximum power value associated with this mode.
+   */
   public final int maxPower;
 
   PowerMode(int maxPower) {

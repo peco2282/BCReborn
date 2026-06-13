@@ -11,5 +11,8 @@
  */
 package com.peco2282.bcreborn.api;
 
+/**
+ * Interface representing an object that can be heated (e.g., a boiler or a combustion engine).
+ */
 public interface IHeatable {
 }

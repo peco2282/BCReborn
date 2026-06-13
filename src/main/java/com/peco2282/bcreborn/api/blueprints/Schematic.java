@@ -20,107 +20,120 @@ import net.minecraft.world.item.ItemStack;
 import java.util.LinkedList;
 
 /**
- * A schematic is a piece of a blueprint. It allows to stock blocks or entities
- * to blueprints, and can have a state that moves from a blueprint referential
- * to a world referential. Although default schematic behavior will be OK for a
- * lot of objects, specific blocks and entities may be associated with a
- * dedicated schematic class, which will be instantiated automatically.
+ * A schematic is a component of a blueprint. It handles the storage and placement of blocks or entities.
  * <p>
- * Schematic perform "id translation" in case the block ids between a blueprint
- * and the world installation are different. Mapping is done through the builder
- * context.
- * <p>
- * Detailed documentation on the schematic behavior can be found on
- * http://www.mod-buildcraft.com/wiki/doku.php?id=builder_support
- * <p>
- * Example of schematics for minecraft blocks are available in the package
- * buildcraft.core.schematics.
+ * Schematics manage coordinate and ID translations between the blueprint and the world.
+ * Dedicated schematic classes can be associated with specific blocks or entities for custom behavior.
  */
 public abstract class Schematic {
   /**
-   * This is called to verify whether the required item is equal to the
-   * supplied item.
-   * <p>
-   * Primarily rely on this for checking metadata/NBT - the item ID
-   * itself might have been filtered out by previously running code.
+   * Checks if a supplied item stack matches a required item stack for building.
+   *
+   * @param suppliedStack The stack provided for building.
+   * @param requiredStack The stack required by the schematic.
+   * @return True if they match.
    */
   public boolean isItemMatchingRequirement(ItemStack suppliedStack, ItemStack requiredStack) {
     return StackHelper.isEqualItem(suppliedStack, requiredStack);
   }
 
   /**
-   * Perform a 90 degree rotation to the slot.
+   * Rotates the schematic 90 degrees to the left.
+   *
+   * @param context The builder context.
    */
   public void rotateLeft(IBuilderContext context) {
 
   }
 
   /**
-   * Applies translations to all positions in the schematic to center in the
-   * blueprint referential
+   * Applies translations to center the schematic in the blueprint referential.
+   *
+   * @param transform The translation transform.
    */
   public void translateToBlueprint(Translation transform) {
 
   }
 
   /**
-   * Apply translations to all positions in the schematic to center in the
-   * builder referential
+   * Applies translations to center the schematic in the world referential.
+   *
+   * @param transform The translation transform.
    */
   public void translateToWorld(Translation transform) {
 
   }
 
   /**
-   * Translates blocks and item ids to the blueprint referential
+   * Translates block and item IDs to the blueprint referential.
+   *
+   * @param registry The mapping registry.
    */
   public void idsToBlueprint(MappingRegistry registry) {
 
   }
 
   /**
-   * Translates blocks and item ids to the world referential
+   * Translates block and item IDs to the world referential.
+   *
+   * @param registry The mapping registry.
    */
   public void idsToWorld(MappingRegistry registry) {
 
   }
 
   /**
-   * Initializes a schematic for blueprint according to an objet placed on {x,
-   * y, z} on the world. For blocks, block and meta fields will be initialized
-   * automatically.
+   * Initializes the schematic from an object at the specified world coordinates.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
    */
   public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
 
   }
 
   /**
-   * Places the block in the world, at the location specified in the slot,
-   * using the stack in parameters
+   * Places the block or entity in the world at the specified coordinates.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
+   * @param stacks  The item stacks used for placement.
    */
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
 
   }
 
   /**
-   * Write specific requirements coming from the world to the blueprint.
+   * Stores building requirements from the world into the schematic.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
    */
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
   }
 
   /**
-   * Returns the requirements needed to build this block. When the
-   * requirements are met, they will be removed all at once from the builder,
-   * before calling writeToWorld.
+   * Gets the requirements needed to build this component.
+   *
+   * @param context      The builder context.
+   * @param requirements The list to add requirements to.
    */
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
 
   }
 
   /**
-   * Returns the amount of energy required to build this slot, depends on the
-   * stacks selected for the build.
+   * Gets the amount of energy required to build this component.
+   *
+   * @param stacksUsed The stacks used for the build.
+   * @return The energy requirement.
    */
   public int getEnergyRequirement(LinkedList<ItemStack> stacksUsed) {
     int result = 0;
@@ -135,7 +148,10 @@ public abstract class Schematic {
   }
 
   /**
-   * Returns the flying stacks to display in the builder animation.
+   * Gets the stacks to display in the builder's animation.
+   *
+   * @param stackConsumed The stacks consumed during the build.
+   * @return A list of stacks to display.
    */
   public LinkedList<ItemStack> getStacksToDisplay(
     LinkedList<ItemStack> stackConsumed) {
@@ -144,79 +160,95 @@ public abstract class Schematic {
   }
 
   /**
-   * Return the stage where this schematic has to be built.
+   * Gets the building stage for this schematic.
+   *
+   * @return The {@link BuildingStage}.
    */
   public BuildingStage getBuildStage() {
     return BuildingStage.STANDALONE;
   }
 
   /**
-   * Return true if the block on the world correspond to the block stored in
-   * the blueprint at the location given by the slot. By default, this
-   * subprogram is permissive and doesn't take into account metadata.
-   * <p>
-   * Post processing will be called on these blocks.
+   * Checks if the component is already built at the specified world position.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
+   * @return True if it is already built.
    */
   public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
     return true;
   }
 
   /**
-   * Return true if the block should not be placed to the world. Requirements
-   * will not be asked on such a block, and building will not be called.
-   * <p>
-   * Post processing will be called on these blocks.
+   * Checks if the component should not be built in the world.
+   *
+   * @return True if building should be skipped.
    */
   public boolean doNotBuild() {
     return false;
   }
 
   /**
-   * Return true if the schematic should not be used at all. This is computed
-   * straight after readFromNBT can be used to deactivate schematics in which
-   * an inconsistency is detected. It will be considered as a block of air
-   * instead.
-   * <p>
-   * Post processing will *not* be called on these blocks.
+   * Checks if the schematic should not be used at all.
+   * This is typically used to deactivate schematics when an inconsistency is detected.
+   *
+   * @return True if it should not be used.
    */
   public boolean doNotUse() {
     return false;
   }
 
   /**
-   * Return the maximium building permission for blueprint containing this
-   * schematic.
+   * Gets the building permission for this schematic.
+   *
+   * @return The {@link BuildingPermission}.
    */
   public BuildingPermission getBuildingPermission() {
     return BuildingPermission.ALL;
   }
 
   /**
-   * Called on a block when the blueprint has finished to place all the
-   * blocks. This may be useful to adjust variable depending on surrounding
-   * blocks that may not be there already at initial building.
+   * Called after the builder has finished placing all blocks in the blueprint.
+   * Use this to adjust state based on neighbor blocks.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
    */
   public void postProcessing(IBuilderContext context, int x, int y, int z) {
 
   }
 
   /**
-   * Saves this schematic to the blueprint NBT.
+   * Writes the schematic data to an NBT tag.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
    */
   public void writeSchematicToNBT(CompoundTag nbt, MappingRegistry registry) {
 
   }
 
   /**
-   * Loads this schematic from the blueprint NBT.
+   * Reads the schematic data from an NBT tag.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
    */
   public void readSchematicFromNBT(CompoundTag nbt, MappingRegistry registry) {
 
   }
 
   /**
-   * Returns the number of cycles to wait after building this schematic. Tiles
-   * and entities typically require more wait, around 5 cycles.
+   * Consumes an item from an inventory slot for building.
+   *
+   * @param context       The builder context.
+   * @param requiredStack The stack required.
+   * @param slotInv       The inventory slot.
+   * @return The stack taken from the slot, or {@link ItemStack#EMPTY} if no item was taken.
    */
   public ItemStack useItem(IBuilderContext context, ItemStack requiredStack, IInvSlot slotInv) {
     ItemStack stack = slotInv.getStackInSlot();
@@ -226,13 +258,17 @@ public abstract class Schematic {
     return ItemStack.EMPTY;
   }
 
+  /**
+   * Gets the time required to build this schematic (in builder cycles).
+   *
+   * @return The build time.
+   */
   public int buildTime() {
     return 1;
   }
 
   /**
-   * Blocks are build in various stages, in order to make sure that a block
-   * can indeed be placed, and that it's unlikely to disturb other blocks.
+   * Represents the building stage of a schematic.
    */
   public enum BuildingStage implements StringRepresentable {
     /**
@@ -241,8 +277,7 @@ public abstract class Schematic {
     STANDALONE,
 
     /**
-     * Expanding blocks will grow and may disturb other block locations,
-     * like liquids.
+     * Expanding blocks may grow and disturb other block locations (e.g., liquids).
      */
     EXPANDING;
 

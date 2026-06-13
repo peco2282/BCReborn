@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class for interacting with Minecraft and Forge registries.
+ */
 @SuppressWarnings("deprecation")
 public interface RegistryUtil {
   /**
@@ -77,10 +80,20 @@ public interface RegistryUtil {
     return fromItemTag(key).stream().map(Holder::get).toList();
   }
 
+  /**
+   * Gets all registered schematics.
+   *
+   * @return A set of all schematic entries.
+   */
   static Set<Map.Entry<ResourceKey<Schematic>, Schematic>> getSchematics() {
     return getRegistry(BCRegistryKeys.SCHEMATIC).getEntries();
   }
 
+  /**
+   * Gets all registered filler patterns.
+   *
+   * @return A set of all filler pattern entries.
+   */
   static Set<Map.Entry<ResourceKey<IStatement>, IFillerPattern>> getFillerPatterns() {
     return getRegistry(BCRegistryKeys.STATEMENT).getEntries()
       .stream()
@@ -89,14 +102,31 @@ public interface RegistryUtil {
       .collect(Collectors.toUnmodifiableSet());
   }
 
+  /**
+   * Retrieves a redstone board from an NBT tag.
+   *
+   * @param tag The NBT tag containing the board ID.
+   * @return The {@link RedstoneBoardNBT}, or an empty board if not found.
+   */
   static RedstoneBoardNBT<?> getRedstoneBoard(CompoundTag tag) {
     return getRedstoneBoard(tag.getString("id"));
   }
 
+  /**
+   * Retrieves a redstone board by its string ID.
+   *
+   * @param id The string ID of the board.
+   * @return The {@link RedstoneBoardNBT}, or an empty board if not found.
+   */
   static RedstoneBoardNBT<?> getRedstoneBoard(String id) {
     return getRedstoneBoardsList().stream().filter(it -> it.getID().equals(ResourceLocation.parse(id))).findFirst().orElseGet(RedstoneBoardNBT.getEmpty());
   }
 
+  /**
+   * Gets a list of all registered redstone boards.
+   *
+   * @return A list of all redstone boards.
+   */
   static List<RedstoneBoardNBT<?>> getRedstoneBoardsList() {
     return getRegistry(BCRegistryKeys.REDSTONE_BOARD).getEntries().stream()
       .map(Map.Entry::getValue)
@@ -104,6 +134,14 @@ public interface RegistryUtil {
       .toList();
   }
 
+  /**
+   * Gets a Forge registry for the specified resource key.
+   *
+   * @param key The resource key of the registry.
+   * @param <T> The type of objects in the registry.
+   * @return The {@link IForgeRegistry}.
+   * @throws IllegalArgumentException if the key is null.
+   */
   @SuppressWarnings("UnstableApiUsage")
   @Contract(value = "null->fail; _->!null", pure = true)
   static <T> IForgeRegistry<T> getRegistry(ResourceKey<Registry<T>> key) {

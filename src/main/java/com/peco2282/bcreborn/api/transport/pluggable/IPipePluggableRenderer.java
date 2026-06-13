@@ -16,6 +16,21 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 
+/**
+ * Interface for rendering pipe pluggables.
+ */
 public interface IPipePluggableRenderer {
+  /**
+   * Renders the pluggable.
+   *
+   * @param pipe          The pipe.
+   * @param side          The side.
+   * @param pipePluggable The pluggable instance.
+   * @param renderPass    The current render pass.
+   * @param poseStack     The pose stack.
+   * @param buffer        The buffer source.
+   * @param packedLight   The light level.
+   * @param packedOverlay The overlay level.
+   */
   void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
 }

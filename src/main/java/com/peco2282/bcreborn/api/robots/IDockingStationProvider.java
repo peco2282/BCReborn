@@ -12,8 +12,13 @@
 package com.peco2282.bcreborn.api.robots;
 
 /**
- * By default, this can be either an IPipePluggable or a TileEntity.
+ * Interface for blocks or tile entities that provide a docking station.
  */
 public interface IDockingStationProvider {
+  /**
+   * Returns the docking station provided by this object.
+   *
+   * @return The docking station.
+   */
   DockingStation getStation();
 }

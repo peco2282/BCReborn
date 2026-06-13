@@ -12,23 +12,42 @@
 package com.peco2282.bcreborn.api.core;
 
 /**
- * To be implemented by TileEntities able to provide a square area on the world, typically BuildCraft markers.
+ * To be implemented by BlockEntities able to provide a 3D area in the world, typically BuildCraft markers.
  */
 public interface IAreaProvider {
+
+  /**
+   * @return The minimum x-coordinate of the area.
+   */
   int xMin();
 
+  /**
+   * @return The minimum y-coordinate of the area.
+   */
   int yMin();
 
+  /**
+   * @return The minimum z-coordinate of the area.
+   */
   int zMin();
 
+  /**
+   * @return The maximum x-coordinate of the area.
+   */
   int xMax();
 
+  /**
+   * @return The maximum y-coordinate of the area.
+   */
   int yMax();
 
+  /**
+   * @return The maximum z-coordinate of the area.
+   */
   int zMax();
 
   /**
-   * Remove from the world all objects used to define the area.
+   * Removes from the world all objects used to define the area (e.g., markers).
    */
   void removeFromWorld();
 }

@@ -18,13 +18,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.LinkedList;
 
+/**
+ * Schematic implementation for blocks with block entities.
+ */
 public class SchematicTile extends SchematicBlock {
 
   /**
-   * This tree contains additional data to be stored in the blueprint. By
-   * default, it will be initialized from Schematic.readFromWord with the
-   * standard readNBT function of the corresponding tile (if any) and will be
-   * loaded from BptBlock.writeToWorld using the standard writeNBT function.
+   * The NBT data of the block entity.
    */
   public CompoundTag tileNBT = new CompoundTag();
 
@@ -42,13 +42,13 @@ public class SchematicTile extends SchematicBlock {
     }
   }
 
+  /**
+   * Called after the NBT data has been loaded.
+   */
   public void onNBTLoaded() {
 
   }
 
-  /**
-   * Places the block in the world, at the location specified in the slot.
-   */
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
     super.placeInWorld(context, x, y, z, stacks);

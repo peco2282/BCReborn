@@ -13,12 +13,21 @@ package com.peco2282.bcreborn.api.blueprints;
 
 import com.peco2282.bcreborn.api.core.Position;
 
+/**
+ * Represents a translation transform in 3D space.
+ */
 public class Translation {
 
   public double x = 0;
   public double y = 0;
   public double z = 0;
 
+  /**
+   * Translates the given position by the values in this transform.
+   *
+   * @param p The position to translate.
+   * @return A new {@link Position} representing the translated coordinates.
+   */
   public Position translate(Position p) {
     Position p2 = new Position(p);
 

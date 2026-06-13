@@ -16,9 +16,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * Interface for items that can provide an overlay when rendered on a robot.
+ */
 public interface IRobotOverlayItem {
+  /**
+   * Checks if the given item stack is a valid overlay for a robot.
+   *
+   * @param stack The item stack.
+   * @return {@code true} if valid, {@code false} otherwise.
+   */
   boolean isValidRobotOverlay(ItemStack stack);
 
+  /**
+   * Renders the robot overlay.
+   *
+   * @param stack          The item stack.
+   * @param textureManager The texture manager.
+   */
   @OnlyIn(Dist.CLIENT)
   void renderRobotOverlay(ItemStack stack, TextureManager textureManager);
 }

@@ -14,18 +14,28 @@ package com.peco2282.bcreborn.api.transport;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * Interface for objects that can have items injected into them.
+ */
 public interface IInjectable {
+
+  /**
+   * Checks if items can be injected from the specified side.
+   *
+   * @param from The direction items are coming from.
+   * @return True if injection is allowed.
+   */
   boolean canInjectItems(Direction from);
 
   /**
-   * Offers an ItemStack for addition to the pipe. Will be rejected if the
-   * pipe doesn't accept items from that side.
+   * Offers an {@link ItemStack} for addition to the object.
+   * Will be rejected if the object doesn't accept items from that side.
    *
-   * @param stack ItemStack offered for addition. Do not manipulate this!
-   * @param doAdd If false no actual addition should take place. Implementors should simulate.
-   * @param from  Orientation the ItemStack is offered from.
-   * @param color The color of the item to be added to the pipe, or null for no color.
-   * @return Amount of items used from the passed stack.
+   * @param stack The stack to inject. Do not modify the original stack!
+   * @param doAdd If true, actually perform the injection; if false, just simulate.
+   * @param from  The direction the item is coming from.
+   * @param color The color of the item (if any), or null.
+   * @return The number of items successfully injected.
    */
   int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color);
 }

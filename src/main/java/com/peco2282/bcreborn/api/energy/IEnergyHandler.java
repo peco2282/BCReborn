@@ -11,5 +11,9 @@
  */
 package com.peco2282.bcreborn.api.energy;
 
+/**
+ * Interface for objects that can handle energy.
+ * This is a base interface for more specific energy-related handlers.
+ */
 public interface IEnergyHandler {
 }

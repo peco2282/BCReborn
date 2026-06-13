@@ -13,35 +13,37 @@ package com.peco2282.bcreborn.api;
 
 
 /**
- * This interface should be implemented by any Tile Entity which wishes to
- * have non-redstone automation (for example, BuildCraft Gates, but also
- * other mods which implement it, e.g. OpenComputers).
+ * This interface should be implemented by any BlockEntity which wishes to
+ * support non-redstone automation (for example, BuildCraft Gates or integration from other mods).
  */
 public interface IControllable {
+
   /**
-   * Get the current control mode of the Tile Entity.
+   * Gets the current control mode of the BlockEntity.
    *
-   * @return
+   * @return The current {@link Mode}.
    */
   Mode getControlMode();
 
   /**
-   * Set the mode of the Tile Entity.
+   * Sets the control mode of the BlockEntity.
    *
-   * @param mode
+   * @param mode The new {@link Mode} to set.
    */
   void setControlMode(Mode mode);
 
   /**
-   * Check if a given control mode is accepted.
-   * If you query IControllable tiles, you MUST check with
-   * acceptsControlMode first.
+   * Checks if a given control mode is supported by this BlockEntity.
+   * When interacting with {@link IControllable} objects, you should check this before calling {@link #setControlMode(Mode)}.
    *
-   * @param mode
-   * @return True if this control mode is accepted.
+   * @param mode The {@link Mode} to check.
+   * @return True if the mode is accepted.
    */
   boolean acceptsControlMode(Mode mode);
 
+  /**
+   * Represents various control modes for automation.
+   */
   enum Mode {
     Unknown, On, Off, Mode, Loop
   }

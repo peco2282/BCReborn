@@ -17,16 +17,36 @@ import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.world.level.Level;
 
 /**
- * This interface provide contextual information when building or initializing
- * blueprint slots.
+ * Interface providing contextual information for building or initializing blueprint slots.
  */
 public interface IBuilderContext {
 
+  /**
+   * Rotates the given position to the left based on the context's orientation.
+   *
+   * @param pos The position to rotate.
+   * @return The rotated {@link Position}.
+   */
   Position rotatePositionLeft(Position pos);
 
+  /**
+   * Gets the surrounding box of the construction area.
+   *
+   * @return The {@link IBox}.
+   */
   IBox surroundingBox();
 
+  /**
+   * Gets the world context.
+   *
+   * @return The {@link Level}.
+   */
   Level world();
 
+  /**
+   * Gets the mapping registry for identifying blocks and entities.
+   *
+   * @return The {@link MappingRegistry}.
+   */
   MappingRegistry getMappingRegistry();
 }

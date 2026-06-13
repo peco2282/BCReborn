@@ -18,18 +18,25 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Function;
 
+/**
+ * Interface for providing icons (textures) for various components.
+ */
 public interface IIconProvider {
 
   /**
-   * @param iconIndex
+   * Gets the icon for a specific index.
+   *
+   * @param iconIndex The index of the icon.
+   * @return The sprite for the icon.
    */
   @OnlyIn(Dist.CLIENT)
   TextureAtlasSprite getIcon(int iconIndex);
 
   /**
-   * A call for the provider to register its Icons. This may be called multiple times but should only be executed once per provider
+   * Registers icons using the provided texture getter.
+   * This may be called multiple times but should only be executed once per provider.
    *
-   * @param textureGetter
+   * @param textureGetter A function to retrieve a {@link TextureAtlasSprite} from a {@link ResourceLocation}.
    */
   @OnlyIn(Dist.CLIENT)
   void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);

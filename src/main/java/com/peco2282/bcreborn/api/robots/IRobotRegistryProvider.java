@@ -13,6 +13,15 @@ package com.peco2282.bcreborn.api.robots;
 
 import net.minecraft.world.level.Level;
 
+/**
+ * Interface for providing access to the robot registry for a specific world.
+ */
 public interface IRobotRegistryProvider {
+  /**
+   * Returns the robot registry for the given world.
+   *
+   * @param world The world.
+   * @return The robot registry.
+   */
   IRobotRegistry getRegistry(Level world);
 }

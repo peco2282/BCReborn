@@ -24,7 +24,15 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
+/**
+ * Schematic implementation for a standard block.
+ */
 public class SchematicBlock extends SchematicBlockBase {
+
+  /**
+   * Relative indexes used to identify neighbor positions.
+   * 0: UP, 1: DOWN, 2: NORTH, 3: SOUTH, 4: WEST, 5: EAST
+   */
   public static final BlockIndex[] RELATIVE_INDEXES = new BlockIndex[]{
     new BlockIndex(0, -1, 0),
     new BlockIndex(0, 1, 0),
@@ -33,20 +41,39 @@ public class SchematicBlock extends SchematicBlockBase {
     new BlockIndex(-1, 0, 0),
     new BlockIndex(1, 0, 0),
   };
+
+  /**
+   * The orientation of the block.
+   */
   public Direction facing = Direction.UP;
 
+  /**
+   * The block state represented by this schematic.
+   */
   public BlockState state = Blocks.AIR.defaultBlockState();
+
+  /**
+   * The default building permission for this block.
+   */
   public BuildingPermission defaultPermission = BuildingPermission.ALL;
 
   /**
-   * This field contains requirements for a given block when stored in the
-   * blueprint. Modders can either rely on this list or compute their own int
-   * Schematic.
+   * Requirements for the block when stored in a blueprint.
    */
   public ItemStack[] storedRequirements = new ItemStack[0];
 
   private boolean doNotUse = false;
 
+  /**
+   * Helper method to check if the block at the specified position matches one of the given blocks.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
+   * @param blocks  The blocks to check against.
+   * @return True if it matches.
+   */
   protected static boolean isBlock(IBuilderContext context, int x, int y, int z, Block... blocks) {
     BlockState state = context.world().getBlockState(new BlockPos(x, y, z));
     for (Block block : blocks) {
@@ -121,8 +148,10 @@ public class SchematicBlock extends SchematicBlockBase {
   }
 
   /**
-   * Get a list of relative block coordinates which have to be built before
-   * this block can be placed.
+   * Gets a set of relative block indexes that must be built before this block.
+   *
+   * @param context The builder context.
+   * @return A set of {@link BlockIndex} prerequisites.
    */
   public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
     Set<BlockIndex> indexes = new HashSet<>();
@@ -146,17 +175,33 @@ public class SchematicBlock extends SchematicBlockBase {
     return defaultPermission;
   }
 
-  // Utility functions
+  /**
+   * Utility function to set the block in the world.
+   *
+   * @param context The builder context.
+   * @param x       The x-coordinate.
+   * @param y       The y-coordinate.
+   * @param z       The z-coordinate.
+   */
   protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
     if (state != null) {
       context.world().setBlock(new BlockPos(x, y, z), state, 3);
     }
   }
 
+  /**
+   * @return True if this schematic should not be used (e.g., mapping failed).
+   */
   public boolean doNotUse() {
     return doNotUse;
   }
 
+  /**
+   * Reads the block state from NBT.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
+   */
   protected void readBlockFromNBT(CompoundTag nbt, MappingRegistry registry) {
     try {
       state = registry.readBlockStateFromNBT(nbt);
@@ -165,6 +210,12 @@ public class SchematicBlock extends SchematicBlockBase {
     }
   }
 
+  /**
+   * Reads requirements from NBT.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
+   */
   protected void readRequirementsFromNBT(CompoundTag nbt, MappingRegistry registry) {
     if (nbt.contains("rq")) {
       ListTag rq = nbt.getList("rq", Tag.TAG_COMPOUND);
@@ -196,10 +247,22 @@ public class SchematicBlock extends SchematicBlockBase {
     }
   }
 
+  /**
+   * Writes the block state to NBT.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
+   */
   protected void writeBlockToNBT(CompoundTag nbt, MappingRegistry registry) {
     registry.writeBlockStateToNBT(nbt, state);
   }
 
+  /**
+   * Writes requirements to NBT.
+   *
+   * @param nbt      The NBT tag.
+   * @param registry The mapping registry.
+   */
   protected void writeRequirementsToNBT(CompoundTag nbt, MappingRegistry registry) {
     if (storedRequirements.length > 0) {
       ListTag rq = new ListTag();
