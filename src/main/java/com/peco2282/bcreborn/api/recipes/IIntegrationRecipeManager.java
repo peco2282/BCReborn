@@ -11,10 +11,15 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
-import java.util.List;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface IIntegrationRecipeManager {
-  void addRecipe(IIntegrationRecipe recipe);
+  @Nullable IntegrationRecipe getRecipe(ResourceLocation id);
 
-  List<? extends IIntegrationRecipe> getRecipes();
+  Collection<IntegrationRecipe> getRecipes();
+
+  boolean contains(ResourceLocation id);
 }
