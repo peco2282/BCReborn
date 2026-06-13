@@ -92,14 +92,14 @@ public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
   }
 
   @Override
-  public void write(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     nbt.putByteArray("uniqueBptId", uniqueId);
     nbt.putString("name", name);
     nbt.putString("extension", extension);
   }
 
   @Override
-  public void read(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     uniqueId = nbt.getByteArray("uniqueBptId");
     name = nbt.getString("name");
     if (nbt.contains("kind")) {

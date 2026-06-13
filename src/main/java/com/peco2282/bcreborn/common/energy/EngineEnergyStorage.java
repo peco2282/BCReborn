@@ -131,7 +131,7 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   @Override
   public void writeData(FriendlyByteBuf data) {
     CompoundTag tag = new CompoundTag();
-    write(tag);
+    writeTag(tag);
     data.writeNbt(tag);
   }
 
@@ -146,11 +146,11 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
     if (tag == null) {
       return;
     }
-    read(tag);
+    readTag(tag);
   }
 
   @Override
-  public void read(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     this.maxEnergy = Math.max(0, nbt.getInt("MaxEnergy"));
     this.maxExtract = Math.max(0, nbt.getInt("MaxExtract"));
     // 保存された値を0..maxEnergyにクランプ
@@ -161,7 +161,7 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   }
 
   @Override
-  public void write(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     nbt.putInt("MaxEnergy", this.maxEnergy);
     nbt.putInt("MaxExtract", this.maxExtract);
     nbt.putInt("Energy", this.energy);

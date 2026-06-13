@@ -16,10 +16,12 @@ import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -48,17 +50,17 @@ public class FacadePluggable extends PipePluggable {
 
   @Override
   public void readFromNBT(CompoundTag nbt) {
-    state = NbtUtils.readBlockState(net.minecraft.core.registries.BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
+    state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
   }
 
   @Override
   public void writeData(FriendlyByteBuf data) {
-    data.writeVarInt(net.minecraft.world.level.block.Block.getId(state));
+    data.writeVarInt(Block.getId(state));
   }
 
   @Override
   public void readData(FriendlyByteBuf data) {
-    state = net.minecraft.world.level.block.Block.stateById(data.readVarInt());
+    state = Block.stateById(data.readVarInt());
   }
 
   @Override

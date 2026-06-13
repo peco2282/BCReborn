@@ -15,19 +15,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface INBT extends INBTSerializable<CompoundTag> {
-  void read(CompoundTag nbt);
+  void readTag(CompoundTag nbt);
 
-  void write(CompoundTag nbt);
+  void writeTag(CompoundTag nbt);
 
   @Override
   default CompoundTag serializeNBT() {
     CompoundTag nbt = new CompoundTag();
-    write(nbt);
+    writeTag(nbt);
     return nbt;
   }
 
   @Override
   default void deserializeNBT(CompoundTag nbt) {
-    read(nbt);
+    readTag(nbt);
   }
 }

@@ -132,7 +132,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     nbt.putString("name", mapName);
 
     CompoundTag invNBT = new CompoundTag();
-    inv.write(invNBT);
+    inv.writeTag(invNBT);
     nbt.put("inv", invNBT);
 
     for (int i = 0; i < selectedAreas.length; ++i) {
@@ -153,7 +153,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
       mapName = "";
     }
 
-    inv.read(nbt.getCompound("inv"));
+    inv.readTag(nbt.getCompound("inv"));
 
     for (int i = 0; i < selectedAreas.length; ++i) {
       if (nbt.contains("selectedArea[" + i + "]")) {

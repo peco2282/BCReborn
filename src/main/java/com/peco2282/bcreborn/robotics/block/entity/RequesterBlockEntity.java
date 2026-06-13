@@ -97,18 +97,18 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     CompoundTag invNBT = new CompoundTag();
-    inv.write(invNBT);
+    inv.writeTag(invNBT);
     nbt.put("inv", invNBT);
     CompoundTag reqNBT = new CompoundTag();
-    requests.write(reqNBT);
+    requests.writeTag(reqNBT);
     nbt.put("req", reqNBT);
   }
 
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.read(nbt.getCompound("inv"));
-    requests.read(nbt.getCompound("req"));
+    inv.readTag(nbt.getCompound("inv"));
+    requests.readTag(nbt.getCompound("req"));
   }
 
   public boolean isFulfilled(int i) {
