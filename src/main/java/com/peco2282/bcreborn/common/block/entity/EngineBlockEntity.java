@@ -12,11 +12,8 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.api.IEngine;
-import com.peco2282.bcreborn.api.IHeatable;
-import com.peco2282.bcreborn.api.IPipeConnection;
-import com.peco2282.bcreborn.api.IRedstoneEngine;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
+import com.peco2282.bcreborn.api.power.IRedstoneEngine;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.common.energy.EngineEnergyStorage;
@@ -39,7 +36,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public abstract class EngineBlockEntity<T extends BlockEntity>
   extends BuildCraftBlockEntity
-  implements IEngine, IHeatable, IEnergyHandler, IPipeConnection {
+  implements IEnergyHandler {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
   public static final float MIN_HEAT = 20;
   public static final float IDEAL_HEAT = 100;

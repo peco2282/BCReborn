@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.gui;
 
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
+import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
 

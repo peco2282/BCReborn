@@ -13,9 +13,9 @@ package com.peco2282.bcreborn.factory.block.entity;
 
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
 import com.peco2282.bcreborn.api.transport.IPipeConnection;
 import com.peco2282.bcreborn.api.transport.IPipeTile;

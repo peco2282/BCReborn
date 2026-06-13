@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.factory.block.entity;
 
-import com.peco2282.bcreborn.api.IRedstoneEngine;
+import com.peco2282.bcreborn.api.power.IRedstoneEngine;
 import com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.tiles.IHasWork;

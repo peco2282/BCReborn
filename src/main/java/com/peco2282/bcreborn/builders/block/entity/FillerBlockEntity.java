@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.builders.block.entity;
 
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.menu.FillerMenu;
 import com.peco2282.bcreborn.common.Box;

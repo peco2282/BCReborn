@@ -11,12 +11,12 @@
  */
 package com.peco2282.bcreborn.core.statements;
 
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IActionProvider;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContainer;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 

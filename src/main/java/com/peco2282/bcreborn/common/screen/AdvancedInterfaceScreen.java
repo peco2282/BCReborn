@@ -29,9 +29,9 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
   }
 
 
-  public int getSlotIndexAtLocation(int i, int j) {
-    int x = i - leftPos;
-    int y = j - topPos;
+  public int getSlotIndexAtLocation(double i, double j) {
+    double x = i - leftPos;
+    double y = j - topPos;
 
     for (int position = 0; position < slots.size(); ++position) {
       AdvancedSlot s = slots.get(position);
@@ -43,7 +43,7 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
     return -1;
   }
 
-  public AdvancedSlot getSlotAtLocation(int i, int j) {
+  public AdvancedSlot getSlotAtLocation(double i, double j) {
     int id = getSlotIndexAtLocation(i, j);
 
     if (id != -1) {
@@ -90,6 +90,10 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
     if (caption != null && !caption.isEmpty()) {
       guiGraphics.renderTooltip(this.font, Component.literal(caption), mouseX, mouseY);
     }
+  }
+
+  public void renderTooltip(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
+    guiGraphics.renderTooltip(this.font, stack, x, y);
   }
 
   @Override

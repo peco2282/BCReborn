@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.block.entity;
 
-import com.peco2282.bcreborn.api.IControllable;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.BuilderBlock;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
