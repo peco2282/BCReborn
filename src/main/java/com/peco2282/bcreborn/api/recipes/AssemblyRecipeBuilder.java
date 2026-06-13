@@ -58,6 +58,19 @@ public class AssemblyRecipeBuilder extends BCRecipeBuilder<AssemblyRecipe> {
   }
 
   /**
+   * Creates a new AssemblyRecipeBuilder instance.
+   * <p>
+   * This is the recommended way to instantiate the builder.
+   * </p>
+   *
+   * @param id The resource location identifier for the recipe
+   * @return A new AssemblyRecipeBuilder instance
+   */
+  public static AssemblyRecipeBuilder create(ResourceLocation id) {
+    return new AssemblyRecipeBuilder(id);
+  }
+
+  /**
    * Adds an ingredient to the recipe from an ItemStack.
    *
    * @param stack The ItemStack to add as an ingredient
@@ -131,18 +144,5 @@ public class AssemblyRecipeBuilder extends BCRecipeBuilder<AssemblyRecipe> {
   @Override
   public AssemblyRecipe build() {
     return new AssemblyRecipe(id, ingredients, result, energy, craftingTime);
-  }
-
-  /**
-   * Creates a new AssemblyRecipeBuilder instance.
-   * <p>
-   * This is the recommended way to instantiate the builder.
-   * </p>
-   *
-   * @param id The resource location identifier for the recipe
-   * @return A new AssemblyRecipeBuilder instance
-   */
-  public static AssemblyRecipeBuilder create(ResourceLocation id) {
-    return new AssemblyRecipeBuilder(id);
   }
 }

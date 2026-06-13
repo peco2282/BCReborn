@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsDirt extends WorldProperty {
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		return state.is(Blocks.DIRT) || state.is(Blocks.GRASS_BLOCK);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    return state.is(Blocks.DIRT) || state.is(Blocks.GRASS_BLOCK);
+  }
 }

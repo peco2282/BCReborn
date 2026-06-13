@@ -23,29 +23,29 @@ import java.util.Map;
 
 public abstract class WorldProperty implements IWorldProperty {
 
-	public Map<ResourceKey<Level>, DimensionProperty> properties = new HashMap<>();
+  public Map<ResourceKey<Level>, DimensionProperty> properties = new HashMap<>();
 
-	@Override
-	public synchronized boolean get(Level world, BlockPos pos) {
-		return getDimension(world).get(pos.getX(), pos.getY(), pos.getZ());
-	}
+  @Override
+  public synchronized boolean get(Level world, BlockPos pos) {
+    return getDimension(world).get(pos.getX(), pos.getY(), pos.getZ());
+  }
 
-	private DimensionProperty getDimension(Level world) {
-		ResourceKey<Level> key = world.dimension();
+  private DimensionProperty getDimension(Level world) {
+    ResourceKey<Level> key = world.dimension();
 
     return properties.putIfAbsent(key, new DimensionProperty(world, this));
-	}
+  }
 
-	@Override
-	public void clear() {
-		for (DimensionProperty p : properties.values()) {
-			if (p != null) {
-				p.clear();
-			}
-		}
+  @Override
+  public void clear() {
+    for (DimensionProperty p : properties.values()) {
+      if (p != null) {
+        p.clear();
+      }
+    }
 
-		properties.clear();
-	}
+    properties.clear();
+  }
 
-	protected abstract boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos);
+  protected abstract boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos);
 }

@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class WorldPropertyIsHarvestable extends WorldProperty {
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		return CropManager.isMature(blockAccess, state, pos);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    return CropManager.isMature(blockAccess, state, pos);
+  }
 }

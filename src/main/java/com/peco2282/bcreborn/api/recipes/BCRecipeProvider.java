@@ -36,19 +36,9 @@ import java.util.function.Supplier;
  */
 public abstract class BCRecipeProvider<R extends BCRecipe, B extends BCRecipeBuilder<R>> implements DataProvider {
   protected final PackOutput.PathProvider output;
-  private final Codec<R> codec;
   protected final ArrayList<R> recipes = new ArrayList<>();
   protected final String modId;
-
-  /**
-   * Creates a recipe type path prefixed with "bcreborn/".
-   *
-   * @param type The recipe type name.
-   * @return The full recipe type path.
-   */
-  protected static String kind(String type) {
-    return "bcreborn/" + type;
-  }
+  private final Codec<R> codec;
 
   /**
    * Constructs a new recipe provider.
@@ -61,6 +51,16 @@ public abstract class BCRecipeProvider<R extends BCRecipe, B extends BCRecipeBui
     this.output = output;
     this.codec = codec;
     this.modId = modId;
+  }
+
+  /**
+   * Creates a recipe type path prefixed with "bcreborn/".
+   *
+   * @param type The recipe type name.
+   * @return The full recipe type path.
+   */
+  protected static String kind(String type) {
+    return "bcreborn/" + type;
   }
 
   /**

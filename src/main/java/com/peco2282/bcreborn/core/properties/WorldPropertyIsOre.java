@@ -17,14 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 
 public class WorldPropertyIsOre extends WorldProperty {
-	public WorldPropertyIsOre() {
-	}
+  public WorldPropertyIsOre() {
+  }
 
-	@Override
-	public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-		if (state == null) {
-			return false;
-		}
-		return state.is(Tags.Blocks.ORES);
-	}
+  @Override
+  public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
+    if (state == null) {
+      return false;
+    }
+    return state.is(Tags.Blocks.ORES);
+  }
 }

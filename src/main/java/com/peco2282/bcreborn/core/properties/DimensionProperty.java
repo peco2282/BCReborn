@@ -20,55 +20,55 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 public class DimensionProperty {
 
-	private final Long2ObjectMap<ChunkProperty> chunkMapping = new Long2ObjectOpenHashMap<>();
-	private final Level world;
-	private final int worldHeight;
-	private final int minBuildHeight;
-	private final WorldProperty worldProperty;
+  private final Long2ObjectMap<ChunkProperty> chunkMapping = new Long2ObjectOpenHashMap<>();
+  private final Level world;
+  private final int worldHeight;
+  private final int minBuildHeight;
+  private final WorldProperty worldProperty;
 
-	public DimensionProperty(Level iWorld, WorldProperty iProp) {
-		world = iWorld;
-		worldHeight = iWorld.getHeight();
-		minBuildHeight = iWorld.getMinBuildHeight();
-		worldProperty = iProp;
-	}
+  public DimensionProperty(Level iWorld, WorldProperty iProp) {
+    world = iWorld;
+    worldHeight = iWorld.getHeight();
+    minBuildHeight = iWorld.getMinBuildHeight();
+    worldProperty = iProp;
+  }
 
-	public synchronized boolean get(int x, int y, int z) {
-		int xChunk = x >> 4;
-		int zChunk = z >> 4;
+  public synchronized boolean get(int x, int y, int z) {
+    int xChunk = x >> 4;
+    int zChunk = z >> 4;
 
-		if (world.hasChunk(xChunk, zChunk)) {
-			long chunkId = ChunkPos.asLong(xChunk, zChunk);
-			ChunkProperty property;
-			if (!chunkMapping.containsKey(chunkId)) {
-				property = new ChunkProperty(world, worldHeight, minBuildHeight);
-				chunkMapping.put(chunkId, property);
-				load(world.getChunk(xChunk, zChunk), property);
-			} else {
-				property = chunkMapping.get(chunkId);
-			}
+    if (world.hasChunk(xChunk, zChunk)) {
+      long chunkId = ChunkPos.asLong(xChunk, zChunk);
+      ChunkProperty property;
+      if (!chunkMapping.containsKey(chunkId)) {
+        property = new ChunkProperty(world, worldHeight, minBuildHeight);
+        chunkMapping.put(chunkId, property);
+        load(world.getChunk(xChunk, zChunk), property);
+      } else {
+        property = chunkMapping.get(chunkId);
+      }
 
-			return property.get(x & 0xF, y, z & 0xF);
-		} else {
-			return false;
-		}
-	}
+      return property.get(x & 0xF, y, z & 0xF);
+    } else {
+      return false;
+    }
+  }
 
-	private void load(LevelChunk chunk, ChunkProperty property) {
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		for (int x = 0; x < 16; ++x) {
-			for (int y = minBuildHeight; y < minBuildHeight + worldHeight; ++y) {
-				for (int z = 0; z < 16; ++z) {
-					pos.set(chunk.getPos().getMinBlockX() + x, y, chunk.getPos().getMinBlockZ() + z);
-					boolean prop = worldProperty.get(world, chunk.getBlockState(pos), pos);
-					property.set(x, y, z, prop);
-				}
-			}
-		}
-	}
+  private void load(LevelChunk chunk, ChunkProperty property) {
+    BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+    for (int x = 0; x < 16; ++x) {
+      for (int y = minBuildHeight; y < minBuildHeight + worldHeight; ++y) {
+        for (int z = 0; z < 16; ++z) {
+          pos.set(chunk.getPos().getMinBlockX() + x, y, chunk.getPos().getMinBlockZ() + z);
+          boolean prop = worldProperty.get(world, chunk.getBlockState(pos), pos);
+          property.set(x, y, z, prop);
+        }
+      }
+    }
+  }
 
-	public void clear() {
-		chunkMapping.clear();
-	}
+  public void clear() {
+    chunkMapping.clear();
+  }
 
 }

@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
  * Factory methods are provided for convenient construction from various types.
  * </p>
  *
- * @param stack The ItemStack component of this key, may be null.
+ * @param stack      The ItemStack component of this key, may be null.
  * @param fluidStack The FluidStack component of this key, may be null.
  */
 public record StackKey(ItemStack stack, FluidStack fluidStack) {

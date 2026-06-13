@@ -12,36 +12,37 @@
 package com.peco2282.bcreborn.core.properties;
 
 import net.minecraft.world.level.BlockGetter;
+
 import java.util.BitSet;
 
 public class ChunkProperty {
 
-	private final BitSet property;
-	private final int worldHeight;
-	private final int minBuildHeight;
+  private final BitSet property;
+  private final int worldHeight;
+  private final int minBuildHeight;
 
-	public ChunkProperty(BlockGetter blockAccess, int iWorldHeight, int iMinBuildHeight) {
-		worldHeight = iWorldHeight;
-		minBuildHeight = iMinBuildHeight;
-		property = new BitSet(16 * 16 * worldHeight);
-	}
+  public ChunkProperty(BlockGetter blockAccess, int iWorldHeight, int iMinBuildHeight) {
+    worldHeight = iWorldHeight;
+    minBuildHeight = iMinBuildHeight;
+    property = new BitSet(16 * 16 * worldHeight);
+  }
 
-	public boolean get(int xChunk, int y, int zChunk) {
-		int index = getIndex(xChunk, y, zChunk);
-		if (index < 0 || index >= property.size()) return false;
-		return property.get(index);
-	}
+  public boolean get(int xChunk, int y, int zChunk) {
+    int index = getIndex(xChunk, y, zChunk);
+    if (index < 0 || index >= property.size()) return false;
+    return property.get(index);
+  }
 
-	public void set(int xChunk, int y, int zChunk, boolean value) {
-		int index = getIndex(xChunk, y, zChunk);
-		if (index >= 0 && index < 16 * 16 * worldHeight) {
-			property.set(index, value);
-		}
-	}
+  public void set(int xChunk, int y, int zChunk, boolean value) {
+    int index = getIndex(xChunk, y, zChunk);
+    if (index >= 0 && index < 16 * 16 * worldHeight) {
+      property.set(index, value);
+    }
+  }
 
-	private int getIndex(int x, int y, int z) {
-		int relativeY = y - minBuildHeight;
-		if (relativeY < 0 || relativeY >= worldHeight) return -1;
-		return (x * worldHeight * 16) + (relativeY * 16) + z;
-	}
+  private int getIndex(int x, int y, int z) {
+    int relativeY = y - minBuildHeight;
+    if (relativeY < 0 || relativeY >= worldHeight) return -1;
+    return (x * worldHeight * 16) + (relativeY * 16) + z;
+  }
 }
