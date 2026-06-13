@@ -169,7 +169,7 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
   @Override
   public void load(CompoundTag data) {
     super.load(data);
-    resultInv.read(data);
+    resultInv.readTag(data);
     if (data.contains("input")) {
       InvUtils.readInvFromNBT(inputInv, "input", data);
       InvUtils.readInvFromNBT(craftMatrix, "matrix", data);
@@ -191,7 +191,7 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
   @Override
   public void saveAdditional(CompoundTag data) {
     super.saveAdditional(data);
-    resultInv.write(data);
+    resultInv.writeTag(data);
     InvUtils.writeInvToNBT(inputInv, "input", data);
     InvUtils.writeInvToNBT(craftMatrix, "matrix", data);
   }

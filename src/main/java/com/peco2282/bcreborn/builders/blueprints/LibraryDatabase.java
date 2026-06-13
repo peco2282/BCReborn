@@ -50,7 +50,7 @@ public class LibraryDatabase {
   /**
    * Initialize the blueprint database.
    *
-   * @param inputPath directories to read the blueprints from.
+   * @param inputPath directories to readTag the blueprints from.
    */
   public void init(Path inputPath, Path outputPath) {
     outputDir = outputPath.toFile();

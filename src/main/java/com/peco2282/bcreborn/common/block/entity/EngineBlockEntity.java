@@ -404,7 +404,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     progressPart = data.getInt("progressPart");
     heat = data.getFloat("heat");
     if (data.contains("engineEnergy")) {
-      energyStorage.read(data.getCompound("engineEnergy"));
+      energyStorage.readTag(data.getCompound("engineEnergy"));
     }
   }
 
@@ -420,7 +420,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     data.putFloat("heat", heat);
     if (energyStorage != null) {
       CompoundTag tag = new CompoundTag();
-      energyStorage.write(tag);
+      energyStorage.writeTag(tag);
       data.put("engineEnergy", tag);
     }
   }

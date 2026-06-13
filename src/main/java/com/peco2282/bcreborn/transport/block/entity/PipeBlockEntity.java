@@ -537,10 +537,10 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         CompoundTag entry = filtersTag.getCompound(i);
         if (entry.contains("Dir")) {
           Direction dir = Direction.from3DDataValue(entry.getInt("Dir"));
-          filters.get(dir).read(entry);
+          filters.get(dir).readTag(entry);
         } else if (i < 6) {
           // legacy fallback: index-based
-          filters.get(Direction.from3DDataValue(i)).read(entry);
+          filters.get(Direction.from3DDataValue(i)).readTag(entry);
         }
       }
     }
@@ -574,7 +574,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     for (Direction dir : Direction.values()) {
       CompoundTag filterTag = new CompoundTag();
       filterTag.putInt("Dir", dir.get3DDataValue());
-      filters.get(dir).write(filterTag);
+      filters.get(dir).writeTag(filterTag);
       filtersTag.add(filterTag);
     }
     tag.put("Filters", filtersTag);

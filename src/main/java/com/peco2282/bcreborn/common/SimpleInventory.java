@@ -43,7 +43,7 @@ public class SimpleInventory implements Container, INBT {
   }
 
   @Override
-  public void read(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     if (nbt.contains("items")) {
       // this is to support legacy item load, the new format should be
       // "Items"
@@ -72,7 +72,7 @@ public class SimpleInventory implements Container, INBT {
   }
 
   @Override
-  public void write(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     writeToNBT(nbt, "items");
   }
 

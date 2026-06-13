@@ -56,7 +56,7 @@ public class Tank extends FluidTank {
   @Override
   public final FluidTank readFromNBT(CompoundTag nbt) {
     if (nbt.contains(name)) {
-      // allow to read empty tanks
+      // allow to readTag empty tanks
       setFluid(null);
 
       CompoundTag tankData = nbt.getCompound(name);

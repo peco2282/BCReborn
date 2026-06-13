@@ -74,7 +74,7 @@ public class LibraryBlueprintTypeHandler extends LibraryTypeHandlerNBT {
     for (String key : nbt.getAllKeys()) {
       compound.put(key, nbt.get(key));
     }
-    id.write(compound);
+    id.writeTag(compound);
     return true;
   }
 }

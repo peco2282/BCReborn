@@ -40,7 +40,7 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
   public static LibraryId getId(ItemStack stack) {
     CompoundTag nbt = stack.getOrCreateTag();
     LibraryId id = new LibraryId();
-    id.read(nbt);
+    id.readTag(nbt);
 
     if (BCRebornBuilders.getServerDB().exists(id)) {
       return id;
