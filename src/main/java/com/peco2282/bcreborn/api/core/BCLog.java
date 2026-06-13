@@ -41,9 +41,4 @@ public final class BCLog {
       logger.log(Level.ERROR, msg.toString());
     }
   }
-
-  @Deprecated
-  public static String getVersion() {
-    return BuildCraftAPI.getVersion();
-  }
 }
