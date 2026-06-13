@@ -19,12 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ContextProcessor {
   private static final Logger log = LoggerFactory.getLogger("ContextProcessor");
+  private static final Map<ModContainer, ContextProcessor> CACHE = new ConcurrentHashMap<>();
   private final String modId;
   private final @NotNull ModContainer container;
 
@@ -34,11 +37,11 @@ public class ContextProcessor {
   }
 
   public static ContextProcessor create(@NotNull ModContainer container) {
-    return new ContextProcessor(container);
+    return CACHE.computeIfAbsent(container, ContextProcessor::new);
   }
 
   public static ContextProcessor create(@NotNull String modId) {
-    return new ContextProcessor(ModList.get().getModContainerById(modId).orElseThrow());
+    return create(ModList.get().getModContainerById(modId).orElseThrow());
   }
 
   private static <T> ProcessExaminator<T> examine(
