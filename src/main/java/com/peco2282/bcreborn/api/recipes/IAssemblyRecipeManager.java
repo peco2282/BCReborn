@@ -11,18 +11,15 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 public interface IAssemblyRecipeManager {
-  void addRecipe(String id, int energyCost, ItemStack output, Object... input);
+  @Nullable AssemblyRecipe getRecipe(ResourceLocation id);
 
-  void addRecipe(IFlexibleRecipe<ItemStack> recipe);
+  Collection<AssemblyRecipe> getRecipes();
 
-  void removeRecipe(String id);
-
-  void removeRecipe(IFlexibleRecipe<ItemStack> recipe);
-
-  Collection<IFlexibleRecipe<ItemStack>> getRecipes();
+  boolean contains(ResourceLocation id);
 }

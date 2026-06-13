@@ -11,22 +11,16 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
-import net.minecraftforge.fluids.FluidStack;
+
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 public interface IRefineryRecipeManager {
+  @Nullable RefineryRecipe getRecipe(ResourceLocation id);
 
-  void addRecipe(String id, FluidStack ingredient, FluidStack result, int energy, int delay);
+  Collection<RefineryRecipe> getRecipes();
 
-  void addRecipe(String id, FluidStack ingredient1, FluidStack ingredient2, FluidStack result, int energy, int delay);
-
-  void removeRecipe(String id);
-
-  void removeRecipe(IFlexibleRecipe<FluidStack> recipe);
-
-  Collection<IFlexibleRecipe<FluidStack>> getRecipes();
-
-  IFlexibleRecipe<FluidStack> getRecipe(String currentRecipeId);
-
+  boolean contains(ResourceLocation id);
 }

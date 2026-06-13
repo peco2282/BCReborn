@@ -11,16 +11,13 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 
 public interface IProgrammingRecipeManager {
-  void addRecipe(IProgrammingRecipe recipe);
-
-  void removeRecipe(String id);
-
-  void removeRecipe(IProgrammingRecipe recipe);
-
-  IProgrammingRecipe getRecipe(String id);
-
-  Collection<IProgrammingRecipe> getRecipes();
+  @Nullable ProgrammingRecipe getRecipe(ResourceLocation id);
+  Collection<ProgrammingRecipe> getRecipes();
+  boolean contains(ResourceLocation id);
 }
