@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.transport.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
+import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,6 +42,8 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   @Override
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    renderPluggables(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
+
     List<TravelingItem> items = blockEntity.getTravelingItems();
     if (items.isEmpty()) return;
 
@@ -101,5 +105,17 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
       poseStack, bufferSource, null, 0);
 
     poseStack.popPose();
+  }
+
+  private void renderPluggables(PipeBlockEntity pipe, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    for (Direction side : Direction.values()) {
+      PipePluggable pluggable = pipe.sideProperties.pluggables[side.ordinal()];
+      if (pluggable != null) {
+        IPipePluggableRenderer renderer = pluggable.getRenderer();
+        if (renderer != null) {
+          renderer.renderPluggable(null, side, pluggable, 0, poseStack, buffer, packedLight, packedOverlay);
+        }
+      }
+    }
   }
 }

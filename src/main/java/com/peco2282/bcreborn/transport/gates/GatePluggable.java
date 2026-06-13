@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.peco2282.bcreborn.api.gates.GateExpansions;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.transport.IPipe;
@@ -18,6 +19,7 @@ import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableDynamicRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -222,12 +224,12 @@ public class GatePluggable extends PipePluggable {
     }
 
     @Override
-    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, int x, int y, int z) {
+    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
       // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
     }
 
     @Override
-    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, double x, double y, double z) {
+    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
       // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
     }
   }

@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.api.facades;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
 
 public interface IFacadeItem {
   FacadeType getFacadeType(ItemStack facade);
 
-  ItemStack getFacadeForBlock(Block block, int meta);
+  ItemStack getFacadeForBlock(BlockState state);
 
-  Block[] getBlocksForFacade(ItemStack facade);
-
-  int[] getMetaValuesForFacade(ItemStack facade);
+  List<BlockState> getBlockStatesForFacade(ItemStack facade);
 }

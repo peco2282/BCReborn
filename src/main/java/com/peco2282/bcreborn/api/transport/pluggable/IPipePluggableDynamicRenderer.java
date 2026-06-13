@@ -11,9 +11,11 @@
  */
 package com.peco2282.bcreborn.api.transport.pluggable;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.peco2282.bcreborn.api.transport.IPipe;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 
 public interface IPipePluggableDynamicRenderer {
-  void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, double x, double y, double z);
+  void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
 }
