@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.recipes;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -24,5 +26,11 @@ public record AssemblyRecipe(
   int energy,
   int craftingTime
 ) {
-
+  public static final Codec<AssemblyRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    ResourceLocation.CODEC.fieldOf("id").forGetter(AssemblyRecipe::id),
+    Codecs.INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter(AssemblyRecipe::ingredients),
+    ItemStack.CODEC.fieldOf("result").forGetter(AssemblyRecipe::result),
+    Codec.INT.fieldOf("energy").forGetter(AssemblyRecipe::energy),
+    Codec.INT.fieldOf("crafting_time").forGetter(AssemblyRecipe::craftingTime)
+  ).apply(instance, AssemblyRecipe::new));
 }
