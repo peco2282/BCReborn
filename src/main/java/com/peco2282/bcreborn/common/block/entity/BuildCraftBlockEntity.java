@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.common.block.entity;
 
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;

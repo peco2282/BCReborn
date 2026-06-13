@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.gui;
 
+import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemSlot extends AdvancedSlot {

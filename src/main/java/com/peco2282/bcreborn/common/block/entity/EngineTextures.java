@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.ResourceBuilder;
-import com.peco2282.bcreborn.common.ResourceUtils;
+import com.peco2282.bcreborn.common.utils.ResourceUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;

@@ -67,4 +67,9 @@ public final class ResourceUtils {
     Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.parse(name));
     return resource.isPresent();
   }
+
+  public static boolean resourceExists(ResourceLocation name) {
+    Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(name);
+    return resource.isPresent();
+  }
 }

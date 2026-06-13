@@ -16,7 +16,6 @@ package com.peco2282.bcreborn.api.tiles;
  * have non-redstone automation (for example, BuildCraft Gates, but also
  * other mods which implement it, e.g. OpenComputers).
  */
-@Deprecated(forRemoval = true)
 public interface IControllable {
   /**
    * Get the current control mode of the Tile Entity.

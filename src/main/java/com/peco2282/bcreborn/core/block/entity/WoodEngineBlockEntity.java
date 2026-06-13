@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.core.block.entity;
 
-import com.peco2282.bcreborn.api.IRedstoneEngine;
+import com.peco2282.bcreborn.api.power.IRedstoneEngine;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.core.CoreBlockEntityTypes;

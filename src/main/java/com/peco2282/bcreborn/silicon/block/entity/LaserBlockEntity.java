@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.silicon.block.entity;
 
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.api.power.ILaserTarget;
 import com.peco2282.bcreborn.api.power.ILaserTargetBlock;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;

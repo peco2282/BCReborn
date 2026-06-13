@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.core.block;
 
-import com.peco2282.bcreborn.common.XorShift128Random;
+import com.peco2282.bcreborn.common.utils.XorShift128Random;
 import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.energy.EnergyFluids;
 import net.minecraft.core.BlockPos;

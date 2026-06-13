@@ -12,10 +12,10 @@
 package com.peco2282.bcreborn.core.statements;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.api.IControllable;
 import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
+import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;

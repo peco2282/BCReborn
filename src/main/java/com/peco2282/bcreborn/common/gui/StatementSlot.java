@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.gui;
 
 import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

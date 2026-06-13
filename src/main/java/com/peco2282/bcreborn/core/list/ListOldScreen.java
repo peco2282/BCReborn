@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.core.list;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.common.gui.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
+import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.item.ListItem;
 import net.minecraft.client.gui.GuiGraphics;

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
