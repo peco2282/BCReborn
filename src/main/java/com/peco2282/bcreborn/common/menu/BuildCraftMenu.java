@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.gui.slots.IPhantomSlot;
 import com.peco2282.bcreborn.common.gui.slots.SlotBase;
 import com.peco2282.bcreborn.common.gui.widgets.Widget;
-import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.PacketGuiWidget;
 import io.netty.buffer.ByteBufInputStream;

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.core.list;
 
 
 import com.peco2282.bcreborn.api.lists.ListMatchHandler;
-import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.api.StackHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

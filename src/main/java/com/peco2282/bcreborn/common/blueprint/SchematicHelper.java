@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.blueprints.ISchematicHelper;
-import com.peco2282.bcreborn.common.inventory.StackHelper;
+import com.peco2282.bcreborn.api.StackHelper;
 import net.minecraft.world.item.ItemStack;
 
 public final class SchematicHelper implements ISchematicHelper {
