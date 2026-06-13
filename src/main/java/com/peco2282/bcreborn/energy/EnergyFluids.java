@@ -123,10 +123,10 @@ public class EnergyFluids {
 
   public static void registerFluidTypes(IEventBus bus) {
     FLUID_TYPES.register(bus);
-  }  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
+  }
+
+  public static final RegistryObject<OilFluid.Source> OIL_SOURCE = REGISTRY.registerFluid("oil",
     () -> new OilFluid.Source(oilProperties()));
-
-
 
 
   public static final RegistryObject<OilFluid.Flowing> OIL_FLOWING = REGISTRY.registerFluid("flowing_oil",
