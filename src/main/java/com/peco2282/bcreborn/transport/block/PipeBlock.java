@@ -161,9 +161,14 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     if (state.getValue(WATERLOGGED)) {
       level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
     }
+    var bet = switch (transportType) {
+      case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
+      case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
+      case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
+    };
 
     // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
-    level.getBlockEntity(currentPos, TransportBlockEntityTypes.PIPE.get()).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
+    level.getBlockEntity(currentPos, bet).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
 
     BlockState newState = state;
     for (Direction dir : Direction.values()) {
