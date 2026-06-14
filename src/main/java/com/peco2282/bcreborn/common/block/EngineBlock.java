@@ -12,6 +12,8 @@
 package com.peco2282.bcreborn.common.block;
 
 import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -31,6 +34,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public abstract class EngineBlock extends BuildCraftBlock {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
@@ -78,11 +82,19 @@ public abstract class EngineBlock extends BuildCraftBlock {
 
   @Override
   public BlockState getStateForPlacement(BlockPlaceContext context) {
-    Direction direction = context.getClickedFace();
-    if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
-      direction = direction.getOpposite();
+    for (Direction dir : Direction.values()) {
+      BlockPos neighborPos = context.getClickedPos().relative(dir);
+      BlockEntity be = context.getLevel().getBlockEntity(neighborPos);
+      if (be != null) {
+        if (be.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).isPresent()) {
+          return this.defaultBlockState().setValue(FACING, dir).setValue(ACTIVE, false);
+        } else if (be instanceof PipeBlockEntity pbe && pbe.getPipeMaterial() == PipeMaterial.WOOD) {
+          return this.defaultBlockState().setValue(FACING, dir).setValue(ACTIVE, false);
+        }
+      }
     }
-    return this.defaultBlockState().setValue(FACING, direction);
+    Direction facing = context.getClickedFace().getOpposite();
+    return this.defaultBlockState().setValue(FACING, facing).setValue(ACTIVE, false);
   }
 
   @Override

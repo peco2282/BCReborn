@@ -620,6 +620,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (cap == ForgeCapabilities.ENERGY && transportType == PipeType.ENERGY) {
       return energyCap.cast();
     }
+    // Powered pipe (for extract)
+    if (cap == ForgeCapabilities.ENERGY && pipeMaterial == PipeMaterial.WOOD) {
+      if (getBattery() != null) {
+        return LazyOptional.of(this::getBattery).cast();
+      }
+    }
     return super.getCapability(cap, side);
   }
 
