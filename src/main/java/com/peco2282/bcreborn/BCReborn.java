@@ -22,13 +22,15 @@ public interface BCReborn {
 
   StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
+  Logger COMMON_LOGGER = LoggerFactory.getLogger(MOD_ID_BASE.toUpperCase());
+
   static Logger createLogger() {
     String pack = STACK_WALKER.getCallerClass().getPackageName().replace("com.peco2282.bcreborn.", "").split("\\.")[0];
     return LoggerFactory.getLogger((MOD_ID_BASE + "." + pack).toUpperCase());
   }
 
   static Logger commonLogger() {
-    return LoggerFactory.getLogger(MOD_ID_BASE.toUpperCase());
+    return COMMON_LOGGER;
   }
 
   static String getModId(Type type) {
