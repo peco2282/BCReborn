@@ -25,11 +25,7 @@ import java.util.function.Supplier;
 public class TransportItems {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
-  public static final RegistryObject<FacadeItem> FACADE = register("facade", () -> new FacadeItem(new Item.Properties()));
-
-  private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
-    return REGISTRY.registerItem(name, item);
-  }
+  public static final RegistryObject<FacadeItem> FACADE = REGISTRY.registerItem("facade", FacadeItem::new);
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
     output.accept(FACADE.get());
