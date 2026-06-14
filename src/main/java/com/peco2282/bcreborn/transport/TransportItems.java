@@ -16,10 +16,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.transport.item.FacadeItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornTransport.MODID)
 public class TransportItems {
@@ -32,7 +29,7 @@ public class TransportItems {
     // 全ての有効なブロックのFacadeを追加
     net.minecraft.core.registries.BuiltInRegistries.BLOCK.stream()
       .map(net.minecraft.world.level.block.Block::defaultBlockState)
-      .filter(FacadeItem::isBlockValidForFacade)
+      .filter(FacadeItem::isBlockValidForCreativeTab)
       .forEach(state -> output.accept(FACADE.get().getFacadeForBlock(state)));
   }
 }
