@@ -39,6 +39,8 @@ public class TransportBlockStateProvider extends BlockStateProvider {
   @Override
   protected void registerStatesAndModels() {
     TransportBlocks.pipesForEach((type, material, block) -> generatePipeBlockState(material, type, block));
+    itemModels().getBuilder("facade")
+      .parent(new net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }
 
   private void generatePipeBlockState(PipeMaterial material, PipeType type, RegistryObject<PipeBlock> block) {
