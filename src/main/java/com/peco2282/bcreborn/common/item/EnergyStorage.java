@@ -20,9 +20,14 @@ public class EnergyStorage implements IEnergyStorage {
   private int energy, maxEnergy, maxReceive, maxExtract;
 
   public EnergyStorage(int maxEnergy, int maxReceive, int maxExtract) {
+    this(maxEnergy, maxReceive, maxExtract, 0);
+  }
+
+  public EnergyStorage(int maxEnergy, int maxReceive, int maxExtract, int energy) {
     this.maxEnergy = maxEnergy;
     this.maxReceive = maxReceive;
     this.maxExtract = maxExtract;
+    this.energy = energy;
   }
 
   public void read(CompoundTag tag) {
