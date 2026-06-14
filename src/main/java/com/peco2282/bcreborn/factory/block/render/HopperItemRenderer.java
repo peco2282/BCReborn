@@ -22,11 +22,11 @@ import net.minecraft.world.item.ItemStack;
 public class HopperItemRenderer extends BlockEntityWithoutLevelRenderer {
   public static final HopperItemRenderer INSTANCE = new HopperItemRenderer();
 
-  private final RenderHopper renderer;
+  private final HopperRenderer renderer;
 
   public HopperItemRenderer() {
     super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-    renderer = new RenderHopper(Minecraft.getInstance().getEntityModels());
+    renderer = new HopperRenderer(Minecraft.getInstance().getEntityModels());
   }
 
   @Override

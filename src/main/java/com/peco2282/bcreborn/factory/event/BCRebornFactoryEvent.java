@@ -15,9 +15,9 @@ import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryMenuTypes;
-import com.peco2282.bcreborn.factory.block.render.RenderHopper;
-import com.peco2282.bcreborn.factory.block.render.RenderRefinery;
-import com.peco2282.bcreborn.factory.block.render.RenderTank;
+import com.peco2282.bcreborn.factory.block.render.HopperRenderer;
+import com.peco2282.bcreborn.factory.block.render.RefineryRenderer;
+import com.peco2282.bcreborn.factory.block.render.TankRenderer;
 import com.peco2282.bcreborn.factory.screen.AutoCraftingScreen;
 import com.peco2282.bcreborn.factory.screen.HopperScreen;
 import com.peco2282.bcreborn.factory.screen.RefineryScreen;
@@ -47,15 +47,15 @@ public class BCRebornFactoryEvent {
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     LOGGER.info("Registering renderers");
-    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.HOPPER.get(), RenderHopper::new);
-    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.REFINERY.get(), RenderRefinery::new);
-    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.TANK.get(), RenderTank::new);
+    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.HOPPER.get(), HopperRenderer::new);
+    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.REFINERY.get(), RefineryRenderer::new);
+    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.TANK.get(), TankRenderer::new);
   }
 
   @SubscribeEvent
   public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
     LOGGER.info("Registering layer definitions");
-    event.registerLayerDefinition(HOPPER_LAYER, RenderHopper::createLayer);
-    event.registerLayerDefinition(REFINERY_LAYER, RenderRefinery::createLayer);
+    event.registerLayerDefinition(HOPPER_LAYER, HopperRenderer::createLayer);
+    event.registerLayerDefinition(REFINERY_LAYER, RefineryRenderer::createLayer);
   }
 }

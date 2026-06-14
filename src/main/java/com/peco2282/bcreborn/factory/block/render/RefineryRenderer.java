@@ -38,13 +38,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.joml.Matrix4f;
 
-public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> {
+public class RefineryRenderer implements BlockEntityRenderer<RefineryBlockEntity> {
 
   private static final ResourceLocation TEXTURE = BCRebornFactory.location("textures/block/refinery_block/refinery.png");
   private final ModelPart tank;
   private final ModelPart[] magnet = new ModelPart[4];
 
-  public RenderRefinery(BlockEntityRendererProvider.Context context) {
+  public RefineryRenderer(BlockEntityRendererProvider.Context context) {
     ModelPart root = context.bakeLayer(BCRebornFactoryEvent.REFINERY_LAYER);
     this.tank = root.getChild("tank");
     for (int i = 0; i < 4; i++) {

@@ -34,7 +34,7 @@ import org.joml.Matrix4f;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class RenderHopper implements BlockEntityRenderer<HopperBlockEntity> {
+public class HopperRenderer implements BlockEntityRenderer<HopperBlockEntity> {
 
   private static final ResourceLocation HOPPER_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/top.png");
   private static final ResourceLocation HOPPER_MIDDLE_TEXTURE = BCRebornFactory.location("textures/block/hopper_block/middle.png");
@@ -42,11 +42,11 @@ public class RenderHopper implements BlockEntityRenderer<HopperBlockEntity> {
   public final ModelPart top;
   public final ModelPart bottom;
 
-  public RenderHopper(BlockEntityRendererProvider.Context context) {
+  public HopperRenderer(BlockEntityRendererProvider.Context context) {
     this(context.getModelSet());
   }
 
-  public RenderHopper(EntityModelSet modelSet) {
+  public HopperRenderer(EntityModelSet modelSet) {
     ModelPart root = modelSet.bakeLayer(BCRebornFactoryEvent.HOPPER_LAYER);
     this.top = root.getChild("top");
     this.bottom = root.getChild("bottom");
