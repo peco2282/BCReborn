@@ -13,19 +13,19 @@ package com.peco2282.bcreborn.common.utils;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
+import net.minecraft.util.RandomSource;
 
 import java.util.Iterator;
-import java.util.Random;
 
 public class BlockScannerZoneRandom implements Iterable<BlockIndex> {
 
-  private final Random rand;
+  private final RandomSource rand;
   private final IZone zone;
   private final int x;
   private final int y;
   private final int z;
 
-  public BlockScannerZoneRandom(int iX, int iY, int iZ, Random iRand, IZone iZone) {
+  public BlockScannerZoneRandom(int iX, int iY, int iZ, RandomSource iRand, IZone iZone) {
     x = iX;
     y = iY;
     z = iZ;

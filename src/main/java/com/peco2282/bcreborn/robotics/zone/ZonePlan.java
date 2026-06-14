@@ -18,10 +18,10 @@ import com.peco2282.bcreborn.common.ChunkIndex;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 
 public class ZonePlan implements IZone, ISerializable {
@@ -126,7 +126,7 @@ public class ZonePlan implements IZone, ISerializable {
   }
 
   @Override
-  public BlockIndex getRandomBlockIndex(Random rand) {
+  public BlockIndex getRandomBlockIndex(RandomSource rand) {
     if (chunkMapping.isEmpty()) {
       return null;
     }

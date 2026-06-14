@@ -16,9 +16,9 @@ import com.peco2282.bcreborn.api.core.ISerializable;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 
 import java.util.BitSet;
-import java.util.Random;
 
 public class ZoneChunk implements ISerializable {
 
@@ -84,7 +84,7 @@ public class ZoneChunk implements ISerializable {
     }
   }
 
-  public BlockIndex getRandomBlockIndex(Random rand) {
+  public BlockIndex getRandomBlockIndex(RandomSource rand) {
     int x, z;
 
     if (fullSet) {
