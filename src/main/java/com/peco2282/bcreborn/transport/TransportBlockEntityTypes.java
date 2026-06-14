@@ -42,6 +42,4 @@ public class TransportBlockEntityTypes {
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> FLUID_PIPE = register("fluid_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.FLUID), null));
 
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ENERGY_PIPE = register("energy_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ENERGY), null));
-
-  public static final RegistryObject<BlockEntityType<PipeBlockEntity>> PIPE = register("pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, TransportBlocks.getPipeList().stream().map(RegistryObject::get).collect(Collectors.toUnmodifiableSet()), null));
 }
