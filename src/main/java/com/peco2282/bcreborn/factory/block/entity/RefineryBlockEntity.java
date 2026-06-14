@@ -40,8 +40,8 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
   public FluidTank[] tanks = {new FluidTank(LIQUID_PER_SLOT), new FluidTank(LIQUID_PER_SLOT)};
   public FluidTank result = new FluidTank(LIQUID_PER_SLOT);
   public float animationSpeed = 1;
-  private short animationStage = 0;
-  private boolean isActive;
+  public short animationStage = 0;
+  public boolean isActive;
 
   public RefineryBlockEntity(BlockPos pos, BlockState state) {
     super(FactoryBlockEntityTypes.REFINERY.get(), pos, state);
@@ -51,12 +51,19 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
-      // Animation logic
+      if (isActive) {
+        animationStage += (short) animationSpeed;
+        if (animationStage > 300) {
+          animationStage -= 300;
+        }
+      } else {
+        animationStage = 0;
+      }
       return;
     }
 
     if (updateNetworkTime.markTimeIfDelay(level)) {
-      // Network update
+      level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
     }
 
     isActive = false;
@@ -71,6 +78,7 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
     result.readFromNBT(data.getCompound("result"));
     animationStage = data.getShort("animationStage");
     animationSpeed = data.getFloat("animationSpeed");
+    isActive = data.getBoolean("isActive");
   }
 
   @Override
@@ -87,6 +95,7 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
     data.put("result", tr);
     data.putShort("animationStage", animationStage);
     data.putFloat("animationSpeed", animationSpeed);
+    data.putBoolean("isActive", isActive);
   }
 
   @Override

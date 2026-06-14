@@ -58,12 +58,12 @@ public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> 
 
     root.addOrReplaceChild("tank",
       CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 16.0F, 8.0F),
-      PartPose.offset(8.0F, 8.0F, 8.0F));
+      PartPose.ZERO);
 
     for (int i = 0; i < 4; i++) {
       root.addOrReplaceChild("magnet_" + i,
         CubeListBuilder.create().texOffs(32, i * 8).addBox(0, -8.0F, -8.0F, 8.0F, 4.0F, 4.0F),
-        PartPose.offset(8.0F, 8.0F, 8.0F));
+        PartPose.ZERO);
     }
 
     return LayerDefinition.create(mesh, 64, 32);
@@ -79,22 +79,58 @@ public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> 
     float angle = facing.toYRot();
     poseStack.mulPose(Axis.YP.rotationDegrees(-angle));
 
-    VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entitySolid(TEXTURE));
-    tank.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
 
-    float anim = blockEntity.animationSpeed;
+    // Render 3 tanks
+    poseStack.pushPose();
+    poseStack.translate(-0.25F, 0, -0.25F);
+    tank.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    poseStack.popPose();
+
+    poseStack.pushPose();
+    poseStack.translate(-0.25F, 0, 0.25F);
+    tank.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    poseStack.popPose();
+
+    poseStack.pushPose();
+    poseStack.translate(0.25F, 0, 0);
+    tank.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    poseStack.popPose();
+
+    float anim = blockEntity.animationStage;
     ModelPart theMagnet;
-    if (anim <= 1) theMagnet = magnet[0];
-    else if (anim <= 2.5) theMagnet = magnet[1];
-    else if (anim <= 4.5) theMagnet = magnet[2];
+    float speed = blockEntity.animationSpeed;
+    if (speed <= 1) theMagnet = magnet[0];
+    else if (speed <= 2.5) theMagnet = magnet[1];
+    else if (speed <= 4.5) theMagnet = magnet[2];
     else theMagnet = magnet[3];
 
+    float trans1, trans2;
+    if (anim <= 100) {
+      trans1 = 0.75F * anim / 100F;
+      trans2 = 0;
+    } else if (anim <= 200) {
+      trans1 = 0.75F - (0.75F * (anim - 100F) / 100F);
+      trans2 = 0.75F * (anim - 100F) / 100F;
+    } else {
+      trans1 = 0.75F * (anim - 200F) / 100F;
+      trans2 = 0.75F - (0.75F * (anim - 200F) / 100F);
+    }
+
+    poseStack.pushPose();
+    poseStack.translate(-0.51F, trans1 - 0.5F, -0.5F);
     theMagnet.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    poseStack.popPose();
+
+    poseStack.pushPose();
+    poseStack.translate(-0.51F, trans2 - 0.5F, 0.25F);
+    theMagnet.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    poseStack.popPose();
 
     // Render fluids
-    renderFluid(blockEntity.tanks[0], poseStack, bufferSource, packedLight, -0.25f, -0.5f, -0.25f, 0.25f, 0.5f, 0.25f);
-    renderFluid(blockEntity.tanks[1], poseStack, bufferSource, packedLight, -0.25f, -0.5f, 0.0f, 0.25f, 0.5f, 0.25f);
-    renderFluid(blockEntity.result, poseStack, bufferSource, packedLight, 0.0f, -0.5f, -0.25f, 0.25f, 0.5f, 0.25f);
+    renderFluid(blockEntity.tanks[0], poseStack, bufferSource, packedLight, -0.5f, -0.5f, -0.5f, 0.0f, 0.5f, 0.0f);
+    renderFluid(blockEntity.tanks[1], poseStack, bufferSource, packedLight, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.5f);
+    renderFluid(blockEntity.result, poseStack, bufferSource, packedLight, 0.0f, -0.5f, -0.25f, 0.5f, 0.5f, 0.25f);
 
     poseStack.popPose();
   }
