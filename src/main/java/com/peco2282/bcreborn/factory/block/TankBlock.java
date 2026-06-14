@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -27,6 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class TankBlock extends BuildCraftBlock {
@@ -39,6 +42,11 @@ public class TankBlock extends BuildCraftBlock {
       .strength(0.5F)
       .noOcclusion());
     this.registerDefaultState(this.getStateDefinition().any().setValue(IS_STACKED, false));
+  }
+
+  @Override
+  public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+    return box(2, 0, 2, 14, 16, 14);
   }
 
   @Override
