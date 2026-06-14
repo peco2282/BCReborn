@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.peco2282.bcreborn.BCRebornFactory;
+import com.peco2282.bcreborn.factory.block.RefineryBlock;
 import com.peco2282.bcreborn.factory.block.entity.RefineryBlockEntity;
 import com.peco2282.bcreborn.factory.event.BCRebornFactoryEvent;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -75,7 +75,7 @@ public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> 
     poseStack.translate(0.5, 0.5, 0.5);
     poseStack.scale(0.99F, 0.99F, 0.99F);
 
-    Direction facing = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+    Direction facing = blockEntity.getBlockState().getValue(RefineryBlock.FACING);
     float angle = facing.toYRot();
     poseStack.mulPose(Axis.YP.rotationDegrees(-angle));
 
