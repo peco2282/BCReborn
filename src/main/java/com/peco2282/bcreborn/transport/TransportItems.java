@@ -29,5 +29,10 @@ public class TransportItems {
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
     output.accept(FACADE.get());
+    // 全ての有効なブロックのFacadeを追加
+    net.minecraft.core.registries.BuiltInRegistries.BLOCK.stream()
+      .map(net.minecraft.world.level.block.Block::defaultBlockState)
+      .filter(FacadeItem::isBlockValidForFacade)
+      .forEach(state -> output.accept(FACADE.get().getFacadeForBlock(state)));
   }
 }

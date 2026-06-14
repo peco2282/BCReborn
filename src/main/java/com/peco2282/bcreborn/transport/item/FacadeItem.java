@@ -25,6 +25,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -65,8 +66,16 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
   public static boolean isBlockValidForFacade(BlockState state) {
     Block block = state.getBlock();
     if (block == Blocks.AIR) return false;
-    if (!state.isSolid()) return false;
-    return state.getRenderShape() != RenderShape.INVISIBLE;
+    // オリジナルのBuildCraftの挙動に合わせ、モデルを持つフルブロックを基本とする
+    if (state.getRenderShape() != RenderShape.MODEL) return false;
+    
+    // 技術的に問題がある可能性のあるブロック（TileEntityを持つものなど）を除外
+//    if (block instanceof net.minecraft.world.level.block.EntityBlock) return false;
+    if (block.asItem() instanceof IFacadeItem) return false;
+    
+    // 不透明なブロックか、ガラスのような一部の透過ブロックを許可
+    // 簡易的な判定として、solid かつ impermeable (ガラス等) をチェック
+    return state.isSolid() || state.is(BlockTags.IMPERMEABLE);
   }
 
   @Override
@@ -201,14 +210,8 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
       if (nbt.contains("block", Tag.TAG_STRING)) {
         try {
           String stateStr = nbt.getString("block");
-          if (nbt.contains("metadata")) {
-            // Legacy support: Convert old block + metadata to state
-            Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(stateStr));
-            state = block.defaultBlockState();
-          } else {
-            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), stateStr, true);
-            state = result.blockState();
-          }
+          var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), stateStr, true);
+          state = result.blockState();
         } catch (Exception ignored) {
         }
       }
