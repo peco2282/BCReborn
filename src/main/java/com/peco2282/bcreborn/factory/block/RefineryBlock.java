@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -40,7 +41,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class RefineryBlock extends BuildCraftBlock {
-  public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
+  public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
   public RefineryBlock() {
     super(Properties.of()
@@ -53,7 +54,7 @@ public class RefineryBlock extends BuildCraftBlock {
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return null;
+    return new RefineryBlockEntity(pos, state);
   }
 
   @Nullable
@@ -64,7 +65,7 @@ public class RefineryBlock extends BuildCraftBlock {
 
   @Override
   public RenderShape getRenderShape(BlockState state) {
-    return RenderShape.MODEL;
+    return RenderShape.ENTITYBLOCK_ANIMATED;
   }
 
   @Override
