@@ -15,9 +15,10 @@ import com.peco2282.bcreborn.api.facades.FacadeType;
 import com.peco2282.bcreborn.api.facades.IFacadeItem;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
+import com.peco2282.bcreborn.core.block.SpringBlock;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.item.render.FacadeItemRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
@@ -27,13 +28,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -78,15 +79,26 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     return FacadeType.Basic;
   }
 
-  public static boolean isBlockValidForFacade(BlockState state) {
+  public static boolean isValidBlockForFacade(BlockState state) {
+    if (!Block.isShapeFullBlock(state.getShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO))) {
+      return false;
+    }
+
     Block block = state.getBlock();
-    if (block == Blocks.AIR) return false;
+    return !(block instanceof SpringBlock) && !(block instanceof PipeBlock);
+  }
+
+  public static boolean isBlockValidForCreativeTab(BlockState state) {
+    if (!isValidBlockForFacade(state)) return false;
     // オリジナルのBuildCraftの挙動に合わせ、モデルを持つフルブロックを基本とする
     if (state.getRenderShape() != RenderShape.MODEL) return false;
-    
+    Block block = state.getBlock();
+
     // 技術的に問題がある可能性のあるブロック（TileEntityを持つものなど）を除外
 //    if (block instanceof net.minecraft.world.level.block.EntityBlock) return false;
     if (block.asItem() instanceof IFacadeItem) return false;
+    if (block == Blocks.AIR) return false;
+
     
     // 不透明なブロックか、ガラスのような一部の透過ブロックを許可
     // 簡易的な判定として、solid かつ impermeable (ガラス等) をチェック
