@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn;
 
-import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +31,7 @@ public class BCRebornSilicon implements BCReborn {
   // Define mod id in a common place for everything to reference
   public static final String MODID = "bcrebornsilicon";
   // Directly reference a slf4j logger
-  private static final Logger LOGGER = LogUtils.getLogger();
+  public static final Logger LOGGER = BCReborn.createLogger();
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
 
