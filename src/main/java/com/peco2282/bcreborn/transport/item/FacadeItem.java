@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
 
 public class FacadeItem extends BuildCraftItem implements IFacadeItem {
 
-  public FacadeItem(Properties properties) {
-    super(properties);
+  public FacadeItem() {
+    super(new Properties());
   }
 
   public static FacadeState[] getStates(ItemStack stack) {
