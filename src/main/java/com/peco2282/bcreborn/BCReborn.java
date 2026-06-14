@@ -27,6 +27,10 @@ public interface BCReborn {
     return LoggerFactory.getLogger((MOD_ID_BASE + "." + pack).toUpperCase());
   }
 
+  static Logger commonLogger() {
+    return LoggerFactory.getLogger(MOD_ID_BASE.toUpperCase());
+  }
+
   static String getModId(Type type) {
     return MOD_ID_BASE + type.modId;
   }
