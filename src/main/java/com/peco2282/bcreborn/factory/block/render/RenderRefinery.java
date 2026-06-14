@@ -118,12 +118,12 @@ public class RenderRefinery implements BlockEntityRenderer<RefineryBlockEntity> 
     }
 
     poseStack.pushPose();
-    poseStack.translate(-0.51F, trans1 - 0.5F, -0.5F);
+//    poseStack.translate(-0.51F, trans1 - 0.5F, -0.5F);
     theMagnet.render(poseStack, vertexConsumer, packedLight, packedOverlay);
     poseStack.popPose();
 
     poseStack.pushPose();
-    poseStack.translate(-0.51F, trans2 - 0.5F, 0.25F);
+    poseStack.translate(0F, 0, 0.75);
     theMagnet.render(poseStack, vertexConsumer, packedLight, packedOverlay);
     poseStack.popPose();
 
