@@ -557,6 +557,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (energyStorage != null && tag.contains("Energy")) {
       energyStorage.deserializeNBT(tag.get("Energy"));
     }
+    if (tag.contains("SideProperties")) {
+      sideProperties.readFromNBT(tag.getCompound("SideProperties"));
+    }
   }
   // --- End Container Implementation ---
 
@@ -604,6 +607,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (energyStorage != null) {
       tag.put("Energy", energyStorage.serializeNBT());
     }
+    CompoundTag sideTag = new CompoundTag();
+    sideProperties.writeToNBT(sideTag);
+    tag.put("SideProperties", sideTag);
   }
 
   // ---- Capabilities ----
