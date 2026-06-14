@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
+import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
@@ -53,7 +54,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -144,6 +144,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       filters.put(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
     }
     this.behaviour = PipeBehaviourManager.getBehaviour(type, material);
+
+    // Powered pipe (for extract)
+    if (material == PipeMaterial.WOOD && (type == PipeType.ITEM || type == PipeType.FLUID)) {
+      this.setBattery(new EnergyStorage(1024, 64, 64, 0));
+    }
   }
 
   public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
@@ -211,31 +216,15 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public int getExtractionEnergy() {
-    int totalEnergy = 0;
-    for (Direction dir : Direction.values()) {
-      BlockEntity be = getBlockEntity(worldPosition.relative(dir));
-      if (be instanceof EngineBlockEntity<?> engine) {
-        if (engine.orientation == dir.getOpposite() && engine.isActive()) {
-          totalEnergy += engine.getEnergyStored();
-        }
-      }
+    if (getBattery() != null) {
+      return getBattery().getEnergyStored();
     }
-    return totalEnergy;
+    return 0;
   }
 
   public void consumeExtractionEnergy(int amount) {
-    int remaining = amount;
-    for (Direction dir : Direction.values()) {
-      if (remaining <= 0) break;
-      BlockEntity be = getBlockEntity(worldPosition.relative(dir));
-      if (be instanceof EngineBlockEntity<?> engine) {
-        if (engine.orientation == dir.getOpposite() && engine.isActive()) {
-          int stored = engine.getEnergyStored();
-          int toConsume = Math.min(remaining, stored);
-          engine.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).ifPresent(e -> e.extractEnergy(toConsume, false));
-          remaining -= toConsume;
-        }
-      }
+    if (getBattery() != null) {
+      getBattery().useEnergy(0, amount, false);
     }
   }
 
@@ -555,7 +544,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       fluidTank.readFromNBT(tag.getCompound("Fluid"));
     }
     if (energyStorage != null && tag.contains("Energy")) {
-      energyStorage.deserializeNBT(tag.get("Energy"));
+      energyStorage.read(tag.getCompound("Energy"));
     }
     if (tag.contains("SideProperties")) {
       sideProperties.readFromNBT(tag.getCompound("SideProperties"));
@@ -605,7 +594,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       tag.put("Fluid", fluidTag);
     }
     if (energyStorage != null) {
-      tag.put("Energy", energyStorage.serializeNBT());
+      var energy = new CompoundTag();
+      energyStorage.write(energy);
+      tag.put("Energy", energy);
     }
     CompoundTag sideTag = new CompoundTag();
     sideProperties.writeToNBT(sideTag);
