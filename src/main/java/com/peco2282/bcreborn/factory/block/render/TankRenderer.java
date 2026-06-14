@@ -25,9 +25,9 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.joml.Matrix4f;
 
-public class RenderTank implements BlockEntityRenderer<TankBlockEntity> {
+public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
 
-  public RenderTank(BlockEntityRendererProvider.Context context) {
+  public TankRenderer(BlockEntityRendererProvider.Context context) {
   }
 
   @Override
