@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn;
 
-import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.builders.blueprints.BlueprintServerDatabase;
 import com.peco2282.bcreborn.builders.blueprints.LibraryDatabase;
 import com.peco2282.bcreborn.builders.event.BCRebornBuildersEvent;
@@ -35,7 +34,7 @@ public class BCRebornBuilders implements BCReborn {
   // Define mod id in a common place for everything to reference
   public static final String MODID = "bcrebornbuilders";
   // Directly reference a slf4j logger
-  private static final Logger LOGGER = LogUtils.getLogger();
+  public static final Logger LOGGER = BCReborn.createLogger();
 
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);

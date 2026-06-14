@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn;
 
-import com.mojang.logging.LogUtils;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.common.BCRegistry;
@@ -37,7 +36,7 @@ public class BCRebornRobotics implements BCReborn {
   // Define mod id in a common place for everything to reference
   public static final String MODID = "bcrebornrobotics";
   // Directly reference a slf4j logger
-  private static final Logger LOGGER = LogUtils.getLogger();
+  public static final Logger LOGGER = BCReborn.createLogger();
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
 
