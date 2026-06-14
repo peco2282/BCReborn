@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.blueprints.*;
-import com.peco2282.bcreborn.api.core.BCLog;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -99,8 +99,7 @@ public class Blueprint extends BlueprintBase {
       slot.storeRequirements(context, x, y, z);
       put(posX, posY, posZ, slot);
     } catch (Throwable t) {
-      t.printStackTrace();
-      BCLog.logger.throwing(t);
+      BCReborn.commonLogger().error("Initialization error", t);
     }
 
     switch (slot.getBuildingPermission()) {
