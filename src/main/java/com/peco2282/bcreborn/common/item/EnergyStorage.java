@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.common.item;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import java.util.StringJoiner;
+
 public class EnergyStorage implements IEnergyStorage {
   private int energy, maxEnergy, maxReceive, maxExtract;
 
@@ -110,5 +112,15 @@ public class EnergyStorage implements IEnergyStorage {
     } else if (energy > maxEnergy) {
       energy = maxEnergy;
     }
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", EnergyStorage.class.getSimpleName() + "[", "]")
+      .add("energy=" + energy)
+      .add("maxEnergy=" + maxEnergy)
+      .add("maxReceive=" + maxReceive)
+      .add("maxExtract=" + maxExtract)
+      .toString();
   }
 }
