@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -31,7 +32,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 
@@ -188,4 +193,11 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
     }
   }
 
+  @Override
+  public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.ENERGY && getBattery() != null) {
+      return LazyOptional.of(this::getBattery).cast();
+    }
+    return super.getCapability(cap, side);
+  }
 }
