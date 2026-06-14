@@ -31,36 +31,54 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class FacadePluggable extends PipePluggable {
 
   private BlockState state = Blocks.AIR.defaultBlockState();
+  private boolean hollow = false;
 
   public FacadePluggable() {
   }
 
   public FacadePluggable(BlockState state) {
+    this(state, false);
+  }
+
+  public FacadePluggable(BlockState state, boolean hollow) {
     this.state = state;
+    this.hollow = hollow;
   }
 
   public BlockState getState() {
     return state;
   }
 
+  public boolean isHollow() {
+    return hollow;
+  }
+
+  public void setHollow(boolean hollow) {
+    this.hollow = hollow;
+  }
+
   @Override
   public void writeToNBT(CompoundTag nbt) {
     nbt.put("state", NbtUtils.writeBlockState(state));
+    nbt.putBoolean("hollow", hollow);
   }
 
   @Override
   public void readFromNBT(CompoundTag nbt) {
     state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
+    hollow = nbt.getBoolean("hollow");
   }
 
   @Override
   public void writeData(FriendlyByteBuf data) {
     data.writeVarInt(Block.getId(state));
+    data.writeBoolean(hollow);
   }
 
   @Override
   public void readData(FriendlyByteBuf data) {
     state = Block.stateById(data.readVarInt());
+    hollow = data.readBoolean();
   }
 
   @Override
@@ -68,12 +86,18 @@ public class FacadePluggable extends PipePluggable {
     ItemStack stack = new ItemStack(TransportItems.FACADE.get());
     CompoundTag nbt = stack.getOrCreateTagElement("facade");
     nbt.put("state", NbtUtils.writeBlockState(state));
+    nbt.putBoolean("hollow", hollow);
     return new ItemStack[]{stack};
   }
 
   @Override
   public boolean isBlocking(IPipeTile pipe, Direction direction) {
-    return true;
+    return !hollow;
+  }
+
+  @Override
+  public boolean isSolidOnSide(IPipeTile pipe, Direction direction) {
+    return !hollow;
   }
 
   @Override

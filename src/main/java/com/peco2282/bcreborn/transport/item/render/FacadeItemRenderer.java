@@ -37,13 +37,49 @@ public class FacadeItemRenderer extends BlockEntityWithoutLevelRenderer {
     poseStack.pushPose();
 
     float thickness = 1.0f / 16.0f;
+    boolean hollow = stack.hasTag() && stack.getOrCreateTag().getBoolean("hollow");
+
     // アイテムとして見やすいように中央付近に配置
     poseStack.translate(0.0, 0.0, 0.5 - thickness / 2.0);
     poseStack.scale(1.0f, 1.0f, thickness);
 
-    // renderSingleBlockを使用すると、ブロックの全面が描画される
-    dispatcher.renderSingleBlock(state, poseStack, buffer, packedLight, packedOverlay, ModelData.EMPTY, net.minecraft.client.renderer.RenderType.cutout());
+    if (hollow) {
+      renderHollow(state, poseStack, buffer, packedLight, packedOverlay, dispatcher);
+    } else {
+      dispatcher.renderSingleBlock(state, poseStack, buffer, packedLight, packedOverlay, ModelData.EMPTY, net.minecraft.client.renderer.RenderType.cutout());
+    }
 
     poseStack.popPose();
+  }
+
+  private void renderHollow(BlockState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, BlockRenderDispatcher dispatcher) {
+    float holeMin = 4.0f / 16.0f;
+    float holeMax = 12.0f / 16.0f;
+
+    // 1. 上
+    poseStack.pushPose();
+    renderSection(state, 0, holeMax, 1.0f, 1.0f, poseStack, buffer, packedLight, packedOverlay, dispatcher);
+    poseStack.popPose();
+
+    // 2. 下
+    poseStack.pushPose();
+    renderSection(state, 0, 0, 1.0f, holeMin, poseStack, buffer, packedLight, packedOverlay, dispatcher);
+    poseStack.popPose();
+
+    // 3. 左
+    poseStack.pushPose();
+    renderSection(state, 0, holeMin, holeMin, holeMax, poseStack, buffer, packedLight, packedOverlay, dispatcher);
+    poseStack.popPose();
+
+    // 4. 右
+    poseStack.pushPose();
+    renderSection(state, holeMax, holeMin, 1.0f, holeMax, poseStack, buffer, packedLight, packedOverlay, dispatcher);
+    poseStack.popPose();
+  }
+
+  private void renderSection(BlockState state, float xMin, float yMin, float xMax, float yMax, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, BlockRenderDispatcher dispatcher) {
+    poseStack.translate(xMin, yMin, 0);
+    poseStack.scale(xMax - xMin, yMax - yMin, 1.0f);
+    dispatcher.renderSingleBlock(state, poseStack, buffer, packedLight, packedOverlay, ModelData.EMPTY, net.minecraft.client.renderer.RenderType.cutout());
   }
 }

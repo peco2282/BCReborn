@@ -117,7 +117,8 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
         if (!level.isClientSide) {
           FacadeState[] states = getFacadeStates(context.getItemInHand());
           if (states.length > 0 && states[0] != null && states[0].state != null) {
-            pipe.sideProperties.pluggables[side.ordinal()] = new com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable(states[0].state);
+            boolean hollow = context.getItemInHand().getOrCreateTag().getBoolean("hollow");
+            pipe.sideProperties.pluggables[side.ordinal()] = new com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable(states[0].state, hollow);
             pipe.setChanged();
             level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
             if (!context.getPlayer().getAbilities().instabuild) {
