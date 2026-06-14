@@ -141,13 +141,16 @@ NBT key: `EntryDir` (legacy fallback: `LastDir` for backward compatibility).
 - Async tick — Minecraft is fundamentally single-threaded.
 - Capability caching — invalid lifecycle management overhead outweighs benefit now.
 
-##### Next Implementation Priorities
+#### 🚧 今後の実装優先順位 (Next Implementation Priorities)
 
-1. **Diamond Pipe** — override `chooseNextDirection()` with filter-based routing.
-2. **Iron Pipe** — forced output direction (`ironPipeOutput` field already on `PipeBlockEntity`).
-3. **Gold Pipe** — speed modifier via `PipeMaterial`.
-4. **Obsidian Pipe** — world item suction.
-5. **`FluidTransportModule`** — mirror `ItemTransportModule` structure for fluid transport.
-6. **`EnergyTransportModule`** — FE transport following same module pattern.
-7. **Pipe rendering** — dynamic shape model, item-in-pipe rendering.
-8. **Congestion system** — jam detection using `bounceCount`, overflow, bounce threshold.
+1.  **Transport UI の完成**
+    - Diamond Pipe のフィルター設定 GUI。
+    - Iron Pipe の出力方向指定 GUI。
+2.  **建築マシンのロジック実装**
+    - `Landmark` による範囲指定とレーザー表示。
+    - `QuarryBlockEntity` / `FillerBlockEntity` の `tick()` 内に BuildCraft 準拠のロジックを実装。
+3.  **エンジンの安定化と演出**
+    - ピストンアニメーションのクライアント・サーバ同期。
+    - `StoneEngineBlockEntity` / `IronEngineBlockEntity` の GUI 完成。
+4.  **アイテムレンダリング**
+    - パイプ内を移動する `TravelingItem` の動的レンダリング。

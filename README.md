@@ -119,7 +119,12 @@ com.peco2282.bcreborn
 
 ## 開発状況
 
-詳細な実装状況・今後の予定は [ROADMAP.md](ROADMAP.md) を参照してください。
+詳細な進捗状況と今後の計画については、[ROADMAP.md](ROADMAP.md) を参照してください。
+
+### 🚀 現在の注力タスク
+- **Transport UI**: Diamond Pipe / Iron Pipe の設定 GUI 実装
+- **Heavy Machines**: Quarry / Filler の動作ロジック実装
+- **Landmarks**: 範囲指定システムの基盤構築
 
 ---
 

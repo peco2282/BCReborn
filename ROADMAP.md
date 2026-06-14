@@ -1,6 +1,6 @@
 # BCReborn — 実装ロードマップ (Original BuildCraft 準拠)
 
-> 最終更新: 2026-05-31
+> 最終更新: 2026-06-14
 > 対象バージョン: Minecraft 1.20.1 / Forge 47.x
 
 ---
@@ -20,11 +20,10 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 
 ---
 
-## 🛠 短期重点タスク (Priority HIGH)
-1.  **Transport UI の完成**: Diamond Pipe のフィルター設定、Iron Pipe の方向指定を GUI で可能にする。
-2.  **Transport ロジックの完遂**: Obsidian Pipe (吸引), Void Pipe (消去), 渋滞 (Bounce) システムの実装。
-3.  **エネルギー基盤の安定化**: エンジンのオーバーヒート、爆発、ピストンアニメーションの同期。
-4.  **建築マシンの着手**: Quarry (クァーリー) の基本掘削ロジックと Landmark (ランドマーク) による範囲指定。
+## 🛠 最優先タスク (Immediate Priority)
+1.  **Transport UI の実装**: Diamond Pipe のフィルター設定、Iron Pipe の方向指定を GUI で可能にする。
+2.  **建築マシンの基本ロジック**: Landmark による範囲指定の実装と、Quarry/Filler の動作開始。
+3.  **エンジンの安定化と演出**: ピストンアニメーションの同期と GUI の完成。
 
 ---
 
@@ -37,11 +36,11 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 | 基本輸送ロジック | ✅ | TravelingItem, MovementHelper, SpeedHelper |
 | Wood / Emerald | ✅ | 抽出ロジック実装済み |
 | Stone / Cobblestone | ✅ | 基本輸送・摩擦の違い |
-| Iron | 🔧 | 輸送は可能だが、GUI による出力方向固定が未実装 |
+| Iron | 🔧 | 挙動は実装済み。GUI による出力方向固定が未実装 |
 | Golden | ✅ | 加速ロジック |
-| Diamond | 🔧 | ルーティング Behaviour はあるが、GUI によるフィルター設定が未実装 |
-| Obsidian | ⬜ | 地面のアイテムを吸引するロジック |
-| Void | ⬜ | アイテムを消去するロジック |
+| Diamond | 🔧 | ルーティングは実装済み。GUI によるフィルター設定が未実装 |
+| Obsidian | ✅ | 地面のアイテムを吸引するロジック実装済み |
+| Void | ✅ | アイテムを消去するロジック実装済み |
 | Daizuli / Emzuli | ⬜ | 高度な色分けルーティング |
 | 渋滞・逆流システム | ⬜ | bounceCount によるアイテムドロップ/消失 |
 
@@ -55,9 +54,9 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 ### 1-3. 拡張機能 (Gates & Logistics)
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| パイプワイヤー (4色) | ⬜ | 赤・青・黄・緑の信号伝播 |
+| パイプワイヤー (4色) | ✅ | 基本的な信号伝播ロジック実装済み |
 | ゲート (Gate) | ⬜ | 条件(Trigger)とアクション(Action)による制御。BC の真骨頂 |
-| 外装 (Facade) | ⬜ | パイプを隠すブロック装飾 |
+| 外装 (Facade) | ✅ | FacadeItem と基本的な描画ロジック実装済み |
 | プラグ (Plug/Lens) | ⬜ | 信号遮断や特殊機能 |
 
 ---
@@ -72,8 +71,8 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 | Stone Engine | ✅ | 燃料燃焼、冷却ロジック |
 | Iron Engine | ✅ | 液体燃料対応 |
 | Creative Engine | ✅ | テスト用無限出力 |
-| ピストンアニメーション | 🔧 | クライアント側での滑らかなピストン運動 (Renderer) |
-| エンジン GUI | 🔧 | 燃料ゲージ、温度計表示 |
+| ピストンアニメーション | 🔧 | Renderer はあるが、同期の最適化が必要 |
+| エンジン GUI | 🔧 | Stone/Iron Engine の GUI 実装中 |
 
 ---
 
@@ -89,9 +88,9 @@ BC を象徴する大型マシン。
 ### 3-2. マシン (Machines)
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| Quarry (クァーリー) | 🔧 | ブロックは存在するが、掘削・フレーム設置ロジックが未実装 |
+| Quarry (クァーリー) | 🔧 | ブロック/Entity はあるが、掘削ロジックが未実装 |
 | Mining Well | ⬜ | 1ブロック直下掘削 |
-| Filler (フィラー) | ⬜ | 範囲内のブロック埋め・撤去 (パターン指定) |
+| Filler (フィラー) | 🔧 | ブロック/Entity/GUI はあるが、掘削・充填ロジックが未実装 |
 | Builder (ビルダー) | ⬜ | 設計図 (Blueprint) に基づく自動建築 |
 | Architect Table | ⬜ | 範囲内を設計図として記録 |
 
@@ -120,26 +119,24 @@ BC を象徴する大型マシン。
 
 ## 🚀 ROADMAP: 今後のリリース計画
 
-### Phase 1: 輸送と基盤の完成 (Transport & Core)
-*   [ ] Diamond/Iron Pipe GUI の実装
+### Phase 1: 輸送と UI の完成 (Transport & UI)
+*   [ ] Diamond/Iron Pipe GUI の完全実装（設定の保存と同期）
 *   [ ] パイプ内アイテムレンダリングの実装 (ワクワク感の向上)
-*   [ ] Obsidian/Void/Sandstone などの特殊パイプ完成
 *   [ ] パイプの動的接続モデル (見た目の改善)
 
-### Phase 2: ゲートと論理制御 (Logistics)
-*   [ ] パイプワイヤーの実装
-*   [ ] ゲート (Gate) の基本システム (Trigger/Action)
+### Phase 2: 採掘と建築の始動 (Heavy Machines & Logic)
+*   [ ] ランドマーク (Landmark) とレーザー表示の実装
+*   [ ] クァーリー (Quarry) の動作開始 (フレーム設置、掘削、アイテム排出)
+*   [ ] フィラー (Filler) の基本パターン動作
+
+### Phase 3: ゲートと論理制御 (Logistics & Silicon)
+*   [ ] ゲート (Gate) の基本システム (Trigger/Action) と GUI
 *   [ ] 基本的なチップ製造 (Assembly Table)
 
-### Phase 3: 自動採掘と建築 (Heavy Machines)
-*   [ ] ランドマーク (Landmark) とレーザー表示
-*   [ ] クァーリー (Quarry) の動作開始 (フレーム設置、掘削、アイテム排出)
-*   [ ] フィラー (Filler) による整地
-
-### Phase 4: 高度な自動化と装飾 (Final Polish)
+### Phase 4: 高度な自動化と仕上げ (Advanced Features & Polish)
 *   [ ] ロボット (Robotics) システム
-*   [ ] 外装 (Facade) システム
-*   [ ] 各種互換性向上 (他の工業 MOD との連携)
+*   [ ] 外装 (Facade) のバリエーション拡充
+*   [ ] エンジンの爆発・オーバーヒートのバランス調整
 
 ---
 
