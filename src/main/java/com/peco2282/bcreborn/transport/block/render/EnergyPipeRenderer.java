@@ -239,7 +239,7 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
       if (pluggable != null) {
         IPipePluggableRenderer renderer = pluggable.getRenderer();
         if (renderer != null) {
-          renderer.renderPluggable(null, side, pluggable, 0, poseStack, buffer, packedLight, packedOverlay);
+          renderer.renderPluggable(pipe.getPipe(), side, pluggable, 0, poseStack, buffer, packedLight, packedOverlay);
         }
       }
     }
