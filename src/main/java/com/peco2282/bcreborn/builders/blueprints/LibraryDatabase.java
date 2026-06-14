@@ -12,11 +12,13 @@
 package com.peco2282.bcreborn.builders.blueprints;
 
 
+import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.library.LibraryAPI;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,6 +31,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class LibraryDatabase {
+  private static final Logger LOGGER = BCRebornBuilders.LOGGER;
   protected Set<LibraryId> blueprintIds;
   protected LibraryId[] pages = new LibraryId[0];
 
@@ -40,7 +43,7 @@ public class LibraryDatabase {
       try {
         return NbtIo.readCompressed(blueprintFile);
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.error("Failed to load blueprint file: {}", blueprintFile.getName(), e);
       }
     }
 
