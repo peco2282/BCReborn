@@ -82,22 +82,14 @@ public class FacadePluggable extends PipePluggable {
     float max = 1.0f;
     float thickness = 1.0f / 16.0f;
 
-    switch (side) {
-      case DOWN:
-        return new AABB(min, 0, min, max, thickness, max);
-      case UP:
-        return new AABB(min, 1.0f - thickness, min, max, 1.0, max);
-      case NORTH:
-        return new AABB(min, min, 0, max, max, thickness);
-      case SOUTH:
-        return new AABB(min, min, 1.0f - thickness, max, max, 1.0);
-      case WEST:
-        return new AABB(0, min, min, thickness, max, max);
-      case EAST:
-        return new AABB(1.0f - thickness, min, min, 1.0, max, max);
-      default:
-        return new AABB(0, 0, 0, 1, 1, 1);
-    }
+    return switch (side) {
+      case DOWN -> new AABB(min, 0, min, max, thickness, max);
+      case UP -> new AABB(min, 1.0f - thickness, min, max, 1.0, max);
+      case NORTH -> new AABB(min, min, 0, max, max, thickness);
+      case SOUTH -> new AABB(min, min, 1.0f - thickness, max, max, 1.0);
+      case WEST -> new AABB(0, min, min, thickness, max, max);
+      case EAST -> new AABB(1.0f - thickness, min, min, 1.0, max, max);
+    };
   }
 
   @Override
