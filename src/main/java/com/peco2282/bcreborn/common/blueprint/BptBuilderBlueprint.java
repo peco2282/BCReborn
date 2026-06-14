@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.blueprint;
 
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
@@ -193,9 +194,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               }
             }
           } catch (Throwable t) {
-            // Defensive code against errors in implementers
-            t.printStackTrace();
-            BCLog.logger.throwing(t);
+            BCReborn.commonLogger().error("Blueprint deploy error", t);
           }
 
           b.writeToWorld(context);
@@ -213,9 +212,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
           }
         }
       } catch (Throwable t) {
-        // Defensive code against errors in implementers
-        t.printStackTrace();
-        BCLog.logger.throwing(t);
+        BCReborn.commonLogger().error("Blueprint deploy error", t);
       }
 
       e.writeToWorld(context);
@@ -437,8 +434,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
         }
       } catch (Throwable t) {
         // Defensive code against errors in implementers
-        t.printStackTrace();
-        BCLog.logger.throwing(t);
+        BCReborn.commonLogger().error("Blueprint deploy error", t);
         iterator.remove();
         requirementMap.remove(slot);
       }
@@ -489,8 +485,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       }
     } catch (Throwable t) {
       // Defensive code against errors in implementers
-      t.printStackTrace();
-      BCLog.logger.throwing(t);
+      BCReborn.commonLogger().error("Blueprint deploy error", t);
     }
 
     LinkedList<ItemStack> stacksUsed = new LinkedList<>();
@@ -526,8 +521,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
             stacksUsed.add(slot.useItem(context, reqStk, slotInv));
           } catch (Throwable t) {
             // Defensive code against errors in implementers
-            t.printStackTrace();
-            BCLog.logger.throwing(t);
+            BCReborn.commonLogger().error("Blueprint deploy error", t);
           }
 
           if (reqStk.getCount() == 0) {
@@ -560,8 +554,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       }
     } catch (Throwable t) {
       // Defensive code against errors in implementers
-      t.printStackTrace();
-      BCLog.logger.throwing(t);
+      BCReborn.commonLogger().error("Blueprint deploy error", t);
 
     }
 
@@ -604,8 +597,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
             slot.addStackConsumed(usedStack);
           } catch (Throwable t) {
             // Defensive code against errors in implementers
-            t.printStackTrace();
-            BCLog.logger.throwing(t);
+            BCReborn.commonLogger().error("Blueprint deploy error", t);
           }
 
           if (reqStk.getCount() == 0) {
@@ -636,14 +628,13 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       stacks = slot.getRequirements(context);
     } catch (Throwable t) {
       // Defensive code against errors in implementers
-      t.printStackTrace();
-      BCLog.logger.throwing(t);
+      BCReborn.commonLogger().error("Blueprint deploy error", t);
     }
 
     HashMap<StackKey, Integer> computeStacks = new HashMap<>();
 
     for (ItemStack stack : stacks) {
-      if (stack == null || stack.getItem() == null || stack.getCount() == 0) {
+      if (stack == null || stack.isEmpty() || stack.getCount() == 0) {
         continue;
       }
 
@@ -707,12 +698,11 @@ public class BptBuilderBlueprint extends BptBuilderBase {
           stacks = slot.getRequirements(context);
         } catch (Throwable t) {
           // Defensive code against errors in implementers
-          t.printStackTrace();
-          BCLog.logger.throwing(t);
+          BCReborn.commonLogger().error("Blueprint deploy error", t);
         }
 
         for (ItemStack stack : stacks) {
-          if (stack == null || stack.getItem() == null || stack.getCount() == 0) {
+          if (stack == null || stack.isEmpty() || stack.getCount() == 0) {
             continue;
           }
 
@@ -737,12 +727,11 @@ public class BptBuilderBlueprint extends BptBuilderBase {
         stacks = slot.getRequirements(context);
       } catch (Throwable t) {
         // Defensive code against errors in implementers
-        t.printStackTrace();
-        BCLog.logger.throwing(t);
+        BCReborn.commonLogger().error("Blueprint deploy error", t);
       }
 
       for (ItemStack stack : stacks) {
-        if (stack == null || stack.getItem() == null || stack.getCount() == 0) {
+        if (stack == null || stack.isEmpty() || stack.getCount() == 0) {
           continue;
         }
 
@@ -774,8 +763,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
         s.postProcessing(context);
       } catch (Throwable t) {
         // Defensive code against errors in implementers
-        t.printStackTrace();
-        BCLog.logger.throwing(t);
+        BCReborn.commonLogger().error("Blueprint deploy error", t);
       }
     }
   }

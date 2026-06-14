@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.blueprints.*;
-import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.common.Box;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -121,8 +121,7 @@ public abstract class BlueprintBase {
             try {
               newContents[pos].rotateLeft(context);
             } catch (Throwable t) {
-              t.printStackTrace();
-              BCLog.logger.throwing(t);
+              BCReborn.commonLogger().error("Rotation error", t);
             }
           }
         }
@@ -207,7 +206,7 @@ public abstract class BlueprintBase {
     try {
       loadContents(nbt);
     } catch (BptError e) {
-      e.printStackTrace();
+      BCReborn.commonLogger().error("Blueprint load error", e);
     }
 
     if (nbt.contains("subBpt")) {
