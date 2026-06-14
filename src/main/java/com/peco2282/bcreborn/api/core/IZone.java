@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.core;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 
 import java.util.Random;
 
@@ -62,6 +63,6 @@ public interface IZone {
    * @param rand The random instance to use.
    * @return A random {@link BlockIndex}.
    */
-  BlockIndex getRandomBlockIndex(Random rand);
+  BlockIndex getRandomBlockIndex(RandomSource rand);
 
 }

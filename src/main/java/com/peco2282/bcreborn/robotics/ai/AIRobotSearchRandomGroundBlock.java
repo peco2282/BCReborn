@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
-import com.peco2282.bcreborn.common.utils.WrapRandomSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 
@@ -65,7 +64,7 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot {
       x = (int) (Mth.cos(a) * r + Math.floor(robot.getX()));
       z = (int) (Mth.sin(a) * r + Math.floor(robot.getZ()));
     } else {
-      BlockIndex b = zone.getRandomBlockIndex(new WrapRandomSource(robot.level().random));
+      BlockIndex b = zone.getRandomBlockIndex(robot.level().random);
       x = b.x;
       z = b.z;
     }

@@ -19,13 +19,13 @@ import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Box implements IBox {
   public Kind kind = Kind.LASER_RED;
@@ -287,7 +287,7 @@ public class Box implements IBox {
   }
 
   @Override
-  public BlockIndex getRandomBlockIndex(Random rand) {
+  public BlockIndex getRandomBlockIndex(RandomSource rand) {
     int x = (xMax > xMin) ? xMin + rand.nextInt(xMax - xMin + 1) : xMin;
     int y = (yMax > yMin) ? yMin + rand.nextInt(yMax - yMin + 1) : yMin;
     int z = (zMax > zMin) ? zMin + rand.nextInt(zMax - zMin + 1) : zMin;
