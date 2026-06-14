@@ -16,6 +16,9 @@ import com.peco2282.bcreborn.api.facades.IFacadeItem;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.item.render.FacadeItemRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,17 +39,29 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FacadeItem extends BuildCraftItem implements IFacadeItem {
 
   public FacadeItem() {
     super(new Properties());
+  }
+
+  @Override
+  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    consumer.accept(new IClientItemExtensions() {
+      @Override
+      public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+        return FacadeItemRenderer.INSTANCE;
+      }
+    });
   }
 
   public static FacadeState[] getStates(ItemStack stack) {
