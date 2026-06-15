@@ -12,15 +12,18 @@
 package com.peco2282.bcreborn.common.packet.c2s;
 
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
+import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+@Packet(direction = NetworkDirection.PLAY_TO_SERVER)
 public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket {
   public static UploadNothingToServerPacket decode(FriendlyByteBuf buffer) {
     return new UploadNothingToServerPacket(buffer.readBlockPos());

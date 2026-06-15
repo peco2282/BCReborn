@@ -11,14 +11,17 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
+import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.core.list.ListNewMenu;
 import com.peco2282.bcreborn.core.list.ListOldMenu;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+@Packet(direction = NetworkDirection.PLAY_TO_SERVER)
 public record ListSetLabelPacket(
   String label
 ) implements CustomPacket {

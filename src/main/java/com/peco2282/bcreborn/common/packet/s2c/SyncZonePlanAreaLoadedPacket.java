@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.s2c;
 
+import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
@@ -18,10 +19,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+@Packet(direction = NetworkDirection.PLAY_TO_CLIENT)
 public record SyncZonePlanAreaLoadedPacket(BlockPos pos, ZonePlan plan) implements CustomPacket {
   public static SyncZonePlanAreaLoadedPacket decode(FriendlyByteBuf buffer) {
     BlockPos pos = buffer.readBlockPos();
