@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
-import com.peco2282.bcreborn.common.packet.PacketController;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.crops.CropHandlerPlantable;
 import com.peco2282.bcreborn.core.crops.CropHandlerReeds;
@@ -36,6 +35,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
@@ -48,6 +49,15 @@ public class BCRebornCore implements BCReborn {
   public static final String MODID = "bcreborncore";
   // Directly reference a slf4j logger
   public static final Logger LOGGER = BCReborn.createLogger();
+
+  private static final String PROTOCOL_VERSION = "1.0";
+
+  public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+    BCReborn.getLocation("main"),
+    () -> PROTOCOL_VERSION,
+    PROTOCOL_VERSION::equals,
+    PROTOCOL_VERSION::equals
+  );
 
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
@@ -75,6 +85,7 @@ public class BCRebornCore implements BCReborn {
     MinecraftForge.EVENT_BUS.register(this);
     MinecraftForge.EVENT_BUS.register(new SpringPopulate());
     processor.initRegister();
+    processor.packetRegister(CHANNEL);
 //    REGISTRY
 //        .addRunner(BlocksCore::init)
 //        .addRunner(CoreBlockEntityTypes::init)
@@ -82,7 +93,6 @@ public class BCRebornCore implements BCReborn {
     // Touch CoreItems to trigger static field initialization
     var ignored = CoreItems.WRENCH;
     REGISTRY.register(modEventBus);
-    PacketController.init();
     modEventBus.register(DataGatherEvent.class);
 
     String fileName = String.format(Locale.ROOT, "%s-%s.toml", MOD_ID_BASE, ModConfig.Type.COMMON.extension());

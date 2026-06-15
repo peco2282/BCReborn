@@ -12,18 +12,21 @@
 package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
+import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+@Packet(direction = NetworkDirection.PLAY_TO_CLIENT)
 public record SyncBuilderRequirementsPacket(BlockPos pos,
                                             List<RequirementItemStack> requirements) implements CustomPacket {
   public static SyncBuilderRequirementsPacket decode(FriendlyByteBuf buffer) {

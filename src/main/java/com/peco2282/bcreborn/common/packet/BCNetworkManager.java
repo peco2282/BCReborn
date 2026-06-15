@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class BCNetworkManager {
-  private static final SimpleChannel channel = PacketController.CHANNEL;
+  private static final SimpleChannel channel = BCRebornCore.CHANNEL;
   // Client -> Server
 
   /// Blueprint
