@@ -11,10 +11,15 @@
  */
 package com.peco2282.bcreborn.robotics.item;
 
+import com.peco2282.bcreborn.api.transport.IPipe;
+import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
+import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.robotics.render.RobotStationItemRenderer;
+import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
@@ -22,7 +27,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.Consumer;
 
-public class RobotStationItem extends BuildCraftItem {
+public class RobotStationItem extends BuildCraftItem implements IPipePluggableItem {
 
   public RobotStationItem() {
     super(new Properties());
@@ -43,5 +48,8 @@ public class RobotStationItem extends BuildCraftItem {
     return true;
   }
 
-  // TODO: Implement IPipePluggableItem when the modern Pipe system API is ready
+  @Override
+  public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+    return new RobotStationPluggable();
+  }
 }
