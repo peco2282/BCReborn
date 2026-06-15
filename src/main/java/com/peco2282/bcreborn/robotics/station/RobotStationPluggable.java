@@ -170,7 +170,7 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
     Linked
   }
 
-  private RobotStationState renderState;
+  private RobotStationState renderState = RobotStationState.Available;
   private DockingStationPipe station;
   private boolean isValid = false;
 
@@ -244,6 +244,16 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
       case WEST -> new AABB(0.749, 0.25, 0.25, 1.0, 0.75, 0.75);
       case EAST -> new AABB(0.0, 0.25, 0.25, 0.251, 0.75, 0.75);
     };
+  }
+
+  @Override
+  public void update(IPipeTile pipe, Direction direction) {
+    if (pipe.getWorld().isClientSide) return;
+    RobotStationState oldState = renderState;
+    refreshRenderState();
+    if (oldState != renderState) {
+      pipe.scheduleRenderUpdate();
+    }
   }
 
   private void refreshRenderState() {
