@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.robotics.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.BCRebornTransport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ import org.joml.Matrix4f;
 
 public class RobotStationItemRenderer extends BlockEntityWithoutLevelRenderer {
   public static final RobotStationItemRenderer INSTANCE = new RobotStationItemRenderer();
-  private static final ResourceLocation TEXTURE = BCRebornRobotics.location("textures/block/pipes/pipe_robot_station.png");
+  private static final ResourceLocation TEXTURE = BCRebornTransport.location("textures/block/pipes/pipe_robot_station.png");
 
   public RobotStationItemRenderer() {
     super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
