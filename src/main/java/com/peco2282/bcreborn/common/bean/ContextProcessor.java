@@ -61,7 +61,7 @@ public class ContextProcessor {
     for (ModFileScanData.AnnotationData ad : data.getAnnotations()) {
 
       if (ad.annotationType().getClassName().equals(InitRegister.class.getName())) {
-        log.debug("Processing annotation data for class {}", ad.annotationType().getClassName());
+        log.debug("Processing annotation data for class {}", ad.clazz().getClassName());
         String modId = (String) ad.annotationData().get("modId");
         if (modId == null) {
           continue;
