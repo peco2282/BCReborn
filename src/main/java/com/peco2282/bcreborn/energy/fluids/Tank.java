@@ -17,6 +17,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class Tank extends FluidTank {
   public final FluidTank readFromNBT(CompoundTag nbt) {
     if (nbt.contains(name)) {
       // allow to readTag empty tanks
-      setFluid(null);
+      setFluid(FluidStack.EMPTY);
 
       CompoundTag tankData = nbt.getCompound(name);
       super.readFromNBT(tankData);
