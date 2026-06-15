@@ -13,9 +13,9 @@ package com.peco2282.bcreborn.builders.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.BCRebornBuilders;
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
+import com.peco2282.bcreborn.common.GeneralConfig;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.gui.AdvancedSlot;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
@@ -180,7 +180,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
         Tank tank = builder.getFluidTanks().get(i);
         if (!tank.getFluid().isEmpty()) {
           fluidTip.add(tank.getFluid().getDisplayName());
-          if (!BCRebornCore.hideFluidNumbers) {
+          if (!GeneralConfig.isHideFluidValues()) {
             fluidTip.add(Component.literal(tank.getFluid().getAmount() + " mB").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
           }
         } else {
