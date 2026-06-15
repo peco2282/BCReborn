@@ -39,7 +39,7 @@ public class FluidGaugeWidget extends Widget {
       return;
     }
     FluidStack fluidStack = tank.getFluid();
-    if (fluidStack == null || fluidStack.getAmount() <= 0 || fluidStack.getFluid() == null) {
+    if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0 || fluidStack.getFluid() == null) {
       return;
     }
 
