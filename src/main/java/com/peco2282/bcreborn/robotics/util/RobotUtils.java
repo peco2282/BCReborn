@@ -33,11 +33,11 @@ public final class RobotUtils {
 
   }
 
-  public static List<DockingStation> getStations(Object tile) {
-    ArrayList<DockingStation> stations = new ArrayList<>();
+  public static List<DockingStation<?>> getStations(Object tile) {
+    ArrayList<DockingStation<?>> stations = new ArrayList<>();
 
     if (tile instanceof IDockingStationProvider) {
-      DockingStation station = ((IDockingStationProvider) tile).getStation();
+      DockingStation<?> station = ((IDockingStationProvider) tile).getStation();
       if (station != null) {
         stations.add(station);
       }
@@ -46,7 +46,7 @@ public final class RobotUtils {
     if (tile instanceof IPipeTile pipeTile) {
       for (Direction d : Direction.values()) {
         if (pipeTile.getPipePluggable(d) instanceof IDockingStationProvider pluggable) {
-          DockingStation station = pluggable.getStation();
+          DockingStation<?> station = pluggable.getStation();
 
           if (station != null) {
             stations.add(station);

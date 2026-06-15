@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnloadFluids;
 import com.peco2282.bcreborn.robotics.ai.AIRobotPumpBlock;
@@ -27,12 +28,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
-public class BoardRobotPump extends RedstoneBoardRobot {
+public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
 
   private BlockIndex blockFound;
 
   public BoardRobotPump(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.PUMP, iRobot);
   }
 
   @Override
@@ -61,7 +62,7 @@ public class BoardRobotPump extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
       if (ai.success()) {
         blockFound = searchAI.getBlockFound();

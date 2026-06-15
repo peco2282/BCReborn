@@ -15,12 +15,13 @@ import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.world.entity.item.ItemEntity;
 
-public class AIRobotDisposeItems extends AIRobot {
+public class AIRobotDisposeItems extends AIRobot<AIRobotDisposeItems> {
 
   public AIRobotDisposeItems(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.DISPOSE_ITEMS, iRobot);
   }
 
   @Override
@@ -29,7 +30,7 @@ public class AIRobotDisposeItems extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationAndUnload) {
       if (ai.success()) {
         if (robot.containsItems()) {

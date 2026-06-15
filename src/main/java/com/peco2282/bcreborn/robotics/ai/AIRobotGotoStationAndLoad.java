@@ -14,14 +14,15 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotGotoStationAndLoad extends AIRobot {
+public class AIRobotGotoStationAndLoad extends AIRobot<AIRobotGotoStationAndLoad> {
 
   private IStackFilter filter;
   private int quantity;
 
   public AIRobotGotoStationAndLoad(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_AND_LOAD, iRobot);
   }
 
   public AIRobotGotoStationAndLoad(RobotEntityBase iRobot, IStackFilter iFilter, int iQuantity) {
@@ -37,7 +38,7 @@ public class AIRobotGotoStationAndLoad extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationToLoad) {
       if (filter != null && ai.success()) {
         startDelegateAI(new AIRobotLoad(robot, filter, quantity));

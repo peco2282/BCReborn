@@ -58,9 +58,9 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
     if (container.getTile() == null || container.getTile().getLevel() == null) return;
     IRobotRegistry registry = RobotManager.registryProvider.getRegistry(container.getTile().getLevel());
 
-    List<DockingStation> stations = RobotUtils.getStations(container.getTile());
+    List<DockingStation<?>> stations = RobotUtils.getStations(container.getTile());
 
-    for (DockingStation station : stations) {
+    for (DockingStation<?> station : stations) {
       if (station.robotTaking() != null) {
         RobotEntity robot = (RobotEntity) station.robotTaking();
         Object ai = robot.getOverridingAI();
@@ -69,7 +69,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
           continue;
         }
 
-        DockingStation newStation = station;
+        DockingStation<?> newStation = station;
 
         if (parameters[0] instanceof StatementParameterItemStack) {
           newStation = getStation((StatementParameterItemStack) parameters[0], registry);
@@ -82,7 +82,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
     }
   }
 
-  private DockingStation getStation(StatementParameterItemStack stackParam,
+  private DockingStation<?> getStation(StatementParameterItemStack stackParam,
                                     IRobotRegistry registry) {
     ItemStack item = stackParam.getItemStack();
 

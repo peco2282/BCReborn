@@ -63,7 +63,7 @@ public interface IRobotRegistry {
    * @param resourceId The resource identifier.
    * @return {@code true} if taken, {@code false} otherwise.
    */
-  boolean isTaken(ResourceId resourceId);
+  boolean isTaken(ResourceId<?> resourceId);
 
   /**
    * Returns the ID of the robot currently taking the specified resource.
@@ -71,7 +71,7 @@ public interface IRobotRegistry {
    * @param resourceId The resource identifier.
    * @return The robot ID.
    */
-  long robotIdTaking(ResourceId resourceId);
+  long robotIdTaking(ResourceId<?> resourceId);
 
   /**
    * Returns the robot entity currently taking the specified resource.
@@ -79,7 +79,7 @@ public interface IRobotRegistry {
    * @param resourceId The resource identifier.
    * @return The robot entity, or {@code null} if none.
    */
-  RobotEntityBase robotTaking(ResourceId resourceId);
+  RobotEntityBase robotTaking(ResourceId<?> resourceId);
 
   /**
    * Attempts to take a resource for a robot.
@@ -88,7 +88,7 @@ public interface IRobotRegistry {
    * @param robot      The robot object.
    * @return {@code true} if successful, {@code false} otherwise.
    */
-  boolean take(ResourceId resourceId, Object robot);
+  boolean take(ResourceId<?> resourceId, Object robot);
 
   /**
    * Attempts to take a resource for a robot by its ID.
@@ -97,14 +97,14 @@ public interface IRobotRegistry {
    * @param robotId    The robot ID.
    * @return {@code true} if successful, {@code false} otherwise.
    */
-  boolean take(ResourceId resourceId, long robotId);
+  boolean take(ResourceId<?> resourceId, long robotId);
 
   /**
    * Releases a resource from the robot that has taken it.
    *
    * @param resourceId The resource identifier.
    */
-  void release(ResourceId resourceId);
+  void release(ResourceId<?> resourceId);
 
   /**
    * Releases all resources taken by the specified robot.
@@ -120,28 +120,28 @@ public interface IRobotRegistry {
    * @param side The side.
    * @return The docking station, or {@code null} if none.
    */
-  DockingStation getStation(BlockPos pos, Direction side);
+  DockingStation<?> getStation(BlockPos pos, Direction side);
 
   /**
    * Returns all registered docking stations.
    *
    * @return A collection of docking stations.
    */
-  Collection<DockingStation> getStations();
+  Collection<DockingStation<?>> getStations();
 
   /**
    * Registers a docking station.
    *
    * @param station The docking station.
    */
-  void registerStation(DockingStation station);
+  void registerStation(DockingStation<?> station);
 
   /**
    * Removes a docking station from the registry.
    *
    * @param station The docking station.
    */
-  void removeStation(DockingStation station);
+  void removeStation(DockingStation<?> station);
 
   /**
    * Marks a docking station as taken by a robot.
@@ -149,7 +149,7 @@ public interface IRobotRegistry {
    * @param station The docking station.
    * @param robotId The robot ID.
    */
-  void take(DockingStation station, long robotId);
+  void take(DockingStation<?> station, long robotId);
 
   /**
    * Marks a docking station as released by a robot.
@@ -157,7 +157,7 @@ public interface IRobotRegistry {
    * @param station The docking station.
    * @param robotId The robot ID.
    */
-  void release(DockingStation station, long robotId);
+  void release(DockingStation<?> station, long robotId);
 
   /**
    * Writes the registry state to NBT.

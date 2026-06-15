@@ -17,18 +17,19 @@ import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotStripesHandler;
 import net.minecraft.nbt.CompoundTag;
 
-public class BoardRobotStripes extends RedstoneBoardRobot {
+public class BoardRobotStripes extends RedstoneBoardRobot<BoardRobotStripes> {
 
   private BlockIndex blockFound;
 
   public BoardRobotStripes(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.STRIPES, iRobot);
   }
 
   @Override
@@ -47,7 +48,7 @@ public class BoardRobotStripes extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
       if (ai.success()) {
         blockFound = searchAI.getBlockFound();

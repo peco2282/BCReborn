@@ -17,20 +17,21 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
-public class AIRobotGotoStation extends AIRobot {
+public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
 
   private BlockIndex stationIndex;
   private Direction stationSide;
 
   public AIRobotGotoStation(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION, iRobot);
   }
 
-  public AIRobotGotoStation(RobotEntityBase iRobot, DockingStation station) {
+  public AIRobotGotoStation(RobotEntityBase iRobot, DockingStation<?> station) {
     this(iRobot);
 
     stationIndex = station.index();
@@ -40,7 +41,7 @@ public class AIRobotGotoStation extends AIRobot {
 
   @Override
   public void start() {
-    DockingStation station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
+    DockingStation<?> station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
 
     if (station == null) {
       terminate();
@@ -62,8 +63,8 @@ public class AIRobotGotoStation extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
-    DockingStation station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
+  public void delegateAIEnded(AIRobot<?> ai) {
+    DockingStation<?> station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
 
     if (station == null) {
       terminate();

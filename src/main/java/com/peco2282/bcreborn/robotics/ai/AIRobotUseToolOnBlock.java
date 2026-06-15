@@ -15,18 +15,19 @@ import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotUseToolOnBlock extends AIRobot {
+public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
 
   private BlockIndex useToBlock;
   private int useCycles = 0;
 
   public AIRobotUseToolOnBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.USE_TOOL_ON_BLOCK, iRobot);
   }
 
   public AIRobotUseToolOnBlock(RobotEntityBase iRobot, BlockIndex index) {

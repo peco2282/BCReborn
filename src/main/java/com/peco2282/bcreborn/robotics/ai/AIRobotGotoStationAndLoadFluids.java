@@ -14,13 +14,14 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotGotoStationAndLoadFluids extends AIRobot {
+public class AIRobotGotoStationAndLoadFluids extends AIRobot<AIRobotGotoStationAndLoadFluids> {
 
   private IFluidFilter filter;
 
   public AIRobotGotoStationAndLoadFluids(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_AND_LOAD_FLUIDS, iRobot);
   }
 
   public AIRobotGotoStationAndLoadFluids(RobotEntityBase iRobot, IFluidFilter iFilter) {
@@ -35,7 +36,7 @@ public class AIRobotGotoStationAndLoadFluids extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationToLoadFluids) {
       if (filter != null && ai.success()) {
         startDelegateAI(new AIRobotLoadFluids(robot, filter));

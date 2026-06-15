@@ -13,11 +13,12 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotGotoSleep extends AIRobot {
+public class AIRobotGotoSleep extends AIRobot<AIRobotGotoSleep> {
 
   public AIRobotGotoSleep(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_SLEEP, iRobot);
   }
 
   @Override
@@ -27,7 +28,7 @@ public class AIRobotGotoSleep extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStation) {
       startDelegateAI(new AIRobotSleep(robot));
     } else if (ai instanceof AIRobotSleep) {

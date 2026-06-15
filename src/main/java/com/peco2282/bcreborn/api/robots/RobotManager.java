@@ -11,198 +11,245 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Global manager for robot-related registrations.
  * <p>
  * This class handles the registration of robot AIs, resource IDs, and docking station types.
  */
+@SuppressWarnings("unchecked")
 public abstract class RobotManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(RobotManager.class);
-  private static final Map<Class<? extends AIRobot>, String> aiRobotsNames;
-  private static final Map<String, Class<? extends AIRobot>> aiRobotsByNames;
-  private static final Map<String, Class<? extends AIRobot>> aiRobotsByLegacyClassNames;
-  private static final Map<Class<? extends ResourceId>, String> resourceIdNames;
-  private static final Map<String, Class<? extends ResourceId>> resourceIdByNames;
-  private static final Map<String, Class<? extends ResourceId>> resourceIdLegacyClassNames;
-  private static final Map<Class<? extends DockingStation>, String> dockingStationNames;
-  private static final Map<String, Class<? extends DockingStation>> dockingStationByNames;
+
+  private static final Map<ResourceLocation, AIRobotType<?>> robotTypes = new HashMap<>();
+  private static final Map<ResourceLocation, ResourceIdType<?>> resourceIdTypes = new HashMap<>();
+  private static final Map<ResourceLocation, DockingStationType<?>> dockingStationTypes = new HashMap<>();
+
   /**
    * Provider for the robot registry.
    */
   public static IRobotRegistryProvider registryProvider;
 
-  /**
-   * List of registered AIRobot classes.
-   */
-  public static ArrayList<Class<? extends AIRobot>> aiRobots = new ArrayList<>();
-
-  static {
-    aiRobotsByNames = new HashMap<>();
-    aiRobotsNames = new HashMap<>();
-    aiRobotsByLegacyClassNames = new HashMap<>();
-    resourceIdNames = new HashMap<>();
-    resourceIdByNames = new HashMap<>();
-    resourceIdLegacyClassNames = new HashMap<>();
-    dockingStationNames = new HashMap<>();
-    dockingStationByNames = new HashMap<>();
-    registerResourceId(ResourceIdBlock.class, "resourceIdBlock", "buildcraft.core.robots.ResourceIdBlock");
-    registerResourceId(ResourceIdRequest.class, "resourceIdRequest", "buildcraft.core.robots.ResourceIdRequest");
+  // Robot types
+  @Contract(value = "_,_ -> new")
+  @NotNull
+  public static <T extends AIRobot<T>> AIRobotType<T> registerRobotType(ResourceLocation id, Function<RobotEntityBase, @NotNull T> type) {
+    return registerRobotType(new AIRobotType<>(id, type));
   }
 
-  /**
-   * Registers a robot AI class.
-   *
-   * @param aiRobot The AI class to register.
-   * @param name    The unique name for this AI.
-   */
-  public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name) {
-    registerAIRobot(aiRobot, name, null);
-  }
-
-  /**
-   * Registers a robot AI class with an optional legacy class name for backward compatibility.
-   *
-   * @param aiRobot         The AI class to register.
-   * @param name            The unique name for this AI.
-   * @param legacyClassName The legacy class name (can be {@code null}).
-   */
-  public static void registerAIRobot(Class<? extends AIRobot> aiRobot, String name, String legacyClassName) {
-    if (aiRobotsByNames.containsKey(name)) {
-      LOGGER.info("Overriding {} with {}", aiRobotsByNames.get(name).getName(), aiRobot.getName());
+  @Contract("_ -> param1")
+  @NotNull
+  public static <T extends AIRobot<T>> AIRobotType<T> registerRobotType(AIRobotType<T> type) {
+    var id = type.id();
+    if (robotTypes.containsKey(id)) {
+      LOGGER.info("Overriding Robot {} with {}", robotTypes.get(id).id(), type.id());
     }
-    try {
-      aiRobot.getConstructor(RobotEntityBase.class);
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException("AI class " + aiRobot.getName() + " lacks NBT load constructor! This is a bug!");
+    robotTypes.put(id, type);
+    return type;
+  }
+
+  public static boolean hasRobotType(String id) {
+    return robotTypes.containsKey(ResourceLocation.parse(id));
+  }
+
+  @Contract(pure = true)
+  public static boolean hasRobotType(ResourceLocation id) {
+    return robotTypes.containsKey(id);
+  }
+
+  @Nullable
+  public static <T extends AIRobot<T>> AIRobotType<T> getRobotType(String id) {
+    return getRobotType(ResourceLocation.parse(id));
+  }
+
+  @Contract(pure = true)
+  @Nullable
+  public static <T extends AIRobot<T>> AIRobotType<T> getRobotType(ResourceLocation id) {
+    return (AIRobotType<T>) robotTypes.get(id);
+  }
+
+  @NotNull
+  public static <T extends AIRobot<T>> T createRobot(AIRobotType<T> type, RobotEntityBase base) {
+    return type.create(base);
+  }
+
+  @NotNull
+  public static <T extends AIRobot<T>> T createRobot(String id, RobotEntityBase base) {
+    return createRobot(ResourceLocation.parse(id), base);
+  }
+
+  @NotNull
+  public static <T extends AIRobot<T>> T createRobot(ResourceLocation id, RobotEntityBase base) {
+    var type = robotTypes.get(id);
+    if (type == null) {
+      throw new IllegalArgumentException("Unknown robot type: " + id);
     }
-    aiRobots.add(aiRobot);
-    aiRobotsByNames.put(name, aiRobot);
-    aiRobotsNames.put(aiRobot, name);
-    if (legacyClassName != null) {
-      aiRobotsByLegacyClassNames.put(legacyClassName, aiRobot);
+    return (T) type.create(base);
+  }
+
+  @NotNull
+  public static <T extends AIRobot<T>> T createRobot(String id, RobotEntityBase base, CompoundTag init) {
+    return createRobot(ResourceLocation.parse(id), base, init);
+  }
+
+  @NotNull
+  public static <T extends AIRobot<T>> T createRobot(ResourceLocation id, RobotEntityBase base, CompoundTag init) {
+    var robot = createRobot(id, base);
+    robot.loadFromNBT(init);
+
+    return (T) robot;
+  }
+
+  // Resource ID types
+  @NotNull
+  public static <T extends ResourceId<T>> ResourceIdType<T> registerResourceIdType(ResourceLocation id, Supplier<T> type) {
+    return registerResourceIdType(new ResourceIdType<>(id, type));
+  }
+
+  @Contract("_ -> param1")
+  @NotNull
+  public static <T extends ResourceId<T>> ResourceIdType<T> registerResourceIdType(ResourceIdType<T> type) {
+    var id = type.id();
+    if (resourceIdTypes.containsKey(id)) {
+      LOGGER.info("Overriding Resource ID {} with {}", resourceIdTypes.get(id).id(), type.id());
     }
+    resourceIdTypes.put(id, type);
+    return type;
   }
 
-  /**
-   * Returns the AI robot class associated with the given name.
-   *
-   * @param aiRobotName The name of the AI.
-   * @return The AI class, or {@code null} if not found.
-   */
-  public static Class<?> getAIRobotByName(String aiRobotName) {
-    return aiRobotsByNames.get(aiRobotName);
+  @Contract(pure = true)
+  @Nullable
+  public static ResourceIdType<?> getResourceIdType(String id) {
+    return getResourceIdType(ResourceLocation.parse(id));
   }
 
-  /**
-   * Returns the name associated with the given AI robot class.
-   *
-   * @param aiRobotClass The AI class.
-   * @return The name, or {@code null} if not found.
-   */
-  public static String getAIRobotName(Class<? extends AIRobot> aiRobotClass) {
-    return aiRobotsNames.get(aiRobotClass);
+  @Nullable
+  public static <T extends ResourceId<T>> ResourceIdType<T> getResourceIdType(ResourceLocation id) {
+    return (ResourceIdType<T>) resourceIdTypes.get(id);
   }
 
-  /**
-   * Returns the AI robot class associated with the given legacy class name.
-   *
-   * @param aiRobotLegacyClassName The legacy class name.
-   * @return The AI class, or {@code null} if not found.
-   */
-  public static Class<?> getAIRobotByLegacyClassName(String aiRobotLegacyClassName) {
-    return aiRobotsByLegacyClassNames.get(aiRobotLegacyClassName);
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(ResourceIdType<T> type) {
+    return type.create();
   }
 
-  /**
-   * Registers a resource ID class.
-   *
-   * @param resourceId The resource ID class.
-   * @param name       The unique name for this resource ID.
-   */
-  public static void registerResourceId(Class<? extends ResourceId> resourceId, String name) {
-    registerResourceId(resourceId, name, null);
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(String id) {
+    return createResourceId(ResourceLocation.parse(id));
   }
 
-  /**
-   * Registers a resource ID class with an optional legacy class name.
-   *
-   * @param resourceId      The resource ID class.
-   * @param name            The unique name for this resource ID.
-   * @param legacyClassName The legacy class name (can be {@code null}).
-   */
-  public static void registerResourceId(Class<? extends ResourceId> resourceId, String name, String legacyClassName) {
-    resourceIdByNames.put(name, resourceId);
-    resourceIdNames.put(resourceId, name);
-    if (legacyClassName != null) {
-      resourceIdLegacyClassNames.put(legacyClassName, resourceId);
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(String id, CompoundTag nbt) {
+    return createResourceId(ResourceLocation.parse(id), nbt);
+  }
+
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(ResourceLocation id) {
+    var type = getResourceIdType(id);
+    if (type == null) {
+      throw new IllegalArgumentException("Unknown resource ID type: " + id);
     }
+    return (T) type.create();
   }
 
-  /**
-   * Returns the resource ID class associated with the given name.
-   *
-   * @param resourceIdName The name of the resource ID.
-   * @return The resource ID class, or {@code null} if not found.
-   */
-  public static Class<?> getResourceIdByName(String resourceIdName) {
-    return resourceIdByNames.get(resourceIdName);
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(ResourceLocation id, CompoundTag nbt) {
+    T res = createResourceId(id);
+    res.readFromNBT(nbt);
+    return res;
   }
 
-  /**
-   * Returns the name associated with the given resource ID class.
-   *
-   * @param resourceIdClass The resource ID class.
-   * @return The name, or {@code null} if not found.
-   */
-  public static String getResourceIdName(Class<? extends ResourceId> resourceIdClass) {
-    return resourceIdNames.get(resourceIdClass);
+  @NotNull
+  public static <T extends ResourceId<T>> T createResourceId(ResourceIdType<T> type, CompoundTag nbt) {
+    var res = type.create();
+    res.readFromNBT(nbt);
+    return res;
   }
 
-  /**
-   * Returns the resource ID class associated with the given legacy class name.
-   *
-   * @param resourceIdLegacyClassName The legacy class name.
-   * @return The resource ID class, or {@code null} if not found.
-   */
-  public static Class<?> getResourceIdByLegacyClassName(String resourceIdLegacyClassName) {
-    return resourceIdLegacyClassNames.get(resourceIdLegacyClassName);
+  public static boolean hasResourceIdType(String id) {
+    return hasResourceIdType(ResourceLocation.parse(id));
   }
 
-  /**
-   * Registers a docking station class.
-   *
-   * @param dockingStation The docking station class.
-   * @param name           The unique name for this docking station type.
-   */
-  public static void registerDockingStation(Class<? extends DockingStation> dockingStation, String name) {
-    dockingStationByNames.put(name, dockingStation);
-    dockingStationNames.put(dockingStation, name);
+  @Contract(pure = true)
+  public static boolean hasResourceIdType(ResourceLocation id) {
+    return resourceIdTypes.containsKey(id);
   }
 
-  /**
-   * Returns the docking station class associated with the given name.
-   *
-   * @param dockingStationTypeName The name of the docking station type.
-   * @return The docking station class, or {@code null} if not found.
-   */
-  public static Class<? extends DockingStation> getDockingStationByName(String dockingStationTypeName) {
-    return dockingStationByNames.get(dockingStationTypeName);
+  // Docking station types
+  @NotNull
+  public static <T extends DockingStation<T>> DockingStationType<T> registerDockingStationType(ResourceLocation id, Supplier<T> type) {
+    return registerDockingStationType(new DockingStationType<>(id, type));
   }
 
-  /**
-   * Returns the name associated with the given docking station class.
-   *
-   * @param dockingStation The docking station class.
-   * @return The name, or {@code null} if not found.
-   */
-  public static String getDockingStationName(Class<? extends DockingStation> dockingStation) {
-    return dockingStationNames.get(dockingStation);
+  @Contract("_ -> param1")
+  @NotNull
+  public static <T extends DockingStation<T>> DockingStationType<T> registerDockingStationType(DockingStationType<T> type) {
+    var id = type.id();
+    if (dockingStationTypes.containsKey(id)) {
+      LOGGER.info("Overriding Docking Station ID {} with {}", dockingStationTypes.get(id).id(), type.id());
+    }
+    dockingStationTypes.put(id, type);
+    return type;
+  }
+
+  @Nullable
+  public static <T extends DockingStation<T>> DockingStationType<T> getDockingStationType(String id) {
+    return getDockingStationType(ResourceLocation.parse(id));
+  }
+
+  @Nullable
+  public static <T extends DockingStation<T>> DockingStationType<T> getDockingStationType(ResourceLocation id) {
+    return (DockingStationType<T>) dockingStationTypes.get(id);
+  }
+
+  @NotNull
+  public static <T extends DockingStation<T>> T createDockingStation(DockingStationType<T> type) {
+    return type.create();
+  }
+
+  @NotNull
+  public static <T extends DockingStation<T>> T createDockingStation(String id) {
+    return createDockingStation(ResourceLocation.parse(id));
+  }
+
+  @NotNull
+  public static <T extends DockingStation<T>> T createDockingStation(ResourceLocation id) {
+    var station = getDockingStationType(id);
+    if (station == null) {
+      throw new IllegalArgumentException("Unknown docking station ID: " + id);
+    }
+    return (T) station.create();
+  }
+
+  @NotNull
+  public static <T extends DockingStation<T>> T createDockingStation(String id, CompoundTag tag) {
+    return createDockingStation(ResourceLocation.parse(id), tag);
+  }
+
+  @NotNull
+  public static <T extends DockingStation<T>> T createDockingStation(ResourceLocation id, CompoundTag tag) {
+    var station = (T) createDockingStation(id);
+    station.readFromNBT(tag);
+    return station;
+  }
+
+  public static boolean hasDockingStationType(String id) {
+    return hasDockingStationType(ResourceLocation.parse(id));
+  }
+
+  public static boolean hasDockingStationType(ResourceLocation id) {
+    return dockingStationTypes.containsKey(id);
   }
 }

@@ -20,24 +20,27 @@ import net.minecraft.world.item.ItemStack;
  * This class defines the lifecycle and execution logic for robot AIs. AIs can be stacked,
  * allowing a parent AI to delegate tasks to a sub-AI (delegate).
  */
-public class AIRobot {
+public abstract class AIRobot<T extends AIRobot<T>> {
   /**
    * The robot entity this AI is controlling.
    */
   public RobotEntityBase robot;
 
-  private AIRobot delegateAI;
-  private AIRobot parentAI;
+  private AIRobot<?> delegateAI;
+  private AIRobot<?> parentAI;
   private boolean success;
+  protected final AIRobotType<T> type;
 
   /**
    * Constructs a new AIRobot instance for the given robot.
    *
-   * @param iRobot The robot entity this AI will control.
+   * @param type  The type of this AI.
+   * @param robot The robot entity this AI will control.
    */
-  public AIRobot(RobotEntityBase iRobot) {
-    robot = iRobot;
+  public AIRobot(AIRobotType<T> type, RobotEntityBase robot) {
+    this.robot = robot;
     success = true;
+    this.type = type;
   }
 
   /**
@@ -47,25 +50,8 @@ public class AIRobot {
    * @param robot The robot entity the loaded AI will control.
    * @return A new AIRobot instance, or {@code null} if loading failed.
    */
-  public static AIRobot loadAI(CompoundTag nbt, RobotEntityBase robot) {
-    AIRobot ai = null;
-
-    try {
-      Class<?> aiRobotClass;
-      if (nbt.contains("class")) {
-        aiRobotClass = RobotManager.getAIRobotByLegacyClassName(nbt.getString("class"));
-      } else {
-        aiRobotClass = RobotManager.getAIRobotByName(nbt.getString("aiName"));
-      }
-      if (aiRobotClass != null) {
-        ai = (AIRobot) aiRobotClass.getConstructor(RobotEntityBase.class).newInstance(robot);
-        ai.loadFromNBT(nbt);
-      }
-    } catch (Throwable e) {
-      e.printStackTrace();
-    }
-
-    return ai;
+  public static AIRobot<?> loadAI(CompoundTag nbt, RobotEntityBase robot) {
+    return RobotManager.createRobot(nbt.getString("aiName"), robot, nbt);
   }
 
   /**
@@ -79,7 +65,7 @@ public class AIRobot {
    *
    * @param ai The current delegate AI.
    */
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
   }
 
   /**
@@ -100,7 +86,7 @@ public class AIRobot {
    *
    * @param ai The delegate AI that ended.
    */
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
   }
 
   /**
@@ -108,7 +94,7 @@ public class AIRobot {
    *
    * @param ai The delegate AI that was aborted.
    */
-  public void delegateAIAborted(AIRobot ai) {
+  public void delegateAIAborted(AIRobot<?> ai) {
   }
 
   /**
@@ -233,7 +219,7 @@ public class AIRobot {
    *
    * @param ai The AI to delegate to.
    */
-  public final void startDelegateAI(AIRobot ai) {
+  public final void startDelegateAI(AIRobot<?> ai) {
     abortDelegateAI();
     delegateAI = ai;
     ai.parentAI = this;
@@ -254,7 +240,7 @@ public class AIRobot {
    *
    * @return The active AIRobot instance.
    */
-  public final AIRobot getActiveAI() {
+  public final AIRobot<?> getActiveAI() {
     if (delegateAI != null) {
       return delegateAI.getActiveAI();
     } else {
@@ -267,7 +253,7 @@ public class AIRobot {
    *
    * @return The delegate AIRobot instance, or {@code null} if none.
    */
-  public final AIRobot getDelegateAI() {
+  public final AIRobot<?> getDelegateAI() {
     return delegateAI;
   }
 
@@ -277,7 +263,7 @@ public class AIRobot {
    * @param nbt The NBT tag to write to.
    */
   public final void writeToNBT(CompoundTag nbt) {
-    nbt.putString("aiName", RobotManager.getAIRobotName(getClass()));
+    nbt.putString("aiName", type.id().toString());
 
     CompoundTag data = new CompoundTag();
     writeSelfToNBT(data);
@@ -300,25 +286,15 @@ public class AIRobot {
 
     if (nbt.contains("delegateAI")) {
       CompoundTag sub = nbt.getCompound("delegateAI");
-
-      try {
-        Class<?> aiRobotClass;
-        if (sub.contains("class")) {
-          aiRobotClass = RobotManager.getAIRobotByLegacyClassName(sub.getString("class"));
-        } else {
-          aiRobotClass = RobotManager.getAIRobotByName(sub.getString("aiName"));
-        }
-        if (aiRobotClass != null) {
-          delegateAI = (AIRobot) aiRobotClass.getConstructor(RobotEntityBase.class).newInstance(robot);
-          delegateAI.parentAI = this;
-
-          if (delegateAI.canLoadFromNBT()) {
-            delegateAI.loadFromNBT(sub);
-          }
-        }
-      } catch (Throwable e) {
-        e.printStackTrace();
+      delegateAI = RobotManager.createRobot(sub.getString("aiName"), robot);
+      delegateAI.parentAI = this;
+      if (delegateAI.canLoadFromNBT()) {
+        delegateAI.loadFromNBT(sub);
       }
     }
+  }
+
+  public final AIRobotType<T> getType() {
+    return type;
   }
 }

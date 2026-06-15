@@ -22,18 +22,19 @@ import com.peco2282.bcreborn.api.transport.IStripesHandler.StripesHandlerType;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotStripesHandler extends AIRobot implements IStripesActivator {
+public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implements IStripesActivator {
   private BlockIndex useToBlock;
   private int useCycles = 0;
 
   public AIRobotStripesHandler(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.STRIPES_HANDLER, iRobot);
   }
 
   public AIRobotStripesHandler(RobotEntityBase iRobot, BlockIndex index) {

@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
+import com.peco2282.bcreborn.api.robots.AIRobotType;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
@@ -31,13 +32,13 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 
-public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
+public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSearchBlock<T>> extends RedstoneBoardRobot<T> {
 
   private final ArrayList<Block> blockFilter = new ArrayList<>();
   private BlockIndex blockFound;
 
-  public BoardRobotGenericSearchBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+  public BoardRobotGenericSearchBlock(AIRobotType<T> type, RobotEntityBase iRobot) {
+    super(type, iRobot);
   }
 
   /**
@@ -62,7 +63,7 @@ public abstract class BoardRobotGenericSearchBlock extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
       if (ai.success()) {
         blockFound = searchAI.getBlockFound();

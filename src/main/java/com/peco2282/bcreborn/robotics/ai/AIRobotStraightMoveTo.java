@@ -12,16 +12,17 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.nbt.CompoundTag;
 
-public class AIRobotStraightMoveTo extends AIRobotGoto {
+public class AIRobotStraightMoveTo extends AIRobotGoto<AIRobotStraightMoveTo> {
 
   private double prevDistance = Double.MAX_VALUE;
 
   private float x, y, z;
 
   public AIRobotStraightMoveTo(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.STRAIGHT_MOVE_TO, iRobot);
   }
 
   public AIRobotStraightMoveTo(RobotEntityBase iRobot, float ix, float iy, float iz) {

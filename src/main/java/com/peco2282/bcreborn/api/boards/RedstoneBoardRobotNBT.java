@@ -34,7 +34,7 @@ public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<RobotEntity
    * @return A new {@link RedstoneBoardRobot} instance.
    */
   @Override
-  public RedstoneBoardRobot create(CompoundTag nbt, RobotEntityBase robot) {
+  public RedstoneBoardRobot<?> create(CompoundTag nbt, RobotEntityBase robot) {
     return create(robot);
   }
 
@@ -44,7 +44,7 @@ public abstract class RedstoneBoardRobotNBT extends RedstoneBoardNBT<RobotEntity
    * @param robot The robot entity for which to create the board.
    * @return A new {@link RedstoneBoardRobot} instance.
    */
-  public abstract RedstoneBoardRobot create(RobotEntityBase robot);
+  public abstract RedstoneBoardRobot<?> create(RobotEntityBase robot);
 
   /**
    * Gets the texture resource location for the robot.

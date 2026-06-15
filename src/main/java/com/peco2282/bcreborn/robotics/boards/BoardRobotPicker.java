@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchItem;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
@@ -23,12 +24,12 @@ import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BoardRobotPicker extends RedstoneBoardRobot {
+public class BoardRobotPicker extends RedstoneBoardRobot<BoardRobotPicker> {
 
   public static Set<Integer> targettedItems = new HashSet<>();
 
   public BoardRobotPicker(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.PICKER, iRobot);
   }
 
   public static void onServerStart() {
@@ -46,7 +47,7 @@ public class BoardRobotPicker extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotFetchItem) {
       if (ai.success()) {
         // if we find an item - that may have been cancelled.

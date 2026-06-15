@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collections;
 
-public class DockingStationPipe extends DockingStation implements IRequestProvider {
+public class DockingStationPipe extends DockingStation<DockingStationPipe> implements IRequestProvider {
 
   private final IInjectable injectablePipe = new IInjectable() {
     @Override
@@ -42,10 +43,11 @@ public class DockingStationPipe extends DockingStation implements IRequestProvid
   private IPipeTile pipe;
 
   public DockingStationPipe() {
+    super(RoboticsAIType.PIPE);
   }
 
   public DockingStationPipe(IPipeTile iPipe, Direction side) {
-    super(new BlockIndex(iPipe.getPos().getX(), iPipe.getPos().getY(), iPipe.getPos().getZ()), side);
+    super(RoboticsAIType.PIPE, new BlockIndex(iPipe.getPos().getX(), iPipe.getPos().getY(), iPipe.getPos().getZ()), side);
     pipe = iPipe;
     world = iPipe.getWorld();
   }

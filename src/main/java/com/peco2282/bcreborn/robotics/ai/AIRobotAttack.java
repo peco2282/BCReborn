@@ -20,17 +20,18 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.world.entity.Entity;
 
-public class AIRobotAttack extends AIRobot {
+public class AIRobotAttack extends AIRobot<AIRobotAttack> {
 
   private Entity target;
 
   private int delay = 10;
 
   public AIRobotAttack(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.ATTACK, iRobot);
   }
 
   public AIRobotAttack(RobotEntityBase iRobot, Entity iTarget) {
@@ -40,7 +41,7 @@ public class AIRobotAttack extends AIRobot {
   }
 
   @Override
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoBlock) {
       // target may become null in the event of a load. In that case, just
       // go to the expected location.
@@ -84,7 +85,7 @@ public class AIRobotAttack extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoBlock) {
       if (!ai.success()) {
         robot.unreachableEntityDetected(target);

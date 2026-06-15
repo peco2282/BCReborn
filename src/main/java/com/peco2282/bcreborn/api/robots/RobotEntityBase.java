@@ -86,14 +86,14 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The linked docking station.
    */
-  public abstract DockingStation getLinkedStation();
+  public abstract DockingStation<?> getLinkedStation();
 
   /**
    * Returns the redstone board installed in this robot.
    *
    * @return The redstone board.
    */
-  public abstract RedstoneBoardRobot getBoard();
+  public abstract RedstoneBoardRobot<?> getBoard();
 
   /**
    * Aims the robot's current item at the specified yaw and pitch.
@@ -145,14 +145,14 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The docking station, or {@code null} if not docked.
    */
-  public abstract DockingStation getDockingStation();
+  public abstract DockingStation<?> getDockingStation();
 
   /**
    * Docks the robot at the specified station.
    *
    * @param station The docking station.
    */
-  public abstract void dock(DockingStation station);
+  public abstract void dock(DockingStation<?> station);
 
   /**
    * Undocks the robot from its current station.
@@ -240,7 +240,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @param station The main docking station.
    */
-  public abstract void setMainStation(DockingStation station);
+  public abstract void setMainStation(DockingStation<?> station);
 
   /**
    * Returns the fluid handler for this robot.

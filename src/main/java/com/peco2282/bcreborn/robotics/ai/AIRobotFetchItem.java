@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.boards.BoardRobotPicker;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,7 +24,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
-public class AIRobotFetchItem extends AIRobot {
+public class AIRobotFetchItem extends AIRobot<AIRobotFetchItem> {
 
   private ItemEntity target;
 
@@ -33,7 +34,7 @@ public class AIRobotFetchItem extends AIRobot {
   private IZone zone;
 
   public AIRobotFetchItem(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.FETCH_ITEM, iRobot);
   }
 
   public AIRobotFetchItem(RobotEntityBase iRobot, float iMaxRange, IStackFilter iStackFilter, IZone iZone) {
@@ -45,7 +46,7 @@ public class AIRobotFetchItem extends AIRobot {
   }
 
   @Override
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
     if (target != null && target.isRemoved()) {
       terminate();
     }
@@ -73,7 +74,7 @@ public class AIRobotFetchItem extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoBlock) {
       if (target == null) {
         // This would happen after a load. As we reached the item

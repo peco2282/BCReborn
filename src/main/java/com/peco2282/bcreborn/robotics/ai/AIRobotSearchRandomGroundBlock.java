@@ -17,10 +17,11 @@ import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 
-public class AIRobotSearchRandomGroundBlock extends AIRobot {
+public class AIRobotSearchRandomGroundBlock extends AIRobot<AIRobotSearchRandomGroundBlock> {
 
   private static final int MAX_ATTEMPTS = 4096;
 
@@ -32,7 +33,7 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot {
   private int attempts = 0;
 
   public AIRobotSearchRandomGroundBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_RANDOM_GROUND_BLOCK, iRobot);
   }
 
   public AIRobotSearchRandomGroundBlock(RobotEntityBase iRobot, int iRange, IBlockFilter iFilter, IZone iZone) {

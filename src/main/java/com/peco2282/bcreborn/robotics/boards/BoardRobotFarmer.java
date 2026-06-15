@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
@@ -26,12 +27,12 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotUseToolOnBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 
-public class BoardRobotFarmer extends RedstoneBoardRobot {
+public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
 
   private BlockIndex blockFound;
 
   public BoardRobotFarmer(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.FARMER, iRobot);
   }
 
   @Override

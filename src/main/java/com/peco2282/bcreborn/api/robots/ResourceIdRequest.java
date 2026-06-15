@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * Resource identifier for a request at a specific docking station and slot.
  */
-public class ResourceIdRequest extends ResourceId {
+public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
   private BlockPos index;
   private Direction side;
   private int slot;
@@ -29,6 +29,7 @@ public class ResourceIdRequest extends ResourceId {
    * Default constructor for NBT loading.
    */
   public ResourceIdRequest() {
+    super(ResourceIdType.REQUEST);
   }
 
   /**
@@ -37,7 +38,8 @@ public class ResourceIdRequest extends ResourceId {
    * @param station The docking station.
    * @param slot    The slot index.
    */
-  public ResourceIdRequest(DockingStation station, int slot) {
+  public ResourceIdRequest(DockingStation<?> station, int slot) {
+    this();
     index = station.index().toBlockPos();
     side = station.side();
     this.slot = slot;

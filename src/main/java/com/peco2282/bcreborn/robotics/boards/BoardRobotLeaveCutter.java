@@ -14,15 +14,16 @@ package com.peco2282.bcreborn.robotics.boards;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.level.Level;
 
-public class BoardRobotLeaveCutter extends BoardRobotGenericBreakBlock {
+public class BoardRobotLeaveCutter extends BoardRobotGenericBreakBlock<BoardRobotLeaveCutter> {
 
   public BoardRobotLeaveCutter(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.LEAVE_CUTTER, iRobot);
   }
 
   @Override

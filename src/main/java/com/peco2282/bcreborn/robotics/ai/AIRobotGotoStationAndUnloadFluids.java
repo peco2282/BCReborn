@@ -13,11 +13,12 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotGotoStationAndUnloadFluids extends AIRobot {
+public class AIRobotGotoStationAndUnloadFluids extends AIRobot<AIRobotGotoStationAndUnloadFluids> {
 
   public AIRobotGotoStationAndUnloadFluids(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_AND_UNLOAD_FLUIDS, iRobot);
   }
 
   @Override
@@ -26,7 +27,7 @@ public class AIRobotGotoStationAndUnloadFluids extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationToUnloadFluids) {
       if (ai.success()) {
         startDelegateAI(new AIRobotUnloadFluids(robot));

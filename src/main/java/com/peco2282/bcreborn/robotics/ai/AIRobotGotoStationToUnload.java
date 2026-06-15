@@ -15,12 +15,13 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 
-public class AIRobotGotoStationToUnload extends AIRobot {
+public class AIRobotGotoStationToUnload extends AIRobot<AIRobotGotoStationToUnload> {
 
   public AIRobotGotoStationToUnload(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_TO_UNLOAD, iRobot);
   }
 
   @Override
@@ -29,7 +30,7 @@ public class AIRobotGotoStationToUnload extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoStation) {
       setSuccess(ai.success());
       terminate();
@@ -38,7 +39,7 @@ public class AIRobotGotoStationToUnload extends AIRobot {
 
   private class StationInventory implements IStationFilter {
     @Override
-    public boolean matches(DockingStation station) {
+    public boolean matches(DockingStation<?> station) {
       return AIRobotUnload.unload(robot, station, false);
     }
   }

@@ -37,7 +37,7 @@ public class RobotRegistryProvider implements IRobotRegistryProvider {
 
       newRegistry.level = serverLevel;
 
-      for (DockingStation d : newRegistry.stations.values()) {
+      for (DockingStation<?> d : newRegistry.stations.values()) {
         d.world = world;
       }
 

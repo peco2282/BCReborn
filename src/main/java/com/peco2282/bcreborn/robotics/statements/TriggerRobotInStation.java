@@ -62,9 +62,9 @@ public class TriggerRobotInStation extends BCStatement implements ITriggerIntern
 
   @Override
   public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
-    List<DockingStation> stations = RobotUtils.getStations(container.getTile());
+    List<DockingStation<?>> stations = RobotUtils.getStations(container.getTile());
 
-    for (DockingStation station : stations) {
+    for (DockingStation<?> station : stations) {
       if (station.robotTaking() != null) {
         RobotEntity robot = (RobotEntity) station.robotTaking();
 
