@@ -68,6 +68,6 @@ public class MiningWellBlock extends BuildCraftBlock {
 
   @Override
   public boolean isRotatable() {
-    return false;
+    return true;
   }
 }
