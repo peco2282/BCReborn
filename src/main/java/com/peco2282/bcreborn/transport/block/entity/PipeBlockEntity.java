@@ -749,6 +749,27 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
 
     @Override
+    public void setPipePluggable(Direction direction, @Nullable PipePluggable pluggable) {
+      PipePluggable old = sideProperties.pluggables[direction.ordinal()];
+      if (old == pluggable) return;
+
+      if (old != null) {
+        old.onDetachedPipe(this, direction);
+      }
+
+      sideProperties.pluggables[direction.ordinal()] = pluggable;
+
+      if (pluggable != null) {
+        pluggable.onAttachedPipe(this, direction);
+      }
+
+      setChanged();
+      if (level != null) {
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+      }
+    }
+
+    @Override
     public boolean hasPipePluggable(Direction direction) {
       return sideProperties.pluggables[direction.ordinal()] != null;
     }
@@ -785,6 +806,18 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return true;
     }
   };
+
+  public PipePluggable getPipePluggable(Direction direction) {
+    return pipeTileApi.getPipePluggable(direction);
+  }
+
+  public void setPipePluggable(Direction direction, @Nullable PipePluggable pluggable) {
+    pipeTileApi.setPipePluggable(direction, pluggable);
+  }
+
+  public boolean hasPipePluggable(Direction direction) {
+    return pipeTileApi.hasPipePluggable(direction);
+  }
 
   public IPipe getPipe() {
     return pipeApi;
