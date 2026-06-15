@@ -25,6 +25,7 @@ import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.utils.BlockMiner;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
+import com.peco2282.bcreborn.core.ConfigCore;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHasWork, IPipeConnection, IControllable, ILEDProvider {
-  private final SafeTimeTracker updateTracker = new SafeTimeTracker(BCRebornCore.updateFactor);
+  private final SafeTimeTracker updateTracker = new SafeTimeTracker(ConfigCore.getUpdateFactor());
   private boolean isDigging = true;
   private BlockMiner miner;
   private int ledState;

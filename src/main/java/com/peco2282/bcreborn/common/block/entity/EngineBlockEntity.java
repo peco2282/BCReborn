@@ -11,12 +11,12 @@
  */
 package com.peco2282.bcreborn.common.block.entity;
 
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.api.power.IRedstoneEngine;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.common.energy.EngineEnergyStorage;
+import com.peco2282.bcreborn.core.ConfigCore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -112,7 +112,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
 
   public void overheat() {
-    if (BCRebornCore.canEnginesExplode) {
+    if (ConfigCore.isCanEnginesExplode()) {
       explode();
     } else {
       // 爆発しない設定の場合はエネルギーを消費して冷却を待つような挙動
