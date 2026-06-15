@@ -15,17 +15,18 @@ import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.statements.ActionStationForbidRobot;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 
-public class AIRobotSearchStation extends AIRobot {
+public class AIRobotSearchStation extends AIRobot<AIRobotSearchStation> {
 
-  public DockingStation targetStation;
+  public DockingStation<?> targetStation;
   private IStationFilter filter;
   private IZone zone;
 
   public AIRobotSearchStation(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_STATION, iRobot);
   }
 
   public AIRobotSearchStation(RobotEntityBase iRobot, IStationFilter iFilter, IZone iZone) {
@@ -45,9 +46,9 @@ public class AIRobotSearchStation extends AIRobot {
     }
 
     double potentialStationDistance = Float.MAX_VALUE;
-    DockingStation potentialStation = null;
+    DockingStation<?> potentialStation = null;
 
-    for (DockingStation station : robot.getRegistry().getStations()) {
+    for (DockingStation<?> station : robot.getRegistry().getStations()) {
       if (!station.isInitialized()) {
         continue;
       }
@@ -85,7 +86,7 @@ public class AIRobotSearchStation extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     terminate();
   }
 

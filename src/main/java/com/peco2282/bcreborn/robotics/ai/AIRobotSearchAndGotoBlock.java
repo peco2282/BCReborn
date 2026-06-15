@@ -16,9 +16,10 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.nbt.CompoundTag;
 
-public class AIRobotSearchAndGotoBlock extends AIRobot {
+public class AIRobotSearchAndGotoBlock extends AIRobot<AIRobotSearchAndGotoBlock> {
 
   private BlockIndex blockFound;
 
@@ -27,7 +28,7 @@ public class AIRobotSearchAndGotoBlock extends AIRobot {
   private double maxDistanceToEnd;
 
   public AIRobotSearchAndGotoBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_AND_GOTO_BLOCK, iRobot);
 
     blockFound = null;
 
@@ -55,7 +56,7 @@ public class AIRobotSearchAndGotoBlock extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchBlock searchAI) {
       if (ai.success()) {
         if (searchAI.takeResource()) {

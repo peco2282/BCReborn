@@ -36,7 +36,7 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
     super("robot.work_filter_tool");
   }
 
-  public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
+  public static Collection<ItemStack> getGateFilterStacks(DockingStation<?> station) {
     ArrayList<ItemStack> result = new ArrayList<>();
 
     for (StatementSlot slot : station.getActiveActions()) {

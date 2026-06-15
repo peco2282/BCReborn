@@ -15,10 +15,11 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotLoad extends AIRobot {
+public class AIRobotLoad extends AIRobot<AIRobotLoad> {
 
   public static final int ANY_QUANTITY = -1;
   private IStackFilter filter;
@@ -26,17 +27,17 @@ public class AIRobotLoad extends AIRobot {
   private int waitedCycles = 0;
 
   public AIRobotLoad(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.LOAD, iRobot);
   }
 
   public AIRobotLoad(RobotEntityBase iRobot, IStackFilter iFilter, int iQuantity) {
-    super(iRobot);
+    super(RoboticsAIType.LOAD, iRobot);
 
     filter = iFilter;
     quantity = iQuantity;
   }
 
-  public static ItemStack takeSingle(DockingStation station, IStackFilter filter, boolean doTake) {
+  public static ItemStack takeSingle(DockingStation<?> station, IStackFilter filter, boolean doTake) {
     if (station == null) {
       return ItemStack.EMPTY;
     }
@@ -63,7 +64,7 @@ public class AIRobotLoad extends AIRobot {
     return ItemStack.EMPTY;
   }
 
-  public static boolean load(RobotEntityBase robot, DockingStation station, IStackFilter filter,
+  public static boolean load(RobotEntityBase robot, DockingStation<?> station, IStackFilter filter,
                              int quantity, boolean doLoad) {
     if (station == null) {
       return false;

@@ -35,7 +35,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
     this.invert = invert;
   }
 
-  public static boolean isForbidden(DockingStation station, RobotEntityBase robot) {
+  public static boolean isForbidden(DockingStation<?> station, RobotEntityBase robot) {
     for (StatementSlot s : station.getActiveActions()) {
       if (s.statement instanceof ActionStationForbidRobot) {
         if (((ActionStationForbidRobot) s.statement).invert ^ ActionStationForbidRobot.isForbidden(s, robot)) {

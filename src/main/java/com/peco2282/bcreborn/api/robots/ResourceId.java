@@ -16,9 +16,11 @@ import net.minecraft.nbt.CompoundTag;
 /**
  * Base class for resource identifiers used by robots.
  */
-public abstract class ResourceId {
+public abstract class ResourceId<T extends ResourceId<T>> {
 
-  protected ResourceId() {
+  protected ResourceIdType<T> type;
+  protected ResourceId(ResourceIdType<T> type) {
+    this.type = type;
   }
 
   /**
@@ -27,24 +29,8 @@ public abstract class ResourceId {
    * @param nbt The NBT tag.
    * @return The loaded ResourceId, or {@code null} if loading failed.
    */
-  public static ResourceId load(CompoundTag nbt) {
-    try {
-      Class<?> cls;
-      if (nbt.contains("class")) {
-        cls = RobotManager.getResourceIdByLegacyClassName(nbt.getString("class"));
-      } else {
-        cls = RobotManager.getResourceIdByName(nbt.getString("resourceName"));
-      }
-
-      ResourceId id = (ResourceId) cls.getDeclaredConstructor().newInstance();
-      id.readFromNBT(nbt);
-
-      return id;
-    } catch (Throwable e) {
-      e.printStackTrace();
-    }
-
-    return null;
+  public static <T extends ResourceId<T>> T load(CompoundTag nbt) {
+    return RobotManager.createResourceId(nbt.getString("resourceName"), nbt);
   }
 
   /**
@@ -53,7 +39,7 @@ public abstract class ResourceId {
    * @param nbt The NBT tag.
    */
   public void writeToNBT(CompoundTag nbt) {
-    nbt.putString("resourceName", RobotManager.getResourceIdName(getClass()));
+    nbt.putString("resourceName", type.id().toString());
   }
 
   /**
@@ -62,5 +48,9 @@ public abstract class ResourceId {
    * @param nbt The NBT tag.
    */
   protected void readFromNBT(CompoundTag nbt) {
+  }
+
+  public ResourceIdType<T> getType() {
+    return type;
   }
 }

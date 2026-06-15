@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotPlant;
@@ -25,12 +26,12 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-public class BoardRobotPlanter extends RedstoneBoardRobot {
+public class BoardRobotPlanter extends RedstoneBoardRobot<BoardRobotPlanter> {
 
   private BlockIndex blockFound;
 
   public BoardRobotPlanter(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.PLANTER, iRobot);
   }
 
   @Override
@@ -54,7 +55,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoBlock searchAI) {
       if (ai.success()) {
         blockFound = searchAI.getBlockFound();

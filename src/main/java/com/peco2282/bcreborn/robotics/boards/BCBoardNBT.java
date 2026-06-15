@@ -33,10 +33,10 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   private final ResourceLocation texture;
   private final ResourceLocation id;
   private final String upperName, boardType;
-  private final Function<RobotEntityBase, ? extends RedstoneBoardRobot> boardInit;
+  private final Function<RobotEntityBase, ? extends RedstoneBoardRobot<?>> boardInit;
   private final int energyCost;
 
-  public BCBoardNBT(ResourceLocation id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot> board, String boardType, int energyCost) {
+  public BCBoardNBT(ResourceLocation id, String name, Function<RobotEntityBase, ? extends RedstoneBoardRobot<?>> board, String boardType, int energyCost) {
     this.id = id;
     this.boardType = boardType;
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -63,7 +63,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  public RedstoneBoardRobot create(RobotEntityBase robot) {
+  public RedstoneBoardRobot<?> create(RobotEntityBase robot) {
     return boardInit.apply(robot);
   }
 

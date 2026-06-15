@@ -15,17 +15,18 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class BoardRobotBomber extends RedstoneBoardRobot {
+public class BoardRobotBomber extends RedstoneBoardRobot<BoardRobotBomber> {
 
   private final int flyingHeight = 20;
 
   public BoardRobotBomber(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.BOMBER,iRobot);
   }
 
   @Override
@@ -45,7 +46,7 @@ public class BoardRobotBomber extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationAndLoad) {
       if (!ai.success()) {
         startDelegateAI(new AIRobotGotoSleep(robot));

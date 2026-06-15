@@ -129,13 +129,13 @@ public class RobotEntity extends RobotEntityBase implements
   private final WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<>();
   private final EnergyStorage battery = new EnergyStorage(MAX_ENERGY, MAX_ENERGY, 100);
   public LaserData laser = new LaserData();
-  public DockingStation linkedDockingStation;
+  public DockingStation<?> linkedDockingStation;
   public BlockIndex linkedDockingStationIndex;
   public Direction linkedDockingStationSide;
   public BlockIndex currentDockingStationIndex;
   public Direction currentDockingStationSide;
   public boolean isDocked = false;
-  public RedstoneBoardRobot board;
+  public RedstoneBoardRobot<?> board;
   public AIRobotMain mainAI;
   public ItemStack itemInUse;
   public float itemAngle1 = 0;
@@ -143,7 +143,7 @@ public class RobotEntity extends RobotEntityBase implements
   public boolean itemActive = false;
   public float itemActiveStage = 0;
   public long lastUpdateTime = 0;
-  private DockingStation currentDockingStation;
+  private DockingStation<?> currentDockingStation;
   private boolean needsUpdate = false;
   private FluidStack tank;
   private ResourceLocation texture;
@@ -592,9 +592,9 @@ public class RobotEntity extends RobotEntityBase implements
     mainAI = (AIRobotMain) AIRobot.loadAI(ai, this);
 
     if (nbt.contains("board")) {
-      board = (RedstoneBoardRobot) AIRobot.loadAI(nbt.getCompound("board"), this);
+      board = (RedstoneBoardRobot<?>) AIRobot.loadAI(nbt.getCompound("board"), this);
     } else {
-      board = (RedstoneBoardRobot) mainAI.getDelegateAI();
+      board = (RedstoneBoardRobot<?>) mainAI.getDelegateAI();
     }
 
     if (board == null) {
@@ -620,7 +620,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public void dock(DockingStation station) {
+  public void dock(DockingStation<?> station) {
     currentDockingStation = station;
 
     setSteamDirection(
@@ -646,12 +646,12 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public DockingStation getDockingStation() {
+  public DockingStation<?> getDockingStation() {
     return currentDockingStation;
   }
 
   @Override
-  public void setMainStation(DockingStation station) {
+  public void setMainStation(DockingStation<?> station) {
     if (linkedDockingStation != null && linkedDockingStation != station) {
       linkedDockingStation.unsafeRelease(this);
     }
@@ -867,12 +867,12 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public RedstoneBoardRobot getBoard() {
+  public RedstoneBoardRobot<?> getBoard() {
     return board;
   }
 
   @Override
-  public DockingStation getLinkedStation() {
+  public DockingStation<?> getLinkedStation() {
     return linkedDockingStation;
   }
 
@@ -897,7 +897,7 @@ public class RobotEntity extends RobotEntityBase implements
     return false;
   }
 
-  public AIRobot getOverridingAI() {
+  public AIRobot<?> getOverridingAI() {
     return mainAI.getOverridingAI();
   }
 
@@ -915,7 +915,7 @@ public class RobotEntity extends RobotEntityBase implements
     return ItemStack.EMPTY;
   }
 
-  public void overrideAI(AIRobot ai) {
+  public void overrideAI(AIRobot<?> ai) {
     mainAI.setOverridingAI(ai);
   }
 
@@ -1398,9 +1398,9 @@ public class RobotEntity extends RobotEntityBase implements
     info.add("Robot " + board.getNBTHandler().getID() + " (" + getBattery().getEnergyStored() + "/" + getBattery().getMaxEnergyStored() + " RF)");
     info.add(String.format("Position: %.2f, %.2f, %.2f", getX(), getY(), getZ()));
     info.add("AI tree:");
-    AIRobot aiRobot = mainAI;
+    AIRobot<?> aiRobot = mainAI;
     while (aiRobot != null) {
-      info.add("- " + RobotManager.getAIRobotName(aiRobot.getClass()) + " (" + aiRobot.getEnergyCost() + " RF/t)");
+      info.add("- " + aiRobot.getType().id() + " (" + aiRobot.getEnergyCost() + " RF/t)");
       if (aiRobot instanceof IDebuggable) {
         ((IDebuggable) aiRobot).getDebugInfo(info, side, debugger, player);
       }

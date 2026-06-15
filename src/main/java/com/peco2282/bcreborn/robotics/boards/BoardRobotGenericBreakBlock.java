@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
+import com.peco2282.bcreborn.api.robots.AIRobotType;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.ai.AIRobotBreak;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
@@ -19,10 +20,10 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class BoardRobotGenericBreakBlock extends BoardRobotGenericSearchBlock {
+public abstract class BoardRobotGenericBreakBlock<T extends BoardRobotGenericBreakBlock<T>> extends BoardRobotGenericSearchBlock<T> {
 
-  public BoardRobotGenericBreakBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+  public BoardRobotGenericBreakBlock(AIRobotType<T> type, RobotEntityBase iRobot) {
+    super(type, iRobot);
   }
 
   public abstract boolean isExpectedTool(ItemStack stack);
@@ -44,7 +45,7 @@ public abstract class BoardRobotGenericBreakBlock extends BoardRobotGenericSearc
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotFetchAndEquipItemStack || ai instanceof AIRobotGotoStationAndUnload) {
       if (!ai.success()) {
         startDelegateAI(new AIRobotGotoSleep(robot));

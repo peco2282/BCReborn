@@ -15,19 +15,20 @@ import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
-public class AIRobotGoAndLinkToDock extends AIRobot {
+public class AIRobotGoAndLinkToDock extends AIRobot<AIRobotGoAndLinkToDock> {
 
-  private DockingStation station;
+  private DockingStation<?> station;
 
   public AIRobotGoAndLinkToDock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GO_AND_LINK_TO_DOCK, iRobot);
   }
 
-  public AIRobotGoAndLinkToDock(RobotEntityBase iRobot, DockingStation iStation) {
+  public AIRobotGoAndLinkToDock(RobotEntityBase iRobot, DockingStation<?> iStation) {
     this(iRobot);
 
     station = iStation;
@@ -51,7 +52,7 @@ public class AIRobotGoAndLinkToDock extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoBlock) {
       if (ai.success()) {
         startDelegateAI(new AIRobotStraightMoveTo(robot,

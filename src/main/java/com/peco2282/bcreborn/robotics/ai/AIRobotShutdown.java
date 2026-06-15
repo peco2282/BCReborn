@@ -13,14 +13,15 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotShutdown extends AIRobot {
+public class AIRobotShutdown extends AIRobot<AIRobotShutdown> {
   private int skip;
   private double motionX;
   private double motionZ;
 
   public AIRobotShutdown(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SHUTDOWN, iRobot);
     skip = 0;
     motionX = robot.getDeltaMovement().x;
     motionZ = robot.getDeltaMovement().z;

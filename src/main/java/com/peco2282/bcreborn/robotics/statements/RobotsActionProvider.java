@@ -36,7 +36,7 @@ public class RobotsActionProvider implements IActionProvider {
       return result;
     }
 
-    List<DockingStation> stations = RobotUtils.getStations(pipeTile);
+    List<DockingStation<?>> stations = RobotUtils.getStations(pipeTile);
 
     if (stations.isEmpty()) {
       return result;

@@ -15,15 +15,16 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 
-public class BoardRobotButcher extends RedstoneBoardRobot {
+public class BoardRobotButcher extends RedstoneBoardRobot<BoardRobotButcher> {
 
   public BoardRobotButcher(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.BUTCHER,iRobot);
   }
 
   @Override
@@ -44,7 +45,7 @@ public class BoardRobotButcher extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotFetchAndEquipItemStack) {
       if (!ai.success()) {
         startDelegateAI(new AIRobotGotoSleep(robot));

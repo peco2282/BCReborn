@@ -14,14 +14,15 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotMain extends AIRobot {
+public class AIRobotMain extends AIRobot<AIRobotMain> {
 
-  private AIRobot overridingAI;
+  private AIRobot<?> overridingAI;
   private int rechargeCooldown;
 
   public AIRobotMain(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.MAIN, iRobot);
     rechargeCooldown = 0;
   }
 
@@ -31,7 +32,7 @@ public class AIRobotMain extends AIRobot {
   }
 
   @Override
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
     if (robot.getEnergy() <= RobotEntityBase.SHUTDOWN_ENERGY
       && (robot.getDockingStation() == null || !robot.getDockingStation().providesPower())) {
       if (!(ai instanceof AIRobotShutdown)) {
@@ -53,7 +54,7 @@ public class AIRobotMain extends AIRobot {
 
   @Override
   public void update() {
-    AIRobot board = robot.getBoard();
+    AIRobot<?> board = robot.getBoard();
 
     if (board != null) {
       startDelegateAI(board);
@@ -61,7 +62,7 @@ public class AIRobotMain extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotRecharge) {
       if (!ai.success()) {
         rechargeCooldown = 120;
@@ -72,11 +73,11 @@ public class AIRobotMain extends AIRobot {
     }
   }
 
-  public AIRobot getOverridingAI() {
+  public AIRobot<?> getOverridingAI() {
     return overridingAI;
   }
 
-  public void setOverridingAI(AIRobot ai) {
+  public void setOverridingAI(AIRobot<?> ai) {
     if (overridingAI == null) {
       overridingAI = ai;
     }

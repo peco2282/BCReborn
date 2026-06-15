@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
@@ -23,17 +24,17 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 
-public class BoardRobotMiner extends BoardRobotGenericBreakBlock {
+public class BoardRobotMiner extends BoardRobotGenericBreakBlock<BoardRobotMiner> {
   private static final int MAX_HARVEST_LEVEL = 3;
   private int harvestLevel = 0;
 
   public BoardRobotMiner(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.MINER, iRobot);
     detectHarvestLevel();
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     super.delegateAIEnded(ai);
 
     if (ai instanceof AIRobotFetchAndEquipItemStack) {

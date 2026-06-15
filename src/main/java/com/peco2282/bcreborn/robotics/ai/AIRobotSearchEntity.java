@@ -15,12 +15,13 @@ import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IEntityFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
-public class AIRobotSearchEntity extends AIRobot {
+public class AIRobotSearchEntity extends AIRobot<AIRobotSearchEntity> {
 
   public Entity target;
 
@@ -29,7 +30,7 @@ public class AIRobotSearchEntity extends AIRobot {
   private IEntityFilter filter;
 
   public AIRobotSearchEntity(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_ENTITY, iRobot);
   }
 
   public AIRobotSearchEntity(RobotEntityBase iRobot, IEntityFilter iFilter, float iMaxRange, IZone iZone) {

@@ -31,7 +31,7 @@ public class ActionStationProvideItems extends BCStatement implements IActionInt
     super("station.provide_items");
   }
 
-  public static boolean canExtractItem(DockingStation station, ItemStack stack) {
+  public static boolean canExtractItem(DockingStation<?> station, ItemStack stack) {
     boolean hasFilter = false;
 
     for (StatementSlot s : station.getActiveActions()) {

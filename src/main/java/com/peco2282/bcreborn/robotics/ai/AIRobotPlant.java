@@ -17,18 +17,19 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BCFakePlayer;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
-public class AIRobotPlant extends AIRobot {
+public class AIRobotPlant extends AIRobot<AIRobotPlant> {
   private BlockIndex blockFound;
   private int delay = 0;
 
   public AIRobotPlant(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.PLANT, iRobot);
   }
 
   public AIRobotPlant(RobotEntityBase iRobot, BlockIndex iBlockFound) {

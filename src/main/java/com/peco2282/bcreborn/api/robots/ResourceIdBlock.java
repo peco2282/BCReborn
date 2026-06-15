@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * Resource identifier for a specific block and side.
  */
-public class ResourceIdBlock extends ResourceId {
+public class ResourceIdBlock extends ResourceId<ResourceIdBlock> {
   /**
    * The block position.
    */
@@ -36,17 +36,7 @@ public class ResourceIdBlock extends ResourceId {
    * Default constructor for NBT loading.
    */
   public ResourceIdBlock() {
-  }
-
-  /**
-   * Constructs a ResourceIdBlock for the specified coordinates.
-   *
-   * @param x The X coordinate.
-   * @param y The Y coordinate.
-   * @param z The Z coordinate.
-   */
-  public ResourceIdBlock(int x, int y, int z) {
-    index = new BlockPos(x, y, z);
+    super(ResourceIdType.BLOCK);
   }
 
   /**
@@ -55,6 +45,7 @@ public class ResourceIdBlock extends ResourceId {
    * @param iIndex The block position.
    */
   public ResourceIdBlock(BlockPos iIndex) {
+    this();
     index = iIndex;
   }
 
@@ -64,6 +55,7 @@ public class ResourceIdBlock extends ResourceId {
    * @param tile The block entity.
    */
   public ResourceIdBlock(BlockEntity tile) {
+    this();
     index = tile.getBlockPos();
   }
 

@@ -15,15 +15,16 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 
-public class AIRobotGotoStationToLoad extends AIRobot {
+public class AIRobotGotoStationToLoad extends AIRobot<AIRobotGotoStationToLoad> {
 
   private IStackFilter filter;
   private int quantity;
 
   public AIRobotGotoStationToLoad(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_TO_LOAD, iRobot);
   }
 
   public AIRobotGotoStationToLoad(RobotEntityBase iRobot, IStackFilter iFilter, int iQuantity) {
@@ -39,7 +40,7 @@ public class AIRobotGotoStationToLoad extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoStation) {
       setSuccess(ai.success());
       terminate();
@@ -49,7 +50,7 @@ public class AIRobotGotoStationToLoad extends AIRobot {
   private class StationFilter implements IStationFilter {
 
     @Override
-    public boolean matches(DockingStation station) {
+    public boolean matches(DockingStation<?> station) {
       return AIRobotLoad.load(robot, station, filter, quantity, false);
     }
 

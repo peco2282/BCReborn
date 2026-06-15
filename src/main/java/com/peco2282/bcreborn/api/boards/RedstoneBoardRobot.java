@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.boards;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
+import com.peco2282.bcreborn.api.robots.AIRobotType;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
 /**
@@ -21,7 +22,7 @@ import com.peco2282.bcreborn.api.robots.RobotEntityBase;
  * a foundation for creating AI behaviors that can be controlled via redstone signals.
  * Subclasses must implement {@link #getNBTHandler()} to provide NBT serialization support.
  */
-public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoard<RobotEntityBase> {
+public abstract class RedstoneBoardRobot<T extends RedstoneBoardRobot<T>> extends AIRobot<T> implements IRedstoneBoard<RobotEntityBase> {
 
   /**
    * The robot entity that this board controls.
@@ -33,8 +34,8 @@ public abstract class RedstoneBoardRobot extends AIRobot implements IRedstoneBoa
    *
    * @param robot The robot entity that this board will control.
    */
-  public RedstoneBoardRobot(RobotEntityBase robot) {
-    super(robot);
+  public RedstoneBoardRobot(AIRobotType<T> type, RobotEntityBase robot) {
+    super(type, robot);
     this.robot = robot;
   }
 

@@ -20,6 +20,7 @@ import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.builder.BuildingSlot;
 import com.peco2282.bcreborn.common.inventory.filters.ArrayStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -28,7 +29,7 @@ import net.minecraft.world.level.GameType;
 
 import java.util.LinkedList;
 
-public class BoardRobotBuilder extends RedstoneBoardRobot {
+public class BoardRobotBuilder extends RedstoneBoardRobot<BoardRobotBuilder> {
 
   private static final int MAX_RANGE_SQ = 3 * 64 * 64;
 
@@ -38,7 +39,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
   private int launchingDelay = 0;
 
   public BoardRobotBuilder(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.BUILDER, iRobot);
   }
 
   @Override
@@ -137,7 +138,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationAndLoad) {
       if (ai.success()) {
         requirementsToLookFor.removeFirst();

@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 import com.peco2282.bcreborn.robotics.station.StackRequest;
 import net.minecraft.world.item.ItemStack;
@@ -25,17 +26,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AIRobotSearchStackRequest extends AIRobot {
+public class AIRobotSearchStackRequest extends AIRobot<AIRobotSearchStackRequest> {
 
   public StackRequest request = null;
-  public DockingStation station = null;
+  public DockingStation<?> station = null;
 
   private Collection<ItemStack> blackList;
 
   private IStackFilter filter;
 
   public AIRobotSearchStackRequest(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_STACK_REQUEST, iRobot);
   }
 
   public AIRobotSearchStackRequest(RobotEntityBase iRobot, IStackFilter iFilter, Collection<ItemStack> iBlackList) {
@@ -51,7 +52,7 @@ public class AIRobotSearchStackRequest extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchStation) {
       if (ai.success()) {
         request = getOrderFromRequestingStation(((AIRobotSearchStation) ai).targetStation, true);
@@ -76,7 +77,7 @@ public class AIRobotSearchStackRequest extends AIRobot {
     return false;
   }
 
-  private StackRequest getOrderFromRequestingStation(DockingStation station, boolean take) {
+  private StackRequest getOrderFromRequestingStation(DockingStation<?> station, boolean take) {
 
     for (StackRequest req : getAvailableRequests(station)) {
       if (!isBlacklisted(req.getStack()) && filter.matches(req.getStack())) {
@@ -94,7 +95,7 @@ public class AIRobotSearchStackRequest extends AIRobot {
     return null;
   }
 
-  private Collection<StackRequest> getAvailableRequests(DockingStation station) {
+  private Collection<StackRequest> getAvailableRequests(DockingStation<?> station) {
     List<StackRequest> result = new ArrayList<>();
 
     IRequestProvider provider = station.getRequestProvider();
@@ -118,7 +119,7 @@ public class AIRobotSearchStackRequest extends AIRobot {
   private class StationProviderFilter implements IStationFilter {
 
     @Override
-    public boolean matches(DockingStation station) {
+    public boolean matches(DockingStation<?> station) {
       return getOrderFromRequestingStation(station, false) != null;
     }
   }

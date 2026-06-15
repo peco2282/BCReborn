@@ -15,16 +15,17 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndLoad;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnload;
 import com.peco2282.bcreborn.robotics.ai.AIRobotLoad;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 
-public class BoardRobotCarrier extends RedstoneBoardRobot {
+public class BoardRobotCarrier extends RedstoneBoardRobot<BoardRobotCarrier> {
 
   public BoardRobotCarrier(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.CARRIER,iRobot);
   }
 
   @Override

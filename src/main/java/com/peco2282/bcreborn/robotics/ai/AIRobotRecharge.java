@@ -14,11 +14,12 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotRecharge extends AIRobot {
+public class AIRobotRecharge extends AIRobot<AIRobotRecharge> {
 
   public AIRobotRecharge(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.RECHARGE, iRobot);
   }
 
   @Override
@@ -42,7 +43,7 @@ public class AIRobotRecharge extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoStation) {
       if (!ai.success()) {
         setSuccess(false);

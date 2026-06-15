@@ -17,24 +17,25 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class AIRobotSearchBlock extends AIRobot {
+public class AIRobotSearchBlock extends AIRobot<AIRobotSearchBlock> {
 
   public BlockIndex blockFound;
   public LinkedList<BlockIndex> path;
   private Iterator<BlockIndex> blockIter;
 
   public AIRobotSearchBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_BLOCK, iRobot);
   }
 
   public AIRobotSearchBlock(RobotEntityBase iRobot, boolean random, IBlockFilter iFilter,
                             double iMaxDistanceToEnd) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_BLOCK, iRobot);
 
     // private PathFindingSearch blockScanner = null; // TODO: Implement
     IZone zone = iRobot.getZoneToWork();

@@ -15,22 +15,23 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.SimpleFluidFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationAcceptFluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class AIRobotUnloadFluids extends AIRobot {
+public class AIRobotUnloadFluids extends AIRobot<AIRobotUnloadFluids> {
 
   private int waitedCycles = 0;
 
   public AIRobotUnloadFluids(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.UNLOAD_FLUIDS, iRobot);
     setSuccess(false);
   }
 
-  public static int unload(RobotEntityBase robot, DockingStation station, boolean doUnload) {
+  public static int unload(RobotEntityBase robot, DockingStation<?> station, boolean doUnload) {
     if (station == null) {
       return 0;
     }

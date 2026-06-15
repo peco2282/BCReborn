@@ -15,16 +15,17 @@ import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class AIRobotPumpBlock extends AIRobot {
+public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
   private BlockIndex blockToPump;
   private long waited = 0;
 
   public AIRobotPumpBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.PUMP_BLOCK, iRobot);
   }
 
   public AIRobotPumpBlock(RobotEntityBase iRobot, BlockIndex iBlockToPump) {
@@ -39,7 +40,7 @@ public class AIRobotPumpBlock extends AIRobot {
   }
 
   @Override
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
     super.preempt(ai);
   }
 

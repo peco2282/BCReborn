@@ -16,13 +16,14 @@ import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IterableAlgorithmRunner;
 import com.peco2282.bcreborn.common.utils.PathFinding;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.LinkedList;
 
-public class AIRobotGotoBlock extends AIRobotGoto {
+public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
 
   private PathFinding pathSearch;
   private IterableAlgorithmRunner pathSearchJob;
@@ -34,7 +35,7 @@ public class AIRobotGotoBlock extends AIRobotGoto {
   private boolean loadedFromNBT;
 
   public AIRobotGotoBlock(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_BLOCK, iRobot);
   }
 
   public AIRobotGotoBlock(RobotEntityBase robot, int x, int y, int z) {

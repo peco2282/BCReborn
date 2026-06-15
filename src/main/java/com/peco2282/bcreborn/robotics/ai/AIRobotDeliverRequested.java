@@ -17,16 +17,17 @@ import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.inventory.filters.ArrayStackOrListFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.StackRequest;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotDeliverRequested extends AIRobot {
+public class AIRobotDeliverRequested extends AIRobot<AIRobotDeliverRequested> {
 
   private StackRequest requested;
 
   public AIRobotDeliverRequested(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.DELIVER_REQUESTED, iRobot);
   }
 
   public AIRobotDeliverRequested(RobotEntityBase robot, StackRequest request) {
@@ -46,7 +47,7 @@ public class AIRobotDeliverRequested extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStation) {
       if (!ai.success()) {
         setSuccess(false);

@@ -14,17 +14,18 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilterTool;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotFetchAndEquipItemStack extends AIRobot {
+public class AIRobotFetchAndEquipItemStack extends AIRobot<AIRobotFetchAndEquipItemStack> {
 
   private IStackFilter filter;
   private int delay = 0;
 
   public AIRobotFetchAndEquipItemStack(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.FETCH_AND_EQUIP_ITEM_STACK, iRobot);
   }
 
   public AIRobotFetchAndEquipItemStack(RobotEntityBase iRobot, IStackFilter iFilter) {
@@ -60,7 +61,7 @@ public class AIRobotFetchAndEquipItemStack extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationToLoad) {
       if (filter == null) {
         // filter can't be retreived, usually because of a load operation.

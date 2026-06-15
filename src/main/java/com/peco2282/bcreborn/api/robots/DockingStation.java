@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 /**
  * Represents a location where a robot can dock and interact with the world.
  */
-public abstract class DockingStation {
+public abstract class DockingStation<T extends DockingStation<T>> {
   /**
    * The side of the block this docking station is on.
    */
@@ -40,6 +40,7 @@ public abstract class DockingStation {
   private boolean linkIsMain = false;
 
   private BlockIndex index;
+  protected final DockingStationType<T> type;
 
   /**
    * Constructs a new DockingStation with the specified index and side.
@@ -47,7 +48,8 @@ public abstract class DockingStation {
    * @param iIndex The block position index.
    * @param iSide  The side of the block.
    */
-  public DockingStation(BlockIndex iIndex, Direction iSide) {
+  public DockingStation(DockingStationType<T> iType, BlockIndex iIndex, Direction iSide) {
+    type = iType;
     index = iIndex;
     side = iSide;
   }
@@ -55,7 +57,8 @@ public abstract class DockingStation {
   /**
    * Default constructor for NBT loading.
    */
-  public DockingStation() {
+  public DockingStation(DockingStationType<T> iType) {
+    type = iType;
   }
 
   /**
@@ -395,5 +398,9 @@ public abstract class DockingStation {
    * Called when the chunk containing this station is unloaded.
    */
   public void onChunkUnload() {
+  }
+
+  public DockingStationType<T> getType() {
+    return type;
   }
 }

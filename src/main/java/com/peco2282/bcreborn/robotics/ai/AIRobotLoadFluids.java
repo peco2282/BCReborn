@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.robotics.statements.ActionStationProvideFluids;
 import net.minecraft.core.Direction;
@@ -22,13 +23,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class AIRobotLoadFluids extends AIRobot {
+public class AIRobotLoadFluids extends AIRobot<AIRobotLoadFluids> {
 
   private int waitedCycles = 0;
   private IFluidFilter filter;
 
   public AIRobotLoadFluids(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.LOAD_FLUIDS, iRobot);
   }
 
   public AIRobotLoadFluids(RobotEntityBase iRobot, IFluidFilter iFilter) {
@@ -38,7 +39,7 @@ public class AIRobotLoadFluids extends AIRobot {
     setSuccess(false);
   }
 
-  public static int load(RobotEntityBase robot, DockingStation station, IFluidFilter filter,
+  public static int load(RobotEntityBase robot, DockingStation<?> station, IFluidFilter filter,
                          boolean doLoad) {
     if (station == null) {
       return 0;

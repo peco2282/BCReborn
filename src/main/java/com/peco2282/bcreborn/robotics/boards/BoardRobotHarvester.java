@@ -15,19 +15,20 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotHarvest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
-public class BoardRobotHarvester extends BoardRobotGenericSearchBlock {
+public class BoardRobotHarvester extends BoardRobotGenericSearchBlock<BoardRobotHarvester> {
 
   public BoardRobotHarvester(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.HARVESTER, iRobot);
   }
 
   public BoardRobotHarvester(RobotEntityBase iRobot, CompoundTag nbt) {
-    super(iRobot);
+    super(RoboticsAIType.HARVESTER, iRobot);
   }
 
   @Override
@@ -50,7 +51,7 @@ public class BoardRobotHarvester extends BoardRobotGenericSearchBlock {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotHarvest) {
       releaseBlockFound(ai.success());
     }

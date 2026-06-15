@@ -14,19 +14,20 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 
-public class AIRobotGotoStationAndUnload extends AIRobot {
+public class AIRobotGotoStationAndUnload extends AIRobot<AIRobotGotoStationAndUnload> {
 
-  private final DockingStation station;
+  private final DockingStation<?> station;
 
   public AIRobotGotoStationAndUnload(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.GOTO_STATION_AND_UNLOAD, iRobot);
 
     station = null;
   }
 
-  public AIRobotGotoStationAndUnload(RobotEntityBase iRobot, DockingStation iStation) {
-    super(iRobot);
+  public AIRobotGotoStationAndUnload(RobotEntityBase iRobot, DockingStation<?> iStation) {
+    super(RoboticsAIType.GOTO_STATION_AND_UNLOAD, iRobot);
 
     station = iStation;
   }
@@ -41,7 +42,7 @@ public class AIRobotGotoStationAndUnload extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotGotoStationToUnload) {
       if (ai.success()) {
         startDelegateAI(new AIRobotUnload(robot));

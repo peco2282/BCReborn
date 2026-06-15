@@ -31,11 +31,11 @@ import java.util.*;
 
 public class RobotRegistry extends SavedData implements IRobotRegistry {
 
-  protected final HashMap<StationIndex, DockingStation> stations = new HashMap<>();
+  protected final HashMap<StationIndex, DockingStation<?>> stations = new HashMap<>();
   private final Long2ObjectOpenHashMap<RobotEntity> robotsLoaded = new Long2ObjectOpenHashMap<>();
   private final HashSet<RobotEntity> robotsLoadedSet = new HashSet<>();
-  private final HashMap<ResourceId, Long> resourcesTaken = new HashMap<>();
-  private final Long2ObjectOpenHashMap<HashSet<ResourceId>> resourcesTakenByRobot = new Long2ObjectOpenHashMap<>();
+  private final HashMap<ResourceId<?>, Long> resourcesTaken = new HashMap<>();
+  private final Long2ObjectOpenHashMap<HashSet<ResourceId<?>>> resourcesTakenByRobot = new Long2ObjectOpenHashMap<>();
   private final Long2ObjectOpenHashMap<HashSet<StationIndex>> stationsTakenByRobot = new Long2ObjectOpenHashMap<>();
   protected Level level;
   private long nextRobotID = Long.MIN_VALUE;
@@ -68,7 +68,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     addRobotLoaded(robot);
   }
 
-  private HashSet<ResourceId> getResourcesTakenByRobot(long robotId) {
+  private HashSet<ResourceId<?>> getResourcesTakenByRobot(long robotId) {
     return resourcesTakenByRobot.get(robotId);
   }
 
@@ -110,12 +110,12 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized boolean isTaken(ResourceId resourceId) {
+  public synchronized boolean isTaken(ResourceId<?> resourceId) {
     return robotIdTaking(resourceId) != RobotEntityBase.NULL_ROBOT_ID;
   }
 
   @Override
-  public synchronized long robotIdTaking(ResourceId resourceId) {
+  public synchronized long robotIdTaking(ResourceId<?> resourceId) {
     if (!resourcesTaken.containsKey(resourceId)) {
       return RobotEntityBase.NULL_ROBOT_ID;
     }
@@ -132,7 +132,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized RobotEntityBase robotTaking(ResourceId resourceId) {
+  public synchronized RobotEntityBase robotTaking(ResourceId<?> resourceId) {
     long robotId = robotIdTaking(resourceId);
     if (robotId == RobotEntityBase.NULL_ROBOT_ID) {
       return null;
@@ -141,7 +141,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized boolean take(ResourceId resourceId, Object robot) {
+  public synchronized boolean take(ResourceId<?> resourceId, Object robot) {
     if (robot instanceof RobotEntityBase robotBase) {
       return take(resourceId, robotBase.getRobotId());
     }
@@ -149,7 +149,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized boolean take(ResourceId resourceId, long robotId) {
+  public synchronized boolean take(ResourceId<?> resourceId, long robotId) {
     if (resourceId == null) {
       return false;
     }
@@ -163,12 +163,12 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized void release(ResourceId resourceId) {
+  public synchronized void release(ResourceId<?> resourceId) {
     if (resourceId == null) return;
     setDirty();
     Long robotId = resourcesTaken.remove(resourceId);
     if (robotId != null) {
-      HashSet<ResourceId> taken = getResourcesTakenByRobot(robotId);
+      HashSet<ResourceId<?>> taken = getResourcesTakenByRobot(robotId);
       if (taken != null) {
         taken.remove(resourceId);
       }
@@ -181,9 +181,9 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     setDirty();
 
     long robotId = robot.getRobotId();
-    HashSet<ResourceId> resourceSet = resourcesTakenByRobot.remove(robotId);
+    HashSet<ResourceId<?>> resourceSet = resourcesTakenByRobot.remove(robotId);
     if (resourceSet != null) {
-      for (ResourceId id : new HashSet<>(resourceSet)) {
+      for (ResourceId<?> id : new HashSet<>(resourceSet)) {
         release(id);
       }
     }
@@ -191,7 +191,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     HashSet<StationIndex> stationSet = stationsTakenByRobot.remove(robotId);
     if (stationSet != null) {
       for (StationIndex s : stationSet) {
-        DockingStation d = stations.get(s);
+        DockingStation<?> d = stations.get(s);
         if (d != null) {
           // Logic for releasing station if applicable
         }
@@ -200,17 +200,17 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized DockingStation getStation(BlockPos pos, Direction side) {
+  public synchronized DockingStation<?> getStation(BlockPos pos, Direction side) {
     return stations.get(new StationIndex(side, pos.getX(), pos.getY(), pos.getZ()));
   }
 
   @Override
-  public synchronized Collection<DockingStation> getStations() {
+  public synchronized Collection<DockingStation<?>> getStations() {
     return stations.values();
   }
 
   @Override
-  public synchronized void registerStation(DockingStation station) {
+  public synchronized void registerStation(DockingStation<?> station) {
     setDirty();
     StationIndex index = new StationIndex(station);
     if (stations.containsKey(index)) {
@@ -220,20 +220,20 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   }
 
   @Override
-  public synchronized void removeStation(DockingStation station) {
+  public synchronized void removeStation(DockingStation<?> station) {
     setDirty();
     StationIndex index = new StationIndex(station);
     stations.remove(index);
   }
 
   @Override
-  public synchronized void take(DockingStation station, long robotId) {
+  public synchronized void take(DockingStation<?> station, long robotId) {
     setDirty();
     stationsTakenByRobot.computeIfAbsent(robotId, k -> new HashSet<>()).add(new StationIndex(station));
   }
 
   @Override
-  public synchronized void release(DockingStation station, long robotId) {
+  public synchronized void release(DockingStation<?> station, long robotId) {
     setDirty();
     HashSet<StationIndex> taken = stationsTakenByRobot.get(robotId);
     if (taken != null) {
@@ -245,7 +245,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   public CompoundTag save(CompoundTag nbt) {
     nbt.putLong("nextRobotID", nextRobotID);
     ListTag resourceList = new ListTag();
-    for (Map.Entry<ResourceId, Long> e : resourcesTaken.entrySet()) {
+    for (Map.Entry<ResourceId<?>, Long> e : resourcesTaken.entrySet()) {
       CompoundTag cpt = new CompoundTag();
       CompoundTag resourceId = new CompoundTag();
       e.getKey().writeToNBT(resourceId);
@@ -256,14 +256,12 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     nbt.put("resourceList", resourceList);
 
     ListTag stationList = new ListTag();
-    for (DockingStation station : stations.values()) {
+    for (DockingStation<?> station : stations.values()) {
       CompoundTag cpt = new CompoundTag();
       station.writeToNBT(cpt);
-      String name = RobotManager.getDockingStationName(station.getClass());
-      if (name != null) {
-        cpt.putString("stationType", name);
-        stationList.add(cpt);
-      }
+      String name = station.getType().id().toString();
+      cpt.putString("stationType", name);
+      stationList.add(cpt);
     }
     nbt.put("stationList", stationList);
     return nbt;
@@ -280,7 +278,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     ListTag resourceList = nbt.getList("resourceList", 10);
     for (int i = 0; i < resourceList.size(); ++i) {
       CompoundTag cpt = resourceList.getCompound(i);
-      ResourceId resourceId = ResourceId.load(cpt.getCompound("resourceId"));
+      ResourceId<?> resourceId = ResourceId.load(cpt.getCompound("resourceId"));
       long robotId = cpt.getLong("robotId");
       take(resourceId, robotId);
     }
@@ -289,17 +287,12 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     for (int i = 0; i < stationList.size(); ++i) {
       CompoundTag cpt = stationList.getCompound(i);
       String type = cpt.getString("stationType");
-      Class<? extends DockingStation> cls = RobotManager.getDockingStationByName(type);
-      if (cls == null && type.isEmpty()) cls = DockingStationPipe.class;
+      DockingStation<?> station = RobotManager.createDockingStation(type, cpt);
 
-      if (cls != null) {
-        try {
-          DockingStation station = cls.getDeclaredConstructor().newInstance();
-          station.readFromNBT(cpt);
-          registerStation(station);
-        } catch (Exception e) {
-          BCLog.logger.error("Could not load docking station", e);
-        }
+      try {
+        registerStation(station);
+      } catch (Exception e) {
+        BCLog.logger.error("Could not load docking station", e);
       }
     }
   }
@@ -312,7 +305,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   @SubscribeEvent
   public void onChunkUnload(ChunkEvent.Unload e) {
     if (e.getLevel() == this.level) {
-      for (DockingStation station : new ArrayList<>(stations.values())) {
+      for (DockingStation<?> station : new ArrayList<>(stations.values())) {
         if (!level.isLoaded(station.index().toBlockPos())) {
           station.onChunkUnload();
         }

@@ -14,15 +14,16 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 
-public class AIRobotSearchAndGotoStation extends AIRobot {
+public class AIRobotSearchAndGotoStation extends AIRobot<AIRobotSearchAndGotoStation> {
 
   private IStationFilter filter;
   private IZone zone;
 
   public AIRobotSearchAndGotoStation(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SEARCH_AND_GOTO_STATION, iRobot);
   }
 
   public AIRobotSearchAndGotoStation(RobotEntityBase iRobot, IStationFilter iFilter, IZone iZone) {
@@ -38,7 +39,7 @@ public class AIRobotSearchAndGotoStation extends AIRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchStation) {
       if (ai.success()) {
         startDelegateAI(new AIRobotGotoStation(robot, ((AIRobotSearchStation) ai).targetStation));

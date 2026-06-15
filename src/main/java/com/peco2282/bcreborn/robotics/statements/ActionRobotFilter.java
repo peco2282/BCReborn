@@ -36,7 +36,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
     super("robot.work_filter");
   }
 
-  public static Collection<ItemStack> getGateFilterStacks(DockingStation station) {
+  public static Collection<ItemStack> getGateFilterStacks(DockingStation<?> station) {
     ArrayList<ItemStack> result = new ArrayList<>();
 
     for (StatementSlot slot : station.getActiveActions()) {
@@ -56,7 +56,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
     return result;
   }
 
-  public static IStackFilter getGateFilter(DockingStation station) {
+  public static IStackFilter getGateFilter(DockingStation<?> station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
     if (stacks.isEmpty()) {
@@ -66,7 +66,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
     }
   }
 
-  public static IFluidFilter getGateFluidFilter(DockingStation station) {
+  public static IFluidFilter getGateFluidFilter(DockingStation<?> station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
     if (stacks.isEmpty()) {
@@ -76,7 +76,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
     }
   }
 
-  public static boolean canInteractWithItem(DockingStation station, IStackFilter filter, Class<?> actionClass) {
+  public static boolean canInteractWithItem(DockingStation<?> station, IStackFilter filter, Class<?> actionClass) {
     boolean actionFound = false;
 
     for (StatementSlot s : station.getActiveActions()) {
@@ -93,7 +93,7 @@ public class ActionRobotFilter extends BCStatement implements IActionInternal {
     return actionFound;
   }
 
-  public static boolean canInteractWithFluid(DockingStation station, IFluidFilter filter, Class<?> actionClass) {
+  public static boolean canInteractWithFluid(DockingStation<?> station, IFluidFilter filter, Class<?> actionClass) {
     boolean actionFound = false;
 
     for (StatementSlot s : station.getActiveActions()) {

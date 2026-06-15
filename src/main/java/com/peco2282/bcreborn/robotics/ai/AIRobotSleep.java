@@ -14,19 +14,20 @@ package com.peco2282.bcreborn.robotics.ai;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.statements.ActionRobotWakeUp;
 
-public class AIRobotSleep extends AIRobot {
+public class AIRobotSleep extends AIRobot<AIRobotSleep> {
 
   private static final int SLEEPING_TIME = 60 * 20;
   private int sleptTime = 0;
 
   public AIRobotSleep(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.SLEEP, iRobot);
   }
 
   @Override
-  public void preempt(AIRobot ai) {
+  public void preempt(AIRobot<?> ai) {
     for (StatementSlot s : robot.getLinkedStation().getActiveActions()) {
       if (s.statement instanceof ActionRobotWakeUp) {
         terminate();

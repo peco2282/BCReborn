@@ -15,21 +15,23 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.ai.AIRobotDisposeItems;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
+import com.peco2282.bcreborn.robotics.station.StackRequest;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-public class BoardRobotDelivery extends RedstoneBoardRobot {
+public class BoardRobotDelivery extends RedstoneBoardRobot<BoardRobotDelivery> {
 
   private final ArrayList<ItemStack> deliveryBlacklist = new ArrayList<>();
 
-  // private StackRequest currentRequest = null; // TODO: Implement StackRequest
+  private StackRequest currentRequest = null; // TODO: Implement StackRequest
 
   public BoardRobotDelivery(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.DELIVERY,iRobot);
   }
 
   @Override
@@ -49,7 +51,7 @@ public class BoardRobotDelivery extends RedstoneBoardRobot {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotDisposeItems) {
       update();
     } else {

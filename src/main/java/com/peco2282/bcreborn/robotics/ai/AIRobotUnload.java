@@ -17,18 +17,19 @@ import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
-public class AIRobotUnload extends AIRobot {
+public class AIRobotUnload extends AIRobot<AIRobotUnload> {
 
   private int waitedCycles = 0;
 
   public AIRobotUnload(RobotEntityBase iRobot) {
-    super(iRobot);
+    super(RoboticsAIType.UNLOAD, iRobot);
   }
 
-  public static boolean unload(RobotEntityBase robot, DockingStation station, boolean doUnload) {
+  public static boolean unload(RobotEntityBase robot, DockingStation<?> station, boolean doUnload) {
     if (station == null) {
       return false;
     }

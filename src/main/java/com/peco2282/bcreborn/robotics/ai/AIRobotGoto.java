@@ -12,15 +12,16 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.robots.AIRobot;
+import com.peco2282.bcreborn.api.robots.AIRobotType;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 
-public abstract class AIRobotGoto extends AIRobot {
+public abstract class AIRobotGoto<T extends AIRobotGoto<T>> extends AIRobot<T> {
 
   protected float nextX, nextY, nextZ;
   protected double dirX, dirY, dirZ;
 
-  public AIRobotGoto(RobotEntityBase iRobot) {
-    super(iRobot);
+  public AIRobotGoto(AIRobotType<T> type, RobotEntityBase iRobot) {
+    super(type, iRobot);
   }
 
   protected void setDestination(RobotEntityBase robot, float x, float y, float z) {
