@@ -40,7 +40,7 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
     this.id = id;
     this.boardType = boardType;
     this.upperName = name.substring(0, 1).toUpperCase() + name.substring(1);
-    this.texture = BCRebornRobotics.location("textures/entity/robot/robot_" + name + ".png");
+    this.texture = BCRebornRobotics.location("textures/entity/robot_" + name + ".png");
     this.boardInit = board;
     this.energyCost = energyCost;
 
