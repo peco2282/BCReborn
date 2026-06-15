@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IDockingStationProvider;
 import com.peco2282.bcreborn.api.robots.RobotManager;
@@ -48,11 +49,11 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
   @OnlyIn(Dist.CLIENT)
   public static class RobotStationPluggableRenderer implements IPipePluggableRenderer {
     private static final ResourceLocation TEXTURE_NONE =
-        BCRebornRobotics.location("textures/block/pipes/pipe_robot_station.png");
+        BCRebornTransport.location("textures/block/pipes/pipe_robot_station.png");
     private static final ResourceLocation TEXTURE_RESERVED =
-        BCRebornRobotics.location("textures/block/pipes/pipe_robot_station_reserved.png");
+        BCRebornTransport.location("textures/block/pipes/pipe_robot_station_reserved.png");
     private static final ResourceLocation TEXTURE_LINKED =
-        BCRebornRobotics.location("textures/block/pipes/pipe_robot_station_linked.png");
+        BCRebornTransport.location("textures/block/pipes/pipe_robot_station_linked.png");
 
     private static final float Z_FIGHT = 1.0f / 4096.0f;
 
