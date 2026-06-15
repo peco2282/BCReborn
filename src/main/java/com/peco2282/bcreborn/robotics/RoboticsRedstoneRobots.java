@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 public class RoboticsRedstoneRobots {
   private static final BCRegistry REGISTRY = BCRebornRobotics.getRegistry();
 
-  public static final RegistryObject<RedstoneBoardRobotEmptyNBT> EMPTY = register("empty", RedstoneBoardRobotEmptyNBT::new);
+  public static final RegistryObject<RedstoneBoardRobotEmptyNBT> EMPTY = register("empty", RedstoneBoardRobotEmptyNBT::getInstance);
 
   public static final RegistryObject<BCBoardNBT> ROBOT_PICKER = register("robot_picker", () -> new BCBoardNBT(loc("robot_picker"), "picker", BoardRobotPicker::new, "green", RedstoneBoardNBT.COST_LOW));
   public static final RegistryObject<BCBoardNBT> ROBOT_CARRIER = register("robot_carrier", () -> new BCBoardNBT(loc("robot_carrier"), "carrier", BoardRobotCarrier::new, "green", RedstoneBoardNBT.COST_LOW));

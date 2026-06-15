@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.BCRebornRobotics;
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.network.chat.Component;
@@ -26,7 +25,12 @@ import java.util.List;
 
 public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 
-  public static RedstoneBoardRobotEmptyNBT instance = new RedstoneBoardRobotEmptyNBT();
+  private static final RedstoneBoardRobotEmptyNBT INSTANCE = new RedstoneBoardRobotEmptyNBT();
+
+  public static RedstoneBoardRobotEmptyNBT getInstance() {
+    return INSTANCE;
+  }
+  private RedstoneBoardRobotEmptyNBT() {}
 
   @Override
   public int getEnergyCost() {
@@ -34,13 +38,13 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
   }
 
   @Override
-  public RedstoneBoardRobot create(RobotEntityBase robot) {
-    return null; // TODO: Implement when BoardRobotEmpty is available
+  public BoardRobotEmpty create(RobotEntityBase robot) {
+    return new BoardRobotEmpty(robot);
   }
 
   @Override
   public ResourceLocation getRobotTexture() {
-    return BCRebornRobotics.location("textures/entity/robot/robot_base.png");
+    return BCRebornRobotics.location("textures/entity/robot_base.png");
   }
 
   @Override
