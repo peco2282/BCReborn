@@ -44,12 +44,6 @@ public class ContextProcessor {
     return create(ModList.get().getModContainerById(modId).orElseThrow());
   }
 
-  private static <T> ProcessExaminator<T> examine(
-    Stream<T> values
-  ) {
-    return new ProcessExaminator<>(values);
-  }
-
   public String getModId() {
     return modId;
   }
@@ -81,32 +75,6 @@ public class ContextProcessor {
           }
         }
       }
-    }
-  }
-
-  public static class ProcessExaminator<T> {
-    private Stream<T> stream;
-
-    public ProcessExaminator(Stream<T> stream) {
-      this.stream = stream;
-    }
-
-    public ProcessExaminator<T> filter(Predicate<T> predicate) {
-      this.stream = this.stream.filter(predicate);
-      return this;
-    }
-
-    public ProcessExaminator<T> sorted(Comparator<T> comparator) {
-      this.stream = this.stream.sorted(comparator);
-      return this;
-    }
-
-    public <U> ProcessExaminator<U> map(Function<T, U> mapper) {
-      return new ProcessExaminator<>(this.stream.map(mapper));
-    }
-
-    public Stream<T> get() {
-      return this.stream;
     }
   }
 }
