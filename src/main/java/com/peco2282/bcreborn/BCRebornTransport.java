@@ -14,7 +14,9 @@ package com.peco2282.bcreborn;
 import com.peco2282.bcreborn.api.facades.FacadeAPI;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
+import com.peco2282.bcreborn.transport.gates.GatePluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -66,6 +68,8 @@ public class BCRebornTransport implements BCReborn {
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
     registerPipePluggable(FacadePluggable.class, "facade");
+    registerPipePluggable(GatePluggable.class, "gate");
+    registerPipePluggable(RobotStationPluggable.class, "robotStation");
 
     FacadeAPI.facadeItem(TransportItems.FACADE.get());
   }
