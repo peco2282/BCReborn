@@ -12,13 +12,13 @@
 package com.peco2282.bcreborn.api.gates;
 
 import com.google.common.collect.HashBiMap;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
 public final class GateExpansions {
-  private static final Map<String, IGateExpansion> expansions = new HashMap<>();
-  private static final ArrayList<IGateExpansion> expansionIDs = new ArrayList<>();
+  private static final Map<ResourceLocation, IGateExpansion> expansions = new HashMap<>();
   private static final Map<IGateExpansion, ItemStack> recipes = HashBiMap.create();
 
   private GateExpansions() {
@@ -28,9 +28,8 @@ public final class GateExpansions {
     registerExpansion(expansion.getUniqueIdentifier(), expansion);
   }
 
-  public static void registerExpansion(String identifier, IGateExpansion expansion) {
+  public static void registerExpansion(ResourceLocation identifier, IGateExpansion expansion) {
     expansions.put(identifier, expansion);
-    expansionIDs.add(expansion);
   }
 
   public static void registerExpansion(IGateExpansion expansion, ItemStack addedRecipe) {
@@ -39,22 +38,18 @@ public final class GateExpansions {
   }
 
   public static IGateExpansion getExpansion(String identifier) {
+    return getExpansion(ResourceLocation.parse(identifier));
+  }
+
+  public static IGateExpansion getExpansion(ResourceLocation identifier) {
     return expansions.get(identifier);
   }
 
-  public static Set<IGateExpansion> getExpansions() {
-    return new HashSet<>(expansionIDs);
+  public static Collection<? extends IGateExpansion> getExpansions() {
+    return Collections.unmodifiableCollection(expansions.values());
   }
 
   public static Map<IGateExpansion, ItemStack> getRecipesForPostInit() {
     return recipes;
-  }
-
-  public static IGateExpansion getExpansionByID(int id) {
-    return expansionIDs.get(id);
-  }
-
-  public static int getExpansionID(IGateExpansion expansion) {
-    return expansionIDs.indexOf(expansion);
   }
 }
