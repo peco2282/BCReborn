@@ -744,13 +744,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
 
     @Override
-    public PipePluggable getPipePluggable(Direction direction) {
+    public PipePluggable<?> getPipePluggable(Direction direction) {
       return sideProperties.pluggables[direction.ordinal()];
     }
 
     @Override
-    public void setPipePluggable(Direction direction, @Nullable PipePluggable pluggable) {
-      PipePluggable old = sideProperties.pluggables[direction.ordinal()];
+    public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
+      PipePluggable<?> old = sideProperties.pluggables[direction.ordinal()];
       if (old == pluggable) return;
 
       if (old != null) {
@@ -776,7 +776,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     @Override
     public boolean hasBlockingPluggable(Direction direction) {
-      PipePluggable p = getPipePluggable(direction);
+      PipePluggable<?> p = getPipePluggable(direction);
       return p != null && p.isBlocking(this, direction);
     }
 
@@ -807,11 +807,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   };
 
-  public PipePluggable getPipePluggable(Direction direction) {
+  public PipePluggable<?> getPipePluggable(Direction direction) {
     return pipeTileApi.getPipePluggable(direction);
   }
 
-  public void setPipePluggable(Direction direction, @Nullable PipePluggable pluggable) {
+  public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
     pipeTileApi.setPipePluggable(direction, pluggable);
   }
 
@@ -826,7 +826,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public ArrayList<ItemStack> computeItemDrop() {
     ArrayList<ItemStack> list = new ArrayList<>();
     // Pluggables
-    for (PipePluggable pluggable : sideProperties.pluggables) {
+    for (PipePluggable<?> pluggable : sideProperties.pluggables) {
       if (pluggable != null) {
         Collections.addAll(list, pluggable.getDropItems(pipeTileApi));
       }
@@ -853,20 +853,19 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public static class SideProperties {
-    public PipePluggable[] pluggables = new PipePluggable[Direction.values().length];
+    public PipePluggable<?>[] pluggables = new PipePluggable[Direction.values().length];
 
     public void writeToNBT(CompoundTag nbt) {
       for (int i = 0; i < Direction.values().length; i++) {
-        PipePluggable pluggable = pluggables[i];
+        PipePluggable<?> pluggable = pluggables[i];
         final String key = "pluggable[" + i + "]";
         if (pluggable == null) {
           nbt.remove(key);
         } else {
           CompoundTag pluggableData = new CompoundTag();
-          String name = PipeManager.getPluggableName(pluggable.getClass());
-          if (name != null) {
-            pluggableData.putString("pluggableName", name);
-          }
+          String name = pluggable.getType().id().toString();
+          pluggableData.putString("pluggableName", name);
+
           pluggable.writeToNBT(pluggableData);
           nbt.put(key, pluggableData);
         }
@@ -879,23 +878,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         if (!nbt.contains(key)) {
           continue;
         }
-        try {
-          CompoundTag pluggableData = nbt.getCompound(key);
-          Class<?> pluggableClass = PipeManager.getPluggableByName(pluggableData.getString("pluggableName"));
-
-          if (pluggableClass != null && PipePluggable.class.isAssignableFrom(pluggableClass)) {
-            PipePluggable pluggable = (PipePluggable) pluggableClass.getDeclaredConstructor().newInstance();
-            pluggable.readFromNBT(pluggableData);
-            pluggables[i] = pluggable;
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+        CompoundTag pluggableData = nbt.getCompound(key);
+        pluggables[i] = PipeManager.createPipePluggable(pluggableData.getString("pluggableName"), pluggableData);
       }
     }
 
     public void rotateLeft() {
-      PipePluggable[] newPluggables = new PipePluggable[Direction.values().length];
+      PipePluggable<?>[] newPluggables = new PipePluggable[Direction.values().length];
       for (Direction dir : Direction.values()) {
         Direction newDir = dir;
         if (dir.getAxis() != Direction.Axis.Y) {

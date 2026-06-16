@@ -49,7 +49,7 @@ public class RobotStationItem extends BuildCraftItem implements IPipePluggableIt
   }
 
   @Override
-  public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+  public RobotStationPluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
     return new RobotStationPluggable();
   }
 }

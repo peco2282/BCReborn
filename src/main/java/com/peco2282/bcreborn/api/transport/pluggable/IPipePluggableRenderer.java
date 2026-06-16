@@ -32,5 +32,5 @@ public interface IPipePluggableRenderer {
    * @param packedLight   The light level.
    * @param packedOverlay The overlay level.
    */
-  void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
+  void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
 }

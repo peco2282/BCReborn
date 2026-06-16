@@ -24,7 +24,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Base class for all pipe pluggables (e.g., facades, gates, etc.).
  * Implementations must have a public no-args constructor for synchronization and serialization.
  */
-public abstract class PipePluggable implements INBTStoreable, ISerializable {
+public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTStoreable, ISerializable {
+  protected PluggableType<T> type;
+
+  public PipePluggable(PluggableType<T> type) {
+    this.type = type;
+  }
+
+  public final PluggableType<T> getType() {
+    return type;
+  }
 
   /**
    * Gets the items that should be dropped when this pluggable is removed.
@@ -130,7 +139,7 @@ public abstract class PipePluggable implements INBTStoreable, ISerializable {
    * @param old The old pluggable.
    * @return True if a render update is needed.
    */
-  public boolean requiresRenderUpdate(PipePluggable old) {
+  public boolean requiresRenderUpdate(PipePluggable<?> old) {
     return true;
   }
 }

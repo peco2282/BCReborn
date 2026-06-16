@@ -43,7 +43,7 @@ import org.joml.Matrix4f;
 
 import java.util.List;
 
-public class RobotStationPluggable extends PipePluggable implements IPipePluggableItem, IDebuggable,
+public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> implements IPipePluggableItem, IDebuggable,
     IDockingStationProvider {
 
   @OnlyIn(Dist.CLIENT)
@@ -176,6 +176,7 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
   private boolean isValid = false;
 
   public RobotStationPluggable() {
+    super(BCRebornTransport.ROBOT_STATION);
   }
 
   @Override
@@ -192,7 +193,7 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
   }
 
   @Override
-  public DockingStation getStation() {
+  public DockingStation<?> getStation() {
     return station;
   }
 
@@ -301,7 +302,7 @@ public class RobotStationPluggable extends PipePluggable implements IPipePluggab
   }
 
   @Override
-  public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+  public RobotStationPluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
     return new RobotStationPluggable();
   }
 
