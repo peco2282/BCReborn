@@ -19,8 +19,7 @@ import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -166,20 +165,17 @@ public class ItemTransportModule {
   // ---- NBT ----
 
   public void save(CompoundTag tag) {
-    ListTag travelingTag = new ListTag();
-    for (TravelingItem item : travelingItems) {
-      travelingTag.add(item.save());
-    }
-    tag.put("TravelingItems", travelingTag);
+    TravelingItem.CODEC.listOf().encodeStart(NbtOps.INSTANCE, travelingItems)
+        .resultOrPartial(System.err::println)
+        .ifPresent(t -> tag.put("TravelingItems", t));
   }
 
   public void load(CompoundTag tag) {
     if (tag.contains("TravelingItems")) {
       travelingItems.clear();
-      ListTag list = tag.getList("TravelingItems", Tag.TAG_COMPOUND);
-      for (int i = 0; i < list.size(); i++) {
-        travelingItems.add(TravelingItem.load(list.getCompound(i)));
-      }
+      TravelingItem.CODEC.listOf().parse(NbtOps.INSTANCE, tag.get("TravelingItems"))
+          .resultOrPartial(System.err::println)
+          .ifPresent(travelingItems::addAll);
     }
   }
 }
