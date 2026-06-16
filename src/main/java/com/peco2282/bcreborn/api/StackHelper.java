@@ -36,7 +36,7 @@ public class StackHelper {
    * @return True if stacks can be merged.
    */
   public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-    if (stack1 == null || stack2 == null) {
+    if (stack1.isEmpty() || stack2.isEmpty()) {
       return false;
     }
     if (!ItemStack.isSameItem(stack1, stack2)) {
@@ -54,7 +54,7 @@ public class StackHelper {
    * @return True if they can be merged.
    */
   public static boolean canStacksOrListsMerge(ItemStack stack1, ItemStack stack2) {
-    if (stack1 == null || stack2 == null) {
+    if (stack1.isEmpty() || stack2.isEmpty()) {
       return false;
     }
 
@@ -100,20 +100,10 @@ public class StackHelper {
    *
    * @param base          The stack to compare to.
    * @param comparison    The stack to compare.
-   * @param oreDictionary Whether to take the Forge OreDictionary into account (currently not implemented).
    * @return True if they are considered equivalent.
    */
-  public static boolean isCraftingEquivalent(ItemStack base, ItemStack comparison, boolean oreDictionary) {
+  public static boolean isCraftingEquivalent(ItemStack base, ItemStack comparison) {
     return isMatchingItem(base, comparison, true, false);
-  }
-
-  /**
-   * @param oreIDs     Ore IDs to check.
-   * @param comparison The stack to compare.
-   * @return False (currently not implemented).
-   */
-  public static boolean isCraftingEquivalent(int[] oreIDs, ItemStack comparison) {
-    return false;
   }
 
   /**
@@ -177,21 +167,5 @@ public class StackHelper {
     }
 
     return true;
-  }
-
-  /**
-   * @param stack The stack to check.
-   * @return False (currently not implemented).
-   */
-  public static boolean isWildcard(ItemStack stack) {
-    return false;
-  }
-
-  /**
-   * @param damage The damage value.
-   * @return True if the damage is -1.
-   */
-  public static boolean isWildcard(int damage) {
-    return damage == -1;
   }
 }

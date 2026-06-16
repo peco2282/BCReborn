@@ -26,7 +26,7 @@ public record CraftingFilter(ItemStack... stacks) implements IStackFilter {
       return true;
     }
     for (ItemStack s : stacks) {
-      if (StackHelper.isCraftingEquivalent(s, stack, true)) {
+      if (StackHelper.isCraftingEquivalent(s, stack)) {
         return true;
       }
     }
