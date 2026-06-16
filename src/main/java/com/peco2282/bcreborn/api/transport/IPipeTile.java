@@ -98,7 +98,7 @@ public interface IPipeTile extends IInjectable {
    * @param direction The direction.
    * @return The {@link PipePluggable}, or null if none.
    */
-  PipePluggable getPipePluggable(Direction direction);
+  PipePluggable<?> getPipePluggable(Direction direction);
 
   /**
    * Sets the pluggable on the specified side.
@@ -106,7 +106,7 @@ public interface IPipeTile extends IInjectable {
    * @param direction The direction.
    * @param pluggable The pluggable to set, or null to remove.
    */
-  void setPipePluggable(Direction direction, PipePluggable pluggable);
+  void setPipePluggable(Direction direction, PipePluggable<?> pluggable);
 
   /**
    * Checks if there is a pluggable on the specified side.

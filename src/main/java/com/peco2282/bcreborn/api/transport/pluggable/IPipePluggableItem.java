@@ -28,5 +28,5 @@ public interface IPipePluggableItem {
    * @param stack The item stack.
    * @return A new {@link PipePluggable}.
    */
-  PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack);
+  PipePluggable<?> createPipePluggable(IPipe pipe, Direction side, ItemStack stack);
 }

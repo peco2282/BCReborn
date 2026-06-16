@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.api.facades.FacadeAPI;
+import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
@@ -41,6 +42,10 @@ public class BCRebornTransport implements BCReborn {
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
 
+  public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
+  public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
+  public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robotStation"), RobotStationPluggable::new);
+
   public BCRebornTransport(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
 
@@ -66,10 +71,6 @@ public class BCRebornTransport implements BCReborn {
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-    registerPipePluggable(FacadePluggable.class, "facade");
-    registerPipePluggable(GatePluggable.class, "gate");
-    registerPipePluggable(RobotStationPluggable.class, "robotStation");
 
     FacadeAPI.facadeItem(TransportItems.FACADE.get());
   }
