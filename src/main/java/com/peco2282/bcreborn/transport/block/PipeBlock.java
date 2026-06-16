@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.transport.block;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
-import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.util.IWrench;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
