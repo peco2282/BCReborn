@@ -13,10 +13,12 @@ package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
+import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
+import com.peco2282.bcreborn.robotics.registry.RobotRegistryProvider;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -69,6 +71,7 @@ public class BCRebornRobotics implements BCReborn {
     RoboticsStatements.init();
 
     BuilderAPI.schematic(SchematicRegistry.INSTANCE);
+    RobotManager.registryProvider = RobotRegistryProvider.INSTANCE;
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

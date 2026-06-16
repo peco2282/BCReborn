@@ -22,7 +22,11 @@ import java.util.HashMap;
 
 
 public class RobotRegistryProvider implements IRobotRegistryProvider {
+  public static final RobotRegistryProvider INSTANCE = new RobotRegistryProvider();
   private static final HashMap<ResourceKey<Level>, RobotRegistry> registries = new HashMap<>();
+
+  private RobotRegistryProvider() {
+  }
 
   @Override
   public synchronized RobotRegistry getRegistry(Level world) {
