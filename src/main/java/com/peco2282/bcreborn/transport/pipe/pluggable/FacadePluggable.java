@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.pluggable;
 
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -28,12 +29,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class FacadePluggable extends PipePluggable {
+public class FacadePluggable extends PipePluggable<FacadePluggable> {
 
   private BlockState state = Blocks.AIR.defaultBlockState();
   private boolean hollow = false;
 
   public FacadePluggable() {
+    super(BCRebornTransport.FACADE);
   }
 
   public FacadePluggable(BlockState state) {
@@ -41,6 +43,7 @@ public class FacadePluggable extends PipePluggable {
   }
 
   public FacadePluggable(BlockState state, boolean hollow) {
+    super(BCRebornTransport.FACADE);
     this.state = state;
     this.hollow = hollow;
   }

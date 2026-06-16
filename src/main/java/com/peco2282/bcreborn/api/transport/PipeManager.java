@@ -12,113 +12,86 @@
 package com.peco2282.bcreborn.api.transport;
 
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Global manager for pipe-related registries, such as stripes handlers and pipe pluggables.
  */
 public abstract class PipeManager {
+  private static final Map<ResourceLocation, PluggableType<? extends PipePluggable<?>>> PLUGGABLE_TYPE = new HashMap<>();
+  private static final List<StripeHandlerEntry> STRIPES_HANDLERS = new ArrayList<>();
 
-  private static final Map<String, Class<? extends PipePluggable>> pipePluggableNames = new HashMap<>();
-  private static final Map<Class<? extends PipePluggable>, String> pipePluggableByNames = new HashMap<>();
-  private static final Map<IStripesHandler, Integer> stripesHandlerPriorities = new HashMap<>();
-  /**
-   * List of registered {@link IStripesHandler}s, sorted by priority.
-   */
-  public static List<IStripesHandler> stripesHandlers = new ArrayList<>();
-  /**
-   * List of all registered {@link PipePluggable} classes.
-   */
-  public static ArrayList<Class<? extends PipePluggable>> pipePluggables = new ArrayList<>();
-
-  /**
-   * Checks if items can be extracted from the specified position.
-   *
-   * @param extractor The object doing the extraction.
-   * @param world     The world.
-   * @param pos       The position.
-   * @return True if extraction is allowed.
-   * @deprecated Use capability checks or specific transport module methods.
-   */
-  @Deprecated
-  public static boolean canExtractItems(Object extractor, Level world, BlockPos pos) {
-    return true;
+  public static void registerStripeHandler(StripeHandlerEntry entry) {
+    STRIPES_HANDLERS.add(entry);
+    STRIPES_HANDLERS.sort(Comparator.comparingInt(StripeHandlerEntry::priority).reversed());
   }
 
-  /**
-   * Checks if fluids can be extracted from the specified position.
-   *
-   * @param extractor The object doing the extraction.
-   * @param world     The world.
-   * @param pos       The position.
-   * @return True if extraction is allowed.
-   * @deprecated Use capability checks or specific transport module methods.
-   */
-  @Deprecated
-  public static boolean canExtractFluids(Object extractor, Level world, BlockPos pos) {
-    return true;
+  @Contract(pure = true)
+  @NotNull
+  @UnmodifiableView
+  public static List<StripeHandlerEntry> getStripeHandlers() {
+    return Collections.unmodifiableList(STRIPES_HANDLERS);
   }
 
-  /**
-   * Registers a stripes handler with default priority (0).
-   *
-   * @param handler The handler to register.
-   * @deprecated Use {@link #registerStripesHandler(IStripesHandler, int)} instead.
-   */
-  @Deprecated
-  public static void registerStripesHandler(IStripesHandler handler) {
-    registerStripesHandler(handler, 0);
+  @NotNull
+  @UnmodifiableView
+  public static List<IStripesHandler> getStripesHandlers() {
+    return getStripeHandlers().stream()
+            .map(StripeHandlerEntry::handler)
+            .toList();
   }
 
-  /**
-   * Registers a stripes handler with the specified priority.
-   * Higher priority handlers are checked first.
-   *
-   * @param handler  The handler to register.
-   * @param priority The priority value.
-   */
-  public static void registerStripesHandler(IStripesHandler handler, int priority) {
-    stripesHandlers.add(handler);
-    stripesHandlerPriorities.put(handler, priority);
-
-    stripesHandlers.sort((o1, o2) -> stripesHandlerPriorities.get(o2) - stripesHandlerPriorities.get(o1));
+  public static void registerStripesHandler(
+          IStripesHandler handler,
+          int priority
+  ) {
+    registerStripeHandler(StripeHandlerEntry.of(handler, priority));
   }
 
-  /**
-   * Registers a pipe pluggable class with a unique name.
-   *
-   * @param pluggable The pluggable class.
-   * @param name      The unique name for registration.
-   */
-  public static void registerPipePluggable(Class<? extends PipePluggable> pluggable, String name) {
-    pipePluggables.add(pluggable);
-    pipePluggableNames.put(name, pluggable);
-    pipePluggableByNames.put(pluggable, name);
+  @Contract("_ -> param1")
+  @NotNull
+  public static <T extends PipePluggable<T>> PluggableType<T> registerPipePluggable(PluggableType<T> type) {
+    if (PLUGGABLE_TYPE.containsKey(type.id())) {
+      throw new IllegalArgumentException("Pipe pluggable type with ID " + type.id() + " already registered");
+    };
+    PLUGGABLE_TYPE.put(type.id(), type);
+    return type;
   }
 
-  /**
-   * Gets a pluggable class by its registered name.
-   *
-   * @param pluggableName The registered name.
-   * @return The pluggable class, or null if not found.
-   */
-  public static Class<?> getPluggableByName(String pluggableName) {
-    return pipePluggableNames.get(pluggableName);
+  public static <T extends PipePluggable<T>> PluggableType<T> registerPipePluggable(ResourceLocation id, Supplier<T> factory) {
+    return registerPipePluggable(PluggableType.of(id, factory));
   }
 
-  /**
-   * Gets the registered name of a pluggable class.
-   *
-   * @param aClass The pluggable class.
-   * @return The registered name, or null if not found.
-   */
-  public static String getPluggableName(Class<? extends PipePluggable> aClass) {
-    return pipePluggableByNames.get(aClass);
+  public static PluggableType<?> getPipePluggable(ResourceLocation id) {
+    return PLUGGABLE_TYPE.get(id);
+  }
+
+  public static boolean hasPipePluggable(ResourceLocation id) {
+    return PLUGGABLE_TYPE.containsKey(id);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends PipePluggable<T>> T createPipePluggable(ResourceLocation id) {
+    var type = getPipePluggable(id);
+    if (type == null) {
+      throw new IllegalArgumentException("Pipe pluggable type with ID " + id + " not found");
+    }
+    return (T) type.create();
+  }
+  public static <T extends PipePluggable<T>> T createPipePluggable(String id, CompoundTag tag) {
+    return createPipePluggable(ResourceLocation.parse(id), tag);
+  }
+  public static <T extends PipePluggable<T>> T createPipePluggable(ResourceLocation id, CompoundTag tag) {
+    T pluggable = createPipePluggable(id);
+    pluggable.readFromNBT(tag);
+    return pluggable;
   }
 }
