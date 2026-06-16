@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.function.Function;
 
 public interface IGateExpansion {
-  String getUniqueIdentifier();
+  ResourceLocation getUniqueIdentifier();
 
   String getDisplayName();
 

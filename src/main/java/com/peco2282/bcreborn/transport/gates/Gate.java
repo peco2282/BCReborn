@@ -172,7 +172,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     ListTag exList = new ListTag();
     for (GateExpansionController con : expansions.values()) {
       CompoundTag conNBT = new CompoundTag();
-      conNBT.putString("type", con.getType().getUniqueIdentifier());
+      conNBT.putString("type", con.getType().getUniqueIdentifier().toString());
       CompoundTag conData = new CompoundTag();
       con.writeToNBT(conData);
       conNBT.put("data", conData);

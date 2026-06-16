@@ -30,8 +30,8 @@ public abstract class GateExpansionBuildcraft implements IGateExpansion {
   }
 
   @Override
-  public String getUniqueIdentifier() {
-    return "bcreborntransport:" + tag;
+  public ResourceLocation getUniqueIdentifier() {
+    return BCRebornTransport.location(tag);
   }
 
   @Override
