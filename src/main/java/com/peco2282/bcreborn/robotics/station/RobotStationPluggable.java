@@ -43,16 +43,171 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> implements IPipePluggableItem, IDebuggable,
-    IDockingStationProvider {
+  IDockingStationProvider {
+
+  private RobotStationState renderState = RobotStationState.Available;
+  private DockingStationPipe station;
+  private boolean isValid = false;
+
+  public RobotStationPluggable() {
+    super(BCRebornTransport.ROBOT_STATION);
+  }
+
+  @Override
+  public void writeToNBT(CompoundTag nbt) {
+  }
+
+  @Override
+  public void readFromNBT(CompoundTag nbt) {
+  }
+
+  @Override
+  public ItemStack[] getDropItems(IPipeTile pipe) {
+    return new ItemStack[]{new ItemStack(RoboticsItems.ROBOT_STATION.get())};
+  }
+
+  @Override
+  public DockingStation<?> getStation() {
+    return station;
+  }
+
+  @Override
+  public boolean isBlocking(IPipeTile pipe, Direction direction) {
+    return true;
+  }
+
+  @Override
+  public void invalidate() {
+    if (station != null
+      && station.getPipe() != null
+      && !station.world.isClientSide) {
+      if (RobotManager.registryProvider != null) {
+        RobotManager.registryProvider.getRegistry(station.world).removeStation(station);
+      }
+      isValid = false;
+    }
+  }
+
+  @Override
+  public void validate(IPipeTile pipe, Direction direction) {
+    if (!isValid && !pipe.getWorld().isClientSide) {
+      if (RobotManager.registryProvider != null) {
+        station = (DockingStationPipe)
+          RobotManager.registryProvider.getRegistry(pipe.getWorld()).getStation(
+            pipe.getPos(),
+            direction);
+
+        if (station == null) {
+          station = new DockingStationPipe(pipe, direction);
+          RobotManager.registryProvider.getRegistry(pipe.getWorld()).registerStation(station);
+        }
+      } else {
+        station = new DockingStationPipe(pipe, direction);
+      }
+
+      isValid = true;
+    }
+  }
+
+  @Override
+  public AABB getBoundingBox(Direction side) {
+    // Approximate bounding box matching the original shape
+    return switch (side) {
+      case DOWN -> new AABB(0.25, 0.749, 0.25, 0.75, 1.0, 0.75);
+      case UP -> new AABB(0.25, 0.0, 0.25, 0.75, 0.251, 0.75);
+      case NORTH -> new AABB(0.25, 0.25, 0.749, 0.75, 0.75, 1.0);
+      case SOUTH -> new AABB(0.25, 0.25, 0.0, 0.75, 0.75, 0.251);
+      case WEST -> new AABB(0.749, 0.25, 0.25, 1.0, 0.75, 0.75);
+      case EAST -> new AABB(0.0, 0.25, 0.25, 0.251, 0.75, 0.75);
+    };
+  }
+
+  @Override
+  public void update(IPipeTile pipe, Direction direction) {
+    if (pipe.getWorld().isClientSide) return;
+    RobotStationState oldState = renderState;
+    refreshRenderState();
+    if (oldState != renderState) {
+      pipe.scheduleRenderUpdate();
+    }
+  }
+
+  private void refreshRenderState() {
+    if (station == null) {
+      renderState = RobotStationState.None;
+      return;
+    }
+    this.renderState = station.isTaken()
+      ? (station.isMainStation() ? RobotStationState.Linked : RobotStationState.Reserved)
+      : RobotStationState.Available;
+  }
+
+  public RobotStationState getRenderState() {
+    if (renderState == null) {
+      renderState = RobotStationState.None;
+    }
+    return renderState;
+  }
+
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  public IPipePluggableRenderer getRenderer() {
+    return new RobotStationPluggableRenderer();
+  }
+
+  @Override
+  public void writeData(FriendlyByteBuf stream) {
+    refreshRenderState();
+    stream.writeByte(getRenderState().ordinal());
+  }
+
+  @Override
+  public boolean requiresRenderUpdate(PipePluggable<?> old) {
+    return getRenderState() != ((RobotStationPluggable) old).getRenderState();
+  }
+
+  @Override
+  public void readData(FriendlyByteBuf stream) {
+    try {
+      this.renderState = RobotStationState.values()[stream.readUnsignedByte()];
+    } catch (ArrayIndexOutOfBoundsException e) {
+      this.renderState = RobotStationState.None;
+    }
+  }
+
+  @Override
+  public RobotStationPluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+    return new RobotStationPluggable();
+  }
+
+  @Override
+  public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
+    if (station == null) {
+      info.add("RobotStationPluggable: No station found!");
+    } else {
+      refreshRenderState();
+      info.add("Docking Station (side " + side.name() + ", " + getRenderState().name() + ")");
+      if (station.robotTaking() != null && station.robotTaking() instanceof IDebuggable debuggable) {
+        debuggable.getDebugInfo(info, Direction.UP, debugger, player);
+      }
+    }
+  }
+
+  public enum RobotStationState {
+    None,
+    Available,
+    Reserved,
+    Linked
+  }
 
   @OnlyIn(Dist.CLIENT)
   public static class RobotStationPluggableRenderer implements IPipePluggableRenderer {
     private static final ResourceLocation TEXTURE_NONE =
-        BCRebornTransport.location("textures/block/pipes/pipe_robot_station.png");
+      BCRebornTransport.location("textures/block/pipes/pipe_robot_station.png");
     private static final ResourceLocation TEXTURE_RESERVED =
-        BCRebornTransport.location("textures/block/pipes/pipe_robot_station_reserved.png");
+      BCRebornTransport.location("textures/block/pipes/pipe_robot_station_reserved.png");
     private static final ResourceLocation TEXTURE_LINKED =
-        BCRebornTransport.location("textures/block/pipes/pipe_robot_station_linked.png");
+      BCRebornTransport.location("textures/block/pipes/pipe_robot_station_linked.png");
 
     private static final float Z_FIGHT = 1.0f / 4096.0f;
 
@@ -118,35 +273,35 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
       Matrix3f n = poseStack.last().normal();
 
       // Down (-Y)
-      vertex(m, n, consumer, minX, minY, minZ, 0, 0,  0, -1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, minY, minZ, 1, 0,  0, -1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, minY, maxZ, 1, 1,  0, -1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, minY, maxZ, 0, 1,  0, -1,  0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, minZ, 0, 0, 0, -1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, minZ, 1, 0, 0, -1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, maxZ, 1, 1, 0, -1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, maxZ, 0, 1, 0, -1, 0, packedLight, packedOverlay);
       // Up (+Y)
-      vertex(m, n, consumer, minX, maxY, maxZ, 0, 0,  0,  1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, maxZ, 1, 0,  0,  1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, minZ, 1, 1,  0,  1,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, maxY, minZ, 0, 1,  0,  1,  0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, maxZ, 0, 0, 0, 1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, maxZ, 1, 0, 0, 1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, minZ, 1, 1, 0, 1, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, minZ, 0, 1, 0, 1, 0, packedLight, packedOverlay);
       // North (-Z)
-      vertex(m, n, consumer, minX, minY, minZ, 0, 0,  0,  0, -1, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, maxY, minZ, 0, 1,  0,  0, -1, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, minZ, 1, 1,  0,  0, -1, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, minY, minZ, 1, 0,  0,  0, -1, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, minZ, 0, 0, 0, 0, -1, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, minZ, 0, 1, 0, 0, -1, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, minZ, 1, 1, 0, 0, -1, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, minZ, 1, 0, 0, 0, -1, packedLight, packedOverlay);
       // South (+Z)
-      vertex(m, n, consumer, maxX, minY, maxZ, 0, 0,  0,  0,  1, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, maxZ, 0, 1,  0,  0,  1, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, maxY, maxZ, 1, 1,  0,  0,  1, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, minY, maxZ, 1, 0,  0,  0,  1, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, maxZ, 0, 0, 0, 0, 1, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, maxZ, 0, 1, 0, 0, 1, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, maxZ, 1, 1, 0, 0, 1, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, maxZ, 1, 0, 0, 0, 1, packedLight, packedOverlay);
       // West (-X)
-      vertex(m, n, consumer, minX, minY, maxZ, 0, 0, -1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, maxY, maxZ, 0, 1, -1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, maxY, minZ, 1, 1, -1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, minX, minY, minZ, 1, 0, -1,  0,  0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, maxZ, 0, 0, -1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, maxZ, 0, 1, -1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, maxY, minZ, 1, 1, -1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, minX, minY, minZ, 1, 0, -1, 0, 0, packedLight, packedOverlay);
       // East (+X)
-      vertex(m, n, consumer, maxX, minY, minZ, 0, 0,  1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, minZ, 0, 1,  1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, maxY, maxZ, 1, 1,  1,  0,  0, packedLight, packedOverlay);
-      vertex(m, n, consumer, maxX, minY, maxZ, 1, 0,  1,  0,  0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, minZ, 0, 0, 1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, minZ, 0, 1, 1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, maxY, maxZ, 1, 1, 1, 0, 0, packedLight, packedOverlay);
+      vertex(m, n, consumer, maxX, minY, maxZ, 1, 0, 1, 0, 0, packedLight, packedOverlay);
     }
 
     private void vertex(Matrix4f m, Matrix3f n, VertexConsumer consumer,
@@ -154,167 +309,12 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
                         float nx, float ny, float nz,
                         int packedLight, int packedOverlay) {
       consumer.vertex(m, x, y, z)
-          .color(255, 255, 255, 255)
-          .uv(u, v)
-          .overlayCoords(OverlayTexture.NO_OVERLAY)
-          .uv2(packedLight)
-          .normal(n, nx, ny, nz)
-          .endVertex();
-    }
-  }
-
-  public enum RobotStationState {
-    None,
-    Available,
-    Reserved,
-    Linked
-  }
-
-  private RobotStationState renderState = RobotStationState.Available;
-  private DockingStationPipe station;
-  private boolean isValid = false;
-
-  public RobotStationPluggable() {
-    super(BCRebornTransport.ROBOT_STATION);
-  }
-
-  @Override
-  public void writeToNBT(CompoundTag nbt) {
-  }
-
-  @Override
-  public void readFromNBT(CompoundTag nbt) {
-  }
-
-  @Override
-  public ItemStack[] getDropItems(IPipeTile pipe) {
-    return new ItemStack[]{new ItemStack(RoboticsItems.ROBOT_STATION.get())};
-  }
-
-  @Override
-  public DockingStation<?> getStation() {
-    return station;
-  }
-
-  @Override
-  public boolean isBlocking(IPipeTile pipe, Direction direction) {
-    return true;
-  }
-
-  @Override
-  public void invalidate() {
-    if (station != null
-        && station.getPipe() != null
-        && !station.world.isClientSide) {
-      if (RobotManager.registryProvider != null) {
-        RobotManager.registryProvider.getRegistry(station.world).removeStation(station);
-      }
-      isValid = false;
-    }
-  }
-
-  @Override
-  public void validate(IPipeTile pipe, Direction direction) {
-    if (!isValid && !pipe.getWorld().isClientSide) {
-      if (RobotManager.registryProvider != null) {
-        station = (DockingStationPipe)
-            RobotManager.registryProvider.getRegistry(pipe.getWorld()).getStation(
-                pipe.getPos(),
-                direction);
-
-        if (station == null) {
-          station = new DockingStationPipe(pipe, direction);
-          RobotManager.registryProvider.getRegistry(pipe.getWorld()).registerStation(station);
-        }
-      } else {
-        station = new DockingStationPipe(pipe, direction);
-      }
-
-      isValid = true;
-    }
-  }
-
-  @Override
-  public AABB getBoundingBox(Direction side) {
-    // Approximate bounding box matching the original shape
-    return switch (side) {
-      case DOWN -> new AABB(0.25, 0.749, 0.25, 0.75, 1.0, 0.75);
-      case UP -> new AABB(0.25, 0.0, 0.25, 0.75, 0.251, 0.75);
-      case NORTH -> new AABB(0.25, 0.25, 0.749, 0.75, 0.75, 1.0);
-      case SOUTH -> new AABB(0.25, 0.25, 0.0, 0.75, 0.75, 0.251);
-      case WEST -> new AABB(0.749, 0.25, 0.25, 1.0, 0.75, 0.75);
-      case EAST -> new AABB(0.0, 0.25, 0.25, 0.251, 0.75, 0.75);
-    };
-  }
-
-  @Override
-  public void update(IPipeTile pipe, Direction direction) {
-    if (pipe.getWorld().isClientSide) return;
-    RobotStationState oldState = renderState;
-    refreshRenderState();
-    if (oldState != renderState) {
-      pipe.scheduleRenderUpdate();
-    }
-  }
-
-  private void refreshRenderState() {
-    if (station == null) {
-      renderState = RobotStationState.None;
-      return;
-    }
-    this.renderState = station.isTaken()
-        ? (station.isMainStation() ? RobotStationState.Linked : RobotStationState.Reserved)
-        : RobotStationState.Available;
-  }
-
-  public RobotStationState getRenderState() {
-    if (renderState == null) {
-      renderState = RobotStationState.None;
-    }
-    return renderState;
-  }
-
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public IPipePluggableRenderer getRenderer() {
-    return new RobotStationPluggableRenderer();
-  }
-
-  @Override
-  public void writeData(FriendlyByteBuf stream) {
-    refreshRenderState();
-    stream.writeByte(getRenderState().ordinal());
-  }
-
-  @Override
-  public boolean requiresRenderUpdate(PipePluggable<?> old) {
-    return getRenderState() != ((RobotStationPluggable) old).getRenderState();
-  }
-
-  @Override
-  public void readData(FriendlyByteBuf stream) {
-    try {
-      this.renderState = RobotStationState.values()[stream.readUnsignedByte()];
-    } catch (ArrayIndexOutOfBoundsException e) {
-      this.renderState = RobotStationState.None;
-    }
-  }
-
-  @Override
-  public RobotStationPluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
-    return new RobotStationPluggable();
-  }
-
-  @Override
-  public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
-    if (station == null) {
-      info.add("RobotStationPluggable: No station found!");
-    } else {
-      refreshRenderState();
-      info.add("Docking Station (side " + side.name() + ", " + getRenderState().name() + ")");
-      if (station.robotTaking() != null && station.robotTaking() instanceof IDebuggable debuggable) {
-        debuggable.getDebugInfo(info, Direction.UP, debugger, player);
-      }
+        .color(255, 255, 255, 255)
+        .uv(u, v)
+        .overlayCoords(OverlayTexture.NO_OVERLAY)
+        .uv2(packedLight)
+        .normal(n, nx, ny, nz)
+        .endVertex();
     }
   }
 }

@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 public abstract class ResourceId<T extends ResourceId<T>> {
 
   protected ResourceIdType<T> type;
+
   protected ResourceId(ResourceIdType<T> type) {
     this.type = type;
   }

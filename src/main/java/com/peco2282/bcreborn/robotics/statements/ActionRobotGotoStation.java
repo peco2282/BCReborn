@@ -83,7 +83,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
   }
 
   private DockingStation<?> getStation(StatementParameterItemStack stackParam,
-                                    IRobotRegistry registry) {
+                                       IRobotRegistry registry) {
     ItemStack item = stackParam.getItemStack();
 
     if (item != null && !item.isEmpty() && item.getItem() instanceof IMapLocation map) {

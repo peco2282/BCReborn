@@ -17,9 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public record ResourceIdType<T extends ResourceId<T>>(ResourceLocation id, Supplier<@NotNull T> factory) {
-  public static final ResourceIdType<ResourceIdBlock> BLOCK = of(ResourceLocation.fromNamespaceAndPath("bcreborncore", "resource_id_block"), ResourceIdBlock::new);
-  public static final ResourceIdType<ResourceIdRequest> REQUEST = of(ResourceLocation.fromNamespaceAndPath("bcreborncore", "resource_id_request"), ResourceIdRequest::new);
-
   private static <T extends ResourceId<T>> ResourceIdType<T> of(ResourceLocation id, Supplier<T> factory) {
     return RobotManager.registerResourceIdType(new ResourceIdType<>(id, factory));
   }
@@ -28,4 +25,7 @@ public record ResourceIdType<T extends ResourceId<T>>(ResourceLocation id, Suppl
   public T create() {
     return factory.get();
   }
+
+  public static final ResourceIdType<ResourceIdBlock> BLOCK = of(ResourceLocation.fromNamespaceAndPath("bcreborncore", "resource_id_block"), ResourceIdBlock::new);
+  public static final ResourceIdType<ResourceIdRequest> REQUEST = of(ResourceLocation.fromNamespaceAndPath("bcreborncore", "resource_id_request"), ResourceIdRequest::new);
 }

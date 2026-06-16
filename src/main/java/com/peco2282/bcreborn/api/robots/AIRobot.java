@@ -21,15 +21,14 @@ import net.minecraft.world.item.ItemStack;
  * allowing a parent AI to delegate tasks to a sub-AI (delegate).
  */
 public abstract class AIRobot<T extends AIRobot<T>> {
+  protected final AIRobotType<T> type;
   /**
    * The robot entity this AI is controlling.
    */
   public RobotEntityBase robot;
-
   private AIRobot<?> delegateAI;
   private AIRobot<?> parentAI;
   private boolean success;
-  protected final AIRobotType<T> type;
 
   /**
    * Constructs a new AIRobot instance for the given robot.

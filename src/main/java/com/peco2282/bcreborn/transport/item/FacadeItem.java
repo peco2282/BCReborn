@@ -55,16 +55,6 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     super(new Properties());
   }
 
-  @Override
-  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-    consumer.accept(new IClientItemExtensions() {
-      @Override
-      public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        return FacadeItemRenderer.INSTANCE;
-      }
-    });
-  }
-
   public static FacadeState[] getStates(ItemStack stack) {
     if (stack.getItem() instanceof FacadeItem facade) {
       return facade.getFacadeStates(stack);
@@ -99,10 +89,20 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     if (block.asItem() instanceof IFacadeItem) return false;
     if (block == Blocks.AIR) return false;
 
-    
+
     // 不透明なブロックか、ガラスのような一部の透過ブロックを許可
     // 簡易的な判定として、solid かつ impermeable (ガラス等) をチェック
     return state.isSolid() || state.is(BlockTags.IMPERMEABLE);
+  }
+
+  @Override
+  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    consumer.accept(new IClientItemExtensions() {
+      @Override
+      public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+        return FacadeItemRenderer.INSTANCE;
+      }
+    });
   }
 
   @Override
