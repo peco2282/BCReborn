@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.transport.gates;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.gates.GateExpansions;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.transport.IPipe;
@@ -33,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Set;
 
-public class GatePluggable extends PipePluggable {
+public class GatePluggable extends PipePluggable<GatePluggable> {
 
   public GateDefinition.GateMaterial material;
   public GateDefinition.GateLogic logic;
@@ -43,9 +44,11 @@ public class GatePluggable extends PipePluggable {
   private float pulseStage;
 
   public GatePluggable() {
+    super(BCRebornTransport.GATE);
   }
 
   public GatePluggable(Gate gate) {
+    super(BCRebornTransport.GATE);
     instantiatedGate = gate;
     initFromGate(gate);
   }
@@ -65,7 +68,7 @@ public class GatePluggable extends PipePluggable {
 
     ListTag expansionsList = new ListTag();
     for (IGateExpansion expansion : expansions) {
-      expansionsList.add(StringTag.valueOf(expansion.getUniqueIdentifier()));
+      expansionsList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
     }
     nbt.put(ItemGate.NBT_TAG_EX, expansionsList);
   }
@@ -94,7 +97,7 @@ public class GatePluggable extends PipePluggable {
     buf.writeShort(expansionsSize);
 
     for (IGateExpansion expansion : expansions) {
-      buf.writeShort(GateExpansions.getExpansionID(expansion));
+      buf.writeResourceLocation(expansion.getUniqueIdentifier());
     }
   }
 
@@ -109,12 +112,12 @@ public class GatePluggable extends PipePluggable {
     expansions = new IGateExpansion[expansionsSize];
 
     for (int i = 0; i < expansionsSize; i++) {
-      expansions[i] = GateExpansions.getExpansionByID(buf.readUnsignedShort());
+      expansions[i] = GateExpansions.getExpansion(buf.readResourceLocation());
     }
   }
 
   @Override
-  public boolean requiresRenderUpdate(PipePluggable o) {
+  public boolean requiresRenderUpdate(PipePluggable<?> o) {
     // rendered by TESR
     return false;
   }
@@ -224,12 +227,12 @@ public class GatePluggable extends PipePluggable {
     }
 
     @Override
-    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
       // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
     }
 
     @Override
-    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
       // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
     }
   }
