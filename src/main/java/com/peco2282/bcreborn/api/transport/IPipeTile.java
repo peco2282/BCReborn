@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.transport;
 
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
@@ -145,11 +146,4 @@ public interface IPipeTile extends IInjectable {
    */
   @Deprecated
   int injectItem(ItemStack stack, boolean doAdd, Direction from);
-
-  /**
-   * Represents the type of a pipe.
-   */
-  enum PipeType {
-    ITEM, FLUID, POWER, STRUCTURE
-  }
 }

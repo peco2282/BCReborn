@@ -46,6 +46,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -73,7 +74,7 @@ import java.util.*;
  * </p>
  * Transport logic itself is delegated to transport modules.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, Container {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeTile, Container {
   public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
@@ -695,6 +696,61 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return pipeTileApi.hasPipePluggable(direction);
   }
 
+  @Override
+  public boolean hasBlockingPluggable(Direction direction) {
+    return pipeTileApi.hasBlockingPluggable(direction);
+  }
+
+  @Override
+  public void scheduleNeighborChange() {
+    pipeTileApi.scheduleNeighborChange();
+  }
+
+  @Override
+  public void scheduleRenderUpdate() {
+    pipeTileApi.scheduleRenderUpdate();
+  }
+
+  @Override
+  public int injectItem(ItemStack stack, boolean doAdd, Direction from) {
+    return pipeTileApi.injectItem(stack, doAdd, from);
+  }
+
+  @Override
+  public PipeType getPipeType() {
+    return pipeTileApi.getPipeType();
+  }
+
+  @Override
+  public Level getWorld() {
+    return pipeTileApi.getWorld();
+  }
+
+  @Override
+  public BlockPos getPos() {
+    return pipeTileApi.getPos();
+  }
+
+  @Override
+  public boolean isPipeConnected(Direction with) {
+    return pipeTileApi.isPipeConnected(with);
+  }
+
+  @Override
+  public Block getNeighborBlock(Direction dir) {
+    return pipeTileApi.getNeighborBlock(dir);
+  }
+
+  @Override
+  public BlockEntity getNeighborTile(Direction dir) {
+    return pipeTileApi.getNeighborTile(dir);
+  }
+
+  @Override
+  public IPipe getNeighborPipe(Direction dir) {
+    return pipeTileApi.getNeighborPipe(dir);
+  }
+
   public IPipe getPipe() {
     return pipeApi;
   }
@@ -705,7 +761,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return switch (transportType) {
         case ITEM -> PipeType.ITEM;
         case FLUID -> PipeType.FLUID;
-        case ENERGY -> PipeType.POWER;
+        case ENERGY -> PipeType.ENERGY;
       };
     }
 
@@ -838,6 +894,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
     level.sendBlockUpdated(pos, state, state, 3);
     return true;
+  }
+
+  @Override
+  public boolean canInjectItems(Direction from) {
+    return false;
+  }
+
+  @Override
+  public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
+    return 0;
   }
 
   public enum ExtractFilterMode {

@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.statements.IActionProvider;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.robotics.util.RobotUtils;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -51,12 +52,12 @@ public class RobotsActionProvider implements IActionProvider {
     result.add(RoboticsStatements.actionStationForbidRobot);
     result.add(RoboticsStatements.actionStationForceRobot);
 
-    if (pipeTile.getPipeType() == IPipeTile.PipeType.ITEM) {
+    if (pipeTile.getPipeType() == PipeType.ITEM) {
       result.add(RoboticsStatements.actionStationRequestItems);
       result.add(RoboticsStatements.actionStationAcceptItems);
     }
 
-    if (pipeTile.getPipeType() == IPipeTile.PipeType.FLUID) {
+    if (pipeTile.getPipeType() == PipeType.FLUID) {
       result.add(RoboticsStatements.actionStationAcceptFluids);
     }
 

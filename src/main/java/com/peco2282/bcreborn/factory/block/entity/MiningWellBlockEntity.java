@@ -27,6 +27,7 @@ import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.core.ConfigCore;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -153,9 +154,9 @@ public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHas
   }
 
   @Override
-  public IPipeConnection.ConnectOverride overridePipeConnection(IPipeTile.PipeType type,
+  public IPipeConnection.ConnectOverride overridePipeConnection(PipeType type,
                                                                 Direction with) {
-    return type == IPipeTile.PipeType.ITEM ? IPipeConnection.ConnectOverride.CONNECT : IPipeConnection.ConnectOverride.DEFAULT;
+    return type == PipeType.ITEM ? IPipeConnection.ConnectOverride.CONNECT : IPipeConnection.ConnectOverride.DEFAULT;
   }
 
   @Override

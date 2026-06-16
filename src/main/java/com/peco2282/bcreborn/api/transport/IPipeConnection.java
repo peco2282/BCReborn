@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.api.transport;
 
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
 
 /**
@@ -24,7 +25,7 @@ public interface IPipeConnection {
    * @param with The direction of the connection.
    * @return A {@link ConnectOverride} value.
    */
-  ConnectOverride overridePipeConnection(IPipeTile.PipeType type, Direction with);
+  ConnectOverride overridePipeConnection(PipeType type, Direction with);
 
   /**
    * Represents connection override options.
