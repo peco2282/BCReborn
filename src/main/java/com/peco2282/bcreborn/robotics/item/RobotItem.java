@@ -122,12 +122,12 @@ public class RobotItem extends BuildCraftItem {
     }
 
     Direction side = context.getClickedFace();
-    PipePluggable pluggable = pipe.sideProperties.pluggables[side.ordinal()];
+    PipePluggable<?> pluggable = pipe.sideProperties.pluggables[side.ordinal()];
     if (!(pluggable instanceof RobotStationPluggable stationPluggable)) {
       return InteractionResult.PASS;
     }
 
-    DockingStation station = stationPluggable.getStation();
+    DockingStation<?> station = stationPluggable.getStation();
     if (station == null || station.isTaken()) {
       return InteractionResult.PASS;
     }
