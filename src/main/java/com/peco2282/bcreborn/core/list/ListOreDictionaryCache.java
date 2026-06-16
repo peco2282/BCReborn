@@ -90,17 +90,4 @@ public final class ListOreDictionaryCache {
       ll.add(id);
     }
   }
-
-//	public void registerName(String name) {
-//		if (registeredNames.contains(name)) {
-//			return;
-//		}
-//
-//		int oreID = OreDictionary.getOreID(name);
-//
-//		addToNamingCache(getType(name), oreID);
-//		addToNamingCache(getMaterial(name), oreID);
-//
-//		registeredNames.add(name);
-//	}
 }
