@@ -152,13 +152,13 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   @Override
   @OnlyIn(Dist.CLIENT)
   public IPipePluggableRenderer getRenderer() {
-    return new RobotStationPluggableRenderer();
+    return RobotStationPluggableRenderer.INSTANCE;
   }
 
   @Override
   public void writeData(FriendlyByteBuf stream) {
     refreshRenderState();
-    stream.writeByte(getRenderState().ordinal());
+    stream.writeEnum(getRenderState());
   }
 
   @Override
@@ -169,7 +169,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   @Override
   public void readData(FriendlyByteBuf stream) {
     try {
-      this.renderState = RobotStationState.values()[stream.readUnsignedByte()];
+      this.renderState = stream.readEnum(RobotStationState.class);
     } catch (ArrayIndexOutOfBoundsException e) {
       this.renderState = RobotStationState.None;
     }
@@ -202,6 +202,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
 
   @OnlyIn(Dist.CLIENT)
   public static class RobotStationPluggableRenderer implements IPipePluggableRenderer {
+    private static final RobotStationPluggableRenderer INSTANCE = new RobotStationPluggableRenderer();
     private static final ResourceLocation TEXTURE_NONE =
       BCRebornTransport.location("textures/block/pipes/pipe_robot_station.png");
     private static final ResourceLocation TEXTURE_RESERVED =
