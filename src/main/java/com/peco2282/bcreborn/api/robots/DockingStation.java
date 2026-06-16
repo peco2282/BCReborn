@@ -24,23 +24,19 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * Represents a location where a robot can dock and interact with the world.
  */
 public abstract class DockingStation<T extends DockingStation<T>> {
+  protected final DockingStationType<T> type;
   /**
    * The side of the block this docking station is on.
    */
   public Direction side;
-
   /**
    * The world this docking station is in.
    */
   public Level world;
-
   private long robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
   private RobotEntityBase robotTaking;
-
   private boolean linkIsMain = false;
-
   private BlockIndex index;
-  protected final DockingStationType<T> type;
 
   /**
    * Constructs a new DockingStation with the specified index and side.

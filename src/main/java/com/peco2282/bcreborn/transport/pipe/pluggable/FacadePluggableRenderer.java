@@ -29,11 +29,10 @@ import net.minecraftforge.client.model.data.ModelData;
 public class FacadePluggableRenderer implements IPipePluggableRenderer {
 
   public static final FacadePluggableRenderer INSTANCE = new FacadePluggableRenderer();
+  private static final float Z_FIGHT_OFFSET = 1.0f / 4096.0f;
 
   private FacadePluggableRenderer() {
   }
-
-  private static final float Z_FIGHT_OFFSET = 1.0f / 4096.0f;
 
   @Override
   public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {

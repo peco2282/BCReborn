@@ -98,8 +98,8 @@ public class StackHelper {
   /**
    * Determines whether the given ItemStack should be considered equivalent for crafting purposes.
    *
-   * @param base          The stack to compare to.
-   * @param comparison    The stack to compare.
+   * @param base       The stack to compare to.
+   * @param comparison The stack to compare.
    * @return True if they are considered equivalent.
    */
   public static boolean isCraftingEquivalent(ItemStack base, ItemStack comparison) {

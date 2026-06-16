@@ -45,13 +45,13 @@ public abstract class PipeManager {
   @UnmodifiableView
   public static List<IStripesHandler> getStripesHandlers() {
     return getStripeHandlers().stream()
-            .map(StripeHandlerEntry::handler)
-            .toList();
+      .map(StripeHandlerEntry::handler)
+      .toList();
   }
 
   public static void registerStripesHandler(
-          IStripesHandler handler,
-          int priority
+    IStripesHandler handler,
+    int priority
   ) {
     registerStripeHandler(StripeHandlerEntry.of(handler, priority));
   }
@@ -61,7 +61,7 @@ public abstract class PipeManager {
   public static <T extends PipePluggable<T>> PluggableType<T> registerPipePluggable(PluggableType<T> type) {
     if (PLUGGABLE_TYPE.containsKey(type.id())) {
       throw new IllegalArgumentException("Pipe pluggable type with ID " + type.id() + " already registered");
-    };
+    }
     PLUGGABLE_TYPE.put(type.id(), type);
     return type;
   }
@@ -86,9 +86,11 @@ public abstract class PipeManager {
     }
     return (T) type.create();
   }
+
   public static <T extends PipePluggable<T>> T createPipePluggable(String id, CompoundTag tag) {
     return createPipePluggable(ResourceLocation.parse(id), tag);
   }
+
   public static <T extends PipePluggable<T>> T createPipePluggable(ResourceLocation id, CompoundTag tag) {
     T pluggable = createPipePluggable(id);
     pluggable.readFromNBT(tag);

@@ -24,7 +24,7 @@ import net.minecraft.world.item.SwordItem;
 public class BoardRobotButcher extends RedstoneBoardRobot<BoardRobotButcher> {
 
   public BoardRobotButcher(RobotEntityBase iRobot) {
-    super(RoboticsAIType.BUTCHER,iRobot);
+    super(RoboticsAIType.BUTCHER, iRobot);
   }
 
   @Override

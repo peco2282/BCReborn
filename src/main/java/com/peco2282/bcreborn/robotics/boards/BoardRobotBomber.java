@@ -26,7 +26,7 @@ public class BoardRobotBomber extends RedstoneBoardRobot<BoardRobotBomber> {
   private final int flyingHeight = 20;
 
   public BoardRobotBomber(RobotEntityBase iRobot) {
-    super(RoboticsAIType.BOMBER,iRobot);
+    super(RoboticsAIType.BOMBER, iRobot);
   }
 
   @Override

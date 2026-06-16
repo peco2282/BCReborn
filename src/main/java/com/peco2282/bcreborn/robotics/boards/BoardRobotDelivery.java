@@ -28,10 +28,10 @@ public class BoardRobotDelivery extends RedstoneBoardRobot<BoardRobotDelivery> {
 
   private final ArrayList<ItemStack> deliveryBlacklist = new ArrayList<>();
 
-  private StackRequest currentRequest = null; // TODO: Implement StackRequest
+  private final StackRequest currentRequest = null; // TODO: Implement StackRequest
 
   public BoardRobotDelivery(RobotEntityBase iRobot) {
-    super(RoboticsAIType.DELIVERY,iRobot);
+    super(RoboticsAIType.DELIVERY, iRobot);
   }
 
   @Override

@@ -656,6 +656,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return Items.AIR;
   }
 
+  public PipePluggable<?> getPipePluggable(Direction direction) {
+    return pipeTileApi.getPipePluggable(direction);
+  }
+
+  public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
+    pipeTileApi.setPipePluggable(direction, pluggable);
+  }
+
   private final IPipe pipeApi = new IPipe() {
     @Override
     public IPipeTile getTile() {
@@ -682,6 +690,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return false;
     }
   };
+
+  public boolean hasPipePluggable(Direction direction) {
+    return pipeTileApi.hasPipePluggable(direction);
+  }
+
+  public IPipe getPipe() {
+    return pipeApi;
+  }
 
   private final IPipeTile pipeTileApi = new IPipeTile() {
     @Override
@@ -805,22 +821,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   };
 
-  public PipePluggable<?> getPipePluggable(Direction direction) {
-    return pipeTileApi.getPipePluggable(direction);
-  }
-
-  public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
-    pipeTileApi.setPipePluggable(direction, pluggable);
-  }
-
-  public boolean hasPipePluggable(Direction direction) {
-    return pipeTileApi.hasPipePluggable(direction);
-  }
-
-  public IPipe getPipe() {
-    return pipeApi;
-  }
-
   public ArrayList<ItemStack> computeItemDrop() {
     ArrayList<ItemStack> list = new ArrayList<>();
     // Pluggables
@@ -893,4 +893,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       pluggables = newPluggables;
     }
   }
+
+
 }

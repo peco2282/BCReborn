@@ -27,10 +27,12 @@ public class RedstoneBoardRobotEmptyNBT extends RedstoneBoardRobotNBT {
 
   private static final RedstoneBoardRobotEmptyNBT INSTANCE = new RedstoneBoardRobotEmptyNBT();
 
+  private RedstoneBoardRobotEmptyNBT() {
+  }
+
   public static RedstoneBoardRobotEmptyNBT getInstance() {
     return INSTANCE;
   }
-  private RedstoneBoardRobotEmptyNBT() {}
 
   @Override
   public int getEnergyCost() {

@@ -166,16 +166,16 @@ public class ItemTransportModule {
 
   public void save(CompoundTag tag) {
     TravelingItem.CODEC.listOf().encodeStart(NbtOps.INSTANCE, travelingItems)
-        .resultOrPartial(System.err::println)
-        .ifPresent(t -> tag.put("TravelingItems", t));
+      .resultOrPartial(System.err::println)
+      .ifPresent(t -> tag.put("TravelingItems", t));
   }
 
   public void load(CompoundTag tag) {
     if (tag.contains("TravelingItems")) {
       travelingItems.clear();
       TravelingItem.CODEC.listOf().parse(NbtOps.INSTANCE, tag.get("TravelingItems"))
-          .resultOrPartial(System.err::println)
-          .ifPresent(travelingItems::addAll);
+        .resultOrPartial(System.err::println)
+        .ifPresent(travelingItems::addAll);
     }
   }
 }

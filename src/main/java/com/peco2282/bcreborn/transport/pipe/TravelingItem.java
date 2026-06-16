@@ -24,13 +24,13 @@ import java.util.Optional;
 
 public class TravelingItem {
   public static final Codec<TravelingItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-      ItemStack.CODEC.fieldOf("stack").forGetter(TravelingItem::getStack),
-      Direction.CODEC.fieldOf("entry_direction").forGetter(TravelingItem::getEntryDirection),
-      Codec.FLOAT.optionalFieldOf("progress", 0.0f).forGetter(TravelingItem::getProgress),
-      Direction.CODEC.optionalFieldOf("next_direction").forGetter(item -> Optional.ofNullable(item.getNextDirection())),
-      Codec.FLOAT.optionalFieldOf("speed", 0.05f).forGetter(TravelingItem::getSpeed),
-      Codec.INT.optionalFieldOf("bounce_count", 0).forGetter(TravelingItem::getBounceCount),
-      Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining)
+    ItemStack.CODEC.fieldOf("stack").forGetter(TravelingItem::getStack),
+    Direction.CODEC.fieldOf("entry_direction").forGetter(TravelingItem::getEntryDirection),
+    Codec.FLOAT.optionalFieldOf("progress", 0.0f).forGetter(TravelingItem::getProgress),
+    Direction.CODEC.optionalFieldOf("next_direction").forGetter(item -> Optional.ofNullable(item.getNextDirection())),
+    Codec.FLOAT.optionalFieldOf("speed", 0.05f).forGetter(TravelingItem::getSpeed),
+    Codec.INT.optionalFieldOf("bounce_count", 0).forGetter(TravelingItem::getBounceCount),
+    Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining)
   ).apply(instance, TravelingItem::new));
   private final ItemStack stack;
 

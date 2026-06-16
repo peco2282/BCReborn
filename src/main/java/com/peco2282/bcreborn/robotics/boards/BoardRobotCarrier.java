@@ -25,7 +25,7 @@ import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 public class BoardRobotCarrier extends RedstoneBoardRobot<BoardRobotCarrier> {
 
   public BoardRobotCarrier(RobotEntityBase iRobot) {
-    super(RoboticsAIType.CARRIER,iRobot);
+    super(RoboticsAIType.CARRIER, iRobot);
   }
 
   @Override
