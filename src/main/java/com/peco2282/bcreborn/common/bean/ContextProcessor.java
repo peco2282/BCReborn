@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,6 +88,9 @@ public class ContextProcessor {
     AtomicInteger id = new AtomicInteger(0);
     getScanData().getAnnotations().stream()
       .filter(ad -> ad.annotationType().getClassName().equals(Packet.class.getName()))
+      .sorted(Comparator
+        .comparingInt(this::getPacketPriority)
+        .thenComparing(ad -> ad.clazz().getClassName()))
       .forEach(ad -> {
         try {
           @SuppressWarnings("unchecked")
@@ -98,6 +102,11 @@ public class ContextProcessor {
           log.error("{} was not found", ad.clazz().getClassName(), e);
         }
       });
+  }
+
+  private int getPacketPriority(ModFileScanData.AnnotationData annotationData) {
+    Object priority = annotationData.annotationData().get("priority");
+    return priority instanceof Integer value ? value : 0;
   }
 
   @SuppressWarnings("unchecked")
