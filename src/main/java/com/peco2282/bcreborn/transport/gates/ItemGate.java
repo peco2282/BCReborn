@@ -94,7 +94,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
     }
 
     ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-    expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier()));
+    expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
     nbt.put(NBT_TAG_EX, expansionList);
   }
 

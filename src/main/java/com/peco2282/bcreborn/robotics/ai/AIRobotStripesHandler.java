@@ -72,7 +72,7 @@ public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implem
       player.setXRot(0);
       player.setYRot(180);
 
-      for (IStripesHandler handler : PipeManager.stripesHandlers) {
+      for (IStripesHandler handler : PipeManager.getStripesHandlers()) {
         if (handler.getType() == StripesHandlerType.ITEM_USE
           && handler.shouldHandle(stack)) {
           if (handler.handle(robot.level(), new BlockPos((int) p.x, (int) p.y,
