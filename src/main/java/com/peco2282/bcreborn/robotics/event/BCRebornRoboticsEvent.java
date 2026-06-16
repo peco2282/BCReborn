@@ -15,17 +15,19 @@ import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import com.peco2282.bcreborn.robotics.render.RenderRobot;
 import com.peco2282.bcreborn.robotics.render.RenderZonePlan;
 import com.peco2282.bcreborn.robotics.screen.RequesterScreen;
 import com.peco2282.bcreborn.robotics.screen.ZonePlanScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(modid = BCRebornRobotics.MODID)
+@Mod.EventBusSubscriber(modid = BCRebornRobotics.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BCRebornRoboticsEvent {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
@@ -44,5 +46,10 @@ public class BCRebornRoboticsEvent {
   @SubscribeEvent
   public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
     event.registerLayerDefinition(RenderRobot.LAYER_LOCATION, RenderRobot::createLayer);
+  }
+
+  @SubscribeEvent
+  public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
+    event.put(RoboticsEntityTypes.ROBOT.get(), RobotEntity.createMobAttributes().build());
   }
 }
