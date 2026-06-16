@@ -166,9 +166,9 @@ public class RobotEntity extends RobotEntityBase implements
     this(RoboticsEntityTypes.ROBOT.get(), world);
 
     board = boardNBT.create(this);
-    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
 
     if (!world.isClientSide) {
+      entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
       mainAI = new AIRobotMain(this);
       mainAI.start();
     }
@@ -427,6 +427,7 @@ public class RobotEntity extends RobotEntityBase implements
     for (ItemStack s : wearables) {
       data.writeItem(s);
     }
+    data.writeUtf(board.getNBTHandler().getID().toString());
   }
 
   @Override
@@ -435,6 +436,11 @@ public class RobotEntity extends RobotEntityBase implements
     while (amount > 0) {
       wearables.add(data.readItem());
       amount--;
+    }
+    String boardId = data.readUtf();
+    RedstoneBoardNBT<?> boardNBT = RegistryUtil.getRedstoneBoard(boardId);
+    if (boardNBT instanceof RedstoneBoardRobotNBT robotBoardNBT) {
+      this.board = robotBoardNBT.create(this);
     }
     init();
   }
@@ -602,7 +608,9 @@ public class RobotEntity extends RobotEntityBase implements
       board = RoboticsRedstoneRobots.EMPTY.get().create(this);
     }
 
-    entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
+    if (!level().isClientSide) {
+      entityData.set(DATA_BOARD_ID, board.getNBTHandler().getID().toString());
+    }
 
     stackRequestNBT = nbt.getList("stackRequests", ListTag.TAG_COMPOUND);
 

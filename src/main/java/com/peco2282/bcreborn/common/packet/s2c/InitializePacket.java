@@ -14,11 +14,13 @@ package com.peco2282.bcreborn.common.packet.s2c;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -44,27 +46,18 @@ public record InitializePacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> {
-      ServerPlayer sender = ctx.getSender();
-      if (sender == null) {
-        return;
-      }
-
-      ServerLevel level = sender.serverLevel();
-      Entity entity = level.getEntity(entityId);
-
-      if (entity == null) {
-        return;
-      }
-
-      // 目的の Entity 型に絞る
-      if (entity instanceof RobotEntity robot) {
-        robot.itemInUse = itemInUse;
-        robot.itemActive = itemActive;
-        robot.doInitialize(sender);
-      }
-    });
+    ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::handleClient));
 
     ctx.setPacketHandled(true);
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  private void handleClient() {
+    Entity entity = Minecraft.getInstance().level.getEntity(entityId);
+    if (entity instanceof RobotEntity robot) {
+      robot.itemInUse = itemInUse;
+      robot.itemActive = itemActive;
+      robot.doInitialize(null);
+    }
   }
 }

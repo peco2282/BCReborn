@@ -136,7 +136,8 @@ public class RobotItem extends BuildCraftItem {
     CompoundTag cpt = getNBT(stack);
     RedstoneBoardRobotNBT boardNBT = getRobotNBT(cpt);
 
-    if (boardNBT instanceof RedstoneBoardRobotEmptyNBT) {
+    if (!(boardNBT instanceof RedstoneBoardRobotEmptyNBT)) {
+      context.getPlayer().displayClientMessage(Component.literal("Robot is not empty"), true);
       return InteractionResult.PASS;
     }
 
