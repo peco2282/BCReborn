@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * This class provides methods for movement relative to orientation and serialization
  * to/from NBT and network packets.
  */
-public class Position implements ISerializable {
+public class Position implements IBufferSerializable {
   public double x, y, z;
   public Direction orientation;
 

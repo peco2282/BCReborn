@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.zone;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.common.ChunkIndex;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ZonePlan implements IZone, ISerializable {
+public class ZonePlan implements IZone, IBufferSerializable {
   private final HashMap<ChunkIndex, ZoneChunk> chunkMapping = new HashMap<>();
 
   public boolean get(int x, int z) {

@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.builder;
 
 import com.peco2282.bcreborn.api.blueprints.MappingNotFoundException;
 import com.peco2282.bcreborn.api.blueprints.MappingRegistry;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.StackAtPosition;
 import com.peco2282.bcreborn.common.blueprint.BptContext;
@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BuildingItem implements ISerializable, IBuildingItem {
+public class BuildingItem implements IBufferSerializable, IBuildingItem {
 
   public static int ITEMS_SPACE = 2;
 

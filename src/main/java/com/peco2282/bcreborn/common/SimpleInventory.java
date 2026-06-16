@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common;
 
-import com.peco2282.bcreborn.api.core.INBT;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class SimpleInventory implements Container, INBT {
+public class SimpleInventory implements Container, INBTSerializable {
   private final ItemStack[] contents;
   private final String name;
   private final int stackLimit;

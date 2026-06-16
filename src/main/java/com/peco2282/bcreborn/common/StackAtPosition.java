@@ -11,12 +11,12 @@
  */
 package com.peco2282.bcreborn.common;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-public class StackAtPosition implements ISerializable {
+public class StackAtPosition implements IBufferSerializable {
   public ItemStack stack;
   public Position pos;
   public boolean display;
