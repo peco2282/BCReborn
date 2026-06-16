@@ -58,7 +58,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
     private static final float Z_FIGHT = 1.0f / 4096.0f;
 
     @Override
-    public void renderPluggable(IPipe pipe, Direction side, PipePluggable pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
       if (renderPass != 0) return;
 
       RobotStationState state = ((RobotStationPluggable) pipePluggable).getRenderState();
@@ -288,7 +288,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public boolean requiresRenderUpdate(PipePluggable old) {
+  public boolean requiresRenderUpdate(PipePluggable<?> old) {
     return getRenderState() != ((RobotStationPluggable) old).getRenderState();
   }
 
