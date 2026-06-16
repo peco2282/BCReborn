@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +79,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
   @Override
   public IInjectable getItemOutput() {
     IPipeTile p = getPipe();
-    if (p == null || p.getPipeType() != IPipeTile.PipeType.ITEM) {
+    if (p == null || p.getPipeType() != PipeType.ITEM) {
       return null;
     }
 
