@@ -11,14 +11,14 @@
  */
 package com.peco2282.bcreborn.common.energy;
 
-import com.peco2282.bcreborn.api.core.INBT;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEnergyStorage, ISerializable, INBT {
+public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEnergyStorage, IBufferSerializable, INBTSerializable {
   private final E engine;
 
   private int energy, maxEnergy, maxExtract;

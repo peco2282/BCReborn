@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-public class RequirementItemStack implements ISerializable {
+public class RequirementItemStack implements IBufferSerializable {
   public ItemStack stack;
   public int size;
 

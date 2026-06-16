@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.block.entity;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
@@ -658,7 +658,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   // -----------------------------------------------------------------------
   // TileWrapper
   // -----------------------------------------------------------------------
-  public static class TileWrapper implements ISerializable {
+  public static class TileWrapper implements IBufferSerializable {
 
     public BlockPos pos;
     private MarkerBlockEntity marker;
@@ -710,7 +710,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
   // -----------------------------------------------------------------------
   // Origin
   // -----------------------------------------------------------------------
-  public static class Origin implements ISerializable {
+  public static class Origin implements IBufferSerializable {
     public TileWrapper vectO = new TileWrapper();
     public TileWrapper[] vect = {new TileWrapper(), new TileWrapper(), new TileWrapper()};
     public BlockPos.MutableBlockPos posMin = BlockPos.ZERO.mutable();

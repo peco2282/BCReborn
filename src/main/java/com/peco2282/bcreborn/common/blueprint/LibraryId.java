@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
-import com.peco2282.bcreborn.api.core.INBT;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,7 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class LibraryId implements INBT, Comparable<LibraryId>, ISerializable {
+public class LibraryId implements INBTSerializable, Comparable<LibraryId>, IBufferSerializable {
   public static final char BPT_SEP_CHARACTER = '-';
 
   public byte[] uniqueId;

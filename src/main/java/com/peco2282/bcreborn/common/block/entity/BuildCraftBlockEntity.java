@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.block.entity;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
 import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.common.ResourceBuilder;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 
-public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, ISerializable {
+public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, IBufferSerializable {
   private final String owner = "[BuildCraft]";
   protected boolean init = false;
   protected IControllable.Mode mode;

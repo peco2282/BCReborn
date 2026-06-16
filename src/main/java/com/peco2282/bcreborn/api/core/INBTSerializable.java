@@ -12,13 +12,12 @@
 package com.peco2282.bcreborn.api.core;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * An interface for objects that can be serialized to and from NBT {@link CompoundTag}.
  * Extends Forge's {@link INBTSerializable} for compatibility.
  */
-public interface INBT extends INBTSerializable<CompoundTag> {
+public interface INBTSerializable extends net.minecraftforge.common.util.INBTSerializable<CompoundTag> {
 
   /**
    * Reads the object's state from the given NBT tag.

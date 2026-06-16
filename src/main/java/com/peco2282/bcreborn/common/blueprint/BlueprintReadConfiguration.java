@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.common.blueprint;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class BlueprintReadConfiguration implements ISerializable {
+public class BlueprintReadConfiguration implements IBufferSerializable {
   public boolean rotate = true;
   public boolean excavate = true;
   public boolean allowCreative = false;

@@ -11,12 +11,12 @@
  */
 package com.peco2282.bcreborn.common;
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 
-public class ChunkIndex implements ISerializable {
+public class ChunkIndex implements IBufferSerializable {
   public int x, z;
 
   public ChunkIndex() {

@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.robotics.zone;
 
 import com.peco2282.bcreborn.api.core.BlockIndex;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,7 +20,7 @@ import net.minecraft.util.RandomSource;
 
 import java.util.BitSet;
 
-public class ZoneChunk implements ISerializable {
+public class ZoneChunk implements IBufferSerializable {
 
   public BitSet property;
   private boolean fullSet = false;

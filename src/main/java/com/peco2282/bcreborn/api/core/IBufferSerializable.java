@@ -17,7 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
  * Implemented by classes that can be serialized to and from a {@link FriendlyByteBuf}.
  * This is typically used for network packet synchronization.
  */
-public interface ISerializable {
+public interface IBufferSerializable {
 
   /**
    * Serializes the object's state to the buffer.

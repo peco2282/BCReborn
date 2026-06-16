@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.api.transport.pluggable;
 
 import com.peco2282.bcreborn.api.core.INBTStoreable;
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Base class for all pipe pluggables (e.g., facades, gates, etc.).
  * Implementations must have a public no-args constructor for synchronization and serialization.
  */
-public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTStoreable, ISerializable {
+public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTStoreable, IBufferSerializable {
   protected PluggableType<T> type;
 
   public PipePluggable(PluggableType<T> type) {

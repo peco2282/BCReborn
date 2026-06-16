@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.common;
 
 
-import com.peco2282.bcreborn.api.core.ISerializable;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
-public class LaserData implements ISerializable {
+public class LaserData implements IBufferSerializable {
   public LaserKind kind = LaserKind.Red;
   public Position head = new Position(0, 0, 0);
   public Position tail = new Position(0, 0, 0);
