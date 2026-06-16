@@ -11,13 +11,27 @@
  */
 package com.peco2282.bcreborn.transport.pipe;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class TravelingItem {
+  public static final Codec<TravelingItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+      ItemStack.CODEC.fieldOf("stack").forGetter(TravelingItem::getStack),
+      Direction.CODEC.fieldOf("entry_direction").forGetter(TravelingItem::getEntryDirection),
+      Codec.FLOAT.optionalFieldOf("progress", 0.0f).forGetter(TravelingItem::getProgress),
+      Direction.CODEC.optionalFieldOf("next_direction").forGetter(item -> Optional.ofNullable(item.getNextDirection())),
+      Codec.FLOAT.optionalFieldOf("speed", 0.05f).forGetter(TravelingItem::getSpeed),
+      Codec.INT.optionalFieldOf("bounce_count", 0).forGetter(TravelingItem::getBounceCount),
+      Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining)
+  ).apply(instance, TravelingItem::new));
   private final ItemStack stack;
 
   /**
@@ -61,24 +75,20 @@ public class TravelingItem {
     this.speed = speed;
   }
 
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private TravelingItem(ItemStack stack, Direction entryDirection, float progress, Optional<Direction> nextDirection, float speed, int bounceCount, int boostedBlocksRemaining) {
+    this.stack = stack;
+    this.entryDirection = entryDirection;
+    this.progress = progress;
+    this.prevProgress = progress;
+    this.nextDirection = nextDirection.orElse(null);
+    this.speed = speed;
+    this.bounceCount = bounceCount;
+    this.boostedBlocksRemaining = boostedBlocksRemaining;
+  }
+
   public static TravelingItem load(CompoundTag tag) {
-    ItemStack stack = ItemStack.of(tag.getCompound("Stack"));
-    // "LastDir" は旧 NBT キー名。後方互換のため両方を読む。
-    int dirValue = tag.contains("EntryDir") ? tag.getInt("EntryDir") : tag.getInt("LastDir");
-    Direction entryDir = Direction.from3DDataValue(dirValue);
-    TravelingItem item = new TravelingItem(stack, entryDir);
-    item.progress = tag.getFloat("Progress");
-    item.prevProgress = item.progress; // ロード時は前回の状態が不明なので現在の値で初期化
-    if (tag.contains("Speed")) {
-      item.speed = tag.getFloat("Speed");
-    }
-    if (tag.contains("NextDir")) {
-      item.nextDirection = Direction.from3DDataValue(tag.getInt("NextDir"));
-    }
-    if (tag.contains("BoostedBlocks")) {
-      item.boostedBlocksRemaining = tag.getInt("BoostedBlocks");
-    }
-    return item;
+    return CODEC.parse(NbtOps.INSTANCE, tag).resultOrPartial(System.err::println).orElseThrow();
   }
 
   public Direction getNextDirection() {
@@ -174,17 +184,6 @@ public class TravelingItem {
   }
 
   public CompoundTag save() {
-    CompoundTag tag = new CompoundTag();
-    tag.put("Stack", stack.save(new CompoundTag()));
-    tag.putInt("EntryDir", entryDirection.get3DDataValue());
-    tag.putFloat("Progress", progress);
-    tag.putFloat("Speed", speed);
-    if (nextDirection != null) {
-      tag.putInt("NextDir", nextDirection.get3DDataValue());
-    }
-    if (boostedBlocksRemaining > 0) {
-      tag.putInt("BoostedBlocks", boostedBlocksRemaining);
-    }
-    return tag;
+    return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow(false, System.err::println);
   }
 }
