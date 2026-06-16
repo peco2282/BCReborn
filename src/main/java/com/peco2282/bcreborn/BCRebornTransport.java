@@ -44,7 +44,7 @@ public class BCRebornTransport implements BCReborn {
 
   public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
   public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
-  public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robotStation"), RobotStationPluggable::new);
+  public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robot_station"), RobotStationPluggable::new);
 
   public BCRebornTransport(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
