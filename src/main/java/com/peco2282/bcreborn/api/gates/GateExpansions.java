@@ -15,7 +15,10 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class GateExpansions {
   private static final Map<ResourceLocation, IGateExpansion> expansions = new HashMap<>();

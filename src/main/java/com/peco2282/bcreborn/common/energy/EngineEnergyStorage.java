@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.common.energy;
 
-import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
