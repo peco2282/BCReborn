@@ -141,7 +141,7 @@ public class RobotItem extends BuildCraftItem {
       return InteractionResult.PASS;
     }
 
-    IRobotRegistry registry = RobotManager.registryProvider.getRegistry(level);
+    IRobotRegistry registry = RobotManager.registry().getRegistry(level);
     if (registry == null) {
       return InteractionResult.PASS;
     }

@@ -77,7 +77,7 @@ public class StackRequest {
 
   public DockingStation getStation(Level world) {
     if (station == null) {
-      IRobotRegistry robotRegistry = RobotManager.registryProvider.getRegistry(world);
+      IRobotRegistry robotRegistry = RobotManager.registry().getRegistry(world);
       station = robotRegistry.getStation(stationIndex.toBlockPos(), stationSide);
     }
     return station;

@@ -1260,7 +1260,7 @@ public class RobotEntity extends RobotEntityBase implements
 
   @Override
   public RobotRegistry getRegistry() {
-    return (RobotRegistry) RobotManager.registryProvider.getRegistry(level());
+    return (RobotRegistry) RobotManager.registry().getRegistry(level());
   }
 
   @Override

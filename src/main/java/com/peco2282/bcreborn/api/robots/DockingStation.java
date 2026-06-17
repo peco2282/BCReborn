@@ -111,7 +111,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
     if (robotTakingId == RobotEntityBase.NULL_ROBOT_ID) {
       return null;
     } else if (robotTaking == null) {
-      robotTaking = RobotManager.registryProvider.getRegistry(world).getLoadedRobot(
+      robotTaking = RobotManager.registry().getRegistry(world).getLoadedRobot(
         robotTakingId);
     }
 
@@ -142,7 +142,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    */
   public boolean takeAsMain(RobotEntityBase robot) {
     if (robotTakingId == RobotEntityBase.NULL_ROBOT_ID) {
-      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      IRobotRegistry registry = RobotManager.registry().getRegistry(world);
       linkIsMain = true;
       robotTaking = robot;
       robotTakingId = robot.getRobotId();
@@ -164,7 +164,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    */
   public boolean take(RobotEntityBase robot) {
     if (robotTaking == null) {
-      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      IRobotRegistry registry = RobotManager.registry().getRegistry(world);
       linkIsMain = false;
       robotTaking = robot;
       robotTakingId = robot.getRobotId();
@@ -184,7 +184,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    */
   public void release(RobotEntityBase robot) {
     if (robotTaking == robot && !linkIsMain) {
-      IRobotRegistry registry = RobotManager.registryProvider.getRegistry(world);
+      IRobotRegistry registry = RobotManager.registry().getRegistry(world);
       unsafeRelease(robot);
       registry.registryMarkDirty();
       registry.release(this, robot.getRobotId());
