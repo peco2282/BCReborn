@@ -27,9 +27,10 @@ public final class StatementManager {
 
   private static final List<ITriggerProvider> triggerProviders = new LinkedList<>();
   private static final List<IActionProvider> actionProviders = new LinkedList<>();
-  public static Map<ResourceLocation, IStatement> statements = new HashMap<>();
-  public static Map<ResourceLocation, Class<? extends IStatementParameter>> parameters = new HashMap<>();
-  public static Map<ResourceLocation, Codec<? extends IStatementParameter>> parameterCodecs = new HashMap<>();
+  private static final Map<ResourceLocation, IStatement> STATEMENTS = new HashMap<>();
+  private static final Map<ResourceLocation, Parameter<?>> PARAMETERS = new HashMap<>();
+  private record Parameter<P extends IStatementParameter>(P parameter, Codec<P> codec) {
+  }
 
   private StatementManager() {
   }
@@ -58,9 +59,13 @@ public final class StatementManager {
     return STATEMENTS.get(tag);
   }
 
-  public static DataResult<? extends Codec<? extends IStatementParameter>> getParameterCodec(ResourceLocation tag) {
-    if (parameterCodecs.containsKey(tag)) {
-      return DataResult.success(parameterCodecs.get(tag));
+  public static <P extends IStatementParameter> void registerParameter(P parameter, Codec<P> codec) {
+    PARAMETERS.put(parameter.getUniqueTag(), new Parameter<>(parameter, codec));
+  }
+
+  public static DataResult<Codec<? extends IStatementParameter>> getParameterCodec(ResourceLocation tag) {
+    if (PARAMETERS.containsKey(tag)) {
+      return DataResult.success(PARAMETERS.get(tag).codec());
     }
     return DataResult.error(() -> "Unknown parameter tag: " + tag);
   }
@@ -156,7 +161,10 @@ public final class StatementManager {
   }
 
   public static IStatementParameter createParameter(String kind) {
-    return createParameter(parameters.get(kind));
+    return createParameter(ResourceLocation.parse(kind));
+  }
+  public static IStatementParameter createParameter(ResourceLocation kind) {
+    return PARAMETERS.containsKey(kind) ? PARAMETERS.get(kind).parameter() : null;
   }
 
   private static IStatementParameter createParameter(Class<? extends IStatementParameter> param) {
@@ -170,12 +178,12 @@ public final class StatementManager {
 
   @OnlyIn(Dist.CLIENT)
   public static void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
-    for (IStatement statement : statements.values()) {
+    for (IStatement statement : STATEMENTS.values()) {
       statement.registerIcons(textureGetter);
     }
 
-    for (Class<? extends IStatementParameter> parameter : parameters.values()) {
-      createParameter(parameter).registerIcons(textureGetter);
+    for (Parameter<?> parameter : PARAMETERS.values()) {
+      parameter.parameter().registerIcons(textureGetter);
     }
   }
 }
