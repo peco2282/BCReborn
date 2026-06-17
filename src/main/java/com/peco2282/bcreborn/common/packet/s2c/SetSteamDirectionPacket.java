@@ -14,7 +14,12 @@ package com.peco2282.bcreborn.common.packet.s2c;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -42,12 +47,17 @@ public record SetSteamDirectionPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context context = supplier.get();
-    if (context.getDirection().getReceptionSide().isServer()) {
+    context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::handleClient));
+    context.setPacketHandled(true);
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  private void handleClient() {
+    if (Minecraft.getInstance().level == null) {
       return;
     }
-
-    RobotEntity robot = (RobotEntity) context.getSender().serverLevel().getEntity(entityId);
-    if (robot != null) {
+    Entity entity = Minecraft.getInstance().level.getEntity(entityId);
+    if (entity instanceof RobotEntity robot) {
       robot.setSteamDirection(x, y, z);
     }
   }
