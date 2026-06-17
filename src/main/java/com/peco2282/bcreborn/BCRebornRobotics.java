@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
+import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.registry.RobotRegistryProvider;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
@@ -72,6 +73,7 @@ public class BCRebornRobotics implements BCReborn {
 
     BuilderAPI.schematic(SchematicRegistry.INSTANCE);
     RobotManager.registry(RobotRegistryProvider.INSTANCE);
+    RobotManager.setEmpty(RoboticsAIType.EMPTY);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

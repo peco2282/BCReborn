@@ -11,8 +11,10 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
+import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,8 +48,15 @@ public abstract class RobotManager {
     return registryProvider;
   }
 
+  @ApiStatus.Internal
   public static void registry(IRobotRegistryProvider provider) {
     registryProvider = provider;
+  }
+
+  private static AIRobotType<? extends RedstoneBoardRobot<?>> emptyBoard;
+
+  public static void setEmpty(AIRobotType<? extends RedstoneBoardRobot<?>> empty) {
+    emptyBoard = empty;
   }
 
   // Robot types
@@ -105,6 +114,11 @@ public abstract class RobotManager {
       throw new IllegalArgumentException("Unknown robot type: " + id);
     }
     return (T) type.create(base);
+  }
+
+  public static RedstoneBoardRobot<?> createEmptyRobot(RobotEntityBase base) {
+    //noinspection RedundantCast
+    return (RedstoneBoardRobot<?>) createRobot(emptyBoard.id(), base);
   }
 
   @NotNull
