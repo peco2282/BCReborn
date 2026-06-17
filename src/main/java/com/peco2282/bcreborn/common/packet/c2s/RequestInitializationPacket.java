@@ -14,7 +14,9 @@ package com.peco2282.bcreborn.common.packet.c2s;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -40,7 +42,18 @@ public record RequestInitializationPacket(
 
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
-    supplier.get().enqueueWork(() -> BCNetworkManager.sendInitialize(supplier.get().getSender(), entityId, itemInUse, itemActive));
-    supplier.get().setPacketHandled(true);
+    var ctx = supplier.get();
+    ctx.enqueueWork(() -> {
+      ServerPlayer player = ctx.getSender();
+      if (player == null) {
+        return;
+      }
+      var entity = player.serverLevel().getEntity(entityId);
+      if (entity instanceof RobotEntity robot) {
+        robot.doInitialize(player);
+        BCNetworkManager.sendInitialize(player, entityId, robot.itemInUse, robot.itemActive);
+      }
+    });
+    ctx.setPacketHandled(true);
   }
 }

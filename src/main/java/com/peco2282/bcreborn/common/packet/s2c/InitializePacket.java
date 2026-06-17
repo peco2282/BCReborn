@@ -57,7 +57,6 @@ public record InitializePacket(
     if (entity instanceof RobotEntity robot) {
       robot.itemInUse = itemInUse;
       robot.itemActive = itemActive;
-      robot.doInitialize(null);
     }
   }
 }
