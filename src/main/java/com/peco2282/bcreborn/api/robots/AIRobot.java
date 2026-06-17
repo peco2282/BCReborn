@@ -50,6 +50,9 @@ public abstract class AIRobot<T extends AIRobot<T>> {
    * @return A new AIRobot instance, or {@code null} if loading failed.
    */
   public static AIRobot<?> loadAI(CompoundTag nbt, RobotEntityBase robot) {
+    if (!nbt.contains("aiName")) {
+      return RobotManager.createEmptyRobot(robot);
+    }
     return RobotManager.createRobot(nbt.getString("aiName"), robot, nbt);
   }
 
