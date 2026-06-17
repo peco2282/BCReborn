@@ -47,18 +47,15 @@ public final class StatementManager {
   }
 
   public static void registerStatement(IStatement statement) {
-    statements.put(statement.getUniqueTag(), statement);
+    STATEMENTS.put(statement.getUniqueTag(), statement);
   }
 
-  public static void registerParameterClass(Class<? extends IStatementParameter> param) {
-    ResourceLocation tag = createParameter(param).getUniqueTag();
-    parameters.put(tag, param);
-    try {
-      //noinspection unchecked
-      parameterCodecs.put(tag, (Codec<? extends IStatementParameter>) param.getField("CODEC").get(null));
-    } catch (Exception e) {
-      // No codec
-    }
+  public static IStatement getStatement(String tag) {
+    return getStatement(ResourceLocation.parse(tag));
+  }
+
+  public static IStatement getStatement(ResourceLocation tag) {
+    return STATEMENTS.get(tag);
   }
 
   public static DataResult<? extends Codec<? extends IStatementParameter>> getParameterCodec(ResourceLocation tag) {

@@ -203,11 +203,11 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     // Read
     for (int i = 0; i < material.numSlots; ++i) {
       if (data.contains("trigger[" + i + "]")) {
-        triggers[i] = StatementManager.statements.get(ResourceLocation.parse(data.getString("trigger[" + i + "]")));
+        triggers[i] = StatementManager.getStatement(ResourceLocation.parse(data.getString("trigger[" + i + "]")));
       }
 
       if (data.contains("action[" + i + "]")) {
-        actions[i] = StatementManager.statements.get(ResourceLocation.parse(data.getString("action[" + i + "]")));
+        actions[i] = StatementManager.getStatement(ResourceLocation.parse(data.getString("action[" + i + "]")));
       }
 
       // This is for legacy trigger loading

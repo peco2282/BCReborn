@@ -28,8 +28,8 @@ import java.util.function.Function;
 public class ActionStationAcceptItems extends ActionStationInputItems {
 
   public ActionStationAcceptItems() {
-    super("station.accept_items");
-    StatementManager.statements.put(BCRebornCore.location("station.drop_in_pipe"), this);
+    super(BCRebornCore.location("station.drop_in_pipe").toString());
+    StatementManager.registerStatement(this);
   }
 
   @Override

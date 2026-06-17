@@ -37,7 +37,7 @@ public abstract class BCStatement implements IStatement {
    */
   public BCStatement(String uniqueTag) {
     this.uniqueTag = ResourceLocation.parse(uniqueTag);
-    StatementManager.statements.put(this.uniqueTag, this);
+    StatementManager.registerStatement(this);
   }
 
   @Override
