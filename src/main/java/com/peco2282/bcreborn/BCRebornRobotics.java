@@ -71,7 +71,7 @@ public class BCRebornRobotics implements BCReborn {
     RoboticsStatements.init();
 
     BuilderAPI.schematic(SchematicRegistry.INSTANCE);
-    RobotManager.registryProvider = RobotRegistryProvider.INSTANCE;
+    RobotManager.registry(RobotRegistryProvider.INSTANCE);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

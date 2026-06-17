@@ -40,7 +40,15 @@ public abstract class RobotManager {
   /**
    * Provider for the robot registry.
    */
-  public static IRobotRegistryProvider registryProvider;
+  private static IRobotRegistryProvider registryProvider;
+
+  public static IRobotRegistryProvider registry() {
+    return registryProvider;
+  }
+
+  public static void registry(IRobotRegistryProvider provider) {
+    registryProvider = provider;
+  }
 
   // Robot types
   @Contract(value = "_,_ -> new")

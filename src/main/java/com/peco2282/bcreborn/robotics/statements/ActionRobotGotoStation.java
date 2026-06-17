@@ -56,7 +56,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
   @Override
   public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
     if (container.getTile() == null || container.getTile().getLevel() == null) return;
-    IRobotRegistry registry = RobotManager.registryProvider.getRegistry(container.getTile().getLevel());
+    IRobotRegistry registry = RobotManager.registry().getRegistry(container.getTile().getLevel());
 
     List<DockingStation<?>> stations = RobotUtils.getStations(container.getTile());
 

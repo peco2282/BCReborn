@@ -62,8 +62,8 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     }
 
     if (pipe == null || ((BlockEntity) pipe).isRemoved()) {
-      if (RobotManager.registryProvider != null) {
-        RobotManager.registryProvider.getRegistry(world).removeStation(this);
+      if (RobotManager.registry() != null) {
+        RobotManager.registry().getRegistry(world).removeStation(this);
       }
       pipe = null;
     }
