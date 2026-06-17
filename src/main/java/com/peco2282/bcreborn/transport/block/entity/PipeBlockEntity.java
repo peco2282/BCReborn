@@ -658,17 +658,33 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public PipePluggable<?> getPipePluggable(Direction direction) {
-    return pipeTileApi.getPipePluggable(direction);
+    return sideProperties.pluggables[direction.ordinal()];
   }
 
   public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
-    pipeTileApi.setPipePluggable(direction, pluggable);
+    PipePluggable<?> old = sideProperties.pluggables[direction.ordinal()];
+    if (old == pluggable) return;
+
+    if (old != null) {
+      old.onDetachedPipe(this, direction);
+    }
+
+    sideProperties.pluggables[direction.ordinal()] = pluggable;
+
+    if (pluggable != null) {
+      pluggable.onAttachedPipe(this, direction);
+    }
+
+    setChanged();
+    if (level != null) {
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
   }
 
   private final IPipe pipeApi = new IPipe() {
     @Override
     public IPipeTile getTile() {
-      return pipeTileApi;
+      return PipeBlockEntity.this;
     }
 
     @Override
@@ -693,196 +709,85 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   };
 
   public boolean hasPipePluggable(Direction direction) {
-    return pipeTileApi.hasPipePluggable(direction);
+    return sideProperties.pluggables[direction.ordinal()] != null;
   }
 
   @Override
   public boolean hasBlockingPluggable(Direction direction) {
-    return pipeTileApi.hasBlockingPluggable(direction);
+    PipePluggable<?> p = getPipePluggable(direction);
+    return p != null && p.isBlocking(this, direction);
   }
 
   @Override
   public void scheduleNeighborChange() {
-    pipeTileApi.scheduleNeighborChange();
   }
 
   @Override
   public void scheduleRenderUpdate() {
-    pipeTileApi.scheduleRenderUpdate();
   }
 
   @Override
   public int injectItem(ItemStack stack, boolean doAdd, Direction from) {
-    return pipeTileApi.injectItem(stack, doAdd, from);
+    return injectItem(stack, doAdd, from, null);
   }
 
   @Override
   public PipeType getPipeType() {
-    return pipeTileApi.getPipeType();
+    return switch (transportType) {
+      case ITEM -> PipeType.ITEM;
+      case FLUID -> PipeType.FLUID;
+      case ENERGY -> PipeType.ENERGY;
+    };
   }
 
   @Override
   public Level getWorld() {
-    return pipeTileApi.getWorld();
+    return level;
   }
 
   @Override
   public BlockPos getPos() {
-    return pipeTileApi.getPos();
+    return worldPosition;
   }
 
   @Override
   public boolean isPipeConnected(Direction with) {
-    return pipeTileApi.isPipeConnected(with);
+    BlockState state = getBlockState();
+    if (state.getBlock() instanceof PipeBlock) {
+      return state.getValue(PipeBlock.PROPERTY_MAP.get(with));
+    }
+    return false;
   }
 
   @Override
   public Block getNeighborBlock(Direction dir) {
-    return pipeTileApi.getNeighborBlock(dir);
+    return level.getBlockState(worldPosition.relative(dir)).getBlock();
   }
 
   @Override
   public BlockEntity getNeighborTile(Direction dir) {
-    return pipeTileApi.getNeighborTile(dir);
+    return level.getBlockEntity(worldPosition.relative(dir));
   }
 
   @Override
   public IPipe getNeighborPipe(Direction dir) {
-    return pipeTileApi.getNeighborPipe(dir);
+    BlockEntity be = getNeighborTile(dir);
+    if (be instanceof PipeBlockEntity other) {
+      return other.getPipe();
+    }
+    return null;
   }
 
   public IPipe getPipe() {
     return pipeApi;
   }
 
-  private final IPipeTile pipeTileApi = new IPipeTile() {
-    @Override
-    public PipeType getPipeType() {
-      return switch (transportType) {
-        case ITEM -> PipeType.ITEM;
-        case FLUID -> PipeType.FLUID;
-        case ENERGY -> PipeType.ENERGY;
-      };
-    }
-
-    @Override
-    public Level getWorld() {
-      return level;
-    }
-
-    @Override
-    public BlockPos getPos() {
-      return worldPosition;
-    }
-
-    @Override
-    public boolean isPipeConnected(Direction with) {
-      BlockState state = getBlockState();
-      if (state.getBlock() instanceof PipeBlock) {
-        return state.getValue(PipeBlock.PROPERTY_MAP.get(with));
-      }
-      return false;
-    }
-
-    @Override
-    public net.minecraft.world.level.block.Block getNeighborBlock(Direction dir) {
-      return level.getBlockState(worldPosition.relative(dir)).getBlock();
-    }
-
-    @Override
-    public BlockEntity getNeighborTile(Direction dir) {
-      return level.getBlockEntity(worldPosition.relative(dir));
-    }
-
-    @Override
-    public IPipe getNeighborPipe(Direction dir) {
-      BlockEntity be = getNeighborTile(dir);
-      if (be instanceof PipeBlockEntity other) {
-        return other.getPipe();
-      }
-      return null;
-    }
-
-    @Override
-    public IPipe getPipe() {
-      return pipeApi;
-    }
-
-    @Override
-    public DyeColor getPipeColor() {
-      return pipeColor;
-    }
-
-    @Override
-    public PipePluggable<?> getPipePluggable(Direction direction) {
-      return sideProperties.pluggables[direction.ordinal()];
-    }
-
-    @Override
-    public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
-      PipePluggable<?> old = sideProperties.pluggables[direction.ordinal()];
-      if (old == pluggable) return;
-
-      if (old != null) {
-        old.onDetachedPipe(this, direction);
-      }
-
-      sideProperties.pluggables[direction.ordinal()] = pluggable;
-
-      if (pluggable != null) {
-        pluggable.onAttachedPipe(this, direction);
-      }
-
-      setChanged();
-      if (level != null) {
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-      }
-    }
-
-    @Override
-    public boolean hasPipePluggable(Direction direction) {
-      return sideProperties.pluggables[direction.ordinal()] != null;
-    }
-
-    @Override
-    public boolean hasBlockingPluggable(Direction direction) {
-      PipePluggable<?> p = getPipePluggable(direction);
-      return p != null && p.isBlocking(this, direction);
-    }
-
-    @Override
-    public void scheduleNeighborChange() {
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-    }
-
-    @Override
-    public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
-      if (doAdd) {
-        PipeBlockEntity.this.injectItem(stack, from);
-      }
-      return stack.getCount();
-    }
-
-    @Override
-    public int injectItem(ItemStack stack, boolean doAdd, Direction from) {
-      return injectItem(stack, doAdd, from, null);
-    }
-
-    @Override
-    public boolean canInjectItems(Direction from) {
-      return true;
-    }
-  };
-
   public ArrayList<ItemStack> computeItemDrop() {
     ArrayList<ItemStack> list = new ArrayList<>();
     // Pluggables
     for (PipePluggable<?> pluggable : sideProperties.pluggables) {
       if (pluggable != null) {
-        Collections.addAll(list, pluggable.getDropItems(pipeTileApi));
+        Collections.addAll(list, pluggable.getDropItems(this));
       }
     }
     return list;
@@ -898,12 +803,15 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public boolean canInjectItems(Direction from) {
-    return false;
+    return true;
   }
 
   @Override
   public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
-    return 0;
+    if (doAdd) {
+      PipeBlockEntity.this.injectItem(stack, from);
+    }
+    return stack.getCount();
   }
 
   public enum ExtractFilterMode {
