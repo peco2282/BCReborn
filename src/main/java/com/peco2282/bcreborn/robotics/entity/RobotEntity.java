@@ -65,6 +65,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -452,14 +453,14 @@ public class RobotEntity extends RobotEntityBase implements
     }
   }
 
-  @Override
-  public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
-    return false;
-  }
-
-  @Override
-  protected void checkFallDamage(double p_20990_, boolean p_20991_, BlockState p_20992_, BlockPos p_20993_) {
-  }
+//  @Override
+//  public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
+//    return false;
+//  }
+//
+//  @Override
+//  protected void checkFallDamage(double p_20990_, boolean p_20991_, BlockState p_20992_, BlockPos p_20993_) {
+//  }
 
   @Override
   public void travel(Vec3 travelVector) {
@@ -741,14 +742,6 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public void startOpen(Player player) {
-  }
-
-  @Override
-  public void stopOpen(Player player) {
-  }
-
-  @Override
   public boolean canPlaceItem(int slot, ItemStack stack) {
     return inv[slot].isEmpty()
       || (inv[slot].is(stack.getItem()) && inv[slot].isStackable() && inv[slot].getCount()
@@ -779,13 +772,14 @@ public class RobotEntity extends RobotEntityBase implements
     }
   }
 
-  @Override
-  public void setHealth(float par1) {
-    // deactivate health management
-  }
+//  @Override
+//  public void setHealth(float par1) {
+//    // deactivate health management
+//  }
 
   @Override
   public boolean hurt(DamageSource source, float f) {
+    if (source.is(DamageTypes.GENERIC_KILL)) return super.hurt(source, f); // By /kill command
     // Ignore hits from mobs or when docked.
     Entity src = source.getEntity();
     if (src != null && !(src instanceof Fallable) && !(src instanceof Mob) && currentDockingStation == null) {
@@ -1230,23 +1224,8 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public void remove(RemovalReason reason) {
-    if (level().isClientSide) {
-      super.remove(reason);
-    }
-  }
-
-  @Override
   public void onChunkUnload() {
     getRegistry().unloadRobot(this);
-  }
-
-  @Override
-  public void push(Entity p_21294_) {
-  }
-
-  @Override
-  public void push(double p_20286_, double p_20287_, double p_20288_) {
   }
 
   public void setUniqueRobotId(long iRobotId) {
