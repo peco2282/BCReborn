@@ -37,8 +37,8 @@ public class RoboticsStatements {
   public static final IActionInternal actionStationMachineRequestItems = new ActionStationRequestItemsMachine();
 
   public static void init() {
-    StatementManager.registerParameterClass(StatementParameterRobot.class);
-    StatementManager.registerParameterClass(StatementParameterMapLocation.class);
+    StatementManager.registerParameter(StatementParameterRobot.INSTANCE, StatementParameterRobot.CODEC);
+    StatementManager.registerParameter(StatementParameterMapLocation.INSTANCE, StatementParameterMapLocation.CODEC);
     StatementManager.registerActionProvider(new RobotsActionProvider());
     StatementManager.registerTriggerProvider(new RobotsTriggerProvider());
   }

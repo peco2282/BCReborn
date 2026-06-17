@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
@@ -24,6 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class StatementParameterRobot extends StatementParameterItemStack {
+  public static final StatementParameterRobot INSTANCE = new StatementParameterRobot();
+  public static final Codec<StatementParameterRobot> CODEC = Codec.unit(INSTANCE);
 
   public StatementParameterRobot() {
     super(ItemStack.EMPTY);

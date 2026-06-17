@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
+import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.statements.IStatement;
@@ -21,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class StatementParameterMapLocation extends StatementParameterItemStack {
+  public static final StatementParameterMapLocation INSTANCE = new StatementParameterMapLocation();
+  public static final Codec<StatementParameterMapLocation> CODEC = Codec.unit(INSTANCE);
 
   public StatementParameterMapLocation() {
     super(ItemStack.EMPTY);
