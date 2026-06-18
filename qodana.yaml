@@ -11,3 +11,4 @@ include:
 
 disable:
     - AutoCloseableResource
+    - resource
