@@ -113,7 +113,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private long usedFilters = 0L;
   // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
 //  private int pipeColor = 0;
-  private DyeColor pipeColor = DyeColor.WHITE;
+  @Nullable // if null will be no color
+  private DyeColor pipeColor = null;
   private ExtractFilterMode extractFilterMode = ExtractFilterMode.WHITE_LIST;
 
   public PipeBlockEntity(BlockPos pos, BlockState state) {
@@ -410,7 +411,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
   }
 
-  public DyeColor getPipeColor() {
+  public @Nullable DyeColor getPipeColor() {
     return pipeColor;
   }
 
@@ -570,7 +571,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
     tag.put("Filters", filtersTag);
     tag.putLong("usedFilters", usedFilters);
-    tag.putInt("PipeColor", pipeColor.getId());
+    if (pipeColor != null)
+      tag.putInt("PipeColor", pipeColor.getId());
     tag.putInt("ExtractFilterMode", extractFilterMode.ordinal());
 
     byte[] wires = new byte[wireSignals.length];

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.api.blocks.IColorRemovable;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
@@ -52,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock {
+public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock, IColorRemovable {
   public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
   public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
   public static final BooleanProperty EAST = BlockStateProperties.EAST;
@@ -296,5 +297,14 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
 
   public PipeMaterial getPipeMaterial() {
     return material;
+  }
+
+  @Override
+  public boolean removeColorFromBlock(Level world, BlockPos pos, Direction side) {
+    BlockEntity entity = world.getBlockEntity(pos);
+    if (entity instanceof PipeBlockEntity pipe) {
+      pipe.setPipeColor(null);
+    }
+    return false;
   }
 }
