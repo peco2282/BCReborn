@@ -22,8 +22,10 @@ import com.peco2282.bcreborn.robotics.RoboticsItems;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.boards.RedstoneBoardRobotEmptyNBT;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
+import com.peco2282.bcreborn.robotics.render.RobotItemRenderer;
 import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,9 +36,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RobotItem extends BuildCraftItem {
 
@@ -65,7 +69,9 @@ public class RobotItem extends BuildCraftItem {
   private static CompoundTag getNBT(ItemStack stack) {
     CompoundTag cpt = stack.getOrCreateTag();
     if (!cpt.contains("board")) {
-      RoboticsRedstoneRobots.EMPTY.get().createBoard(cpt);
+      CompoundTag boardCpt = new CompoundTag();
+      RoboticsRedstoneRobots.EMPTY.get().createBoard(boardCpt);
+      cpt.put("board", boardCpt);
     }
     return cpt;
   }
@@ -162,5 +168,15 @@ public class RobotItem extends BuildCraftItem {
     }
 
     return InteractionResult.PASS;
+  }
+
+  @Override
+  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    consumer.accept(new IClientItemExtensions() {
+      @Override
+      public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+        return RobotItemRenderer.INSTANCE;
+      }
+    });
   }
 }
