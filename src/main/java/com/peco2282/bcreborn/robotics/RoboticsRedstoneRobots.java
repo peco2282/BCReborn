@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.robotics.boards.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornRobotics.MODID)
@@ -55,4 +56,10 @@ public class RoboticsRedstoneRobots {
   private static <T, R extends RedstoneBoardNBT<T>> RegistryObject<R> register(String name, Supplier<R> supplier) {
     return REGISTRY.registerRedstoneBoard(name, supplier);
   }
+
+  public static final List<RegistryObject<BCBoardNBT>> ALL = List.of(
+    ROBOT_PICKER, ROBOT_CARRIER, ROBOT_FLUID_CARRIER,
+    ROBOT_LUMBERJACK, ROBOT_HARVESTER, ROBOT_MINER, ROBOT_PLANTER, ROBOT_FARMER, ROBOT_LEAVE_CUTTER, ROBOT_BUTCHER, ROBOT_SHOVELMAN, ROBOT_PUMP,
+    ROBOT_DELIVERY, ROBOT_KNIGHT, ROBOT_BOMBER, ROBOT_STRIPES, ROBOT_BUILDER
+  );
 }
