@@ -12,9 +12,11 @@
 package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
+import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.PipeManager;
+import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
@@ -690,7 +692,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
 
     @Override
-    public com.peco2282.bcreborn.api.gates.IGate getGate(Direction side) {
+    public IGate getGate(Direction side) {
       return null;
     }
 
@@ -700,12 +702,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
 
     @Override
-    public boolean isWired(com.peco2282.bcreborn.api.transport.PipeWire wire) {
+    public boolean isWired(PipeWire wire) {
       return false;
     }
 
     @Override
-    public boolean isWireActive(com.peco2282.bcreborn.api.transport.PipeWire wire) {
+    public boolean isWireActive(PipeWire wire) {
       return false;
     }
   };
