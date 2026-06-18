@@ -44,7 +44,12 @@ public class RoboticsItems {
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
     REDSTONE_BOARDS.getAll().forEach(it -> output.accept(it.get()));
-    output.accept(ROBOT.get());
+//    output.accept(ROBOT.get());
+    RoboticsRedstoneRobots.ALL.forEach(it -> {
+      var board = it.get();
+      output.accept(RobotItem.createRobotStack(board, 0));
+      output.accept(RobotItem.createRobotStack(board, board.getEnergyCost()));
+    });
     output.accept(ROBOT_STATION.get());
   }
 }
