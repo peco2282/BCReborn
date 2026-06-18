@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class RoboticsBlockStateProvider extends BCBlockStateHelper {
@@ -82,5 +83,8 @@ public class RoboticsBlockStateProvider extends BCBlockStateHelper {
         .parent(getExistingFile(mcLoc("item/generated")))
         .texture("layer0", modLoc("item/board/" + k));
     });
+
+    itemModels().getBuilder("robot")
+      .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }
 }
