@@ -9,6 +9,5 @@ profile:
 include:
   - name: CheckDependencyLicenses
 
-disable:
-    - AutoCloseableResource
-    - resource
+exclude:
+  - name: AutoCloseableResource
