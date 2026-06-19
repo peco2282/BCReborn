@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
@@ -174,6 +175,11 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     }
     CompoundTag tag = stack.getTag();
     if (tag == null) return FacadeType.Basic;
+
+    if (tag.contains("facade", Tag.TAG_COMPOUND)) {
+      return FacadeType.Basic;
+    }
+
     return FacadeType.fromOrdinal(tag.getByte("type"));
   }
 
@@ -183,6 +189,13 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
     }
     CompoundTag tag = stack.getTag();
     if (tag == null) return new FacadeState[0];
+
+    // 新しい形式 (FacadePluggable.getDropItems が生成するもの)
+    if (tag.contains("facade", Tag.TAG_COMPOUND)) {
+      CompoundTag facadeTag = tag.getCompound("facade");
+      return new FacadeState[]{FacadeState.fromNbt(facadeTag)};
+    }
+
     if (tag.contains("states", Tag.TAG_LIST)) {
       ListTag list = tag.getList("states", Tag.TAG_COMPOUND);
       FacadeState[] states = new FacadeState[list.size()];
@@ -235,7 +248,9 @@ public class FacadeItem extends BuildCraftItem implements IFacadeItem {
   ) {
     public static FacadeState fromNbt(CompoundTag nbt) {
       BlockState state = null;
-      if (nbt.contains("block", Tag.TAG_STRING)) {
+      if (nbt.contains("state", Tag.TAG_COMPOUND)) {
+        state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
+      } else if (nbt.contains("block", Tag.TAG_STRING)) {
         try {
           String stateStr = nbt.getString("block");
           var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), stateStr, true);
