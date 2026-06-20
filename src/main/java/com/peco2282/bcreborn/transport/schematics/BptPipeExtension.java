@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.transport.schematics;
 
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import net.minecraft.world.item.Item;
 
 import java.util.HashMap;
@@ -34,11 +34,11 @@ public class BptPipeExtension {
     return bptPipeExtensionRegistry.get(i);
   }
 
-  public void postProcessing(SchematicTile slot, IBuilderContext context) {
+  public void postProcessing(SchematicBlockEntity slot, IBuilderContext context) {
 
   }
 
-  public void rotateLeft(SchematicTile slot, IBuilderContext context) {
+  public void rotateLeft(SchematicBlockEntity slot, IBuilderContext context) {
 
   }
 

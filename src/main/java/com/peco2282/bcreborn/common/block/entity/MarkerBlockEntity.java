@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
-import com.peco2282.bcreborn.api.tiles.ITileAreaProvider;
+import com.peco2282.bcreborn.api.tiles.IBlockEntityAreaProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAreaProvider {
+public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEntityAreaProvider {
   public static final int MARKER_RANGE = 64;
   // -----------------------------------------------------------------------
   // Fields
@@ -417,7 +417,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements ITileAre
 //  }
 
   // -----------------------------------------------------------------------
-  // ITileAreaProvider / IAreaProvider
+  // IBlockEntityAreaProvider / IAreaProvider
   // -----------------------------------------------------------------------
   @Override
   public int xMin() {

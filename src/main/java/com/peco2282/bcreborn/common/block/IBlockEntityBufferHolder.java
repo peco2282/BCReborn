@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface ITileBufferHolder {
+public interface IBlockEntityBufferHolder {
 
   void blockRemoved(Direction from);
 
@@ -23,6 +23,6 @@ public interface ITileBufferHolder {
 
   Block getBlock(Direction to);
 
-  BlockEntity getTile(Direction to);
+  BlockEntity getBlockEntity(Direction to);
 
 }

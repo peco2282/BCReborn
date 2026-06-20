@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.transport.block.entity;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -76,7 +76,7 @@ import java.util.*;
  * </p>
  * Transport logic itself is delegated to transport modules.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeTile, Container {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeBlockEntity, Container {
   public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
@@ -687,7 +687,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   private final IPipe pipeApi = new IPipe() {
     @Override
-    public IPipeTile getTile() {
+    public IPipeBlockEntity getBlockEntity() {
       return PipeBlockEntity.this;
     }
 
@@ -769,13 +769,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   @Override
-  public BlockEntity getNeighborTile(Direction dir) {
+  public BlockEntity getNeighborBlockEntity(Direction dir) {
     return level.getBlockEntity(worldPosition.relative(dir));
   }
 
   @Override
   public IPipe getNeighborPipe(Direction dir) {
-    BlockEntity be = getNeighborTile(dir);
+    BlockEntity be = getNeighborBlockEntity(dir);
     if (be instanceof PipeBlockEntity other) {
       return other.getPipe();
     }

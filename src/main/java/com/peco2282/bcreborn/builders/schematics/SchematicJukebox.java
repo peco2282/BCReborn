@@ -13,11 +13,11 @@ package com.peco2282.bcreborn.builders.schematics;
 
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import com.peco2282.bcreborn.api.core.JavaTools;
 import net.minecraft.world.item.ItemStack;
 
-public class SchematicJukebox extends SchematicTile {
+public class SchematicJukebox extends SchematicBlockEntity {
   public SchematicJukebox() {
   }
 

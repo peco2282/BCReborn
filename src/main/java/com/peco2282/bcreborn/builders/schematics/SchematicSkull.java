@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.builders.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 
-public class SchematicSkull extends SchematicTile {
+public class SchematicSkull extends SchematicBlockEntity {
 
   @Override
   public void rotateLeft(IBuilderContext context) {

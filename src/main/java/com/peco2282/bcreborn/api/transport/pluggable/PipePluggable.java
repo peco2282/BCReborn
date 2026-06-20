@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.api.transport.pluggable;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTStoreable;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -41,7 +41,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param pipe The pipe this pluggable is attached to.
    * @return An array of {@link ItemStack}s.
    */
-  public abstract ItemStack[] getDropItems(IPipeTile pipe);
+  public abstract ItemStack[] getDropItems(IPipeBlockEntity pipe);
 
   /**
    * Called every tick to update the pluggable's state.
@@ -49,7 +49,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param pipe      The pipe this pluggable is attached to.
    * @param direction The side of the pipe this pluggable is on.
    */
-  public void update(IPipeTile pipe, Direction direction) {
+  public void update(IPipeBlockEntity pipe, Direction direction) {
   }
 
   /**
@@ -58,7 +58,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param pipe      The pipe.
    * @param direction The side.
    */
-  public void onAttachedPipe(IPipeTile pipe, Direction direction) {
+  public void onAttachedPipe(IPipeBlockEntity pipe, Direction direction) {
     validate(pipe, direction);
   }
 
@@ -68,7 +68,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param pipe      The pipe.
    * @param direction The side.
    */
-  public void onDetachedPipe(IPipeTile pipe, Direction direction) {
+  public void onDetachedPipe(IPipeBlockEntity pipe, Direction direction) {
     invalidate();
   }
 
@@ -79,7 +79,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param direction The side.
    * @return True if it blocks connections.
    */
-  public abstract boolean isBlocking(IPipeTile pipe, Direction direction);
+  public abstract boolean isBlocking(IPipeBlockEntity pipe, Direction direction);
 
   /**
    * Invalidates the pluggable state.
@@ -93,7 +93,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param pipe      The pipe.
    * @param direction The side.
    */
-  public void validate(IPipeTile pipe, Direction direction) {
+  public void validate(IPipeBlockEntity pipe, Direction direction) {
   }
 
   /**
@@ -103,7 +103,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    * @param direction The side.
    * @return True if solid.
    */
-  public boolean isSolidOnSide(IPipeTile pipe, Direction direction) {
+  public boolean isSolidOnSide(IPipeBlockEntity pipe, Direction direction) {
     return false;
   }
 

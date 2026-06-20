@@ -18,7 +18,7 @@ import com.peco2282.bcreborn.builders.schematics.*;
 import com.peco2282.bcreborn.common.builder.schematics.SchematicBlockCreative;
 import com.peco2282.bcreborn.common.builder.schematics.SchematicFree;
 import com.peco2282.bcreborn.common.builder.schematics.SchematicIgnore;
-import com.peco2282.bcreborn.common.builder.schematics.SchematicTileCreative;
+import com.peco2282.bcreborn.common.builder.schematics.SchematicBlockEntityCreative;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -119,8 +119,8 @@ public final class SchematicRegistry implements ISchematicRegistry {
 
     schemes.registerSchematicBlock(Blocks.BEDROCK, SchematicBlockCreative::new);
 
-    schemes.registerSchematicBlock(Blocks.COMMAND_BLOCK, SchematicTileCreative::new);
-    schemes.registerSchematicBlock(Blocks.SPAWNER, SchematicTileCreative::new);
+    schemes.registerSchematicBlock(Blocks.COMMAND_BLOCK, SchematicBlockEntityCreative::new);
+    schemes.registerSchematicBlock(Blocks.SPAWNER, SchematicBlockEntityCreative::new);
 
     // Standard entities
 

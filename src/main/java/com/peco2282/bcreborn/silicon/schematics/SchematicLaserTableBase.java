@@ -13,9 +13,9 @@ package com.peco2282.bcreborn.silicon.schematics;
 
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 
-public class SchematicLaserTableBase extends SchematicTile {
+public class SchematicLaserTableBase extends SchematicBlockEntity {
 
   @Override
   public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {

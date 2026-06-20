@@ -18,7 +18,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IDockingStationProvider;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.robotics.item.RobotItem;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public final class RobotUtils {
       }
     }
 
-    if (tile instanceof IPipeTile pipeTile) {
+    if (tile instanceof IPipeBlockEntity pipeTile) {
       for (Direction d : Direction.values()) {
         if (pipeTile.getPipePluggable(d) instanceof IDockingStationProvider pluggable) {
           DockingStation<?> station = pluggable.getStation();

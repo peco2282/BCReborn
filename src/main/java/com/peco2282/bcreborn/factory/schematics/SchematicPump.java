@@ -13,14 +13,14 @@ package com.peco2282.bcreborn.factory.schematics;
 
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.LinkedList;
 
-public class SchematicPump extends SchematicTile {
+public class SchematicPump extends SchematicBlockEntity {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {

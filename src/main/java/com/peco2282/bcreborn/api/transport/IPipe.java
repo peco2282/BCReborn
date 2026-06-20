@@ -19,11 +19,11 @@ import net.minecraft.core.Direction;
  */
 public interface IPipe {
   /**
-   * Gets the {@link IPipeTile} associated with this pipe.
+   * Gets the {@link IPipeBlockEntity} associated with this pipe.
    *
    * @return The pipe tile.
    */
-  IPipeTile getTile();
+  IPipeBlockEntity getBlockEntity();
 
   /**
    * Gets the gate on the specified side of the pipe.

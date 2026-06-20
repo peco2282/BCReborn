@@ -15,7 +15,6 @@ import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.statements.StatementManager;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class SchematicPipe extends SchematicTile {
+public class SchematicPipe extends SchematicBlockEntity {
 
   public static final int MAX_STATEMENTS = 8;
   public static final int MAX_PARAMETERS = 3;
@@ -226,8 +225,8 @@ public class SchematicPipe extends SchematicTile {
 
       for (PipePluggable<?> pluggable : props.pluggables) {
         if (pluggable != null) {
-          // NOTE: This might still fail if pluggable.getDropItems expects IPipeTile
-          // We may need to pass a proxy or a dummy IPipeTile if PipeBlockEntity doesn't implement it yet.
+          // NOTE: This might still fail if pluggable.getDropItems expects IPipeBlockEntity
+          // We may need to pass a proxy or a dummy IPipeBlockEntity if PipeBlockEntity doesn't implement it yet.
           Collections.addAll(list, pluggable.getDropItems(pipe));
         }
       }

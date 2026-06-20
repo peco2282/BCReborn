@@ -69,8 +69,8 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
     PipeBlockEntity pipe;
     if (apiPipe instanceof PipeBlockEntity) {
       pipe = (PipeBlockEntity) apiPipe;
-    } else if (apiPipe.getTile() instanceof PipeBlockEntity) {
-      pipe = (PipeBlockEntity) apiPipe.getTile();
+    } else if (apiPipe.getBlockEntity() instanceof PipeBlockEntity) {
+      pipe = (PipeBlockEntity) apiPipe.getBlockEntity();
     } else {
       return false;
     }

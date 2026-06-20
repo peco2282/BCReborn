@@ -82,7 +82,7 @@ public final class GateFactory {
       CompoundTag conNBT = exList.getCompound(i);
       IGateExpansion ex = GateExpansions.getExpansion(conNBT.getString("type"));
       if (ex != null) {
-        GateExpansionController con = ex.makeController(pipe.getTile() instanceof BlockEntity be ? be : null);
+        GateExpansionController con = ex.makeController(pipe.getBlockEntity() instanceof BlockEntity be ? be : null);
         con.readFromNBT(conNBT.getCompound("data"));
         gate.expansions.put(ex, con);
       }

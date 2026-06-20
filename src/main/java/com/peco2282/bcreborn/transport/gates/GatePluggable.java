@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.gates.GateExpansions;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableDynamicRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -123,7 +123,7 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   }
 
   @Override
-  public ItemStack[] getDropItems(IPipeTile pipe) {
+  public ItemStack[] getDropItems(IPipeBlockEntity pipe) {
     ItemStack gate = ItemGate.makeGateItem(material, logic);
     if (gate.isEmpty()) return new ItemStack[0];
     for (IGateExpansion expansion : expansions) {
@@ -133,7 +133,7 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   }
 
   @Override
-  public void update(IPipeTile pipe, Direction direction) {
+  public void update(IPipeBlockEntity pipe, Direction direction) {
     if (isPulsing || pulseStage > 0.11F) {
       // if it is moving, or is still in a moved state, then complete
       // the current movement
@@ -144,17 +144,17 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   }
 
   @Override
-  public void onAttachedPipe(IPipeTile pipe, Direction direction) {
+  public void onAttachedPipe(IPipeBlockEntity pipe, Direction direction) {
     // TODO: Implement logic without BuildCraft 1.7.10 classes
   }
 
   @Override
-  public void onDetachedPipe(IPipeTile pipe, Direction direction) {
+  public void onDetachedPipe(IPipeBlockEntity pipe, Direction direction) {
     // TODO: Implement logic without BuildCraft 1.7.10 classes
   }
 
   @Override
-  public boolean isBlocking(IPipeTile pipe, Direction direction) {
+  public boolean isBlocking(IPipeBlockEntity pipe, Direction direction) {
     return true;
   }
 

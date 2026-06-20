@@ -12,10 +12,10 @@
 package com.peco2282.bcreborn.common.builder.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import net.minecraft.world.level.block.Rotation;
 
-public class SchematicRotateMeta extends SchematicTile {
+public class SchematicRotateMeta extends SchematicBlockEntity {
   public SchematicRotateMeta() {
   }
 

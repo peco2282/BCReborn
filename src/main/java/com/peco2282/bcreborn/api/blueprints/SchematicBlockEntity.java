@@ -21,7 +21,7 @@ import java.util.LinkedList;
 /**
  * Schematic implementation for blocks with block entities.
  */
-public class SchematicTile extends SchematicBlock {
+public class SchematicBlockEntity extends SchematicBlock {
 
   /**
    * The NBT data of the block entity.
