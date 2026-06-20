@@ -114,7 +114,7 @@ public final class InvUtils {
     for (int slot = 0; slot < inv.getContainerSize(); ++slot) {
       ItemStack items = inv.getItem(slot);
 
-      if (items != null && items.getCount() > 0) {
+      if (items.getCount() > 0) {
         dropItems(world, items.copy(), i, j, k);
       }
     }
@@ -126,17 +126,8 @@ public final class InvUtils {
     }
   }
 
-  public static CompoundTag getItemData(ItemStack stack) {
-    CompoundTag nbt = stack.getOrCreateTag();
-    if (nbt == null) {
-      nbt = new CompoundTag();
-      stack.save(nbt);
-    }
-    return nbt;
-  }
-
   public static void addItemToolTip(ItemStack stack, String msg) {
-    CompoundTag nbt = getItemData(stack);
+    CompoundTag nbt = stack.getOrCreateTag();
     CompoundTag display = nbt.getCompound("display");
     nbt.put("display", display);
     ListTag lore = display.getList("Lore", ListTag.TAG_STRING);

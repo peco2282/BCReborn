@@ -81,7 +81,7 @@ public class CropHandlerPlantable implements ICropHandler {
   @Override
   public boolean isMature(BlockGetter blockAccess, BlockState state, BlockPos pos) {
     Block block = state.getBlock();
-    if (block == null || FORBIDDEN_BLOCKS.contains(block)) {
+    if (FORBIDDEN_BLOCKS.contains(block)) {
       return false;
     } else if (block instanceof TallGrassBlock
       || block instanceof MelonBlock

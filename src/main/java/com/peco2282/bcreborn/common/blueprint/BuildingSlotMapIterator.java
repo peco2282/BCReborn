@@ -55,7 +55,7 @@ public class BuildingSlotMapIterator {
           }
         }
         for (Tank t : builder.getFluidTanks()) {
-          if (t.getFluid() != null && t.getFluid().getFluid() != null) {
+          if (!t.getFluid().isEmpty() && t.getFluid().getFluid() != null) {
             availablePairs.add(new BuilderItemMetaPair(new ItemStack(Items.BUCKET)));
           }
         }
@@ -100,7 +100,7 @@ public class BuildingSlotMapIterator {
       }
       if (slotFound >= MAX_PER_ITEM) {
         currentKey.position = slotPos;
-      } else if (slotPos >= slots.size()) {
+      } else {
         currentKey.position = 0;
       }
       findNextKey();

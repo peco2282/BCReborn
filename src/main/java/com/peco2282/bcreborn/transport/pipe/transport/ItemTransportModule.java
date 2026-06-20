@@ -144,7 +144,7 @@ public class ItemTransportModule {
 
     Level level = pipe.getLevel();
     BlockPos pos = pipe.getBlockPos();
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), 3);
     }
   }

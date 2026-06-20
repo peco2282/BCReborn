@@ -121,7 +121,9 @@ public class EnergyTransportModule {
         } else {
           // 一般機械（IEnergyStorage）へ転送
           Direction incomingFace = outDir.getOpposite();
+          //noinspection DataFlowIssue
           IEnergyStorage handler = be.getCapability(ForgeCapabilities.ENERGY, incomingFace).orElse(null);
+          //noinspection ConstantValue
           if (handler != null && handler.canReceive()) {
             int iShare = (int) share;
             int accepted = handler.receiveEnergy(iShare, false);
@@ -176,7 +178,9 @@ public class EnergyTransportModule {
       }
 
       Direction incomingFace = dir.getOpposite();
+      //noinspection DataFlowIssue
       IEnergyStorage handler = be.getCapability(ForgeCapabilities.ENERGY, incomingFace).orElse(null);
+      //noinspection ConstantValue
       if (handler != null && handler.canReceive()) {
         int request = handler.receiveEnergy(maxPower, true); // simulate
         if (request > 0) {

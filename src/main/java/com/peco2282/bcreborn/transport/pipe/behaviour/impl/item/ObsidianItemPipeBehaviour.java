@@ -54,7 +54,6 @@ public class ObsidianItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
     Level level = pipe.getLevel();
-    if (level == null) return true;
     BlockPos neighborPos = pipe.getBlockPos().relative(dir);
     BlockEntity be = level.getBlockEntity(neighborPos);
     if (be instanceof PipeBlockEntity neighborPipe) {

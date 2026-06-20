@@ -182,7 +182,7 @@ public final class OilPopulate {
         }
       }
 
-    } else if (type == GenType.LAKE) {
+    } else { // GenType.LAKE
 
       BlockPos lakePos = new BlockPos(x, groundLevel, z);
       BlockState blockState = level.getBlockState(lakePos);

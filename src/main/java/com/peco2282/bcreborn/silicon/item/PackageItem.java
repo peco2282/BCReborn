@@ -42,7 +42,7 @@ public class PackageItem extends BuildCraftItem {
 
   public static ItemStack getStack(ItemStack stack, int slot) {
     CompoundTag tag = stack.getOrCreateTag();
-    if (tag != null && tag.contains("item" + slot)) {
+    if (tag.contains("item" + slot)) {
       return ItemStack.of(tag.getCompound("item" + slot));
     } else {
       return ItemStack.EMPTY;
@@ -68,7 +68,7 @@ public class PackageItem extends BuildCraftItem {
   @Override
   public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
     CompoundTag tag = stack.getOrCreateTag();
-    if (tag != null && !tag.isEmpty()) {
+    if (!tag.isEmpty()) {
       tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:0}}"));
       tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:1}}"));
       tooltip.add(Component.literal("{{BC_PACKAGE_SPECIAL:2}}"));

@@ -79,7 +79,7 @@ public class SchematicHanging extends SchematicEntity {
       CompoundTag tag = entityNBT.getCompound("Item");
       ItemStack stack = ItemStack.of(tag);
 
-      if (stack != null) {
+      if (!stack.isEmpty()) {
         storedRequirements = new ItemStack[2];
         storedRequirements[0] = new ItemStack(baseItem);
         storedRequirements[1] = stack;

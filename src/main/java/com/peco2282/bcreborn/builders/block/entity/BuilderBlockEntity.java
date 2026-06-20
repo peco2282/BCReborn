@@ -100,13 +100,11 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
       CompoundTag nbt = blueprintStack.getTag();
       if (nbt != null) {
         BlueprintBase bpt = BlueprintBase.loadBluePrint(nbt);
-        if (bpt != null) {
-          Direction dir = getBlockState().getValue(BuilderBlock.FACING);
-          BlockPos pos1 = getBlockPos();
-          bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), dir);
-          currentBuilder = new BptBuilderTemplate(bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
-          done = false;
-        }
+        Direction dir = getBlockState().getValue(BuilderBlock.FACING);
+        BlockPos pos1 = getBlockPos();
+        bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), dir);
+        currentBuilder = new BptBuilderTemplate(bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
+        done = false;
       }
     }
 

@@ -41,7 +41,6 @@ public class StripesItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
     Level level = pipe.getLevel();
-    if (level == null) return true;
     BlockPos neighborPos = pipe.getBlockPos().relative(dir);
     BlockEntity be = level.getBlockEntity(neighborPos);
     if (be instanceof PipeBlockEntity neighborPipe) {
@@ -55,7 +54,7 @@ public class StripesItemPipeBehaviour implements ItemPipeBehaviour {
   public void onInjectItem(PipeBlockEntity pipe, ItemStack stack, Direction from, float speed) {
     if (stack.isEmpty()) return;
     Level level = pipe.getLevel();
-    if (level == null || level.isClientSide) return;
+    if (level.isClientSide) return;
 
     // 突端チェック：接続されているパイプ方向が2方向以上の場合は動作しない
     BlockState state = level.getBlockState(pipe.getBlockPos());

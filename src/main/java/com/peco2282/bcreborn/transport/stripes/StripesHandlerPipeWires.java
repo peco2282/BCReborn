@@ -56,6 +56,7 @@ public class StripesHandlerPipeWires implements IStripesHandler {
     Position p = new Position(pos.getX(), pos.getY(), pos.getZ());
     p.orientation = direction;
 
+    //noinspection ConstantValue,LoopStatementThatDoesntLoop
     while (pipesToTry > 0) {
       p.moveBackwards(1.0);
 

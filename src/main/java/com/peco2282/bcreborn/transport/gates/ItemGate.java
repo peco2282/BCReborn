@@ -50,14 +50,14 @@ public class ItemGate extends Item implements IPipePluggableItem {
 
   private static CompoundTag getNBT(ItemStack stack) {
     if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) {
-      return null;
+      return new CompoundTag();
     } else {
-      return InvUtils.getItemData(stack);
+      return stack.getOrCreateTag();
     }
   }
 
   public static void setMaterial(ItemStack stack, GateMaterial material) {
-    CompoundTag nbt = InvUtils.getItemData(stack);
+    CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
   }
 
@@ -82,7 +82,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   public static void setLogic(ItemStack stack, GateLogic logic) {
-    CompoundTag nbt = InvUtils.getItemData(stack);
+    CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
   }
 
@@ -148,7 +148,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
     // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
     ItemStack stack = ItemStack.EMPTY;
     if (stack.isEmpty()) return stack;
-    CompoundTag nbt = InvUtils.getItemData(stack);
+    CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
     nbt.putByte(NBT_TAG_LOGIC, (byte) logic.ordinal());
 
@@ -159,7 +159,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
     // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
     ItemStack stack = ItemStack.EMPTY;
     if (stack.isEmpty()) return stack;
-    CompoundTag nbt = InvUtils.getItemData(stack);
+    CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_MAT, (byte) gate.material.ordinal());
     nbt.putByte(NBT_TAG_LOGIC, (byte) gate.logic.ordinal());
 
