@@ -65,7 +65,7 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(Blocks.MELON_STEM, () -> new SchematicSeeds(Items.MELON_SEEDS));
     schemes.registerSchematicBlock(Blocks.NETHER_WART, () -> new SchematicSeeds(Items.NETHER_WART));
 
-    schemes.registerSchematicBlock(Blocks.FLOWER_POT, SchematicTile::new);
+    schemes.registerSchematicBlock(Blocks.FLOWER_POT, SchematicBlockEntity::new);
 
     schemes.registerSchematicBlock(Blocks.TRIPWIRE, SchematicTripwire::new);
     schemes.registerSchematicBlock(Blocks.TRIPWIRE_HOOK, SchematicTripWireHook::new);
@@ -89,9 +89,9 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(Blocks.REPEATER, () -> new SchematicRedstoneDiode(Items.REPEATER));
     schemes.registerSchematicBlock(Blocks.COMPARATOR, () -> new SchematicRedstoneDiode(Items.COMPARATOR));
 
-    schemes.registerSchematicBlock(Blocks.DAYLIGHT_DETECTOR, SchematicTile::new);
+    schemes.registerSchematicBlock(Blocks.DAYLIGHT_DETECTOR, SchematicBlockEntity::new);
     schemes.registerSchematicBlock(Blocks.JUKEBOX, SchematicJukebox::new);
-    schemes.registerSchematicBlock(Blocks.NOTE_BLOCK, SchematicTile::new);
+    schemes.registerSchematicBlock(Blocks.NOTE_BLOCK, SchematicBlockEntity::new);
 
     schemes.registerSchematicBlock(Blocks.REDSTONE_LAMP, SchematicRedstoneLamp::new);
 
@@ -111,9 +111,9 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(Blocks.DETECTOR_RAIL, SchematicRail::new);
     schemes.registerSchematicBlock(Blocks.POWERED_RAIL, SchematicRail::new);
 
-    schemes.registerSchematicBlock(Blocks.BEACON, SchematicTile::new);
+    schemes.registerSchematicBlock(Blocks.BEACON, SchematicBlockEntity::new);
     schemes.registerSchematicBlock(Blocks.BREWING_STAND, SchematicBrewingStand::new);
-    schemes.registerSchematicBlock(Blocks.ENCHANTING_TABLE, SchematicTile::new);
+    schemes.registerSchematicBlock(Blocks.ENCHANTING_TABLE, SchematicBlockEntity::new);
 
     schemes.registerSchematicBlock(Blocks.FIRE, SchematicFire::new);
 
