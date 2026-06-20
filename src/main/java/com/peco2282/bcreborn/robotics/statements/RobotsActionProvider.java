@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IActionProvider;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
@@ -33,7 +33,7 @@ public class RobotsActionProvider implements IActionProvider {
     LinkedList<IActionInternal> result = new LinkedList<>();
     BlockEntity tile = container.getTile();
 
-    if (!(tile instanceof IPipeTile pipeTile)) {
+    if (!(tile instanceof IPipeBlockEntity pipeTile)) {
       return result;
     }
 

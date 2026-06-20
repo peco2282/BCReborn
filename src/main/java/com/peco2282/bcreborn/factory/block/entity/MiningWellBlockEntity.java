@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
 import com.peco2282.bcreborn.api.transport.IPipeConnection;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;

@@ -12,7 +12,7 @@
 package com.peco2282.bcreborn.transport.pipe.pluggable;
 
 import com.peco2282.bcreborn.BCRebornTransport;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
@@ -86,19 +86,19 @@ public class FacadePluggable extends PipePluggable<FacadePluggable> {
   }
 
   @Override
-  public ItemStack[] getDropItems(IPipeTile pipe) {
+  public ItemStack[] getDropItems(IPipeBlockEntity pipe) {
     ItemStack stack = new ItemStack(TransportItems.FACADE.get());
     TransportItems.FACADE.get().setFacadeStates(stack, new FacadeItem.FacadeState[]{new FacadeItem.FacadeState(state, null, hollow)});
     return new ItemStack[]{stack};
   }
 
   @Override
-  public boolean isBlocking(IPipeTile pipe, Direction direction) {
+  public boolean isBlocking(IPipeBlockEntity pipe, Direction direction) {
     return !hollow;
   }
 
   @Override
-  public boolean isSolidOnSide(IPipeTile pipe, Direction direction) {
+  public boolean isSolidOnSide(IPipeBlockEntity pipe, Direction direction) {
     return !hollow;
   }
 

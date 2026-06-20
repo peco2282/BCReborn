@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.builders.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Rotation;
 
 import java.util.LinkedList;
 
-public class SchematicSign extends SchematicTile {
+public class SchematicSign extends SchematicBlockEntity {
 
   boolean isWall;
 

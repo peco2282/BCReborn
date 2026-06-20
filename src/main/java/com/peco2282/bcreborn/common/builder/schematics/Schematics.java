@@ -28,7 +28,7 @@ public class Schematics {
   public static final RegistryObject<SchematicIgnoreMeta> IGNORE_META = register("ignore_meta", SchematicIgnoreMeta::new);
   public static final RegistryObject<SchematicRotateMeta> ROTATE_META = register("rotate_meta", SchematicRotateMeta::new);
   public static final RegistryObject<SchematicRotateMetaSupported> ROTATE_META_SUPPORTED = register("rotate_meta_supported", SchematicRotateMetaSupported::new);
-  public static final RegistryObject<SchematicTileCreative> CREATIVE_TILE = register("creative_tile", SchematicTileCreative::new);
+  public static final RegistryObject<SchematicBlockEntityCreative> CREATIVE_TILE = register("creative_tile", SchematicBlockEntityCreative::new);
   public static final RegistryObject<SchematicWallSide> WALL_SIDE = register("wall_side", SchematicWallSide::new);
 
   private static <S extends Schematic> RegistryObject<S> register(String name, Supplier<S> supplier) {

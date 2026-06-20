@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * Interface representing a pipe's block entity.
  * Extends {@link IInjectable}.
  */
-public interface IPipeTile extends IInjectable {
+public interface IPipeBlockEntity extends IInjectable {
   /**
    * Gets the type of the pipe.
    *
@@ -69,7 +69,7 @@ public interface IPipeTile extends IInjectable {
    * @param dir The direction.
    * @return The {@link BlockEntity}.
    */
-  BlockEntity getNeighborTile(Direction dir);
+  BlockEntity getNeighborBlockEntity(Direction dir);
 
   /**
    * Gets the neighbor pipe in the specified direction.

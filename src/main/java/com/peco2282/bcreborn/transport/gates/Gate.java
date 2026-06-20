@@ -130,7 +130,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
   public void addGateExpansion(IGateExpansion expansion) {
     if (!expansions.containsKey(expansion)) {
-      expansions.put(expansion, expansion.makeController(pipe != null && pipe.getTile() instanceof BlockEntity be ? be : null));
+      expansions.put(expansion, expansion.makeController(pipe != null && pipe.getBlockEntity() instanceof BlockEntity be ? be : null));
     }
   }
 
@@ -305,7 +305,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
             return Component.literal("Gate");
           }
         },
-        buf -> buf.writeBlockPos(pipe.getTile().getPos())
+        buf -> buf.writeBlockPos(pipe.getBlockEntity().getPos())
       );
     }
   }
@@ -452,7 +452,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
         ((IActionInternal) action).actionActivate(this, slot.parameters);
       } else if (action instanceof IActionExternal) {
         for (Direction side : Direction.values()) {
-          BlockEntity tile = this.getPipe().getTile().getNeighborTile(side);
+          BlockEntity tile = this.getPipe().getBlockEntity().getNeighborBlockEntity(side);
           if (tile != null) {
             ((IActionExternal) action).actionActivate(tile, side, this, slot.parameters);
           }
@@ -467,7 +467,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
       }
 
       for (Direction side : Direction.values()) {
-        BlockEntity tile = pipe.getTile().getNeighborTile(side);
+        BlockEntity tile = pipe.getBlockEntity().getNeighborBlockEntity(side);
         if (tile instanceof IActionReceptor recept) {
           recept.actionActivated(action, slot.parameters);
         }
@@ -487,7 +487,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     boolean isActive = !activeActions.isEmpty();
 
     if (wasActive != isActive) {
-      pipe.getTile().scheduleRenderUpdate();
+      pipe.getBlockEntity().scheduleRenderUpdate();
     }
   }
 
@@ -511,7 +511,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
       }
     } else if (trigger instanceof ITriggerExternal) {
       for (Direction side : Direction.values()) {
-        BlockEntity tile = this.getPipe().getTile().getNeighborTile(side);
+        BlockEntity tile = this.getPipe().getBlockEntity().getNeighborBlockEntity(side);
         if (tile != null) {
           if (tile instanceof ITriggerExternalOverride) {
             ITriggerExternalOverride.Result result = ((ITriggerExternalOverride) tile).override(side, this, parameters);
@@ -558,7 +558,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     allTriggers.addAll(StatementManager.getInternalTriggers(this));
 
     for (Direction o : Direction.values()) {
-      BlockEntity tile = pipe.getTile().getNeighborTile(o);
+      BlockEntity tile = pipe.getBlockEntity().getNeighborBlockEntity(o);
       allTriggers.addAll(StatementManager.getExternalTriggers(o, tile));
     }
 
@@ -583,7 +583,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     allActions.addAll(StatementManager.getInternalActions(this));
 
     for (Direction o : Direction.values()) {
-      BlockEntity tile = pipe.getTile().getNeighborTile(o);
+      BlockEntity tile = pipe.getBlockEntity().getNeighborBlockEntity(o);
       allActions.addAll(StatementManager.getExternalActions(o, tile));
     }
 
@@ -594,7 +594,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   public void setPulsing(boolean pulsing) {
     if (pulsing != isPulsing) {
       isPulsing = pulsing;
-      pipe.getTile().scheduleRenderUpdate();
+      pipe.getBlockEntity().scheduleRenderUpdate();
     }
   }
 
@@ -641,7 +641,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
   @Override
   public BlockEntity getTile() {
-    return pipe.getTile() instanceof BlockEntity be ? be : null;
+    return pipe.getBlockEntity() instanceof BlockEntity be ? be : null;
   }
 
   @Override

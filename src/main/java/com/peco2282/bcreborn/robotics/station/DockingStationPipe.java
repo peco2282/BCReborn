@@ -17,7 +17,7 @@ import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
@@ -41,23 +41,23 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     }
   };
 
-  private IPipeTile pipe;
+  private IPipeBlockEntity pipe;
 
   public DockingStationPipe() {
     super(RoboticsAIType.PIPE);
   }
 
-  public DockingStationPipe(IPipeTile iPipe, Direction side) {
+  public DockingStationPipe(IPipeBlockEntity iPipe, Direction side) {
     super(RoboticsAIType.PIPE, new BlockIndex(iPipe.getPos().getX(), iPipe.getPos().getY(), iPipe.getPos().getZ()), side);
     pipe = iPipe;
     world = iPipe.getWorld();
   }
 
-  public IPipeTile getPipe() {
+  public IPipeBlockEntity getPipe() {
     if (pipe == null) {
       BlockEntity tile = world.getBlockEntity(index().toBlockPos());
-      if (tile instanceof IPipeTile) {
-        pipe = (IPipeTile) tile;
+      if (tile instanceof IPipeBlockEntity) {
+        pipe = (IPipeBlockEntity) tile;
       }
     }
 
@@ -78,7 +78,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
 
   @Override
   public IInjectable getItemOutput() {
-    IPipeTile p = getPipe();
+    IPipeBlockEntity p = getPipe();
     if (p == null || p.getPipeType() != PipeType.ITEM) {
       return null;
     }

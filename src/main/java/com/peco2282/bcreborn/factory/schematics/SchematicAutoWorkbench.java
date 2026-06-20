@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.factory.schematics;
 
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.core.JavaTools;
 import com.peco2282.bcreborn.common.inventory.InventoryIterator;
@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class SchematicAutoWorkbench extends SchematicTile {
+public class SchematicAutoWorkbench extends SchematicBlockEntity {
 
   @Override
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {

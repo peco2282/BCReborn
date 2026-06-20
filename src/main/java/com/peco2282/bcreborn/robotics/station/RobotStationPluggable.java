@@ -20,7 +20,7 @@ import com.peco2282.bcreborn.api.robots.IDockingStationProvider;
 import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.transport.IPipe;
-import com.peco2282.bcreborn.api.transport.IPipeTile;
+import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -62,7 +62,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public ItemStack[] getDropItems(IPipeTile pipe) {
+  public ItemStack[] getDropItems(IPipeBlockEntity pipe) {
     return new ItemStack[]{new ItemStack(RoboticsItems.ROBOT_STATION.get())};
   }
 
@@ -72,7 +72,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public boolean isBlocking(IPipeTile pipe, Direction direction) {
+  public boolean isBlocking(IPipeBlockEntity pipe, Direction direction) {
     return true;
   }
 
@@ -89,7 +89,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public void validate(IPipeTile pipe, Direction direction) {
+  public void validate(IPipeBlockEntity pipe, Direction direction) {
     if (!isValid && !pipe.getWorld().isClientSide) {
       if (RobotManager.registry() != null) {
         station = (DockingStationPipe)
@@ -123,7 +123,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public void update(IPipeTile pipe, Direction direction) {
+  public void update(IPipeBlockEntity pipe, Direction direction) {
     if (pipe.getWorld().isClientSide) return;
     RobotStationState oldState = renderState;
     refreshRenderState();

@@ -17,9 +17,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
-public class RenderBuilderTile implements BlockEntityRenderer<BuilderBlockEntity> {
+public class RenderBuilderBlockEntity implements BlockEntityRenderer<BuilderBlockEntity> {
 
-  public RenderBuilderTile(BlockEntityRendererProvider.Context context) {
+  public RenderBuilderBlockEntity(BlockEntityRendererProvider.Context context) {
   }
 
   @Override

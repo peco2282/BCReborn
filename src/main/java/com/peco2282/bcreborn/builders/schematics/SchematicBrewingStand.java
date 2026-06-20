@@ -12,9 +12,9 @@
 package com.peco2282.bcreborn.builders.schematics;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
-import com.peco2282.bcreborn.api.blueprints.SchematicTile;
+import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 
-public class SchematicBrewingStand extends SchematicTile {
+public class SchematicBrewingStand extends SchematicBlockEntity {
   @Override
   public void initializeFromObjectAt(IBuilderContext context, int x, int y, int z) {
     super.initializeFromObjectAt(context, x, y, z);
