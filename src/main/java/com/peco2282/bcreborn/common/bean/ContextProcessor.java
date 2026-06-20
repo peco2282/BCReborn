@@ -111,9 +111,20 @@ public class ContextProcessor {
 
   @SuppressWarnings("unchecked")
   private <P extends CustomPacket> void processPacket(Class<P> cls, NetworkDirection direction, SimpleChannel channel, int id) {
+    final Method decodeMethod;
+    try {
+      decodeMethod = cls.getDeclaredMethod("decode", FriendlyByteBuf.class);
+    } catch (NoSuchMethodException e) {
+      var msg = """
+          @Packet annotated class must have a static decode(FriendlyByteBuf) method
+          """;
+      log.error("Packet class {} must have a static decode(FriendlyByteBuf) method", cls.getName(), e);
+
+      throw new RuntimeException(msg, e);
+    }
+
     Function<FriendlyByteBuf, P> decoder = buf -> {
       try {
-        Method decodeMethod = cls.getDeclaredMethod("decode", FriendlyByteBuf.class);
         return (P) decodeMethod.invoke(null, buf);
       } catch (Exception e) {
         var msg = """
