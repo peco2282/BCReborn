@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.factory.block.TankBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder.FaceRotation;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -227,5 +228,20 @@ public class FactoryBlockStateProvider extends BCBlockStateHelper {
       .end()
       .end()
     );
+
+     simpleBlockWithItem(FactoryBlocks.PLAIN_PIPE.get(), models().getBuilder("block/plain_pipe")
+      .texture("particle", modLoc("block/plain_pipe_block/default"))
+      .element()
+      .from(4, 0, 4)
+      .to(12, 16, 12)
+      .face(Direction.NORTH).texture("#texture").uvs(4, 0, 12, 16).end()
+      .face(Direction.SOUTH).texture("#texture").uvs(4, 0, 12, 16).end()
+      .face(Direction.EAST).texture("#texture").uvs(4, 0, 12, 16).end()
+      .face(Direction.WEST).texture("#texture").uvs(4, 0, 12, 16).end()
+      .face(Direction.UP).texture("#texture").uvs(4, 4, 12, 12).end()
+      .face(Direction.DOWN).texture("#texture").uvs(4, 4, 12, 12).end()
+      .end()
+      .renderType("cutout")
+      .texture("texture", modLoc("block/plain_pipe_block/default")));
   }
 }
