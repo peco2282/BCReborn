@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildcraft.iml" filepath="$PROJECT_DIR$/.idea/modules/buildcraft.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildcraft.main.iml" filepath="$PROJECT_DIR$/.idea/modules/buildcraft.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildcraft.test.iml" filepath="$PROJECT_DIR$/.idea/modules/buildcraft.test.iml" />
     </modules>
