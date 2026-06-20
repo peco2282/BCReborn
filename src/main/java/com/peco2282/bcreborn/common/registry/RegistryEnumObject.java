@@ -24,9 +24,6 @@ public class RegistryEnumObject<E extends Enum<E> & StringRepresentable, V> exte
 
   private RegistryEnumObject(Class<E> keyType, Function<E, String> nameMaker, Function<E, V> valueMaker, BiFunction<String, Supplier<V>, RegistryObject<V>> registerer) {
     super(keyType);
-    if (keyType == null) {
-      throw new IllegalArgumentException("Key type cannot be null");
-    }
     if (!keyType.isEnum()) {
       throw new IllegalArgumentException("Key type must be an enum");
     }

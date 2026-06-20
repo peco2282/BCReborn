@@ -38,18 +38,13 @@ public class SchematicMetadataMask extends SchematicBlock {
 
   @Override
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
-    if (state != null) {
-      storedRequirements = new ItemStack[1];
-      storedRequirements[0] = new ItemStack(state.getBlock());
-    }
+    storedRequirements = new ItemStack[1];
+    storedRequirements[0] = new ItemStack(state.getBlock());
   }
 
   @Override
   public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    if (state != null) {
-      BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-      return state.getBlock() == worldState.getBlock();
-    }
-    return false;
+    BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
+    return state.getBlock() == worldState.getBlock();
   }
 }

@@ -19,7 +19,7 @@ public class SimpleFluidFilter implements IFluidFilter {
   private Fluid fluidChecked;
 
   public SimpleFluidFilter(FluidStack stack) {
-    if (stack != null) {
+    if (!stack.isEmpty()) {
       fluidChecked = stack.getFluid();
     }
   }

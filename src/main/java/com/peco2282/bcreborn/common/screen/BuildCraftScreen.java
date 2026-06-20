@@ -34,8 +34,7 @@ public abstract class BuildCraftScreen<M extends BuildCraftMenu<M>> extends Abst
 
   public void drawTexturedModalRect(GuiGraphics guiGraphics, int x, int y, int u, int v, int width, int height) {
     ResourceLocation texture = getMenuTexture();
-    if (texture != null)
-      guiGraphics.blit(texture, x, y, u, v, width, height);
+    guiGraphics.blit(texture, x, y, u, v, width, height);
   }
 
   @Override

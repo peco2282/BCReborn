@@ -75,15 +75,6 @@ public class BptBuilderBlueprint extends BptBuilderBase {
           if (!isLocationUsed(xCoord, yCoord, zCoord)) {
             SchematicBlock slot = (SchematicBlock) blueprint.get(i, j, k);
 
-            if (slot == null && !blueprint.excavate) {
-              continue;
-            }
-
-            if (slot == null) {
-              slot = new SchematicBlock();
-              slot.state = Blocks.AIR.defaultBlockState();
-            }
-
             if (!SchematicRegistry.INSTANCE.isSupported(slot.state)) {
               continue;
             }
@@ -119,10 +110,6 @@ public class BptBuilderBlueprint extends BptBuilderBase {
           int zCoord = k + z - blueprint.anchorZ;
 
           SchematicBlock slot = (SchematicBlock) blueprint.get(i, j, k);
-
-          if (slot == null) {
-            continue;
-          }
 
           if (!SchematicRegistry.INSTANCE.isSupported(slot.state)) {
             continue;
@@ -254,9 +241,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       BuildingSlot slot = internalGetNextBlock(world, null);
       checkDone();
 
-      if (slot != null) {
-        slot.reserved = true;
-      }
+      slot.reserved = true;
 
       return slot;
     }
@@ -265,25 +250,23 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   private void addToBuildList(BuildingSlotBlock b) {
-    if (b != null) {
-      BuilderItemMetaPair imp = new BuilderItemMetaPair(context, b);
-      if (!buildList.containsKey(imp)) {
-        buildList.put(imp, new ArrayList<>());
-      }
-      buildList.get(imp).add(b);
+    BuilderItemMetaPair imp = new BuilderItemMetaPair(context, b);
+    if (!buildList.containsKey(imp)) {
+      buildList.put(imp, new ArrayList<>());
+    }
+    buildList.get(imp).add(b);
 
-      if (buildStageOccurences == null) {
-        buildStageOccurences = new int[Math.max(3, b.buildStage + 1)];
-      } else if (buildStageOccurences.length <= b.buildStage) {
-        int[] newBSO = new int[b.buildStage + 1];
-        System.arraycopy(buildStageOccurences, 0, newBSO, 0, buildStageOccurences.length);
-        buildStageOccurences = newBSO;
-      }
-      buildStageOccurences[b.buildStage]++;
+    if (buildStageOccurences == null) {
+      buildStageOccurences = new int[Math.max(3, b.buildStage + 1)];
+    } else if (buildStageOccurences.length <= b.buildStage) {
+      int[] newBSO = new int[b.buildStage + 1];
+      System.arraycopy(buildStageOccurences, 0, newBSO, 0, buildStageOccurences.length);
+      buildStageOccurences = newBSO;
+    }
+    buildStageOccurences[b.buildStage]++;
 
-      if (b.mode == Mode.Build) {
-        requirementMap.add(b, context);
-      }
+    if (b.mode == Mode.Build) {
+      requirementMap.add(b, context);
     }
   }
 
@@ -306,7 +289,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   protected boolean readyForSlotLookup(AbstractBuilderBlockEntity builder) {
-    return builder == null || builder.energyAvailable() >= BuilderAPI.BREAK_ENERGY;
+    return builder.energyAvailable() >= BuilderAPI.BREAK_ENERGY;
   }
 
   /**
@@ -386,10 +369,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               iterator.remove();
               markLocationUsed(slot.x, slot.y, slot.z);
             } else {
-              if (builder == null) {
-                createDestroyItems(slot);
-                return slot;
-              } else if (canDestroy(builder, context, slot)) {
+              if (canDestroy(builder, context, slot)) {
                 consumeEnergyToDestroy(builder, slot);
                 createDestroyItems(slot);
 
@@ -399,9 +379,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               }
             }
           } else if (!slot.schematic.doNotBuild()) {
-            if (builder == null) {
-              return slot;
-            } else if (checkRequirements(builder, slot.schematic)) {
+            if (checkRequirements(builder, slot.schematic)) {
               if (!BuildCraftAPI.isSoftBlock(world, slot.x, slot.y,
                 slot.z) || requirementMap.contains(new BlockIndex(slot.x, slot.y, slot.z))) {
                 continue; // Can't build yet, wait (#2751)
@@ -512,7 +490,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
         }
 
         ItemStack invStk = slotInv.getStackInSlot();
-        if (invStk == null || invStk.isEmpty()) {
+        if (invStk.isEmpty()) {
           continue;
         }
 

@@ -45,9 +45,6 @@ public class PatternBox extends FillerPattern {
 
   @Override
   public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-    if (parameters == null || parameters.length == 0) {
-      parameters = this.parameters;
-    }
     Template result = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
 
     int xMin = 0;

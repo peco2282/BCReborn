@@ -58,15 +58,15 @@ public final class Utils {
   }
 
   public static boolean isRegistered(Block block) {
-    return block != null && BuiltInRegistries.BLOCK.containsKey(BuiltInRegistries.BLOCK.getKey(block));
+    return BuiltInRegistries.BLOCK.containsKey(BuiltInRegistries.BLOCK.getKey(block));
   }
 
   public static boolean isRegistered(Item item) {
-    return item != null && BuiltInRegistries.ITEM.containsKey(BuiltInRegistries.ITEM.getKey(item));
+    return BuiltInRegistries.ITEM.containsKey(BuiltInRegistries.ITEM.getKey(item));
   }
 
   public static boolean isRegistered(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
+    if (stack.isEmpty()) {
       return false;
     }
     return isRegistered(stack.getItem());
@@ -88,7 +88,7 @@ public final class Utils {
 
       BlockEntity tileInventory = BlockUtils.getTileEntity(world, neighbor);
       ITransactor transactor = Transactor.getTransactorFor(tileInventory);
-      if (transactor != null && !(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
+      if (!(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
         ItemStack added = transactor.add(stack, orientation.getOpposite(), true);
         if (!added.isEmpty()) {
           return added.getCount();
@@ -103,7 +103,7 @@ public final class Utils {
     List<Direction> pipeDirections = new ArrayList<>();
 
     for (Direction side : Direction.values()) {
-      if (from == null || from.getOpposite() == side) {
+      if (from.getOpposite() == side) {
         continue;
       }
 
@@ -132,7 +132,7 @@ public final class Utils {
   }
 
   public static void dropTryIntoPlayerInventory(Level world, BlockPos pos, ItemStack stack, Player player) {
-    if (player != null && player.getInventory().add(stack)) {
+    if (player.getInventory().add(stack)) {
       if (player instanceof ServerPlayer serverPlayer) {
         serverPlayer.containerMenu.broadcastChanges();
       }

@@ -110,7 +110,7 @@ public class BlockMiner {
       if (!breakEvent.isCanceled()) {
         List<ItemStack> stacks = BlockUtils.getItemStackFromBlock((ServerLevel) world, pos);
 
-        if (stacks != null) {
+        if (!stacks.isEmpty()) {
           for (ItemStack s : stacks) {
             if (s != null) {
               mineStack(s);

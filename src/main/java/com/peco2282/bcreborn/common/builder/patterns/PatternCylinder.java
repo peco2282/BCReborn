@@ -60,9 +60,6 @@ public class PatternCylinder extends FillerPattern {
 
   @Override
   public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-    if (parameters == null || parameters.length == 0) {
-      parameters = this.parameters;
-    }
     Template result = new Template(box.sizeX(), box.sizeY(), box.sizeZ());
     boolean filled = parameters.length > 0 && parameters[0] instanceof PatternParameterHollow
       && ((PatternParameterHollow) parameters[0]).filled;

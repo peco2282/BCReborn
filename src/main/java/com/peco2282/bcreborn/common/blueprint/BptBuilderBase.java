@@ -113,20 +113,17 @@ public abstract class BptBuilderBase implements IAreaProvider {
                            double z) {
     initialize();
 
-    if (slot != null) {
-      slot.built = true;
-      BuildingItem i = new BuildingItem();
-      i.origin = new Position(x, y, z);
-      i.destination = slot.getDestination();
-      i.slotToBuild = slot;
-      i.context = getContext();
-      i.setStacksToDisplay(slot.getStacksToDisplay());
-      builder.addAndLaunchBuildingItem(i);
+    slot.built = true;
+    BuildingItem i = new BuildingItem();
+    i.origin = new Position(x, y, z);
+    i.destination = slot.getDestination();
+    i.slotToBuild = slot;
+    i.context = getContext();
+    i.setStacksToDisplay(slot.getStacksToDisplay());
+    builder.addAndLaunchBuildingItem(i);
 
-      return true;
-    }
+    return true;
 
-    return false;
   }
 
   public BuildingSlot reserveNextSlot(Level world) {
