@@ -35,12 +35,17 @@ import org.jetbrains.annotations.Nullable;
 public class BlueprintLibraryBlock extends BuildCraftBlock {
   public BlueprintLibraryBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 0).strength(5.0F));
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
-  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-    p_49915_.add(FACING);
+  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(HORIZONTAL_FACING);
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 
   @Override
