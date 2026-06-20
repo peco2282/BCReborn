@@ -46,12 +46,12 @@ public class ConstructionMarkerBlock extends MarkerBlock {
 
   public ConstructionMarkerBlock(Properties properties) {
     super(properties);
-    this.registerDefaultState(this.getStateDefinition().any().setValue(MarkerBlock.FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(MarkerBlock.FACING);
+    builder.add(FACING);
   }
 
   @Override

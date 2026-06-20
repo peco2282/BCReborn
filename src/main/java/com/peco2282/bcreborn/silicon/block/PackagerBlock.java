@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.block.entity.PackagerBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public class PackagerBlock extends BuildCraftBlock {
   public PackagerBlock() {
     super(Properties.of().strength(10F));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
@@ -62,5 +64,6 @@ public class PackagerBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(FACING);
   }
 }

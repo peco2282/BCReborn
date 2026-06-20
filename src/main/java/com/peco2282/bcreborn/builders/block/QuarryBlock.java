@@ -25,12 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
 public class QuarryBlock extends BuildCraftBlock {
-  public static final DirectionProperty FACING = DirectionProperty.create("facing");
-
   public QuarryBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 1));
     this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));

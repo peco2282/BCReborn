@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class MiningWellBlock extends BuildCraftBlock {
   public MiningWellBlock() {
     super(Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(5.0F, 10.0F));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
@@ -64,5 +66,6 @@ public class MiningWellBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(FACING);
   }
 }

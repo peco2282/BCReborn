@@ -31,15 +31,12 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BuilderBlock extends BuildCraftBlock {
-  public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
-
   public BuilderBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 1));
     this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
