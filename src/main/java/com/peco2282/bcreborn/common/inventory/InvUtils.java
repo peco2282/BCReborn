@@ -208,7 +208,7 @@ public final class InvUtils {
    * Ensures that the given inventory is the full inventory, i.e. takes double
    * chests into account.
    *
-   * @param inv
+   * @param inv The inventory to check.
    * @return Modified inventory if double chest, unmodified otherwise.
    */
   public static Container getInventory(Container inv) {
