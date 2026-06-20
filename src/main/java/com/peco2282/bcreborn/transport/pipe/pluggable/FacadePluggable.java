@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.transport.IPipeTile;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
+import com.peco2282.bcreborn.transport.item.FacadeItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -87,9 +88,7 @@ public class FacadePluggable extends PipePluggable<FacadePluggable> {
   @Override
   public ItemStack[] getDropItems(IPipeTile pipe) {
     ItemStack stack = new ItemStack(TransportItems.FACADE.get());
-    CompoundTag nbt = stack.getOrCreateTagElement("facade");
-    nbt.put("state", NbtUtils.writeBlockState(state));
-    nbt.putBoolean("hollow", hollow);
+    TransportItems.FACADE.get().setFacadeStates(stack, new FacadeItem.FacadeState[]{new FacadeItem.FacadeState(state, null, hollow)});
     return new ItemStack[]{stack};
   }
 
