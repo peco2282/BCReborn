@@ -98,9 +98,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final LazyOptional<IFluidHandler> fluidHandlerCap;
   private final LazyOptional<IEnergyStorage> energyCap;
   private final boolean[] wireSignals = new boolean[4];
-  protected PipeType transportType;
-  protected PipeMaterial pipeMaterial;
-  protected int ticksSincePull = 0;
+  private PipeType transportType;
+  private PipeMaterial pipeMaterial;
+  private int ticksSincePull = 0;
   // 流体流入方向を記録するためのラッパー（逆流防止用）
   @Nullable
   private PipeFluidHandler pipeFluidHandler = null;
