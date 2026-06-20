@@ -59,4 +59,9 @@ public abstract class BuildCraftBlock extends BaseEntityBlock implements IRotata
   public boolean isHorizontalRotatable() {
     return false;
   }
+
+  @Override
+  public @Nullable DirectionProperty getDirectionProperty() {
+    return isHorizontalRotatable() ? HORIZONTAL_FACING : isRotatable() ? FACING : null;
+  }
 }

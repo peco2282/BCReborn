@@ -11,6 +11,11 @@
  */
 package com.peco2282.bcreborn.api.blocks;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Interface for blocks that can be rotated with a Wrench.
  * <p>
@@ -44,4 +49,24 @@ public interface IRotatable {
    * @return {@code true} if the block can be rotated horizontally with a Wrench, {@code false} otherwise
    */
   boolean isHorizontalRotatable();
+
+  /**
+   * Returns the DirectionProperty used for storing the block's orientation.
+   * <p>
+   * This method provides access to the {@link DirectionProperty} that is used to store
+   * and manage the block's current facing direction in its {@link BlockState}. The returned
+   * property depends on the rotation capabilities of the block:
+   * </p>
+   * <ul>
+   *   <li>If {@link #isHorizontalRotatable()} returns {@code true}, this should return a
+   *       horizontal direction property (e.g., {@link BlockStateProperties#HORIZONTAL_FACING}).</li>
+   *   <li>If {@link #isRotatable()} returns {@code true}, this should return a full direction
+   *       property (e.g., {@link BlockStateProperties#FACING}).</li>
+   *   <li>If the block is not rotatable, this may return {@code null}.</li>
+   * </ul>
+   *
+   * @return the {@link DirectionProperty} for this block's orientation, or {@code null} if the block
+   * does not support rotation or does not use a direction property
+   */
+  @Nullable DirectionProperty getDirectionProperty();
 }
