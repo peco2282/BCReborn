@@ -167,15 +167,6 @@ public final class StatementManager {
     return PARAMETERS.containsKey(kind) ? PARAMETERS.get(kind).parameter() : null;
   }
 
-  private static IStatementParameter createParameter(Class<? extends IStatementParameter> param) {
-    try {
-      return param.getDeclaredConstructor().newInstance();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   @OnlyIn(Dist.CLIENT)
   public static void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
     for (IStatement statement : STATEMENTS.values()) {
