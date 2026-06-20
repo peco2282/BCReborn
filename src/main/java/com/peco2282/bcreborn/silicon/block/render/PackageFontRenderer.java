@@ -28,16 +28,7 @@ public class PackageFontRenderer extends Font {
   private final Pattern stringPattern = Pattern.compile("^\\{\\{BC_PACKAGE_SPECIAL:([0-2])}}$");
 
   public PackageFontRenderer(ItemStack packageStack) {
-    super(text -> {
-      try {
-        var field = Font.class.getDeclaredField("fonts");
-        field.setAccessible(true);
-        @SuppressWarnings("unchecked") Function<ResourceLocation, FontSet> func = (Function<ResourceLocation, FontSet>) field.get(Minecraft.getInstance().font);
-        return func.apply(text);
-      } catch (Exception e) {
-        return null;
-      }
-    }, false);
+    super(Minecraft.getInstance().font::getFontSet, false);
     this.pkgTag = packageStack.getOrCreateTag();
   }
 
