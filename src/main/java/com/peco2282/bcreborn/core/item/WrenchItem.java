@@ -11,12 +11,16 @@
  */
 package com.peco2282.bcreborn.core.item;
 
+import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.api.blocks.IRotatable;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
-import com.peco2282.bcreborn.core.util.IWrench;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class WrenchItem extends BuildCraftItem implements IWrench {
+public class WrenchItem extends BuildCraftItem implements IToolWrench {
   public WrenchItem(Item.Properties properties) {
     super(properties);
   }
@@ -24,6 +28,19 @@ public class WrenchItem extends BuildCraftItem implements IWrench {
   @Override
   public boolean canWrench(Player player, int x, int y, int z) {
     return true;
+  }
+
+  @Override
+  public InteractionResult useOn(UseOnContext p_41427_) {
+    BlockState state = p_41427_.getLevel().getBlockState(p_41427_.getHitResult().getBlockPos());
+    if (state.getBlock() instanceof IRotatable rotatable && (rotatable.isHorizontalRotatable() || rotatable.isRotatable())) {
+      var prop = rotatable.getDirectionProperty();
+      if (prop != null) {
+        p_41427_.getLevel().setBlock(p_41427_.getHitResult().getBlockPos(), state.cycle(prop), 3);
+      }
+      return InteractionResult.sidedSuccess(p_41427_.getLevel().isClientSide);
+    }
+    return super.useOn(p_41427_);
   }
 
   @Override
