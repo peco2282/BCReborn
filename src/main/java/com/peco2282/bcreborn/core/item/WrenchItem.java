@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.core.item;
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.api.blocks.IRotatable;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,7 +27,7 @@ public class WrenchItem extends BuildCraftItem implements IToolWrench {
   }
 
   @Override
-  public boolean canWrench(Player player, int x, int y, int z) {
+  public boolean canWrench(Player player, BlockPos pos) {
     return true;
   }
 
@@ -44,6 +45,6 @@ public class WrenchItem extends BuildCraftItem implements IToolWrench {
   }
 
   @Override
-  public void wrenchUsed(Player player, int x, int y, int z) {
+  public void wrenchUsed(Player player, BlockPos pos) {
   }
 }
