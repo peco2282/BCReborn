@@ -31,4 +31,17 @@ public interface IRotatable {
    * @return {@code true} if the block can be rotated with a Wrench, {@code false} otherwise
    */
   boolean isRotatable();
+
+  /**
+   * Determines if this block can be rotated horizontally using a Wrench.
+   * <p>
+   * When this method returns {@code true}, the block can only be rotated on the horizontal plane
+   * (around the Y-axis) using a Wrench tool. This restricts rotation to the four horizontal
+   * directions (NORTH, SOUTH, EAST, WEST) and prevents vertical orientations (UP, DOWN).
+   * When it returns {@code false}, horizontal-only rotation is disabled for this block.
+   * </p>
+   *
+   * @return {@code true} if the block can be rotated horizontally with a Wrench, {@code false} otherwise
+   */
+  boolean isHorizontalRotatable();
 }

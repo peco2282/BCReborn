@@ -88,29 +88,29 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
 
     getVariantBuilder(BuildersBlock.ARCHITECT.get())
       .forAllStates(state -> {
-        Direction dir = state.getValue(ArchitectBlock.FACING);
+        Direction dir = state.getValue(ArchitectBlock.HORIZONTAL_FACING);
         return ConfiguredModel.builder()
           .modelFile(models().getExistingFile(architect))
-          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
-          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .rotationX(0)
+          .rotationY((((int) dir.toYRot()) + 180) % 360)
           .build();
       });
     getVariantBuilder(BuildersBlock.BUILDER.get())
       .forAllStates(state -> {
-        Direction dir = state.getValue(BuilderBlock.FACING);
+        Direction dir = state.getValue(BuilderBlock.HORIZONTAL_FACING);
         return ConfiguredModel.builder()
           .modelFile(models().getExistingFile(builder))
-          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
-          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .rotationX(0)
+          .rotationY((((int) dir.toYRot()) + 180) % 360)
           .build();
       });
     getVariantBuilder(BuildersBlock.FILLER.get())
       .forAllStates(state -> {
-        Direction dir = state.getValue(FillerBlock.FACING);
+        Direction dir = state.getValue(FillerBlock.HORIZONTAL_FACING);
         return ConfiguredModel.builder()
           .modelFile(models().getExistingFile(filler))
-          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
-          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .rotationX(0)
+          .rotationY((((int) dir.toYRot()) + 180) % 360)
           .build();
       });
     getVariantBuilder(BuildersBlock.BLUEPRINT_LIBRARY.get())
@@ -124,11 +124,11 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
       });
     getVariantBuilder(BuildersBlock.QUARRY.get())
       .forAllStates(state -> {
-        Direction dir = state.getValue(QuarryBlock.FACING);
+        Direction dir = state.getValue(QuarryBlock.HORIZONTAL_FACING);
         return ConfiguredModel.builder()
           .modelFile(models().getExistingFile(quarry))
-          .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
-          .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+          .rotationX(0)
+          .rotationY((((int) dir.toYRot()) + 180) % 360)
           .build();
       });
 

@@ -35,12 +35,22 @@ import org.jetbrains.annotations.Nullable;
 public class ZonePlanBlock extends BuildCraftBlock {
   public ZonePlanBlock(Properties properties) {
     super(properties);
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
+    builder.add(HORIZONTAL_FACING);
+  }
+
+  @Override
+  public boolean isRotatable() {
+    return false;
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 
   @Nullable

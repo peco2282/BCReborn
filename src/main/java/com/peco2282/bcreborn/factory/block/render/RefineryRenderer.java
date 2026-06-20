@@ -75,7 +75,7 @@ public class RefineryRenderer implements BlockEntityRenderer<RefineryBlockEntity
     poseStack.translate(0.5, 0.5, 0.5);
     poseStack.scale(0.99F, 0.99F, 0.99F);
 
-    Direction facing = blockEntity.getBlockState().getValue(RefineryBlock.FACING);
+    Direction facing = blockEntity.getBlockState().getValue(RefineryBlock.HORIZONTAL_FACING);
     float angle = facing.toYRot();
     poseStack.mulPose(Axis.YP.rotationDegrees(-angle));
 
