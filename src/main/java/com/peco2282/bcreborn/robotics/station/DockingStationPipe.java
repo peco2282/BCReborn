@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 
@@ -31,12 +32,12 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
 
   private final IInjectable injectablePipe = new IInjectable() {
     @Override
-    public boolean canInjectItems(Direction from) {
+    public boolean canInjectItems(@Nullable Direction from) {
       return true;
     }
 
     @Override
-    public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
+    public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color) {
       return 0;
     }
   };
@@ -53,6 +54,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     world = iPipe.getWorld();
   }
 
+  @Nullable
   public IPipeBlockEntity getPipe() {
     if (pipe == null) {
       BlockEntity tile = world.getBlockEntity(index().toBlockPos());
@@ -62,9 +64,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     }
 
     if (pipe == null || ((BlockEntity) pipe).isRemoved()) {
-      if (RobotManager.registry() != null) {
-        RobotManager.registry().getRegistry(world).removeStation(this);
-      }
+      RobotManager.registry().getRegistry(world).removeStation(this);
       pipe = null;
     }
 
@@ -76,6 +76,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     return Collections.emptyList();
   }
 
+  @Nullable
   @Override
   public IInjectable getItemOutput() {
     IPipeBlockEntity p = getPipe();
@@ -91,6 +92,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     return side != null ? side.getOpposite() : Direction.UP;
   }
 
+  @Nullable
   @Override
   public Container getItemInput() {
     return null;
@@ -116,6 +118,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
     return ItemStack.EMPTY;
   }
 
+  @Nullable
   @Override
   public ItemStack offerItem(int slot, ItemStack stack) {
     return stack;

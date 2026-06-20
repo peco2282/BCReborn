@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.blueprints;
 
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -21,6 +22,7 @@ public abstract class SchematicFactory<S extends Schematic> {
 
   private static final HashMap<Class<? extends Schematic>, SchematicFactory<?>> schematicToFactory = new HashMap<>();
 
+  @Nullable
   public static Schematic createSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
     throws MappingNotFoundException {
     String factoryName = nbt.getString("factoryID");
@@ -37,6 +39,7 @@ public abstract class SchematicFactory<S extends Schematic> {
     factories.put(factory.getClass().getCanonicalName(), factory);
   }
 
+  @Nullable
   public static SchematicFactory<?> getFactory(Class<?> clas) {
     Class<?> superClass = clas.getSuperclass();
 
@@ -49,6 +52,7 @@ public abstract class SchematicFactory<S extends Schematic> {
     }
   }
 
+  @Nullable
   protected abstract S loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
     throws MappingNotFoundException;
 

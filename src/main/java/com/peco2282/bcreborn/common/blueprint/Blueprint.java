@@ -77,12 +77,7 @@ public class Blueprint extends BlueprintBase {
 
     BlockState state = context.world().getBlockState(pos);
 
-    SchematicBlock slot = SchematicRegistry.INSTANCE.createSchematicBlock(
-      context.world().getBlockState(pos).getBlock(), state);
-
-    if (slot == null) {
-      return;
-    }
+    SchematicBlock slot = SchematicRegistry.INSTANCE.createSchematicBlock(state);
 
     int posX = (int) (x - context.surroundingBox().pMin().x);
     int posY = (int) (y - context.surroundingBox().pMin().y);

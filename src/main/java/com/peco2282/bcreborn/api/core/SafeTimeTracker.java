@@ -103,10 +103,6 @@ public class SafeTimeTracker {
    * @return {@code true} if the delay has passed and time was marked, {@code false} otherwise.
    */
   public boolean markTimeIfDelay(Level world) {
-    if (world == null) {
-      return false;
-    }
-
     long currentTime = world.getGameTime();
 
     if (currentTime < lastMark) {

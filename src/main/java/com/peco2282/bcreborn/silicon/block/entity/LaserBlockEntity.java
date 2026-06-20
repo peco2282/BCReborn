@@ -200,7 +200,7 @@ public class LaserBlockEntity extends BuildCraftBlockEntity implements IHasWork,
   }
 
   protected void sendNetworkUpdate() {
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }

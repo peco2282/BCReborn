@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ public abstract class StatementSlot extends AdvancedSlot {
     this.slot = slot;
   }
 
+  @Nullable
   @Override
   public String getDescription() {
     IStatement stmt = getStatement();
@@ -43,6 +45,7 @@ public abstract class StatementSlot extends AdvancedSlot {
     }
   }
 
+  @Nullable
   @OnlyIn(Dist.CLIENT)
   @Override
   public TextureAtlasSprite getIcon() {
@@ -60,6 +63,7 @@ public abstract class StatementSlot extends AdvancedSlot {
     return getStatement() != null;
   }
 
+  @Nullable
   public abstract IStatement getStatement();
 
   @Override

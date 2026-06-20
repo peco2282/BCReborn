@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -65,7 +66,7 @@ public class SchematicAutoWorkbench extends SchematicBlockEntity {
     if (autoWb != null) {
       for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
         ItemStack stack = slot.getStackInSlot();
-        if (stack != null) {
+        if (!stack.isEmpty()) {
           stack.setCount(1);
         }
       }
@@ -77,6 +78,7 @@ public class SchematicAutoWorkbench extends SchematicBlockEntity {
     return BuildingStage.STANDALONE;
   }
 
+  @Nullable
   private AutoWorkbenchBlockEntity getTile(IBuilderContext context, BlockPos pos) {
     BlockEntity tile = context.world().getBlockEntity(pos);
     if (tile instanceof AutoWorkbenchBlockEntity autoWork) {

@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for all robot entities.
@@ -86,6 +87,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The linked docking station.
    */
+  @Nullable
   public abstract DockingStation<?> getLinkedStation();
 
   /**
@@ -145,6 +147,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The docking station, or {@code null} if not docked.
    */
+  @Nullable
   public abstract DockingStation<?> getDockingStation();
 
   /**
@@ -164,6 +167,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The work zone.
    */
+  @Nullable
   public abstract IZone getZoneToWork();
 
   /**
@@ -171,6 +175,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The load/unload zone.
    */
+  @Nullable
   public abstract IZone getZoneToLoadUnload();
 
   /**

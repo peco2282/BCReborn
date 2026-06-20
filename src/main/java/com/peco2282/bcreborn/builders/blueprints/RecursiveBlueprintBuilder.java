@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.blueprint.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,7 @@ public class RecursiveBlueprintBuilder {
     dir = iDir;
   }
 
+  @Nullable
   public BptBuilderBase nextBuilder() {
     if (!returnedThis) {
       blueprint = blueprint.adjustToWorld(world, x, y, z, dir);

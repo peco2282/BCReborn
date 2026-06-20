@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -76,6 +77,7 @@ public abstract class BCStatement implements IStatement {
     return this;
   }
 
+  @Nullable
   @Override
   public IStatementParameter createParameter(int index) {
     return null;

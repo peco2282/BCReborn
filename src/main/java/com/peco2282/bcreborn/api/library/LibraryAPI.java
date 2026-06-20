@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.library;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +31,7 @@ public final class LibraryAPI {
     handlers.add(handler);
   }
 
+  @Nullable
   public static LibraryTypeHandler getHandlerFor(String extension) {
     for (LibraryTypeHandler h : handlers) {
       if (h.isInputExtension(extension)) {

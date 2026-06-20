@@ -35,15 +35,11 @@ public class SchematicFactoryBlock extends SchematicFactory<SchematicBlock> {
 
       return s;
     } else {
-      SchematicBlock s = SchematicRegistry.INSTANCE.createSchematicBlock(b, registry.readBlockStateFromNBT(nbt));
+      SchematicBlock s = SchematicRegistry.INSTANCE.createSchematicBlock(registry.readBlockStateFromNBT(nbt));
 
-      if (s != null) {
-        s.readSchematicFromNBT(nbt, registry);
-        return s;
-      }
+      s.readSchematicFromNBT(nbt, registry);
+      return s;
     }
-
-    return null;
   }
 
   @Override

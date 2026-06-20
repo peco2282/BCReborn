@@ -18,10 +18,12 @@ import com.peco2282.bcreborn.api.blueprints.SchematicEntity;
 import com.peco2282.bcreborn.api.blueprints.SchematicFactory;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 public class SchematicFactoryEntity extends SchematicFactory<SchematicEntity> {
 
   @Override
+  @Nullable
   protected SchematicEntity loadSchematicFromWorldNBT(CompoundTag nbt, MappingRegistry registry)
     throws MappingNotFoundException {
     int entityId = nbt.getInt("entityId");

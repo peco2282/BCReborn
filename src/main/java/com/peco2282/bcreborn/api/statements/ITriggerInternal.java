@@ -11,8 +11,10 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface ITriggerInternal extends IStatement {
 
-  boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters);
+  boolean isTriggerActive(@Nullable IStatementContainer source, IStatementParameter[] parameters);
 
 }

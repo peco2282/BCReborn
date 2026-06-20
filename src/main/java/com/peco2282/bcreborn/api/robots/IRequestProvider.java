@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.robots;
 
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for objects that can provide and fulfill item requests.
@@ -39,5 +40,6 @@ public interface IRequestProvider {
    * @param stack The item stack being offered.
    * @return The remaining item stack after the offer is processed.
    */
+  @Nullable
   ItemStack offerItem(int slot, ItemStack stack);
 }

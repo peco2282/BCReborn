@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.robotics.statements;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.items.IMapLocation;
+import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IRobotRegistry;
 import com.peco2282.bcreborn.api.robots.RobotManager;
@@ -63,7 +64,7 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
     for (DockingStation<?> station : stations) {
       if (station.robotTaking() != null) {
         RobotEntity robot = (RobotEntity) station.robotTaking();
-        Object ai = robot.getOverridingAI();
+        AIRobot<?> ai = robot.getOverridingAI();
 
         if (ai != null) {
           continue;

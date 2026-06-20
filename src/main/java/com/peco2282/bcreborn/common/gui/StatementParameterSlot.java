@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
 import com.peco2282.bcreborn.common.screen.AdvancedInterfaceScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by asie on 1/24/15.
@@ -52,25 +53,21 @@ public abstract class StatementParameterSlot extends AdvancedSlot {
   @Override
   public ItemStack getItemStack() {
     IStatementParameter parameter = getParameter();
-
     if (parameter != null) {
       return parameter.getItemStack();
     } else {
-      return null;
+      return ItemStack.EMPTY;
     }
   }
 
+  @Nullable
   @Override
   public TextureAtlasSprite getIcon() {
     IStatementParameter parameter = getParameter();
-
-    if (parameter != null) {
-      return parameter.getIcon();
-    } else {
-      return null;
-    }
+    return parameter != null ? parameter.getIcon() : null;
   }
 
+  @Nullable
   public abstract IStatementParameter getParameter();
 
   public boolean isAllowed() {

@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface representing a pipe's block entity.
@@ -45,6 +46,7 @@ public interface IPipeBlockEntity extends IInjectable {
    *
    * @return The {@link BlockPos}.
    */
+  @Nullable
   BlockPos getPos();
 
   /**
@@ -61,6 +63,7 @@ public interface IPipeBlockEntity extends IInjectable {
    * @param dir The direction.
    * @return The {@link Block}.
    */
+  @Nullable
   Block getNeighborBlock(Direction dir);
 
   /**
@@ -69,6 +72,7 @@ public interface IPipeBlockEntity extends IInjectable {
    * @param dir The direction.
    * @return The {@link BlockEntity}.
    */
+  @Nullable
   BlockEntity getNeighborBlockEntity(Direction dir);
 
   /**
@@ -77,6 +81,7 @@ public interface IPipeBlockEntity extends IInjectable {
    * @param dir The direction.
    * @return The {@link IPipe}, or null if not a pipe.
    */
+  @Nullable
   IPipe getNeighborPipe(Direction dir);
 
   /**
@@ -84,6 +89,7 @@ public interface IPipeBlockEntity extends IInjectable {
    *
    * @return The pipe.
    */
+  @Nullable
   IPipe getPipe();
 
   /**
@@ -91,6 +97,7 @@ public interface IPipeBlockEntity extends IInjectable {
    *
    * @return The {@link DyeColor}, or null if not colored.
    */
+  @Nullable
   DyeColor getPipeColor();
 
   /**
@@ -99,6 +106,7 @@ public interface IPipeBlockEntity extends IInjectable {
    * @param direction The direction.
    * @return The {@link PipePluggable}, or null if none.
    */
+  @Nullable
   PipePluggable<?> getPipePluggable(Direction direction);
 
   /**
@@ -145,5 +153,5 @@ public interface IPipeBlockEntity extends IInjectable {
    * @deprecated Use specific transport module methods if possible.
    */
   @Deprecated
-  int injectItem(ItemStack stack, boolean doAdd, Direction from);
+  int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from);
 }

@@ -39,7 +39,7 @@ public class LibraryDatabase {
   private File inputDir;
 
   public static CompoundTag load(File blueprintFile) {
-    if (blueprintFile != null && blueprintFile.exists()) {
+    if (blueprintFile.exists()) {
       try {
         return NbtIo.readCompressed(blueprintFile);
       } catch (IOException e) {
@@ -47,7 +47,7 @@ public class LibraryDatabase {
       }
     }
 
-    return null;
+    return new CompoundTag();
   }
 
   /**
@@ -80,12 +80,10 @@ public class LibraryDatabase {
   public void deleteBlueprint(LibraryId id) {
     File blueprintFile = getBlueprintFile(id);
 
-    if (blueprintFile != null) {
-      blueprintFile.delete();
-      blueprintIds.remove(id);
-      pages = new LibraryId[blueprintIds.size()];
-      pages = blueprintIds.toArray(pages);
-    }
+    blueprintFile.delete();
+    blueprintIds.remove(id);
+    pages = new LibraryId[blueprintIds.size()];
+    pages = blueprintIds.toArray(pages);
   }
 
   protected File getBlueprintFile(LibraryId id) {
@@ -182,10 +180,6 @@ public class LibraryDatabase {
   }
 
   public CompoundTag load(final LibraryId id) {
-    if (id == null) {
-      return null;
-    }
-
     return load(getBlueprintFile(id));
   }
 

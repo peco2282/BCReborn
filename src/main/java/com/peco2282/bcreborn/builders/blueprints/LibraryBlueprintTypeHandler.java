@@ -67,7 +67,7 @@ public class LibraryBlueprintTypeHandler extends LibraryTypeHandlerNBT {
     }
 
     CompoundTag nbt = BCRebornBuilders.getServerDB().load(id);
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return false;
     }
 

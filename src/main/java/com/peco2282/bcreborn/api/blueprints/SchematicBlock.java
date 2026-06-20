@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -50,6 +51,7 @@ public class SchematicBlock extends SchematicBlockBase {
   /**
    * The block state represented by this schematic.
    */
+  @NotNull
   public BlockState state = Blocks.AIR.defaultBlockState();
 
   /**
@@ -86,12 +88,10 @@ public class SchematicBlock extends SchematicBlockBase {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null) {
-      if (storedRequirements.length != 0) {
-        Collections.addAll(requirements, storedRequirements);
-      } else {
-        requirements.add(new ItemStack(state.getBlock()));
-      }
+    if (storedRequirements.length != 0) {
+      Collections.addAll(requirements, storedRequirements);
+    } else {
+      requirements.add(new ItemStack(state.getBlock()));
     }
   }
 
@@ -104,7 +104,7 @@ public class SchematicBlock extends SchematicBlockBase {
 
   @Override
   public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    return state != null && state == context.world().getBlockState(new BlockPos(x, y, z));
+    return state == context.world().getBlockState(new BlockPos(x, y, z));
   }
 
   @Override
@@ -184,9 +184,7 @@ public class SchematicBlock extends SchematicBlockBase {
    * @param z       The z-coordinate.
    */
   protected void setBlockInWorld(IBuilderContext context, int x, int y, int z) {
-    if (state != null) {
-      context.world().setBlock(new BlockPos(x, y, z), state, 3);
-    }
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 
   /**
@@ -280,8 +278,6 @@ public class SchematicBlock extends SchematicBlockBase {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 }

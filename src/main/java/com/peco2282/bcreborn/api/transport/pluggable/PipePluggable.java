@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for all pipe pluggables (e.g., facades, gates, etc.).
@@ -128,6 +129,7 @@ public abstract class PipePluggable<T extends PipePluggable<T>> implements INBTS
    *
    * @return The {@link IPipePluggableDynamicRenderer}, or null if not needed.
    */
+  @Nullable
   @OnlyIn(Dist.CLIENT)
   public IPipePluggableDynamicRenderer getDynamicRenderer() {
     return null;

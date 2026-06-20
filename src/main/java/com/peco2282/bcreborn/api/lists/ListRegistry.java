@@ -25,9 +25,7 @@ public final class ListRegistry {
   }
 
   public static void registerHandler(ListMatchHandler h) {
-    if (h != null) {
-      handlers.add(h);
-    }
+    handlers.add(h);
   }
 
   public static List<ListMatchHandler> getHandlers() {

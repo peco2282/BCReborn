@@ -27,6 +27,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +176,7 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
     inv.clearContent();
   }
 
+  @Nullable
   private LibraryTypeHandler findHandler(int slot, LibraryTypeHandler.HandlerType type) {
     // TODO: implement when LibraryAPI is available
     return null;

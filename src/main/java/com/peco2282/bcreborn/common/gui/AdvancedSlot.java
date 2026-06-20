@@ -19,6 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AdvancedSlot {
   private static final ResourceLocation TEXTURE_SLOT = BCRebornCore.location(
@@ -33,6 +34,7 @@ public abstract class AdvancedSlot {
     this.gui = gui;
   }
 
+  @Nullable
   public String getDescription() {
     return null;
   }
@@ -43,7 +45,7 @@ public abstract class AdvancedSlot {
       gui.drawTooltip(guiGraphics, desc, x, y);
     } else {
       ItemStack stack = getItemStack();
-      if (stack != null && !stack.isEmpty()) {
+      if (!stack.isEmpty()) {
         int cornerX = (gui.width - gui.getXSize()) / 2;
         int cornerY = (gui.height - gui.getYSize()) / 2;
         int xS = x - cornerX;
@@ -53,16 +55,18 @@ public abstract class AdvancedSlot {
     }
   }
 
+  @Nullable
   public TextureAtlasSprite getIcon() {
     return null;
   }
 
+  @Nullable
   public ResourceLocation getTexture() {
     return null;
   }
 
   public ItemStack getItemStack() {
-    return null;
+    return ItemStack.EMPTY;
   }
 
   public boolean isDefined() {
@@ -77,7 +81,7 @@ public abstract class AdvancedSlot {
       return;
     }
     ItemStack stack = getItemStack();
-    if (stack != null && !stack.isEmpty()) {
+    if (!stack.isEmpty()) {
       drawStack(guiGraphics, stack);
     } else if (getIcon() != null) {
       ResourceLocation texture = getTexture();

@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -126,18 +125,16 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
       if (bpt instanceof Blueprint) {
         BlockPos pos1 = getBlockPos();
         bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), getDirection());
-        if (bpt != null) {
-          bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
-          bptContext = bluePrintBuilder.getContext();
-          box.initialize(bluePrintBuilder.xMin(), bluePrintBuilder.yMin(), bluePrintBuilder.zMin(), bluePrintBuilder.xMax(), bluePrintBuilder.yMax(), bluePrintBuilder.zMax());
-        }
+        bluePrintBuilder = new BptBuilderBlueprint((Blueprint) bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
+        bptContext = bluePrintBuilder.getContext();
+        box.initialize(bluePrintBuilder.xMin(), bluePrintBuilder.yMin(), bluePrintBuilder.zMin(), bluePrintBuilder.xMax(), bluePrintBuilder.yMax(), bluePrintBuilder.zMax());
       } else {
         return;
       }
     }
 
     Direction direction = getDirection();
-    if (laser == null && direction != null && direction != Direction.UP) {
+    if (laser == null && direction != Direction.UP) {
       BlockPos pos2 = getBlockPos();
       laser = new LaserData();
       laser.head = new Position(pos2.getX() + 0.5F, pos2.getY() + 0.5F, pos2.getZ() + 0.5F);
@@ -157,7 +154,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
   }
 
   @Override
-  public void load(@NotNull CompoundTag nbt) {
+  public void load(CompoundTag nbt) {
     super.load(nbt);
     items = NonNullList.withSize(1, ItemStack.EMPTY);
     ContainerHelper.loadAllItems(nbt, items);
@@ -168,7 +165,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
   }
 
   @Override
-  protected void saveAdditional(@NotNull CompoundTag nbt) {
+  protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     ContainerHelper.saveAllItems(nbt, items);
 

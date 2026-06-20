@@ -103,7 +103,7 @@ public enum PipeWire implements StringRepresentable {
    * @return True if it is a pipe wire.
    */
   public boolean isPipeWire(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
+    if (stack.isEmpty()) {
       return false;
     } else {
       return stack.getItem() == item;

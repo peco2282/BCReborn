@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -46,7 +47,7 @@ public class TriggerRobotSleep extends BCStatement implements ITriggerInternal {
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer container, IStatementParameter[] parameters) {
     List<DockingStation<?>> stations = RobotUtils.getStations(container.getTile());
 
     for (DockingStation<?> station : stations) {

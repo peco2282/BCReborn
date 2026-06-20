@@ -40,9 +40,7 @@ public class RefineryScreen extends BuildCraftScreen<RefineryMenu> {
 
   @Override
   protected void renderLabels(GuiGraphics p_281635_, int p_282681_, int p_283686_) {
-    p_281635_.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-    p_281635_.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
-
+    super.renderLabels(p_281635_, p_282681_, p_283686_);
     p_281635_.drawString(this.font, "->", 63, 59, 4210752, false);
     p_281635_.drawString(this.font, "<-", 106, 59, 4210752, false);
   }

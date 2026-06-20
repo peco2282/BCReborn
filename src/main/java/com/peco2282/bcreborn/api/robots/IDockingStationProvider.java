@@ -20,5 +20,5 @@ public interface IDockingStationProvider {
    *
    * @return The docking station.
    */
-  DockingStation getStation();
+  DockingStation<?> getStation();
 }

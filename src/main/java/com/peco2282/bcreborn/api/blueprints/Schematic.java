@@ -138,7 +138,7 @@ public abstract class Schematic {
   public int getEnergyRequirement(LinkedList<ItemStack> stacksUsed) {
     int result = 0;
 
-    if (stacksUsed != null) {
+    if (!stacksUsed.isEmpty()) {
       for (ItemStack s : stacksUsed) {
         result += s.getCount() * BuilderAPI.BUILD_ENERGY;
       }

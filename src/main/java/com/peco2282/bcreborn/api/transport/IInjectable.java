@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.api.transport;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for objects that can have items injected into them.
@@ -25,7 +26,7 @@ public interface IInjectable {
    * @param from The direction items are coming from.
    * @return True if injection is allowed.
    */
-  boolean canInjectItems(Direction from);
+  boolean canInjectItems(@Nullable Direction from);
 
   /**
    * Offers an {@link ItemStack} for addition to the object.
@@ -37,5 +38,5 @@ public interface IInjectable {
    * @param color The color of the item (if any), or null.
    * @return The number of items successfully injected.
    */
-  int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color);
+  int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color);
 }
