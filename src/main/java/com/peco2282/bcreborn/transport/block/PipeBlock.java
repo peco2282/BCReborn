@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.api.blocks.IColorRemovable;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
-import com.peco2282.bcreborn.core.util.IWrench;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -144,7 +144,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       }
 
       if (pipeBE.getBehaviour() != null && !player.isShiftKeyDown()) {
-        if (stack.getItem() instanceof IWrench) {
+        if (stack.getItem() instanceof IToolWrench) {
           return pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);
         } else {
           return pipeBE.getBehaviour().onUse(pipeBE, level, pos, player, hand, hit);

@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.core.util.IWrench;
+import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
@@ -56,7 +56,7 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
                                  Player player, InteractionHand hand, BlockHitResult hit) {
     ItemStack heldItem = player.getItemInHand(hand);
     // レンチを持っている場合のみ方向変更
-    if (!(heldItem.getItem() instanceof IWrench wrench)) {
+    if (!(heldItem.getItem() instanceof IToolWrench wrench)) {
       return InteractionResult.PASS;
     }
     if (!wrench.canWrench(player, pos.getX(), pos.getY(), pos.getZ())) {
