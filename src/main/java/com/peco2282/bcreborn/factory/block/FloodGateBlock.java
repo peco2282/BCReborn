@@ -74,11 +74,6 @@ public class FloodGateBlock extends BuildCraftBlock {
   }
 
   @Override
-  public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-    super.neighborChanged(state, level, pos, block, fromPos, isMoving);
-  }
-
-  @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
   }
 
