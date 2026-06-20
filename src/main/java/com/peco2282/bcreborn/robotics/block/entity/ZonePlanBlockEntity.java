@@ -226,4 +226,8 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
   public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
     return null;
   }
+
+  public void doSetName(String name) {
+    mapName = name;
+  }
 }
