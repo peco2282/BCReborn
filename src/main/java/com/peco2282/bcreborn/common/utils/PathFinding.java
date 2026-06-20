@@ -128,9 +128,9 @@ public class PathFinding implements IIterableAlgorithm {
     ArrayList<Node> nodes = new ArrayList<>();
     byte[][][] resultMoves = movements(from);
 
-    for (int dx = -1; dx <= +1; ++dx) {
-      for (int dy = -1; dy <= +1; ++dy) {
-        for (int dz = -1; dz <= +1; ++dz) {
+    for (int dx = -1; dx <= 1; ++dx) {
+      for (int dy = -1; dy <= 1; ++dy) {
+        for (int dz = -1; dz <= 1; ++dz) {
           if (resultMoves[dx + 1][dy + 1][dz + 1] == 0) {
             continue;
           }
@@ -208,9 +208,9 @@ public class PathFinding implements IIterableAlgorithm {
   private byte[][][] movements(Node from) {
     byte[][][] resultMoves = new byte[3][3][3];
 
-    for (int dx = -1; dx <= +1; ++dx) {
-      for (int dy = -1; dy <= +1; ++dy) {
-        for (int dz = -1; dz <= +1; ++dz) {
+    for (int dx = -1; dx <= 1; ++dx) {
+      for (int dy = -1; dy <= 1; ++dy) {
+        for (int dz = -1; dz <= 1; ++dz) {
           int x = from.index.x + dx;
           int y = from.index.y + dy;
           int z = from.index.z + dz;

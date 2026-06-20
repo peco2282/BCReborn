@@ -795,7 +795,7 @@ public class RobotEntity extends RobotEntityBase implements
           if (s.getItem() instanceof ArmorItem) {
             mul = mul * 2 / (2 + ((ArmorItem) s.getItem()).getDefense()) / 2;
           } else {
-            mul *= 0.7;
+            mul = (int) (mul * 0.7);
           }
         }
 
@@ -937,17 +937,11 @@ public class RobotEntity extends RobotEntityBase implements
 
         if (attributes != null) {
           for (AttributeModifier modifier : attributes.get(Attributes.ATTACK_DAMAGE)) {
-            switch (modifier.getOperation()) {
-              case ADDITION:
-                attackDamage += modifier.getAmount();
-                break;
-              case MULTIPLY_BASE:
-                attackDamage *= modifier.getAmount();
-                break;
-              case MULTIPLY_TOTAL:
-                attackDamage *= 1.0F + modifier.getAmount();
-                break;
-            }
+            attackDamage = (float) switch (modifier.getOperation()) {
+              case ADDITION -> attackDamage + modifier.getAmount();
+              case MULTIPLY_BASE -> attackDamage * modifier.getAmount();
+              case MULTIPLY_TOTAL -> attackDamage * (1.0F + modifier.getAmount());
+            };
           }
         }
 

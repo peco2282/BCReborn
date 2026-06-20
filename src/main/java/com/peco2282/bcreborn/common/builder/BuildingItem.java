@@ -152,7 +152,7 @@ public class BuildingItem implements IBufferSerializable, IBuildingItem {
     float displayPortion = timeSpan / tickDuration;
 
     if (lifetimeDisplay - lifetime <= 1.0) {
-      lifetimeDisplay += 1.0 * displayPortion;
+      lifetimeDisplay += (float) (1.0 * displayPortion);
     }
   }
 
