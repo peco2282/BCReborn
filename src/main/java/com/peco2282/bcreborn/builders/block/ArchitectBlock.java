@@ -54,11 +54,6 @@ public class ArchitectBlock extends BuildCraftBlock {
   }
 
   @Override
-  public boolean isRotatable() {
-    return true;
-  }
-
-  @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return BuildersBlockEntityTypes.ARCHITECT.get().create(pos, state);
   }

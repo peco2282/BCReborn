@@ -98,9 +98,4 @@ public class LaserBlock extends BuildCraftBlock {
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
     return createTickerHelper(type, SiliconBlockEntityTypes.LASER.get(), LaserBlockEntity.ticker());
   }
-
-  @Override
-  public boolean isRotatable() {
-    return true;
-  }
 }

@@ -63,9 +63,4 @@ public class ZonePlanBlock extends BuildCraftBlock {
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
     return createTickerHelper(type, RoboticsBlockEntityTypes.ZONE_PLAN.get(), BuildCraftBlockEntity.ticker());
   }
-
-  @Override
-  public boolean isRotatable() {
-    return true;
-  }
 }

@@ -118,11 +118,6 @@ public abstract class EngineBlock extends BuildCraftBlock {
   }
 
   @Override
-  public boolean isRotatable() {
-    return true;
-  }
-
-  @Override
   public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
     return Shapes.block();
   }

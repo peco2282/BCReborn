@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.block;
 
+import com.peco2282.bcreborn.api.blocks.IRotatable;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -27,5 +28,10 @@ public abstract class BuildCraftBlock extends BaseEntityBlock implements IRotata
   @Override
   public RenderShape getRenderShape(BlockState p_49232_) {
     return RenderShape.MODEL;
+  }
+
+  @Override
+  public boolean isRotatable() {
+    return true;
   }
 }
