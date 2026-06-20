@@ -81,7 +81,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
   }
 
   private boolean isTarget(BlockIndex block) {
-    if (zone != null && !zone.contains(block.x, block.y, block.z)) {
+    if (!zone.contains(block.x, block.y, block.z)) {
       return false;
     }
     if (!pathFound.matches(world, new BlockPos(block.x, block.y, block.z))) {
@@ -113,7 +113,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
       pathFinding.iterate(itNumber / pathFinders.size());
       if (pathFinding.isDone()) {
         LinkedList<BlockIndex> path = pathFinding.getResult();
-        if (path != null && !path.isEmpty()) {
+        if (!path.isEmpty()) {
           if (reserve(pathFinding.end())) {
             return;
           }

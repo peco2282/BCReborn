@@ -96,11 +96,11 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
     this.battery = battery;
   }
 
-  public @NotNull BlockPos getBlockPos() {
+  public BlockPos getBlockPos() {
     return this.worldPosition;
   }
 
-  public @NotNull Level getLevel() {
+  public Level getLevel() {
     //noinspection DataFlowIssue
     return super.level;
   }
@@ -132,7 +132,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   protected abstract void tick(Level level, BlockPos pos, BlockState state);
 
   public boolean stillValid(Player player) {
-    if (this.level == null || this.level.getBlockEntity(this.worldPosition) != this) {
+    if (this.level.getBlockEntity(this.worldPosition) != this) {
       return false;
     }
     return player.distanceToSqr(this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D, this.worldPosition.getZ() + 0.5D) <= 64.0D;
@@ -197,8 +197,8 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   }
 
   @Override
-  public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-    if (cap == ForgeCapabilities.ENERGY && getBattery() != null) {
+  public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.ENERGY) {
       return LazyOptional.of(this::getBattery).cast();
     }
     return super.getCapability(cap, side);

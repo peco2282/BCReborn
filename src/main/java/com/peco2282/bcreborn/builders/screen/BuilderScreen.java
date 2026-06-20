@@ -82,7 +82,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
 
     List<RequirementItemStack> needs = builder.getNeededItems();
 
-    if (needs != null && !needs.isEmpty()) {
+    if (!needs.isEmpty()) {
       if (needs.size() > slots.size()) {
         menu.getScrollbarWidget().hidden = false;
         menu.getScrollbarWidget().setLength((needs.size() - slots.size() + 3) / 4);

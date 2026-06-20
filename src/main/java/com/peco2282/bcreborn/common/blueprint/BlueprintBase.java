@@ -21,6 +21,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,7 @@ public abstract class BlueprintBase {
     return (y * sizeZ + z) * sizeX + x;
   }
 
+  @Nullable
   public SchematicBlockBase get(int x, int y, int z) {
     return contents[(y * sizeZ + z) * sizeX + x];
   }

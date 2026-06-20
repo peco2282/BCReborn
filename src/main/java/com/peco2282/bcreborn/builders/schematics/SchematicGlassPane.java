@@ -22,9 +22,7 @@ public class SchematicGlassPane extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null) {
-      requirements.add(new ItemStack(state.getBlock()));
-    }
+    requirements.add(new ItemStack(state.getBlock()));
   }
 
   @Override

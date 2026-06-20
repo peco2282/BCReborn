@@ -65,9 +65,6 @@ public class PatternPyramid extends FillerPattern {
 
   @Override
   public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-    if (parameters == null || parameters.length == 0) {
-      parameters = this.parameters;
-    }
     int xMin = (int) box.pMin().x;
     int yMin = (int) box.pMin().y;
     int zMin = (int) box.pMin().z;

@@ -22,7 +22,7 @@ public class SchematicTripWireHook extends SchematicBlock {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
+    if (null != state) {
       state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
     }
   }

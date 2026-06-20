@@ -54,7 +54,7 @@ public class MultiButton extends BetterButton {
     guiGraphics.blit(tex.getTexture(), getX() + width / 2, getY(), xOffset + w - width / 2, yOffset, width / 2, h);
 
     String label = state.getLabel();
-    if (label != null && !label.isEmpty()) {
+    if (!label.isEmpty()) {
       guiGraphics.drawCenteredString(fontrenderer, Component.literal(label), getX() + width / 2, getY() + (h - 8) / 2, getTextColor(flag));
     }
   }
@@ -72,10 +72,6 @@ public class MultiButton extends BetterButton {
 
   @Override
   public ToolTip getToolTip() {
-    ToolTip tip = this.control.getButtonState().getToolTip();
-    if (tip != null) {
-      return tip;
-    }
-    return super.getToolTip();
+    return this.control.getButtonState().getToolTip();
   }
 }

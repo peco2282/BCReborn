@@ -25,13 +25,8 @@ public class BuilderItemMetaPair {
   public int position = 0;
 
   public BuilderItemMetaPair(ItemStack stack) {
-    if (stack != null) {
-      this.item = stack.getItem();
-      this.meta = stack.getDamageValue();
-    } else {
-      this.item = Blocks.AIR.asItem();
-      this.meta = 0;
-    }
+    this.item = stack.getItem();
+    this.meta = stack.getDamageValue();
   }
 
   public BuilderItemMetaPair(IBuilderContext context, BuildingSlotBlock block) {

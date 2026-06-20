@@ -24,12 +24,10 @@ public class SchematicWallSide extends SchematicBlock {
   @Override
   public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
     Direction side = Direction.UP;
-    if (state != null) {
-      if (state.hasProperty(BlockStateProperties.FACING)) {
-        side = state.getValue(BlockStateProperties.FACING).getOpposite();
-      } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-        side = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
-      }
+    if (state.hasProperty(BlockStateProperties.FACING)) {
+      side = state.getValue(BlockStateProperties.FACING).getOpposite();
+    } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+      side = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
     }
 
     return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
