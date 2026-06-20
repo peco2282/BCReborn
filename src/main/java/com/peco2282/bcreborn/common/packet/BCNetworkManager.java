@@ -19,7 +19,6 @@ import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.packet.c2s.*;
 import com.peco2282.bcreborn.common.packet.s2c.*;
-import com.peco2282.bcreborn.robotics.block.entity.ZonePlanBlockEntity;
 import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -139,20 +138,7 @@ public class BCNetworkManager {
   }
 
   public static void sendRequestZonePlanSetName(BlockPos pos, String name) {
-    // sendToServer(new RequestZonePlanSetNamePacket(pos, name)); // To be created
-  }
-
-  public static void computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
-    final byte[] textureData = new byte[width * height];
-    // TODO: implement actual map computation or delegate to BE
-    // For now, let's assume we send it in chunks
-    int MAX_PACKET_LENGTH = 30000;
-    for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
-      int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
-      byte[] chunk = new byte[len];
-      System.arraycopy(textureData, i, chunk, 0, len);
-      sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
-    }
+    sendToServer(new RequestZonePlanSetNamePacket(pos, name)); // To be created
   }
 
   public static void sendRequestInitialization(int entityId, ItemStack itemInUse, boolean itemActive) {
