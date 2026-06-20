@@ -16,25 +16,20 @@ import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.block.entity.LaserBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class LaserBlock extends BuildCraftBlock {
-  public static final DirectionProperty FACING = DirectionalBlock.FACING;
-
   protected static final VoxelShape DOWN_BASE = Block.box(0, 12, 0, 16, 16, 16);
   protected static final VoxelShape DOWN_HEAD = Block.box(5, 3, 5, 11, 12, 11);
   protected static final VoxelShape DOWN = Shapes.or(DOWN_BASE, DOWN_HEAD);
@@ -74,12 +69,6 @@ public class LaserBlock extends BuildCraftBlock {
       case WEST -> WEST;
       case EAST -> EAST;
     };
-  }
-
-  @Nullable
-  @Override
-  public BlockState getStateForPlacement(BlockPlaceContext context) {
-    return this.defaultBlockState().setValue(FACING, context.getClickedFace());
   }
 
   @Override

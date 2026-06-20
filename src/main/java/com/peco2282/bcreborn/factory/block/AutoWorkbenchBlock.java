@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.transport.IItemPipe;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.factory.block.entity.AutoWorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 public class AutoWorkbenchBlock extends BuildCraftBlock {
   public AutoWorkbenchBlock() {
     super(Properties.of().sound(SoundType.WOOD).strength(3.0F));
+    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
@@ -71,6 +73,6 @@ public class AutoWorkbenchBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-
+    p_49915_.add(FACING);
   }
 }

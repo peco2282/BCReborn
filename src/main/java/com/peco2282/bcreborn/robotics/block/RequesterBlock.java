@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.block.entity.RequesterBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,10 +35,12 @@ import org.jetbrains.annotations.Nullable;
 public class RequesterBlock extends BuildCraftBlock {
   public RequesterBlock(Properties properties) {
     super(properties);
+    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(FACING);
   }
 
   @Nullable

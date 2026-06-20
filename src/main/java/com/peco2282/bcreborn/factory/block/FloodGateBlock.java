@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.FloodGateBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -40,6 +41,7 @@ public class FloodGateBlock extends BuildCraftBlock {
       .mapColor(MapColor.METAL)
       .sound(SoundType.METAL)
       .strength(3.0F));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
   }
 
   @Override
@@ -75,6 +77,7 @@ public class FloodGateBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(FACING);
   }
 
   @Override

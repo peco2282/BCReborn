@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -95,10 +94,5 @@ public class RefineryBlock extends BuildCraftBlock {
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(FACING);
-  }
-
-  @Override
-  public @Nullable BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
-    return this.defaultBlockState().setValue(FACING, p_49820_.getHorizontalDirection().getOpposite());
   }
 }

@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -38,7 +37,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public abstract class EngineBlock extends BuildCraftBlock {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-  public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
 
   public static final VoxelShape SHAPE_UP =
     Shapes.or(box(0, 0, 0, 16, 4, 16), box(4, 4, 4, 12, 16, 12));
