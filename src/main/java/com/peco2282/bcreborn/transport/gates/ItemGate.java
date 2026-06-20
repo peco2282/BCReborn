@@ -63,7 +63,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   public static GateMaterial getMaterial(ItemStack stack) {
     CompoundTag nbt = getNBT(stack);
 
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return GateMaterial.REDSTONE;
     } else {
       return GateMaterial.fromOrdinal(nbt.getByte(NBT_TAG_MAT));
@@ -73,7 +73,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   public static GateLogic getLogic(ItemStack stack) {
     CompoundTag nbt = getNBT(stack);
 
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return GateLogic.AND;
     } else {
       return GateLogic.fromOrdinal(nbt.getByte(NBT_TAG_LOGIC));
@@ -88,7 +88,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   public static void addGateExpansion(ItemStack stack, IGateExpansion expansion) {
     CompoundTag nbt = getNBT(stack);
 
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return;
     }
 
@@ -100,7 +100,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   public static boolean hasGateExpansion(ItemStack stack, IGateExpansion expansion) {
     CompoundTag nbt = getNBT(stack);
 
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return false;
     }
 
@@ -124,7 +124,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
     Set<IGateExpansion> expansions = new HashSet<>();
     CompoundTag nbt = getNBT(stack);
 
-    if (nbt == null) {
+    if (nbt.isEmpty()) {
       return expansions;
     }
 
@@ -206,7 +206,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   @Override
-  public PipePluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
+  public PipePluggable<?> createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
     return new GatePluggable(GateFactory.makeGate(pipe, stack, side));
   }
 }
