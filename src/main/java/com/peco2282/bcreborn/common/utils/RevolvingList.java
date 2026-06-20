@@ -57,12 +57,8 @@ public class RevolvingList<T> extends ForwardingCollection<T> {
 
   public void setCurrent(T e) {
     if (!contains(e)) {
-    } else if (e == null) {
-      while (getCurrent() != null) {
-        rotateRight();
-      }
     } else {
-      while (getCurrent() == null || !getCurrent().equals(e)) {
+      while (!getCurrent().equals(e)) {
         rotateRight();
       }
     }

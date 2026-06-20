@@ -35,7 +35,7 @@ public class SchematicDoor extends SchematicBlockFloored {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+    if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
       requirements.add(stack.copy());
     }
   }
@@ -47,27 +47,23 @@ public class SchematicDoor extends SchematicBlockFloored {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override
   public boolean doNotBuild() {
-    return state != null && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
+    return state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
   }
 
   @Override
   public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
     BlockState worldState = context.world().getBlockState(new BlockPos(x, y, z));
-    return state != null && state.getBlock() == worldState.getBlock() && state.getValue(DoorBlock.HALF) == worldState.getValue(DoorBlock.HALF);
+    return state.getBlock() == worldState.getBlock() && state.getValue(DoorBlock.HALF) == worldState.getValue(DoorBlock.HALF);
   }
 
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-    if (state != null) {
-      context.world().setBlock(new BlockPos(x, y, z), state, 3);
-    }
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 
   @Override

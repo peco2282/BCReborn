@@ -23,7 +23,7 @@ import java.util.LinkedList;
 
 public class SchematicSilverfish extends SchematicBlock {
   private BlockState getRealState() {
-    if (state != null && state.getBlock() instanceof InfestedBlock infested) {
+    if (state.getBlock() instanceof InfestedBlock infested) {
       return infested.getHostBlock().defaultBlockState();
     }
     return Blocks.STONE.defaultBlockState();

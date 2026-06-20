@@ -34,7 +34,7 @@ public class IndexRequirementMap {
       BlockIndex index = new BlockIndex(b.x, b.y, b.z);
       Set<BlockIndex> prereqs = ((SchematicBlock) b.schematic).getPrerequisiteBlocks(context);
 
-      if (prereqs != null && !prereqs.isEmpty()) {
+      if (!prereqs.isEmpty()) {
         Position min = context.surroundingBox().pMin();
         Position max = context.surroundingBox().pMax();
         for (BlockIndex i : prereqs) {

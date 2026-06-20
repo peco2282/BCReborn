@@ -53,7 +53,7 @@ public record UploadBlueprintChunkPacket(
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(be -> {
       int start = chunk * BlueprintLibraryBlockEntity.CHUNK_SIZE;
-      if (be.getBlueprintDownload() == null) {
+      if (be.getBlueprintDownload().length > 0) {
         be.setBlueprintDownload(start, data);
       }
     }));

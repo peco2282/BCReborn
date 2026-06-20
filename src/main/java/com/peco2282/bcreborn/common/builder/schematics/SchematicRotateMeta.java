@@ -21,8 +21,6 @@ public class SchematicRotateMeta extends SchematicBlockEntity {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 }

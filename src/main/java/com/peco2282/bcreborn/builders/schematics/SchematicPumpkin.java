@@ -22,9 +22,7 @@ public class SchematicPumpkin extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null) {
-      requirements.add(new ItemStack(state.getBlock()));
-    }
+    requirements.add(new ItemStack(state.getBlock()));
   }
 
   @Override
@@ -34,9 +32,7 @@ public class SchematicPumpkin extends SchematicBlock {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
 }

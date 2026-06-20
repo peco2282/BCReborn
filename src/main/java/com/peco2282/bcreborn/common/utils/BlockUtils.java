@@ -36,6 +36,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +143,7 @@ public final class BlockUtils {
     if (!state.isAir() && !world.isClientSide
       && world.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).get()) {
       List<ItemStack> blockDrops = getItemStackFromBlock(world, pos);
-      if (blockDrops != null) {
+      if (!blockDrops.isEmpty()) {
         drops.addAll(blockDrops);
       }
     }
@@ -169,7 +170,7 @@ public final class BlockUtils {
   }
 
   public static boolean canChangeBlock(Block block, Level world, BlockPos pos) {
-    if (block == null || world.getBlockState(pos).isAir()) {
+    if (world.getBlockState(pos).isAir()) {
       return true;
     }
 
@@ -200,10 +201,6 @@ public final class BlockUtils {
   }
 
   public static boolean isUnbreakableBlock(Level world, BlockPos pos, Block b) {
-    if (b == null) {
-      return false;
-    }
-
     return getBlockHardnessMining(world, pos, b, ItemStack.EMPTY) < 0;
   }
 
@@ -327,6 +324,7 @@ public final class BlockUtils {
     world.updateNeighborsAt(pos, block);
   }
 
+  @Nullable
   public static ChestBlockEntity getOtherDoubleChest(BlockEntity inv) {
     if (inv instanceof ChestBlockEntity chest) {
       // In 1.20.1, we'd use ChestBlock.getContainer or similar, but for now we'll return null to satisfy the signature.

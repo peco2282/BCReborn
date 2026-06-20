@@ -146,7 +146,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
 
       ItemStack stack = invSlot.getStackInSlot();
 
-      if (stack != null && stack.getCount() > 0) {
+      if (!stack.isEmpty() && stack.getCount() > 0) {
         firstSlotToConsume = invSlot;
         break;
       }

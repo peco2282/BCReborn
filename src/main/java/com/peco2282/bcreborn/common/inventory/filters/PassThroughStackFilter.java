@@ -20,7 +20,7 @@ public class PassThroughStackFilter implements IStackFilter {
 
   @Override
   public boolean matches(ItemStack stack) {
-    return stack != null && stack.getCount() > 0;
+    return !stack.isEmpty() && stack.getCount() > 0;
   }
 
 }

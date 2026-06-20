@@ -65,7 +65,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected static int getBurningTime(ItemStack stack) {
-    if (stack == null || stack.isEmpty()) {
+    if (stack.isEmpty()) {
       return 0;
     }
     return ForgeHooks.getBurnTime(stack, null);
@@ -90,7 +90,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     if (isActive == active) return;
     isActive = active;
     setChanged();
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       BlockState state = level.getBlockState(worldPosition);
       if (state.hasProperty(EngineBlock.ACTIVE)) {
         level.setBlock(worldPosition, state.setValue(EngineBlock.ACTIVE, active), 3);
@@ -121,7 +121,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public void explode() {
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.explode(null, worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, 3.0F, true, Level.ExplosionInteraction.BLOCK);
       level.removeBlock(worldPosition, false);
     }
@@ -359,7 +359,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected void pushEnergyToNeighbor() {
-    if (level == null || level.isClientSide) return;
+    if (level.isClientSide) return;
     if (energyStorage == null) return;
 
     BlockPos outPos = getBlockPos().relative(orientation);

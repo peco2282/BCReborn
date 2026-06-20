@@ -47,7 +47,7 @@ public class BCLanguageProvider extends LanguageProvider {
   }
 
   public static String snake2Title(String value) {
-    if (value == null || value.isBlank()) {
+    if (value.isBlank()) {
       return value;
     }
     StringBuilder result = new StringBuilder();

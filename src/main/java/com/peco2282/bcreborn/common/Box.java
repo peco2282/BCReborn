@@ -232,7 +232,7 @@ public class Box implements IBox {
   }
 
   public Box extendToEncompass(Box toBeContained) {
-    if (toBeContained == null || !toBeContained.initialized) {
+    if (!toBeContained.initialized) {
       return this;
     }
     if (toBeContained.xMin < xMin) xMin = toBeContained.xMin;
