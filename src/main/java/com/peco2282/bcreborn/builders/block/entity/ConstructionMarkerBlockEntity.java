@@ -70,7 +70,7 @@ public class ConstructionMarkerBlockEntity extends BuildCraftBlockEntity impleme
   public void setBlueprint(ItemStack stack) {
     items.set(0, stack);
     setChanged();
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }

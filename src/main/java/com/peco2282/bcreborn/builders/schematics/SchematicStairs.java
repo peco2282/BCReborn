@@ -22,7 +22,7 @@ public class SchematicStairs extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null) {
+    if (null != state) {
       requirements.add(new ItemStack(state.getBlock()));
     }
   }

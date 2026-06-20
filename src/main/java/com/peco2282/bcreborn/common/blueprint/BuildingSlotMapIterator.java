@@ -37,8 +37,7 @@ public class BuildingSlotMapIterator {
     this.builderBlueprint = builderBlueprint;
     this.slotMap = builderBlueprint.buildList;
     int[] buildStageOccurences = builderBlueprint.buildStageOccurences;
-    this.isCreative = builder == null
-      || builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
+    this.isCreative = builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
 
     reset();
   }

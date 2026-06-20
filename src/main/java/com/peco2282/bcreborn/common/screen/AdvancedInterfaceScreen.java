@@ -81,13 +81,11 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
   public void drawTooltipForSlotAt(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     AdvancedSlot slot = getSlotAtLocation(mouseX, mouseY);
 
-    if (slot != null) {
-      slot.drawTooltip(null, guiGraphics, mouseX, mouseY);
-    }
+    slot.drawTooltip(this, guiGraphics, mouseX, mouseY);
   }
 
   public void drawTooltip(GuiGraphics guiGraphics, String caption, int mouseX, int mouseY) {
-    if (caption != null && !caption.isEmpty()) {
+    if (!caption.isEmpty()) {
       guiGraphics.renderTooltip(this.font, Component.literal(caption), mouseX, mouseY);
     }
   }
@@ -102,7 +100,7 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
   }
 
   public void drawStack(GuiGraphics guiGraphics, ItemStack item, int x, int y) {
-    if (item != null && !item.isEmpty()) {
+    if (!item.isEmpty()) {
       guiGraphics.renderItem(item, x, y);
       guiGraphics.renderItemDecorations(this.font, item, x, y);
     }
@@ -114,7 +112,7 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
 
     AdvancedSlot slot = getSlotAtLocation((int) mouseX, (int) mouseY);
 
-    if (slot != null && slot.isDefined()) {
+    if (slot.isDefined()) {
       slotClicked(slot, mouseButton);
     }
     return result;

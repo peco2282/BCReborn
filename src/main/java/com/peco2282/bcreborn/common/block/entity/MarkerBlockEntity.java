@@ -87,7 +87,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   // Signal / connection
   // -----------------------------------------------------------------------
   public void updateSignals() {
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       boolean oldSignals = showSignals;
       showSignals = level.hasNeighborSignal(worldPosition);
       if (oldSignals != showSignals) {
@@ -100,20 +100,16 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   public void switchSignals() {
     if (origin.isSet()) {
       MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      if (originMarker != null) {
-        if (showSignals) {
-          originMarker.createLasers();
-        } else {
-          originMarker.destroyLasers();
-        }
+      if (showSignals) {
+        originMarker.createLasers();
+      } else {
+        originMarker.destroyLasers();
       }
       // Also notify end markers to update their lasers
       for (int i = 0; i < 3; i++) {
         if (origin.vect[i].isSet()) {
           MarkerBlockEntity endMarker = origin.vect[i].getMarker(level);
-          if (endMarker != null) {
-            endMarker.updateSignalsLasers();
-          }
+          endMarker.updateSignalsLasers();
         }
       }
     }
@@ -122,7 +118,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
 
   public void updateSignalsLasers() {
     signals.clear();
-    if (level == null || level.isClientSide || !origin.isSet()) {
+    if (level.isClientSide || !origin.isSet()) {
       return;
     }
 
@@ -162,7 +158,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   }
 
   public void createLasers() {
-    if (level == null || level.isClientSide) {
+    if (level.isClientSide) {
       return;
     }
     if (!origin.isSet()) {
@@ -228,13 +224,13 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     if (lasers.isEmpty()) return;
     lasers.clear();
     setChanged();
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
 
   public void tryConnection() {
-    if (level == null || level.isClientSide) {
+    if (level.isClientSide) {
       return;
     }
 
@@ -242,7 +238,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     // If the origin exists but its marker is missing/removed, clear it
     if (origin.isSet()) {
       MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      if (originMarker == null || originMarker.isRemoved()) {
+      if (originMarker.isRemoved()) {
         origin = new Origin();
       }
     }
@@ -256,9 +252,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
 
     if (origin.isSet()) {
       MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      if (originMarker != null) {
-        originMarker.createLasers();
-      }
+      originMarker.createLasers();
     }
 
     setChanged();
@@ -321,7 +315,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   }
 
   private boolean linkTo(MarkerBlockEntity marker, int n) {
-    if (marker == null || marker == this) {
+    if (marker == this) {
       return false;
     }
 
@@ -357,9 +351,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     }
 
     MarkerBlockEntity mO = origin.vectO.getMarker(level);
-    if (mO != null) {
-      mO.createLasers();
-    }
+    mO.createLasers();
     updateSignals();
     marker.updateSignals();
 
@@ -484,7 +476,7 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
 
   @Override
   public void removeFromWorld() {
-    if (level == null || !origin.isSet()) {
+    if (!origin.isSet()) {
       return;
     }
 
@@ -509,9 +501,6 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   }
 
   public void destroy() {
-    if (level == null) {
-      return;
-    }
     destroyLasers();
 
     if (origin.isSet()) {
@@ -519,21 +508,17 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
 
       // 1. Notify origin marker to destroy its box lasers
       MarkerBlockEntity originMarker = o.vectO.getMarker(level);
-      if (originMarker != null) {
-        originMarker.destroyLasers();
-      }
+      originMarker.destroyLasers();
 
       // 2. Clear origin reference from all markers in this group
       List<MarkerBlockEntity> affectedMarkers = new ArrayList<>();
 
       MarkerBlockEntity mO = o.vectO.getMarker(level);
-      if (mO != null) affectedMarkers.add(mO);
+      affectedMarkers.add(mO);
 
       for (TileWrapper m : o.vect) {
         MarkerBlockEntity mark = m.getMarker(level);
-        if (mark != null) {
-          affectedMarkers.add(mark);
-        }
+        affectedMarkers.add(mark);
       }
 
       for (MarkerBlockEntity mark : affectedMarkers) {
@@ -632,14 +617,13 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     lasers = readLaserList(stream);
     signals = readLaserList(stream);
     switchSignals();
-    if (origin.vectO.isSet() && origin.vectO.getMarker(level) != null) {
+    if (origin.vectO.isSet()) {
+      origin.vectO.getMarker(level);
       origin.vectO.getMarker(level).updateSignals();
       for (TileWrapper w : origin.vect) {
         MarkerBlockEntity m = w.getMarker(level);
 
-        if (m != null) {
-          m.updateSignals();
-        }
+        m.updateSignals();
       }
     }
 

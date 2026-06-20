@@ -23,7 +23,7 @@ public class InvertedStackFilter implements IStackFilter {
 
   @Override
   public boolean matches(ItemStack stack) {
-    if (stack == null) {
+    if (stack.isEmpty()) {
       return false;
     }
     return !filter.matches(stack);

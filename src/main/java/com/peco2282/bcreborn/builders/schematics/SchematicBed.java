@@ -27,7 +27,7 @@ public class SchematicBed extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null && state.getValue(BedBlock.PART) == BedPart.FOOT) {
+    if (state.getValue(BedBlock.PART) == BedPart.FOOT) {
       requirements.add(new ItemStack(Items.WHITE_BED));
     }
   }
@@ -39,20 +39,16 @@ public class SchematicBed extends SchematicBlock {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override
   public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-    if (state != null) {
-      context.world().setBlock(new BlockPos(x, y, z), state, 3);
-    }
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 
   @Override
   public boolean doNotBuild() {
-    return state != null && state.getValue(BedBlock.PART) == BedPart.HEAD;
+    return state.getValue(BedBlock.PART) == BedPart.HEAD;
   }
 }

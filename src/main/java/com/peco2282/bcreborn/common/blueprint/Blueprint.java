@@ -168,10 +168,8 @@ public class Blueprint extends BlueprintBase {
         for (int z = 0; z < sizeZ; ++z) {
           SchematicBlockBase schematic = get(x, y, z);
           CompoundTag cpt = new CompoundTag();
-          if (schematic != null) {
-            schematic.idsToBlueprint(mapping);
-            schematic.writeSchematicToNBT(cpt, mapping);
-          }
+          schematic.idsToBlueprint(mapping);
+          schematic.writeSchematicToNBT(cpt, mapping);
           nbtContents.add(cpt);
         }
       }

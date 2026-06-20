@@ -28,12 +28,10 @@ public class SchematicRotateMetaSupported extends SchematicRotateMeta {
   @Override
   public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
     Direction side = Direction.NORTH;
-    if (state != null) {
-      if (state.hasProperty(BlockStateProperties.FACING)) {
-        side = state.getValue(BlockStateProperties.FACING);
-      } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-        side = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-      }
+    if (state.hasProperty(BlockStateProperties.FACING)) {
+      side = state.getValue(BlockStateProperties.FACING);
+    } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+      side = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
     }
     return Sets.newHashSet(RELATIVE_INDEXES[side.get3DDataValue()]);
   }

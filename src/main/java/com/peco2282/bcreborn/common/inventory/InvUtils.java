@@ -25,6 +25,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
@@ -40,7 +41,7 @@ public final class InvUtils {
     int count = 0;
     for (IInvSlot slot : InventoryIterator.getIterable(inv, side)) {
       ItemStack stack = slot.getStackInSlot();
-      if (stack != null && filter.matches(stack)) {
+      if (!stack.isEmpty() && filter.matches(stack)) {
         count += stack.getCount();
       }
     }
@@ -50,7 +51,7 @@ public final class InvUtils {
   public static boolean containsItem(Container inv, Direction side, IStackFilter filter) {
     for (IInvSlot slot : InventoryIterator.getIterable(inv, side)) {
       ItemStack stack = slot.getStackInSlot();
-      if (stack != null && filter.matches(stack)) {
+      if (!stack.isEmpty() && filter.matches(stack)) {
         return true;
       }
     }
@@ -65,7 +66,7 @@ public final class InvUtils {
    * @return true if room for stack
    */
   public static boolean isRoomForStack(ItemStack stack, Direction side, Container dest) {
-    if (stack == null || dest == null) {
+    if (stack.isEmpty()) {
       return false;
     }
     ITransactor tran = Transactor.getTransactorFor(dest);
@@ -83,7 +84,7 @@ public final class InvUtils {
   public static ItemStack moveOneItem(Container source, Direction output, Container dest, Direction intput, IStackFilter filter) {
     ITransactor imSource = Transactor.getTransactorFor(source);
     ItemStack stack = imSource.remove(filter, output, false);
-    if (stack != null) {
+    if (!stack.isEmpty()) {
       ITransactor imDest = Transactor.getTransactorFor(dest);
       int moved = imDest.add(stack, intput, true).getCount();
       if (moved > 0) {
@@ -96,7 +97,7 @@ public final class InvUtils {
 
   /* STACK DROPS */
   public static void dropItems(Level world, ItemStack stack, int i, int j, int k) {
-    if (stack == null || stack.isEmpty()) {
+    if (stack.isEmpty()) {
       return;
     }
 
@@ -222,6 +223,7 @@ public final class InvUtils {
     return inv;
   }
 
+  @Nullable
   public static IInvSlot getItem(Container inv, IStackFilter filter) {
     for (IInvSlot s : InventoryIterator.getIterable(inv)) {
       if (!s.getStackInSlot().isEmpty() && filter.matches(s.getStackInSlot())) {
@@ -233,52 +235,47 @@ public final class InvUtils {
   }
 
   public static Iterable<IInvSlot> getItems(final Container inv, final IStackFilter filter) {
-    return new Iterable<>() {
+    return () -> new Iterator<>() {
+      private final Iterator<IInvSlot> parent = InventoryIterator.getIterable(inv).iterator();
+      private boolean searched = false;
+      private IInvSlot next;
+
+      private void find() {
+        next = null;
+        searched = true;
+
+        while (parent.hasNext()) {
+          IInvSlot s = parent.next();
+          if (!s.getStackInSlot().isEmpty() && filter.matches(s.getStackInSlot())) {
+            next = s;
+            return;
+          }
+        }
+      }
+
       @Override
-      public Iterator<IInvSlot> iterator() {
-        return new Iterator<>() {
-          private final Iterator<IInvSlot> parent = InventoryIterator.getIterable(inv).iterator();
-          private boolean searched = false;
-          private IInvSlot next;
+      public boolean hasNext() {
+        if (!searched) {
+          find();
+        }
 
-          private void find() {
-            next = null;
-            searched = true;
+        return next != null;
+      }
 
-            while (parent.hasNext()) {
-              IInvSlot s = parent.next();
-              if (!s.getStackInSlot().isEmpty() && filter.matches(s.getStackInSlot())) {
-                next = s;
-                return;
-              }
-            }
-          }
+      @Override
+      public IInvSlot next() {
+        if (!searched) {
+          find();
+        }
 
-          @Override
-          public boolean hasNext() {
-            if (!searched) {
-              find();
-            }
+        IInvSlot current = next;
+        find();
+        return current;
+      }
 
-            return next != null;
-          }
-
-          @Override
-          public IInvSlot next() {
-            if (!searched) {
-              find();
-            }
-
-            IInvSlot current = next;
-            find();
-            return current;
-          }
-
-          @Override
-          public void remove() {
-            throw new UnsupportedOperationException("Remove not supported.");
-          }
-        };
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException("Remove not supported.");
       }
     };
   }

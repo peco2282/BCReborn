@@ -263,14 +263,12 @@ public class BuildingItem implements IBufferSerializable, IBuildingItem {
   }
 
   public void setStacksToDisplay(List<ItemStack> stacks) {
-    if (stacks != null) {
-      for (ItemStack s : stacks) {
-        for (int i = 0; i < s.getCount(); ++i) {
-          StackAtPosition sPos = new StackAtPosition();
-          sPos.stack = s.copy();
-          sPos.stack.setCount(1);
-          stacksToDisplay.add(sPos);
-        }
+    for (ItemStack s : stacks) {
+      for (int i = 0; i < s.getCount(); ++i) {
+        StackAtPosition sPos = new StackAtPosition();
+        sPos.stack = s.copy();
+        sPos.stack.setCount(1);
+        stacksToDisplay.add(sPos);
       }
     }
   }

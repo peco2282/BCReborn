@@ -36,7 +36,7 @@ public class TransactorRoundRobin extends TransactorSimple {
       for (IInvSlot slot : InventoryIterator.getIterable(inventory, orientation)) {
         ItemStack stackInInventory = slot.getStackInSlot();
 
-        if (stackInInventory == null) {
+        if (stackInInventory.isEmpty()) {
           continue;
         }
 

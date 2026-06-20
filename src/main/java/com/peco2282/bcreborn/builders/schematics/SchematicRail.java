@@ -22,9 +22,7 @@ import java.util.LinkedList;
 public class SchematicRail extends SchematicBlockFloored {
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (state != null) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override
@@ -34,8 +32,6 @@ public class SchematicRail extends SchematicBlockFloored {
 
   @Override
   public void postProcessing(IBuilderContext context, int x, int y, int z) {
-    if (state != null) {
-      context.world().setBlock(new BlockPos(x, y, z), state, 3);
-    }
+    context.world().setBlock(new BlockPos(x, y, z), state, 3);
   }
 }
