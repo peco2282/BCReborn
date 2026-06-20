@@ -103,7 +103,7 @@ public final class Utils {
     List<Direction> pipeDirections = new ArrayList<>();
 
     for (Direction side : Direction.values()) {
-      if (from.getOpposite() == side) {
+      if (from == null || from.getOpposite() == side) {
         continue;
       }
 

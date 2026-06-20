@@ -204,7 +204,7 @@ public final class BlockUtils {
       return false;
     }
 
-    return getBlockHardnessMining(world, pos, b, null) < 0;
+    return getBlockHardnessMining(world, pos, b, ItemStack.EMPTY) < 0;
   }
 
   public static boolean isUnbreakableBlock(Level world, int x, int y, int z) {
