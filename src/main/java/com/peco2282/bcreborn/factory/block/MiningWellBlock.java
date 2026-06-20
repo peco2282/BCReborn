@@ -65,9 +65,4 @@ public class MiningWellBlock extends BuildCraftBlock {
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
   }
-
-  @Override
-  public boolean isRotatable() {
-    return true;
-  }
 }

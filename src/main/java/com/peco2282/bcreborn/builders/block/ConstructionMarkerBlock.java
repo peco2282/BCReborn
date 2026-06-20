@@ -56,7 +56,7 @@ public class ConstructionMarkerBlock extends MarkerBlock {
 
   @Override
   public boolean isRotatable() {
-    return true;
+    return false;
   }
 
   @Override

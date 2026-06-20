@@ -66,11 +66,6 @@ public class BlueprintLibraryBlock extends BuildCraftBlock {
   }
 
   @Override
-  public boolean isRotatable() {
-    return false;
-  }
-
-  @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
     return BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get().create(p_153215_, p_153216_);
   }

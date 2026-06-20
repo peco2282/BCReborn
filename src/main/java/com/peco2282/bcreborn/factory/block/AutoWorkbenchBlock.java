@@ -73,9 +73,4 @@ public class AutoWorkbenchBlock extends BuildCraftBlock {
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
 
   }
-
-  @Override
-  public boolean isRotatable() {
-    return false;
-  }
 }

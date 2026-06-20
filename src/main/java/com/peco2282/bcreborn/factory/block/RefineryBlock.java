@@ -101,9 +101,4 @@ public class RefineryBlock extends BuildCraftBlock {
   public @Nullable BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
     return this.defaultBlockState().setValue(FACING, p_49820_.getHorizontalDirection().getOpposite());
   }
-
-  @Override
-  public boolean isRotatable() {
-    return true;
-  }
 }
