@@ -67,7 +67,6 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
   @Override
   public boolean success() {
-    int pumped = 0;
-    return pumped > 0;
+    return false;
   }
 }

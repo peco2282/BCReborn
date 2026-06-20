@@ -280,7 +280,7 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
     ItemStack originalStack = ItemStack.EMPTY;
     Slot slot = slots.get(slotIndex);
     int numSlots = slots.size();
-    if (slot != null && slot.hasItem()) {
+    if (slot.hasItem()) {
       ItemStack stackInSlot = slot.getItem();
       originalStack = stackInSlot.copy();
       if (slotIndex >= numSlots - 9 * 4 && tryShiftItem(stackInSlot, numSlots)) {

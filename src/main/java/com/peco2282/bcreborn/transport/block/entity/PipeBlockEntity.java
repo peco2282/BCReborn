@@ -193,7 +193,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     if (transportType == PipeType.ITEM) {
       tickItems(level, pos);
-      if (!level.isClientSide && !itemTransportModule.getTravelingItems().isEmpty()) {
+      if (!itemTransportModule.getTravelingItems().isEmpty()) {
         level.sendBlockUpdated(pos, state, state, 3);
       }
     } else if (transportType == PipeType.FLUID) {
@@ -422,7 +422,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
     Level level = getLevel();
     BlockPos pos = getBlockPos();
-    if (level != null && !level.isClientSide) {
+    if (!level.isClientSide) {
       level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
     }
   }

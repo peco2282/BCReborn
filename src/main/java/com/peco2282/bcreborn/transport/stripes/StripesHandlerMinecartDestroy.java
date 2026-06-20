@@ -61,7 +61,7 @@ public class StripesHandlerMinecartDestroy implements IStripesHandler {
     }
 
     ItemStack cartItem = cart.getPickResult();
-    if (cartItem == null || cartItem.isEmpty()) {
+    if (cartItem.isEmpty()) {
       // In 1.20.1 AbstractMinecart doesn't have getCartItem(), pickResult should work
       // if it fails we might need to check specific types or use a fallback.
       // Using reflection as AT might not be picked up correctly in all environments

@@ -224,13 +224,11 @@ public class SchematicPipe extends SchematicTile {
     try {
       PipeBlockEntity.SideProperties props = pipe.sideProperties;
 
-      for (PipePluggable pluggable : props.pluggables) {
+      for (PipePluggable<?> pluggable : props.pluggables) {
         if (pluggable != null) {
           // NOTE: This might still fail if pluggable.getDropItems expects IPipeTile
           // We may need to pass a proxy or a dummy IPipeTile if PipeBlockEntity doesn't implement it yet.
-          if (pipe instanceof IPipeTile) {
-            Collections.addAll(list, pluggable.getDropItems((IPipeTile) pipe));
-          }
+          Collections.addAll(list, pluggable.getDropItems(pipe));
         }
       }
     } catch (Exception e) {

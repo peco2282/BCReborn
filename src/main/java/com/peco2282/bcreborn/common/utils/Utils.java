@@ -58,11 +58,11 @@ public final class Utils {
   }
 
   public static boolean isRegistered(Block block) {
-    return block != null && BuiltInRegistries.BLOCK.getKey(block) != null;
+    return block != null && BuiltInRegistries.BLOCK.containsKey(BuiltInRegistries.BLOCK.getKey(block));
   }
 
   public static boolean isRegistered(Item item) {
-    return item != null && BuiltInRegistries.ITEM.getKey(item) != null;
+    return item != null && BuiltInRegistries.ITEM.containsKey(BuiltInRegistries.ITEM.getKey(item));
   }
 
   public static boolean isRegistered(ItemStack stack) {

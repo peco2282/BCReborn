@@ -108,7 +108,7 @@ public class ZonePlanScreen extends AdvancedInterfaceScreen<ZonePlanMenu> {
   }
 
   private boolean isFullscreen() {
-    return mapHeight > WINDOWED_MAP_HEIGHT;
+    return false;
   }
 
   @Override
@@ -126,14 +126,16 @@ public class ZonePlanScreen extends AdvancedInterfaceScreen<ZonePlanMenu> {
       graphics.blit(TMP_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
-    int mapXMin = 0;
+    int mapXMin;
+    //noinspection ConstantValue
     if (mapWidth <= WINDOWED_MAP_WIDTH) {
       mapXMin = leftPos + 8 + (WINDOWED_MAP_WIDTH - mapWidth) / 2;
     } else {
       mapXMin = (width - mapWidth) / 2;
     }
 
-    int mapYMin = 0;
+    int mapYMin;
+    //noinspection ConstantValue
     if (mapHeight <= WINDOWED_MAP_HEIGHT) {
       mapYMin = topPos + 9 + (WINDOWED_MAP_HEIGHT - mapHeight) / 2;
     } else {
@@ -150,6 +152,7 @@ public class ZonePlanScreen extends AdvancedInterfaceScreen<ZonePlanMenu> {
 
     boolean inSelection = false;
     int selX2 = 0;
+    //noinspection ConstantValue
     if (inSelection && selX2 != 0) {
       int selX1 = 0;
       int x1 = Math.min(selX1, selX2);

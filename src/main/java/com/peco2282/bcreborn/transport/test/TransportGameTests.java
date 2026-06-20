@@ -55,7 +55,9 @@ public class TransportGameTests {
     helper.succeedWhen(() -> {
       BlockEntity be = helper.getBlockEntity(chestPos);
       if (be == null) helper.fail("Chest not found", chestPos);
+      //noinspection DataFlowIssue
       IItemHandler handler = be.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+      //noinspection ConstantValue
       if (handler == null) helper.fail("Item handler not found");
 
       boolean found = false;

@@ -47,6 +47,7 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
     // Simplified check for fluid in tank
     boolean hasFluid = false; // TODO: Implement proper check
 
+    //noinspection ConstantValue
     if (hasFluid) {
       startDelegateAI(new AIRobotGotoStationAndUnloadFluids(robot));
     } else {

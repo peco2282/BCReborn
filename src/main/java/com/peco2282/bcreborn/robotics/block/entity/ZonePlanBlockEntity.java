@@ -149,9 +149,6 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     super.load(nbt);
 
     mapName = nbt.getString("name");
-    if (mapName == null) {
-      mapName = "";
-    }
 
     inv.readTag(nbt.getCompound("inv"));
 

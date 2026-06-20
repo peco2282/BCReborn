@@ -60,7 +60,9 @@ public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
       BlockEntity be = pipe.getLevel().getBlockEntity(pipe.getBlockPos().relative(dir));
       if (be == null || be instanceof PipeBlockEntity) continue;
 
+      //noinspection DataFlowIssue
       IEnergyStorage source = be.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).orElse(null);
+      //noinspection ConstantValue
       if (source == null || !source.canExtract()) continue;
 
       // 吸い出し可能量を計算（maxPower との差分を上限とする）

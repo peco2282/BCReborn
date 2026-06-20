@@ -21,10 +21,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ListTooltipHandler {
   @SubscribeEvent
   public void itemTooltipEvent(ItemTooltipEvent event) {
-    if (event.getItemStack().isEmpty() && event.getEntity() != null && event.getEntity().containerMenu != null
+    if (event.getItemStack().isEmpty() && event.getEntity() != null
       && event.getEntity().containerMenu instanceof ListNewMenu) {
       ItemStack list = event.getEntity().getMainHandItem();
-      if (list != null && list.getItem() instanceof IList) {
+      if (!list.isEmpty() && list.getItem() instanceof IList) {
         if (((IList) list.getItem()).matches(list, event.getItemStack())) {
           event.getToolTip().add(Component.translatable("tip.list.matches").withStyle(ChatFormatting.GREEN));
         }

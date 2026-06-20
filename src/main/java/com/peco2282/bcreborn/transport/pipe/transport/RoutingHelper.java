@@ -65,7 +65,7 @@ class RoutingHelper {
       BlockPos pos = pipe.getBlockPos();
       List<Direction> restricted = new ArrayList<>();
       for (Direction dir : possibleDirections) {
-        if (level != null && ib.canConnectTo(pipe, dir, level.getBlockState(pos.relative(dir)))) {
+        if (ib.canConnectTo(pipe, dir, level.getBlockState(pos.relative(dir)))) {
           restricted.add(dir);
         }
       }
@@ -79,7 +79,7 @@ class RoutingHelper {
     }
 
     Level level = pipe.getLevel();
-    RandomSource random = (level != null) ? level.random : RandomSource.create();
+    RandomSource random = level.random;
     Direction chosen = possibleDirections.get(random.nextInt(possibleDirections.size()));
     PipeDebugLogger.logRouting(pipe, item, chosen);
     return chosen;

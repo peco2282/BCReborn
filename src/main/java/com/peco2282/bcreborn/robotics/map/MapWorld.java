@@ -61,9 +61,7 @@ public class MapWorld {
       if (target.exists()) {
         try {
           CompoundTag nbt = NbtIo.readCompressed(target);
-          if (nbt != null) {
-            region.readFromNBT(nbt);
-          }
+          region.readFromNBT(nbt);
         } catch (Exception e) {
           e.printStackTrace();
         }

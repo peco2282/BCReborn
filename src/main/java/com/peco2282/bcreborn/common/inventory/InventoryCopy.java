@@ -33,7 +33,7 @@ public class InventoryCopy implements Container {
     contents = new ItemStack[orignal.getContainerSize()];
     for (int i = 0; i < contents.length; i++) {
       ItemStack stack = orignal.getItem(i);
-      if (stack != null && !stack.isEmpty()) {
+      if (!stack.isEmpty()) {
         contents[i] = stack.copy();
       } else {
         contents[i] = ItemStack.EMPTY;

@@ -72,7 +72,7 @@ public class AutoWorkbenchMenu extends BuildCraftMenu<AutoWorkbenchMenu> {
   @Override
   public void broadcastChanges() {
     super.broadcastChanges();
-    if (tile.getLevel() != null && !tile.getLevel().isClientSide) {
+    if (!tile.getLevel().isClientSide) {
       this.data.set(0, tile.progress);
 
       ItemStack output = tile.getCraftResult().getItem(0);
