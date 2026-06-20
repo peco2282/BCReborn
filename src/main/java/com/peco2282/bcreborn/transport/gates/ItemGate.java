@@ -48,7 +48,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   private static CompoundTag getNBT(ItemStack stack) {
-    if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) {
+    if (stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) {
       return new CompoundTag();
     } else {
       return stack.getOrCreateTag();
@@ -133,9 +133,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
       for (int i = 0; i < expansionList.size(); i++) {
         String exTag = expansionList.getString(i);
         IGateExpansion ex = GateExpansions.getExpansion(exTag);
-        if (ex != null) {
-          expansions.add(ex);
-        }
+        expansions.add(ex);
       }
     } catch (RuntimeException ignored) {
     }
