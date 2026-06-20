@@ -58,21 +58,9 @@ public class SchematicPipe extends SchematicBlockEntity {
   }
 
   private Item getPipeItem(PipeBlockEntity pipe) {
-    try {
-      Field matField = PipeBlockEntity.class.getDeclaredField("pipeMaterial");
-      matField.setAccessible(true);
-      PipeMaterial material = (PipeMaterial) matField.get(pipe);
-
-      Field typeField = PipeBlockEntity.class.getDeclaredField("transportType");
-      typeField.setAccessible(true);
-      PipeType type = (PipeType) typeField.get(pipe);
-
-      RegistryObject<PipeBlock> block = TransportBlocks.get(type, material);
-      if (block != null) {
-        return block.get().asItem();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    RegistryObject<PipeBlock> block = TransportBlocks.get(pipe.getTransportType(), pipe.getPipeMaterial());
+    if (block != null) {
+      return block.get().asItem();
     }
     return Items.AIR;
   }
