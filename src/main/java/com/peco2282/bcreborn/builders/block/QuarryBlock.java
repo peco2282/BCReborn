@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,11 +30,6 @@ public class QuarryBlock extends BuildCraftBlock {
   public QuarryBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 1));
     this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
-  }
-
-  @Override
-  public @Nullable BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
-    return super.getStateForPlacement(p_49820_);
   }
 
   @Nullable

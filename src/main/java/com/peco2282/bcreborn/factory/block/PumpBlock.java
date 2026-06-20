@@ -15,7 +15,9 @@ import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
+import com.peco2282.bcreborn.factory.block.entity.PumpBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -40,11 +42,12 @@ public class PumpBlock extends BuildCraftBlock {
       .sound(SoundType.METAL)
       .strength(5.0F, 10.0F)
       .lightLevel(state -> 1));
+    this.registerDefaultState(this.stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
   public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-    return null;
+    return new PumpBlockEntity(pos, state);
   }
 
   @Nullable
@@ -75,5 +78,11 @@ public class PumpBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(HORIZONTAL_FACING);
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 }

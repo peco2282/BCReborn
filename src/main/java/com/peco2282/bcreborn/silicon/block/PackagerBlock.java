@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public class PackagerBlock extends BuildCraftBlock {
   public PackagerBlock() {
     super(Properties.of().strength(10F));
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
@@ -63,7 +63,12 @@ public class PackagerBlock extends BuildCraftBlock {
   }
 
   @Override
+  public boolean isHorizontalRotatable() {
+    return true;
+  }
+
+  @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
+    builder.add(HORIZONTAL_FACING);
   }
 }

@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 public class AutoWorkbenchBlock extends BuildCraftBlock {
   public AutoWorkbenchBlock() {
     super(Properties.of().sound(SoundType.WOOD).strength(3.0F));
-    this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
@@ -72,7 +72,12 @@ public class AutoWorkbenchBlock extends BuildCraftBlock {
   }
 
   @Override
+  public boolean isHorizontalRotatable() {
+    return true;
+  }
+
+  @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-    p_49915_.add(FACING);
+    p_49915_.add(HORIZONTAL_FACING);
   }
 }

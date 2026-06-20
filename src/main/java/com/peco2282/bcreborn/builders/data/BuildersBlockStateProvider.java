@@ -115,7 +115,7 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
       });
     getVariantBuilder(BuildersBlock.BLUEPRINT_LIBRARY.get())
       .forAllStates(state -> {
-        Direction dir = state.getValue(BlueprintLibraryBlock.FACING);
+        Direction dir = state.getValue(BlueprintLibraryBlock.HORIZONTAL_FACING);
         return ConfiguredModel.builder()
           .modelFile(models().getExistingFile(library))
           .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)

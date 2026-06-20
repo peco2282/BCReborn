@@ -41,7 +41,7 @@ public class FloodGateBlock extends BuildCraftBlock {
       .mapColor(MapColor.METAL)
       .sound(SoundType.METAL)
       .strength(3.0F));
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
@@ -77,11 +77,16 @@ public class FloodGateBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
+    builder.add(HORIZONTAL_FACING);
   }
 
   @Override
   public boolean isRotatable() {
     return false;
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 }

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class MiningWellBlock extends BuildCraftBlock {
   public MiningWellBlock() {
     super(Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(5.0F, 10.0F));
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
@@ -66,6 +66,11 @@ public class MiningWellBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
+    builder.add(HORIZONTAL_FACING);
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 }
