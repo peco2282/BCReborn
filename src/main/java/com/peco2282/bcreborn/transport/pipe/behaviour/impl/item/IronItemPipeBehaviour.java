@@ -59,7 +59,7 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
     if (!(heldItem.getItem() instanceof IToolWrench wrench)) {
       return InteractionResult.PASS;
     }
-    if (!wrench.canWrench(player, pos.getX(), pos.getY(), pos.getZ())) {
+    if (!wrench.canWrench(player, pos)) {
       return InteractionResult.PASS;
     }
 
@@ -74,7 +74,7 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
       if (next != null) {
         player.displayClientMessage(Component.literal("Output direction: " + next.name()), true);
       }
-      wrench.wrenchUsed(player, pos.getX(), pos.getY(), pos.getZ());
+      wrench.wrenchUsed(player, pos);
     }
     return InteractionResult.sidedSuccess(level.isClientSide);
   }

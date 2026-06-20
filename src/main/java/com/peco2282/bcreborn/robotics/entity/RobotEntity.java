@@ -47,6 +47,7 @@ import com.peco2282.bcreborn.robotics.statements.ActionRobotWorkInArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -1101,7 +1102,7 @@ public class RobotEntity extends RobotEntityBase implements
       onRobotHit(false);
 
       if (level().isClientSide) {
-        ((WrenchItem) stack.getItem()).wrenchUsed(player, 0, 0, 0);
+        ((WrenchItem) stack.getItem()).wrenchUsed(player, BlockPos.ZERO);
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     } else if (wearables.size() < MAX_WEARABLES && stack.getItem().canEquip(stack, EquipmentSlot.HEAD, this)) {
