@@ -28,25 +28,15 @@ import net.minecraft.world.item.crafting.Ingredient;
  * for data-driven recipe definitions.
  */
 public record ProgrammingRecipe(
-  /**
-   * The unique identifier for this recipe.
-   */
+  // The unique identifier for this recipe.
   ResourceLocation id,
-  /**
-   * The input ingredient that will be programmed.
-   */
+  // The input ingredient that will be programmed.
   Ingredient input,
-  /**
-   * The optional programming ingredient that defines the programming behavior.
-   */
+  // The optional programming ingredient that defines the programming behavior.
   Ingredient option,
-  /**
-   * The resulting programmed item stack.
-   */
+  // The resulting programmed item stack.
   ItemStack result,
-  /**
-   * The amount of energy required to complete this programming recipe.
-   */
+  // The amount of energy required to complete this programming recipe.
   int energy
 ) implements BCRecipe {
   /**

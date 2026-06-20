@@ -51,8 +51,8 @@ public final class ResourceUtils {
   /**
    * Turns a block/item name into a prefix for finding textures.
    *
-   * @param objectName
-   * @return
+   * @param objectName the name of the object to get the prefix for
+   * @return the prefix for finding textures
    */
   public static String getObjectPrefix(String objectName) {
     if (objectName == null) {

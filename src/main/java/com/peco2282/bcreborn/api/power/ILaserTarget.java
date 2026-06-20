@@ -30,7 +30,7 @@ public interface ILaserTarget {
   /**
    * Transfers energy from the laser to the target.
    *
-   * @param energy
+   * @param energy the amount of energy to transfer to this target
    */
   void receiveLaserEnergy(int energy);
 
@@ -45,21 +45,21 @@ public interface ILaserTarget {
   /**
    * Get the X coordinate of the laser stream.
    *
-   * @return
+   * @return the X coordinate of the laser target
    */
   double getXCoord();
 
   /**
    * Get the Y coordinate of the laser stream.
    *
-   * @return
+   * @return the Y coordinate of the laser target
    */
   double getYCoord();
 
   /**
    * Get the Z coordinate of the laser stream.
    *
-   * @return
+   * @return the Z coordinate of the laser target
    */
   double getZCoord();
 }
