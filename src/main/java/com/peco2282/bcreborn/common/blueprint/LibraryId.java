@@ -66,10 +66,9 @@ public class LibraryId implements INBTSerializable, Comparable<LibraryId>, IBuff
     byte[] result = new byte[suffix.length() / 2];
 
     for (int i = 0; i < result.length; ++i) {
-      result[i] = (byte) ((byte) (fromHex(suffix.charAt(i * 2 + 1)))
-        + (byte) (fromHex(suffix.charAt(i * 2)) << 4));
-
-      result[i] -= 128;
+      int value = (fromHex(suffix.charAt(i * 2)) << 4)
+        | fromHex(suffix.charAt(i * 2 + 1));
+      result[i] = (byte) (value - 128);
     }
 
     return result;

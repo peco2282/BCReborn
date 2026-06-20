@@ -279,7 +279,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
     if (data.contains("wireState[0]")) {
       for (PipeWire wire : PipeWire.VALUES) {
         if (data.getBoolean("wireState[" + wire.ordinal() + "]")) {
-          broadcastSignal |= 1 << wire.ordinal();
+          broadcastSignal |= (byte) (1 << wire.ordinal());
         }
       }
     } else {
@@ -627,7 +627,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   }
 
   public void broadcastSignal(PipeWire color) {
-    broadcastSignal |= 1 << color.ordinal();
+    broadcastSignal |= (byte) (1 << color.ordinal());
   }
 
   public IPipe getPipe() {

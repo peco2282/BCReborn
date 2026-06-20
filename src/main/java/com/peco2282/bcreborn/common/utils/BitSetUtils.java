@@ -36,7 +36,7 @@ public final class BitSetUtils {
     byte[] bytes = new byte[sizeInBytes];
     for (int i = 0; i < bits.length(); i++) {
       if (bits.get(i)) {
-        bytes[i / 8] |= 1 << (i % 8);
+        bytes[i / 8] |= (byte) (1 << (i % 8));
       }
     }
     return bytes;

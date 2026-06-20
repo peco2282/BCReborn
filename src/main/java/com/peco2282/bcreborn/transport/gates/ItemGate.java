@@ -111,7 +111,7 @@ public class ItemGate extends Item implements IPipePluggableItem {
       for (int i = 0; i < expansionList.size(); i++) {
         String ex = expansionList.getString(i);
 
-        if (ex.equals(expansion.getUniqueIdentifier())) {
+        if (ex.equals(expansion.getUniqueIdentifier().toString())) {
           return true;
         }
       }
