@@ -30,12 +30,12 @@ import org.jetbrains.annotations.Nullable;
 public class QuarryBlock extends BuildCraftBlock {
   public QuarryBlock() {
     super(Properties.of().noOcclusion().lightLevel(state -> 1));
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
   public @Nullable BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
-    return super.getStateForPlacement(p_49820_).setValue(FACING, p_49820_.getHorizontalDirection().getOpposite());
+    return super.getStateForPlacement(p_49820_);
   }
 
   @Nullable
@@ -46,12 +46,17 @@ public class QuarryBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-    p_49915_.add(FACING);
+    p_49915_.add(HORIZONTAL_FACING);
   }
 
   @Override
   public boolean isRotatable() {
     return false;
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 
   @Override

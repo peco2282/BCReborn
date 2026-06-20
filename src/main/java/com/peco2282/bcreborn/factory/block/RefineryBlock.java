@@ -41,15 +41,13 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class RefineryBlock extends BuildCraftBlock {
-  public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-
   public RefineryBlock() {
     super(Properties.of()
       .mapColor(MapColor.METAL)
       .sound(SoundType.METAL)
       .strength(5.0F, 10.0F)
       .noOcclusion());
-    this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    this.registerDefaultState(this.getStateDefinition().any().setValue(HORIZONTAL_FACING, Direction.NORTH));
   }
 
   @Override
@@ -93,6 +91,16 @@ public class RefineryBlock extends BuildCraftBlock {
 
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    builder.add(FACING);
+    builder.add(HORIZONTAL_FACING);
+  }
+
+  @Override
+  public boolean isRotatable() {
+    return false;
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return true;
   }
 }

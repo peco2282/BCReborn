@@ -19,11 +19,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BuildCraftBlock extends BaseEntityBlock implements IRotatable {
-  public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.values());
+  public static final DirectionProperty FACING = BlockStateProperties.FACING;
+  public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
   public BuildCraftBlock(Properties p_49795_) {
     super(p_49795_);
@@ -34,8 +36,11 @@ public abstract class BuildCraftBlock extends BaseEntityBlock implements IRotata
   @Override
   public @Nullable BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
     var state = super.getStateForPlacement(p_49820_);
+    if (this.isHorizontalRotatable()) {
+      return state.setValue(HORIZONTAL_FACING, p_49820_.getHorizontalDirection().getOpposite());
+    }
     if (this.isRotatable()) {
-      return state.setValue(FACING, p_49820_.getHorizontalDirection().getOpposite());
+      return state.setValue(FACING, p_49820_.getNearestLookingDirection().getOpposite());
     }
     return state;
   }
@@ -48,5 +53,10 @@ public abstract class BuildCraftBlock extends BaseEntityBlock implements IRotata
   @Override
   public boolean isRotatable() {
     return true;
+  }
+
+  @Override
+  public boolean isHorizontalRotatable() {
+    return false;
   }
 }
