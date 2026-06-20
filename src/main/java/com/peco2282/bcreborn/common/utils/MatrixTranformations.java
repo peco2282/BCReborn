@@ -24,7 +24,7 @@ public final class MatrixTranformations {
   /**
    * Mirrors the array on the Y axis by calculating offsets from 0.5F
    *
-   * @param targetArray
+   * @param targetArray the array to be mirrored
    */
   public static void mirrorY(float[][] targetArray) {
     float temp = targetArray[1][0];
@@ -49,8 +49,13 @@ public final class MatrixTranformations {
   }
 
   /**
+   * Transforms the coordinates of a float[][] array based on the given direction.
+   * <p>
+   * This method applies a mirrorY transformation if the direction is odd, and then
+   * rotates the array by the number of quarter turns specified by the direction.
+   *
    * @param targetArray the array that should be transformed
-   * @param direction
+   * @param direction   the direction to transform the array
    */
   public static void transform(float[][] targetArray, Direction direction) {
     if ((direction.ordinal() & 0x1) == 1) {

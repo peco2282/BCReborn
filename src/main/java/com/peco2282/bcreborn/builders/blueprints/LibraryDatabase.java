@@ -169,7 +169,7 @@ public class LibraryDatabase {
 
           blueprintIds.add(id);
         } else {
-          BCLog.logger.warn("Found incorrectly named (no extension) blueprint file: '%s'!", fileName);
+          BCLog.logger.warn("Found incorrectly named (no extension) blueprint file: %s'!", fileName);
         }
       }
 

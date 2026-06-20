@@ -20,14 +20,14 @@ public interface IControllable {
   /**
    * Get the current control mode of the Tile Entity.
    *
-   * @return
+   * @return The current control mode.
    */
   Mode getControlMode();
 
   /**
    * Set the mode of the Tile Entity.
    *
-   * @param mode
+   * @param mode The new control mode.
    */
   void setControlMode(Mode mode);
 
@@ -36,7 +36,7 @@ public interface IControllable {
    * If you query IControllable tiles, you MUST check with
    * acceptsControlMode first.
    *
-   * @param mode
+   * @param mode The control mode to check.
    * @return True if this control mode is accepted.
    */
   boolean acceptsControlMode(Mode mode);

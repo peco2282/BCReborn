@@ -33,7 +33,7 @@ public abstract class BCStatement implements IStatement {
    * more standardized tags if needed, otherwise just pass a single string.
    * The first passed string will be the one used when saved to disk.
    *
-   * @param uniqueTag
+   * @param uniqueTag the unique tag for the statement
    */
   public BCStatement(String uniqueTag) {
     this.uniqueTag = ResourceLocation.parse(uniqueTag);

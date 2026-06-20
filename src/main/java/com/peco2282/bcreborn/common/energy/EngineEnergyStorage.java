@@ -126,7 +126,7 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   /**
    * Serializes the state to the stream
    *
-   * @param data
+   * @param data The buffer to write the data to.
    */
   @Override
   public void writeData(FriendlyByteBuf data) {
@@ -138,7 +138,7 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   /**
    * Deserializes the state from the stream
    *
-   * @param data
+   * @param data The buffer to read the data from.
    */
   @Override
   public void readData(FriendlyByteBuf data) {

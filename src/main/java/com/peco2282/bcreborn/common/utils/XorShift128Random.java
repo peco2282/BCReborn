@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.utils;
 import java.util.Random;
 
 /**
- * Based on http://xorshift.di.unimi.it/xorshift128plus.c
+ * <a href="http://xorshift.di.unimi.it/xorshift128plus.c">Based on</a><br/>
  * TODO: This thing ought to have tests!
  */
 public class XorShift128Random {

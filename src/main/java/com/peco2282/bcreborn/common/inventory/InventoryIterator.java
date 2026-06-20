@@ -32,8 +32,8 @@ public final class InventoryIterator {
   /**
    * Returns an Iterable object for the specified side of the inventory.
    *
-   * @param inv
-   * @param side
+   * @param inv The inventory to iterate over.
+   * @param side The side of the inventory to iterate over.
    * @return Iterable
    */
   public static Iterable<IInvSlot> getIterable(Container inv, Direction side) {

@@ -77,12 +77,17 @@ public class TransactorSimple extends Transactor {
   }
 
   /**
+   * Attempts to add items from the given stack into the specified inventory slot.
+   * <p>
+   * This method calculates how many items can be added to the slot based on stack size limits,
+   * the number of items already injected, and whether the stacks can merge. If {@code doAdd} is
+   * true, the items are actually moved into the slot; otherwise, this is a simulation.
    *
-   * @param slot
-   * @param stack
-   * @param injected Amount not to move?
-   * @param doAdd
-   * @return Return the number of items moved.
+   * @param slot the inventory slot to add items to
+   * @param stack the item stack containing items to be added
+   * @param injected the number of items already injected from the stack (not to be moved again)
+   * @param doAdd if true, actually perform the addition; if false, only simulate
+   * @return the number of items that were (or would be) added to the slot
    */
   protected int addToSlot(IInvSlot slot, ItemStack stack, int injected, boolean doAdd) {
     int available = stack.getCount() - injected;

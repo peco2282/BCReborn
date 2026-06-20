@@ -24,7 +24,7 @@ import java.util.LinkedList;
 
 /**
  * This class implements a 3D path finding based on the A* algorithm, following
- * guidelines documented on http://www.policyalmanac.org/games/aStarTutorial.htm
+ * <a href="http://www.policyalmanac.org/games/aStarTutorial.htm">guidelines documented on</a>
  * .
  */
 public class PathFinding implements IIterableAlgorithm {
