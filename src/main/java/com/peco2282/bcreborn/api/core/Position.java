@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a 3D position in world space with an associated orientation.
@@ -59,7 +60,7 @@ public class Position implements IBufferSerializable {
    * @param ck           The z coordinate.
    * @param corientation The orientation direction (defaults to DOWN if null).
    */
-  public Position(double ci, double cj, double ck, Direction corientation) {
+  public Position(double ci, double cj, double ck, @Nullable Direction corientation) {
     x = ci;
     y = cj;
     z = ck;

@@ -15,12 +15,14 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
 public interface IStatement {
   ResourceLocation getUniqueTag();
 
+  @Nullable
   @OnlyIn(Dist.CLIENT)
   TextureAtlasSprite getIcon();
 
@@ -31,9 +33,12 @@ public interface IStatement {
 
   int minParameters();
 
+  @Nullable
   String getDescription();
 
+  @Nullable
   IStatementParameter createParameter(int index);
 
+  @Nullable
   IStatement rotateLeft();
 }

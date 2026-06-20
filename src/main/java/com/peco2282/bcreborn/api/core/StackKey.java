@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A record used as a key for storing both {@link ItemStack} and {@link FluidStack} objects in maps and collections.
@@ -203,7 +204,7 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
    * @param o2 The second object.
    * @return True if both are null or both are equal, false otherwise.
    */
-  private boolean objectsEqual(Object o1, Object o2) {
+  private boolean objectsEqual(@Nullable Object o1, @Nullable Object o2) {
     if (o1 == null && o2 == null) {
       return true;
     } else if (o1 == null || o2 == null) {
@@ -219,7 +220,7 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
    * @param o The object.
    * @return The hash code of the object, or 0 if null.
    */
-  private int objectHashCode(Object o) {
+  private int objectHashCode(@Nullable Object o) {
     return o != null ? o.hashCode() : 0;
   }
 
@@ -232,7 +233,6 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
    * @return A new StackKey with copied stacks.
    */
   public StackKey copy() {
-    return new StackKey(stack != null ? stack.copy() : null,
-      fluidStack != null ? fluidStack.copy() : null);
+    return new StackKey(stack.copy(), fluidStack.copy());
   }
 }

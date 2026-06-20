@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Rotation;
 
 import java.util.LinkedList;
 
@@ -30,11 +29,6 @@ public class SchematicRefinery extends SchematicBlockEntity {
   @Override
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-  }
-
-  @Override
-  public void rotateLeft(IBuilderContext context) {
-    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 
   @Override

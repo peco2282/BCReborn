@@ -26,7 +26,6 @@ import com.peco2282.bcreborn.common.blueprint.Template;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -156,7 +155,7 @@ public abstract class FillerPattern implements IFillerPattern {
 
   public abstract Template getTemplate(Box box, Level world, IStatementParameter[] parameters);
 
-  public Blueprint getBlueprint(Box box, Level world, IStatementParameter[] parameters, Block block, BlockState meta) {
+  public Blueprint getBlueprint(Box box, Level world, IStatementParameter[] parameters, BlockState meta) {
     Blueprint result = new Blueprint(box.sizeX(), box.sizeY(), box.sizeZ());
 
     try {
@@ -166,7 +165,7 @@ public abstract class FillerPattern implements IFillerPattern {
         for (int y = 0; y < box.sizeY(); ++y) {
           for (int z = 0; z < box.sizeZ(); ++z) {
             if (tmpl.get(x, y, z) != null) {
-              result.put(x, y, z, SchematicRegistry.INSTANCE.createSchematicBlock(block, meta));
+              result.put(x, y, z, SchematicRegistry.INSTANCE.createSchematicBlock(meta));
             }
           }
         }

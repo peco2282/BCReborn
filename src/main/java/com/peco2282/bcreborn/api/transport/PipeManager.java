@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -35,13 +35,11 @@ public abstract class PipeManager {
   }
 
   @Contract(pure = true)
-  @NotNull
   @UnmodifiableView
   public static List<StripeHandlerEntry> getStripeHandlers() {
     return Collections.unmodifiableList(STRIPES_HANDLERS);
   }
 
-  @NotNull
   @UnmodifiableView
   public static List<IStripesHandler> getStripesHandlers() {
     return getStripeHandlers().stream()
@@ -57,7 +55,6 @@ public abstract class PipeManager {
   }
 
   @Contract("_ -> param1")
-  @NotNull
   public static <T extends PipePluggable<T>> PluggableType<T> registerPipePluggable(PluggableType<T> type) {
     if (PLUGGABLE_TYPE.containsKey(type.id())) {
       throw new IllegalArgumentException("Pipe pluggable type with ID " + type.id() + " already registered");
@@ -70,7 +67,7 @@ public abstract class PipeManager {
     return registerPipePluggable(PluggableType.of(id, factory));
   }
 
-  public static PluggableType<?> getPipePluggable(ResourceLocation id) {
+  public static @Nullable PluggableType<?> getPipePluggable(ResourceLocation id) {
     return PLUGGABLE_TYPE.get(id);
   }
 

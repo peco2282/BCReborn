@@ -178,16 +178,10 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   public SchematicBlock createSchematicBlock(Block block) {
-    return createSchematicBlock(block, block.defaultBlockState());
+    return createSchematicBlock(block.defaultBlockState());
   }
 
   public SchematicBlock createSchematicBlock(BlockState state) {
-    return createSchematicBlock(state.getBlock(), state);
-  }
-
-  public SchematicBlock createSchematicBlock(Block block, BlockState state) {
-    if (block == null) return null;
-
     SchematicFactory<? extends SchematicBlock> factory = schematicBlocks.get(state);
     if (factory == null) {
       // Fall back to meta 0
@@ -200,6 +194,7 @@ public final class SchematicRegistry implements ISchematicRegistry {
     return s;
   }
 
+  @Nullable
   public SchematicEntity createSchematicEntity(EntityType<? extends Entity> type) {
     if (!schematicEntities.containsKey(type)) return null;
 

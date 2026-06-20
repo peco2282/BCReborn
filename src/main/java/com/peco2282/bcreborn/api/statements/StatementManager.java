@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -36,13 +37,13 @@ public final class StatementManager {
   }
 
   public static void registerTriggerProvider(ITriggerProvider provider) {
-    if (provider != null && !triggerProviders.contains(provider)) {
+    if (!triggerProviders.contains(provider)) {
       triggerProviders.add(provider);
     }
   }
 
   public static void registerActionProvider(IActionProvider provider) {
-    if (provider != null && !actionProviders.contains(provider)) {
+    if (!actionProviders.contains(provider)) {
       actionProviders.add(provider);
     }
   }
@@ -51,10 +52,12 @@ public final class StatementManager {
     STATEMENTS.put(statement.getUniqueTag(), statement);
   }
 
+  @Nullable
   public static IStatement getStatement(String tag) {
     return getStatement(ResourceLocation.parse(tag));
   }
 
+  @Nullable
   public static IStatement getStatement(ResourceLocation tag) {
     return STATEMENTS.get(tag);
   }
@@ -75,9 +78,7 @@ public final class StatementManager {
 
     if (entity instanceof IOverrideDefaultStatements) {
       result = ((IOverrideDefaultStatements) entity).overrideTriggers();
-      if (result != null) {
-        return result;
-      }
+      return result;
     }
 
     result = new LinkedList<>();
@@ -85,11 +86,9 @@ public final class StatementManager {
     for (ITriggerProvider provider : triggerProviders) {
       Collection<ITriggerExternal> toAdd = provider.getExternalTriggers(side, entity);
 
-      if (toAdd != null) {
-        for (ITriggerExternal t : toAdd) {
-          if (!result.contains(t)) {
-            result.add(t);
-          }
+      for (ITriggerExternal t : toAdd) {
+        if (!result.contains(t)) {
+          result.add(t);
         }
       }
     }
@@ -102,9 +101,7 @@ public final class StatementManager {
 
     if (entity instanceof IOverrideDefaultStatements) {
       result = ((IOverrideDefaultStatements) entity).overrideActions();
-      if (result != null) {
-        return result;
-      }
+      return result;
     }
 
     result = new LinkedList<>();
@@ -112,11 +109,9 @@ public final class StatementManager {
     for (IActionProvider provider : actionProviders) {
       Collection<IActionExternal> toAdd = provider.getExternalActions(side, entity);
 
-      if (toAdd != null) {
-        for (IActionExternal t : toAdd) {
-          if (!result.contains(t)) {
-            result.add(t);
-          }
+      for (IActionExternal t : toAdd) {
+        if (!result.contains(t)) {
+          result.add(t);
         }
       }
     }
@@ -130,11 +125,9 @@ public final class StatementManager {
     for (ITriggerProvider provider : triggerProviders) {
       Collection<ITriggerInternal> toAdd = provider.getInternalTriggers(container);
 
-      if (toAdd != null) {
-        for (ITriggerInternal t : toAdd) {
-          if (!result.contains(t)) {
-            result.add(t);
-          }
+      for (ITriggerInternal t : toAdd) {
+        if (!result.contains(t)) {
+          result.add(t);
         }
       }
     }
@@ -148,11 +141,9 @@ public final class StatementManager {
     for (IActionProvider provider : actionProviders) {
       Collection<IActionInternal> toAdd = provider.getInternalActions(container);
 
-      if (toAdd != null) {
-        for (IActionInternal t : toAdd) {
-          if (!result.contains(t)) {
-            result.add(t);
-          }
+      for (IActionInternal t : toAdd) {
+        if (!result.contains(t)) {
+          result.add(t);
         }
       }
     }
@@ -164,7 +155,9 @@ public final class StatementManager {
     return createParameter(ResourceLocation.parse(kind));
   }
   public static IStatementParameter createParameter(ResourceLocation kind) {
-    return PARAMETERS.containsKey(kind) ? PARAMETERS.get(kind).parameter() : null;
+    var parameter = PARAMETERS.get(kind);
+    if (parameter != null) return parameter.parameter();
+    throw new IllegalArgumentException("Unknown parameter kind: " + kind);
   }
 
   @OnlyIn(Dist.CLIENT)

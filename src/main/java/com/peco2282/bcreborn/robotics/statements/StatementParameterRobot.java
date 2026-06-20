@@ -23,6 +23,7 @@ import com.peco2282.bcreborn.robotics.item.RobotItem;
 import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class StatementParameterRobot extends StatementParameterItemStack {
   public static final StatementParameterRobot INSTANCE = new StatementParameterRobot();
@@ -58,15 +59,11 @@ public class StatementParameterRobot extends StatementParameterItemStack {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack,
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack,
                       StatementMouseClick mouse) {
     if (stack.isEmpty() && (this.stack.isEmpty() || this.stack.getItem() instanceof RobotItem)) {
       RedstoneBoardRobotNBT nextBoard = RobotUtils.getNextBoard(this.stack, mouse.button() > 0);
-      if (nextBoard != null) {
-        this.stack = RobotItem.createRobotStack(nextBoard, 0);
-      } else {
-        this.stack = ItemStack.EMPTY;
-      }
+      this.stack = RobotItem.createRobotStack(nextBoard, 0);
     } else {
       super.onClick(source, stmt, stack, mouse);
     }

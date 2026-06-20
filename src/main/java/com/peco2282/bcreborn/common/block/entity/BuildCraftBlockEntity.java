@@ -49,6 +49,9 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   private int receivedTick, extractedTick;
   private long worldTimeEnergyReceive;
   private EnergyStorage battery;
+  @SuppressWarnings("DataFlowIssue")
+  @NotNull
+  protected Level level = super.level;
 
 
   public BuildCraftBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {

@@ -36,9 +36,7 @@ public final class BCLog {
 
     logger.log(Level.ERROR, msg.toString());
 
-    if (classFile != null) {
-      msg.append("API error: ").append(classFile.getSimpleName()).append(" is loaded from ").append(classFile.getProtectionDomain().getCodeSource().getLocation());
-      logger.log(Level.ERROR, msg.toString());
-    }
+    msg.append("API error: ").append(classFile.getSimpleName()).append(" is loaded from ").append(classFile.getProtectionDomain().getCodeSource().getLocation());
+    logger.log(Level.ERROR, msg.toString());
   }
 }

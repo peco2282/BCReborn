@@ -38,9 +38,7 @@ public final class RobotUtils {
 
     if (tile instanceof IDockingStationProvider) {
       DockingStation<?> station = ((IDockingStationProvider) tile).getStation();
-      if (station != null) {
-        stations.add(station);
-      }
+      stations.add(station);
     }
 
     if (tile instanceof IPipeBlockEntity pipeTile) {

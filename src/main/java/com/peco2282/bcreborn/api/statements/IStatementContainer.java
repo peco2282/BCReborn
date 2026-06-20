@@ -12,7 +12,9 @@
 package com.peco2282.bcreborn.api.statements;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public interface IStatementContainer {
+  @Nullable
   BlockEntity getTile();
 }

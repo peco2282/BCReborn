@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -41,6 +42,7 @@ public class StatementParameterItemStack implements IStatementParameter {
     this.stack = stack;
   }
 
+  @Nullable
   @Override
   public TextureAtlasSprite getIcon() {
     return null;
@@ -52,18 +54,18 @@ public class StatementParameterItemStack implements IStatementParameter {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
-    if (stack != null) {
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+    if (!stack.isEmpty()) {
       this.stack = stack.copy();
       this.stack.setCount(1);
     } else {
-      this.stack = null;
+      this.stack = ItemStack.EMPTY;
     }
   }
 
   @Override
   public void writeToNBT(CompoundTag compound) {
-    if (stack != null) {
+    if (!stack.isEmpty()) {
       CompoundTag tagCompound = new CompoundTag();
       stack.save(tagCompound);
       compound.put("stack", tagCompound);
@@ -85,6 +87,7 @@ public class StatementParameterItemStack implements IStatementParameter {
     }
   }
 
+  @Nullable
   @Override
   public String getDescription() {
     if (stack != null) {
@@ -103,6 +106,7 @@ public class StatementParameterItemStack implements IStatementParameter {
   public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
   }
 
+  @Nullable
   @Override
   public IStatementParameter rotateLeft() {
     return this;

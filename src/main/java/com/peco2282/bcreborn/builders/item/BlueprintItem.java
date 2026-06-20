@@ -37,6 +37,7 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
     return getId(stack) != null;
   }
 
+  @Nullable
   public static LibraryId getId(ItemStack stack) {
     CompoundTag nbt = stack.getOrCreateTag();
     LibraryId id = new LibraryId();
@@ -49,8 +50,9 @@ public abstract class BlueprintItem extends BuildCraftItem implements IBlueprint
     }
   }
 
+  @Nullable
   public static BlueprintBase loadBlueprint(ItemStack stack) {
-    if (stack == null || stack.isEmpty() || !(stack.getItem() instanceof IBlueprintItem)) {
+    if (stack.isEmpty() || !(stack.getItem() instanceof IBlueprintItem)) {
       return null;
     }
 

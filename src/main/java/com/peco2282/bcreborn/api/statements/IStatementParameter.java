@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -29,6 +30,7 @@ public interface IStatementParameter {
 
   ResourceLocation getUniqueTag();
 
+  @Nullable
   @OnlyIn(Dist.CLIENT)
   TextureAtlasSprite getIcon();
 
@@ -37,13 +39,15 @@ public interface IStatementParameter {
   @OnlyIn(Dist.CLIENT)
   void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter);
 
+  @Nullable
   String getDescription();
 
-  void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse);
+  void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack, StatementMouseClick mouse);
 
   void readFromNBT(CompoundTag compound);
 
   void writeToNBT(CompoundTag compound);
 
+  @Nullable
   IStatementParameter rotateLeft();
 }

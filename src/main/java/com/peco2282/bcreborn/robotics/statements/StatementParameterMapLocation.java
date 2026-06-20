@@ -20,6 +20,7 @@ import com.peco2282.bcreborn.api.statements.StatementMouseClick;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class StatementParameterMapLocation extends StatementParameterItemStack {
   public static final StatementParameterMapLocation INSTANCE = new StatementParameterMapLocation();
@@ -35,9 +36,9 @@ public class StatementParameterMapLocation extends StatementParameterItemStack {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stackIn, StatementMouseClick mouse) {
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stackIn, StatementMouseClick mouse) {
     ItemStack stack = stackIn;
-    if (stack != null && !stack.isEmpty() && !(stack.getItem() instanceof IMapLocation)) {
+    if (!stack.isEmpty() && !(stack.getItem() instanceof IMapLocation)) {
       stack = ItemStack.EMPTY;
     }
     super.onClick(source, stmt, stack, mouse);

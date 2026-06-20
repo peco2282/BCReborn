@@ -11,8 +11,10 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface IActionInternal extends IStatement {
 
-  void actionActivate(IStatementContainer source, IStatementParameter[] parameters);
+  void actionActivate(@Nullable IStatementContainer source, IStatementParameter[] parameters);
 
 }

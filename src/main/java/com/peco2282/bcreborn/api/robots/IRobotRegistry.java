@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.api.robots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -55,6 +56,7 @@ public interface IRobotRegistry {
    * @param id The robot ID.
    * @return The loaded robot entity, or {@code null} if not found.
    */
+  @Nullable
   RobotEntityBase getLoadedRobot(long id);
 
   /**
@@ -79,6 +81,7 @@ public interface IRobotRegistry {
    * @param resourceId The resource identifier.
    * @return The robot entity, or {@code null} if none.
    */
+  @Nullable
   RobotEntityBase robotTaking(ResourceId<?> resourceId);
 
   /**
@@ -120,6 +123,7 @@ public interface IRobotRegistry {
    * @param side The side.
    * @return The docking station, or {@code null} if none.
    */
+  @Nullable
   DockingStation<?> getStation(BlockPos pos, Direction side);
 
   /**

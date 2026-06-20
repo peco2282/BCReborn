@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a location where a robot can dock and interact with the world.
@@ -107,7 +108,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The robot entity, or {@code null} if none.
    */
-  public RobotEntityBase robotTaking() {
+  public @Nullable RobotEntityBase robotTaking() {
     if (robotTakingId == RobotEntityBase.NULL_ROBOT_ID) {
       return null;
     } else if (robotTaking == null) {
@@ -305,6 +306,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The item output handler, or {@code null} if none.
    */
+  @Nullable
   public IInjectable getItemOutput() {
     return null;
   }
@@ -323,6 +325,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The item input container, or {@code null} if none.
    */
+  @Nullable
   public Container getItemInput() {
     return null;
   }
@@ -341,6 +344,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The fluid output handler, or {@code null} if none.
    */
+  @Nullable
   public IFluidHandler getFluidOutput() {
     return null;
   }
@@ -359,6 +363,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The fluid input handler, or {@code null} if none.
    */
+  @Nullable
   public IFluidHandler getFluidInput() {
     return null;
   }
@@ -386,6 +391,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The request provider, or {@code null} if none.
    */
+  @Nullable
   public IRequestProvider getRequestProvider() {
     return null;
   }

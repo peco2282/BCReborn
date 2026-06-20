@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
     return result;
   }
 
-  public static IStackFilter getGateFilter(DockingStation station) {
+  public static IStackFilter getGateFilter(DockingStation<?> station) {
     Collection<ItemStack> stacks = getGateFilterStacks(station);
 
     if (stacks.isEmpty()) {
@@ -87,13 +88,14 @@ public class ActionRobotFilterTool extends BCStatement implements IActionInterna
     return 1;
   }
 
+  @Nullable
   @Override
   public IStatementParameter createParameter(int index) {
     return new StatementParameterItemStack(ItemStack.EMPTY);
   }
 
   @Override
-  public void actionActivate(IStatementContainer source,
+  public void actionActivate(@Nullable IStatementContainer source,
                              IStatementParameter[] parameters) {
   }
 }

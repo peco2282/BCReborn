@@ -78,31 +78,27 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
 
   @Override
   public void invalidate() {
-    if (station != null
-      && station.getPipe() != null
-      && !station.world.isClientSide) {
-      if (RobotManager.registry() != null) {
+    if (station != null) {
+      station.getPipe();
+      if (!station.world.isClientSide) {
         RobotManager.registry().getRegistry(station.world).removeStation(station);
+        isValid = false;
       }
-      isValid = false;
     }
   }
 
   @Override
   public void validate(IPipeBlockEntity pipe, Direction direction) {
     if (!isValid && !pipe.getWorld().isClientSide) {
-      if (RobotManager.registry() != null) {
-        station = (DockingStationPipe)
-          RobotManager.registry().getRegistry(pipe.getWorld()).getStation(
-            pipe.getPos(),
-            direction);
+      station = (DockingStationPipe)
+        RobotManager.registry().getRegistry(pipe.getWorld()).getStation(
+          pipe.getPos(),
+          direction);
 
-        if (station == null) {
-          station = new DockingStationPipe(pipe, direction);
-          RobotManager.registry().getRegistry(pipe.getWorld()).registerStation(station);
-        }
-      } else {
+      //noinspection ConstantValue
+      if (station == null) {
         station = new DockingStationPipe(pipe, direction);
+        RobotManager.registry().getRegistry(pipe.getWorld()).registerStation(station);
       }
 
       isValid = true;

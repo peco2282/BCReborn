@@ -92,6 +92,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -666,13 +667,8 @@ public class RobotEntity extends RobotEntityBase implements
     }
 
     linkedDockingStation = station;
-    if (station != null) {
-      linkedDockingStationIndex = linkedDockingStation.index();
-      linkedDockingStationSide = linkedDockingStation.side();
-    } else {
-      linkedDockingStationIndex = null;
-      linkedDockingStationSide = Direction.UP;
-    }
+    linkedDockingStationIndex = linkedDockingStation.index();
+    linkedDockingStationSide = linkedDockingStation.side();
   }
 
   @Override
@@ -899,6 +895,7 @@ public class RobotEntity extends RobotEntityBase implements
     return false;
   }
 
+  @Nullable
   public AIRobot<?> getOverridingAI() {
     return mainAI.getOverridingAI();
   }
@@ -981,7 +978,7 @@ public class RobotEntity extends RobotEntityBase implements
             }
 
             if (itemInUse.getCount() == 0) {
-              setItemInUse(null);
+              setItemInUse(ItemStack.EMPTY);
             }
           }
         }
@@ -1262,7 +1259,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return null;
   }
 
@@ -1272,7 +1269,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return false;
   }
 
@@ -1405,7 +1402,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   private void updateItem(ItemStack stack, int i, boolean held) {
-    if (stack != null && !stack.isEmpty()) {
+    if (!stack.isEmpty()) {
       int id = Item.getId(stack.getItem());
       // did this item not throw an exception before?
       if (!blacklistedItemsForUpdate.contains(id)) {
