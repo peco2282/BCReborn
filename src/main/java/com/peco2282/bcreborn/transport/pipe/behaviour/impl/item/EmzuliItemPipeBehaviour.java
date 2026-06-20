@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.core.util.IWrench;
+import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
@@ -68,7 +68,7 @@ public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
   public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
     ItemStack heldItem = player.getItemInHand(hand);
-    if (!(heldItem.getItem() instanceof IWrench wrench)) {
+    if (!(heldItem.getItem() instanceof IToolWrench wrench)) {
       return InteractionResult.PASS;
     }
     if (!wrench.canWrench(player, pos.getX(), pos.getY(), pos.getZ())) {
