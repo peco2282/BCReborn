@@ -26,12 +26,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHandler {
   public final FluidTank tank = new FluidTank(16000);
-  private final int prevLightValue = 0;
   public boolean hasUpdate = false;
   public boolean hasNetworkUpdate = false;
   public SafeTimeTracker tracker = new SafeTimeTracker(20); // Placeholder
@@ -41,6 +39,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     super(FactoryBlockEntityTypes.TANK.get(), pos, state);
   }
 
+  @Nullable
   public static TankBlockEntity getTankBelow(TankBlockEntity tile) {
     BlockEntity below = tile.getLevel().getBlockEntity(tile.getBlockPos().below());
     if (below instanceof TankBlockEntity) {
@@ -49,6 +48,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     return null;
   }
 
+  @Nullable
   public static TankBlockEntity getTankAbove(TankBlockEntity tile) {
     BlockEntity above = tile.getLevel().getBlockEntity(tile.getBlockPos().above());
     if (above instanceof TankBlockEntity) {
@@ -157,7 +157,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return this.tank.getFluid();
   }
 
@@ -167,7 +167,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return this.tank.isFluidValid(stack);
   }
 
@@ -189,7 +189,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     TankBlockEntity top = getTopTank();
     FluidStack totalDrained = FluidStack.EMPTY;
     FluidStack toDrain = resource.copy();
@@ -211,7 +211,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     TankBlockEntity top = getTopTank();
     FluidStack totalDrained = FluidStack.EMPTY;
     int remaining = maxDrain;
