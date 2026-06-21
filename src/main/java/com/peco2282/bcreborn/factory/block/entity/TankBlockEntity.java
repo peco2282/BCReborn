@@ -243,7 +243,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.FLUID_HANDLER) {
-      return LazyOptional.of(() -> tank).cast();
+      return LazyOptional.of(() -> this).cast();
     }
     return super.getCapability(cap, side);
   }
