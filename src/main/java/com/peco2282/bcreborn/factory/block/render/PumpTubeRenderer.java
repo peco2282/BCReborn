@@ -29,6 +29,11 @@ public class PumpTubeRenderer implements BlockEntityRenderer<PumpBlockEntity> {
   }
 
   @Override
+  public boolean shouldRenderOffScreen(PumpBlockEntity blockEntity) {
+    return true;
+  }
+
+  @Override
   public void render(PumpBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     double tubeHeight = blockEntity.getTubeHeight();
     if (Double.isNaN(tubeHeight) || tubeHeight <= 0) {
@@ -94,6 +99,9 @@ public class PumpTubeRenderer implements BlockEntityRenderer<PumpBlockEntity> {
     renderQuad(matrix, consumer, minX + 0.001f, minY, minZ, minX + 0.001f, maxY, maxZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 1, 0, 0);
     // East Face (Inner)
     renderQuad(matrix, consumer, maxX - 0.001f, minY, maxZ, maxX - 0.001f, maxY, minZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, -1, 0, 0);
+
+    // 上面 (Top Face) - 内側から見えるように
+    renderQuad(matrix, consumer, maxX, maxY, minZ, minX, maxY, maxZ, 0, 0, 8, 8, packedLight, packedOverlay, 0, 1, 0);
   }
 
   private void renderQuad(Matrix4f matrix, VertexConsumer consumer, float x1, float y1, float z1, float x2, float y2, float z2, float u1, float v1, float u2, float v2, int packedLight, int packedOverlay, float nx, float ny, float nz) {
