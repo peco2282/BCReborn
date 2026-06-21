@@ -22,6 +22,7 @@ import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.core.ConfigCore;
+import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.energy.fluids.SingleUseTank;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import com.peco2282.bcreborn.energy.fluids.TankUtils;
@@ -38,6 +39,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -93,15 +96,56 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
     pushToConsumers();
 
+    // 隣接する液体コンテナがあるかチェック（BuildCraft仕様：出力先がないと動作しない）
+    boolean hasConsumer = false;
+    if (cache == null) {
+      cache = BlockEntityBuffer.makeBuffer(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), false);
+    }
+    for (Direction side : Direction.values()) {
+      BlockEntity tile = cache[side.ordinal()].getTile();
+      if (tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
+        hasConsumer = true;
+        break;
+      }
+    }
+
+    if (!hasConsumer && tank.getFluidAmount() >= tank.getCapacity()) {
+      // タンクが満タンで、かつ出力先がない場合は何もしない
+      return;
+    }
+
     // Update tube height
     double targetTubeY = aimY;
+    double tubeSpeed = 0.05; // 通常の下降速度
+    
+    // 液体面までの下降ロジック
+    // 下に液体があれば、一定のエネルギーで下降する
+    if (Math.abs(tubeY - aimY) < 0.01) {
+      BlockPos tubePos = pos.atY(aimY);
+      if (isBlocked(tubePos)) {
+        // ブロックがある場合はそれ以上伸ばせないが、液体があればそこを基準にする
+        if (!isPumpableFluid(tubePos)) {
+          // 液体でもなく、ブロックされているなら終了
+        }
+      } else if (!isPumpableFluid(tubePos)) {
+        // ブロックされておらず、液体でもないなら下に伸ばす
+        // エネルギーを消費して下降（一定のエネルギー量 10RF/tick 程度を想定）
+        if (getBattery().useEnergy(10, 10, false) > 0) {
+          if (aimY > level.getMinBuildHeight()) {
+            aimY--;
+            setChanged();
+          }
+        }
+      }
+    }
+
     if (tubeY > targetTubeY + 0.01) {
-      tubeY -= 0.05;
+      tubeY -= tubeSpeed;
       if (tubeY < targetTubeY) {
         tubeY = targetTubeY;
       }
     } else if (tubeY < targetTubeY - 0.01) {
-      tubeY += 0.05;
+      tubeY += tubeSpeed;
       if (tubeY > targetTubeY) {
         tubeY = targetTubeY;
       }
@@ -109,38 +153,61 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
     tick++;
 
-    if (tick % 16 != 0) {
-      return;
-    }
-    BlockIndex index = getNextIndexToPump(false);
+    // 吸引処理
+    // 液体面についたら少しずつ吸う（毎チック判定するが、エネルギーとタンク容量に依存）
+    if (Math.abs(tubeY - aimY) < 0.01) {
+      BlockIndex index = getNextIndexToPump(false);
+      FluidStack fluidToPump = null;
 
-    FluidStack fluidToPump = (index != null && index.getY() != -1) ? BlockUtils.drainBlock(level, index, false) : null;
-    if (fluidToPump != null) {
-      if (tank.fill(fluidToPump, FluidAction.SIMULATE) == fluidToPump.getAmount()) {
-        if (getBattery().useEnergy(100, 100, false) > 0) {
-          if (fluidToPump.getFluid() != Fluids.WATER || numFluidBlocksFound < 9) {
-            index = getNextIndexToPump(true);
-            BlockUtils.drainBlock(level, index, true);
-          }
-
-          tank.fill(fluidToPump, FluidAction.EXECUTE);
-          tickPumped = tick;
+      if (index != null && index.getY() != -1) {
+        fluidToPump = BlockUtils.drainBlock(level, index, false);
+        if (fluidToPump.isEmpty() || !isFluidAllowed(fluidToPump.getFluid())) {
+          fluidToPump = null;
+          getNextIndexToPump(true); // 汲み出せないのでスキップ
         }
       }
-    } else {
-      if (tick % 128 == 0) {
-        rebuildQueue();
 
-        BlockIndex next = getNextIndexToPump(false);
-        if (next == null || next.getY() == -1) {
-          for (int y = aimY - 1; y > level.getMinBuildHeight(); --y) {
-            BlockPos p = pos.atY(y);
-            if (isPumpableFluid(p)) {
-              aimY = y;
-              setChanged();
-              return;
-            } else if (isBlocked(p)) {
-              return;
+      if (fluidToPump != null && !fluidToPump.isEmpty()) {
+        // 1回あたり100mBずつ吸う（少しずつ吸う感じを出す）
+        int amountToDrain = Math.min(fluidToPump.getAmount(), 100);
+        FluidStack smallFluid = new FluidStack(fluidToPump.getFluid(), amountToDrain);
+        
+        if (tank.fill(smallFluid, FluidAction.SIMULATE) == smallFluid.getAmount()) {
+          // エネルギー消費（100RF/1000mB相当なら、10RF/100mB）
+          if (getBattery().useEnergy(10, 10, false) > 0) {
+            boolean consumeWater = EnergyConfig.isPumpsConsumeWater();
+            // 無限水源チェック: 水であり、かつ9ブロック以上の水源がある場合
+            boolean infiniteWater = smallFluid.getFluid() == Fluids.WATER && numFluidBlocksFound >= 9 && !consumeWater;
+
+            if (infiniteWater) {
+              tank.fill(smallFluid, FluidAction.EXECUTE);
+              tickPumped = tick;
+            } else {
+              // 1ブロック丸ごと消すために、1000mB分貯まるまで待つか、
+              // あるいはBuildCraftのように1ブロックずつ消去してタンクに1000mB入れる
+              // ここではオリジナルの実装に合わせて、1ブロック吸える時に吸う
+              if (getBattery().useEnergy(90, 90, false) > 0) { // 残り900RF
+                index = getNextIndexToPump(true);
+                if (index != null) {
+                  BlockUtils.drainBlock(level, index, true);
+                  tank.fill(fluidToPump, FluidAction.EXECUTE);
+                  tickPumped = tick;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // 吸引対象がない場合、またはキューが空の場合
+        if (tick % 16 == 0) {
+          rebuildQueue();
+
+          BlockIndex next = getNextIndexToPump(false);
+          if (next == null || next.getY() == -1) {
+            // 現在の層および接続されている全層に液体がないなら管をさらに下に伸ばす
+            BlockPos p = pos.atY(aimY - 1);
+            if (aimY > level.getMinBuildHeight() && !isBlocked(p) && !isPumpableFluid(p)) {
+              // 下に伸ばす判定自体は毎チック行うが、rebuildQueueは重いので間隔を置く
             }
           }
         }
@@ -215,14 +282,15 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     numFluidBlocksFound = 0;
     pumpLayerQueues.clear();
 
-    if (aimY < 0) {
+    if (aimY < level.getMinBuildHeight()) {
       return;
     }
 
-    BlockPos pos = getBlockPos().atY(aimY);
-    Fluid pumpingFluid = BlockUtils.getFluid(level.getBlockState(pos).getBlock());
+    BlockPos tubePos = getBlockPos().atY(aimY);
+    Block block = level.getBlockState(tubePos).getBlock();
+    Fluid pumpingFluid = BlockUtils.getFluid(block);
 
-    if (pumpingFluid == null) {
+    if (pumpingFluid == null || pumpingFluid == Fluids.EMPTY) {
       return;
     }
 
@@ -233,49 +301,71 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
 
     Set<BlockIndex> visitedBlocks = new HashSet<>();
-    Deque<BlockIndex> fluidsFound = new LinkedList<>();
+    Deque<BlockIndex> fluidsToExpand = new LinkedList<>();
 
-    queueForPumping(pos, visitedBlocks, fluidsFound, pumpingFluid);
+    // 初回のチェック（無限水源保護のためのカウント）
+    if (pumpingFluid == Fluids.WATER) {
+      checkInfiniteWater(tubePos, pumpingFluid);
+    }
 
-    while (!fluidsFound.isEmpty()) {
-      Deque<BlockIndex> fluidsToExpand = fluidsFound;
-      fluidsFound = new LinkedList<>();
+    queueForPumping(tubePos, visitedBlocks, fluidsToExpand, pumpingFluid);
 
-      for (BlockIndex index : fluidsToExpand) {
-        queueForPumping(index.above(), visitedBlocks, fluidsFound, pumpingFluid);
-        queueForPumping(index.east(), visitedBlocks, fluidsFound, pumpingFluid);
-        queueForPumping(index.west(), visitedBlocks, fluidsFound, pumpingFluid);
-        queueForPumping(index.south(), visitedBlocks, fluidsFound, pumpingFluid);
-        queueForPumping(index.north(), visitedBlocks, fluidsFound, pumpingFluid);
+    while (!fluidsToExpand.isEmpty()) {
+      BlockIndex index = fluidsToExpand.pollFirst();
 
-        if (visitedBlocks.size() > 64 * 64) {
-          return;
-        }
+      // 6方向を探索
+      queueForPumping(index.above(), visitedBlocks, fluidsToExpand, pumpingFluid);
+      queueForPumping(index.below(), visitedBlocks, fluidsToExpand, pumpingFluid);
+      queueForPumping(index.east(), visitedBlocks, fluidsToExpand, pumpingFluid);
+      queueForPumping(index.west(), visitedBlocks, fluidsToExpand, pumpingFluid);
+      queueForPumping(index.south(), visitedBlocks, fluidsToExpand, pumpingFluid);
+      queueForPumping(index.north(), visitedBlocks, fluidsToExpand, pumpingFluid);
 
-        if (pumpingFluid == Fluids.WATER
-          && numFluidBlocksFound >= 9) {
-          return;
+      // 探索上限（安全のため。半径64の円内に収まるはずだが、念のため多めに設定）
+      if (visitedBlocks.size() > 64 * 64 * 4) {
+        break;
+      }
+    }
+  }
+
+  private void checkInfiniteWater(BlockPos center, Fluid water) {
+    numFluidBlocksFound = 0;
+    for (int x = -1; x <= 1; x++) {
+      for (int z = -1; z <= 1; z++) {
+        BlockPos p = center.offset(x, 0, z);
+        if (BlockUtils.getFluid(level.getBlockState(p).getBlock()) == water && level.getFluidState(p).isSource()) {
+          numFluidBlocksFound++;
         }
       }
     }
   }
 
-  public void queueForPumping(BlockPos pos, Set<BlockIndex> visitedBlocks, Deque<BlockIndex> fluidsFound, Fluid pumpingFluid) {
+  public void queueForPumping(BlockPos pos, Set<BlockIndex> visitedBlocks, Deque<BlockIndex> fluidsToExpand, Fluid pumpingFluid) {
+    // 高さが管の先端より高い場所は吸わない（仕様：高い順に吸うが、管の先端が基準点）
+    // 元のBuildCraftでは管の先端の層から開始し、上の層も地続きなら吸う。
+    // ただし、現在の実装では aimY を基準点としている。
+    if (pos.getY() < level.getMinBuildHeight() || pos.getY() > level.getMaxBuildHeight()) {
+      return;
+    }
+
     BlockIndex index = new BlockIndex(pos);
     if (visitedBlocks.add(index)) {
-      if (pos.distSqr(getBlockPos().atY(pos.getY())) > 64 * 64) {
+      // 半径64ブロックの範囲制限（水平方向のみ。垂直方向は制限なし、あるいは管の長さによる）
+      long dx = pos.getX() - getBlockPos().getX();
+      long dz = pos.getZ() - getBlockPos().getZ();
+      if (dx * dx + dz * dz > 64 * 64) {
         return;
       }
 
       Block block = level.getBlockState(pos).getBlock();
+      Fluid fluidAt = BlockUtils.getFluid(block);
 
-      if (BlockUtils.getFluid(block) == pumpingFluid) {
-        fluidsFound.add(index);
-      }
+      if (fluidAt == pumpingFluid) {
+        fluidsToExpand.add(index);
 
-      if (canDrainBlock(block, pos, pumpingFluid)) {
-        getLayerQueue(pos.getY()).add(index);
-        numFluidBlocksFound++;
+        if (canDrainBlock(block, pos, pumpingFluid)) {
+          getLayerQueue(pos.getY()).add(index);
+        }
       }
     }
   }
@@ -410,6 +500,18 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     } else { // Green LED
       return (ledState >> 4) > 0 ? 15 : 0;
     }
+  }
+
+  @Override
+  public CompoundTag getUpdateTag() {
+    CompoundTag nbt = super.getUpdateTag();
+    saveAdditional(nbt);
+    return nbt;
+  }
+
+  @Override
+  public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt) {
+    load(pkt.getTag());
   }
 
   public double getTubeHeight() {
