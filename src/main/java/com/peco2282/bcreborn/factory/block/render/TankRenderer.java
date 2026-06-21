@@ -60,7 +60,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
     // 液体の高さだけを調整し、テクスチャの引き伸ばしを防ぐ
     float height = 0.998F * fillRatio;
 
-    renderCube(matrix, consumer, sprite, 0.125F, 0, 0.125F, 0.875F, height, 0.875F, r, g, b, a, packedLight);
+    renderCube(matrix, consumer, sprite, 0.126F, 0.01F, 0.126F, 0.874F, height, 0.874F, r, g, b, a, packedLight);
 
     poseStack.popPose();
   }
