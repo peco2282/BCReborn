@@ -528,11 +528,6 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   @Override
-  public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-    load(pkt.getTag());
-  }
-
-  @Override
   public net.minecraft.world.phys.AABB getRenderBoundingBox() {
     return new net.minecraft.world.phys.AABB(worldPosition).expandTowards(0, -getTubeHeight() - 1, 0);
   }
