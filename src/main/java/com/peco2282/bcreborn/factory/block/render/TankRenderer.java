@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.joml.Matrix4f;
@@ -55,10 +56,10 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
     // 1.7.10: GL11.glTranslatef((float) x + 0.125F, (float) y + 0.5F, (float) z + 0.125F);
     // 1.7.10: GL11.glScalef(0.75F, 0.999F, 0.75F);
     // 1.7.10: GL11.glTranslatef(0, -0.5F, 0);
-    poseStack.translate(0.125F, 0.001F, 0.125F);
-    // 0.75F, 0.998F, 0.75F は元の比率を維持するための値
+    poseStack.translate(0.125F, 0.005F, 0.125F);
+    // 0.75F, 0.990F, 0.75F は元の比率を維持するための値
     // 液体の高さだけを調整し、テクスチャの引き伸ばしを防ぐ
-    float height = 0.998F * fillRatio;
+    float height = 0.990F * fillRatio;
 
     renderCube(matrix, consumer, sprite, 0.126F, 0.01F, 0.126F, 0.874F, height, 0.874F, r, g, b, a, packedLight);
 
@@ -74,16 +75,22 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
     // 縦方向のUVを調整 (maxYに合わせてテクスチャの下側を使う)
     // MinecraftのV座標は上が0、下が1。
     // 液体の高さが半分(0.5)なら、テクスチャのVは 1.0(底) から 0.5(中間) になるべき。
-    // ※ 1ブロック分の高さを 0.998F と想定
-    float vHeight = (v1 - v0) * (maxY - minY) / 0.998F;
-    float vBottom = v1;
-    float vTop = v1 - vHeight;
+    // ※ 1ブロック分の高さを 0.990F と想定
+    float vHeightSide = (v1 - v0) * (maxY - minY) / 0.990F;
+    float vBottomSide = v1;
+    float vTopSide = v1 - vHeightSide;
+
+    // Top面のUV (テクスチャ全体を使う)
+    float u0Top = u0;
+    float u1Top = u1;
+    float v0Top = v0;
+    float v1Top = v1;
 
     // Top
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(u0, v0).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(u0, v1).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(u1, v1).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(u1, v0).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
+    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(u0Top, v0Top).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
+    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(u0Top, v1Top).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
+    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(u1Top, v1Top).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
+    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(u1Top, v0Top).overlayCoords(0).uv2(packedLight).normal(0, 1, 0).endVertex();
 
     // Bottom
     consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(u0, v0).overlayCoords(0).uv2(packedLight).normal(0, -1, 0).endVertex();
@@ -92,29 +99,33 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
     consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(u0, v1).overlayCoords(0).uv2(packedLight).normal(0, -1, 0).endVertex();
 
     // Sides
-    // 横方向のUV (u0からu1) も、テクスチャの 0.5倍 (0.5/1.0) だけ使うように調整
-    float uWidth = (u1 - u0) * 0.75F;
-    float uStart = u0;
-    float uEnd = u0 + uWidth;
+    // 横方向のUV (u0からu1) も、ボックスの幅に合わせて調整
+    float uWidthSide = (u1 - u0) * (maxX - minX);
+    float uStartSide = u0;
+    float uEndSide = u0 + uWidthSide;
 
-    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(uStart, vBottom).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(uStart, vTop).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(uEnd, vTop).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(uEnd, vBottom).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
+    // X- (Normal: -1, 0, 0) - CCW: (minX, minY, minZ) -> (minX, minY, maxZ) -> (minX, maxY, maxZ) -> (minX, maxY, minZ)
+    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(uStartSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
+    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(uEndSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
+    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(uEndSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
+    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(uStartSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(-1, 0, 0).endVertex();
 
-    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(uStart, vBottom).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(uEnd, vBottom).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(uEnd, vTop).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(uStart, vTop).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
+    // X+ (Normal: 1, 0, 0) - CCW: (maxX, minY, minZ) -> (maxX, maxY, minZ) -> (maxX, maxY, maxZ) -> (maxX, minY, maxZ)
+    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(uStartSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
+    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(uStartSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
+    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(uEndSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
+    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(uEndSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(1, 0, 0).endVertex();
 
-    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(uStart, vBottom).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(uEnd, vBottom).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(uEnd, vTop).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(uStart, vTop).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
+    // Z- (Normal: 0, 0, -1) - CCW: (minX, minY, minZ) -> (minX, maxY, minZ) -> (maxX, maxY, minZ) -> (maxX, minY, minZ)
+    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(uStartSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
+    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(uStartSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
+    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(uEndSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
+    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(uEndSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(0, 0, -1).endVertex();
 
-    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(uStart, vBottom).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(uStart, vTop).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(uEnd, vTop).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(uEnd, vBottom).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
+    // Z+ (Normal: 0, 0, 1) - CCW: (minX, minY, maxZ) -> (maxX, minY, maxZ) -> (maxX, maxY, maxZ) -> (minX, maxY, maxZ)
+    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(uStartSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
+    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(uEndSide, vBottomSide).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
+    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(uEndSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
+    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(uStartSide, vTopSide).overlayCoords(0).uv2(packedLight).normal(0, 0, 1).endVertex();
   }
 }

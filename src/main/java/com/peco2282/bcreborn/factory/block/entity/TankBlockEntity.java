@@ -190,14 +190,46 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
 
   @Override
   public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-    TankBlockEntity bottom = getBottomTank();
-    return bottom.tank.drain(resource, action);
+    TankBlockEntity top = getTopTank();
+    FluidStack totalDrained = FluidStack.EMPTY;
+    FluidStack toDrain = resource.copy();
+    TankBlockEntity current = top;
+    while (current != null && !toDrain.isEmpty()) {
+      FluidStack drained = current.tank.drain(toDrain, action);
+      if (!drained.isEmpty()) {
+        if (totalDrained.isEmpty()) {
+          totalDrained = drained.copy();
+        } else {
+          totalDrained.grow(drained.getAmount());
+        }
+        toDrain.shrink(drained.getAmount());
+        if (action.execute()) current.hasNetworkUpdate = true;
+      }
+      current = getTankBelow(current);
+    }
+    return totalDrained;
   }
 
   @Override
   public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-    TankBlockEntity bottom = getBottomTank();
-    return bottom.tank.drain(maxDrain, action);
+    TankBlockEntity top = getTopTank();
+    FluidStack totalDrained = FluidStack.EMPTY;
+    int remaining = maxDrain;
+    TankBlockEntity current = top;
+    while (current != null && remaining > 0) {
+      FluidStack drained = current.tank.drain(remaining, action);
+      if (!drained.isEmpty()) {
+        if (totalDrained.isEmpty()) {
+          totalDrained = drained.copy();
+        } else {
+          totalDrained.grow(drained.getAmount());
+        }
+        remaining -= drained.getAmount();
+        if (action.execute()) current.hasNetworkUpdate = true;
+      }
+      current = getTankBelow(current);
+    }
+    return totalDrained;
   }
 
   public int calculateComparatorInputOverride() {
