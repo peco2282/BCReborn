@@ -48,11 +48,8 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   protected HashSet<Player> guiWatchers = new HashSet<>();
   private int receivedTick, extractedTick;
   private long worldTimeEnergyReceive;
+  @Nullable
   private EnergyStorage battery;
-  @SuppressWarnings("DataFlowIssue")
-  @NotNull
-  protected Level level = super.level;
-
 
   public BuildCraftBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
     super(p_155228_, p_155229_, p_155230_);
@@ -88,16 +85,13 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
     }
   }
 
+  @Nullable
   public EnergyStorage getBattery() {
     return battery;
   }
 
   public void setBattery(EnergyStorage battery) {
     this.battery = battery;
-  }
-
-  public BlockPos getBlockPos() {
-    return this.worldPosition;
   }
 
   public Level getLevel() {
@@ -198,7 +192,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
 
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-    if (cap == ForgeCapabilities.ENERGY) {
+    if (cap == ForgeCapabilities.ENERGY && this.getBattery() != null) {
       return LazyOptional.of(this::getBattery).cast();
     }
     return super.getCapability(cap, side);
