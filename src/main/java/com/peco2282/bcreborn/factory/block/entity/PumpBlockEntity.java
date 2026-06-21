@@ -142,6 +142,10 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
             setChanged();
           }
         }
+      } else {
+        // 現在の場所が液体面。
+        System.out.println("Fluid!");
+        // TODO: Impl Fill fluid!
       }
     }
 
@@ -189,15 +193,16 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
               tank.fill(smallFluid, FluidAction.EXECUTE);
               tickPumped = tick;
             } else {
-              // 1ブロック丸ごと消すために、1000mB分貯まるまで待つか、
-              // あるいはBuildCraftのように1ブロックずつ消去してタンクに1000mB入れる
-              // ここではオリジナルの実装に合わせて、1ブロック吸える時に吸う
-              if (getBattery().useEnergy(90, 90, false) > 0) { // 残り900RF
-                index = getNextIndexToPump(true);
-                if (index != null) {
-                  BlockUtils.drainBlock(level, index, true);
-                  tank.fill(fluidToPump, FluidAction.EXECUTE);
-                  tickPumped = tick;
+              // 1ブロック吸える時に吸う。
+              // タンクに余裕がある時に1ブロック丸ごと消す。
+              if (tank.getCapacity() - tank.getFluidAmount() >= 1000) {
+                if (getBattery().useEnergy(90, 90, false) > 0) { // 残り900RF
+                  index = getNextIndexToPump(true);
+                  if (index != null) {
+                    BlockUtils.drainBlock(level, index, true);
+                    tank.fill(fluidToPump, FluidAction.EXECUTE);
+                    tickPumped = tick;
+                  }
                 }
               }
             }
@@ -212,8 +217,9 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
           if (next == null || next.getY() == -1) {
             // 現在の層および接続されている全層に液体がないなら管をさらに下に伸ばす
             BlockPos p = pos.atY(aimY - 1);
-            if (aimY > level.getMinBuildHeight() && !isBlocked(p) && !isPumpableFluid(p)) {
-              // 下に伸ばす判定自体は毎チック行うが、rebuildQueueは重いので間隔を置く
+            if (aimY > level.getMinBuildHeight() && !isBlocked(p) && isPumpableFluid(p)) {
+              aimY--;
+              setChanged();
             }
           }
         }
@@ -529,6 +535,11 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   @Override
   public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt) {
     load(pkt.getTag());
+  }
+
+  @Override
+  public net.minecraft.world.phys.AABB getRenderBoundingBox() {
+    return new net.minecraft.world.phys.AABB(worldPosition).expandTowards(0, -getTubeHeight() - 1, 0);
   }
 
   public double getTubeHeight() {
