@@ -294,6 +294,7 @@ public final class BlockUtils {
     return getTileEntity(world, pos, false);
   }
 
+  @Nullable
   public static BlockEntity getTileEntity(Level world, BlockPos pos, boolean force) {
     if (pos.getY() < world.getMinBuildHeight() || pos.getY() > world.getMaxBuildHeight()) {
       return null;
@@ -329,7 +330,7 @@ public final class BlockUtils {
     if (inv instanceof ChestBlockEntity chest) {
       // In 1.20.1, we'd use ChestBlock.getContainer or similar, but for now we'll return null to satisfy the signature.
       // TODO: Implement correctly using 1.20.1 double chest logic
-      return null;
+      return chest;
     }
     return null;
   }

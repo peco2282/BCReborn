@@ -30,7 +30,9 @@ import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -291,34 +293,27 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   private Deque<BlockIndex> getLayerQueue(int layer) {
-    Deque<BlockIndex> pumpQueue = pumpLayerQueues.get(layer);
-
-    if (pumpQueue == null) {
-      pumpQueue = new LinkedList<BlockIndex>();
-      pumpLayerQueues.put(layer, pumpQueue);
-    }
-
-    return pumpQueue;
+    return pumpLayerQueues.computeIfAbsent(layer, k -> new LinkedList<>());
   }
 
   public void rebuildQueue() {
     numFluidBlocksFound = 0;
     pumpLayerQueues.clear();
 
-    if (aimY < level.getMinBuildHeight()) {
+    if (aimY < getLevel().getMinBuildHeight()) {
       return;
     }
 
     BlockPos tubePos = getBlockPos().atY(aimY);
-    Block block = level.getBlockState(tubePos).getBlock();
+    Block block = getLevel().getBlockState(tubePos).getBlock();
     Fluid pumpingFluid = BlockUtils.getFluid(block);
 
-    if (pumpingFluid == null || pumpingFluid == Fluids.EMPTY) {
+    if (pumpingFluid == Fluids.EMPTY) {
       return;
     }
 
     if (tank instanceof SingleUseTank sut) {
-      if (pumpingFluid != sut.getAcceptedFluid() && sut.getAcceptedFluid() != null) {
+      if (pumpingFluid != sut.getAcceptedFluid()) {
         return;
       }
     }
@@ -356,7 +351,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     for (int x = -1; x <= 1; x++) {
       for (int z = -1; z <= 1; z++) {
         BlockPos p = center.offset(x, 0, z);
-        if (BlockUtils.getFluid(level.getBlockState(p).getBlock()) == water && level.getFluidState(p).isSource()) {
+        if (BlockUtils.getFluid(getLevel().getBlockState(p).getBlock()) == water && level.getFluidState(p).isSource()) {
           numFluidBlocksFound++;
         }
       }
@@ -367,7 +362,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     // 高さが管の先端より高い場所は吸わない（仕様：高い順に吸うが、管の先端が基準点）
     // 元のBuildCraftでは管の先端の層から開始し、上の層も地続きなら吸う。
     // ただし、現在の実装では aimY を基準点としている。
-    if (pos.getY() < level.getMinBuildHeight() || pos.getY() > level.getMaxBuildHeight()) {
+    if (pos.getY() < getLevel().getMinBuildHeight() || pos.getY() > getLevel().getMaxBuildHeight()) {
       return;
     }
 
@@ -380,7 +375,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         return;
       }
 
-      Block block = level.getBlockState(pos).getBlock();
+      Block block = getLevel().getBlockState(pos).getBlock();
       Fluid fluidAt = BlockUtils.getFluid(block);
 
       if (fluidAt == pumpingFluid) {
@@ -396,18 +391,18 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   private boolean isPumpableFluid(BlockPos pos) {
     Fluid fluid = BlockUtils.getFluid(BlockUtils.getBlock(getLevel(), pos));
 
-    if (fluid == null) {
+    if (fluid == Fluids.EMPTY) {
       return false;
     } else {
       if (tank instanceof SingleUseTank sut) {
-        return !(sut.getAcceptedFluid() != null && sut.getAcceptedFluid() != fluid);
+        return sut.getAcceptedFluid() == fluid;
       }
       return true;
     }
   }
 
   private boolean canDrainBlock(Block block, BlockPos pos, Fluid fluid) {
-    FluidStack fluidStack = BlockUtils.drainBlock(block, level, pos, false);
+    FluidStack fluidStack = BlockUtils.drainBlock(block, getLevel(), pos, false);
 
     if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0) {
       return false;
@@ -533,7 +528,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   @Override
-  public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt) {
+  public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
     load(pkt.getTag());
   }
 
