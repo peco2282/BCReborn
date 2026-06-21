@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,7 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
     return -1;
   }
 
+  @Nullable
   public AdvancedSlot getSlotAtLocation(double i, double j) {
     int id = getSlotIndexAtLocation(i, j);
 
@@ -81,7 +83,9 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
   public void drawTooltipForSlotAt(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     AdvancedSlot slot = getSlotAtLocation(mouseX, mouseY);
 
-    slot.drawTooltip(this, guiGraphics, mouseX, mouseY);
+    if (slot != null) {
+      slot.drawTooltip(this, guiGraphics, mouseX, mouseY);
+    }
   }
 
   public void drawTooltip(GuiGraphics guiGraphics, String caption, int mouseX, int mouseY) {
