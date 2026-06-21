@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.BCRebornFactory;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryMenuTypes;
 import com.peco2282.bcreborn.factory.block.render.HopperRenderer;
+import com.peco2282.bcreborn.factory.block.render.PumpTubeRenderer;
 import com.peco2282.bcreborn.factory.block.render.RefineryRenderer;
 import com.peco2282.bcreborn.factory.block.render.TankRenderer;
 import com.peco2282.bcreborn.factory.screen.AutoCraftingScreen;
@@ -50,6 +51,7 @@ public class BCRebornFactoryEvent {
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.HOPPER.get(), HopperRenderer::new);
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.REFINERY.get(), RefineryRenderer::new);
     event.registerBlockEntityRenderer(FactoryBlockEntityTypes.TANK.get(), TankRenderer::new);
+    event.registerBlockEntityRenderer(FactoryBlockEntityTypes.PUMP.get(), PumpTubeRenderer::new);
   }
 
   @SubscribeEvent
