@@ -289,7 +289,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public void checkRedstonePower() {
-    boolean powered = level.hasNeighborSignal(getBlockPos());
+    boolean powered = getLevel().hasNeighborSignal(getBlockPos());
     if (isRedstonePowered != powered) {
       isRedstonePowered = powered;
       setChanged();
