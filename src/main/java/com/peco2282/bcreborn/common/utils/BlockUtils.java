@@ -235,7 +235,7 @@ public final class BlockUtils {
     if (block instanceof IFluidBlock) {
       return ((IFluidBlock) block).getFluid();
     } else {
-      return block.getFluidState(null).getType(); // Passing null as default if no state available
+      return block.getFluidState(block.defaultBlockState()).getType(); // Passing null as default if no state available
     }
   }
 
@@ -255,7 +255,7 @@ public final class BlockUtils {
         }
         return new FluidStack(fluid, FluidType.BUCKET_VOLUME);
       }
-      return null;
+      return FluidStack.EMPTY;
     }
   }
 
