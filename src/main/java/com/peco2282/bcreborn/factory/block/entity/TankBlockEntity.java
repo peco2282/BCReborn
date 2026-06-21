@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,6 +75,18 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   }
 
   @Override
+  public void readData(FriendlyByteBuf data) {
+    super.readData(data);
+    tank.setFluid(data.readFluidStack());
+  }
+
+  @Override
+  public void writeData(FriendlyByteBuf data) {
+    super.writeData(data);
+    data.writeFluidStack(tank.getFluid());
+  }
+
+  @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
       return;
@@ -89,7 +102,7 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     }
 
     if (hasNetworkUpdate && tracker.markTimeIfDelay(level)) {
-      level.sendBlockUpdated(pos, state, state, 3);
+      setChanged();
       hasNetworkUpdate = false;
     }
   }
