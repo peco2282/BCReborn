@@ -174,20 +174,16 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
   @Nullable
   private BlockIndex getNextIndexToPump(boolean remove) {
-    System.out.println("getNextIndexToPump");
     if (pumpLayerQueues.isEmpty()) {
-      System.out.println("pumpLayerQueues.isEmpty() start");
       if (timer.markTimeIfDelay(level)) {
         rebuildQueue();
       }
-      System.out.println("pumpLayerQueues.isEmpty()");
 
       return null;
     }
 
     Deque<BlockIndex> topLayer = pumpLayerQueues.lastEntry().getValue();
 
-    System.out.println("topLayer: " + topLayer);
     if (topLayer != null) {
       if (topLayer.isEmpty()) {
         pumpLayerQueues.pollLastEntry();
@@ -251,6 +247,10 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         queueForPumping(index.west(), visitedBlocks, fluidsFound, pumpingFluid);
         queueForPumping(index.south(), visitedBlocks, fluidsFound, pumpingFluid);
         queueForPumping(index.north(), visitedBlocks, fluidsFound, pumpingFluid);
+
+        if (visitedBlocks.size() > 64 * 64) {
+          return;
+        }
 
         if (pumpingFluid == Fluids.WATER
           && numFluidBlocksFound >= 9) {
