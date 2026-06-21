@@ -175,6 +175,11 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   }
 
   @Override
+  public CompoundTag getUpdateTag() {
+    return this.saveWithFullMetadata();
+  }
+
+  @Override
   public Packet<ClientGamePacketListener> getUpdatePacket() {
     return ClientboundBlockEntityDataPacket.create(this);
   }

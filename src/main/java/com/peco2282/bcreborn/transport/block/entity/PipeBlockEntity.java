@@ -643,15 +643,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   // ---- Network ----
 
   @Nullable
-  @Override
-  public Packet<ClientGamePacketListener> getUpdatePacket() {
-    return ClientboundBlockEntityDataPacket.create(this);
-  }
-
-  @Override
-  public CompoundTag getUpdateTag() {
-    return saveWithoutMetadata();
-  }
 
   public Item getPipeItem() {
     RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
