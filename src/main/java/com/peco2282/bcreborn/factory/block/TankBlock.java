@@ -15,7 +15,11 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
+import com.peco2282.bcreborn.energy.fluids.TankUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -73,5 +78,19 @@ public class TankBlock extends BuildCraftBlock {
   @Override
   public boolean isRotatable() {
     return false;
+  }
+
+  @Override
+  public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (level.isClientSide) {
+      return InteractionResult.SUCCESS;
+    }
+    BlockEntity be = level.getBlockEntity(pos);
+    if (be instanceof TankBlockEntity tank) {
+      if (TankUtils.handleRightClick(tank, hit.getDirection(), player, true, true)) {
+        return InteractionResult.CONSUME;
+      }
+    }
+    return super.use(state, level, pos, player, hand, hit);
   }
 }
