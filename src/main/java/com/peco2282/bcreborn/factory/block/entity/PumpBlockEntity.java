@@ -44,6 +44,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, IFluidHandler, IRedstoneEngineReceiver, ILEDProvider, IEnergyStorage {
 
@@ -97,6 +98,11 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     pushToConsumers();
 
     // 隣接する液体コンテナがあるかチェック（BuildCraft仕様：出力先がないと動作しない）
+
+    IFluidHandler handler = getFluidCapability();
+    if (handler == null) { // No Fluid Capability
+      return;
+    }
     boolean hasConsumer = false;
     if (cache == null) {
       cache = BlockEntityBuffer.makeBuffer(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), false);
@@ -215,6 +221,17 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
   }
 
+  @Nullable
+  private IFluidHandler getFluidCapability() {
+    AtomicReference<IFluidHandler> handler = new AtomicReference<>(null);
+    for (Direction dir : Direction.values()) {
+      var be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+      if (be != null) {
+        be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir).ifPresent(handler::set);
+      }
+    }
+    return handler.get();
+  }
 
   public void onNeighborBlockChange(Block block) {
     boolean p = level.hasNeighborSignal(getBlockPos());
