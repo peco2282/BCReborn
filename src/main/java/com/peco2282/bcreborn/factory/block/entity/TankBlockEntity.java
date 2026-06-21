@@ -15,14 +15,19 @@ import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHandler {
   public final FluidTank tank = new FluidTank(16000);
@@ -201,5 +206,13 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
 
   public int getComparatorInputOverride() {
     return cachedComparatorOverride;
+  }
+
+  @Override
+  public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.FLUID_HANDLER) {
+      return LazyOptional.of(() -> tank).cast();
+    }
+    return super.getCapability(cap, side);
   }
 }
