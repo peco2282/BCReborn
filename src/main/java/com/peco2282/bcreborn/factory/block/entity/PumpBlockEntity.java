@@ -146,7 +146,6 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         }
       } else {
         // 現在の場所が液体面。
-        System.out.println("Fluid!");
         // TODO: Impl Fill fluid!
       }
     }
