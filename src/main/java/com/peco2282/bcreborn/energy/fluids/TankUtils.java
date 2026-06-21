@@ -36,19 +36,12 @@ public final class TankUtils {
 	}
 
 	public static boolean handleRightClick(IFluidHandler tank, Direction side, Player player, boolean fill, boolean drain) {
-		if (player == null || tank == null) {
-			return false;
-		}
-		ItemStack current = player.getItemInHand(InteractionHand.MAIN_HAND);
+    ItemStack current = player.getItemInHand(InteractionHand.MAIN_HAND);
 		if (!current.isEmpty()) {
 			if (fill && FluidUtil.getFluidContained(current).isPresent()) {
-				if (FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank)) {
-					return true;
-				}
+        return FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank);
 			} else if (drain) {
-				if (FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank)) {
-					return true;
-				}
+        return FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank);
 			}
 		}
 		return false;
@@ -65,9 +58,8 @@ public final class TankUtils {
 	}
 
 	public static void pushFluidToConsumers(IFluidTank tank, int flowCap, BlockEntityBuffer[] tileBuffer) {
-		int amountToPush = flowCap;
 		for (Direction side : Direction.values()) {
-			FluidStack fluidStack = tank.drain(amountToPush, IFluidHandler.FluidAction.SIMULATE);
+			FluidStack fluidStack = tank.drain(flowCap, IFluidHandler.FluidAction.SIMULATE);
 			if (!fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
 				BlockEntity tile = tileBuffer[side.ordinal()].getTile();
 				if (tile != null) {
