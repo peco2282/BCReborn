@@ -72,29 +72,28 @@ public class PumpTubeRenderer implements BlockEntityRenderer<PumpBlockEntity> {
 
     // 外側の4面をレンダリング（BuildCraftの管は中空の立方体のような見た目）
     // North Face
-    renderQuad(matrix, consumer, minX, minY, minZ, maxX, maxY, minZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, 0, 0, -1);
+    renderQuad(matrix, consumer, minX, minY, minZ, maxX, maxY, minZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 0, 0, -1);
     // South Face
-    renderQuad(matrix, consumer, maxX, minY, maxZ, minX, maxY, maxZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, 0, 0, 1);
+    renderQuad(matrix, consumer, maxX, minY, maxZ, minX, maxY, maxZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 0, 0, 1);
     // West Face
-    renderQuad(matrix, consumer, minX, minY, maxZ, minX, maxY, minZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, -1, 0, 0);
+    renderQuad(matrix, consumer, minX, minY, maxZ, minX, maxY, minZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, -1, 0, 0);
     // East Face
-    renderQuad(matrix, consumer, maxX, minY, minZ, maxX, maxY, maxZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, 1, 0, 0);
+    renderQuad(matrix, consumer, maxX, minY, minZ, maxX, maxY, maxZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 1, 0, 0);
     
-    // 底面 (Bottom Face) - 管の先端のみ表示したい場合は条件分岐が必要だが、一旦常に表示
+    // 底面 (Bottom Face)
     if (h < 1.0f || true) {
-        renderQuad(matrix, consumer, minX, minY, minZ, maxX, minY, maxZ, 0, 0, 16, 16, packedLight, packedOverlay, 0, -1, 0);
+        renderQuad(matrix, consumer, minX, minY, minZ, maxX, minY, maxZ, 0, 0, 8, 8, packedLight, packedOverlay, 0, -1, 0);
     }
 
     // 内側の4面をレンダリング（必要であれば）
-    // 内側も描画することで、管の中が見えた時もテクスチャがあるように見える。
     // North Face (Inner)
-    renderQuad(matrix, consumer, maxX, minY, minZ + 0.001f, minX, maxY, minZ + 0.001f, 0, 0, 16, 16 * h, packedLight, packedOverlay, 0, 0, 1);
+    renderQuad(matrix, consumer, maxX, minY, minZ + 0.001f, minX, maxY, minZ + 0.001f, 0, 0, 8, 16 * h, packedLight, packedOverlay, 0, 0, 1);
     // South Face (Inner)
-    renderQuad(matrix, consumer, minX, minY, maxZ - 0.001f, maxX, maxY, maxZ - 0.001f, 0, 0, 16, 16 * h, packedLight, packedOverlay, 0, 0, -1);
+    renderQuad(matrix, consumer, minX, minY, maxZ - 0.001f, maxX, maxY, maxZ - 0.001f, 0, 0, 8, 16 * h, packedLight, packedOverlay, 0, 0, -1);
     // West Face (Inner)
-    renderQuad(matrix, consumer, minX + 0.001f, minY, minZ, minX + 0.001f, maxY, maxZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, 1, 0, 0);
+    renderQuad(matrix, consumer, minX + 0.001f, minY, minZ, minX + 0.001f, maxY, maxZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 1, 0, 0);
     // East Face (Inner)
-    renderQuad(matrix, consumer, maxX - 0.001f, minY, maxZ, maxX - 0.001f, maxY, minZ, 0, 0, 16, 16 * h, packedLight, packedOverlay, -1, 0, 0);
+    renderQuad(matrix, consumer, maxX - 0.001f, minY, maxZ, maxX - 0.001f, maxY, minZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, -1, 0, 0);
   }
 
   private void renderQuad(Matrix4f matrix, VertexConsumer consumer, float x1, float y1, float z1, float x2, float y2, float z2, float u1, float v1, float u2, float v2, int packedLight, int packedOverlay, float nx, float ny, float nz) {
@@ -109,10 +108,10 @@ public class PumpTubeRenderer implements BlockEntityRenderer<PumpBlockEntity> {
       consumer.vertex(matrix, x2, y1, z2).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
       consumer.vertex(matrix, x2, y1, z1).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
     } else { // 垂直面
-      consumer.vertex(matrix, x1, y1, z1).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
-      consumer.vertex(matrix, x2, y1, z2).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
-      consumer.vertex(matrix, x2, y2, z2).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
-      consumer.vertex(matrix, x1, y2, z1).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
+      consumer.vertex(matrix, x1, y1, z1).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
+      consumer.vertex(matrix, x2, y1, z2).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
+      consumer.vertex(matrix, x2, y2, z2).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
+      consumer.vertex(matrix, x1, y2, z1).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(packedOverlay).uv2(packedLight).normal(nx, ny, nz).endVertex();
     }
   }
 }
