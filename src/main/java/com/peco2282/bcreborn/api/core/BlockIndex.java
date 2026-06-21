@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 /**
  * A container for integer-based block positions that implements {@link Comparable}.
  */
-public class BlockIndex implements Comparable<BlockIndex> {
+public class BlockIndex extends BlockPos.MutableBlockPos {
   public int x;
   public int y;
   public int z;
@@ -73,27 +73,51 @@ public class BlockIndex implements Comparable<BlockIndex> {
    * @param entity The block entity.
    */
   public BlockIndex(BlockEntity entity) {
-    BlockPos pos = entity.getBlockPos();
+    this(entity.getBlockPos());
+  }
+
+  /**
+   * Creates an index from a block position.
+   *
+   * @param pos The position.
+   */
+  public BlockIndex(BlockPos pos) {
     this.x = pos.getX();
     this.y = pos.getY();
     this.z = pos.getZ();
   }
 
-  /**
-   * Provides a deterministic and complete ordering of block positions.
-   * Order is X, then Z, then Y.
-   */
   @Override
-  public int compareTo(BlockIndex o) {
-    if (o.x < x) {
-      return 1;
-    } else if (o.x > x) {
-      return -1;
-    } else if (o.z < z) {
-      return 1;
-    } else if (o.z > z) {
-      return -1;
-    } else return Integer.compare(y, o.y);
+  public int getX() {
+    return x;
+  }
+
+  @Override
+  public int getY() {
+    return y;
+  }
+
+  @Override
+  public int getZ() {
+    return z;
+  }
+
+  @Override
+  public BlockPos.MutableBlockPos setX(int x) {
+    this.x = x;
+    return this;
+  }
+
+  @Override
+  public BlockPos.MutableBlockPos setY(int y) {
+    this.y = y;
+    return this;
+  }
+
+  @Override
+  public BlockPos.MutableBlockPos setZ(int z) {
+    this.z = z;
+    return this;
   }
 
   /**
@@ -155,6 +179,6 @@ public class BlockIndex implements Comparable<BlockIndex> {
    * @return The {@link BlockPos}.
    */
   public BlockPos toBlockPos() {
-    return new BlockPos(x, y, z);
+    return this;
   }
 }
