@@ -519,12 +519,6 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
   }
 
-  @Override
-  public CompoundTag getUpdateTag() {
-    CompoundTag nbt = super.getUpdateTag();
-    saveAdditional(nbt);
-    return nbt;
-  }
 
   @Override
   public net.minecraft.world.phys.AABB getRenderBoundingBox() {
