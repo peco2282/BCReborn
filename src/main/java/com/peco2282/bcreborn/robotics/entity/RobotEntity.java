@@ -192,6 +192,7 @@ public class RobotEntity extends RobotEntityBase implements
     this.setBoundingBox(
       new AABB(getX() - 0.25F, getY() - 0.25F, getZ() - 0.25F, getX() + 0.25F, getY() + 0.25F, getZ() + 0.25F)
     );
+    itemInUse = ItemStack.EMPTY;
   }
 
   @Override
@@ -579,7 +580,7 @@ public class RobotEntity extends RobotEntityBase implements
       ListTag list = nbt.getList("wearables", 10);
       for (int i = 0; i < list.size(); i++) {
         ItemStack stack = ItemStack.of(list.getCompound(i));
-        if (!stack.isEmpty()) {
+        if (stack != null && !stack.isEmpty()) {
           wearables.add(stack);
         }
       }
@@ -587,11 +588,17 @@ public class RobotEntity extends RobotEntityBase implements
 
     if (nbt.contains("itemInUse")) {
       itemInUse = ItemStack.of(nbt.getCompound("itemInUse"));
+      if (itemInUse == null) {
+        itemInUse = ItemStack.EMPTY;
+      }
       itemActive = nbt.getBoolean("itemActive");
     }
 
     for (int i = 0; i < inv.length; ++i) {
       inv[i] = ItemStack.of(nbt.getCompound("inv[" + i + "]"));
+      if (inv[i] == null) {
+        inv[i] = ItemStack.EMPTY;
+      }
     }
 
     CompoundTag ai = nbt.getCompound("mainAI");
@@ -1136,7 +1143,7 @@ public class RobotEntity extends RobotEntityBase implements
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
     } else {
-      return super.interact(player, hand);
+      return InteractionResult.FAIL;
     }
   }
 
@@ -1400,7 +1407,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   private void updateItem(ItemStack stack, int i, boolean held) {
-    if (!stack.isEmpty()) {
+    if (stack != null && !stack.isEmpty()) {
       int id = Item.getId(stack.getItem());
       // did this item not throw an exception before?
       if (!blacklistedItemsForUpdate.contains(id)) {
