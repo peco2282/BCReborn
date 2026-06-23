@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
@@ -33,7 +34,7 @@ public class BoardRobotLumberjack extends BoardRobotGenericBreakBlock<BoardRobot
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("lumberjack");
+    return RoboticsRedstoneRobots.ROBOT_LUMBERJACK.get();
   }
 
   @Override

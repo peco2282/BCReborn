@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.monster.Enemy;
@@ -30,7 +31,7 @@ public class BoardRobotKnight extends RedstoneBoardRobot<BoardRobotKnight> {
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("knight");
+    return RoboticsRedstoneRobots.ROBOT_KNIGHT.get();
   }
 
   @Override

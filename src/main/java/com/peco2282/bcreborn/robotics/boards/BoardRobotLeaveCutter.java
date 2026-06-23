@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
@@ -28,7 +29,7 @@ public class BoardRobotLeaveCutter extends BoardRobotGenericBreakBlock<BoardRobo
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("leaveCutter");
+    return RoboticsRedstoneRobots.ROBOT_LEAVE_CUTTER.get();
   }
 
   @Override

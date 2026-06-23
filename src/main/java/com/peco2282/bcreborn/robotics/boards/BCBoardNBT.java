@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class BCBoardNBT extends RedstoneBoardRobotNBT {
-  public static final Map<String, RedstoneBoardRobotNBT> REGISTRY = new HashMap<>();
   private final ResourceLocation texture;
   private final ResourceLocation id;
   private final String upperName, boardType;
@@ -43,8 +42,6 @@ public class BCBoardNBT extends RedstoneBoardRobotNBT {
     this.texture = BCRebornRobotics.location("textures/entity/robot_" + name + ".png");
     this.boardInit = board;
     this.energyCost = energyCost;
-
-    REGISTRY.put(name, this);
   }
 
   public int getEnergyCost() {
