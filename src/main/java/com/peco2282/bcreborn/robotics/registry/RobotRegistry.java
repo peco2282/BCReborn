@@ -205,7 +205,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 
   @Override
   public synchronized Collection<DockingStation<?>> getStations() {
-    return stations.values();
+    return new ArrayList<>(stations.values());
   }
 
   @Override
