@@ -125,7 +125,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   protected abstract void tick(Level level, BlockPos pos, BlockState state);
 
   public boolean stillValid(Player player) {
-    if (this.level.getBlockEntity(this.worldPosition) != this) {
+    if (this.getLevel().getBlockEntity(this.worldPosition) != this) {
       return false;
     }
     return player.distanceToSqr(this.worldPosition.getX() + 0.5D, this.worldPosition.getY() + 0.5D, this.worldPosition.getZ() + 0.5D) <= 64.0D;
@@ -156,7 +156,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   }
 
   protected int getTicksSinceEnergyReceived() {
-    return (int) (level.getGameTime() - worldTimeEnergyReceive);
+    return (int) (getLevel().getGameTime() - worldTimeEnergyReceive);
   }
 
   @Override
