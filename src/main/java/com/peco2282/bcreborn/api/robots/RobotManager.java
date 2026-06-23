@@ -55,6 +55,7 @@ public abstract class RobotManager {
 
   private static AIRobotType<? extends RedstoneBoardRobot<?>> emptyBoard;
 
+  @ApiStatus.Internal
   public static void setEmpty(AIRobotType<? extends RedstoneBoardRobot<?>> empty) {
     emptyBoard = empty;
   }
