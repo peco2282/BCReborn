@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
+import com.peco2282.bcreborn.robotics.event.BCRebornRoboticsEvent;
 import com.peco2282.bcreborn.robotics.registry.RobotRegistryProvider;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.resources.ResourceLocation;
@@ -51,6 +52,7 @@ public class BCRebornRobotics implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
+    MinecraftForge.EVENT_BUS.addListener(BCRebornRoboticsEvent::onRegisterCommand);
     processor.initRegister();
     REGISTRY.register(modEventBus);
   }
