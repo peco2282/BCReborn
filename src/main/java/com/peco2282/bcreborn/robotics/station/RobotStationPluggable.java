@@ -37,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -67,6 +68,7 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
+  @Nullable
   public DockingStation<?> getStation() {
     return station;
   }
@@ -95,7 +97,6 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
           pipe.getPos(),
           direction);
 
-      //noinspection ConstantValue
       if (station == null) {
         station = new DockingStationPipe(pipe, direction);
         RobotManager.registry().getRegistry(pipe.getWorld()).registerStation(station);
