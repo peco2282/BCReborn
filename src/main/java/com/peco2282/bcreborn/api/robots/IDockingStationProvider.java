@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Interface for blocks or tile entities that provide a docking station.
  */
@@ -20,5 +22,6 @@ public interface IDockingStationProvider {
    *
    * @return The docking station.
    */
+  @Nullable
   DockingStation<?> getStation();
 }
