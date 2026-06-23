@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.robotics.statements;
 
 import com.peco2282.bcreborn.BCRebornRobotics;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
@@ -28,11 +27,13 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotGoAndLinkToDock;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
 import com.peco2282.bcreborn.robotics.util.RobotUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -83,17 +84,18 @@ public class ActionRobotGotoStation extends BCStatement implements IActionIntern
     }
   }
 
+  @Nullable
   private DockingStation<?> getStation(StatementParameterItemStack stackParam,
                                        IRobotRegistry registry) {
     ItemStack item = stackParam.getItemStack();
 
-    if (item != null && !item.isEmpty() && item.getItem() instanceof IMapLocation map) {
-      BlockIndex index = map.getPoint(item);
+    if (!item.isEmpty() && item.getItem() instanceof IMapLocation map) {
+      BlockPos index = map.getPoint(item);
 
-      if (index != null) {
+      if (index != BlockPos.ZERO) {
         Direction side = map.getPointSide(item);
 
-        return registry.getStation(index.toBlockPos(), side);
+        return registry.getStation(index, side);
       }
     }
     return null;

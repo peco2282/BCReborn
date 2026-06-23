@@ -21,7 +21,6 @@ public record ResourceIdType<T extends ResourceId<T>>(ResourceLocation id, Suppl
     return RobotManager.registerResourceIdType(new ResourceIdType<>(id, factory));
   }
 
-  @NotNull
   public T create() {
     return factory.get();
   }

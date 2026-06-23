@@ -24,7 +24,6 @@ public record AIRobotType<T extends AIRobot<T>>(
     return new AIRobotType<>(id, factory);
   }
 
-  @NotNull
   public T create(RobotEntityBase entity) {
     return factory.apply(entity);
   }

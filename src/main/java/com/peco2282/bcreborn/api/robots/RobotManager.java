@@ -61,13 +61,11 @@ public abstract class RobotManager {
 
   // Robot types
   @Contract(value = "_,_ -> new")
-  @NotNull
   public static <T extends AIRobot<T>> AIRobotType<T> registerRobotType(ResourceLocation id, Function<RobotEntityBase, @NotNull T> type) {
     return registerRobotType(new AIRobotType<>(id, type));
   }
 
   @Contract("_ -> param1")
-  @NotNull
   public static <T extends AIRobot<T>> AIRobotType<T> registerRobotType(AIRobotType<T> type) {
     var id = type.id();
     if (robotTypes.containsKey(id)) {
@@ -97,17 +95,14 @@ public abstract class RobotManager {
     return (AIRobotType<T>) robotTypes.get(id);
   }
 
-  @NotNull
   public static <T extends AIRobot<T>> T createRobot(AIRobotType<T> type, RobotEntityBase base) {
     return type.create(base);
   }
 
-  @NotNull
   public static <T extends AIRobot<T>> T createRobot(String id, RobotEntityBase base) {
     return createRobot(ResourceLocation.parse(id), base);
   }
 
-  @NotNull
   public static <T extends AIRobot<T>> T createRobot(ResourceLocation id, RobotEntityBase base) {
     var type = robotTypes.get(id);
     if (type == null) {
@@ -121,12 +116,10 @@ public abstract class RobotManager {
     return (RedstoneBoardRobot<?>) createRobot(emptyBoard.id(), base);
   }
 
-  @NotNull
   public static <T extends AIRobot<T>> T createRobot(String id, RobotEntityBase base, CompoundTag init) {
     return createRobot(ResourceLocation.parse(id), base, init);
   }
 
-  @NotNull
   public static <T extends AIRobot<T>> T createRobot(ResourceLocation id, RobotEntityBase base, CompoundTag init) {
     var robot = createRobot(id, base);
     robot.loadFromNBT(init);
@@ -135,13 +128,11 @@ public abstract class RobotManager {
   }
 
   // Resource ID types
-  @NotNull
   public static <T extends ResourceId<T>> ResourceIdType<T> registerResourceIdType(ResourceLocation id, Supplier<T> type) {
     return registerResourceIdType(new ResourceIdType<>(id, type));
   }
 
   @Contract("_ -> param1")
-  @NotNull
   public static <T extends ResourceId<T>> ResourceIdType<T> registerResourceIdType(ResourceIdType<T> type) {
     var id = type.id();
     if (resourceIdTypes.containsKey(id)) {
@@ -162,22 +153,18 @@ public abstract class RobotManager {
     return (ResourceIdType<T>) resourceIdTypes.get(id);
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(ResourceIdType<T> type) {
     return type.create();
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(String id) {
     return createResourceId(ResourceLocation.parse(id));
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(String id, CompoundTag nbt) {
     return createResourceId(ResourceLocation.parse(id), nbt);
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(ResourceLocation id) {
     var type = getResourceIdType(id);
     if (type == null) {
@@ -186,14 +173,12 @@ public abstract class RobotManager {
     return (T) type.create();
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(ResourceLocation id, CompoundTag nbt) {
     T res = createResourceId(id);
     res.readFromNBT(nbt);
     return res;
   }
 
-  @NotNull
   public static <T extends ResourceId<T>> T createResourceId(ResourceIdType<T> type, CompoundTag nbt) {
     var res = type.create();
     res.readFromNBT(nbt);
@@ -210,13 +195,11 @@ public abstract class RobotManager {
   }
 
   // Docking station types
-  @NotNull
   public static <T extends DockingStation<T>> DockingStationType<T> registerDockingStationType(ResourceLocation id, Supplier<T> type) {
     return registerDockingStationType(new DockingStationType<>(id, type));
   }
 
   @Contract("_ -> param1")
-  @NotNull
   public static <T extends DockingStation<T>> DockingStationType<T> registerDockingStationType(DockingStationType<T> type) {
     var id = type.id();
     if (dockingStationTypes.containsKey(id)) {
@@ -236,17 +219,14 @@ public abstract class RobotManager {
     return (DockingStationType<T>) dockingStationTypes.get(id);
   }
 
-  @NotNull
   public static <T extends DockingStation<T>> T createDockingStation(DockingStationType<T> type) {
     return type.create();
   }
 
-  @NotNull
   public static <T extends DockingStation<T>> T createDockingStation(String id) {
     return createDockingStation(ResourceLocation.parse(id));
   }
 
-  @NotNull
   public static <T extends DockingStation<T>> T createDockingStation(ResourceLocation id) {
     var station = getDockingStationType(id);
     if (station == null) {
@@ -255,12 +235,10 @@ public abstract class RobotManager {
     return (T) station.create();
   }
 
-  @NotNull
   public static <T extends DockingStation<T>> T createDockingStation(String id, CompoundTag tag) {
     return createDockingStation(ResourceLocation.parse(id), tag);
   }
 
-  @NotNull
   public static <T extends DockingStation<T>> T createDockingStation(ResourceLocation id, CompoundTag tag) {
     var station = (T) createDockingStation(id);
     station.readFromNBT(tag);

@@ -20,7 +20,6 @@ public record DockingStationType<T extends DockingStation<T>>(
   ResourceLocation id,
   Supplier<@NotNull T> factory
 ) {
-  @NotNull
   public T create() {
     return factory.get();
   }

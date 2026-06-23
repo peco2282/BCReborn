@@ -50,7 +50,6 @@ public abstract class AIRobot<T extends AIRobot<T>> {
    * @param robot The robot entity the loaded AI will control.
    * @return A new AIRobot instance, or {@code null} if loading failed.
    */
-  @Nullable
   public static AIRobot<?> loadAI(CompoundTag nbt, RobotEntityBase robot) {
     if (!nbt.contains("aiName")) {
       return RobotManager.createEmptyRobot(robot);
@@ -244,7 +243,6 @@ public abstract class AIRobot<T extends AIRobot<T>> {
    *
    * @return The active AIRobot instance.
    */
-  @Nullable
   public final AIRobot<?> getActiveAI() {
     if (delegateAI != null) {
       return delegateAI.getActiveAI();
