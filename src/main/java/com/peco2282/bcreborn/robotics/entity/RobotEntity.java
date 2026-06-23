@@ -1101,9 +1101,9 @@ public class RobotEntity extends RobotEntityBase implements
         return InteractionResult.FAIL;
       }
 
-      onRobotHit(false);
-
-      if (level().isClientSide) {
+      if (!level().isClientSide) {
+        onRobotHit(false);
+      } else {
         ((WrenchItem) stack.getItem()).wrenchUsed(player, BlockPos.ZERO);
       }
       return InteractionResult.sidedSuccess(level().isClientSide);
@@ -1208,14 +1208,14 @@ public class RobotEntity extends RobotEntityBase implements
       if (mainAI != null) {
         mainAI.abort();
       }
+      releaseResources();
       List<ItemStack> drops = getDrops();
       for (ItemStack stack : drops) {
         spawnAtLocation(stack, 0);
       }
       remove(RemovalReason.DISCARDED);
+      getRegistry().killRobot(this);
     }
-
-    getRegistry().killRobot(this);
   }
 
   @Override

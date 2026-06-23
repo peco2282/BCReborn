@@ -192,7 +192,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
       for (StationIndex s : stationSet) {
         DockingStation<?> d = stations.get(s);
         if (d != null) {
-          // Logic for releasing station if applicable
+          d.unsafeRelease(robot);
         }
       }
     }
