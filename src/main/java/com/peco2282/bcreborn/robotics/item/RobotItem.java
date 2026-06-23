@@ -137,7 +137,7 @@ public class RobotItem extends BuildCraftItem {
     DockingStation<?> station = stationPluggable.getStation();
     if (station == null || station.isTaken()) {
       context.getPlayer().displayClientMessage(Component.literal("Station is already taken"), true);
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
 
     ItemStack stack = context.getItemInHand();
