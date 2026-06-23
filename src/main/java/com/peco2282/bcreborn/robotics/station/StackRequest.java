@@ -11,19 +11,20 @@
  */
 package com.peco2282.bcreborn.robotics.station;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class StackRequest {
   private final int slot;
   private final ItemStack stack;
   private IRequestProvider requester;
-  private DockingStation station;
-  private BlockIndex stationIndex;
+  private DockingStation<?> station;
+  private BlockPos stationIndex;
   private Direction stationSide;
 
   public StackRequest(IRequestProvider requester, int slot, ItemStack stack) {
@@ -33,7 +34,7 @@ public class StackRequest {
     this.station = null;
   }
 
-  private StackRequest(int slot, ItemStack stack, BlockIndex stationIndex, Direction stationSide) {
+  private StackRequest(int slot, ItemStack stack, BlockPos stationIndex, Direction stationSide) {
     requester = null;
     this.slot = slot;
     this.stack = stack;
@@ -48,7 +49,7 @@ public class StackRequest {
 
       ItemStack stack = ItemStack.of(nbt.getCompound("stack"));
 
-      BlockIndex stationIndex = new BlockIndex(nbt.getCompound("stationIndex"));
+      BlockPos stationIndex = BlockPos.of(nbt.getLong("stationIndex"));
       Direction stationSide = Direction.from3DDataValue(nbt.getByte("stationSide"));
 
       return new StackRequest(slot, stack, stationIndex, stationSide);
@@ -59,7 +60,7 @@ public class StackRequest {
 
   public IRequestProvider getRequester(Level world) {
     if (requester == null) {
-      DockingStation dockingStation = getStation(world);
+      DockingStation<?> dockingStation = getStation(world);
       if (dockingStation != null) {
         requester = dockingStation.getRequestProvider();
       }
@@ -75,15 +76,16 @@ public class StackRequest {
     return stack;
   }
 
-  public DockingStation getStation(Level world) {
+  @Nullable
+  public DockingStation<?> getStation(Level world) {
     if (station == null) {
       IRobotRegistry robotRegistry = RobotManager.registry().getRegistry(world);
-      station = robotRegistry.getStation(stationIndex.toBlockPos(), stationSide);
+      station = robotRegistry.getStation(stationIndex, stationSide);
     }
     return station;
   }
 
-  public void setStation(DockingStation station) {
+  public void setStation(DockingStation<?> station) {
     this.station = station;
     this.stationIndex = station.index();
     this.stationSide = station.side();
@@ -97,14 +99,12 @@ public class StackRequest {
     nbt.put("stack", stackNBT);
 
     if (station != null) {
-      CompoundTag stationIndexNBT = new CompoundTag();
-      station.index().writeTo(stationIndexNBT);
-      nbt.put("stationIndex", stationIndexNBT);
+      nbt.putLong("stationIndex", station.index().asLong());
       nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
     }
   }
 
-  public ResourceId getResourceId(Level world) {
+  public ResourceId<?> getResourceId(Level world) {
     return getStation(world) != null ? new ResourceIdRequest(getStation(world), slot) : null;
   }
 }

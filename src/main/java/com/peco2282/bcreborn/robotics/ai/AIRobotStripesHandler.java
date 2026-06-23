@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -30,14 +29,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implements IStripesActivator {
-  private BlockIndex useToBlock;
+  private BlockPos useToBlock;
   private int useCycles = 0;
 
   public AIRobotStripesHandler(RobotEntityBase iRobot) {
     super(RoboticsAIType.STRIPES_HANDLER, iRobot);
   }
 
-  public AIRobotStripesHandler(RobotEntityBase iRobot, BlockIndex index) {
+  public AIRobotStripesHandler(RobotEntityBase iRobot, BlockPos index) {
     this(iRobot);
 
     useToBlock = index;
@@ -45,7 +44,7 @@ public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implem
 
   @Override
   public void start() {
-    robot.aimItemAt(useToBlock.x, useToBlock.y, useToBlock.z);
+    robot.aimItemAt(useToBlock.getX(), useToBlock.getY(), useToBlock.getZ());
     robot.setItemActive(true);
   }
 
@@ -64,7 +63,7 @@ public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implem
 
       Direction direction = Direction.NORTH;
 
-      Position p = new Position(useToBlock.x, useToBlock.y, useToBlock.z);
+      Position p = new Position(useToBlock.getX(), useToBlock.getY(), useToBlock.getZ());
 
       Player player = BCFakePlayer.getBuildCraftPlayer(
         (ServerLevel) robot.level(), (int) p.x, (int) p.y,
@@ -77,7 +76,7 @@ public class AIRobotStripesHandler extends AIRobot<AIRobotStripesHandler> implem
           && handler.shouldHandle(stack)) {
           if (handler.handle(robot.level(), new BlockPos((int) p.x, (int) p.y,
             (int) p.z), direction, stack, player, this)) {
-            robot.setItemInUse(null);
+            robot.setItemInUse(ItemStack.EMPTY);
             terminate();
             return;
           }

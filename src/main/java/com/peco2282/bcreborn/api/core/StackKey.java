@@ -18,6 +18,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * A record used as a key for storing both {@link ItemStack} and {@link FluidStack} objects in maps and collections.
  * <p>
@@ -32,13 +34,27 @@ import org.jetbrains.annotations.Nullable;
  * @param fluidStack The FluidStack component of this key, may be null.
  */
 public record StackKey(ItemStack stack, FluidStack fluidStack) {
+  public static final StackKey EMPTY = new StackKey(ItemStack.EMPTY, FluidStack.EMPTY);
+  private static <T> T getOr(@Nullable T nullable, T def) {
+    return nullable == null ? def : nullable;
+  }
+
+  public StackKey {
+    if (stack.isEmpty() && fluidStack.isEmpty()) {
+      throw new IllegalArgumentException("StackKey cannot be created with both components null");
+    }
+    if (!stack.isEmpty() && !fluidStack.isEmpty()) {
+      throw new IllegalArgumentException("StackKey cannot be created with both components non-null");
+    }
+  }
+
   /**
    * Creates a StackKey containing only a FluidStack.
    *
    * @param fluidStack The fluid stack to store.
    */
   public StackKey(FluidStack fluidStack) {
-    this(null, fluidStack);
+    this(ItemStack.EMPTY, getOr(fluidStack, FluidStack.EMPTY));
   }
 
   /**
@@ -47,7 +63,7 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
    * @param stack The item stack to store.
    */
   public StackKey(ItemStack stack) {
-    this(stack, null);
+    this(getOr(stack, ItemStack.EMPTY), FluidStack.EMPTY);
   }
 
   /**
@@ -156,21 +172,7 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
       return false;
     }
     StackKey k = (StackKey) o;
-    if ((stack == null ^ k.stack == null) || (fluidStack == null ^ k.fluidStack == null)) {
-      return false;
-    }
-    if (stack != null) {
-      if (stack.getItem() != k.stack.getItem() ||
-        !objectsEqual(stack.getTag(), k.stack.getTag())) {
-        return false;
-      }
-    }
-    if (fluidStack != null) {
-      return fluidStack.getFluid().equals(k.fluidStack.getFluid()) &&
-        fluidStack.getAmount() == k.fluidStack.getAmount() &&
-        objectsEqual(fluidStack.getTag(), k.fluidStack.getTag());
-    }
-    return true;
+    return ItemStack.isSameItemSameTags(stack, k.stack) && FluidStack.areFluidStackTagsEqual(fluidStack, k.fluidStack);
   }
 
   /**
@@ -186,42 +188,16 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
     int result = 7;
     if (stack != null) {
       result = 31 * result + stack.getItem().hashCode();
-      result = 31 * result + objectHashCode(stack.getTag());
+      result = 31 * result + stack.getCount();
+      result = 31 * result + Objects.hashCode(stack.getTag());
     }
     result = 31 * result + 7;
     if (fluidStack != null) {
       result = 31 * result + fluidStack.getFluid().hashCode();
       result = 31 * result + fluidStack.getAmount();
-      result = 31 * result + objectHashCode(fluidStack.getTag());
+      result = 31 * result + Objects.hashCode(fluidStack.getTag());
     }
     return result;
-  }
-
-  /**
-   * Helper method to compare two objects for equality, handling null values.
-   *
-   * @param o1 The first object.
-   * @param o2 The second object.
-   * @return True if both are null or both are equal, false otherwise.
-   */
-  private boolean objectsEqual(@Nullable Object o1, @Nullable Object o2) {
-    if (o1 == null && o2 == null) {
-      return true;
-    } else if (o1 == null || o2 == null) {
-      return false;
-    } else {
-      return o1.equals(o2);
-    }
-  }
-
-  /**
-   * Helper method to get the hash code of an object, returning 0 for null.
-   *
-   * @param o The object.
-   * @return The hash code of the object, or 0 if null.
-   */
-  private int objectHashCode(@Nullable Object o) {
-    return o != null ? o.hashCode() : 0;
   }
 
   /**

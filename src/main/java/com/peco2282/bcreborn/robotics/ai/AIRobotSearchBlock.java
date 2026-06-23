@@ -11,13 +11,13 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Iterator;
@@ -25,9 +25,9 @@ import java.util.LinkedList;
 
 public class AIRobotSearchBlock extends AIRobot<AIRobotSearchBlock> {
 
-  public BlockIndex blockFound;
-  public LinkedList<BlockIndex> path;
-  private Iterator<BlockIndex> blockIter;
+  public BlockPos blockFound;
+  public LinkedList<BlockPos> path;
+  private Iterator<BlockPos> blockIter;
 
   public AIRobotSearchBlock(RobotEntityBase iRobot) {
     super(RoboticsAIType.SEARCH_BLOCK, iRobot);
@@ -73,9 +73,7 @@ public class AIRobotSearchBlock extends AIRobot<AIRobotSearchBlock> {
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -84,13 +82,13 @@ public class AIRobotSearchBlock extends AIRobot<AIRobotSearchBlock> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 
   public boolean takeResource() {
     if (blockFound == null) return false;
-    return robot.getRegistry().take(new ResourceIdBlock(blockFound.toBlockPos()), robot);
+    return robot.getRegistry().take(new ResourceIdBlock(blockFound), robot);
   }
 
   @Override

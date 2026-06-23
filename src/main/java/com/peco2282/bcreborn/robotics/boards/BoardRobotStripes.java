@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -22,11 +21,12 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotStripesHandler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 public class BoardRobotStripes extends RedstoneBoardRobot<BoardRobotStripes> {
 
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   public BoardRobotStripes(RobotEntityBase iRobot) {
     super(RoboticsAIType.STRIPES, iRobot);
@@ -67,7 +67,7 @@ public class BoardRobotStripes extends RedstoneBoardRobot<BoardRobotStripes> {
 
   private void releaseBlockFound() {
     if (blockFound != null) {
-      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      robot.getRegistry().release(new ResourceIdBlock(blockFound));
       blockFound = null;
     }
   }
@@ -82,9 +82,7 @@ public class BoardRobotStripes extends RedstoneBoardRobot<BoardRobotStripes> {
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -93,7 +91,7 @@ public class BoardRobotStripes extends RedstoneBoardRobot<BoardRobotStripes> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.AIRobotType;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSearchBlock<T>> extends RedstoneBoardRobot<T> {
 
   private final ArrayList<Block> blockFilter = new ArrayList<>();
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   public BoardRobotGenericSearchBlock(AIRobotType<T> type, RobotEntityBase iRobot) {
     super(type, iRobot);
@@ -55,7 +54,7 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
     startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
       if (isExpectedBlock(world, pos.getX(), pos.getY(), pos.getZ())
         && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))) {
-        return matchesGateFilter(world, pos.getX(), pos.getY(), pos.getZ());
+        return matchesGateFilter(world, pos);
       } else {
         return false;
       }
@@ -78,14 +77,14 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
     releaseBlockFound(true);
   }
 
-  protected BlockIndex blockFound() {
+  protected BlockPos blockFound() {
     return blockFound;
   }
 
   protected void releaseBlockFound(boolean success) {
     if (blockFound != null) {
       // TODO: if !ai.success() -> can't break block, blacklist it
-      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      robot.getRegistry().release(new ResourceIdBlock(blockFound));
       blockFound = null;
     }
   }
@@ -103,7 +102,7 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
           if (p instanceof StatementParameterItemStack param) {
             ItemStack stack = param.getItemStack();
 
-            if (stack != null && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
               blockFilter.add(((BlockItem) stack.getItem()).getBlock());
             }
           }
@@ -112,12 +111,12 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
     }
   }
 
-  protected boolean matchesGateFilter(Level world, int x, int y, int z) {
+  protected boolean matchesGateFilter(Level world, BlockPos pos) {
     if (blockFilter.isEmpty()) {
       return true;
     }
 
-    Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+    Block block = world.getBlockState(pos).getBlock();
 
     for (Block value : blockFilter) {
       if (value == block) {
@@ -133,9 +132,7 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("indexStored", sub);
+      nbt.putLong("indexStored", blockFound.asLong());
     }
   }
 
@@ -144,7 +141,7 @@ public abstract class BoardRobotGenericSearchBlock<T extends BoardRobotGenericSe
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("indexStored")) {
-      blockFound = new BlockIndex(nbt.getCompound("indexStored"));
+      blockFound = BlockPos.of(nbt.getLong("indexStored"));
     }
   }
 

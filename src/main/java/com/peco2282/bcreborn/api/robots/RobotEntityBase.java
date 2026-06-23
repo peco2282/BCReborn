@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.api.robots;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.core.IZone;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -253,4 +255,30 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    * @return The fluid handler.
    */
   public abstract IFluidHandler getFluidHandler();
+
+  /**
+   * Saves robot-specific data to the given {@link CompoundTag}.
+   * Subclasses should override this to persist their state,
+   * calling {@code super.addAdditionalSaveData(nbt)} first.
+   *
+   * @param nbt The tag to write data into.
+   */
+  @Override
+  public void addAdditionalSaveData(CompoundTag nbt) {
+    super.addAdditionalSaveData(nbt);
+  }
+
+  /**
+   * Loads robot-specific data from the given {@link CompoundTag}.
+   * Subclasses should override this to restore their state,
+   * calling {@code super.readAdditionalSaveData(nbt)} first.
+   *
+   * @param nbt The tag to read data from.
+   */
+  @Override
+  public void readAdditionalSaveData(CompoundTag nbt) {
+    super.readAdditionalSaveData(nbt);
+  }
+
+  public abstract MutableComponent getDisplayName();
 }

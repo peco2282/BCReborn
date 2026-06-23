@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -23,16 +22,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class AIRobotPlant extends AIRobot<AIRobotPlant> {
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
   private int delay = 0;
 
   public AIRobotPlant(RobotEntityBase iRobot) {
     super(RoboticsAIType.PLANT, iRobot);
   }
 
-  public AIRobotPlant(RobotEntityBase iRobot, BlockIndex iBlockFound) {
+  public AIRobotPlant(RobotEntityBase iRobot, BlockPos iBlockFound) {
     this(iRobot);
 
     blockFound = iBlockFound;
@@ -40,7 +40,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
 
   @Override
   public void start() {
-    robot.aimItemAt(blockFound.x, blockFound.y, blockFound.z);
+    robot.aimItemAt(blockFound.getX(), blockFound.getY(), blockFound.getZ());
     robot.setItemActive(true);
   }
 
@@ -54,7 +54,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
     if (delay++ > 40) {
       Player player = BCFakePlayer.getBuildCraftPlayer((ServerLevel) robot.level())
         .get();
-      if (CropManager.plantCrop(robot.level(), player, robot.getMainHandItem(), blockFound.toBlockPos())) {
+      if (CropManager.plantCrop(robot.level(), player, robot.getMainHandItem(), blockFound)) {
       } else {
         setSuccess(false);
       }
@@ -63,7 +63,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
           new BlockPos(Mth.floor(robot.getX()), Mth.floor(robot.getY()),
             Mth.floor(robot.getZ())), 6000, robot.getMainHandItem());
       }
-      robot.setItemInUse(null);
+      robot.setItemInUse(ItemStack.EMPTY);
       terminate();
     }
   }
@@ -83,9 +83,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -94,7 +92,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

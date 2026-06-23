@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.builder.schematics;
 import com.google.common.collect.Sets;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
-import com.peco2282.bcreborn.api.core.BlockIndex;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class SchematicWallSide extends SchematicBlock {
   @Override
-  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
+  public Set<BlockPos> getPrerequisiteBlocks(IBuilderContext context) {
     Direction side = Direction.UP;
     if (state.hasProperty(BlockStateProperties.FACING)) {
       side = state.getValue(BlockStateProperties.FACING).getOpposite();

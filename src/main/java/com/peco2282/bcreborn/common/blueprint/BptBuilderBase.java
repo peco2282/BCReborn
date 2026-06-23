@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.MappingNotFoundException;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlockBase;
 import com.peco2282.bcreborn.api.core.BCLog;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.Box;
@@ -239,28 +238,6 @@ public abstract class BptBuilderBase implements IAreaProvider {
         builder.getBuilders().add(item);
       } catch (MappingNotFoundException e) {
         BCLog.logger.log(org.apache.logging.log4j.Level.WARN, "can't load building item", e);
-      }
-    }
-
-    // 6.4.6 and below migration
-
-    if (nbt.contains("clearList")) {
-      ListTag clearList = nbt.getList("clearList", ListTag.TAG_COMPOUND);
-
-      for (int i = 0; i < clearList.size(); ++i) {
-        CompoundTag cpt = clearList.getCompound(i);
-        BlockIndex o = new BlockIndex(cpt);
-        markLocationUsed(o.x, o.y, o.z);
-      }
-    }
-
-    if (nbt.contains("builtList")) {
-      ListTag builtList = nbt.getList("builtList", ListTag.TAG_COMPOUND);
-
-      for (int i = 0; i < builtList.size(); ++i) {
-        CompoundTag cpt = builtList.getCompound(i);
-        BlockIndex o = new BlockIndex(cpt);
-        markLocationUsed(o.x, o.y, o.z);
       }
     }
   }

@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.BCRebornCore;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
@@ -29,7 +28,7 @@ import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -56,7 +55,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   public String name = "";
   public BlueprintReadConfiguration readConfiguration = new BlueprintReadConfiguration();
   public ArrayList<LaserData> subLasers = new ArrayList<>();
-  public ArrayList<BlockIndex> subBlueprints = new ArrayList<>();
+  public ArrayList<BlockPos> subBlueprints = new ArrayList<>();
   private RecursiveBlueprintReader reader;
   private boolean clientIsWorking, initialized;
 
@@ -68,7 +67,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     return box;
   }
 
-  public ArrayList<BlockIndex> getSubBlueprints() {
+  public ArrayList<BlockPos> getSubBlueprints() {
     return subBlueprints;
   }
 
@@ -144,12 +143,11 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
       readConfiguration.readFromNBT(nbt.getCompound("readConfiguration"));
     }
 
-    ListTag subBptList = nbt.getList("subBlueprints", ListTag.TAG_COMPOUND);
+    long[] subBptList = nbt.getLongArray("subBlueprints");
     subBlueprints.clear();
     subLasers.clear();
-    for (int i = 0; i < subBptList.size(); ++i) {
-      BlockIndex index = new BlockIndex(subBptList.getCompound(i));
-      addSubBlueprint(index);
+    for (long tag : subBptList) {
+      addSubBlueprint(BlockPos.of(tag));
     }
   }
 
@@ -173,12 +171,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     readConfiguration.writeToNBT(readConf);
     nbt.put("readConfiguration", readConf);
 
-    ListTag subBptList = new ListTag();
-    for (BlockIndex b : subBlueprints) {
-      CompoundTag subBpt = new CompoundTag();
-      b.writeTo(subBpt);
-      subBptList.add(subBpt);
-    }
+    LongArrayTag subBptList = new LongArrayTag(subBlueprints.stream().mapToLong(BlockPos::asLong).toArray());
     nbt.put("subBlueprints", subBptList);
   }
 
@@ -239,16 +232,16 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   public void addSubBlueprint(BlockEntity sub) {
     if (mode == Mode.COPY) {
-      addSubBlueprint(new BlockIndex(sub));
+      addSubBlueprint(sub.getBlockPos());
       setChanged();
       level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
     }
   }
 
-  private void addSubBlueprint(BlockIndex index) {
-    subBlueprints.add(index);
+  private void addSubBlueprint(BlockPos pos) {
+    subBlueprints.add(pos);
 
-    LaserData laser = new LaserData(new Position(index.x, index.y, index.z), new Position(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
+    LaserData laser = new LaserData(new Position(pos.getX(), pos.getY(), pos.getZ()), new Position(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
 
     laser.head.x += 0.5F;
     laser.head.y += 0.5F;

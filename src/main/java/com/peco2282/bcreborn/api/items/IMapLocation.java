@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.api.items;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.IZone;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
@@ -37,9 +37,9 @@ public interface IMapLocation extends INamedItem {
    * Gets the single point represented by this location.
    *
    * @param stack The item stack.
-   * @return The {@link BlockIndex} point.
+   * @return The {@link BlockPos} point.
    */
-  BlockIndex getPoint(ItemStack stack);
+  BlockPos getPoint(ItemStack stack);
 
   /**
    * Gets the 3D box region represented by this location.
@@ -61,9 +61,9 @@ public interface IMapLocation extends INamedItem {
    * Gets the path (list of points) represented by this location.
    *
    * @param stack The item stack.
-   * @return A list of {@link BlockIndex} points.
+   * @return A list of {@link BlockPos} points.
    */
-  List<BlockIndex> getPath(ItemStack stack);
+  List<BlockPos> getPath(ItemStack stack);
 
   /**
    * Gets the side of the point associated with this location.

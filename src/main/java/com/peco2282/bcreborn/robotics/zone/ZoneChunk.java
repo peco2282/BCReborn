@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics.zone;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
@@ -84,7 +84,7 @@ public class ZoneChunk implements IBufferSerializable {
     }
   }
 
-  public BlockIndex getRandomBlockIndex(RandomSource rand) {
+  public BlockPos getRandomBlockIndex(RandomSource rand) {
     int x, z;
 
     if (fullSet) {
@@ -105,7 +105,7 @@ public class ZoneChunk implements IBufferSerializable {
     }
     int y = rand.nextInt(255);
 
-    return new BlockIndex(x, y, z);
+    return new BlockPos(x, y, z);
   }
 
   public boolean isEmpty() {

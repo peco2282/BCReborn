@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -37,7 +37,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
   private long robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
   private RobotEntityBase robotTaking;
   private boolean linkIsMain = false;
-  private BlockIndex index;
+  private BlockPos index;
 
   /**
    * Constructs a new DockingStation with the specified index and side.
@@ -45,7 +45,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @param iIndex The block position index.
    * @param iSide  The side of the block.
    */
-  public DockingStation(DockingStationType<T> iType, BlockIndex iIndex, Direction iSide) {
+  public DockingStation(DockingStationType<T> iType, BlockPos iIndex, Direction iSide) {
     type = iType;
     index = iIndex;
     side = iSide;
@@ -73,7 +73,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The X coordinate.
    */
   public int x() {
-    return index.x;
+    return index.getX();
   }
 
   /**
@@ -82,7 +82,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The Y coordinate.
    */
   public int y() {
-    return index.y;
+    return index.getY();
   }
 
   /**
@@ -91,7 +91,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The Z coordinate.
    */
   public int z() {
-    return index.z;
+    return index.getZ();
   }
 
   /**
@@ -210,9 +210,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @param nbt The NBT tag to write to.
    */
   public void writeToNBT(CompoundTag nbt) {
-    CompoundTag indexNBT = new CompoundTag();
-    index.writeTo(indexNBT);
-    nbt.put("index", indexNBT);
+    nbt.putLong("Pos", index.asLong());
     nbt.putByte("side", (byte) side.ordinal());
     nbt.putBoolean("isMain", linkIsMain);
     nbt.putLong("robotId", robotTakingId);
@@ -224,7 +222,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @param nbt The NBT tag to read from.
    */
   public void readFromNBT(CompoundTag nbt) {
-    index = new BlockIndex(nbt.getCompound("index"));
+    index = BlockPos.of(nbt.getLong("Pos"));
     side = Direction.values()[nbt.getByte("side")];
     linkIsMain = nbt.getBoolean("isMain");
     robotTakingId = nbt.getLong("robotId");
@@ -253,13 +251,13 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @return The block index.
    */
-  public BlockIndex index() {
+  public BlockPos index() {
     return index;
   }
 
   @Override
   public String toString() {
-    return "{" + index.x + ", " + index.y + ", " + index.z + ", " + side + " :" + robotTakingId
+    return "{" + index.getX() + ", " + index.getY() + ", " + index.getZ() + ", " + side + " :" + robotTakingId
       + "}";
   }
 

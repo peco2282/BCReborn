@@ -25,7 +25,7 @@ public interface IZone {
    * @param index The block index.
    * @return The distance.
    */
-  double distanceTo(BlockIndex index);
+  double distanceTo(BlockPos index);
 
   /**
    * Calculates the squared distance to a given block index.
@@ -33,7 +33,7 @@ public interface IZone {
    * @param index The block index.
    * @return The squared distance.
    */
-  double distanceToSquared(BlockIndex index);
+  double distanceToSquared(BlockPos index);
 
   /**
    * Checks if the zone contains the specified coordinates.
@@ -59,8 +59,8 @@ public interface IZone {
    * Gets a random block index within the zone.
    *
    * @param rand The random instance to use.
-   * @return A random {@link BlockIndex}.
+   * @return A random {@link BlockPos}.
    */
-  BlockIndex getRandomBlockIndex(RandomSource rand);
+  BlockPos getRandomBlockIndex(RandomSource rand);
 
 }

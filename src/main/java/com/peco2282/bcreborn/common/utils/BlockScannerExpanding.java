@@ -12,12 +12,11 @@
 package com.peco2282.bcreborn.common.utils;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import net.minecraft.core.BlockPos;
 
 import java.util.Iterator;
 
-public class BlockScannerExpanding implements Iterable<BlockIndex> {
+public class BlockScannerExpanding implements Iterable<BlockPos> {
 
   private int searchRadius;
   private int searchX;
@@ -32,16 +31,15 @@ public class BlockScannerExpanding implements Iterable<BlockIndex> {
   }
 
   @Override
-  public Iterator<BlockIndex> iterator() {
+  public Iterator<BlockPos> iterator() {
     return new BlockIt();
   }
 
   public BlockPos nextBlockPos() {
-    BlockIndex index = new BlockIt().next();
-    return new BlockPos(index.x, index.y, index.z);
+    return new BlockIt().next();
   }
 
-  class BlockIt implements Iterator<BlockIndex> {
+  class BlockIt implements Iterator<BlockPos> {
 
     @Override
     public boolean hasNext() {
@@ -49,11 +47,11 @@ public class BlockScannerExpanding implements Iterable<BlockIndex> {
     }
 
     @Override
-    public BlockIndex next() {
+    public BlockPos next() {
       // Step through each block in a hollow cube of size (searchRadius * 2 -1), if done
       // add 1 to the radius and start over.
 
-      BlockIndex next = new BlockIndex(searchX, searchY, searchZ);
+      BlockPos next = new BlockPos(searchX, searchY, searchZ);
 
       // Step to the next Y
       if (Math.abs(searchX) == searchRadius || Math.abs(searchZ) == searchRadius) {

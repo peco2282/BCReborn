@@ -11,17 +11,17 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IBlockFilter;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotSearchAndGotoBlock extends AIRobot<AIRobotSearchAndGotoBlock> {
 
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   private IBlockFilter filter;
   private boolean random;
@@ -83,12 +83,12 @@ public class AIRobotSearchAndGotoBlock extends AIRobot<AIRobotSearchAndGotoBlock
 
   private void releaseBlockFound() {
     if (blockFound != null) {
-      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      robot.getRegistry().release(new ResourceIdBlock(blockFound));
       blockFound = null;
     }
   }
 
-  public BlockIndex getBlockFound() {
+  public BlockPos getBlockFound() {
     return blockFound;
   }
 
@@ -102,9 +102,7 @@ public class AIRobotSearchAndGotoBlock extends AIRobot<AIRobotSearchAndGotoBlock
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("indexStored", sub);
+      nbt.putLong("indexStored", blockFound.asLong());
     }
   }
 
@@ -113,7 +111,7 @@ public class AIRobotSearchAndGotoBlock extends AIRobot<AIRobotSearchAndGotoBlock
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("indexStored")) {
-      blockFound = new BlockIndex(nbt.getCompound("indexStored"));
+      blockFound = BlockPos.of(nbt.getLong("indexStored"));
     }
   }
 }

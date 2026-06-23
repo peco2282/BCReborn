@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -25,7 +24,7 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot<AIRobotSearchRandomG
 
   private static final int MAX_ATTEMPTS = 4096;
 
-  public BlockIndex blockFound;
+  public BlockPos blockFound;
 
   private int range;
   private IBlockFilter filter;
@@ -65,17 +64,18 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot<AIRobotSearchRandomG
       x = (int) (Mth.cos(a) * r + Math.floor(robot.getX()));
       z = (int) (Mth.sin(a) * r + Math.floor(robot.getZ()));
     } else {
-      BlockIndex b = zone.getRandomBlockIndex(robot.level().random);
-      x = b.x;
-      z = b.z;
+      BlockPos b = zone.getRandomBlockIndex(robot.level().random);
+      x = b.getX();
+      z = b.getZ();
     }
 
     for (int y = robot.level().getHeight(); y >= 0; --y) {
-      if (filter.matches(robot.level(), new BlockPos(x, y, z))) {
-        blockFound = new BlockIndex(x, y, z);
+      var pos = new BlockPos(x, y, z);
+      if (filter.matches(robot.level(), pos)) {
+        blockFound = pos;
         terminate();
         return;
-      } else if (!robot.level().getBlockState(new BlockPos(x, y, z)).isAir()) {
+      } else if (!robot.level().getBlockState(pos).isAir()) {
         return;
       }
     }

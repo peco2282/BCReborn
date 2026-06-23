@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.common;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.Position;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Box implements IBox {
+  public static final Box EMPTY = new Box();
   public Kind kind = Kind.LASER_RED;
   public int xMin, yMin, zMin, xMax, yMax, zMax;
   public boolean initialized;
@@ -42,6 +42,11 @@ public class Box implements IBox {
     initialize(pos.getX(), pos.getY(), pos.getZ(),
       pos.getX() + 1, pos.getY() + 1,
       pos.getZ() + 1);
+  }
+
+  public Box(BlockPos min, BlockPos max) {
+    this(min.getX(), min.getY(), min.getZ(),
+      max.getX(), max.getY(), max.getZ());
   }
 
   public Box(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
@@ -107,12 +112,12 @@ public class Box implements IBox {
     );
   }
 
-  public List<BlockIndex> getBlocksInArea() {
-    List<BlockIndex> blocks = new ArrayList<>();
+  public List<BlockPos> getBlocksInArea() {
+    List<BlockPos> blocks = new ArrayList<>();
     for (int x = xMin; x <= xMax; x++) {
       for (int y = yMin; y <= yMax; y++) {
         for (int z = zMin; z <= zMax; z++) {
-          blocks.add(new BlockIndex(x, y, z));
+          blocks.add(new BlockPos(x, y, z));
         }
       }
     }
@@ -148,8 +153,8 @@ public class Box implements IBox {
     return contains((int) p.x, (int) p.y, (int) p.z);
   }
 
-  public boolean contains(BlockIndex i) {
-    return contains(i.x, i.y, i.z);
+  public boolean contains(BlockPos i) {
+    return contains(i.getX(), i.getY(), i.getZ());
   }
 
   @Override
@@ -254,13 +259,13 @@ public class Box implements IBox {
     return this;
   }
 
-  public Box extendToEncompass(BlockIndex toBeContained) {
-    if (toBeContained.x < xMin) xMin = toBeContained.x - 1;
-    if (toBeContained.y < yMin) yMin = toBeContained.y - 1;
-    if (toBeContained.z < zMin) zMin = toBeContained.z - 1;
-    if (toBeContained.x > xMax) xMax = toBeContained.x + 1;
-    if (toBeContained.y > yMax) yMax = toBeContained.y + 1;
-    if (toBeContained.z > zMax) zMax = toBeContained.z + 1;
+  public Box extendToEncompass(BlockPos toBeContained) {
+    if (toBeContained.getX() < xMin) xMin = toBeContained.getX() - 1;
+    if (toBeContained.getY() < yMin) yMin = toBeContained.getY() - 1;
+    if (toBeContained.getZ() < zMin) zMin = toBeContained.getZ() - 1;
+    if (toBeContained.getX() > xMax) xMax = toBeContained.getX() + 1;
+    if (toBeContained.getY() > yMax) yMax = toBeContained.getY() + 1;
+    if (toBeContained.getZ() > zMax) zMax = toBeContained.getZ() + 1;
     return this;
   }
 
@@ -274,24 +279,24 @@ public class Box implements IBox {
   }
 
   @Override
-  public double distanceTo(BlockIndex index) {
+  public double distanceTo(BlockPos index) {
     return Math.sqrt(distanceToSquared(index));
   }
 
   @Override
-  public double distanceToSquared(BlockIndex index) {
-    int dx = index.x - (xMin + (xMax - xMin + 1));
-    int dy = index.y - (yMin + (yMax - yMin + 1));
-    int dz = index.z - (zMin + (zMax - zMin + 1));
+  public double distanceToSquared(BlockPos index) {
+    int dx = index.getX() - (xMin + (xMax - xMin + 1));
+    int dy = index.getY() - (yMin + (yMax - yMin + 1));
+    int dz = index.getZ() - (zMin + (zMax - zMin + 1));
     return dx * dx + dy * dy + dz * dz;
   }
 
   @Override
-  public BlockIndex getRandomBlockIndex(RandomSource rand) {
+  public BlockPos getRandomBlockIndex(RandomSource rand) {
     int x = (xMax > xMin) ? xMin + rand.nextInt(xMax - xMin + 1) : xMin;
     int y = (yMax > yMin) ? yMin + rand.nextInt(yMax - yMin + 1) : yMin;
     int z = (zMax > zMin) ? zMin + rand.nextInt(zMax - zMin + 1) : zMin;
-    return new BlockIndex(x, y, z);
+    return new BlockPos(x, y, z);
   }
 
   public void readData(FriendlyByteBuf stream) {

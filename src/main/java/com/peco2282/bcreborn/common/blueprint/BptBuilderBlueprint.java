@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.blueprints.Schematic;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
 import com.peco2282.bcreborn.api.blueprints.SchematicEntity;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.core.StackKey;
@@ -381,7 +380,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
           } else if (!slot.schematic.doNotBuild()) {
             if (checkRequirements(builder, slot.schematic)) {
               if (!BuildCraftAPI.isSoftBlock(world, slot.x, slot.y,
-                slot.z) || requirementMap.contains(new BlockIndex(slot.x, slot.y, slot.z))) {
+                slot.z) || requirementMap.contains(new BlockPos(slot.x, slot.y, slot.z))) {
                 continue; // Can't build yet, wait (#2751)
               } else if (isBlockPlaceCanceled(world, slot.x, slot.y, slot.z, slot.schematic)) {
                 // Forge does not allow us to place a block in

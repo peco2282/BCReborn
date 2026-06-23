@@ -305,7 +305,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   public void onChunkUnload(ChunkEvent.Unload e) {
     if (e.getLevel() == this.level) {
       for (DockingStation<?> station : new ArrayList<>(stations.values())) {
-        if (!level.isLoaded(station.index().toBlockPos())) {
+        if (!level.isLoaded(station.index())) {
           station.onChunkUnload();
         }
       }

@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,13 +33,13 @@ public class SchematicBlock extends SchematicBlockBase {
    * Relative indexes used to identify neighbor positions.
    * 0: UP, 1: DOWN, 2: NORTH, 3: SOUTH, 4: WEST, 5: EAST
    */
-  public static final BlockIndex[] RELATIVE_INDEXES = new BlockIndex[]{
-    new BlockIndex(0, -1, 0),
-    new BlockIndex(0, 1, 0),
-    new BlockIndex(0, 0, -1),
-    new BlockIndex(0, 0, 1),
-    new BlockIndex(-1, 0, 0),
-    new BlockIndex(1, 0, 0),
+  public static final BlockPos[] RELATIVE_INDEXES = new BlockPos[]{
+    new BlockPos(0, -1, 0),
+    new BlockPos(0, 1, 0),
+    new BlockPos(0, 0, -1),
+    new BlockPos(0, 0, 1),
+    new BlockPos(-1, 0, 0),
+    new BlockPos(1, 0, 0),
   };
 
   /**
@@ -151,10 +150,10 @@ public class SchematicBlock extends SchematicBlockBase {
    * Gets a set of relative block indexes that must be built before this block.
    *
    * @param context The builder context.
-   * @return A set of {@link BlockIndex} prerequisites.
+   * @return A set of {@link BlockPos} prerequisites.
    */
-  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
-    Set<BlockIndex> indexes = new HashSet<>();
+  public Set<BlockPos> getPrerequisiteBlocks(IBuilderContext context) {
+    Set<BlockPos> indexes = new HashSet<>();
     if (state.getBlock() instanceof FallingBlock) {
       indexes.add(RELATIVE_INDEXES[1]); // DOWN index
     }

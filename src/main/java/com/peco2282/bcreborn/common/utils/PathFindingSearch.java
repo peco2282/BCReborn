@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.core.IZone;
 import net.minecraft.core.BlockPos;
@@ -23,20 +22,20 @@ import java.util.*;
 public class PathFindingSearch implements IIterableAlgorithm {
 
   public static final int PATH_ITERATIONS = 1000;
-  private static final HashMap<ResourceKey<Level>, HashSet<BlockIndex>> reservations = new HashMap<>();
+  private static final HashMap<ResourceKey<Level>, HashSet<BlockPos>> reservations = new HashMap<>();
 
   private final Level world;
-  private final BlockIndex start;
+  private final BlockPos start;
   private final List<PathFinding> pathFinders;
   private final IBlockFilter pathFound;
   private final IZone zone;
   private final float maxDistance;
-  private final Iterator<BlockIndex> blockIter;
+  private final Iterator<BlockPos> blockIter;
 
   private final double maxDistanceToEnd;
 
-  public PathFindingSearch(Level iWorld, BlockIndex iStart,
-                           Iterator<BlockIndex> iBlockIter, IBlockFilter iPathFound,
+  public PathFindingSearch(Level iWorld, BlockPos iStart,
+                           Iterator<BlockPos> iBlockIter, IBlockFilter iPathFound,
                            double iMaxDistanceToEnd, float iMaxDistance, IZone iZone) {
     world = iWorld;
     start = iStart;
@@ -64,11 +63,11 @@ public class PathFindingSearch implements IIterableAlgorithm {
         return;
       }
 
-      BlockIndex delta = blockIter.next();
-      BlockIndex block = new BlockIndex(start.x + delta.x,
-        Math.max((start.y + delta.y), 0),
-        start.z + delta.z);
-      if (isLoadedChunk(block.x, block.z)) {
+      BlockPos delta = blockIter.next();
+      BlockPos block = new BlockPos(start.getX() + delta.getX(),
+        Math.max((start.getY() + delta.getY()), 0),
+        start.getZ() + delta.getZ());
+      if (isLoadedChunk(block.getX(), block.getZ())) {
         if (isTarget(block)) {
           pathFinders.add(new PathFinding(world, start, block, maxDistanceToEnd, maxDistance));
         }
@@ -80,28 +79,28 @@ public class PathFindingSearch implements IIterableAlgorithm {
     }
   }
 
-  private boolean isTarget(BlockIndex block) {
-    if (!zone.contains(block.x, block.y, block.z)) {
+  private boolean isTarget(BlockPos block) {
+    if (!zone.contains(block.getX(), block.getY(), block.getZ())) {
       return false;
     }
-    if (!pathFound.matches(world, new BlockPos(block.x, block.y, block.z))) {
+    if (!pathFound.matches(world, block)) {
       return false;
     }
     synchronized (reservations) {
       if (reservations.containsKey(world.dimension())) {
-        HashSet<BlockIndex> dimReservations = reservations
+        HashSet<BlockPos> dimReservations = reservations
           .get(world.dimension());
         if (dimReservations.contains(block)) {
           return false;
         }
       }
     }
-    return BuildCraftAPI.isSoftBlock(world, block.x - 1, block.y, block.z)
-      || BuildCraftAPI.isSoftBlock(world, block.x + 1, block.y, block.z)
-      || BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z - 1)
-      || BuildCraftAPI.isSoftBlock(world, block.x, block.y, block.z + 1)
-      || BuildCraftAPI.isSoftBlock(world, block.x, block.y - 1, block.z)
-      || BuildCraftAPI.isSoftBlock(world, block.x, block.y + 1, block.z);
+    return BuildCraftAPI.isSoftBlock(world, block.getX() - 1, block.getY(), block.getZ())
+      || BuildCraftAPI.isSoftBlock(world, block.getX() + 1, block.getY(), block.getZ())
+      || BuildCraftAPI.isSoftBlock(world, block.getX(), block.getY(), block.getZ() - 1)
+      || BuildCraftAPI.isSoftBlock(world, block.getX(), block.getY(), block.getZ() + 1)
+      || BuildCraftAPI.isSoftBlock(world, block.getX(), block.getY() - 1, block.getZ())
+      || BuildCraftAPI.isSoftBlock(world, block.getX(), block.getY() + 1, block.getZ());
   }
 
   private boolean isLoadedChunk(int x, int z) {
@@ -112,7 +111,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
     for (PathFinding pathFinding : new ArrayList<>(pathFinders)) {
       pathFinding.iterate(itNumber / pathFinders.size());
       if (pathFinding.isDone()) {
-        LinkedList<BlockIndex> path = pathFinding.getResult();
+        LinkedList<BlockPos> path = pathFinding.getResult();
         if (!path.isEmpty()) {
           if (reserve(pathFinding.end())) {
             return;
@@ -133,7 +132,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
     return !blockIter.hasNext();
   }
 
-  public LinkedList<BlockIndex> getResult() {
+  public LinkedList<BlockPos> getResult() {
     for (PathFinding pathFinding : pathFinders) {
       if (pathFinding.isDone()) {
         return pathFinding.getResult();
@@ -142,22 +141,22 @@ public class PathFindingSearch implements IIterableAlgorithm {
     return new LinkedList<>();
   }
 
-  public BlockIndex getResultTarget() {
+  public BlockPos getResultTarget() {
     for (PathFinding pathFinding : pathFinders) {
       if (pathFinding.isDone()) {
         return pathFinding.end();
       }
     }
-    return null;
+    return BlockPos.ZERO;
   }
 
-  private boolean reserve(BlockIndex block) {
+  private boolean reserve(BlockPos block) {
     synchronized (reservations) {
       if (!reservations.containsKey(world.dimension())) {
         reservations.put(world.dimension(),
           new HashSet<>());
       }
-      HashSet<BlockIndex> dimReservations = reservations
+      HashSet<BlockPos> dimReservations = reservations
         .get(world.dimension());
       if (dimReservations.contains(block)) {
         return false;
@@ -167,7 +166,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
     }
   }
 
-  public void unreserve(BlockIndex block) {
+  public void unreserve(BlockPos block) {
     synchronized (reservations) {
       if (reservations.containsKey(world.dimension())) {
         reservations.get(world.dimension()).remove(block);

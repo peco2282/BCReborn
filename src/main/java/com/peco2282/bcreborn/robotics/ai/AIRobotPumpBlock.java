@@ -11,24 +11,24 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
-  private BlockIndex blockToPump;
+  private BlockPos blockToPump;
   private long waited = 0;
 
   public AIRobotPumpBlock(RobotEntityBase iRobot) {
     super(RoboticsAIType.PUMP_BLOCK, iRobot);
   }
 
-  public AIRobotPumpBlock(RobotEntityBase iRobot, BlockIndex iBlockToPump) {
+  public AIRobotPumpBlock(RobotEntityBase iRobot, BlockPos iBlockToPump) {
     this(iRobot);
 
     blockToPump = iBlockToPump;
@@ -36,7 +36,7 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
   @Override
   public void start() {
-    robot.aimItemAt(blockToPump.x, blockToPump.y, blockToPump.z);
+    robot.aimItemAt(blockToPump.getX(), blockToPump.getY(), blockToPump.getZ());
   }
 
   @Override
@@ -49,10 +49,10 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
     if (waited < 40) {
       waited++;
     } else {
-      FluidStack fluidStack = BlockUtils.drainBlock(robot.level(), blockToPump.toBlockPos(), false);
+      FluidStack fluidStack = BlockUtils.drainBlock(robot.level(), blockToPump, false);
       if (fluidStack != null) {
         if (robot.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE) > 0) {
-          BlockUtils.drainBlock(robot.level(), blockToPump.toBlockPos(), true);
+          BlockUtils.drainBlock(robot.level(), blockToPump, true);
         }
       }
       terminate();

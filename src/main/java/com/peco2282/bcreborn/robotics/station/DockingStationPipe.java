@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.station;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IRequestProvider;
 import com.peco2282.bcreborn.api.robots.RobotManager;
@@ -21,7 +20,6 @@ import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +47,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
   }
 
   public DockingStationPipe(IPipeBlockEntity iPipe, Direction side) {
-    super(RoboticsAIType.PIPE, new BlockIndex(iPipe.getPos().getX(), iPipe.getPos().getY(), iPipe.getPos().getZ()), side);
+    super(RoboticsAIType.PIPE, iPipe.getPos(), side);
     pipe = iPipe;
     world = iPipe.getWorld();
   }
@@ -57,7 +55,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
   @Nullable
   public IPipeBlockEntity getPipe() {
     if (pipe == null) {
-      BlockEntity tile = world.getBlockEntity(index().toBlockPos());
+      BlockEntity tile = world.getBlockEntity(index());
       if (tile instanceof IPipeBlockEntity) {
         pipe = (IPipeBlockEntity) tile;
       }
@@ -90,12 +88,6 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
   @Override
   public Direction getItemOutputSide() {
     return side != null ? side.getOpposite() : Direction.UP;
-  }
-
-  @Nullable
-  @Override
-  public Container getItemInput() {
-    return null;
   }
 
   @Override

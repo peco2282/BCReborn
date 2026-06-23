@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.robots.AIRobot;
@@ -30,7 +29,7 @@ import net.minecraft.world.level.Level;
 
 public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
 
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   public BoardRobotPump(RobotEntityBase iRobot) {
     super(RoboticsAIType.PUMP, iRobot);
@@ -82,7 +81,7 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
 
   private void releaseBlockFound() {
     if (blockFound != null) {
-      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      robot.getRegistry().release(new ResourceIdBlock(blockFound));
       blockFound = null;
     }
   }
@@ -92,17 +91,10 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
   }
 
   @Override
-  public boolean canLoadFromNBT() {
-    return true;
-  }
-
-  @Override
   public void writeSelfToNBT(CompoundTag nbt) {
     super.writeSelfToNBT(nbt);
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -111,7 +103,7 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

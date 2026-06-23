@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -32,18 +31,18 @@ public class PathFinding implements IIterableAlgorithm {
   public static int PATH_ITERATIONS = 1000;
 
   private final Level world;
-  private final BlockIndex end;
-  private final HashMap<BlockIndex, Node> openList = new HashMap<>();
-  private final HashMap<BlockIndex, Node> closedList = new HashMap<>();
+  private final BlockPos end;
+  private final HashMap<BlockPos, Node> openList = new HashMap<>();
+  private final HashMap<BlockPos, Node> closedList = new HashMap<>();
   private double maxDistanceToEndSq = 0;
   private float maxTotalDistanceSq = 0;
   private Node nextIteration;
 
-  private LinkedList<BlockIndex> result;
+  private LinkedList<BlockPos> result;
 
   private boolean endReached = false;
 
-  public PathFinding(Level iWorld, BlockIndex iStart, BlockIndex iEnd) {
+  public PathFinding(Level iWorld, BlockPos iStart, BlockPos iEnd) {
     world = iWorld;
     end = iEnd;
 
@@ -57,23 +56,23 @@ public class PathFinding implements IIterableAlgorithm {
     nextIteration = startNode;
   }
 
-  public PathFinding(Level iWorld, BlockIndex iStart, BlockIndex iEnd, double iMaxDistanceToEnd) {
+  public PathFinding(Level iWorld, BlockPos iStart, BlockPos iEnd, double iMaxDistanceToEnd) {
     this(iWorld, iStart, iEnd);
 
     maxDistanceToEndSq = iMaxDistanceToEnd * iMaxDistanceToEnd;
   }
 
-  public PathFinding(Level iWorld, BlockIndex iStart, BlockIndex iEnd, double iMaxDistanceToEnd,
+  public PathFinding(Level iWorld, BlockPos iStart, BlockPos iEnd, double iMaxDistanceToEnd,
                      float iMaxTotalDistance) {
     this(iWorld, iStart, iEnd, iMaxDistanceToEnd);
 
     maxTotalDistanceSq = iMaxTotalDistance * iMaxTotalDistance;
   }
 
-  private static double distanceSq(BlockIndex i1, BlockIndex i2) {
-    double dx = (double) i1.x - (double) i2.x;
-    double dy = (double) i1.y - (double) i2.y;
-    double dz = (double) i1.z - (double) i2.z;
+  private static double distanceSq(BlockPos i1, BlockPos i2) {
+    double dx = (double) i1.getX() - (double) i2.getX();
+    double dy = (double) i1.getY() - (double) i2.getY();
+    double dz = (double) i1.getZ() - (double) i2.getZ();
 
     return dx * dx + dy * dy + dz * dz;
   }
@@ -109,7 +108,7 @@ public class PathFinding implements IIterableAlgorithm {
     return nextIteration == null;
   }
 
-  public LinkedList<BlockIndex> getResult() {
+  public LinkedList<BlockPos> getResult() {
     if (result != null) {
       return result;
     } else {
@@ -117,7 +116,7 @@ public class PathFinding implements IIterableAlgorithm {
     }
   }
 
-  public BlockIndex end() {
+  public BlockPos end() {
     return end;
   }
 
@@ -135,13 +134,13 @@ public class PathFinding implements IIterableAlgorithm {
             continue;
           }
 
-          int x = from.index.x + dx;
-          int y = from.index.y + dy;
-          int z = from.index.z + dz;
+          int x = from.index.getX() + dx;
+          int y = from.index.getY() + dy;
+          int z = from.index.getZ() + dz;
 
           Node nextNode = new Node();
           nextNode.parent = from;
-          nextNode.index = new BlockIndex(x, y, z);
+          nextNode.index = new BlockPos(x, y, z);
 
           if (resultMoves[dx + 1][dy + 1][dz + 1] == 2) {
             endReached = true;
@@ -198,10 +197,10 @@ public class PathFinding implements IIterableAlgorithm {
 
   private boolean endReached(int x, int y, int z) {
     if (maxDistanceToEndSq == 0) {
-      return end.x == x && end.y == y && end.z == z;
+      return end.getX() == x && end.getY() == y && end.getZ() == z;
     } else {
       return BuildCraftAPI.isSoftBlock(world, new BlockPos(x, y, z))
-        && distanceSq(new BlockIndex(x, y, z), end) <= maxDistanceToEndSq;
+        && distanceSq(new BlockPos(x, y, z), end) <= maxDistanceToEndSq;
     }
   }
 
@@ -211,9 +210,9 @@ public class PathFinding implements IIterableAlgorithm {
     for (int dx = -1; dx <= 1; ++dx) {
       for (int dy = -1; dy <= 1; ++dy) {
         for (int dz = -1; dz <= 1; ++dz) {
-          int x = from.index.x + dx;
-          int y = from.index.y + dy;
-          int z = from.index.z + dz;
+          int x = from.index.getX() + dx;
+          int y = from.index.getY() + dy;
+          int z = from.index.getZ() + dz;
 
           if (y < 0 || y >= world.getMaxBuildHeight()) {
             resultMoves[dx + 1][dy + 1][dz + 1] = 0;
@@ -346,7 +345,7 @@ public class PathFinding implements IIterableAlgorithm {
     public double movementCost;
     public double destinationCost;
     public double totalWeight;
-    public BlockIndex index;
+    public BlockPos index;
   }
 
 }

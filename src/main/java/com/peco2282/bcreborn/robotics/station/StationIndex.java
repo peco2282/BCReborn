@@ -12,14 +12,14 @@
 package com.peco2282.bcreborn.robotics.station;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.DockingStation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
 public class StationIndex {
 
-  public BlockIndex index = new BlockIndex();
+  public BlockPos index = BlockPos.ZERO;
   public Direction side = Direction.UP;
 
   protected StationIndex() {
@@ -27,10 +27,10 @@ public class StationIndex {
 
   public StationIndex(Direction iSide, int x, int y, int z) {
     side = iSide;
-    index = new BlockIndex(x, y, z);
+    index = new BlockPos(x, y, z);
   }
 
-  public StationIndex(DockingStation station) {
+  public StationIndex(DockingStation<?> station) {
     side = station.side();
     index = station.index();
   }
@@ -53,14 +53,12 @@ public class StationIndex {
   }
 
   public void writeToNBT(CompoundTag nbt) {
-    CompoundTag indexNBT = new CompoundTag();
-    index.writeTo(indexNBT);
-    nbt.put("index", indexNBT);
+    nbt.putLong("index", index.asLong());
     nbt.putByte("side", (byte) side.get3DDataValue());
   }
 
   protected void readFromNBT(CompoundTag nbt) {
-    index = new BlockIndex(nbt.getCompound("index"));
+    index = BlockPos.of(nbt.getLong("index"));
     side = Direction.from3DDataValue(nbt.getByte("side"));
   }
 }
