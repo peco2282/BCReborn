@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -198,7 +197,8 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.ENERGY && this.getBattery() != null) {
-      return LazyOptional.of(this::getBattery).cast();
+      var energy = this.getBattery();
+      return LazyOptional.of(() -> energy).cast();
     }
     return super.getCapability(cap, side);
   }

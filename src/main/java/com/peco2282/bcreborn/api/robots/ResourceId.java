@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.api.robots;
 
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for resource identifiers used by robots.
@@ -31,7 +30,6 @@ public abstract class ResourceId<T extends ResourceId<T>> {
    * @param nbt The NBT tag.
    * @return The loaded ResourceId, or {@code null} if loading failed.
    */
-  @Nullable
   public static <T extends ResourceId<T>> T load(CompoundTag nbt) {
     return RobotManager.createResourceId(nbt.getString("resourceName"), nbt);
   }
