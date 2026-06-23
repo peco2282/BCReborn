@@ -135,7 +135,8 @@ public class RobotItem extends BuildCraftItem {
     }
 
     DockingStation<?> station = stationPluggable.getStation();
-    if (station == null || station.isTaken() || station.linkedId() != RobotEntityBase.NULL_ROBOT_ID) {
+    if (station == null || station.isTaken()) {
+      context.getPlayer().displayClientMessage(Component.literal("Station is already taken"), true);
       return InteractionResult.PASS;
     }
 
@@ -156,16 +157,19 @@ public class RobotItem extends BuildCraftItem {
     RobotEntity robot = new RobotEntity(level, boardNBT);
     robot.setUniqueRobotId(registry.getNextRobotId());
     robot.setPos(station.x() + 0.5, station.y() + 0.5, station.z() + 0.5);
-    robot.setMainStation(station);
     robot.getBattery().receiveEnergy(getEnergy(cpt), false);
 
     if (level.addFreshEntity(robot)) {
-      robot.dock(station);
-      Player player = context.getPlayer();
-      if (player == null || !player.getAbilities().instabuild) {
-        stack.shrink(1);
+      if (station.takeAsMain(robot)) {
+        robot.dock(station);
+        Player player = context.getPlayer();
+        if (player == null || !player.getAbilities().instabuild) {
+          stack.shrink(1);
+        }
+        return InteractionResult.SUCCESS;
+      } else {
+        robot.discard(); // Fails to take station, remove robot
       }
-      return InteractionResult.SUCCESS;
     }
 
     return InteractionResult.PASS;
