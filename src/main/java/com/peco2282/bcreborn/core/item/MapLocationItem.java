@@ -29,7 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapLocationItem extends BuildCraftItem implements IMapLocation {
@@ -50,14 +50,11 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
     CompoundTag tag = stack.getOrCreateTag();
 
     if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-      int x = tag.getInt("x");
-      int y = tag.getInt("y");
-      int z = tag.getInt("z");
-
-      return new Box(x, y, z, x, y, z);
+      BlockPos pos = BlockPos.of(tag.getLong("Pos"));
+      return new Box(pos, pos);
     }
 
-    return null;
+    return Box.EMPTY;
   }
 
   @Override
@@ -94,10 +91,10 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
         tooltip.add(Component.literal("{" + x + ", " + y + ", " + z + "} + {" + xLength + " x " + yLength + " x " + zLength + "}"));
       }
       case KIND_PATH -> {
-        ListTag path = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
-        if (!path.isEmpty()) {
-          BlockIndex first = new BlockIndex(path.getCompound(0));
-          tooltip.add(Component.literal("{" + first.x + ", " + first.y + ", " + first.z + "} + " + path.size() + " elements"));
+        long[] path = tag.getLongArray(TAG_PATH);
+        if (path.length > 0) {
+          BlockPos first = BlockPos.of(path[0]);
+          tooltip.add(Component.literal("{" + first.getX() + ", " + first.getY() + ", " + first.getZ() + "} + " + path.length + " elements"));
         }
       }
       case KIND_ZONE -> {
@@ -118,15 +115,9 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
 
     if (blockEntity instanceof IPathProvider pathProvider) {
       tag.putByte(TAG_KIND, KIND_PATH);
+      long[] path = pathProvider.getPath().stream().mapToLong(BlockPos::asLong).toArray();
 
-      ListTag pathTag = new ListTag();
-      for (BlockIndex index : pathProvider.getPath()) {
-        CompoundTag indexTag = new CompoundTag();
-        index.writeTo(indexTag);
-        pathTag.add(indexTag);
-      }
-
-      tag.put(TAG_PATH, pathTag);
+      tag.putLongArray(TAG_PATH, path);
     } else if (blockEntity instanceof IAreaProvider areaProvider) {
       tag.putByte(TAG_KIND, KIND_AREA);
       tag.putInt("xMin", areaProvider.xMin());
@@ -138,9 +129,7 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
     } else {
       tag.putByte(TAG_KIND, KIND_SPOT);
       tag.putByte("side", (byte) context.getClickedFace().ordinal());
-      tag.putInt("x", pos.getX());
-      tag.putInt("y", pos.getY());
-      tag.putInt("z", pos.getZ());
+      tag.putLong("Pos", pos.asLong());
     }
 
     return InteractionResult.sidedSuccess(level.isClientSide);
@@ -175,14 +164,14 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
   }
 
   @Override
-  public BlockIndex getPoint(ItemStack stack) {
+  public BlockPos getPoint(ItemStack stack) {
     CompoundTag tag = stack.getOrCreateTag();
 
     if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-      return new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
+      return BlockPos.of(tag.getLong("Pos"));
     }
 
-    return null;
+    return BlockPos.ZERO;
   }
 
   @Override
@@ -204,7 +193,7 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
       return getPointBox(stack);
     }
 
-    return null;
+    return Box.EMPTY;
   }
 
   @Override
@@ -220,31 +209,22 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
     }
 
     // ZonePlan 移植後に KIND_ZONE を復元する。
-    return null;
+    return Box.EMPTY;
   }
 
   @Override
-  public List<BlockIndex> getPath(ItemStack stack) {
+  public List<BlockPos> getPath(ItemStack stack) {
     CompoundTag tag = stack.getOrCreateTag();
 
     if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_PATH) {
-      List<BlockIndex> indexes = new ArrayList<>();
-      ListTag pathTag = tag.getList(TAG_PATH, Tag.TAG_COMPOUND);
-
-      for (int i = 0; i < pathTag.size(); i++) {
-        indexes.add(new BlockIndex(pathTag.getCompound(i)));
-      }
-
-      return indexes;
+      return Arrays.stream(tag.getLongArray(TAG_PATH)).mapToObj(BlockPos::of).toList();
     }
 
     if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_SPOT) {
-      List<BlockIndex> indexes = new ArrayList<>();
-      indexes.add(new BlockIndex(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
-      return indexes;
+      return List.of(BlockPos.of(tag.getLong("Pos")));
     }
 
-    return null;
+    return List.of();
   }
 
   @Override

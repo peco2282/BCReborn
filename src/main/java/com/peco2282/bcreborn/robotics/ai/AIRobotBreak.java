@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
@@ -21,7 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class AIRobotBreak extends AIRobot<AIRobotBreak> {
-  private BlockIndex blockToBreak;
+  private BlockPos blockToBreak;
   private float blockDamage = 0;
 
   private BlockState blockState;
@@ -32,7 +31,7 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
     super(RoboticsAIType.BREAK, iRobot);
   }
 
-  public AIRobotBreak(RobotEntityBase iRobot, BlockIndex iBlockToBreak) {
+  public AIRobotBreak(RobotEntityBase iRobot, BlockPos iBlockToBreak) {
     this(iRobot);
 
     blockToBreak = iBlockToBreak;
@@ -40,10 +39,10 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
 
   @Override
   public void start() {
-    robot.aimItemAt(blockToBreak.x, blockToBreak.y, blockToBreak.z);
+    robot.aimItemAt(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
 
     robot.setItemActive(true);
-    BlockPos pos = new BlockPos(blockToBreak.x, blockToBreak.y, blockToBreak.z);
+    BlockPos pos = new BlockPos(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
     blockState = robot.level().getBlockState(pos);
     hardness = blockState.getDestroySpeed(robot.level(), pos);
     // speed = getBreakSpeed(robot, robot.getMainHandItem(), blockState); // TODO
@@ -52,7 +51,7 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
 
   @Override
   public void update() {
-    BlockPos pos = new BlockPos(blockToBreak.x, blockToBreak.y, blockToBreak.z);
+    BlockPos pos = new BlockPos(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
     if (blockState == null) {
       blockState = robot.level().getBlockState(pos);
       hardness = blockState.getDestroySpeed(robot.level(), pos);
@@ -90,7 +89,7 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
   @Override
   public void end() {
     robot.setItemActive(false);
-    robot.level().destroyBlockProgress(robot.getId(), new BlockPos(blockToBreak.x, blockToBreak.y, blockToBreak.z), -1);
+    robot.level().destroyBlockProgress(robot.getId(), new BlockPos(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ()), -1);
   }
 
   @Override
@@ -108,9 +107,7 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
     super.writeSelfToNBT(nbt);
 
     if (blockToBreak != null) {
-      CompoundTag sub = new CompoundTag();
-      blockToBreak.writeTo(sub);
-      nbt.put("blockToBreak", sub);
+      nbt.putLong("blockToBreak", blockToBreak.asLong());
     }
   }
 
@@ -119,7 +116,7 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockToBreak")) {
-      blockToBreak = new BlockIndex(nbt.getCompound("blockToBreak"));
+      blockToBreak = BlockPos.of(nbt.getLong("blockToBreak"));
     }
   }
 }

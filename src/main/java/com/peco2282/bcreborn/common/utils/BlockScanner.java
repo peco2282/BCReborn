@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.common.utils;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.common.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +19,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Iterator;
 
-public class BlockScanner implements Iterable<BlockIndex> {
+public class BlockScanner implements Iterable<BlockPos> {
 
   Box box = new Box();
   Level world;
@@ -43,7 +42,7 @@ public class BlockScanner implements Iterable<BlockIndex> {
   }
 
   @Override
-  public Iterator<BlockIndex> iterator() {
+  public Iterator<BlockPos> iterator() {
     return new BlockIt();
   }
 
@@ -76,11 +75,10 @@ public class BlockScanner implements Iterable<BlockIndex> {
   }
 
   public BlockPos nextBlockPos() {
-    BlockIndex index = iterator().next();
-    return new BlockPos(index.x, index.y, index.z);
+    return iterator().next();
   }
 
-  class BlockIt implements Iterator<BlockIndex> {
+  class BlockIt implements Iterator<BlockPos> {
 
     int it = 0;
 
@@ -90,8 +88,8 @@ public class BlockScanner implements Iterable<BlockIndex> {
     }
 
     @Override
-    public BlockIndex next() {
-      BlockIndex index = new BlockIndex(x, y, z);
+    public BlockPos next() {
+      BlockPos index = new BlockPos(x, y, z);
       it++;
       blocksDone++;
 

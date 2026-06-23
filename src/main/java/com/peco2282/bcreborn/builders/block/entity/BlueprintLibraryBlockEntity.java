@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.block.entity;
 
+import com.peco2282.bcreborn.api.library.LibraryAPI;
 import com.peco2282.bcreborn.api.library.LibraryTypeHandler;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.menu.BlueprintLibraryMenu;
@@ -168,7 +169,9 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
 
   @Override
   public boolean stillValid(Player p_18946_) {
-    return level.getBlockEntity(worldPosition).getClass().equals(getClass());
+    var entity = getLevel().getBlockEntity(worldPosition);
+    if (entity == null) return false;
+    return entity.getClass().equals(getClass());
   }
 
   @Override
@@ -178,7 +181,13 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
 
   @Nullable
   private LibraryTypeHandler findHandler(int slot, LibraryTypeHandler.HandlerType type) {
-    // TODO: implement when LibraryAPI is available
+    if (getLevel().isClientSide) return null;
+    var stack = getItem(slot);
+    for (LibraryTypeHandler h : LibraryAPI.getHandlerSet()) {
+      if (h.isHandler(stack, type)) {
+        return h;
+      }
+    }
     return null;
   }
 

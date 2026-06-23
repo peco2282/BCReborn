@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.builders.blueprints;
 
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.api.blueprints.Translation;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.builders.block.entity.ArchitectBlockEntity;
 import com.peco2282.bcreborn.builders.block.entity.BuilderBlockEntity;
 import com.peco2282.bcreborn.builders.block.entity.ConstructionMarkerBlockEntity;
@@ -104,10 +103,9 @@ public class RecursiveBlueprintReader {
   public void iterate() {
     if (done) {
     } else if (currentSubReader == null && subIndex < architect.subBlueprints.size()) {
-      BlockIndex subBlock = architect.subBlueprints.get(subIndex);
+      BlockPos subBlock = architect.subBlueprints.get(subIndex);
 
-      BlockEntity subTile = architect.getLevel().getBlockEntity(new BlockPos(subBlock.x, subBlock.y,
-        subBlock.z));
+      BlockEntity subTile = architect.getLevel().getBlockEntity(subBlock);
 
       if (subTile instanceof ArchitectBlockEntity subArchitect) {
         currentSubReader = new RecursiveBlueprintReader(subArchitect, writingBlueprint);
@@ -121,8 +119,7 @@ public class RecursiveBlueprintReader {
         } else {
           BuilderBlockEntity builder = (BuilderBlockEntity) subTile;
           blueprint = BlueprintItem.loadBlueprint(builder.getItem(0));
-          orientation = Direction.values()[architect.getLevel().getBlockState(new BlockPos(subBlock.x, subBlock.y,
-            subBlock.z)).getValue(BlockStateProperties.HORIZONTAL_FACING).ordinal()].getOpposite();
+          orientation = Direction.values()[architect.getLevel().getBlockState(subBlock).getValue(BlockStateProperties.HORIZONTAL_FACING).ordinal()].getOpposite();
         }
 
         if (blueprint != null) {
@@ -153,9 +150,8 @@ public class RecursiveBlueprintReader {
         subIndex++;
       }
     } else if (blockScanner != null && blockScanner.blocksLeft() != 0) {
-      for (BlockIndex index : blockScanner) {
-        writingBlueprint.readFromWorld(writingContext, architect,
-          index.x, index.y, index.z);
+      for (BlockPos index : blockScanner) {
+        writingBlueprint.readFromWorld(writingContext, architect, index);
       }
 
       computingTime = 1 - (float) blockScanner.blocksLeft()

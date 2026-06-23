@@ -11,22 +11,22 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotHarvest extends AIRobot<AIRobotHarvest> {
 
   private final int delay = 0;
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   public AIRobotHarvest(RobotEntityBase iRobot) {
     super(RoboticsAIType.HARVEST, iRobot);
   }
 
-  public AIRobotHarvest(RobotEntityBase iRobot, BlockIndex iBlockFound) {
+  public AIRobotHarvest(RobotEntityBase iRobot, BlockPos iBlockFound) {
     super(RoboticsAIType.HARVEST, iRobot);
     blockFound = iBlockFound;
   }
@@ -52,9 +52,7 @@ public class AIRobotHarvest extends AIRobot<AIRobotHarvest> {
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -63,7 +61,7 @@ public class AIRobotHarvest extends AIRobot<AIRobotHarvest> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

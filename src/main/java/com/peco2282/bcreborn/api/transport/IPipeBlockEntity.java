@@ -46,7 +46,6 @@ public interface IPipeBlockEntity extends IInjectable {
    *
    * @return The {@link BlockPos}.
    */
-  @Nullable
   BlockPos getPos();
 
   /**

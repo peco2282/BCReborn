@@ -11,10 +11,10 @@
  */
 package com.peco2282.bcreborn.robotics.zone;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.common.ChunkIndex;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -95,17 +95,17 @@ public class ZonePlan implements IZone, IBufferSerializable {
   }
 
   @Override
-  public double distanceTo(BlockIndex index) {
+  public double distanceTo(BlockPos index) {
     return Math.sqrt(distanceToSquared(index));
   }
 
   @Override
-  public double distanceToSquared(BlockIndex index) {
+  public double distanceToSquared(BlockPos index) {
     double maxSqrDistance = Double.MAX_VALUE;
 
     for (Map.Entry<ChunkIndex, ZoneChunk> e : chunkMapping.entrySet()) {
-      double dx = (e.getKey().x << 4 + 8) - index.x;
-      double dz = (e.getKey().z << 4 + 8) - index.z;
+      double dx = (e.getKey().x << 4 + 8) - index.getX();
+      double dz = (e.getKey().z << 4 + 8) - index.getZ();
 
       double sqrDistance = dx * dx + dz * dz;
 
@@ -126,7 +126,7 @@ public class ZonePlan implements IZone, IBufferSerializable {
   }
 
   @Override
-  public BlockIndex getRandomBlockIndex(RandomSource rand) {
+  public BlockPos getRandomBlockIndex(RandomSource rand) {
     if (chunkMapping.isEmpty()) {
       return null;
     }
@@ -135,9 +135,8 @@ public class ZonePlan implements IZone, IBufferSerializable {
 
     for (Map.Entry<ChunkIndex, ZoneChunk> e : chunkMapping.entrySet()) {
       if (chunkId == 0) {
-        BlockIndex i = e.getValue().getRandomBlockIndex(rand);
-        i.x = (e.getKey().x << 4) + i.x;
-        i.z = (e.getKey().z << 4) + i.z;
+        BlockPos i = e.getValue().getRandomBlockIndex(rand);
+        i = i.offset(e.getKey().x << 4, 0, e.getKey().z << 4);
 
         return i;
       }
@@ -145,7 +144,7 @@ public class ZonePlan implements IZone, IBufferSerializable {
       chunkId--;
     }
 
-    return null;
+    return BlockPos.ZERO;
   }
 
   @Override

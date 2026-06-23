@@ -40,7 +40,7 @@ public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
    */
   public ResourceIdRequest(DockingStation<?> station, int slot) {
     this();
-    index = station.index().toBlockPos();
+    index = station.index();
     side = station.side();
     this.slot = slot;
   }

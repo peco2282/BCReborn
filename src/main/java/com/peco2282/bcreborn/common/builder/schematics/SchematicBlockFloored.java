@@ -15,14 +15,14 @@ package com.peco2282.bcreborn.common.builder.schematics;
 import com.google.common.collect.Sets;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
-import com.peco2282.bcreborn.api.core.BlockIndex;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import java.util.Set;
 
 public class SchematicBlockFloored extends SchematicBlock {
   @Override
-  public Set<BlockIndex> getPrerequisiteBlocks(IBuilderContext context) {
+  public Set<BlockPos> getPrerequisiteBlocks(IBuilderContext context) {
     return Sets.newHashSet(RELATIVE_INDEXES[Direction.DOWN.get3DDataValue()]);
   }
 }

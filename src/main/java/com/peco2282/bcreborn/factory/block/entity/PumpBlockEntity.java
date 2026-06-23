@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.factory.block.entity;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.api.power.IRedstoneEngineReceiver;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
@@ -27,6 +26,7 @@ import com.peco2282.bcreborn.energy.fluids.SingleUseTank;
 import com.peco2282.bcreborn.energy.fluids.Tank;
 import com.peco2282.bcreborn.energy.fluids.TankUtils;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +55,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   public Tank tank = new SingleUseTank("tank", MAX_LIQUID);
 
 //  private EntityBlock tube;
-  private final TreeMap<Integer, Deque<BlockIndex>> pumpLayerQueues = new TreeMap<>();
+  private final Int2ObjectRBTreeMap<Deque<BlockPos>> pumpLayerQueues = new Int2ObjectRBTreeMap<>();
   private double tubeY = Double.NaN;
   private int aimY = -1;
 
@@ -167,7 +167,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     // 吸引処理
     // 液体面についたら少しずつ吸う（毎チック判定するが、エネルギーとタンク容量に依存）
     if (Math.abs(tubeY - aimY) < 0.01) {
-      BlockIndex index = getNextIndexToPump(false);
+      BlockPos index = getNextIndexToPump(false);
       FluidStack fluidToPump = null;
 
       if (index != null && index.getY() != -1) {
@@ -214,7 +214,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         if (tick % 16 == 0) {
           rebuildQueue();
 
-          BlockIndex next = getNextIndexToPump(false);
+          BlockPos next = getNextIndexToPump(false);
           if (next == null || next.getY() == -1) {
             // 現在の層および接続されている全層に液体がないなら管をさらに下に伸ばす
             BlockPos p = pos.atY(aimY - 1);
@@ -263,21 +263,21 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     TankUtils.pushFluidToConsumers(tank, 400, cache);
   }
 
-  @Nullable
-  private BlockIndex getNextIndexToPump(boolean remove) {
+  private BlockPos getNextIndexToPump(boolean remove) {
     if (pumpLayerQueues.isEmpty()) {
-      if (timer.markTimeIfDelay(level)) {
+      if (timer.markTimeIfDelay(getLevel())) {
         rebuildQueue();
       }
 
-      return null;
+      return BlockPos.ZERO;
     }
 
-    Deque<BlockIndex> topLayer = pumpLayerQueues.lastEntry().getValue();
+    int lastKey = pumpLayerQueues.lastIntKey();
+    Deque<BlockPos> topLayer = pumpLayerQueues.get(lastKey);
 
     if (topLayer != null) {
       if (topLayer.isEmpty()) {
-        pumpLayerQueues.pollLastEntry();
+        pumpLayerQueues.remove(lastKey);
         return getNextIndexToPump(remove);
       }
 
@@ -287,11 +287,11 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         return topLayer.peekLast();
       }
     } else {
-      return null;
+      return BlockPos.ZERO;
     }
   }
 
-  private Deque<BlockIndex> getLayerQueue(int layer) {
+  private Deque<BlockPos> getLayerQueue(int layer) {
     return pumpLayerQueues.computeIfAbsent(layer, k -> new LinkedList<>());
   }
 
@@ -317,8 +317,8 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       }
     }
 
-    Set<BlockIndex> visitedBlocks = new HashSet<>();
-    Deque<BlockIndex> fluidsToExpand = new LinkedList<>();
+    Set<BlockPos> visitedBlocks = new HashSet<>();
+    Deque<BlockPos> fluidsToExpand = new LinkedList<>();
 
     // 初回のチェック（無限水源保護のためのカウント）
     if (pumpingFluid == Fluids.WATER) {
@@ -328,7 +328,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     queueForPumping(tubePos, visitedBlocks, fluidsToExpand, pumpingFluid);
 
     while (!fluidsToExpand.isEmpty()) {
-      BlockIndex index = fluidsToExpand.pollFirst();
+      BlockPos index = fluidsToExpand.pollFirst();
 
       // 6方向を探索
       queueForPumping(index.above(), visitedBlocks, fluidsToExpand, pumpingFluid);
@@ -357,7 +357,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
   }
 
-  public void queueForPumping(BlockPos pos, Set<BlockIndex> visitedBlocks, Deque<BlockIndex> fluidsToExpand, Fluid pumpingFluid) {
+  public void queueForPumping(BlockPos pos, Set<BlockPos> visitedBlocks, Deque<BlockPos> fluidsToExpand, Fluid pumpingFluid) {
     // 高さが管の先端より高い場所は吸わない（仕様：高い順に吸うが、管の先端が基準点）
     // 元のBuildCraftでは管の先端の層から開始し、上の層も地続きなら吸う。
     // ただし、現在の実装では aimY を基準点としている。
@@ -365,8 +365,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       return;
     }
 
-    BlockIndex index = new BlockIndex(pos);
-    if (visitedBlocks.add(index)) {
+    if (visitedBlocks.add(pos)) {
       // 半径64ブロックの範囲制限（水平方向のみ。垂直方向は制限なし、あるいは管の長さによる）
       long dx = pos.getX() - getBlockPos().getX();
       long dz = pos.getZ() - getBlockPos().getZ();
@@ -378,10 +377,10 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       Fluid fluidAt = BlockUtils.getFluid(block);
 
       if (fluidAt == pumpingFluid) {
-        fluidsToExpand.add(index);
+        fluidsToExpand.add(pos);
 
         if (canDrainBlock(block, pos, pumpingFluid)) {
-          getLayerQueue(pos.getY()).add(index);
+          getLayerQueue(pos.getY()).add(pos);
         }
       }
     }

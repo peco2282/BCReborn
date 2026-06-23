@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.core;
 
+import net.minecraft.core.BlockPos;
+
 import java.util.List;
 
 /**
@@ -20,9 +22,9 @@ public interface IPathProvider {
   /**
    * Gets the list of block positions that define the path.
    *
-   * @return A list of {@link BlockIndex}.
+   * @return A list of {@link BlockPos}.
    */
-  List<BlockIndex> getPath();
+  List<BlockPos> getPath();
 
   /**
    * Remove from the world all objects used to define the path.

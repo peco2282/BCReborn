@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.common.blueprint;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.common.Box;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -293,6 +294,10 @@ public abstract class BlueprintBase {
   public abstract void saveContents(CompoundTag nbt);
 
   public abstract void readFromWorld(IBuilderContext context, BlockEntity anchorTile, int x, int y, int z);
+
+  public void readFromWorld(IBuilderContext context, BlockEntity anchorTile, BlockPos pos) {
+    readFromWorld(context, anchorTile, pos.getX(), pos.getY(), pos.getZ());
+  }
 
   public abstract ItemStack getStack();
 

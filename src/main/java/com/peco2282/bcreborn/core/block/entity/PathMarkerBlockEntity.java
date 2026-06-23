@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.core.block.entity;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IPathProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
@@ -186,14 +185,14 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
   // -----------------------------------------------------------------------
 
   @Override
-  public List<BlockIndex> getPath() {
-    HashSet<BlockIndex> visited = new HashSet<>();
-    ArrayList<BlockIndex> result = new ArrayList<>();
+  public List<BlockPos> getPath() {
+    HashSet<BlockPos> visited = new HashSet<>();
+    ArrayList<BlockPos> result = new ArrayList<>();
 
     PathMarkerBlockEntity current = this;
 
     while (current != null) {
-      BlockIndex b = new BlockIndex(
+      BlockPos b = new BlockPos(
         current.worldPosition.getX(),
         current.worldPosition.getY(),
         current.worldPosition.getZ()
@@ -205,7 +204,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
       PathMarkerBlockEntity next = null;
 
       if (current.links[0] != null) {
-        BlockIndex b0 = new BlockIndex(
+        BlockPos b0 = new BlockPos(
           current.links[0].worldPosition.getX(),
           current.links[0].worldPosition.getY(),
           current.links[0].worldPosition.getZ()
@@ -216,7 +215,7 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
       }
 
       if (next == null && current.links[1] != null) {
-        BlockIndex b1 = new BlockIndex(
+        BlockPos b1 = new BlockPos(
           current.links[1].worldPosition.getX(),
           current.links[1].worldPosition.getY(),
           current.links[1].worldPosition.getZ()
@@ -238,10 +237,9 @@ public class PathMarkerBlockEntity extends MarkerBlockEntity implements IPathPro
       return;
     }
 
-    List<BlockIndex> path = getPath();
-    for (BlockIndex b : path) {
-      BlockPos p = new BlockPos(b.x, b.y, b.z);
-      level.removeBlock(p, false);
+    List<BlockPos> path = getPath();
+    for (BlockPos b : path) {
+      level.removeBlock(b, false);
     }
   }
 

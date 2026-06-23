@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.factory.block.entity;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
@@ -41,10 +40,10 @@ public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFlui
     REBUILD_DELAY[7] = 16384;
   }
 
-  private final TreeMap<Integer, Deque<BlockIndex>> pumpLayerQueues = new TreeMap<>();
-  private final Set<BlockIndex> visitedBlocks = new HashSet<>();
+  private final TreeMap<Integer, Deque<BlockPos>> pumpLayerQueues = new TreeMap<>();
+  private final Set<BlockPos> visitedBlocks = new HashSet<>();
   private final FluidTank tank = new FluidTank(MAX_LIQUID);
-  private final Deque<BlockIndex> fluidsFound = new LinkedList<>();
+  private final Deque<BlockPos> fluidsFound = new LinkedList<>();
   private final boolean[] blockedSides = new boolean[6];
   private int rebuildDelay;
   private int tick = Utils.RANDOM.nextInt();

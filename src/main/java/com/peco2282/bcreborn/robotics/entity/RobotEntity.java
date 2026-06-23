@@ -54,6 +54,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -132,9 +133,9 @@ public class RobotEntity extends RobotEntityBase implements
   private final EnergyStorage battery = new EnergyStorage(MAX_ENERGY, MAX_ENERGY, 100);
   public LaserData laser = new LaserData();
   public DockingStation<?> linkedDockingStation;
-  public BlockIndex linkedDockingStationIndex;
+  public BlockPos linkedDockingStationIndex;
   public Direction linkedDockingStationSide;
-  public BlockIndex currentDockingStationIndex;
+  public BlockPos currentDockingStationIndex;
   public Direction currentDockingStationSide;
   public boolean isDocked = false;
   public RedstoneBoardRobot<?> board;
@@ -326,7 +327,7 @@ public class RobotEntity extends RobotEntityBase implements
     if (!level().isClientSide) {
       if (linkedDockingStation == null) {
         if (linkedDockingStationIndex != null) {
-          linkedDockingStation = getRegistry().getStation(linkedDockingStationIndex.toBlockPos(),
+          linkedDockingStation = getRegistry().getStation(linkedDockingStationIndex,
             linkedDockingStationSide);
         }
 
@@ -347,7 +348,7 @@ public class RobotEntity extends RobotEntityBase implements
 
       if (currentDockingStationIndex != null && currentDockingStation == null) {
         currentDockingStation = getRegistry().getStation(
-          currentDockingStationIndex.toBlockPos(),
+          currentDockingStationIndex,
           currentDockingStationSide);
       }
 
@@ -477,24 +478,21 @@ public class RobotEntity extends RobotEntityBase implements
     return texture;
   }
 
+
   @Override
   public void addAdditionalSaveData(CompoundTag nbt) {
     super.addAdditionalSaveData(nbt);
 
     if (linkedDockingStationIndex != null) {
       CompoundTag linkedStationNBT = new CompoundTag();
-      CompoundTag linkedStationIndexNBT = new CompoundTag();
-      linkedDockingStationIndex.writeTo(linkedStationIndexNBT);
-      linkedStationNBT.put("index", linkedStationIndexNBT);
+      linkedStationNBT.putLong("index", linkedDockingStationIndex.asLong());
       linkedStationNBT.putInt("side", linkedDockingStationSide.get3DDataValue());
       nbt.put("linkedStation", linkedStationNBT);
     }
 
     if (currentDockingStationIndex != null) {
       CompoundTag currentStationNBT = new CompoundTag();
-      CompoundTag currentStationIndexNBT = new CompoundTag();
-      currentDockingStationIndex.writeTo(currentStationIndexNBT);
-      currentStationNBT.put("index", currentStationIndexNBT);
+      currentStationNBT.putLong("index", currentDockingStationIndex.asLong());
       currentStationNBT.putInt("side", currentDockingStationSide.get3DDataValue());
       nbt.put("currentStation", currentStationNBT);
     }
@@ -561,13 +559,13 @@ public class RobotEntity extends RobotEntityBase implements
 
     if (nbt.contains("linkedStation")) {
       CompoundTag linkedStationNBT = nbt.getCompound("linkedStation");
-      linkedDockingStationIndex = new BlockIndex(linkedStationNBT.getCompound("index"));
+      linkedDockingStationIndex = BlockPos.of(linkedStationNBT.getLong("index"));
       linkedDockingStationSide = Direction.from3DDataValue(linkedStationNBT.getInt("side"));
     }
 
     if (nbt.contains("currentStation")) {
       CompoundTag currentStationNBT = nbt.getCompound("currentStation");
-      currentDockingStationIndex = new BlockIndex(currentStationNBT.getCompound("index"));
+      currentDockingStationIndex = BlockPos.of(currentStationNBT.getLong("index"));
       currentDockingStationSide = Direction.from3DDataValue(currentStationNBT.getInt("side"));
 
     }
@@ -714,8 +712,8 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public Component getDisplayName() {
-    return Component.empty();
+  public MutableComponent getDisplayName() {
+    return Component.literal("Display name");
   }
 
   @Override
@@ -1244,7 +1242,7 @@ public class RobotEntity extends RobotEntityBase implements
   @Override
   public ItemStack receiveItem(BlockEntity tile, ItemStack stack) {
     if (currentDockingStation != null
-      && currentDockingStation.index().nextTo(new BlockIndex(tile))
+      && BlockIndex.nextTo(currentDockingStation.index(), new BlockPos(tile.getBlockPos()))
       && mainAI != null) {
 
       return mainAI.getActiveAI().receiveItem(stack);

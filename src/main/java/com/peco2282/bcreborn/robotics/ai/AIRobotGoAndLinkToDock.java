@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -80,9 +79,7 @@ public class AIRobotGoAndLinkToDock extends AIRobot<AIRobotGoAndLinkToDock> {
     super.writeSelfToNBT(nbt);
 
     if (station != null && station.index() != null) {
-      CompoundTag indexNBT = new CompoundTag();
-      station.index().writeTo(indexNBT);
-      nbt.put("stationIndex", indexNBT);
+      nbt.putLong("stationIndex", station.index().asLong());
       nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
     }
   }
@@ -90,10 +87,10 @@ public class AIRobotGoAndLinkToDock extends AIRobot<AIRobotGoAndLinkToDock> {
   @Override
   public void loadSelfFromNBT(CompoundTag nbt) {
     if (nbt.contains("stationIndex")) {
-      BlockIndex index = new BlockIndex(nbt.getCompound("stationIndex"));
+      BlockPos index = BlockPos.of(nbt.getLong("stationIndex"));
       Direction side = Direction.from3DDataValue(nbt.getByte("stationSide"));
 
-      station = robot.getRegistry().getStation(new BlockPos(index.x, index.y, index.z), side);
+      station = robot.getRegistry().getStation(index, side);
     } else {
       station = robot.getLinkedStation();
     }

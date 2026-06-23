@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
@@ -23,14 +22,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
 
-  private BlockIndex useToBlock;
+  private BlockPos useToBlock;
   private int useCycles = 0;
 
   public AIRobotUseToolOnBlock(RobotEntityBase iRobot) {
     super(RoboticsAIType.USE_TOOL_ON_BLOCK, iRobot);
   }
 
-  public AIRobotUseToolOnBlock(RobotEntityBase iRobot, BlockIndex index) {
+  public AIRobotUseToolOnBlock(RobotEntityBase iRobot, BlockPos index) {
     this(iRobot);
 
     useToBlock = index;
@@ -38,7 +37,7 @@ public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
 
   @Override
   public void start() {
-    robot.aimItemAt(useToBlock.x, useToBlock.y, useToBlock.z);
+    robot.aimItemAt(useToBlock.getX(), useToBlock.getY(), useToBlock.getZ());
     robot.setItemActive(true);
   }
 
@@ -49,7 +48,7 @@ public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
     if (useCycles > 40) {
       ItemStack stack = robot.getMainHandItem();
 
-      BlockPos pos = useToBlock.toBlockPos();
+      BlockPos pos = useToBlock;
       if (BlockUtils.harvestBlock((ServerLevel) robot.level(), pos, stack)) {
         if (stack.isDamageableItem()) {
           stack.hurtAndBreak(1, robot, r -> {
@@ -93,9 +92,7 @@ public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
     super.writeSelfToNBT(nbt);
 
     if (useToBlock != null) {
-      CompoundTag sub = new CompoundTag();
-      useToBlock.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", useToBlock.asLong());
     }
   }
 
@@ -104,7 +101,7 @@ public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      useToBlock = new BlockIndex(nbt.getCompound("blockFound"));
+      useToBlock = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

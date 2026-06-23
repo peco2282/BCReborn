@@ -12,13 +12,13 @@
 package com.peco2282.bcreborn.common.utils;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import java.util.Iterator;
 
-public class BlockScannerRandom implements Iterable<BlockIndex> {
+public class BlockScannerRandom implements Iterable<BlockPos> {
 
   private final RandomSource rand;
   private final int maxDistance;
@@ -29,11 +29,11 @@ public class BlockScannerRandom implements Iterable<BlockIndex> {
   }
 
   @Override
-  public Iterator<BlockIndex> iterator() {
+  public Iterator<BlockPos> iterator() {
     return new BlockIt();
   }
 
-  class BlockIt implements Iterator<BlockIndex> {
+  class BlockIt implements Iterator<BlockPos> {
 
     @Override
     public boolean hasNext() {
@@ -41,7 +41,7 @@ public class BlockScannerRandom implements Iterable<BlockIndex> {
     }
 
     @Override
-    public BlockIndex next() {
+    public BlockPos next() {
       double radius = rand.nextFloat() * maxDistance;
       float polarAngle = rand.nextFloat() * 2.0F * (float) Math.PI;
       float azimuthAngle = rand.nextFloat() * (float) Math.PI;
@@ -50,7 +50,7 @@ public class BlockScannerRandom implements Iterable<BlockIndex> {
       int searchY = (int) (radius * Mth.cos(azimuthAngle));
       int searchZ = (int) (radius * Mth.sin(polarAngle) * Mth.sin(azimuthAngle));
 
-      return new BlockIndex(searchX, searchY, searchZ);
+      return new BlockPos(searchX, searchY, searchZ);
     }
 
     @Override

@@ -15,15 +15,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicBlock;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.builder.BuildingSlotBlock;
+import net.minecraft.core.BlockPos;
 
 import java.util.Set;
 
 public class IndexRequirementMap {
-  private final Multimap<BlockIndex, BlockIndex> requirements = HashMultimap.create();
-  private final Multimap<BlockIndex, BlockIndex> requirementsInv = HashMultimap.create();
+  private final Multimap<BlockPos, BlockPos> requirements = HashMultimap.create();
+  private final Multimap<BlockPos, BlockPos> requirementsInv = HashMultimap.create();
 
   public IndexRequirementMap() {
 
@@ -31,15 +31,15 @@ public class IndexRequirementMap {
 
   public void add(BuildingSlotBlock b, IBuilderContext context) {
     if (b.schematic instanceof SchematicBlock) {
-      BlockIndex index = new BlockIndex(b.x, b.y, b.z);
-      Set<BlockIndex> prereqs = ((SchematicBlock) b.schematic).getPrerequisiteBlocks(context);
+      BlockPos index = new BlockPos(b.x, b.y, b.z);
+      Set<BlockPos> prereqs = ((SchematicBlock) b.schematic).getPrerequisiteBlocks(context);
 
       if (!prereqs.isEmpty()) {
         Position min = context.surroundingBox().pMin();
         Position max = context.surroundingBox().pMax();
-        for (BlockIndex i : prereqs) {
-          BlockIndex ia = new BlockIndex(i.x + index.x, i.y + index.y, i.z + index.z);
-          if (ia.equals(index) || ia.x < min.x || ia.y < min.y || ia.z < min.z || ia.x > max.x || ia.y > max.y || ia.z > max.z) {
+        for (BlockPos i : prereqs) {
+          BlockPos ia = new BlockPos(i.getX() + index.getX(), i.getY() + index.getY(), i.getZ() + index.getZ());
+          if (ia.equals(index) || ia.getX() < min.x || ia.getY() < min.y || ia.getZ() < min.z || ia.getX() > max.x || ia.getY() > max.y || ia.getZ() > max.z) {
             continue;
           }
           requirements.put(index, ia);
@@ -49,17 +49,17 @@ public class IndexRequirementMap {
     }
   }
 
-  public boolean contains(BlockIndex index) {
+  public boolean contains(BlockPos index) {
     return requirements.containsKey(index);
   }
 
   public void remove(BuildingSlotBlock b) {
-    BlockIndex index = new BlockIndex(b.x, b.y, b.z);
+    BlockPos index = new BlockPos(b.x, b.y, b.z);
     remove(index);
   }
 
-  public void remove(BlockIndex index) {
-    for (BlockIndex reqingIndex : requirementsInv.get(index)) {
+  public void remove(BlockPos index) {
+    for (BlockPos reqingIndex : requirementsInv.get(index)) {
       requirements.remove(reqingIndex, index);
     }
     requirementsInv.removeAll(index);

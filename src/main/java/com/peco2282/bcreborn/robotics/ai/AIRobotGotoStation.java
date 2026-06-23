@@ -12,19 +12,19 @@
 package com.peco2282.bcreborn.robotics.ai;
 
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
 public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
 
-  private BlockIndex stationIndex;
+  private BlockPos stationIndex;
   private Direction stationSide;
 
   public AIRobotGotoStation(RobotEntityBase iRobot) {
@@ -41,7 +41,7 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
 
   @Override
   public void start() {
-    DockingStation<?> station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
+    DockingStation<?> station = robot.getRegistry().getStation(stationIndex, stationSide);
 
     if (station == null) {
       terminate();
@@ -49,7 +49,7 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
       setSuccess(true);
       terminate();
     } else {
-      ResourceIdBlock resourceId = new ResourceIdBlock(station.index().toBlockPos());
+      ResourceIdBlock resourceId = new ResourceIdBlock(station.index());
       resourceId.side = station.side();
       if (robot.getRegistry().take(resourceId, robot)) {
         startDelegateAI(new AIRobotGotoBlock(robot,
@@ -64,24 +64,24 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
 
   @Override
   public void delegateAIEnded(AIRobot<?> ai) {
-    DockingStation<?> station = robot.getRegistry().getStation(stationIndex.toBlockPos(), stationSide);
+    DockingStation<?> station = robot.getRegistry().getStation(stationIndex, stationSide);
 
     if (station == null) {
       terminate();
     } else if (ai instanceof AIRobotGotoBlock) {
       if (ai.success()) {
         startDelegateAI(new AIRobotStraightMoveTo(robot,
-          stationIndex.x + 0.5F + stationSide.getStepX() * 0.5F,
-          stationIndex.y + 0.5F + stationSide.getStepY() * 0.5F,
-          stationIndex.z + 0.5F + stationSide.getStepZ() * 0.5F));
+          stationIndex.getX() + 0.5F + stationSide.getStepX() * 0.5F,
+          stationIndex.getY() + 0.5F + stationSide.getStepY() * 0.5F,
+          stationIndex.getZ() + 0.5F + stationSide.getStepZ() * 0.5F));
       } else {
         terminate();
       }
     } else {
       setSuccess(true);
       if (stationSide.getStepY() == 0) {
-        robot.aimItemAt(stationIndex.x + 2 * stationSide.getStepX(), stationIndex.y,
-          stationIndex.z + 2 * stationSide.getStepZ());
+        robot.aimItemAt(stationIndex.getX() + 2 * stationSide.getStepX(), stationIndex.getY(),
+          stationIndex.getZ() + 2 * stationSide.getStepZ());
       } else {
         robot.aimItemAt(Mth.floor(robot.getAimYaw() / 90f) * 90f + 180f, robot.getAimPitch());
       }
@@ -97,15 +97,13 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
 
   @Override
   public void writeSelfToNBT(CompoundTag nbt) {
-    CompoundTag indexNBT = new CompoundTag();
-    stationIndex.writeTo(indexNBT);
-    nbt.put("stationIndex", indexNBT);
+    nbt.putLong("stationIndex", stationIndex.asLong());
     nbt.putByte("stationSide", (byte) stationSide.ordinal());
   }
 
   @Override
   public void loadSelfFromNBT(CompoundTag nbt) {
-    stationIndex = new BlockIndex(nbt.getCompound("stationIndex"));
+    stationIndex = BlockPos.of(nbt.getLong("stationIndex"));
     stationSide = Direction.values()[nbt.getByte("stationSide")];
   }
 }

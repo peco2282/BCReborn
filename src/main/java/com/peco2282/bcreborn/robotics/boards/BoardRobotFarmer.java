@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.robotics.boards;
 
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.core.IWorldProperty;
 import com.peco2282.bcreborn.api.robots.AIRobot;
@@ -24,12 +23,13 @@ import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotSearchAndGotoBlock;
 import com.peco2282.bcreborn.robotics.ai.AIRobotUseToolOnBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 
 public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
 
-  private BlockIndex blockFound;
+  private BlockPos blockFound;
 
   public BoardRobotFarmer(RobotEntityBase iRobot) {
     super(RoboticsAIType.FARMER, iRobot);
@@ -53,7 +53,7 @@ public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
   }
 
   @Override
-  public void delegateAIEnded(AIRobot ai) {
+  public void delegateAIEnded(AIRobot<?> ai) {
     if (ai instanceof AIRobotSearchAndGotoBlock) {
       if (ai.success()) {
         blockFound = ((AIRobotSearchAndGotoBlock) ai).getBlockFound();
@@ -72,7 +72,7 @@ public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
 
   private void releaseBlockFound() {
     if (blockFound != null) {
-      robot.getRegistry().release(new ResourceIdBlock(blockFound.toBlockPos()));
+      robot.getRegistry().release(new ResourceIdBlock(blockFound));
       blockFound = null;
     }
   }
@@ -87,9 +87,7 @@ public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
     super.writeSelfToNBT(nbt);
 
     if (blockFound != null) {
-      CompoundTag sub = new CompoundTag();
-      blockFound.writeTo(sub);
-      nbt.put("blockFound", sub);
+      nbt.putLong("blockFound", blockFound.asLong());
     }
   }
 
@@ -98,7 +96,7 @@ public class BoardRobotFarmer extends RedstoneBoardRobot<BoardRobotFarmer> {
     super.loadSelfFromNBT(nbt);
 
     if (nbt.contains("blockFound")) {
-      blockFound = new BlockIndex(nbt.getCompound("blockFound"));
+      blockFound = BlockPos.of(nbt.getLong("blockFound"));
     }
   }
 }

@@ -11,13 +11,13 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 
 import java.util.Iterator;
 
-public class BlockScannerZoneRandom implements Iterable<BlockIndex> {
+public class BlockScannerZoneRandom implements Iterable<BlockPos> {
 
   private final RandomSource rand;
   private final IZone zone;
@@ -34,11 +34,11 @@ public class BlockScannerZoneRandom implements Iterable<BlockIndex> {
   }
 
   @Override
-  public Iterator<BlockIndex> iterator() {
+  public Iterator<BlockPos> iterator() {
     return new BlockIt();
   }
 
-  class BlockIt implements Iterator<BlockIndex> {
+  class BlockIt implements Iterator<BlockPos> {
 
     @Override
     public boolean hasNext() {
@@ -46,9 +46,9 @@ public class BlockScannerZoneRandom implements Iterable<BlockIndex> {
     }
 
     @Override
-    public BlockIndex next() {
-      BlockIndex block = zone.getRandomBlockIndex(rand);
-      return new BlockIndex(block.x - x, block.y - y, block.z - z);
+    public BlockPos next() {
+      BlockPos block = zone.getRandomBlockIndex(rand);
+      return new BlockPos(block.getX() - x, block.getY() - y, block.getZ() - z);
     }
 
     @Override

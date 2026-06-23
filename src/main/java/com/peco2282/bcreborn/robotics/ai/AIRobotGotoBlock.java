@@ -11,15 +11,13 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.IterableAlgorithmRunner;
 import com.peco2282.bcreborn.common.utils.PathFinding;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import java.util.LinkedList;
 
@@ -27,11 +25,11 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
 
   private PathFinding pathSearch;
   private IterableAlgorithmRunner pathSearchJob;
-  private LinkedList<BlockIndex> path;
+  private LinkedList<BlockPos> path;
   private double prevDistance = Double.MAX_VALUE;
   private float finalX, finalY, finalZ;
   private double maxDistance = 0;
-  private BlockIndex lastBlockInPath;
+  private BlockPos lastBlockInPath;
   private boolean loadedFromNBT;
 
   public AIRobotGotoBlock(RobotEntityBase iRobot) {
@@ -51,12 +49,12 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
     maxDistance = iMaxDistance;
   }
 
-  public AIRobotGotoBlock(RobotEntityBase robot, LinkedList<BlockIndex> iPath) {
+  public AIRobotGotoBlock(RobotEntityBase robot, LinkedList<BlockPos> iPath) {
     this(robot);
     path = iPath;
-    finalX = path.getLast().x;
-    finalY = path.getLast().y;
-    finalZ = path.getLast().z;
+    finalX = path.getLast().getX();
+    finalY = path.getLast().getY();
+    finalZ = path.getLast().getZ();
     setNextInPath();
   }
 
@@ -75,8 +73,8 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
     }
 
     if (path == null && pathSearch == null) {
-      pathSearch = new PathFinding(robot.level(), new BlockIndex((int) Math.floor(robot.getX()),
-        (int) Math.floor(robot.getY()), (int) Math.floor(robot.getZ())), new BlockIndex(
+      pathSearch = new PathFinding(robot.level(), new BlockPos((int) Math.floor(robot.getX()),
+        (int) Math.floor(robot.getY()), (int) Math.floor(robot.getZ())), new BlockPos(
         (int) Math.floor(finalX), (int) Math.floor(finalY), (int) Math.floor(finalZ)), maxDistance, 96);
 
       pathSearchJob = new IterableAlgorithmRunner(pathSearch, 50);
@@ -113,7 +111,7 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
       robot.setDeltaMovement(0, 0, 0);
 
       if (lastBlockInPath != null) {
-        robot.setPos(lastBlockInPath.x + 0.5, lastBlockInPath.y + 0.5, lastBlockInPath.z + 0.5);
+        robot.setPos(lastBlockInPath.getX() + 0.5, lastBlockInPath.getY() + 0.5, lastBlockInPath.getZ() + 0.5);
       }
       terminate();
     }
@@ -123,12 +121,12 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
     if (!path.isEmpty()) {
       boolean isFirst = prevDistance == Double.MAX_VALUE;
 
-      BlockIndex next = path.getFirst();
+      BlockPos next = path.getFirst();
       prevDistance = Double.MAX_VALUE;
 
-      if (isFirst || BuildCraftAPI.isSoftBlock(robot.level(), next.x, next.y, next.z)) {
-        setDestination(robot, next.x + 0.5F, next.y + 0.5F, next.z + 0.5F);
-        robot.aimItemAt(next.x, next.y, next.z);
+      if (isFirst || BuildCraftAPI.isSoftBlock(robot.level(), next.getX(), next.getY(), next.getZ())) {
+        setDestination(robot, next.getX() + 0.5F, next.getY() + 0.5F, next.getZ() + 0.5F);
+        robot.aimItemAt(next.getX(), next.getY(), next.getZ());
       } else {
         // Path invalid!
         path = null;
@@ -164,15 +162,9 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
     nbt.putDouble("maxDistance", maxDistance);
 
     if (path != null) {
-      ListTag pathList = new ListTag();
+      long[] sub = path.stream().mapToLong(BlockPos::asLong).toArray();
 
-      for (BlockIndex i : path) {
-        CompoundTag subNBT = new CompoundTag();
-        i.writeTo(subNBT);
-        pathList.add(subNBT);
-      }
-
-      nbt.put("path", pathList);
+      nbt.putLongArray("path", sub);
     }
   }
 
@@ -186,12 +178,12 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
     maxDistance = nbt.getDouble("maxDistance");
 
     if (nbt.contains("path")) {
-      ListTag pathList = nbt.getList("path", Tag.TAG_COMPOUND);
+      long[] pathList = nbt.getLongArray("path");
 
       path = new LinkedList<>();
 
-      for (int i = 0; i < pathList.size(); ++i) {
-        path.add(new BlockIndex(pathList.getCompound(i)));
+      for (long l : pathList) {
+        path.add(BlockPos.of(l));
       }
     }
 
