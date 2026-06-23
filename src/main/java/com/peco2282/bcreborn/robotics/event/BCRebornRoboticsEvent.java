@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.robotics.event;
 
 import com.peco2282.bcreborn.BCRebornRobotics;
+import com.peco2282.bcreborn.robotics.RobotCommands;
 import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
@@ -22,6 +23,7 @@ import com.peco2282.bcreborn.robotics.screen.RequesterScreen;
 import com.peco2282.bcreborn.robotics.screen.ZonePlanScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -51,5 +53,10 @@ public class BCRebornRoboticsEvent {
   @SubscribeEvent
   public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
     event.put(RoboticsEntityTypes.ROBOT.get(), RobotEntity.createMobAttributes().build());
+  }
+
+//  @SubscribeEvent
+  public static void onRegisterCommand(RegisterCommandsEvent event) {
+    event.getDispatcher().register(RobotCommands.command());
   }
 }
