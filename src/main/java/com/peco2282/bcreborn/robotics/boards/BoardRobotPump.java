@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnloadFluids;
 import com.peco2282.bcreborn.robotics.ai.AIRobotPumpBlock;
@@ -37,7 +38,7 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("pump");
+    return RoboticsRedstoneRobots.ROBOT_PUMP.get();
   }
 
   @Override

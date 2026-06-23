@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
@@ -57,7 +58,7 @@ public class BoardRobotMiner extends BoardRobotGenericBreakBlock<BoardRobotMiner
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("miner");
+    return RoboticsRedstoneRobots.ROBOT_MINER.get();
   }
 
   @Override

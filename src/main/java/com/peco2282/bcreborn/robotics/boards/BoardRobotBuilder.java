@@ -21,6 +21,7 @@ import com.peco2282.bcreborn.common.builder.BuildingItem;
 import com.peco2282.bcreborn.common.builder.BuildingSlot;
 import com.peco2282.bcreborn.common.inventory.filters.ArrayStackFilter;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -44,7 +45,7 @@ public class BoardRobotBuilder extends RedstoneBoardRobot<BoardRobotBuilder> {
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("builder");
+    return RoboticsRedstoneRobots.ROBOT_BUILDER.get();
   }
 
   @Override

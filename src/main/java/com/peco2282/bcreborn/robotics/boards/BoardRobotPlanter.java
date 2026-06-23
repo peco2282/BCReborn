@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.ResourceIdBlock;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotFetchAndEquipItemStack;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotPlant;
@@ -36,7 +37,7 @@ public class BoardRobotPlanter extends RedstoneBoardRobot<BoardRobotPlanter> {
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("planter");
+    return RoboticsRedstoneRobots.ROBOT_PLANTER.get();
   }
 
   @Override

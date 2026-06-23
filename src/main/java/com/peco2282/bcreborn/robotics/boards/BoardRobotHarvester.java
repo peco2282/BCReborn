@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotHarvest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +34,7 @@ public class BoardRobotHarvester extends BoardRobotGenericSearchBlock<BoardRobot
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("harvester");
+    return RoboticsRedstoneRobots.ROBOT_HARVESTER.get();
   }
 
   @Override

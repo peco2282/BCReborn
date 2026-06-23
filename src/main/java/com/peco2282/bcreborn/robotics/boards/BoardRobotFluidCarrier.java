@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
+import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoSleep;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndLoadFluids;
 import com.peco2282.bcreborn.robotics.ai.AIRobotGotoStationAndUnloadFluids;
@@ -29,7 +30,7 @@ public class BoardRobotFluidCarrier extends RedstoneBoardRobot<BoardRobotFluidCa
 
   @Override
   public RedstoneBoardRobotNBT getNBTHandler() {
-    return BCBoardNBT.REGISTRY.get("fluidCarrier");
+    return RoboticsRedstoneRobots.ROBOT_FLUID_CARRIER.get();
   }
 
   @Override
