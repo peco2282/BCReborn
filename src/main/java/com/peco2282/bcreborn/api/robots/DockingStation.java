@@ -197,7 +197,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * registry).
    */
   public void unsafeRelease(RobotEntityBase robot) {
-    if (robotTaking == robot) {
+    if (robotTaking == robot || robotTakingId == robot.getRobotId()) {
       linkIsMain = false;
       robotTaking = null;
       robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
