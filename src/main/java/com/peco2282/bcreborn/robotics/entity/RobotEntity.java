@@ -474,6 +474,7 @@ public class RobotEntity extends RobotEntityBase implements
     return false;
   }
 
+  @Nullable
   public ResourceLocation getTexture() {
     return texture;
   }
