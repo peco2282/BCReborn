@@ -129,6 +129,9 @@ public class RenderRobot extends EntityRenderer<RobotEntity> {
 
     // Robot body
     ResourceLocation texture = robot.getTexture();
+    if (texture == null) {
+      texture = BCRebornRobotics.location("textures/entity/robot_base.png");
+    }
     poseStack.pushPose();
     float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
     if (robot.hurtTime > 0) {
