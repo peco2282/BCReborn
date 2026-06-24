@@ -27,7 +27,6 @@ public class TransportItems {
   public static final RegistryObject<FacadeItem> FACADE = REGISTRY.registerItem("facade", FacadeItem::new);
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
-    output.accept(FACADE.get());
     // 全ての有効なブロックのFacadeを追加
     if (TransportConfig.isFacadeShowAllInCreative()) {
       //noinspection deprecation
