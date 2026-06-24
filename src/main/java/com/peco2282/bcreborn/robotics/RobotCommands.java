@@ -7,11 +7,15 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -23,11 +27,21 @@ public class RobotCommands {
     return literal("robot")
         .then(
             literal("create")
-                .executes(RobotCommands::create)
+                .then(
+                    argument("type", EntityArgument.entity())
+                        .executes(RobotCommands::create)
+                        .then(
+                            argument("pos", Vec3Argument.vec3())
+                                .executes(RobotCommands::createWithPos)
+                        )
+                )
         )
         .then(
             literal("delete")
-                .executes(RobotCommands::delete)
+                .then(
+                    argument("id", IntegerArgumentType.integer(0))
+                        .executes(RobotCommands::delete)
+                )
         )
         .then(
             literal("list")
@@ -46,11 +60,44 @@ public class RobotCommands {
     return RequiredArgumentBuilder.argument(name, argumentType);
   }
 
-  static int create(CommandContext<CommandSourceStack> context) {
-    return Command.SINGLE_SUCCESS;
+  static int create(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    var entity = EntityArgument.getEntity(context, "type");
+    var pos = context.getSource().getPosition();
+    if (entity instanceof RobotEntityBase robot) {
+      robot.setPos(pos);
+      return context.getSource().getLevel().addFreshEntity(robot) ? Command.SINGLE_SUCCESS : 0;
+    }
+    context.getSource().sendFailure(Component.literal("Entity is not a robot"));
+    return 0;
   }
 
+  static int createWithPos(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    var entity = EntityArgument.getEntity(context, "type");
+    var pos = Vec3Argument.getVec3(context, "pos");
+    if (entity instanceof RobotEntityBase robot) {
+      robot.setPos(pos);
+      return context.getSource().getLevel().addFreshEntity(robot) ? Command.SINGLE_SUCCESS : 0;
+    }
+    context.getSource().sendFailure(Component.literal("Entity is not a robot"));
+    return 0;
+  }
+
+
   static int delete(CommandContext<CommandSourceStack> context) {
+    int id = IntegerArgumentType.getInteger(context, "id");
+    var robots = context.getSource().getLevel().getEntities(EntityTypeTest.forClass(RobotEntityBase.class), RobotEntityBase::isAlive).stream()
+        .filter(entity -> entity.getRobotId() == id).toList();
+    if (robots.isEmpty()) {
+      context.getSource().sendFailure(Component.literal("Robot not found"));
+      return Command.SINGLE_SUCCESS;
+    }
+
+    if (robots.size() > 1) {
+      context.getSource().sendFailure(Component.literal("Multiple robots found"));
+      return 0; // Fail
+    }
+
+    robots.get(0).remove(Entity.RemovalReason.DISCARDED);
     return Command.SINGLE_SUCCESS;
   }
 
