@@ -18,9 +18,11 @@ import com.peco2282.bcreborn.builders.block.*;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BuildersBlockStateProvider extends BlockStateProvider {
@@ -139,15 +141,79 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
     simpleBlockItem(BuildersBlock.QUARRY.get(), models().getExistingFile(quarry));
 
     simpleBlockWithItem(BuildersBlock.CONSTRUCTION_MARKER.get(), models().withExistingParent("construction_marker", mcLoc("block/template_torch")).texture("torch", "block/construction_marker_block/default").renderType(mcLoc("cutout")));
-    simpleBlockWithItem(BuildersBlock.FRAME.get(), models().withExistingParent("frame", mcLoc("block/block"))
+    ResourceLocation frameTex = createTexture("frame", "default");
+    BlockModelBuilder frameCenterModel = models().withExistingParent("block/frame_center", mcLoc("block/block"))
       .renderType(mcLoc("cutout"))
       .element()
       .from(4, 4, 4)
       .to(12, 12, 12)
-      .allFaces((direction, faceBuilder) -> faceBuilder.texture("#texture"))
+      .allFaces((direction, faceBuilder) -> faceBuilder.texture("#texture").uvs(4, 4, 12, 12))
       .end()
-      .texture("texture", createTexture("frame", "default"))
-      .texture("particle", createTexture("frame", "default")));
+      .texture("texture", frameTex)
+      .texture("particle", frameTex);
+
+    MultiPartBlockStateBuilder frameBuilder = getMultipartBuilder(BuildersBlock.FRAME.get());
+    frameBuilder.part().modelFile(frameCenterModel).addModel();
+
+    for (Direction side : Direction.values()) {
+      float[] from = getSideFrom(side);
+      float[] to = getSideTo(side);
+
+      BlockModelBuilder sideModel = models().withExistingParent("block/frame_" + side.getName(), mcLoc("block/block"))
+        .renderType(mcLoc("cutout"))
+        .texture("texture", frameTex)
+        .texture("particle", frameTex);
+
+      var element = sideModel.element()
+        .from(from[0], from[1], from[2])
+        .to(to[0], to[1], to[2]);
+
+      for (Direction dir : Direction.values()) {
+        float[] uv = getSideUV(side, dir);
+        element.face(dir).texture("#texture").uvs(uv[0], uv[1], uv[2], uv[3]).end();
+      }
+      element.end();
+
+      frameBuilder.part()
+        .modelFile(sideModel)
+        .addModel()
+        .condition(FrameBlock.PROPERTY_MAP.get(side), true);
+    }
+
+    simpleBlockItem(BuildersBlock.FRAME.get(), frameCenterModel);
+  }
+
+  private float[] getSideFrom(Direction side) {
+    return switch (side) {
+      case NORTH -> new float[]{4, 4, 0};
+      case SOUTH -> new float[]{4, 4, 12};
+      case WEST -> new float[]{0, 4, 4};
+      case EAST -> new float[]{12, 4, 4};
+      case DOWN -> new float[]{4, 0, 4};
+      case UP -> new float[]{4, 12, 4};
+    };
+  }
+
+  private float[] getSideTo(Direction side) {
+    return switch (side) {
+      case NORTH -> new float[]{12, 12, 4};
+      case SOUTH -> new float[]{12, 12, 16};
+      case WEST -> new float[]{4, 12, 12};
+      case EAST -> new float[]{16, 12, 12};
+      case DOWN -> new float[]{12, 4, 12};
+      case UP -> new float[]{12, 16, 12};
+    };
+  }
+
+  private float[] getSideUV(Direction pipeDir, Direction face) {
+    if (pipeDir == face || pipeDir == face.getOpposite()) {
+      return new float[]{4, 4, 12, 12};
+    }
+    return switch (pipeDir) {
+      case NORTH, SOUTH -> new float[]{4, 0, 12, 4};
+      case WEST, EAST -> new float[]{0, 4, 4, 12};
+      case DOWN, UP -> new float[]{4, 0, 12, 4};
+    };
   }
 
   private ModelFile.UncheckedModelFile unCheckedModel(String name) {
