@@ -53,8 +53,10 @@ public class BlockEntityBase extends Entity {
     setBoundingBox(new AABB(getX(), getY(), getZ(), getX() + iSize, getY() + jSize, getZ() + kSize));
   }
 
-  public void moveEntity(double d, double d1, double d2) {
-    setPos(getX() + d, getY() + d1, getZ() + d2);
+  @Override
+  public void moveTo(double p_20105_, double p_20106_, double p_20107_) {
+    super.moveTo(p_20105_, p_20106_, p_20107_);
+    setPos(p_20105_, p_20106_, p_20107_);
   }
 
   @Override
