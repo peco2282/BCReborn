@@ -16,10 +16,7 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import com.peco2282.bcreborn.common.registry.RegistryEnumObject;
-import com.peco2282.bcreborn.core.item.ListItem;
-import com.peco2282.bcreborn.core.item.MapLocationItem;
-import com.peco2282.bcreborn.core.item.PaintbrushItem;
-import com.peco2282.bcreborn.core.item.WrenchItem;
+import com.peco2282.bcreborn.core.item.*;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -54,6 +51,7 @@ public class CoreItems {
   );
   public static final RegistryObject<MapLocationItem> MAP_LOCATION = register("map_location", MapLocationItem::new);
 
+  public static final RegistryObject<DebuggerItem> DEBUGGER = register("debugger", DebuggerItem::new);
 
   private static <I extends Item> RegistryObject<I> register(String name, Supplier<I> item) {
     return REGISTRY.registerItem(name, item);
@@ -71,5 +69,6 @@ public class CoreItems {
 
     output.acceptAll(COLORED_PAINTBRUSH.values().stream().map(RegistryObject::get).map(ItemStack::new).toList());
     output.accept(MAP_LOCATION.get());
+    output.accept(DEBUGGER.get());
   }
 }
