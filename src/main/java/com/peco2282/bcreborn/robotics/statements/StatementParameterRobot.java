@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.robotics.statements;
 
 import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.BCReborn;
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.items.IList;
@@ -71,6 +72,6 @@ public class StatementParameterRobot extends StatementParameterItemStack {
 
   @Override
   public ResourceLocation getUniqueTag() {
-    return BCReborn.getBasedLocation("robot");
+    return BCRebornRobotics.location("robot");
   }
 }

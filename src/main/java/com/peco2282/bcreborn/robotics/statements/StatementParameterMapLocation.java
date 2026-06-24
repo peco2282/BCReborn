@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.robotics.statements;
 
 import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.BCReborn;
+import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
@@ -32,7 +33,7 @@ public class StatementParameterMapLocation extends StatementParameterItemStack {
 
   @Override
   public ResourceLocation getUniqueTag() {
-    return BCReborn.getBasedLocation("maplocation");
+    return BCRebornRobotics.location("maplocation");
   }
 
   @Override
