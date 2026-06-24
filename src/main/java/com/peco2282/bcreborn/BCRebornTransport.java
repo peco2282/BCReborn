@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.api.facades.FacadeAPI;
+import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
@@ -19,6 +20,7 @@ import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.gates.GatePluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable;
+import com.peco2282.bcreborn.transport.stripes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -73,6 +75,20 @@ public class BCRebornTransport implements BCReborn {
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
     FacadeAPI.facadeItem(TransportItems.FACADE.get());
+
+    PipeManager.registerStripesHandler(StripesHandlerArrow.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerBucket.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerDispenser.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerEntityInteract.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerHoe.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerMinecartDestroy.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerPipes.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerPipeWires.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerPlaceBlock.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerPlant.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerRightClick.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerShears.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerUse.INSTANCE);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

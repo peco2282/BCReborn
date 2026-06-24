@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class StripesHandlerPlant implements IStripesHandler {
+  public static final StripesHandlerPlant INSTANCE = new StripesHandlerPlant();
   @Override
   public StripesHandlerType getType() {
     return StripesHandlerType.ITEM_USE;

@@ -25,6 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class StripesHandlerPlaceBlock implements IStripesHandler {
+  public static final StripesHandlerPlaceBlock INSTANCE = new StripesHandlerPlaceBlock();
 
   @Override
   public StripesHandlerType getType() {

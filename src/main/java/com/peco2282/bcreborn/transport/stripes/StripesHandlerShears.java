@@ -28,6 +28,7 @@ import net.minecraftforge.common.IForgeShearable;
 import java.util.List;
 
 public class StripesHandlerShears implements IStripesHandler {
+  public static final StripesHandlerShears INSTANCE = new StripesHandlerShears();
 
   @Override
   public StripesHandlerType getType() {

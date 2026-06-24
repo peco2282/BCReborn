@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StripesHandlerDispenser implements IStripesHandler {
+  public static final StripesHandlerDispenser INSTANCE = new StripesHandlerDispenser();
   public static final List<Object> items = new ArrayList<>();
 
   @Override

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StripesHandlerRightClick implements IStripesHandler {
+  public static final StripesHandlerRightClick INSTANCE = new StripesHandlerRightClick();
   public static final List<Item> items = new ArrayList<>();
 
   @Override
