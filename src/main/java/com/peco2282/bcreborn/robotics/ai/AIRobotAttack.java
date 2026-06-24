@@ -11,13 +11,6 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
-//import net.minecraft.entity.Entity;
-//
-//import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
-//import com.peco2282.bcreborn.api.robots.AIRobot;
-//import com.peco2282.bcreborn.api.robots.RobotEntityBase;
-//import com.peco2282.bcreborn.robotics.RobotEntity;
-
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
