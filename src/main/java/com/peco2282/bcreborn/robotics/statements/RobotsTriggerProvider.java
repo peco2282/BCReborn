@@ -25,6 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RobotsTriggerProvider implements ITriggerProvider {
+  public static final RobotsTriggerProvider INSTANCE = new RobotsTriggerProvider();
+  private RobotsTriggerProvider() {}
+
   @Override
   public Collection<ITriggerInternal> getInternalTriggers(IStatementContainer container) {
     LinkedList<ITriggerInternal> result = new LinkedList<>();

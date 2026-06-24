@@ -39,7 +39,7 @@ public class RoboticsStatements {
   public static void init() {
     StatementManager.registerParameter(StatementParameterRobot.INSTANCE, StatementParameterRobot.CODEC);
     StatementManager.registerParameter(StatementParameterMapLocation.INSTANCE, StatementParameterMapLocation.CODEC);
-    StatementManager.registerActionProvider(new RobotsActionProvider());
-    StatementManager.registerTriggerProvider(new RobotsTriggerProvider());
+    StatementManager.registerActionProvider(RobotsActionProvider.INSTANCE);
+    StatementManager.registerTriggerProvider(RobotsTriggerProvider.INSTANCE);
   }
 }
