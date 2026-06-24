@@ -135,10 +135,19 @@ public class BuildersBlockStateProvider extends BlockStateProvider {
     simpleBlockItem(BuildersBlock.ARCHITECT.get(), models().getExistingFile(architect));
     simpleBlockItem(BuildersBlock.BUILDER.get(), models().getExistingFile(builder));
     simpleBlockItem(BuildersBlock.FILLER.get(), models().getExistingFile(filler));
-    simpleBlockItem(BuildersBlock.BLUEPRINT_LIBRARY.get(), models().getExistingFile(filler));
-    simpleBlockItem(BuildersBlock.QUARRY.get(), models().getExistingFile(filler));
+    simpleBlockItem(BuildersBlock.BLUEPRINT_LIBRARY.get(), models().getExistingFile(library));
+    simpleBlockItem(BuildersBlock.QUARRY.get(), models().getExistingFile(quarry));
 
     simpleBlockWithItem(BuildersBlock.CONSTRUCTION_MARKER.get(), models().withExistingParent("construction_marker", mcLoc("block/template_torch")).texture("torch", "block/construction_marker_block/default").renderType(mcLoc("cutout")));
+    simpleBlockWithItem(BuildersBlock.FRAME.get(), models().withExistingParent("frame", mcLoc("block/block"))
+      .renderType(mcLoc("cutout"))
+      .element()
+      .from(4, 4, 4)
+      .to(12, 12, 12)
+      .allFaces((direction, faceBuilder) -> faceBuilder.texture("#texture"))
+      .end()
+      .texture("texture", createTexture("frame", "default"))
+      .texture("particle", createTexture("frame", "default")));
   }
 
   private ModelFile.UncheckedModelFile unCheckedModel(String name) {
