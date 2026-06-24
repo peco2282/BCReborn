@@ -22,7 +22,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMenu> {
   private static final ResourceLocation TEXTURE = BCRebornBuilders.location("textures/gui/library_rw.png");
@@ -73,7 +72,7 @@ public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMen
   }
 
   @Override
-  protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
     graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
     int inP = menu.getProgressIn() * 22 / 100;
@@ -84,7 +83,7 @@ public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMen
   }
 
   @Override
-  protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+  protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(this.font, this.title, imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
 
     int off = menu.getScrollbarWidget().getPosition();

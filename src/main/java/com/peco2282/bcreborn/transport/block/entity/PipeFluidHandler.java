@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 流体パイプの IFluidHandler ラッパー。
@@ -48,7 +47,7 @@ public class PipeFluidHandler implements IFluidHandler {
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return this.tank.getFluidInTank(tank);
   }
 
@@ -58,7 +57,7 @@ public class PipeFluidHandler implements IFluidHandler {
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return this.tank.isFluidValid(tank, stack);
   }
 
@@ -85,12 +84,12 @@ public class PipeFluidHandler implements IFluidHandler {
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     return tank.drain(resource, action);
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     return tank.drain(maxDrain, action);
   }
 }

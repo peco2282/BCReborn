@@ -60,7 +60,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -123,7 +122,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
   }
 
-  public PipeBlockEntity(BlockPos pos, BlockState state, @NotNull PipeType type, @NotNull PipeMaterial material) {
+  public PipeBlockEntity(BlockPos pos, BlockState state, PipeType type, PipeMaterial material) {
     super(getBlockEntityType(type), pos, state);
     if (material.unsupports(type)) {
       throw new IllegalArgumentException("Pipe material does not support the specified pipe type");
@@ -608,9 +607,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   // ---- Capabilities ----
 
-  @NotNull
   @Override
-  public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+  public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.ITEM_HANDLER && transportType == PipeType.ITEM) {
       return itemHandlerCap.cast();
     }
@@ -625,8 +623,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
     // Powered pipe (for extract)
     if (cap == ForgeCapabilities.ENERGY && pipeMaterial == PipeMaterial.WOOD) {
-      if (getBattery() != null) {
-        return LazyOptional.of(this::getBattery).cast();
+      var battery = getBattery();
+      if (battery != null) {
+        return LazyOptional.of(() -> battery).cast();
       }
     }
     return super.getCapability(cap, side);
@@ -722,7 +721,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   @Override
-  public int injectItem(ItemStack stack, boolean doAdd, Direction from) {
+  public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from) {
     return injectItem(stack, doAdd, from, null);
   }
 
@@ -802,7 +801,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   @Override
-  public int injectItem(ItemStack stack, boolean doAdd, Direction from, Integer color) {
+  public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color) {
     if (doAdd) {
       PipeBlockEntity.this.injectItem(stack, from);
     }

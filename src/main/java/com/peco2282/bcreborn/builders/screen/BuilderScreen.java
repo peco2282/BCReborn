@@ -33,7 +33,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
   }
 
   @Override
-  protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
     boolean isBlueprint = !builder.getInventory().getItem(0).isEmpty();
 
     graphics.blit(REGULAR_TEXTURE, leftPos, topPos, 0, 0, 176, imageHeight);
@@ -159,7 +158,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
   }
 
   @Override
-  protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+  protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(this.font, this.title, 178 / 2 - this.font.width(this.title) / 2, 16, 0x404040, false);
     if (!builder.getInventory().getItem(0).isEmpty()) {
       graphics.drawString(this.font, Component.translatable("gui.building.resources"), 8, 60, 0x404040, false);
@@ -230,7 +229,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
       if (!visible) {
         return;
       }

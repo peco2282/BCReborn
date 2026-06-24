@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.api.blueprints;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.IdMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +31,7 @@ public final class MappingTable<T> implements IdMap<T> {
   private final List<T> toObject = new ArrayList<>();
 
   @Override
-  public int getId(@NotNull T value) {
+  public int getId(T value) {
     if (!toId.containsKey(value)) {
       register(value);
     }
@@ -105,7 +104,7 @@ public final class MappingTable<T> implements IdMap<T> {
   }
 
   @Override
-  public @NotNull Iterator<T> iterator() {
+  public Iterator<T> iterator() {
     return toObject.iterator();
   }
 }

@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport.pipe;
 
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 public enum PipeMaterial implements StringRepresentable {
   WOOD("wood", 0.05f, 10, 320, 0.0000f),
@@ -87,7 +86,7 @@ public enum PipeMaterial implements StringRepresentable {
   }
 
   @Override
-  public @NotNull String getSerializedName() {
+  public String getSerializedName() {
     return name;
   }
 }

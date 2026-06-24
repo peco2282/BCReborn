@@ -188,7 +188,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return tankManager.get(tank).getFluid();
   }
 
@@ -198,7 +198,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     if (tank == TANK_FUEL) {
       return BuildcraftFuelRegistry.getFuelManager().getFuel(stack.getFluid()) != null;
     } else if (tank == TANK_COOLANT) {
@@ -218,17 +218,17 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     return tankManager.drain(resource, action);
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     return tankManager.drain(maxDrain, action);
   }
 
   @Override
-  public <C> @NotNull LazyOptional<C> getCapability(@NotNull Capability<C> cap, @Nullable Direction side) {
+  public <C> @NotNull LazyOptional<C> getCapability(Capability<C> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.FLUID_HANDLER) {
       return LazyOptional.of(() -> this).cast();
     }

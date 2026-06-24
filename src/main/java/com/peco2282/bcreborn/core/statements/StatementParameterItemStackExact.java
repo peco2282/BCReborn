@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -49,7 +50,7 @@ public class StatementParameterItemStackExact implements IStatementParameter {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
     if (!stack.isEmpty()) {
       if (ItemStack.isSameItemSameTags(this.stack, stack)) {
         if (mouse.button() == 0) {

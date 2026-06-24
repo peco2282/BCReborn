@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -52,7 +53,7 @@ public class PatternParameterHollow implements IStatementParameter {
 
   @Override
   public ItemStack getItemStack() {
-    return null;
+    return ItemStack.EMPTY;
   }
 
   @Override
@@ -66,7 +67,7 @@ public class PatternParameterHollow implements IStatementParameter {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
     filled = !filled;
   }
 

@@ -676,13 +676,13 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   }
 
   @Override
-  public int getRedstoneInput(Direction side) {
+  public int getRedstoneInput(@Nullable Direction side) {
     // return side == Direction.UNKNOWN ? pipe.container.redstoneInput : pipe.container.redstoneInputSide[side.ordinal()];
     return 0; // TODO
   }
 
   @Override
-  public void setRedstoneOutput(Direction side, int value) {
+  public void setRedstoneOutput(@Nullable Direction side, int value) {
     if (side != this.getSide() && side != null) {
       return;
     }

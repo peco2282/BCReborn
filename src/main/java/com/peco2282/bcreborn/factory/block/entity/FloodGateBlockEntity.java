@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -101,7 +100,7 @@ public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFlui
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return this.tank.getFluid();
   }
 
@@ -111,7 +110,7 @@ public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFlui
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return true;
   }
 
@@ -121,12 +120,12 @@ public class FloodGateBlockEntity extends BuildCraftBlockEntity implements IFlui
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     return FluidStack.EMPTY;
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     return FluidStack.EMPTY;
   }
 

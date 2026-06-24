@@ -92,7 +92,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -1313,7 +1312,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     if (tank != null && tank.isFluidEqual(resource)) {
       return drain(resource.getAmount(), action);
     } else {
@@ -1322,7 +1321,7 @@ public class RobotEntity extends RobotEntityBase implements
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     boolean doDrain = action.execute();
     FluidStack result;
 

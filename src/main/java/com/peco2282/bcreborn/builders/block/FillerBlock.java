@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FillerBlock extends BuildCraftBlock {
@@ -67,12 +66,12 @@ public class FillerBlock extends BuildCraftBlock {
   }
 
   @Override
-  public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+  public RenderShape getRenderShape(BlockState state) {
     return RenderShape.MODEL;
   }
 
   @Override
-  public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+  public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     if (!level.isClientSide) {
       BlockEntity entity = level.getBlockEntity(pos);
       if (entity instanceof FillerBlockEntity filler) {

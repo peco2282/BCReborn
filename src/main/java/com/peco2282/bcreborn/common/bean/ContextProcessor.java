@@ -37,16 +37,16 @@ public class ContextProcessor {
   private final String modId;
   private final @NotNull ModContainer container;
 
-  private ContextProcessor(@NotNull ModContainer container) {
+  private ContextProcessor(ModContainer container) {
     this.modId = container.getModId();
     this.container = container;
   }
 
-  public static ContextProcessor create(@NotNull ModContainer container) {
+  public static ContextProcessor create(ModContainer container) {
     return CACHE.computeIfAbsent(container, ContextProcessor::new);
   }
 
-  public static ContextProcessor create(@NotNull String modId) {
+  public static ContextProcessor create(String modId) {
     return create(ModList.get().getModContainerById(modId).orElseThrow());
   }
 

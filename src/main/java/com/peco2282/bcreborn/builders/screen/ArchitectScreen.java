@@ -23,7 +23,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class ArchitectScreen extends BuildCraftScreen<ArchitectMenu> {
   private static final ResourceLocation TEXTURE = BCRebornBuilders.location("textures/gui/architect_gui.png");
@@ -88,14 +87,14 @@ public class ArchitectScreen extends BuildCraftScreen<ArchitectMenu> {
   }
 
   @Override
-  protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
     graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     int progress = menu.getComputingProgress();
     graphics.blit(TEXTURE, leftPos + 159, topPos + 34, 0, 166, progress + 1, 16);
   }
 
   @Override
-  protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+  protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(this.font, this.title, imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
     // Inventory label position adjusted for 256 width
     graphics.drawString(this.font, Component.translatable("gui.inventory"), 88, imageHeight - 94, 0x404040, false);
