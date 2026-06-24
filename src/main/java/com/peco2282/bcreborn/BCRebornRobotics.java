@@ -13,6 +13,7 @@ package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
+import com.peco2282.bcreborn.api.registry.BCRebornAPIRegistry;
 import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
@@ -73,7 +74,7 @@ public class BCRebornRobotics implements BCReborn {
     RedstoneBoardNBT.setEmpty(RoboticsRedstoneRobots.EMPTY);
     RoboticsStatements.init();
 
-    BuilderAPI.schematic(SchematicRegistry.INSTANCE);
+    BCRebornAPIRegistry.schematic(SchematicRegistry.INSTANCE);
     RobotManager.registry(RobotRegistryProvider.INSTANCE);
     RobotManager.setEmpty(RoboticsAIType.EMPTY);
   }
