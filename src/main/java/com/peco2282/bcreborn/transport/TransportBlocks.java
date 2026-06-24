@@ -58,9 +58,7 @@ public class TransportBlocks {
     for (PipeMaterial material : PipeMaterial.values()) {
       for (PipeType type : PipeType.values()) {
         RegistryObject<PipeBlock> block = PIPES.get(type, material);
-        if (block != null) {
-          consumer.accept(type, material, block);
-        }
+        consumer.accept(type, material, block);
       }
     }
   }
