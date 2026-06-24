@@ -22,6 +22,7 @@ import com.peco2282.bcreborn.core.statements.BCStatement;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -32,7 +33,7 @@ public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
   PipeWire color;
 
   public TriggerPipeSignal(boolean active, PipeWire color) {
-    super("buildcraft:pipe.wire.input." + color.name().toLowerCase(Locale.ENGLISH) + (active ? ".active" : ".inactive"));
+    super(BCRebornTransport.location("pipe.wire.input." + color.name().toLowerCase(Locale.ENGLISH) + (active ? ".active" : ".inactive")));
 
     this.active = active;
     this.color = color;
@@ -49,15 +50,12 @@ public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer container, IStatementParameter[] parameters) {
     if (!(container instanceof Gate gate)) {
       return false;
     }
 
     IPipe pipe = gate.getPipe();
-    if (pipe == null) {
-      return false;
-    }
 
     if (active) {
       if (!pipe.isWireActive(color)) {

@@ -33,7 +33,7 @@ import java.util.function.Function;
 public class ActionRobotFilter extends BCStatement implements IActionInternal {
 
   public ActionRobotFilter() {
-    super("robot.work_filter");
+    super(BCRebornRobotics.location("robot.work_filter"));
   }
 
   public static Collection<ItemStack> getGateFilterStacks(DockingStation<?> station) {

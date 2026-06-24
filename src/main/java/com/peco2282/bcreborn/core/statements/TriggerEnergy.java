@@ -31,7 +31,7 @@ public class TriggerEnergy extends BCStatement implements ITriggerInternal {
   private final boolean high;
 
   public TriggerEnergy(boolean high) {
-    super("buildcraft:energyStored" + (high ? "high" : "low"));
+    super(BCRebornCore.location("energy_stored" + (high ? "high" : "low")));
 
     this.high = high;
   }

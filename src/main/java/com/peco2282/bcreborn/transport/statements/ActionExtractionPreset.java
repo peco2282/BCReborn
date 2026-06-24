@@ -29,7 +29,7 @@ public class ActionExtractionPreset extends BCStatement implements IActionIntern
   public final DyeColor color;
 
   public ActionExtractionPreset(DyeColor color) {
-    super("buildcraft:extraction.preset." + color.getSerializedName());
+    super(BCRebornTransport.location("extraction.preset." + color.getSerializedName()));
 
     this.color = color;
   }

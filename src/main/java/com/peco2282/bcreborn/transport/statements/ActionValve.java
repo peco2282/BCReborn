@@ -32,7 +32,7 @@ public class ActionValve extends BCStatement implements IActionInternal {
   public final ValveState state;
 
   public ActionValve(ValveState valveState) {
-    super("pipe.valve." + valveState.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornTransport.location("pipe.valve." + valveState.name().toLowerCase(Locale.ENGLISH)));
     state = valveState;
   }
 

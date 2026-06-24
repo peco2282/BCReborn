@@ -11,10 +11,8 @@
  */
 package com.peco2282.bcreborn.robotics.statements;
 
-import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.BCRebornRobotics;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
-import com.peco2282.bcreborn.api.statements.StatementManager;
 import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,8 +26,7 @@ import java.util.function.Function;
 public class ActionStationAcceptItems extends ActionStationInputItems {
 
   public ActionStationAcceptItems() {
-    super(BCRebornCore.location("station.drop_in_pipe").toString());
-    StatementManager.registerStatement(this);
+    super(BCRebornRobotics.location("station.drop_in_pipe"));
   }
 
   @Override

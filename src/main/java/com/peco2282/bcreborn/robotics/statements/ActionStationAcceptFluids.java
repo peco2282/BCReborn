@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class ActionStationAcceptFluids extends BCStatement implements IActionInternal {
 
   public ActionStationAcceptFluids() {
-    super("station.accept_fluids");
+    super(BCRebornRobotics.location("station.accept_fluids"));
   }
 
   @Override

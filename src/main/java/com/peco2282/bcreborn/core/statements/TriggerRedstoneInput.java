@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -30,7 +31,7 @@ public class TriggerRedstoneInput extends BCStatement implements ITriggerInterna
   boolean active;
 
   public TriggerRedstoneInput(boolean active) {
-    super("buildcraft:redstone.input." + (active ? "active" : "inactive"));
+    super(BCRebornCore.location("redstone.input." + (active ? "active" : "inactive")));
     this.active = active;
   }
 
@@ -40,6 +41,7 @@ public class TriggerRedstoneInput extends BCStatement implements ITriggerInterna
   }
 
   @Override
+  @Nullable
   public IStatementParameter createParameter(int index) {
     IStatementParameter param = null;
 
@@ -56,7 +58,7 @@ public class TriggerRedstoneInput extends BCStatement implements ITriggerInterna
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer container, IStatementParameter[] parameters) {
     if (container instanceof IRedstoneStatementContainer) {
       int level = ((IRedstoneStatementContainer) container).getRedstoneInput(null);
       if (parameters.length > 0 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly &&

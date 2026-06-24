@@ -29,7 +29,7 @@ public class TriggerClockTimer extends BCStatement implements ITriggerInternal {
   public final Time time;
 
   public TriggerClockTimer(Time time) {
-    super("buildcraft:timer." + time.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornTransport.location("timer." + time.name().toLowerCase(Locale.ENGLISH)));
 
     this.time = time;
   }

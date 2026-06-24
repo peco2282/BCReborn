@@ -26,6 +26,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -33,7 +34,7 @@ public class TriggerLightSensor extends BCStatement implements ITriggerInternal 
   private final boolean bright;
 
   public TriggerLightSensor(boolean bright) {
-    super("buildcraft:light_" + (bright ? "bright" : "dark"));
+    super(BCRebornTransport.location("light_" + (bright ? "bright" : "dark")));
     this.bright = bright;
   }
 
@@ -43,7 +44,8 @@ public class TriggerLightSensor extends BCStatement implements ITriggerInternal 
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer source, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer source, IStatementParameter[] parameters) {
+    if (source == null) return false;
     BlockEntity tile = source.getTile();
     if (tile == null || tile.getLevel() == null) {
       return false;

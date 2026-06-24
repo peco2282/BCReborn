@@ -15,9 +15,10 @@ import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
 import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.core.statements.BCStatement;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class ActionStationInputItems extends BCStatement implements IActionInternal {
-  public ActionStationInputItems(String name) {
+  public ActionStationInputItems(ResourceLocation name) {
     super(name);
   }
 

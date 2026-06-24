@@ -33,7 +33,7 @@ public class ActionRobotWorkInArea extends BCStatement implements IActionInterna
   private final AreaType areaType;
 
   public ActionRobotWorkInArea(AreaType iAreaType) {
-    super(iAreaType.getTag());
+    super(BCRebornRobotics.location(iAreaType.getTag()));
 
     areaType = iAreaType;
   }

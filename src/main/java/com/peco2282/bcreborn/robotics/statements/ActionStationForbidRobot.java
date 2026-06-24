@@ -31,7 +31,7 @@ public class ActionStationForbidRobot extends BCStatement implements IActionInte
   private final boolean invert;
 
   public ActionStationForbidRobot(boolean invert) {
-    super("station." + (invert ? "force" : "forbid") + "_robot");
+    super(BCRebornRobotics.location("station." + (invert ? "force" : "forbid") + "_robot"));
     this.invert = invert;
   }
 

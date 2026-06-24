@@ -28,7 +28,7 @@ public class ActionPowerLimiter extends BCStatement implements IActionInternal {
   public final PowerMode limit;
 
   public ActionPowerLimiter(PowerMode limit) {
-    super("buildcraft:power.limiter." + limit.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornTransport.location("power.limiter." + limit.name().toLowerCase(Locale.ENGLISH)));
 
     this.limit = limit;
   }

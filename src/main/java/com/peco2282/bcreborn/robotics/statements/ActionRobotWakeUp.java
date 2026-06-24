@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class ActionRobotWakeUp extends BCStatement implements IActionInternal {
 
   public ActionRobotWakeUp() {
-    super("robot.wakeup");
+    super(BCRebornRobotics.location("robot.wakeup"));
   }
 
   @Override

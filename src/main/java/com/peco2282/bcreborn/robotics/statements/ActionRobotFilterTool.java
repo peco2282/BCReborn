@@ -34,7 +34,7 @@ import java.util.function.Function;
 public class ActionRobotFilterTool extends BCStatement implements IActionInternal {
 
   public ActionRobotFilterTool() {
-    super("robot.work_filter_tool");
+    super(BCRebornRobotics.location("robot.work_filter_tool"));
   }
 
   public static Collection<ItemStack> getGateFilterStacks(DockingStation<?> station) {

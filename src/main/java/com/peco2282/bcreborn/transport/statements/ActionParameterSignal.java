@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -51,7 +52,7 @@ public class ActionParameterSignal implements IStatementParameter {
   }
 
   @Override
-  public void onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
+  public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
     int maxColor = 4;
     if (source instanceof Gate gate) {
       maxColor = gate.material.maxWireColor;

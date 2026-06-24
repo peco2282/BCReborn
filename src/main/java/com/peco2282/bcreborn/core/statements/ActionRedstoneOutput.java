@@ -28,13 +28,13 @@ import java.util.function.Function;
 
 public class ActionRedstoneOutput extends BCStatement implements IActionInternal {
 
-  public ActionRedstoneOutput(String s) {
+  public ActionRedstoneOutput(ResourceLocation s) {
     // Used by fader output
     super(s);
   }
 
   public ActionRedstoneOutput() {
-    super("buildcraft:redstone.output");
+    super(BCRebornCore.location("redstone.output"));
   }
 
   @Override
