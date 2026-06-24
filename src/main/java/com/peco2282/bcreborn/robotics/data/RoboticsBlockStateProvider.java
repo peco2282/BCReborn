@@ -86,5 +86,8 @@ public class RoboticsBlockStateProvider extends BCBlockStateHelper {
 
     itemModels().getBuilder("robot")
       .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
+
+    itemModels().getBuilder("robot_station")
+      .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }
 }

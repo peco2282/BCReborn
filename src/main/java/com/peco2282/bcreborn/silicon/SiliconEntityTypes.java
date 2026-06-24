@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.silicon;
 
 import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.common.BCRegistry;
+import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.silicon.entity.PackageEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,6 +22,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
+@InitRegister(modId = BCRebornSilicon.MODID)
 public class SiliconEntityTypes {
   private static final BCRegistry REGISTRY = BCRebornSilicon.getRegistry();
 
