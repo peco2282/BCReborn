@@ -15,14 +15,18 @@ import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,16 +35,52 @@ import java.util.*;
 public class FrameBlock extends BuildCraftBlock {
   private static final ThreadLocal<Boolean> isRemovingFrames = new ThreadLocal<>();
 
+  public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+  public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
+  public static final BooleanProperty EAST = BlockStateProperties.EAST;
+  public static final BooleanProperty WEST = BlockStateProperties.WEST;
+  public static final BooleanProperty UP = BlockStateProperties.UP;
+  public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
+
+  public static final Map<Direction, BooleanProperty> PROPERTY_MAP = new EnumMap<>(Direction.class);
+
+  static {
+    PROPERTY_MAP.put(Direction.NORTH, NORTH);
+    PROPERTY_MAP.put(Direction.SOUTH, SOUTH);
+    PROPERTY_MAP.put(Direction.EAST, EAST);
+    PROPERTY_MAP.put(Direction.WEST, WEST);
+    PROPERTY_MAP.put(Direction.UP, UP);
+    PROPERTY_MAP.put(Direction.DOWN, DOWN);
+  }
+
   private static final float MIN = 0.25f;
   private static final float MAX = 0.75f;
-  private static final VoxelShape SHAPE = Block.box(MIN * 16, MIN * 16, MIN * 16, MAX * 16, MAX * 16, MAX * 16);
+  private static final VoxelShape CORE_SHAPE = Block.box(MIN * 16, MIN * 16, MIN * 16, MAX * 16, MAX * 16, MAX * 16);
+  private static final Map<Direction, VoxelShape> SIDE_SHAPES = new EnumMap<>(Direction.class);
+
+  static {
+    SIDE_SHAPES.put(Direction.NORTH, box(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 4.0D));
+    SIDE_SHAPES.put(Direction.SOUTH, box(4.0D, 4.0D, 12.0D, 12.0D, 12.0D, 16.0D));
+    SIDE_SHAPES.put(Direction.WEST, box(0.0D, 4.0D, 4.0D, 4.0D, 12.0D, 12.0D));
+    SIDE_SHAPES.put(Direction.EAST, box(12.0D, 4.0D, 4.0D, 16.0D, 12.0D, 12.0D));
+    SIDE_SHAPES.put(Direction.DOWN, box(4.0D, 0.0D, 4.0D, 12.0D, 4.0D, 12.0D));
+    SIDE_SHAPES.put(Direction.UP, box(4.0D, 12.0D, 4.0D, 12.0D, 16.0D, 12.0D));
+  }
 
   public FrameBlock() {
     super(Properties.of().noOcclusion());
+    this.registerDefaultState(this.stateDefinition.any()
+      .setValue(NORTH, false)
+      .setValue(SOUTH, false)
+      .setValue(EAST, false)
+      .setValue(WEST, false)
+      .setValue(UP, false)
+      .setValue(DOWN, false));
   }
 
   @Override
-  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
+  public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
   }
 
   @Override
@@ -55,12 +95,38 @@ public class FrameBlock extends BuildCraftBlock {
 
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return SHAPE;
+    VoxelShape shape = CORE_SHAPE;
+    for (Direction direction : Direction.values()) {
+      if (state.getValue(PROPERTY_MAP.get(direction))) {
+        shape = Shapes.or(shape, SIDE_SHAPES.get(direction));
+      }
+    }
+    return shape;
   }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-    return SHAPE;
+    return getShape(state, level, pos, context);
+  }
+
+  @Override
+  public BlockState getStateForPlacement(BlockPlaceContext context) {
+    BlockState state = this.defaultBlockState();
+    for (Direction direction : Direction.values()) {
+      state = state.setValue(PROPERTY_MAP.get(direction), canConnectTo(context.getLevel(), context.getClickedPos(), direction));
+    }
+    return state;
+  }
+
+  @Override
+  public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
+    return state.setValue(PROPERTY_MAP.get(direction), canConnectTo(level, currentPos, direction));
+  }
+
+  public boolean canConnectTo(net.minecraft.world.level.LevelAccessor level, BlockPos pos, Direction direction) {
+    BlockPos neighborPos = pos.relative(direction);
+    BlockState neighborState = level.getBlockState(neighborPos);
+    return neighborState.getBlock() instanceof FrameBlock;
   }
 
   @Override
