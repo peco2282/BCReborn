@@ -494,5 +494,10 @@ public class SiliconBlockStateProvider extends BlockStateProvider {
       .getBuilder(SiliconItems.REDSTONE_CRYSTAL.getId().getPath())
       .parent(models().getExistingFile(mcLoc("item/generated")))
       .texture("layer0", modLoc("item/redstone_crystal"));
+
+    itemModels()
+      .getBuilder(SiliconItems.PACKAGE_ITEM.getId().getPath())
+      .parent(models().getExistingFile(mcLoc("item/generated")))
+      .texture("layer0", modLoc("item/package"));
   }
 }

@@ -86,6 +86,9 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
 
     withExistingItemParent("wrench", mcLoc("item/generated"))
       .texture("layer0", modLoc("item/wrench_item"));
+
+    basicItem(CoreItems.DEBUGGER.get());
+
     getItemBuilder("wood_engine").parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
 //    withExistingItemParent("wood_engine", mcLoc("builtin/entity"));
   }

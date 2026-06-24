@@ -118,6 +118,7 @@ public class BCLanguageProvider extends LanguageProvider {
     addItem(CoreItems.GOLD_GEAR, "Golden Gear");
     addItem(CoreItems.DIAMOND_GEAR, "Diamond Gear");
     addItem(CoreItems.BUILD_TOOL_BOX, "Build Tool Box");
+    addItem(CoreItems.DEBUGGER, "Debugger");
   }
 
   private void addEnergy() {
