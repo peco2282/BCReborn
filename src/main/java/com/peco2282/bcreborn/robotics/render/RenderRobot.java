@@ -129,30 +129,28 @@ public class RenderRobot extends EntityRenderer<RobotEntity> {
 
     // Robot body
     ResourceLocation texture = robot.getTexture();
-    if (texture != null) {
-      poseStack.pushPose();
-      float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
-      if (robot.hurtTime > 0) {
-        poseStack.mulPose(Axis.ZP.rotationDegrees(robot.hurtTime * 0.01f));
-      }
-
-      VertexConsumer bodyConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
-      int bodyRed = 255;
-      int bodyGreen = robot.hurtTime > 0 ? 153 : 255;
-      int bodyBlue = robot.hurtTime > 0 ? 153 : 255;
-      box.render(poseStack, bodyConsumer, packedLight, OverlayTexture.NO_OVERLAY, bodyRed, bodyGreen, bodyBlue, 255);
-
-      if (robot.isActive()) {
-        // Overlay
-        VertexConsumer redConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(OVERLAY_RED));
-        int alpha = (int) (storagePercent * 255);
-        box.render(poseStack, redConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, alpha);
-
-        VertexConsumer cyanConsumer = bufferSource.getBuffer(RenderType.entityCutout(OVERLAY_CYAN));
-        box.render(poseStack, cyanConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, 255);
-      }
-      poseStack.popPose();
+    poseStack.pushPose();
+    float storagePercent = (float) robot.getBattery().getEnergyStored() / (float) robot.getBattery().getMaxEnergyStored();
+    if (robot.hurtTime > 0) {
+      poseStack.mulPose(Axis.ZP.rotationDegrees(robot.hurtTime * 0.01f));
     }
+
+    VertexConsumer bodyConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
+    int bodyRed = 255;
+    int bodyGreen = robot.hurtTime > 0 ? 153 : 255;
+    int bodyBlue = robot.hurtTime > 0 ? 153 : 255;
+    box.render(poseStack, bodyConsumer, packedLight, OverlayTexture.NO_OVERLAY, bodyRed, bodyGreen, bodyBlue, 255);
+
+    if (robot.isActive()) {
+      // Overlay
+      VertexConsumer redConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(OVERLAY_RED));
+      int alpha = (int) (storagePercent * 255);
+      box.render(poseStack, redConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, alpha);
+
+      VertexConsumer cyanConsumer = bufferSource.getBuffer(RenderType.entityCutout(OVERLAY_CYAN));
+      box.render(poseStack, cyanConsumer, packedLight, OverlayTexture.NO_OVERLAY, 255, 255, 255, 255);
+    }
+    poseStack.popPose();
 
     // Wearables
     for (ItemStack wearable : robot.getWearables()) {
