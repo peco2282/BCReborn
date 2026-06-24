@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.event;
 
+import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
@@ -53,7 +54,7 @@ public class BCRebornBuildersEvent {
 
   public static void onServerSetup(ServerAboutToStartEvent event) {
     Path root = event.getServer().getWorldPath(LevelResource.ROOT);
-    Path blueprintPath = root.resolve("buildcraft").resolve("blueprints");
+    Path blueprintPath = root.resolve(BCReborn.MOD_ID_BASE).resolve("blueprints");
     BCRebornBuilders.getServerDB().init(Path.of(BuildersConfig.getServerDatabaseDirectory()).resolve(blueprintPath), blueprintPath);
   }
 }
