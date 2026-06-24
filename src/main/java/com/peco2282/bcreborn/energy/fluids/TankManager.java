@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,8 +52,8 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-    if (resource == null) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
+    if (resource.isEmpty()) {
       return FluidStack.EMPTY;
     }
     for (Tank tank : tanks) {
@@ -70,7 +69,7 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     for (Tank tank : tanks) {
       FluidStack drained = tank.drain(maxDrain, action);
       if (drained.getAmount() > 0) {
@@ -107,7 +106,7 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
    * @return FluidStack in a given tank. FluidStack.EMPTY if the tank is empty.
    */
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     return get(0).getFluidInTank(tank);
   }
 
@@ -136,7 +135,7 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
    * (Basically, is a given fluid EVER allowed in this tank?) Return FALSE if the answer to that question is 'no.'
    */
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return true;
   }
 

@@ -19,7 +19,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class EngineItemHandler implements IItemHandler {
   private final ItemStackHandler inventory;
@@ -64,7 +63,7 @@ public class EngineItemHandler implements IItemHandler {
    * @return ItemStack in given slot. Empty Itemstack if the slot is empty.
    **/
   @Override
-  public @NotNull ItemStack getStackInSlot(int slot) {
+  public ItemStack getStackInSlot(int slot) {
     return inventory.getStackInSlot(slot);
   }
 
@@ -83,7 +82,7 @@ public class EngineItemHandler implements IItemHandler {
    * The returned ItemStack can be safely modified after.
    **/
   @Override
-  public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+  public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
     // 燃料として有効なアイテムかチェック (旧 isItemValidForSlot のロジックを移植)
     if (!engine.isFuelable(stack)) {
       return stack;
@@ -106,7 +105,7 @@ public class EngineItemHandler implements IItemHandler {
    * The returned ItemStack can be safely modified after, so item handlers should return a new or copied stack.
    **/
   @Override
-  public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+  public ItemStack extractItem(int slot, int amount, boolean simulate) {
     return ItemStack.EMPTY;
   }
 
@@ -141,7 +140,7 @@ public class EngineItemHandler implements IItemHandler {
    * false if the slot can never insert the ItemStack in any situation.
    */
   @Override
-  public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+  public boolean isItemValid(int slot, ItemStack stack) {
     return engine.isFuelable(stack) && inventory.isItemValid(slot, stack);
   }
 }

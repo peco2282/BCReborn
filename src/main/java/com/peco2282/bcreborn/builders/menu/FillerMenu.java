@@ -27,7 +27,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
 public class FillerMenu extends BuildCraftMenu<FillerMenu> {
   private final FillerBlockEntity filler;
@@ -99,12 +98,12 @@ public class FillerMenu extends BuildCraftMenu<FillerMenu> {
   }
 
   @Override
-  public boolean stillValid(@NotNull Player player) {
+  public boolean stillValid(Player player) {
     return filler.stillValid(player);
   }
 
   @Override
-  public ItemStack quickMoveStack(@NotNull Player player, int index) {
+  public ItemStack quickMoveStack(Player player, int index) {
     return super.quickMoveStack(player, index);
   }
 

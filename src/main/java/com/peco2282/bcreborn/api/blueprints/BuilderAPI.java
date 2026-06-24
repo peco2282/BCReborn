@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.api.blueprints;
 
-import org.jetbrains.annotations.ApiStatus;
+import com.peco2282.bcreborn.api.registry.BCRebornAPIRegistry;
 
 /**
  * API for the BuildCraft Builder and Architect systems.
@@ -36,16 +36,6 @@ public final class BuilderAPI {
    * @return The {@link ISchematicRegistry}.
    */
   public static ISchematicRegistry schematic() {
-    return schematicRegistry;
-  }
-
-  /**
-   * Sets the schematic registry.
-   *
-   * @param registry The registry to set.
-   */
-  @ApiStatus.Internal
-  public static void schematic(ISchematicRegistry registry) {
-    schematicRegistry = registry;
+    return BCRebornAPIRegistry.schematic();
   }
 }

@@ -41,7 +41,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -270,7 +269,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   }
 
   @Override
-  public @NotNull Component getName() {
+  public Component getName() {
     return getDisplayName();
   }
 
@@ -279,12 +278,12 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   }
 
   @Override
-  public @NotNull Component getDisplayName() {
+  public Component getDisplayName() {
     return name.isEmpty() ? Component.translatable("menu.bcrebornbuilders.architect") : Component.literal(name);
   }
 
   @Override
-  public @Nullable AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+  public @Nullable AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
     return new ArchitectMenu(windowId, inventory, this);
   }
 
@@ -331,7 +330,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   }
 
   @Override
-  public boolean stillValid(@NotNull Player player) {
+  public boolean stillValid(Player player) {
     return mode != Mode.NONE && super.stillValid(player);
   }
 

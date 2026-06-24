@@ -22,7 +22,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class FillerScreen extends BuildCraftScreen<FillerMenu> {
   private static final ResourceLocation TEXTURE = BCRebornBuilders.location("textures/gui/filler.png");
@@ -53,7 +52,7 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
   }
 
   @Override
-  protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
     graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     drawWidgets(graphics, mouseX, mouseY);
     // Render current delta icon
@@ -67,7 +66,7 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
   }
 
   @Override
-  protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+  protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(this.font, this.title, imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
     graphics.drawString(this.font, Component.translatable("gui.inventory"), 8, imageHeight - 94, 0x404040, false);
   }

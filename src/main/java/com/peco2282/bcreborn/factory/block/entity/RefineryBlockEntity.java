@@ -30,7 +30,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluidHandler, IHasWork, IEnergyStorage, MenuProvider {
@@ -125,7 +124,7 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
   }
 
   @Override
-  public @NotNull FluidStack getFluidInTank(int tank) {
+  public FluidStack getFluidInTank(int tank) {
     if (tank < 2) return tanks[tank].getFluid();
     return result.getFluid();
   }
@@ -136,7 +135,7 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
   }
 
   @Override
-  public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+  public boolean isFluidValid(int tank, FluidStack stack) {
     return tank < 2;
   }
 
@@ -149,12 +148,12 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
   }
 
   @Override
-  public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+  public FluidStack drain(FluidStack resource, FluidAction action) {
     return result.drain(resource, action);
   }
 
   @Override
-  public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+  public FluidStack drain(int maxDrain, FluidAction action) {
     return result.drain(maxDrain, action);
   }
 

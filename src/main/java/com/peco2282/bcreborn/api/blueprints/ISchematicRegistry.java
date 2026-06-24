@@ -16,7 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -30,7 +29,7 @@ public interface ISchematicRegistry {
    * @param block   The block.
    * @param factory The schematic factory.
    */
-  default void registerSchematicBlock(@NotNull Block block, @NotNull SchematicFactory<? extends SchematicBlock> factory) {
+  default void registerSchematicBlock(Block block, SchematicFactory<? extends SchematicBlock> factory) {
     registerSchematicBlock(block, block.defaultBlockState(), factory);
   }
 
@@ -41,7 +40,7 @@ public interface ISchematicRegistry {
    * @param state   The block state.
    * @param factory The schematic factory.
    */
-  void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, @NotNull SchematicFactory<? extends SchematicBlock> factory);
+  void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, SchematicFactory<? extends SchematicBlock> factory);
 
   /**
    * Registers a schematic factory for a specific entity type.
@@ -50,8 +49,8 @@ public interface ISchematicRegistry {
    * @param factory     The schematic factory.
    */
   void registerSchematicEntity(
-    @NotNull EntityType<? extends Entity> entityClass,
-    @NotNull SchematicFactory<? extends SchematicEntity> factory);
+    EntityType<? extends Entity> entityClass,
+    SchematicFactory<? extends SchematicEntity> factory);
 
   /**
    * Checks if a schematic is registered for the given block state.
@@ -60,7 +59,7 @@ public interface ISchematicRegistry {
    * @return True if supported.
    */
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-  boolean isSupported(@NotNull BlockState state);
+  boolean isSupported(BlockState state);
 
   /**
    * Factory interface for creating schematic instances.
@@ -74,6 +73,6 @@ public interface ISchematicRegistry {
      *
      * @return The schematic.
      */
-    @NotNull T create();
+    T create();
   }
 }

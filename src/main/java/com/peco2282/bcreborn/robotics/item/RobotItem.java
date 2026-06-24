@@ -15,7 +15,6 @@ import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.DockingStation;
 import com.peco2282.bcreborn.api.robots.IRobotRegistry;
-import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
@@ -150,9 +149,6 @@ public class RobotItem extends BuildCraftItem {
     }
 
     IRobotRegistry registry = RobotManager.registry().getRegistry(level);
-    if (registry == null) {
-      return InteractionResult.PASS;
-    }
 
     RobotEntity robot = new RobotEntity(level, boardNBT);
     robot.setUniqueRobotId(registry.getNextRobotId());

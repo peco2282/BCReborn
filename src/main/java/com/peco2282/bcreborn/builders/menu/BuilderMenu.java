@@ -19,7 +19,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.NotNull;
 
 public class BuilderMenu extends BuildCraftMenu<BuilderMenu> {
   protected ScrollbarWidget scrollbarWidget;
@@ -68,7 +67,7 @@ public class BuilderMenu extends BuildCraftMenu<BuilderMenu> {
   }
 
   @Override
-  public void removed(@NotNull Player player) {
+  public void removed(Player player) {
     super.removed(player);
     if (!builder.getLevel().isClientSide) {
       builder.removeGuiWatcher(player);
@@ -84,7 +83,7 @@ public class BuilderMenu extends BuildCraftMenu<BuilderMenu> {
   }
 
   @Override
-  public boolean stillValid(@NotNull Player player) {
+  public boolean stillValid(Player player) {
     return builder.stillValid(player);
   }
 }

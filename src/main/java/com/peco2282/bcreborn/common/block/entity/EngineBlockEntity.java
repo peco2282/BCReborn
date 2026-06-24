@@ -33,6 +33,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class EngineBlockEntity<T extends BlockEntity>
   extends BuildCraftBlockEntity
@@ -450,7 +451,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   @Override
-  public <C> LazyOptional<C> getCapability(Capability<C> cap, Direction side) {
+  public <C> LazyOptional<C> getCapability(Capability<C> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.ENERGY) {
       return energyCap.cast();
     }

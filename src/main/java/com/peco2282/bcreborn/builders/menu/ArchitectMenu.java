@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.NotNull;
 
 public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
   private final ArchitectBlockEntity architect;
@@ -87,7 +86,7 @@ public class ArchitectMenu extends BuildCraftMenu<ArchitectMenu> {
   }
 
   @Override
-  public boolean stillValid(@NotNull Player player) {
+  public boolean stillValid(Player player) {
     return architect.stillValid(player);
   }
 

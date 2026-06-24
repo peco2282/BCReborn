@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.api.statements.containers;
 
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 public interface IRedstoneStatementContainer {
   /**
@@ -20,12 +21,12 @@ public interface IRedstoneStatementContainer {
    * @param side The side - use "UNKNOWN" for maximum input.
    * @return The redstone input, from 0 to 15.
    */
-  int getRedstoneInput(Direction side);
+  int getRedstoneInput(@Nullable Direction side);
 
   /**
    * Set the redstone input for a given side.
    *
    * @param side The side - use "UNKNOWN" for all sides.
    */
-  void setRedstoneOutput(Direction side, int value);
+  void setRedstoneOutput(@Nullable Direction side, int value);
 }

@@ -33,7 +33,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,7 +56,7 @@ public final class BCRegistry {
   private final DeferredRegister<IStatementParameter> STATEMENT_PARAMETER;
   private final DeferredRegister<RedstoneBoardNBT<?>> REDSTONE_BOARD;
 
-  private BCRegistry(@NotNull String modid) {
+  private BCRegistry(String modid) {
     this.modid = modid;
 
     BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, modid);
@@ -78,61 +77,61 @@ public final class BCRegistry {
     return CREATED.computeIfAbsent(modid, BCRegistry::new);
   }
 
-  public <B extends Block> RegistryObject<B> registerBlock(@NotNull String name, @NotNull Supplier<B> block) {
+  public <B extends Block> RegistryObject<B> registerBlock(String name, Supplier<B> block) {
     return BLOCKS.register(name, block);
   }
 
-  public <B extends Block> RegistryObject<B> registerBlockItem(@NotNull String name, @NotNull Supplier<B> block) {
+  public <B extends Block> RegistryObject<B> registerBlockItem(String name, Supplier<B> block) {
     return registerBlockItem(name, BlockItem::new, block);
   }
 
   public <B extends Block, BI extends BlockItem> RegistryObject<B> registerBlockItem(
-    @NotNull String name,
-    @NotNull BlockItemSupplier<BI> item,
-    @NotNull Supplier<B> block
+    String name,
+    BlockItemSupplier<BI> item,
+    Supplier<B> block
   ) {
     var reg = BLOCKS.register(name, block);
     registerItem(name, () -> item.get(reg.get(), new Item.Properties()));
     return reg;
   }
 
-  public <I extends Item> RegistryObject<I> registerItem(@NotNull String name, @NotNull Supplier<I> item) {
+  public <I extends Item> RegistryObject<I> registerItem(String name, Supplier<I> item) {
     return ITEMS.register(name, item);
   }
 
-  public <F extends Fluid> RegistryObject<F> registerFluid(@NotNull String name, @NotNull Supplier<F> fluid) {
+  public <F extends Fluid> RegistryObject<F> registerFluid(String name, Supplier<F> fluid) {
     return FLUIDS.register(name, fluid);
   }
 
-  public <E extends Entity> RegistryObject<EntityType<E>> registerEntityType(@NotNull String name, @NotNull Supplier<EntityType<E>> entityType) {
+  public <E extends Entity> RegistryObject<EntityType<E>> registerEntityType(String name, Supplier<EntityType<E>> entityType) {
     return ENTITY_TYPES.register(name, entityType);
   }
 
-  public <T extends BlockEntity> RegistryObject<BlockEntityType<T>> registerBlockEntityType(@NotNull String name, @NotNull Supplier<BlockEntityType<T>> blockEntityType) {
+  public <T extends BlockEntity> RegistryObject<BlockEntityType<T>> registerBlockEntityType(String name, Supplier<BlockEntityType<T>> blockEntityType) {
     return BLOCK_ENTITY_TYPES.register(name, blockEntityType);
   }
 
-  public <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(@NotNull String name, @NotNull Supplier<MenuType<T>> menuType) {
+  public <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(String name, Supplier<MenuType<T>> menuType) {
     return MENU_TYPES.register(name, menuType);
   }
 
-  public RegistryObject<CreativeModeTab> registerCreativeTab(@NotNull String name, @NotNull Supplier<CreativeModeTab> tab) {
+  public RegistryObject<CreativeModeTab> registerCreativeTab(String name, Supplier<CreativeModeTab> tab) {
     return CREATIVE_TABS.register(name, tab);
   }
 
-  public <S extends Schematic> RegistryObject<S> registerSchematic(@NotNull String name, @NotNull Supplier<S> schematic) {
+  public <S extends Schematic> RegistryObject<S> registerSchematic(String name, Supplier<S> schematic) {
     return SCHEMATIC.register(name, schematic);
   }
 
-  public <S extends IStatement> RegistryObject<S> registerStatement(@NotNull String name, @NotNull Supplier<S> statement) {
+  public <S extends IStatement> RegistryObject<S> registerStatement(String name, Supplier<S> statement) {
     return STATEMENT.register(name, statement);
   }
 
-  public <P extends IStatementParameter> RegistryObject<P> registerStatementParameter(@NotNull String name, @NotNull Supplier<P> parameter) {
+  public <P extends IStatementParameter> RegistryObject<P> registerStatementParameter(String name, Supplier<P> parameter) {
     return STATEMENT_PARAMETER.register(name, parameter);
   }
 
-  public <T, R extends RedstoneBoardNBT<T>> RegistryObject<R> registerRedstoneBoard(@NotNull String name, @NotNull Supplier<R> board) {
+  public <T, R extends RedstoneBoardNBT<T>> RegistryObject<R> registerRedstoneBoard(String name, Supplier<R> board) {
     return REDSTONE_BOARD.register(name, board);
   }
 

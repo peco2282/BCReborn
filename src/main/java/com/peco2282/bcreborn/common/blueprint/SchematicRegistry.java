@@ -26,7 +26,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -143,7 +142,7 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   @Override
-  public void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, @NotNull SchematicFactory<? extends SchematicBlock> factory) {
+  public void registerSchematicBlock(@Nullable Block block, @Nullable BlockState state, SchematicFactory<? extends SchematicBlock> factory) {
     if (block == null && state == null) {
       BCLog.logger.warn("Builder: Mod tried to register a null block schematic! Ignoring.");
       return;
@@ -164,8 +163,8 @@ public final class SchematicRegistry implements ISchematicRegistry {
 
   @Override
   public void registerSchematicEntity(
-    @NotNull EntityType<? extends Entity> type,
-    @NotNull SchematicFactory<? extends SchematicEntity> factory) {
+    EntityType<? extends Entity> type,
+    SchematicFactory<? extends SchematicEntity> factory) {
     if (schematicEntities.containsKey(type)) {
       BCLog.logger.warn("Builder: Entity " + EntityType.getKey(type) + " is already associated with a schematic. Skipping.");
       return;
@@ -205,7 +204,7 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   @Override
-  public boolean isSupported(@NotNull BlockState state) {
+  public boolean isSupported(BlockState state) {
     return schematicBlocks.containsKey(state);
   }
 }

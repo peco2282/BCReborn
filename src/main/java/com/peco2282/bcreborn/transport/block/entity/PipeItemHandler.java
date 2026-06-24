@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * パイプのアイテムCapabilityハンドラー。
@@ -36,15 +35,13 @@ public class PipeItemHandler implements IItemHandler {
     return 1;
   }
 
-  @NotNull
   @Override
   public ItemStack getStackInSlot(int slot) {
     return ItemStack.EMPTY;
   }
 
-  @NotNull
   @Override
-  public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+  public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
     if (pipe.getTransportType() != PipeType.ITEM) return stack;
     PipeMaterial mat = pipe.getPipeMaterial();
     if (mat == PipeMaterial.WOOD || mat == PipeMaterial.EMERALD) return stack;
@@ -54,7 +51,6 @@ public class PipeItemHandler implements IItemHandler {
     return ItemStack.EMPTY;
   }
 
-  @NotNull
   @Override
   public ItemStack extractItem(int slot, int amount, boolean simulate) {
     return ItemStack.EMPTY;
@@ -66,7 +62,7 @@ public class PipeItemHandler implements IItemHandler {
   }
 
   @Override
-  public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+  public boolean isItemValid(int slot, ItemStack stack) {
     return pipe.getTransportType() == PipeType.ITEM;
   }
 }
