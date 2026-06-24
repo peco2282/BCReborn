@@ -38,7 +38,7 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
   public State state;
 
   public TriggerFluidContainer(State state) {
-    super("buildcraft:fluid." + state.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornCore.location("fluid." + state.name().toLowerCase(Locale.ENGLISH)));
     this.state = state;
   }
 

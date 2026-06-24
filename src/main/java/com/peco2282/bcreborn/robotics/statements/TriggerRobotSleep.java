@@ -32,7 +32,7 @@ import java.util.function.Function;
 public class TriggerRobotSleep extends BCStatement implements ITriggerInternal {
 
   public TriggerRobotSleep() {
-    super("robot.sleep");
+    super(BCRebornRobotics.location("robot.sleep"));
   }
 
   @Override

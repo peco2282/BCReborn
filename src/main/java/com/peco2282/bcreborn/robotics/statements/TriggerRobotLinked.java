@@ -32,7 +32,7 @@ public class TriggerRobotLinked extends BCStatement implements ITriggerInternal 
   private final boolean reserved;
 
   public TriggerRobotLinked(boolean reserved) {
-    super("robot." + (reserved ? "reserved" : "linked"));
+    super(BCRebornRobotics.location("robot." + (reserved ? "reserved" : "linked")));
     this.reserved = reserved;
   }
 

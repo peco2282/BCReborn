@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class ActionStationRequestItemsMachine extends BCStatement implements IActionInternal {
 
   public ActionStationRequestItemsMachine() {
-    super("station.provide_machine_request");
+    super(BCRebornRobotics.location("station.provide_machine_request"));
   }
 
   @Override

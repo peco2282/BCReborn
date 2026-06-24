@@ -30,7 +30,7 @@ public class ActionSignalOutput extends BCStatement implements IActionInternal {
   public final PipeWire color;
 
   public ActionSignalOutput(PipeWire color) {
-    super("pipe.wire.output." + color.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornTransport.location("pipe.wire.output." + color.name().toLowerCase(Locale.ENGLISH)));
 
     this.color = color;
   }

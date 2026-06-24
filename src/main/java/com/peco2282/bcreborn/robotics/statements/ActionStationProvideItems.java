@@ -28,7 +28,7 @@ import java.util.function.Function;
 public class ActionStationProvideItems extends BCStatement implements IActionInternal {
 
   public ActionStationProvideItems() {
-    super("station.provide_items");
+    super(BCRebornRobotics.location("station.provide_items"));
   }
 
   public static boolean canExtractItem(DockingStation<?> station, ItemStack stack) {

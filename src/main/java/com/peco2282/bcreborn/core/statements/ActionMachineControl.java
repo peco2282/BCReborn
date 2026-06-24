@@ -32,7 +32,7 @@ public class ActionMachineControl extends BCStatement implements IActionExternal
   public final IControllable.Mode mode;
 
   public ActionMachineControl(IControllable.Mode mode) {
-    super("buildcraft:machine." + mode.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornCore.location("machine." + mode.name().toLowerCase(Locale.ENGLISH)));
 
     this.mode = mode;
   }

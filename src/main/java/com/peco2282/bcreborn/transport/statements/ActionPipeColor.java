@@ -29,7 +29,7 @@ public class ActionPipeColor extends BCStatement implements IActionInternal {
   public final DyeColor color;
 
   public ActionPipeColor(DyeColor color) {
-    super("buildcraft:pipe.color." + color.getSerializedName());
+    super(BCRebornTransport.location("pipe.color." + color.getSerializedName()));
 
     this.color = color;
   }

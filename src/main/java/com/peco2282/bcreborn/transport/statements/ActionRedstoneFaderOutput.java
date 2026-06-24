@@ -27,7 +27,7 @@ public class ActionRedstoneFaderOutput extends ActionRedstoneOutput implements I
   public final int level;
 
   public ActionRedstoneFaderOutput(int level) {
-    super(String.format("buildcraft:redstone.output.%02d", level));
+    super(BCRebornTransport.location(String.format("redstone.output.%02d", level)));
 
     this.level = level;
   }

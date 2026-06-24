@@ -26,7 +26,7 @@ import java.util.function.Function;
 public class ActionEnergyPulsar extends BCStatement implements IActionInternal {
 
   public ActionEnergyPulsar() {
-    super("buildcraft:pulsar.constant");
+    super(BCRebornTransport.location("pulsar.constant"));
   }
 
   @Override

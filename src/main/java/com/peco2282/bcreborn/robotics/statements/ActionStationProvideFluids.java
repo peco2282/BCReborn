@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class ActionStationProvideFluids extends BCStatement implements IActionInternal {
 
   public ActionStationProvideFluids() {
-    super("station.provide_fluids");
+    super(BCRebornRobotics.location("station.provide_fluids"));
   }
 
   @Override

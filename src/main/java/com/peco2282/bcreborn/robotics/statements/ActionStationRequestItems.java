@@ -26,7 +26,7 @@ import java.util.function.Function;
 public class ActionStationRequestItems extends ActionStationInputItems {
 
   public ActionStationRequestItems() {
-    super("station.request_items");
+    super(BCRebornRobotics.location("station.request_items"));
   }
 
   @Override

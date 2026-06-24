@@ -28,6 +28,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -37,7 +38,7 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
   private final PipeContents kind;
 
   public TriggerPipeContents(PipeContents kind) {
-    super("buildcraft:pipe.contents." + kind.name().toLowerCase(Locale.ENGLISH));
+    super(BCRebornTransport.location("pipe.contents." + kind.name().toLowerCase(Locale.ENGLISH)));
     this.kind = kind;
     kind.trigger = this;
   }
@@ -56,15 +57,12 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer container, IStatementParameter[] parameters) {
     if (!(container instanceof Gate gate)) {
       return false;
     }
 
     IPipe apiPipe = gate.getPipe();
-    if (apiPipe == null) {
-      return false;
-    }
 
     PipeBlockEntity pipe;
     if (apiPipe instanceof PipeBlockEntity) {
@@ -80,7 +78,7 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
     if (kind == PipeContents.empty) {
       return pipe.getTravelingItems().isEmpty();
     } else if (kind == PipeContents.containsItems) {
-      if (parameter != null && parameter.getItemStack() != null && !parameter.getItemStack().isEmpty()) {
+      if (parameter != null && !parameter.getItemStack().isEmpty()) {
         for (TravelingItem item : pipe.getTravelingItems()) {
           if (ItemStack.isSameItemSameTags(parameter.getItemStack(), item.getStack())) {
             return true;

@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -32,7 +33,7 @@ public class TriggerRedstoneFaderInput extends BCStatement implements ITriggerIn
   public final int level;
 
   public TriggerRedstoneFaderInput(int level) {
-    super(String.format("buildcraft:redtone.input.%02d", level));
+    super(BCRebornTransport.location(String.format("redtone.input.%02d", level)));
 
     this.level = level;
   }
@@ -43,7 +44,7 @@ public class TriggerRedstoneFaderInput extends BCStatement implements ITriggerIn
   }
 
   @Override
-  public boolean isTriggerActive(IStatementContainer container, IStatementParameter[] parameters) {
+  public boolean isTriggerActive(@Nullable IStatementContainer container, IStatementParameter[] parameters) {
     if (!(container instanceof IRedstoneStatementContainer redstoneContainer)) {
       return false;
     }

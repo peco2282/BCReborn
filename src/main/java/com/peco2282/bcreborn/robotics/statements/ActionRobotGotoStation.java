@@ -41,7 +41,7 @@ import java.util.function.Function;
 public class ActionRobotGotoStation extends BCStatement implements IActionInternal {
 
   public ActionRobotGotoStation() {
-    super("robot.goto_station");
+    super(BCRebornRobotics.location("robot.goto_station"));
   }
 
   @Override

@@ -32,7 +32,7 @@ import java.util.function.Function;
 public class TriggerRobotInStation extends BCStatement implements ITriggerInternal {
 
   public TriggerRobotInStation() {
-    super("robot.in.station");
+    super(BCRebornRobotics.location("robot.in.station"));
   }
 
   @Override
