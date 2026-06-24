@@ -147,6 +147,10 @@ public class FrameBlock extends BuildCraftBlock {
 
   @Override
   public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    if (state.is(newState.getBlock())) {
+      super.onRemove(state, level, pos, newState, isMoving);
+      return;
+    }
     if (!level.isClientSide && isRemovingFrames.get() == null) {
       removeNeighboringFrames(level, pos);
     }
