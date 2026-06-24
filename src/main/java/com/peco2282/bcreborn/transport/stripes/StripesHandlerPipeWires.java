@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class StripesHandlerPipeWires implements IStripesHandler {
+  public static final StripesHandlerPipeWires INSTANCE = new StripesHandlerPipeWires();
   @Override
   public StripesHandlerType getType() {
     return StripesHandlerType.ITEM_USE;

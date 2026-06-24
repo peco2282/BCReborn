@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class StripesHandlerEntityInteract implements IStripesHandler {
+  public static final StripesHandlerEntityInteract INSTANCE = new StripesHandlerEntityInteract();
 
   @Override
   public StripesHandlerType getType() {

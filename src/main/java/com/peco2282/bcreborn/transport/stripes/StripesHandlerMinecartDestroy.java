@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class StripesHandlerMinecartDestroy implements IStripesHandler {
+  public static final StripesHandlerMinecartDestroy INSTANCE = new StripesHandlerMinecartDestroy();
 
   @Override
   public StripesHandlerType getType() {

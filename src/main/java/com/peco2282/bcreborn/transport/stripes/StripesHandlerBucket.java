@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class StripesHandlerBucket implements IStripesHandler {
+  public static final StripesHandlerBucket INSTANCE = new StripesHandlerBucket();
   private static final ItemStack emptyBucket = new ItemStack(Items.BUCKET, 1);
 
   @Override

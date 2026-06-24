@@ -29,20 +29,20 @@ public abstract class PipeManager {
   private static final Map<ResourceLocation, PluggableType<? extends PipePluggable<?>>> PLUGGABLE_TYPE = new HashMap<>();
   private static final List<StripeHandlerEntry> STRIPES_HANDLERS = new ArrayList<>();
 
-  public static void registerStripeHandler(StripeHandlerEntry entry) {
+  public static void registerStripesHandler(StripeHandlerEntry entry) {
     STRIPES_HANDLERS.add(entry);
     STRIPES_HANDLERS.sort(Comparator.comparingInt(StripeHandlerEntry::priority).reversed());
   }
 
   @Contract(pure = true)
   @UnmodifiableView
-  public static List<StripeHandlerEntry> getStripeHandlers() {
+  public static List<StripeHandlerEntry> getStripeHandlerEntries() {
     return Collections.unmodifiableList(STRIPES_HANDLERS);
   }
 
   @UnmodifiableView
   public static List<IStripesHandler> getStripesHandlers() {
-    return getStripeHandlers().stream()
+    return getStripeHandlerEntries().stream()
       .map(StripeHandlerEntry::handler)
       .toList();
   }
@@ -51,7 +51,13 @@ public abstract class PipeManager {
     IStripesHandler handler,
     int priority
   ) {
-    registerStripeHandler(StripeHandlerEntry.of(handler, priority));
+    registerStripesHandler(StripeHandlerEntry.of(handler, priority));
+  }
+
+  public static void registerStripesHandler(
+    IStripesHandler handler
+  ) {
+    registerStripesHandler(StripeHandlerEntry.of(handler));
   }
 
   @Contract("_ -> param1")
