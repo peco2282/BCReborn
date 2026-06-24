@@ -39,83 +39,8 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
   @Override
   protected void registerStatesAndModels() {
     simpleEngine(CoreBlocks.WOODEN_ENGINE.get());
-//    simpleBlockWithItem(BlocksCore.BLUE_MARKER.get(), models().withExistingItemParent("blue_marker", mcLoc("block/template_torch")).texture("torch", "block/marker_block/default").renderType(mcLoc("cutout")));
-    ModelFile model = models()
-      .getBuilder("blue_marker")
-      .texture("torch", modLoc("block/marker_block/default"))
-      .renderType("cutout")
-      .ao(false)
-
-      // 芯
-      .element()
-      .from(7, 0, 7)
-      .to(9, 10, 9)
-      .shade(false)
-      .face(Direction.UP)
-      .uvs(7, 6, 9, 8)
-      .texture("#torch")
-      .end()
-      .face(Direction.DOWN)
-      .uvs(7, 13, 9, 15)
-      .texture("#torch")
-      .end()
-      .end()
-
-      // X面
-      .element()
-      .from(7, 0, 0)
-      .to(9, 16, 16)
-      .shade(false)
-      .face(Direction.WEST)
-      .uvs(0, 0, 16, 16)
-      .texture("#torch")
-      .end()
-      .face(Direction.EAST)
-      .uvs(0, 0, 16, 16)
-      .texture("#torch")
-      .end()
-      .end()
-
-      // Z面
-      .element()
-      .from(0, 0, 7)
-      .to(16, 16, 9)
-      .shade(false)
-      .face(Direction.NORTH)
-      .uvs(0, 0, 16, 16)
-      .texture("#torch")
-      .end()
-      .face(Direction.SOUTH)
-      .uvs(0, 0, 16, 16)
-      .texture("#torch")
-      .end()
-      .end();
-    getVariantBuilder(CoreBlocks.BLUE_MARKER.get())
-      .forAllStates(state -> {
-        Direction dir = state.getValue(MarkerBlock.FACING);
-
-        int xRot = switch (dir) {
-          case DOWN -> 180;
-          case NORTH -> 90;
-          case SOUTH -> 270;
-          default -> 0;
-        };
-
-        int yRot = switch (dir) {
-          case EAST -> 90;
-          case SOUTH -> 180;
-          case WEST -> 270;
-          default -> 0;
-        };
-
-        return ConfiguredModel.builder()
-          .modelFile(model)
-          .rotationX(xRot)
-          .rotationY(yRot)
-          .build();
-      });
-
-    itemModels().withExistingParent(getName(CoreBlocks.BLUE_MARKER.get()), mcLoc("item/generated"));
+    registerMarker(CoreBlocks.BLUE_MARKER.get(), "blue_marker", modLoc("block/marker_block/default"));
+    registerMarker(CoreBlocks.PATH_MARKER.get(), "path_marker", modLoc("block/path_marker_block/default"));
 
     // Item models
 
@@ -178,6 +103,86 @@ public class CoreBlockStateProvider extends BCBlockStateHelper {
       .transform(ItemDisplayContext.GUI).rotation(30, 160, 0).translation(2, 3, 0).scale(0.5325F, 0.5325F, 0.5325F).end()
       .end();
 //    itemModels().withExistingParent(getName(block), ResourceLocation.withDefaultNamespace("item/generated"));
+  }
+
+  private void registerMarker(Block block, String modelName, ResourceLocation texture) {
+    ModelFile model = models()
+      .getBuilder(modelName)
+      .texture("torch", texture)
+      .renderType("cutout")
+      .ao(false)
+
+      // 芯
+      .element()
+      .from(7, 0, 7)
+      .to(9, 10, 9)
+      .shade(false)
+      .face(Direction.UP)
+      .uvs(7, 6, 9, 8)
+      .texture("#torch")
+      .end()
+      .face(Direction.DOWN)
+      .uvs(7, 13, 9, 15)
+      .texture("#torch")
+      .end()
+      .end()
+
+      // X面
+      .element()
+      .from(7, 0, 0)
+      .to(9, 16, 16)
+      .shade(false)
+      .face(Direction.WEST)
+      .uvs(0, 0, 16, 16)
+      .texture("#torch")
+      .end()
+      .face(Direction.EAST)
+      .uvs(0, 0, 16, 16)
+      .texture("#torch")
+      .end()
+      .end()
+
+      // Z面
+      .element()
+      .from(0, 0, 7)
+      .to(16, 16, 9)
+      .shade(false)
+      .face(Direction.NORTH)
+      .uvs(0, 0, 16, 16)
+      .texture("#torch")
+      .end()
+      .face(Direction.SOUTH)
+      .uvs(0, 0, 16, 16)
+      .texture("#torch")
+      .end()
+      .end();
+
+    getVariantBuilder(block)
+      .forAllStates(state -> {
+        Direction dir = state.getValue(MarkerBlock.FACING);
+
+        int xRot = switch (dir) {
+          case DOWN -> 180;
+          case NORTH -> 90;
+          case SOUTH -> 270;
+          default -> 0;
+        };
+
+        int yRot = switch (dir) {
+          case EAST -> 90;
+          case SOUTH -> 180;
+          case WEST -> 270;
+          default -> 0;
+        };
+
+        return ConfiguredModel.builder()
+          .modelFile(model)
+          .rotationX(xRot)
+          .rotationY(yRot)
+          .build();
+      });
+
+    itemModels().withExistingParent(getName(block), mcLoc("item/generated"));
   }
 
   private ModelFile cubeAllWithBaseTex(Block block, String texturePath) {
