@@ -57,6 +57,7 @@ public class TransportBlocks {
   public static void pipesForEach(TriConsumer<PipeType, PipeMaterial, RegistryObject<PipeBlock>> consumer) {
     for (PipeMaterial material : PipeMaterial.values()) {
       for (PipeType type : PipeType.values()) {
+        if (!type.supports(material)) continue;
         RegistryObject<PipeBlock> block = PIPES.get(type, material);
         consumer.accept(type, material, block);
       }
