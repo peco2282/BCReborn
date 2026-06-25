@@ -24,6 +24,7 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -137,6 +138,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       .withExistingParent(block.getId().getPath(), centerModel.getLocation());
   }
 
+  @Nullable
   private ResourceLocation getExtractionOverlayTexture(PipeMaterial material, PipeType type) {
     if (!EXTRACTION_OVERLAY_MATERIALS.contains(material)) return null;
     return switch (material) {
