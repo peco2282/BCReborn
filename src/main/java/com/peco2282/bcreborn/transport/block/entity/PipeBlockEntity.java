@@ -132,8 +132,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     this.fluidTransportModule = (type == PipeType.FLUID) ? new FluidTransportModule(this) : null;
     this.energyTransportModule = (type == PipeType.ENERGY) ? new EnergyTransportModule(this) : null;
     if (fluidTank != null) {
-      this.pipeFluidHandler = new PipeFluidHandler(this, fluidTank);
-      this.fluidHandlerCap = LazyOptional.of(() -> pipeFluidHandler);
+      var handler = new PipeFluidHandler(this, fluidTank);
+      this.fluidHandlerCap = LazyOptional.of(() -> handler);
+      this.pipeFluidHandler = handler;
     } else {
       this.fluidHandlerCap = LazyOptional.empty();
     }
