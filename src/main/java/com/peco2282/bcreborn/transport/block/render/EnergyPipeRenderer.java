@@ -110,14 +110,7 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
   }
 
   private boolean isConnected(BlockState state, Direction dir) {
-    return switch (dir) {
-      case NORTH -> state.getValue(PipeBlock.NORTH);
-      case SOUTH -> state.getValue(PipeBlock.SOUTH);
-      case EAST -> state.getValue(PipeBlock.EAST);
-      case WEST -> state.getValue(PipeBlock.WEST);
-      case UP -> state.getValue(PipeBlock.UP);
-      case DOWN -> state.getValue(PipeBlock.DOWN);
-    };
+    return PipeBlock.isConnected(state, dir);
   }
 
   private void renderArm(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
@@ -235,12 +228,10 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
 
   private void renderPluggables(PipeBlockEntity pipe, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
     for (Direction side : Direction.values()) {
-      PipePluggable pluggable = pipe.sideProperties.pluggables[side.ordinal()];
+      PipePluggable<?> pluggable = pipe.sideProperties.pluggables[side.ordinal()];
       if (pluggable != null) {
         IPipePluggableRenderer renderer = pluggable.getRenderer();
-        if (renderer != null) {
-          renderer.renderPluggable(pipe.getPipe(), side, pluggable, 0, poseStack, buffer, packedLight, packedOverlay);
-        }
+        renderer.renderPluggable(pipe.getPipe(), side, pluggable, 0, poseStack, buffer, packedLight, packedOverlay);
       }
     }
   }

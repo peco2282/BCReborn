@@ -93,14 +93,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   }
 
   private boolean isConnected(BlockState state, Direction dir) {
-    return switch (dir) {
-      case NORTH -> state.getValue(PipeBlock.NORTH);
-      case SOUTH -> state.getValue(PipeBlock.SOUTH);
-      case EAST -> state.getValue(PipeBlock.EAST);
-      case WEST -> state.getValue(PipeBlock.WEST);
-      case UP -> state.getValue(PipeBlock.UP);
-      case DOWN -> state.getValue(PipeBlock.DOWN);
-    };
+    return PipeBlock.isConnected(state, dir);
   }
 
   private void renderArm(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
