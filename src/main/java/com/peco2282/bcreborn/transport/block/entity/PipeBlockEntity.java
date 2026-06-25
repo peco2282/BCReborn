@@ -38,9 +38,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -320,7 +317,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  private int getWireIndex(DyeColor color) {
+  private int getWireIndex(@Nullable DyeColor color) {
     if (color == null) return -1;
     return switch (color) {
       case RED -> 0;
@@ -416,7 +413,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return pipeColor;
   }
 
-  public void setPipeColor(DyeColor color) {
+  public void setPipeColor(@Nullable DyeColor color) {
     this.pipeColor = color;
     setChanged();
     Level level = getLevel();
@@ -642,7 +639,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   // ---- Network ----
 
   @Nullable
-
   public Item getPipeItem() {
     RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
     if (block != null) {
@@ -651,11 +647,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return Items.AIR;
   }
 
+  @Nullable
   public PipePluggable<?> getPipePluggable(Direction direction) {
     return sideProperties.pluggables[direction.ordinal()];
   }
 
-  public void setPipePluggable(Direction direction, @Nullable PipePluggable<?> pluggable) {
+  public void setPipePluggable(Direction direction, PipePluggable<?> pluggable) {
     PipePluggable<?> old = sideProperties.pluggables[direction.ordinal()];
     if (old == pluggable) return;
 
@@ -665,9 +662,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     sideProperties.pluggables[direction.ordinal()] = pluggable;
 
-    if (pluggable != null) {
-      pluggable.onAttachedPipe(this, direction);
-    }
+    pluggable.onAttachedPipe(this, direction);
 
     setChanged();
     if (level != null) {
@@ -682,6 +677,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
 
     @Override
+    @Nullable
     public IGate getGate(Direction side) {
       return null;
     }
@@ -736,7 +732,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public Level getWorld() {
-    return level;
+    return getLevel();
   }
 
   @Override
@@ -755,15 +751,17 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public Block getNeighborBlock(Direction dir) {
-    return level.getBlockState(worldPosition.relative(dir)).getBlock();
+    return getLevel().getBlockState(worldPosition.relative(dir)).getBlock();
   }
 
   @Override
+  @Nullable
   public BlockEntity getNeighborBlockEntity(Direction dir) {
-    return level.getBlockEntity(worldPosition.relative(dir));
+    return getLevel().getBlockEntity(worldPosition.relative(dir));
   }
 
   @Override
+  @Nullable
   public IPipe getNeighborPipe(Direction dir) {
     BlockEntity be = getNeighborBlockEntity(dir);
     if (be instanceof PipeBlockEntity other) {
@@ -796,14 +794,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   @Override
-  public boolean canInjectItems(Direction from) {
+  public boolean canInjectItems(@Nullable Direction from) {
     return true;
   }
 
   @Override
   public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color) {
     if (doAdd) {
-      PipeBlockEntity.this.injectItem(stack, from);
+      injectItem(stack, from);
     }
     return stack.getCount();
   }
