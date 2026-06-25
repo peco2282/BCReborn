@@ -105,6 +105,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       .setValue(EXTRACTION_SIDE, EXTRACTION_SIDE_NONE));
   }
 
+  @Nullable
   public static PipeBlockEntity getPipe(Level level, BlockPos pos) {
     BlockEntity tile = level.getBlockEntity(pos);
     if (tile instanceof PipeBlockEntity) {
@@ -113,7 +114,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     return null;
   }
 
-  public static boolean isValid(PipeBlockEntity pipe) {
+  public static boolean isValid(@Nullable PipeBlockEntity pipe) {
     return pipe != null && !pipe.isRemoved();
   }
 
@@ -131,12 +132,10 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
         Direction side = hit.getDirection();
         if (!pipeBE.hasPipePluggable(side)) {
           if (!level.isClientSide) {
-            PipePluggable pluggable = pluggableItem.createPipePluggable(pipeBE.getPipe(), side, stack);
-            if (pluggable != null) {
-              pipeBE.setPipePluggable(side, pluggable);
-              if (!player.getAbilities().instabuild) {
-                stack.shrink(1);
-              }
+            PipePluggable<?> pluggable = pluggableItem.createPipePluggable(pipeBE.getPipe(), side, stack);
+            pipeBE.setPipePluggable(side, pluggable);
+            if (!player.getAbilities().instabuild) {
+              stack.shrink(1);
             }
           }
           return InteractionResult.sidedSuccess(level.isClientSide);
@@ -306,5 +305,16 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       pipe.setPipeColor(null);
     }
     return false;
+  }
+
+  public static boolean isConnected(BlockState state, Direction dir) {
+    return switch (dir) {
+      case DOWN -> state.getValue(DOWN);
+      case UP -> state.getValue(UP);
+      case NORTH -> state.getValue(NORTH);
+      case SOUTH -> state.getValue(SOUTH);
+      case WEST -> state.getValue(WEST);
+      case EAST -> state.getValue(EAST);
+    };
   }
 }

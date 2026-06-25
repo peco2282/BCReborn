@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.api.transport;
 
 import com.peco2282.bcreborn.api.gates.IGate;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface representing a pipe.
@@ -31,6 +32,7 @@ public interface IPipe {
    * @param side The side to check.
    * @return The {@link IGate}, or null if there is no gate.
    */
+  @Nullable
   IGate getGate(Direction side);
 
   /**

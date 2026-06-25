@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public final class BlockEntityBuffer {
 
@@ -81,10 +82,12 @@ public final class BlockEntityBuffer {
     return block;
   }
 
+  @Nullable
   public BlockEntity getTile() {
     return getTile(false);
   }
 
+  @Nullable
   public BlockEntity getTile(boolean forceUpdate) {
     if (!Utils.CAULDRON_DETECTED && tile != null && !tile.isRemoved()) {
       return tile;

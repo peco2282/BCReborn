@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.registry;
 
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -161,6 +162,7 @@ public abstract class KeyedRegistryObject<V> implements Supplier<RegistryObject<
       return map.get(key1s.iterator().next()).get(key2s.iterator().next());
     }
 
+    @Nullable
     public RegistryObject<V> get(K1 key1, K2 key2) {
       return map.get(key1).get(key2);
     }
@@ -227,6 +229,7 @@ public abstract class KeyedRegistryObject<V> implements Supplier<RegistryObject<
       return map.get(key1s.iterator().next()).get(key2s.iterator().next()).get(key3s.iterator().next());
     }
 
+    @Nullable
     public RegistryObject<V> get(K1 key1, K2 key2, K3 key3) {
       return map.get(key1).get(key2).get(key3);
     }
