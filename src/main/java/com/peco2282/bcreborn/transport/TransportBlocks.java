@@ -22,15 +22,14 @@ import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 @InitRegister(modId = BCRebornTransport.MODID)
 public class TransportBlocks {
@@ -40,7 +39,7 @@ public class TransportBlocks {
     Arrays.stream(PipeType.values()).toList(),
     Arrays.stream(PipeMaterial.values()).toList(),
     (type, material) -> "pipe_" + material.getSerializedName() + "_" + type.getSerializedName(),
-    TransportBlocks::register,
+    REGISTRY::registerBlock,
     (type, material) -> new PipeBlock(type, material, BlockBehaviour.Properties.of().noOcclusion()),
     PipeType::supports
   );
@@ -50,6 +49,7 @@ public class TransportBlocks {
     return PIPES.getAll();
   }
 
+  @Nullable
   public static RegistryObject<PipeBlock> get(PipeType type, PipeMaterial material) {
     return PIPES.get(type, material);
   }
@@ -88,10 +88,6 @@ public class TransportBlocks {
 
   public static Map<PipeMaterial, RegistryObject<PipeBlock>> getPipeByType(PipeType type) {
     return PIPES.getMapByKey1(type);
-  }
-
-  private static <B extends Block> RegistryObject<B> register(String name, Supplier<B> type) {
-    return REGISTRY.registerBlockItem(name, type);
   }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
