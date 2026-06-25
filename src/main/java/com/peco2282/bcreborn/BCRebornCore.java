@@ -11,12 +11,14 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
+import com.peco2282.bcreborn.common.event.internal.BCRebornEventBus;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.crops.CropHandlerPlantable;
 import com.peco2282.bcreborn.core.crops.CropHandlerReeds;
@@ -98,6 +100,7 @@ public class BCRebornCore implements BCReborn {
     String fileName = String.format(Locale.ROOT, "%s-%s.toml", MOD_ID_BASE, ModConfig.Type.COMMON.extension());
     // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
     context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, fileName);
+    BuildCraftAPI.bus(BCRebornEventBus.getEventBus());
   }
 
   public static BCRegistry getRegistry() {

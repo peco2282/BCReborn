@@ -12,9 +12,11 @@
 package com.peco2282.bcreborn.api.core;
 
 
+import com.peco2282.bcreborn.api.events.BCEventBus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +27,16 @@ import java.util.Set;
  * Provides access to global registries and utility methods.
  */
 public final class BuildCraftAPI {
+  private static BCEventBus bus;
+
+  public static BCEventBus bus() {
+    return bus;
+  }
+
+  @ApiStatus.Internal
+  public static void bus(BCEventBus bus) {
+    BuildCraftAPI.bus = bus;
+  }
 
   /**
    * Set of blocks that are considered "soft" (easily breakable by machines).
