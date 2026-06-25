@@ -29,24 +29,6 @@ public class StackHelper {
   /* STACK MERGING */
 
   /**
-   * Checks if two ItemStacks are identical enough to be merged.
-   *
-   * @param stack1 The first stack.
-   * @param stack2 The second stack.
-   * @return True if stacks can be merged.
-   */
-  public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-    if (stack1.isEmpty() || stack2.isEmpty()) {
-      return false;
-    }
-    if (!ItemStack.isSameItem(stack1, stack2)) {
-      return false;
-    }
-    return ItemStack.isSameItemSameTags(stack1, stack2);
-
-  }
-
-  /**
    * Checks if two ItemStacks (or {@link IList} items) can be merged.
    *
    * @param stack1 The first stack.
@@ -80,7 +62,7 @@ public class StackHelper {
    * @return The number of items that were successfully merged.
    */
   public static int mergeStacks(ItemStack mergeSource, ItemStack mergeTarget, boolean doMerge) {
-    if (!canStacksMerge(mergeSource, mergeTarget)) {
+    if (!ItemStack.isSameItemSameTags(mergeSource, mergeTarget)) {
       return 0;
     }
     int mergeCount = Math.min(mergeTarget.getMaxStackSize() - mergeTarget.getCount(), mergeSource.getCount());

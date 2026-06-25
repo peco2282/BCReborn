@@ -62,7 +62,7 @@ public class TransactorSimple extends Transactor {
 
     for (IInvSlot slot : slots) {
       ItemStack stackInSlot = slot.getStackInSlot();
-      if (stackInSlot.isEmpty() || StackHelper.canStacksMerge(stackInSlot, stack)) {
+      if (stackInSlot.isEmpty() || ItemStack.isSameItemSameTags(stackInSlot, stack)) {
         int used = addToSlot(slot, stack, realInjected, doAdd);
         if (used > 0) {
           realInjected += used;
@@ -104,7 +104,7 @@ public class TransactorSimple extends Transactor {
       return wanted;
     }
 
-    if (!StackHelper.canStacksMerge(stack, stackInSlot)) {
+    if (!ItemStack.isSameItemSameTags(stack, stackInSlot)) {
       return 0;
     }
 

@@ -217,7 +217,7 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
       for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
         Slot slot = slots.get(slotIndex);
         ItemStack stackInSlot = slot.getItem();
-        if (StackHelper.canStacksMerge(stackInSlot, stackToShift)) {
+        if (ItemStack.isSameItemSameTags(stackInSlot, stackToShift)) {
           int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
           int max = Math.min(stackToShift.getMaxStackSize(), slot.getMaxStackSize());
           if (resultingStackSize <= max) {
