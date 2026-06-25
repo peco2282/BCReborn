@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Block;
 
 public class LaserTableItem extends BlockItem {
 
-  public LaserTableItem(Block block) {
-    super(block, new Properties());
+  public LaserTableItem(Block block, Properties properties) {
+    super(block, properties);
   }
 }
