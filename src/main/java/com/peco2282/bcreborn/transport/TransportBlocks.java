@@ -39,7 +39,7 @@ public class TransportBlocks {
     Arrays.stream(PipeType.values()).toList(),
     Arrays.stream(PipeMaterial.values()).toList(),
     (type, material) -> "pipe_" + material.getSerializedName() + "_" + type.getSerializedName(),
-    REGISTRY::registerBlock,
+    REGISTRY::registerBlockItem,
     (type, material) -> new PipeBlock(type, material, BlockBehaviour.Properties.of().noOcclusion()),
     PipeType::supports
   );
@@ -91,6 +91,8 @@ public class TransportBlocks {
   }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
-    output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(ItemStack::new).toList());
+    output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(it -> {
+      System.out.println("Tr" + it);return it;
+    }).map(ItemStack::new).toList());
   }
 }
