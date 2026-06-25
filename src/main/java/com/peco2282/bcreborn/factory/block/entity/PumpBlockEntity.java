@@ -30,9 +30,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,7 +57,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   private double tubeY = Double.NaN;
   private int aimY = -1;
 
-  private SafeTimeTracker timer = new SafeTimeTracker(REBUID_DELAY);
+  private final SafeTimeTracker TIMER = new SafeTimeTracker(REBUID_DELAY);
   private int tick = Utils.RANDOM.nextInt(32);
   private int tickPumped = tick - 20;
   private int numFluidBlocksFound = 0;
@@ -132,10 +130,12 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       BlockPos tubePos = pos.atY(aimY);
       if (isBlocked(tubePos)) {
         // ブロックがある場合はそれ以上伸ばせないが、液体があればそこを基準にする
+        //noinspection StatementWithEmptyBody
         if (!isPumpableFluid(tubePos)) {
           // 液体でもなく、ブロックされているなら終了
         }
-      } else if (!isPumpableFluid(tubePos)) {
+      } else //noinspection StatementWithEmptyBody
+        if (!isPumpableFluid(tubePos)) {
         // ブロックされておらず、液体でもないなら下に伸ばす
         // エネルギーを消費して下降（一定のエネルギー量 10RF/tick 程度を想定）
         if (getBattery().useEnergy(10, 10, false) > 0) {
@@ -168,17 +168,17 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     // 液体面についたら少しずつ吸う（毎チック判定するが、エネルギーとタンク容量に依存）
     if (Math.abs(tubeY - aimY) < 0.01) {
       BlockPos index = getNextIndexToPump(false);
-      FluidStack fluidToPump = null;
+      FluidStack fluidToPump = FluidStack.EMPTY;
 
-      if (index != null && index.getY() != -1) {
+      if (index != BlockPos.ZERO && index.getY() != -1) {
         fluidToPump = BlockUtils.drainBlock(level, index, false);
         if (fluidToPump.isEmpty() || !isFluidAllowed(fluidToPump.getFluid())) {
-          fluidToPump = null;
+          fluidToPump = FluidStack.EMPTY;
           getNextIndexToPump(true); // 汲み出せないのでスキップ
         }
       }
 
-      if (fluidToPump != null && !fluidToPump.isEmpty()) {
+      if (!fluidToPump.isEmpty()) {
         // 1回あたり100mBずつ吸う（少しずつ吸う感じを出す）
         int amountToDrain = Math.min(fluidToPump.getAmount(), 100);
         FluidStack smallFluid = new FluidStack(fluidToPump.getFluid(), amountToDrain);
@@ -199,7 +199,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
               if (tank.getCapacity() - tank.getFluidAmount() >= 1000) {
                 if (getBattery().useEnergy(90, 90, false) > 0) { // 残り900RF
                   index = getNextIndexToPump(true);
-                  if (index != null) {
+                  if (index != BlockPos.ZERO) {
                     BlockUtils.drainBlock(level, index, true);
                     tank.fill(fluidToPump, FluidAction.EXECUTE);
                     tickPumped = tick;
@@ -215,7 +215,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
           rebuildQueue();
 
           BlockPos next = getNextIndexToPump(false);
-          if (next == null || next.getY() == -1) {
+          if (next == BlockPos.ZERO || next.getY() == -1) {
             // 現在の層および接続されている全層に液体がないなら管をさらに下に伸ばす
             BlockPos p = pos.atY(aimY - 1);
             if (aimY > level.getMinBuildHeight() && !isBlocked(p) && isPumpableFluid(p)) {
@@ -241,7 +241,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   public void onNeighborBlockChange(Block block) {
-    boolean p = level.hasNeighborSignal(getBlockPos());
+    boolean p = getLevel().hasNeighborSignal(getBlockPos());
 
     if (powered != p) {
       powered = p;
@@ -250,14 +250,14 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   private boolean isBlocked(BlockPos pos) {
-    BlockState state = level.getBlockState(pos);
+    BlockState state = getLevel().getBlockState(pos);
 
     return state.blocksMotion();
   }
 
   private void pushToConsumers() {
     if (cache == null) {
-      cache = BlockEntityBuffer.makeBuffer(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), false);
+      cache = BlockEntityBuffer.makeBuffer(getLevel(), getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), false);
     }
 
     TankUtils.pushFluidToConsumers(tank, 400, cache);
@@ -265,7 +265,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
   private BlockPos getNextIndexToPump(boolean remove) {
     if (pumpLayerQueues.isEmpty()) {
-      if (timer.markTimeIfDelay(getLevel())) {
+      if (TIMER.markTimeIfDelay(getLevel())) {
         rebuildQueue();
       }
 
@@ -432,6 +432,11 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     data.putBoolean("powered", powered);
     data.putInt("aimY", aimY);
     data.putDouble("tubeY", tubeY);
+  }
+
+  @Override
+  public EnergyStorage getBattery() {
+    return Objects.requireNonNull(super.getBattery());
   }
 
   @Override
