@@ -44,6 +44,7 @@ public class DataGatherEvent {
     generator.addProvider(true, new BCItemTagsProvider(generator.getPackOutput(), lookup, provider.contentsGetter(), BCReborn.MOD_ID_BASE, helper));
     generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, "en_us"));
     generator.addProvider(true, new BCBlockStateProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, helper));
+    generator.addProvider(true, new BCLootTableProvider(generator.getPackOutput()));
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
     generator.addProvider(true, new BCRecipeProvider(generator.getPackOutput()));
 
