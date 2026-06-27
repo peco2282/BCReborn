@@ -13,8 +13,11 @@ package com.peco2282.bcreborn.builders.event;
 
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornBuilders;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
+import com.peco2282.bcreborn.builders.block.render.BoxBlockEntityRenderer;
+import com.peco2282.bcreborn.builders.block.render.QuarryRenderer;
 import com.peco2282.bcreborn.builders.screen.ArchitectScreen;
 import com.peco2282.bcreborn.builders.screen.BlueprintLibraryScreen;
 import com.peco2282.bcreborn.builders.screen.BuilderScreen;
@@ -24,6 +27,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,6 +54,14 @@ public class BCRebornBuildersEvent {
       MenuScreens.register(BuildersMenuTypes.FILLER.get(), FillerScreen::new);
       MenuScreens.register(BuildersMenuTypes.BLUEPRINT_LIBRARY.get(), BlueprintLibraryScreen::new);
     });
+  }
+
+  @SubscribeEvent
+  public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.QUARRY.get(), QuarryRenderer::new);
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.ARCHITECT.get(), BoxBlockEntityRenderer::new);
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.FILLER.get(), BoxBlockEntityRenderer::new);
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get(), BoxBlockEntityRenderer::new);
   }
 
   public static void onServerSetup(ServerAboutToStartEvent event) {
