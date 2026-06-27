@@ -91,8 +91,6 @@ public class TransportBlocks {
   }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
-    output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(it -> {
-      System.out.println("Tr" + it);return it;
-    }).map(ItemStack::new).toList());
+    output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(ItemStack::new).toList());
   }
 }
