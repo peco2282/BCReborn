@@ -23,6 +23,7 @@ import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
+import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
@@ -45,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, IBlockEntityContainer {
+public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, IBlockEntityContainer, IBoxProvider {
 
   private final SimpleInventory inv = new SimpleInventory(2, "Architect", 1);
   public String currentAuthorName = "";
@@ -84,6 +85,9 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
           if (tile instanceof IAreaProvider a) {
             mode = Mode.COPY;
             box.initialize(a.xMin(), a.yMin(), a.zMin(), a.xMax(), a.yMax(), a.zMax());
+            if (box.isInitialized()) {
+              box.createLaserData();
+            }
             a.removeFromWorld();
             break;
           }
@@ -97,8 +101,13 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
         }
       } else {
         mode = Mode.COPY;
+        box.createLaserData();
       }
       initialized = true;
+    } else if (level.isClientSide) {
+      if (box.isInitialized()) {
+        box.createLaserData();
+      }
     }
   }
 
@@ -195,6 +204,12 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     name = stream.readUtf();
     clientIsWorking = stream.readBoolean();
     mode = Mode.values()[stream.readByte()];
+
+    if (level != null && level.isClientSide) {
+      if (box.isInitialized()) {
+        box.createLaserData();
+      }
+    }
 
     if (mode == Mode.COPY) {
       readConfiguration.readData(stream);

@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,21 +62,23 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
       if (initVect != null) {
         for (int i = 0; i < 3; ++i) {
           if (initVect[i] != null) {
-            BlockEntity te = level.getBlockEntity(initVect[i]);
-            if (te instanceof MarkerBlockEntity other) {
-              linkTo(other, i);
-            }
+            origin.vect[i] = new TileWrapper(initVect[i]);
           }
         }
       }
-
-//      initVectO = null;
-//      initVect = null;
+      if (origin.vectO.pos.equals(worldPosition)) {
+        updateBounds();
+      }
+      initVectO = null;
+      initVect = null;
     }
-//
-//    if (showSignals) {
-//      createLasers();
-//    }
+
+    if (!level.isClientSide) {
+      if (origin.isSet() && origin.vectO.pos.equals(worldPosition)) {
+        createLasers();
+      }
+      updateSignalsLasers();
+    }
   }
 
   @Override
@@ -351,7 +354,9 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     }
 
     MarkerBlockEntity mO = origin.vectO.getMarker(level);
+    mO.updateBounds();
     mO.createLasers();
+    mO.updateSignals();
     updateSignals();
     marker.updateSignals();
 
@@ -484,11 +489,13 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
 
     for (TileWrapper m : o.vect.clone()) {
       if (m.isSet()) {
-        level.removeBlock(m.pos, false);
+        Block.dropResources(getLevel().getBlockState(m.pos), getLevel(), m.pos, this);
+        getLevel().removeBlock(m.pos, false);
       }
     }
 
-    level.removeBlock(o.vectO.pos, false);
+    Block.dropResources(getLevel().getBlockState(o.vectO.pos), getLevel(), o.vectO.pos, this);
+    getLevel().removeBlock(o.vectO.pos, false);
   }
 
   // -----------------------------------------------------------------------
@@ -627,7 +634,10 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
       }
     }
 
-    createLasers();
+    if (origin.isSet() && origin.vectO.pos.equals(worldPosition)) {
+      updateBounds();
+      createLasers();
+    }
   }
 
   private List<LaserData> readLaserList(FriendlyByteBuf stream) {
