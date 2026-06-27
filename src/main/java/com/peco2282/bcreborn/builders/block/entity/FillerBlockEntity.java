@@ -76,11 +76,14 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
         if (tile instanceof IAreaProvider provider) {
           box.initialize(provider.xMin(), provider.yMin(), provider.zMin(), provider.xMax(), provider.yMax(), provider.zMax());
           if (box.isInitialized()) {
+            box.createLaserData();
             provider.removeFromWorld();
             break;
           }
         }
       }
+    } else {
+      box.createLaserData();
     }
   }
 
@@ -251,6 +254,11 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     currentPattern = data.readInt();
     isWorking = data.readBoolean();
     box.readData(data);
+    if (level != null && level.isClientSide) {
+      if (box.isInitialized()) {
+        box.createLaserData();
+      }
+    }
   }
 
   @Override
