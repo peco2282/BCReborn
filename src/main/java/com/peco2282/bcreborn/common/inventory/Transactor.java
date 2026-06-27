@@ -15,10 +15,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Transactor implements ITransactor {
 
-  public static ITransactor getTransactorFor(Object object) {
+  @Nullable
+  public static ITransactor getTransactorFor(@Nullable Object object) {
     if (object instanceof WorldlyContainer) {
       return new TransactorSimple((WorldlyContainer) object);
     } else if (object instanceof Container) {
