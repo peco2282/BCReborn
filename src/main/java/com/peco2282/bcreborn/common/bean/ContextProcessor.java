@@ -31,6 +31,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+/**
+ * Processes mod context for annotation-based registration and packet handling.
+ * <p>
+ * This class scans mod files for annotations such as {@link InitRegister} and {@link Packet},
+ * and processes them to initialize registers and register network packets. It uses a cache
+ * to ensure only one instance exists per mod container.
+ * </p>
+ *
+ * @see InitRegister
+ * @see Packet
+ */
 public class ContextProcessor {
   private static final Logger log = LoggerFactory.getLogger("ContextProcessor");
   private static final Map<ModContainer, ContextProcessor> CACHE = new ConcurrentHashMap<>();
@@ -42,25 +53,55 @@ public class ContextProcessor {
     this.container = container;
   }
 
+  /**
+   * Creates or retrieves a cached ContextProcessor for the given mod container.
+   *
+   * @param container the mod container to create a processor for
+   * @return the ContextProcessor instance for the container
+   */
   public static ContextProcessor create(ModContainer container) {
     return CACHE.computeIfAbsent(container, ContextProcessor::new);
   }
 
+  /**
+   * Creates or retrieves a cached ContextProcessor for the mod with the given ID.
+   *
+   * @param modId the mod ID to create a processor for
+   * @return the ContextProcessor instance for the mod
+   * @throws java.util.NoSuchElementException if no mod with the given ID exists
+   */
   public static ContextProcessor create(String modId) {
     return create(ModList.get().getModContainerById(modId).orElseThrow());
   }
 
+  /**
+   * Gets the mod ID associated with this processor.
+   *
+   * @return the mod ID
+   */
   public String getModId() {
     return modId;
   }
 
+  /**
+   * Retrieves the scan data for the mod container.
+   * <p>
+   * This data contains information about all classes and annotations found during mod loading.
+   * </p>
+   *
+   * @return the mod file scan data
+   */
   private ModFileScanData getScanData() {
     return container.getModInfo().getOwningFile().getFile().getScanResult();
   }
 
   /**
-   * Initializes apply registers classes annotated with {@code InitRegister}. Scans the mod's context
-   * for annotated classes apply logs their discovery. If a class is missing, logs an error message.
+   * Initializes and registers classes annotated with {@link InitRegister}.
+   * <p>
+   * Scans the mod's context for classes annotated with {@code @InitRegister} and loads them.
+   * Classes are only processed if their modId matches this processor's modId.
+   * Successfully found classes are logged, and missing classes generate error logs.
+   * </p>
    */
   public void initRegister() {
     ModFileScanData data = getScanData();
@@ -84,6 +125,17 @@ public class ContextProcessor {
     }
   }
 
+
+  /**
+   * Registers all classes annotated with {@link Packet} to the given network channel.
+   * <p>
+   * This method scans for {@code @Packet} annotations, sorts them by priority and class name,
+   * and registers each packet with the provided SimpleChannel. Each packet is assigned a unique
+   * sequential ID starting from 0.
+   * </p>
+   *
+   * @param channel the SimpleChannel to register packets to
+   */
   public void packetRegister(SimpleChannel channel) {
     AtomicInteger id = new AtomicInteger(0);
     getScanData().getAnnotations().stream()
@@ -104,11 +156,31 @@ public class ContextProcessor {
       });
   }
 
+  /**
+   * Extracts the priority value from packet annotation data.
+   *
+   * @param annotationData the annotation data to extract priority from
+   * @return the priority value, or 0 if not specified or not an integer
+   */
   private int getPacketPriority(ModFileScanData.AnnotationData annotationData) {
     Object priority = annotationData.annotationData().get("priority");
     return priority instanceof Integer value ? value : 0;
   }
 
+  /**
+   * Processes and registers a single packet class with the network channel.
+   * <p>
+   * This method verifies that the packet class has a static {@code decode(FriendlyByteBuf)} method,
+   * creates a decoder function, and registers the packet with the specified ID and direction.
+   * </p>
+   *
+   * @param <P>       the packet type extending CustomPacket
+   * @param cls       the packet class to register
+   * @param direction the network direction for this packet
+   * @param channel   the SimpleChannel to register the packet to
+   * @param id        the unique ID for this packet
+   * @throws RuntimeException if the decode method is missing or cannot be invoked
+   */
   @SuppressWarnings("unchecked")
   private <P extends CustomPacket> void processPacket(Class<P> cls, NetworkDirection direction, SimpleChannel channel, int id) {
     final Method decodeMethod;
