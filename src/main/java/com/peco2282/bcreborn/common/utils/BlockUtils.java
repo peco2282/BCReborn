@@ -56,7 +56,7 @@ public final class BlockUtils {
     BlockState state = world.getBlockState(pos);
 
     if (state.isAir()) {
-      return null;
+      return List.of();
     }
 
     BlockEntity entity = world.getBlockEntity(pos);
@@ -290,6 +290,7 @@ public final class BlockUtils {
   /**
    * The following functions let you avoid unnecessary chunk loads, which is nice.
    */
+  @Nullable
   public static BlockEntity getTileEntity(Level world, BlockPos pos) {
     return getTileEntity(world, pos, false);
   }

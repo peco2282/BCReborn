@@ -112,7 +112,7 @@ public class BlockMiner {
 
         if (!stacks.isEmpty()) {
           for (ItemStack s : stacks) {
-            if (s != null) {
+            if (!s.isEmpty()) {
               mineStack(s);
             }
           }

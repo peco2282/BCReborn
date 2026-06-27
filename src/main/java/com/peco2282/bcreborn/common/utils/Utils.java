@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ public final class Utils {
 
       BlockEntity tileInventory = BlockUtils.getTileEntity(world, neighbor);
       ITransactor transactor = Transactor.getTransactorFor(tileInventory);
-      if (!(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
+      if (transactor != null && !(tileInventory instanceof IEngine) && !(tileInventory instanceof ILaserTarget)) {
         ItemStack added = transactor.add(stack, orientation.getOpposite(), true);
         if (!added.isEmpty()) {
           return added.getCount();
@@ -98,12 +99,12 @@ public final class Utils {
     return 0;
   }
 
-  public static int addToRandomInjectableAround(Level world, BlockPos pos, Direction from, ItemStack stack) {
+  public static int addToRandomInjectableAround(Level world, BlockPos pos, @Nullable Direction from, ItemStack stack) {
     List<IInjectable> possiblePipes = new ArrayList<>();
     List<Direction> pipeDirections = new ArrayList<>();
 
     for (Direction side : Direction.values()) {
-      if (from.getOpposite() == side) {
+      if (from != null && from.getOpposite() == side) {
         continue;
       }
 
