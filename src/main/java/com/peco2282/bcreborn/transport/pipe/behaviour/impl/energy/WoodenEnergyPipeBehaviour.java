@@ -38,10 +38,6 @@ public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
 
   @Override
   public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
-    // 木のエネルギーパイプは他のエネルギーパイプへは接続しない（始端専用）
-    if (neighbor.getBlock() instanceof PipeBlock otherPipe) {
-      return otherPipe.getTransportType() != PipeType.ENERGY;
-    }
     return true;
   }
 

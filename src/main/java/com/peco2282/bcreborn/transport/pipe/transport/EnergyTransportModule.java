@@ -86,7 +86,7 @@ public class EnergyTransportModule {
 
       int totalQuery = 0;
       for (int j = 0; j < 6; j++) {
-        if (j != i && powerQuery[j] > 0) {
+        if (powerQuery[j] > 0) {
           totalQuery += powerQuery[j];
         }
       }
@@ -94,7 +94,7 @@ public class EnergyTransportModule {
 
       int unusedQuery = totalQuery;
       for (int j = 0; j < 6; j++) {
-        if (j == i || powerQuery[j] <= 0) continue;
+        if (powerQuery[j] <= 0) continue;
 
         Direction outDir = Direction.from3DDataValue(j);
         BlockPos neighborPos = pos.relative(outDir);
@@ -193,9 +193,7 @@ public class EnergyTransportModule {
     int[] transferQuery = new int[6];
     for (int i = 0; i < 6; i++) {
       for (int j = 0; j < 6; j++) {
-        if (j != i) {
-          transferQuery[i] += powerQuery[j];
-        }
+        transferQuery[i] += powerQuery[j];
       }
       transferQuery[i] = Math.min(transferQuery[i], maxPower);
     }
