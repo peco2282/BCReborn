@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "bcreborn:ttf/oxanium_semibold.ttf",
+      "shift": [0, 1],
+      "size": 14,
+      "oversample": 2.0
+    }
+  ]
+}

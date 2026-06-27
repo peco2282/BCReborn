@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.common;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class GeneralConfig {
@@ -64,5 +67,48 @@ public class GeneralConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var display = ConfigSection.builder(
+      Component.translatable("screen.config.section.general.display.title")
+    ).addEntries(
+      ConfigEntry.booleanOf(
+      "colorBlindMode",
+      Component.translatable("screen.config.entry.general.colorBlindMode.title"),
+      Component.translatable("screen.config.entry.general.colorBlindMode.tooltip"),
+      colorBlindMode
+    ),
+      ConfigEntry.booleanOf(
+        "hideFluidValues",
+        Component.translatable("screen.config.entry.general.hideFluidValues.title"),
+        Component.translatable("screen.config.entry.general.hideFluidValues.tooltip"),
+        hideFluidValues
+      ),
+      ConfigEntry.booleanOf(
+        "hidePowerValues",
+        Component.translatable("screen.config.entry.general.hidePowerValues.title"),
+        Component.translatable("screen.config.entry.general.hidePowerValues.tooltip"),
+        hidePowerValues
+      )).build();
+
+    var debug = ConfigSection.builder(
+      Component.translatable("screen.config.section.general.debug.title")
+    ).addEntries(
+      ConfigEntry.booleanOf(
+      "printFacadeList",
+      Component.translatable("screen.config.entry.general.printFacadeList.title"),
+      Component.translatable("screen.config.entry.general.printFacadeList.tooltip"),
+      printFacadeList
+    ),
+      ConfigEntry.booleanOf(
+        "printBlueprintSchematicList",
+        Component.translatable("screen.config.entry.general.printBlueprintSchematicList.title"),
+        Component.translatable("screen.config.entry.general.printBlueprintSchematicList.tooltip"),
+        printBlueprintSchematicList
+      )
+    ).build();
+
+    return new ConfigSection[] { display, debug };
   }
 }

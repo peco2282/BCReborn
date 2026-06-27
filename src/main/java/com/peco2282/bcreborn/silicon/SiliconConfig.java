@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.silicon;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class SiliconConfig {
@@ -107,5 +110,42 @@ public class SiliconConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var items = ConfigSection.builder(
+      Component.translatable("screen.config.section.silicon.items.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("redstoneChipset", Component.translatable("screen.config.entry.silicon.redstoneChipset.title"), Component.translatable("screen.config.entry.silicon.redstoneChipset.tooltip"), redstoneChipset),
+      ConfigEntry.booleanOf("redstoneCrystal", Component.translatable("screen.config.entry.silicon.redstoneCrystal.title"), Component.translatable("screen.config.entry.silicon.redstoneCrystal.tooltip"), redstoneCrystal),
+      ConfigEntry.booleanOf("redstoneBoard", Component.translatable("screen.config.entry.silicon.redstoneBoard.title"), Component.translatable("screen.config.entry.silicon.redstoneBoard.tooltip"), redstoneBoard),
+      ConfigEntry.booleanOf("gateCopier", Component.translatable("screen.config.entry.silicon.gateCopier.title"), Component.translatable("screen.config.entry.silicon.gateCopier.tooltip"), gateCopier),
+      ConfigEntry.booleanOf("pipeGate", Component.translatable("screen.config.entry.silicon.pipeGate.title"), Component.translatable("screen.config.entry.silicon.pipeGate.tooltip"), pipeGate),
+      ConfigEntry.booleanOf("pipeLens", Component.translatable("screen.config.entry.silicon.pipeLens.title"), Component.translatable("screen.config.entry.silicon.pipeLens.tooltip"), pipeLens),
+      ConfigEntry.booleanOf("pipeWire", Component.translatable("screen.config.entry.silicon.pipeWire.title"), Component.translatable("screen.config.entry.silicon.pipeWire.tooltip"), pipeWire)
+    ).build();
+
+    var blocks = ConfigSection.builder(
+      Component.translatable("screen.config.section.silicon.blocks.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("laserBlock", Component.translatable("screen.config.entry.silicon.laserBlock.title"), Component.translatable("screen.config.entry.silicon.laserBlock.tooltip"), laserBlock),
+      ConfigEntry.booleanOf("laserTableBlock", Component.translatable("screen.config.entry.silicon.laserTableBlock.title"), Component.translatable("screen.config.entry.silicon.laserTableBlock.tooltip"), laserTableBlock),
+      ConfigEntry.booleanOf("libraryBlock", Component.translatable("screen.config.entry.silicon.libraryBlock.title"), Component.translatable("screen.config.entry.silicon.libraryBlock.tooltip"), libraryBlock),
+      ConfigEntry.booleanOf("zonePlan", Component.translatable("screen.config.entry.silicon.zonePlan.title"), Component.translatable("screen.config.entry.silicon.zonePlan.tooltip"), zonePlan)
+    ).build();
+
+    var power = ConfigSection.builder(
+      Component.translatable("screen.config.section.silicon.power.title")
+    ).addEntries(
+      ConfigEntry.doubleOf(
+        "chipsetCostMultiplier",
+        Component.translatable("screen.config.entry.silicon.chipsetCostMultiplier.title"),
+        Component.translatable("screen.config.entry.silicon.chipsetCostMultiplier.tooltip"),
+        chipsetCostMultiplier,
+        ConfigEntry.range(0.0, Double.MAX_VALUE)
+      )
+    ).build();
+
+    return new ConfigSection[] { items, blocks, power };
   }
 }

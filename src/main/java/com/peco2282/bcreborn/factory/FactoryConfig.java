@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.factory;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class FactoryConfig {
@@ -83,5 +86,28 @@ public class FactoryConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var blocks = ConfigSection.builder(
+      Component.translatable("screen.config.section.factory.blocks.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("autoWorkbenchBlock", Component.translatable("screen.config.entry.factory.autoWorkbenchBlock.title"), Component.translatable("screen.config.entry.factory.autoWorkbenchBlock.tooltip"), autoWorkbenchBlock),
+      ConfigEntry.booleanOf("filteredBufferBlock", Component.translatable("screen.config.entry.factory.filteredBufferBlock.title"), Component.translatable("screen.config.entry.factory.filteredBufferBlock.tooltip"), filteredBufferBlock),
+      ConfigEntry.booleanOf("packagerBlock", Component.translatable("screen.config.entry.factory.packagerBlock.title"), Component.translatable("screen.config.entry.factory.packagerBlock.tooltip"), packagerBlock),
+      ConfigEntry.booleanOf("requester", Component.translatable("screen.config.entry.factory.requester.title"), Component.translatable("screen.config.entry.factory.requester.tooltip"), requester)
+    ).build();
+
+    var items = ConfigSection.builder(
+      Component.translatable("screen.config.section.factory.items.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("blueprintItem", Component.translatable("screen.config.entry.factory.blueprintItem.title"), Component.translatable("screen.config.entry.factory.blueprintItem.tooltip"), blueprintItem),
+      ConfigEntry.booleanOf("templateItem", Component.translatable("screen.config.entry.factory.templateItem.title"), Component.translatable("screen.config.entry.factory.templateItem.tooltip"), templateItem),
+      ConfigEntry.booleanOf("list", Component.translatable("screen.config.entry.factory.list.title"), Component.translatable("screen.config.entry.factory.list.tooltip"), list),
+      ConfigEntry.booleanOf("mapLocation", Component.translatable("screen.config.entry.factory.mapLocation.title"), Component.translatable("screen.config.entry.factory.mapLocation.tooltip"), mapLocation),
+      ConfigEntry.booleanOf("packageItem", Component.translatable("screen.config.entry.factory.packageItem.title"), Component.translatable("screen.config.entry.factory.packageItem.tooltip"), packageItem)
+    ).build();
+
+    return new ConfigSection[] { blocks, items };
   }
 }
