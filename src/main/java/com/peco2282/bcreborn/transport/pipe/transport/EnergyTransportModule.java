@@ -181,35 +181,50 @@ public class EnergyTransportModule {
       //noinspection DataFlowIssue
       IEnergyStorage handler = be.getCapability(ForgeCapabilities.ENERGY, incomingFace).orElse(null);
       //noinspection ConstantValue
-      if (handler != null && handler.canReceive()) {
-        int request = handler.receiveEnergy(maxPower, true); // simulate
-        if (request > 0) {
-          requestEnergy(dir, request);
+      if (handler != null) {
+        if (handler.canReceive()) {
+            int request = handler.receiveEnergy(maxPower, true); // simulate
+            if (request > 0) {
+              requestEnergy(dir, request);
+            }
+        } else if (handler.canExtract()) {
+            // エンジン等の供給源の場合、パイプに空きがあれば1RFの「誘発用需要」を登録する
+            // これにより需要が遡り、木エンジンからの押し込みや木パイプの吸い出しが機能し始める
+            if (internalNextPower[dir.get3DDataValue()] < maxPower) {
+                requestEnergy(dir, 1);
+            }
         }
       }
     }
 
     // 5. 需要を隣接エネルギーパイプへ伝播（入力側を探す）
-    int[] transferQuery = new int[6];
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < 6; j++) {
-        transferQuery[i] += powerQuery[j];
-      }
-      transferQuery[i] = Math.min(transferQuery[i], maxPower);
+    int totalSystemQuery = 0;
+    for (int j = 0; j < 6; j++) {
+      totalSystemQuery += powerQuery[j];
     }
+    totalSystemQuery = Math.min(totalSystemQuery, maxPower);
 
-    for (int i = 0; i < 6; i++) {
-      if (transferQuery[i] == 0) continue;
-      Direction dir = Direction.from3DDataValue(i);
-      BlockPos neighborPos = pos.relative(dir);
-      if (!level.isLoaded(neighborPos)) continue;
+    if (totalSystemQuery > 0) {
+      for (int i = 0; i < 6; i++) {
+        Direction dir = Direction.from3DDataValue(i);
 
-      BlockEntity be = level.getBlockEntity(neighborPos);
-      if (be instanceof PipeBlockEntity neighborPipe
-        && neighborPipe.getTransportType() == PipeType.ENERGY) {
-        EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
-        if (neighborModule != null) {
-          neighborModule.requestEnergy(dir.getOpposite(), transferQuery[i]);
+        // エネルギーが入ってきた方向（入力元）に対してのみ需要を伝播する
+        // これにより需要が供給源に向かって遡る
+        // internalPower[i] > 0 は「この面からエネルギーを受け取った」ことを示す
+        if (internalPower[i] <= 0 && internalNextPower[i] <= 0) {
+          continue;
+        }
+
+        BlockPos neighborPos = pos.relative(dir);
+        if (!level.isLoaded(neighborPos)) continue;
+
+        BlockEntity be = level.getBlockEntity(neighborPos);
+        if (be instanceof PipeBlockEntity neighborPipe
+          && neighborPipe.getTransportType() == PipeType.ENERGY) {
+          EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
+          if (neighborModule != null) {
+            neighborModule.requestEnergy(dir.getOpposite(), totalSystemQuery);
+          }
         }
       }
     }
