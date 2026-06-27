@@ -12,10 +12,13 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.core.IAreaProvider;
+import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
+import com.peco2282.bcreborn.builders.block.FrameBlock;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.builder.AbstractBuilderBlockEntity;
+import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.utils.BlockMiner;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
@@ -33,7 +36,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
-public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
+public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBoxProvider {
   public enum Stage {
     BUILDING,
     DIGGING,
@@ -48,11 +51,13 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
 
   private int targetX, targetY, targetZ;
   private double headPosX, headPosY, headPosZ;
+  private double prevHeadPosX, prevHeadPosY, prevHeadPosZ;
   private float headTrajectory;
   private boolean movingHorizontally, movingVertically;
 
   private BlockMiner miner;
   private final Deque<int[]> visitList = new LinkedList<>();
+  private final Deque<BlockPos> frameList = new LinkedList<>();
 
   public QuarryBlockEntity(BlockPos pos, BlockState state) {
     super(BuildersBlockEntityTypes.QUARRY.get(), pos, state);
@@ -69,7 +74,35 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
       headPosX = worldPosition.getX() + 0.5;
       headPosY = worldPosition.getY() + 1.0;
       headPosZ = worldPosition.getZ() + 0.5;
+      prevHeadPosX = headPosX;
+      prevHeadPosY = headPosY;
+      prevHeadPosZ = headPosZ;
+    } else {
+      if (box.isInitialized()) {
+        box.createLaserData();
+      }
     }
+  }
+
+  @Override
+  public Box getBox() {
+    return box;
+  }
+
+  public double getHeadPosX(float partialTicks) {
+    return prevHeadPosX + (headPosX - prevHeadPosX) * partialTicks;
+  }
+
+  public double getHeadPosY(float partialTicks) {
+    return prevHeadPosY + (headPosY - prevHeadPosY) * partialTicks;
+  }
+
+  public double getHeadPosZ(float partialTicks) {
+    return prevHeadPosZ + (headPosZ - prevHeadPosZ) * partialTicks;
+  }
+
+  public Stage getStage() {
+    return stage;
   }
 
   private void setBoundaries() {
@@ -85,6 +118,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
     if (provider != null) {
       box.initialize(provider);
       if (box.isInitialized()) {
+        box.createLaserData();
         provider.removeFromWorld();
       }
     }
@@ -94,13 +128,20 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
       int xMin = worldPosition.getX() - 5;
       int zMin = worldPosition.getZ() - 5;
       box.initialize(xMin, worldPosition.getY(), zMin, xMin + 10, worldPosition.getY() + 5, zMin + 10);
+      box.createLaserData();
     }
+    createFrameList();
+    stage = Stage.BUILDING;
     setChanged();
   }
 
   @SuppressWarnings("RedundantLabeledSwitchRuleCodeBlock")
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
+    prevHeadPosX = headPosX;
+    prevHeadPosY = headPosY;
+    prevHeadPosZ = headPosZ;
+
     if (level.isClientSide) {
       if (stage != Stage.DONE) {
         moveHead(0.1); // Constant speed for client side prediction
@@ -110,8 +151,39 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
 
     switch (stage) {
       case BUILDING -> {
-        // TODO: Implement frame building logic
-        stage = Stage.IDLE;
+        if (frameList.isEmpty()) {
+          createFrameList();
+        }
+
+        if (frameList.isEmpty()) {
+          stage = Stage.IDLE;
+          setChanged();
+          return;
+        }
+
+        int energyNeeded = 25;
+        if (getBattery().getEnergyStored() >= energyNeeded) {
+          BlockPos framePos = frameList.peek();
+          if (framePos != null) {
+            if (level.getBlockState(framePos).isAir() || level.getBlockState(framePos).getBlock() instanceof FrameBlock) {
+              getBattery().useEnergy(energyNeeded, energyNeeded, false);
+              level.setBlock(framePos, BuildersBlock.FRAME.get().defaultBlockState(), 3);
+              frameList.poll();
+              if (frameList.isEmpty()) {
+                stage = Stage.IDLE;
+              }
+              setChanged();
+            } else {
+              // Something is in the way, skip this frame or wait?
+              // BuildCraft usually breaks the block if it's not unbreakable
+              frameList.poll();
+              if (frameList.isEmpty()) {
+                stage = Stage.IDLE;
+              }
+              setChanged();
+            }
+          }
+        }
       }
       case DIGGING -> {
         dig();
@@ -244,6 +316,40 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
     }
   }
 
+  private void createFrameList() {
+    frameList.clear();
+    if (!box.isInitialized()) return;
+
+    List<BlockPos> list = new ArrayList<>();
+
+    // Horizontal frames at top
+    for (int x = box.xMin; x <= box.xMax; x++) {
+      list.add(new BlockPos(x, box.yMax, box.zMin));
+      list.add(new BlockPos(x, box.yMax, box.zMax));
+      list.add(new BlockPos(x, box.yMin, box.zMin));
+      list.add(new BlockPos(x, box.yMin, box.zMax));
+    }
+    for (int z = box.zMin + 1; z < box.zMax; z++) {
+      list.add(new BlockPos(box.xMin, box.yMax, z));
+      list.add(new BlockPos(box.xMax, box.yMax, z));
+      list.add(new BlockPos(box.xMin, box.yMin, z));
+      list.add(new BlockPos(box.xMax, box.yMin, z));
+    }
+
+    // Vertical frames
+    for (int y = box.yMin + 1; y < box.yMax; y++) {
+      list.add(new BlockPos(box.xMin, y, box.zMin));
+      list.add(new BlockPos(box.xMax, y, box.zMin));
+      list.add(new BlockPos(box.xMin, y, box.zMax));
+      list.add(new BlockPos(box.xMax, y, box.zMax));
+    }
+
+    // Sort by distance to quarry
+    list.sort(Comparator.comparingDouble(p -> p.distSqr(worldPosition)));
+
+    frameList.addAll(list);
+  }
+
   private boolean isQuarriableBlock(int bx, int by, int bz) {
     BlockPos pos = new BlockPos(bx, by, bz);
     BlockState state = getLevel().getBlockState(pos);
@@ -271,6 +377,14 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
     headTrajectory = nbt.getFloat("headTrajectory");
     movingHorizontally = nbt.getBoolean("movingHorizontally");
     movingVertically = nbt.getBoolean("movingVertically");
+
+    if (nbt.contains("frameList")) {
+      frameList.clear();
+      long[] frames = nbt.getLongArray("frameList");
+      for (long f : frames) {
+        frameList.add(BlockPos.of(f));
+      }
+    }
   }
 
   @Override
@@ -289,6 +403,15 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
     nbt.putFloat("headTrajectory", headTrajectory);
     nbt.putBoolean("movingHorizontally", movingHorizontally);
     nbt.putBoolean("movingVertically", movingVertically);
+
+    if (!frameList.isEmpty()) {
+      long[] frames = new long[frameList.size()];
+      int i = 0;
+      for (BlockPos p : frameList) {
+        frames[i++] = p.asLong();
+      }
+      nbt.putLongArray("frameList", frames);
+    }
   }
 
   @Override
@@ -321,6 +444,11 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity {
     targetX = data.readInt();
     targetY = data.readInt();
     targetZ = data.readInt();
+    if (level != null && level.isClientSide) {
+      if (box.isInitialized()) {
+        box.createLaserData();
+      }
+    }
   }
 
   @Override
