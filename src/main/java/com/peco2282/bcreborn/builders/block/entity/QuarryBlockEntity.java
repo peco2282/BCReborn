@@ -304,13 +304,15 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
             if (isQuarriableBlock(bx, searchY, bz)) {
               visitList.add(new int[]{bx, searchY, bz});
             } else {
-              BlockState state = getLevel().getBlockState(new BlockPos(bx, searchY, bz));
+              BlockPos pos = new BlockPos(bx, searchY, bz);
+              BlockState state = getLevel().getBlockState(pos);
               if (!state.isAir() && state.getFluidState().isEmpty()) {
                 // If it's not quarriable, not air, and not a fluid, it might be unbreakable
-                if (BlockUtils.isUnbreakableBlock(getLevel(), new BlockPos(bx, searchY, bz))) {
+                if (BlockUtils.isUnbreakableBlock(getLevel(), pos)) {
                   blockedColumns[searchX][searchZ] = true;
                 }
               }
+              // If it's a fluid, we don't block the column, so we can search below it in the next Y iteration.
             }
           }
         }
@@ -361,8 +363,8 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     BlockState state = getLevel().getBlockState(pos);
     if (state.getBlock() == BuildersBlock.FRAME.get()) return false;
     if (state.isAir()) return false;
-    // We want to mine liquids as well
-    if (!state.getFluidState().isEmpty()) return true;
+    // We want to skip liquids and mine blocks below them
+    if (!state.getFluidState().isEmpty()) return false;
     Block block = state.getBlock();
     // Original BuildCraft logic also excludes Fluid blocks unless specifically handled
     return !BlockUtils.isUnbreakableBlock(getLevel(), pos, block);
