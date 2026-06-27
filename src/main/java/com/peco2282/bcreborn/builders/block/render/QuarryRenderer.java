@@ -90,11 +90,11 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
     Box box = quarry.getBox();
     if (!box.isInitialized()) return;
 
-    double xMin = box.xMin - quarry.getBlockPos().getX() - 1;
-    double xMax = box.xMax - quarry.getBlockPos().getX();// + 1.0;
-    double yMax = box.yMax - quarry.getBlockPos().getY() + 1.0;
-    double zMin = box.zMin - quarry.getBlockPos().getZ() - 1;
-    double zMax = box.zMax - quarry.getBlockPos().getZ();// + 1.0;
+    double xMin = box.xMin - quarry.getBlockPos().getX() + 0.5;
+    double xMax = box.xMax - quarry.getBlockPos().getX() + 0.5;
+    double yMax = box.yMax - quarry.getBlockPos().getY() + 0.5;
+    double zMin = box.zMin - quarry.getBlockPos().getZ() + 0.5;
+    double zMax = box.zMax - quarry.getBlockPos().getZ() + 0.5;
 
     VertexConsumer drillX = buffer.getBuffer(RenderType.entityCutout(DRILL_XZ_TEXTURE));
     VertexConsumer drillY = buffer.getBuffer(RenderType.entityCutout(DRILL_TEXTURE));
