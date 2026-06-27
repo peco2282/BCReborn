@@ -18,8 +18,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
 
@@ -90,6 +92,9 @@ public class BlockMiner {
     }
 
     int energyRequired = BlockUtils.computeBlockBreakEnergy(world, pos);
+    if (!world.getFluidState(pos).isEmpty()) {
+      energyRequired = 100; // BuildCraft often uses a flat energy for fluids
+    }
 
     int usedAmount = MathUtils.clamp(offeredAmount, 0, Math.max(0, energyRequired - energyAccepted));
     energyAccepted += usedAmount;
@@ -108,19 +113,26 @@ public class BlockMiner {
       MinecraftForge.EVENT_BUS.post(breakEvent);
 
       if (!breakEvent.isCanceled()) {
-        List<ItemStack> stacks = BlockUtils.getItemStackFromBlock((ServerLevel) world, pos);
+        if (!world.getFluidState(pos).isEmpty()) {
+          // If it's a fluid, just remove it and don't drop anything
+          // Use flag 3 (block update) and also ensure it's set to AIR
+          world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        } else {
+          BlockState currentState = world.getBlockState(pos);
+          List<ItemStack> stacks = BlockUtils.getItemStackFromBlock((ServerLevel) world, pos);
 
-        if (!stacks.isEmpty()) {
-          for (ItemStack s : stacks) {
-            if (!s.isEmpty()) {
-              mineStack(s);
+          if (!stacks.isEmpty()) {
+            for (ItemStack s : stacks) {
+              if (!s.isEmpty()) {
+                mineStack(s);
+              }
             }
           }
+
+          world.levelEvent(2001, pos, Block.getId(currentState));
+
+          world.removeBlock(pos, false);
         }
-
-        world.levelEvent(2001, pos, Block.getId(world.getBlockState(pos)));
-
-        world.removeBlock(pos, false);
       } else {
         hasFailed = true;
       }
