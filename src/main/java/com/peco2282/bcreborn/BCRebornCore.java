@@ -69,12 +69,8 @@ public class BCRebornCore implements BCReborn {
   public static boolean colorBlindMode = false;
   public static boolean hidePowerNumbers = false;
   public static boolean hideFluidNumbers = false;
-  public static boolean canEnginesExplode = false;
-  public static boolean useServerDataOnClient = true;
   public static boolean alphaPassBugPresent = true;
-  public static int itemLifespan = 1200;
   public static int updateFactor = 10;
-  public static int builderMaxPerItemFactor = 1024;
   public static long longUpdateFactor = 40;
 
   public BCRebornCore(FMLJavaModLoadingContext context) {
