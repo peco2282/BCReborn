@@ -13,7 +13,7 @@ package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.common.GeneralConfig;
-import com.peco2282.bcreborn.core.ConfigCore;
+import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.factory.FactoryConfig;
 import com.peco2282.bcreborn.robotics.RoboticsConfig;
@@ -36,7 +36,7 @@ public class Config {
   static {
     GeneralConfig.load(BUILDER);
 
-    ConfigCore.load(BUILDER); // Core settings
+    CoreConfig.load(BUILDER); // Core settings
     EnergyConfig.load(BUILDER); // Energy settings
     TransportConfig.load(BUILDER); // Transport settings
     BuildersConfig.load(BUILDER); // Builders settings

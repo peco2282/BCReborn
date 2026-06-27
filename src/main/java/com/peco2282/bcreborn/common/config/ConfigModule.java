@@ -13,7 +13,7 @@ package com.peco2282.bcreborn.common.config;
 
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.common.GeneralConfig;
-import com.peco2282.bcreborn.core.ConfigCore;
+import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.factory.FactoryConfig;
 import com.peco2282.bcreborn.robotics.RoboticsConfig;
@@ -41,7 +41,7 @@ public record ConfigModule(
     Component.translatable("screen.config.module.core.title"),
     Component.translatable("screen.config.module.core.description")
   )
-    .addSections(ConfigCore.entries())
+    .addSections(CoreConfig.entries())
     .build();
   public static final ConfigModule BUILDER = builder(
     Component.translatable("screen.config.module.builder.title"),

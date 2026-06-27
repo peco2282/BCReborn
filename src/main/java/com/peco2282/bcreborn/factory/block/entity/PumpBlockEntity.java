@@ -20,7 +20,7 @@ import com.peco2282.bcreborn.common.internal.ILEDProvider;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.common.utils.Utils;
-import com.peco2282.bcreborn.core.ConfigCore;
+import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.energy.EnergyConfig;
 import com.peco2282.bcreborn.energy.fluids.SingleUseTank;
 import com.peco2282.bcreborn.energy.fluids.Tank;
@@ -65,7 +65,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
   private int ledState;
   // tick % 16 => min. 16 ticks per network update
-  private final SafeTimeTracker updateTracker = new SafeTimeTracker(Math.max(16, ConfigCore.getUpdateFactor()));
+  private final SafeTimeTracker updateTracker = new SafeTimeTracker(Math.max(16, CoreConfig.getUpdateFactor()));
 
 
   public PumpBlockEntity(BlockPos pos, BlockState state) {
