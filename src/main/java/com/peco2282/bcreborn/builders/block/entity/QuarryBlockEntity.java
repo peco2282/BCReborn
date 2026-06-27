@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.builders.block.entity;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
+import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.block.FrameBlock;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.SimpleInventory;
@@ -292,7 +293,8 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     int sizeZ = box.zMax - box.zMin + 1;
     boolean[][] blockedColumns = new boolean[sizeX][sizeZ];
 
-    for (int searchY = worldPosition.getY() - 1; searchY >= getLevel().getMinBuildHeight(); --searchY) {
+    int maxY = Math.min(box.yMax, BuildersConfig.getMiningDepth());
+    for (int searchY = maxY; searchY >= getLevel().getMinBuildHeight(); --searchY) {
       for (int searchX = 0; searchX < sizeX; searchX++) {
         for (int searchZ = 0; searchZ < sizeZ; searchZ++) {
           if (!blockedColumns[searchX][searchZ]) {
@@ -321,23 +323,24 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     if (!box.isInitialized()) return;
 
     List<BlockPos> list = new ArrayList<>();
+    int yMax = Math.min(box.yMax, BuildersConfig.getMiningDepth());
 
     // Horizontal frames at top
     for (int x = box.xMin; x <= box.xMax; x++) {
-      list.add(new BlockPos(x, box.yMax, box.zMin));
-      list.add(new BlockPos(x, box.yMax, box.zMax));
+      list.add(new BlockPos(x, yMax, box.zMin));
+      list.add(new BlockPos(x, yMax, box.zMax));
       list.add(new BlockPos(x, box.yMin, box.zMin));
       list.add(new BlockPos(x, box.yMin, box.zMax));
     }
     for (int z = box.zMin + 1; z < box.zMax; z++) {
-      list.add(new BlockPos(box.xMin, box.yMax, z));
-      list.add(new BlockPos(box.xMax, box.yMax, z));
+      list.add(new BlockPos(box.xMin, yMax, z));
+      list.add(new BlockPos(box.xMax, yMax, z));
       list.add(new BlockPos(box.xMin, box.yMin, z));
       list.add(new BlockPos(box.xMax, box.yMin, z));
     }
 
     // Vertical frames
-    for (int y = box.yMin + 1; y < box.yMax; y++) {
+    for (int y = box.yMin + 1; y < Math.min(box.yMax, BuildersConfig.getMiningDepth()); y++) {
       list.add(new BlockPos(box.xMin, y, box.zMin));
       list.add(new BlockPos(box.xMax, y, box.zMin));
       list.add(new BlockPos(box.xMin, y, box.zMax));
@@ -353,6 +356,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   private boolean isQuarriableBlock(int bx, int by, int bz) {
     BlockPos pos = new BlockPos(bx, by, bz);
     BlockState state = getLevel().getBlockState(pos);
+    if (state.getBlock() == BuildersBlock.FRAME.get()) return false;
     if (state.isAir()) return false;
     Block block = state.getBlock();
     if (BlockUtils.isUnbreakableBlock(getLevel(), pos, block)) return false;
