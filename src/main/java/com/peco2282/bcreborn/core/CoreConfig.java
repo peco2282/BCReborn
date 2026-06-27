@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.common.config.ConfigSection;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ConfigCore {
+public class CoreConfig {
   // general
   private static ForgeConfigSpec.IntValue itemLifespan;
   private static ForgeConfigSpec.IntValue markerRange;
