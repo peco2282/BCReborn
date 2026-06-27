@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.builders;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.io.File;
@@ -91,5 +94,63 @@ public class BuildersConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var general = ConfigSection.builder(
+      Component.translatable("screen.config.section.builders.general.title")
+    ).addEntries(
+      ConfigEntry.booleanOf(
+        "dropBrokenBlocks",
+        Component.translatable("screen.config.entry.builders.dropBrokenBlocks.title"),
+        Component.translatable("screen.config.entry.builders.dropBrokenBlocks.tooltip"),
+        dropBrokenBlocks
+      )
+    ).build();
+
+    var quarry = ConfigSection.builder(
+      Component.translatable("screen.config.section.builders.quarry.title")
+    ).addEntries(
+      ConfigEntry.booleanOf(
+        "quarryDoChunkLoading",
+        Component.translatable("screen.config.entry.builders.quarryDoChunkLoading.title"),
+        Component.translatable("screen.config.entry.builders.quarryDoChunkLoading.tooltip"),
+        quarryDoChunkLoading
+      ),
+      ConfigEntry.booleanOf(
+        "quarryOneTimeUse",
+        Component.translatable("screen.config.entry.builders.quarryOneTimeUse.title"),
+        Component.translatable("screen.config.entry.builders.quarryOneTimeUse.tooltip"),
+        quarryOneTimeUse
+      ),
+      ConfigEntry.integerOf(
+        "miningDepth",
+        Component.translatable("screen.config.entry.builders.miningDepth.title"),
+        Component.translatable("screen.config.entry.builders.miningDepth.tooltip"),
+        miningDepth,
+        ConfigEntry.range(1, 512)
+      )
+    ).build();
+
+    var blueprints = ConfigSection.builder(
+      Component.translatable("screen.config.section.builders.blueprints.title")
+    ).addEntries(
+      ConfigEntry.stringOf(
+        "serverDatabaseDirectory",
+        Component.translatable("screen.config.entry.builders.serverDatabaseDirectory.title"),
+        Component.translatable("screen.config.entry.builders.serverDatabaseDirectory.tooltip"),
+        serverDatabaseDirectory,
+        t -> true
+      ),
+      ConfigEntry.stringOf(
+        "clientDatabaseDirectory",
+        Component.translatable("screen.config.entry.builders.clientDatabaseDirectory.title"),
+        Component.translatable("screen.config.entry.builders.clientDatabaseDirectory.tooltip"),
+        clientDatabaseDirectory,
+        t -> true
+      )
+    ).build();
+
+    return new ConfigSection[] { general, quarry, blueprints };
   }
 }

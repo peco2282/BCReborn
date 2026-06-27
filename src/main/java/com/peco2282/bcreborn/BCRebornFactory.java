@@ -13,6 +13,7 @@ package com.peco2282.bcreborn;
 
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,6 +46,8 @@ public class BCRebornFactory implements BCReborn {
     MinecraftForge.EVENT_BUS.register(this);
     processor.initRegister();
     REGISTRY.register(modEventBus);
+
+    MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 4));
   }
 
   public static BCRegistry getRegistry() {

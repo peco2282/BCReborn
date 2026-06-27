@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.crops.CropManager;
 import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
+import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
 import com.peco2282.bcreborn.common.data.DataGatherEvent;
 import com.peco2282.bcreborn.common.event.BCRegistryEvent;
 import com.peco2282.bcreborn.common.event.internal.BCRebornEventBus;
@@ -101,6 +102,8 @@ public class BCRebornCore implements BCReborn {
     // Register our mod's ForgeConfigSpec so that Forge can create apply load the config file for us
     context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, fileName);
     BuildCraftAPI.bus(BCRebornEventBus.getEventBus());
+
+    MinecraftForge.registerConfigScreen(BCRebornConfigScreen::new);
   }
 
   public static BCRegistry getRegistry() {

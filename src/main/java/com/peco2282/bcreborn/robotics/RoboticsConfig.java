@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
@@ -65,5 +68,23 @@ public class RoboticsConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var items = ConfigSection.builder(
+      Component.translatable("screen.config.section.robotics.items.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("robot", Component.translatable("screen.config.entry.robotics.robot.title"), Component.translatable("screen.config.entry.robotics.robot.tooltip"), robot),
+      ConfigEntry.booleanOf("robotStation", Component.translatable("screen.config.entry.robotics.robotStation.title"), Component.translatable("screen.config.entry.robotics.robotStation.tooltip"), robotStation)
+    ).build();
+
+    var blocks = ConfigSection.builder(
+      Component.translatable("screen.config.section.robotics.blocks.title")
+    ).addEntries(
+      ConfigEntry.booleanOf("architectBlock", Component.translatable("screen.config.entry.robotics.architectBlock.title"), Component.translatable("screen.config.entry.robotics.architectBlock.tooltip"), architectBlock),
+      ConfigEntry.booleanOf("constructionMarkerBlock", Component.translatable("screen.config.entry.robotics.constructionMarkerBlock.title"), Component.translatable("screen.config.entry.robotics.constructionMarkerBlock.tooltip"), constructionMarkerBlock)
+    ).build();
+
+    return new ConfigSection[] { items, blocks };
   }
 }

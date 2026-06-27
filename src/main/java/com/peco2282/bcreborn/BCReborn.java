@@ -19,6 +19,7 @@ public interface BCReborn {
   boolean DEVELOPER_MODE = true;
 
   String MOD_ID_BASE = "bcreborn";
+  ResourceLocation CONFIG_FONT = ResourceLocation.fromNamespaceAndPath(MOD_ID_BASE, "config_font");
 
   StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 

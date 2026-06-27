@@ -11,9 +11,11 @@
  */
 package com.peco2282.bcreborn.core;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@SuppressWarnings("NotNullFieldNotInitialized")
 public class ConfigCore {
   // general
   private static ForgeConfigSpec.IntValue itemLifespan;
@@ -105,5 +107,90 @@ public class ConfigCore {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var general = ConfigSection.builder(
+      Component.translatable("screen.config.section.core.general.title")
+    ).addEntries(
+      ConfigEntry.integerOf(
+        "itemLifespan",
+        Component.translatable("screen.config.entry.core.itemLifespan.title"),
+        Component.translatable("screen.config.entry.core.itemLifespan.tooltip"),
+        itemLifespan,
+        ConfigEntry.range(5, Integer.MAX_VALUE)
+      ),
+      ConfigEntry.integerOf(
+        "markerRange",
+        Component.translatable("screen.config.entry.core.markerRange.title"),
+        Component.translatable("screen.config.entry.core.markerRange.tooltip"),
+        markerRange,
+        ConfigEntry.range(8, 64)
+      ),
+      ConfigEntry.integerOf(
+        "builderMaxIterationsPerItemFactor",
+        Component.translatable("screen.config.entry.core.builderMaxIterationsPerItemFactor.title"),
+        Component.translatable("screen.config.entry.core.builderMaxIterationsPerItemFactor.tooltip"),
+        builderMaxIterationsPerItemFactor,
+        ConfigEntry.range(1, Integer.MAX_VALUE)
+      ),
+      ConfigEntry.booleanOf(
+        "canEnginesExplode",
+        Component.translatable("screen.config.entry.core.canEnginesExplode.title"),
+        Component.translatable("screen.config.entry.core.canEnginesExplode.tooltip"),
+        canEnginesExplode
+      ),
+      ConfigEntry.booleanOf(
+        "useServerDataOnClient",
+        Component.translatable("screen.config.entry.core.useServerDataOnClient.title"),
+        Component.translatable("screen.config.entry.core.useServerDataOnClient.tooltip"),
+        useServerDataOnClient
+      ),
+      ConfigEntry.booleanOf(
+        "updateCheck",
+        Component.translatable("screen.config.entry.core.updateCheck.title"),
+        Component.translatable("screen.config.entry.core.updateCheck.tooltip"),
+        updateCheck
+      ),
+      ConfigEntry.booleanOf(
+        "miningBreaksPlayerProtectedBlocks",
+        Component.translatable("screen.config.entry.core.miningBreaksPlayerProtectedBlocks.title"),
+        Component.translatable("screen.config.entry.core.miningBreaksPlayerProtectedBlocks.tooltip"),
+        miningBreaksPlayerProtectedBlocks
+      )
+    ).build();
+
+    var network = ConfigSection.builder(
+      Component.translatable("screen.config.section.core.network.title")
+    ).addEntries(
+      ConfigEntry.integerOf(
+        "updateFactor",
+        Component.translatable("screen.config.entry.core.updateFactor.title"),
+        Component.translatable("screen.config.entry.core.updateFactor.tooltip"),
+        updateFactor,
+        ConfigEntry.range(1, Integer.MAX_VALUE)
+      ),
+      ConfigEntry.integerOf(
+        "longUpdateFactor",
+        Component.translatable("screen.config.entry.core.longUpdateFactor.title"),
+        Component.translatable("screen.config.entry.core.longUpdateFactor.tooltip"),
+        longUpdateFactor,
+        ConfigEntry.range(1, Integer.MAX_VALUE)
+      )
+    ).build();
+
+    var power = ConfigSection.builder(
+      Component.translatable("screen.config.section.core.power.title")
+    ).addEntries(
+      ConfigEntry.doubleOf(
+        "miningUsageMultiplier",
+        Component.translatable("screen.config.entry.core.miningUsageMultiplier.title"),
+        Component.translatable("screen.config.entry.core.miningUsageMultiplier.tooltip"),
+        miningUsageMultiplier,
+        ConfigEntry.range(0.0, Double.MAX_VALUE)
+      )
+    ).build();
+
+    return new ConfigSection[] { general, network, power };
   }
 }

@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.energy;
 
+import com.peco2282.bcreborn.common.config.ConfigEntry;
+import com.peco2282.bcreborn.common.config.ConfigSection;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class EnergyConfig {
@@ -127,5 +130,103 @@ public class EnergyConfig {
 
     builder.pop();
     return builder;
+  }
+
+  public static ConfigSection[] entries() {
+    var general = ConfigSection.builder(
+      Component.translatable("screen.config.section.energy.general.title")
+    ).addEntries(
+      ConfigEntry.doubleOf(
+        "fuelFuelCombustion",
+        Component.translatable("screen.config.entry.energy.fuelFuelCombustion.title"),
+        Component.translatable("screen.config.entry.energy.fuelFuelCombustion.tooltip"),
+        fuelFuelCombustion,
+        ConfigEntry.range(0.0, Double.MAX_VALUE)
+      ),
+      ConfigEntry.integerOf(
+        "fuelFuelCombustionEnergyOutput",
+        Component.translatable("screen.config.entry.energy.fuelFuelCombustionEnergyOutput.title"),
+        Component.translatable("screen.config.entry.energy.fuelFuelCombustionEnergyOutput.tooltip"),
+        fuelFuelCombustionEnergyOutput,
+        ConfigEntry.range(1, Integer.MAX_VALUE)
+      ),
+      ConfigEntry.doubleOf(
+        "fuelOilCombustion",
+        Component.translatable("screen.config.entry.energy.fuelOilCombustion.title"),
+        Component.translatable("screen.config.entry.energy.fuelOilCombustion.tooltip"),
+        fuelOilCombustion,
+        ConfigEntry.range(0.0, Double.MAX_VALUE)
+      ),
+      ConfigEntry.integerOf(
+        "fuelOilCombustionEnergyOutput",
+        Component.translatable("screen.config.entry.energy.fuelOilCombustionEnergyOutput.title"),
+        Component.translatable("screen.config.entry.energy.fuelOilCombustionEnergyOutput.tooltip"),
+        fuelOilCombustionEnergyOutput,
+        ConfigEntry.range(1, Integer.MAX_VALUE)
+      ),
+      ConfigEntry.booleanOf(
+        "canOilBurn",
+        Component.translatable("screen.config.entry.energy.canOilBurn.title"),
+        Component.translatable("screen.config.entry.energy.canOilBurn.tooltip"),
+        canOilBurn
+      ),
+      ConfigEntry.booleanOf(
+        "isOilDense",
+        Component.translatable("screen.config.entry.energy.isOilDense.title"),
+        Component.translatable("screen.config.entry.energy.isOilDense.tooltip"),
+        isOilDense
+      ),
+      ConfigEntry.booleanOf(
+        "pumpsConsumeWater",
+        Component.translatable("screen.config.entry.energy.pumpsConsumeWater.title"),
+        Component.translatable("screen.config.entry.energy.pumpsConsumeWater.tooltip"),
+        pumpsConsumeWater
+      ),
+      ConfigEntry.booleanOf(
+        "pumpsNeedRealPower",
+        Component.translatable("screen.config.entry.energy.pumpsNeedRealPower.title"),
+        Component.translatable("screen.config.entry.energy.pumpsNeedRealPower.tooltip"),
+        pumpsNeedRealPower
+      ),
+      ConfigEntry.stringOf(
+        "pumpDimensionControl",
+        Component.translatable("screen.config.entry.energy.pumpDimensionControl.title"),
+        Component.translatable("screen.config.entry.energy.pumpDimensionControl.tooltip"),
+        pumpDimensionControl,
+        t -> true
+      )
+    ).build();
+
+    var worldgen = ConfigSection.builder(
+      Component.translatable("screen.config.section.energy.worldgen.title")
+    ).addEntries(
+      ConfigEntry.booleanOf(
+        "worldgenEnable",
+        Component.translatable("screen.config.entry.energy.worldgenEnable.title"),
+        Component.translatable("screen.config.entry.energy.worldgenEnable.tooltip"),
+        worldgenEnable
+      ),
+      ConfigEntry.booleanOf(
+        "generateWaterSprings",
+        Component.translatable("screen.config.entry.energy.generateWaterSprings.title"),
+        Component.translatable("screen.config.entry.energy.generateWaterSprings.tooltip"),
+        generateWaterSprings
+      ),
+      ConfigEntry.doubleOf(
+        "oilWellGenerationRate",
+        Component.translatable("screen.config.entry.energy.oilWellGenerationRate.title"),
+        Component.translatable("screen.config.entry.energy.oilWellGenerationRate.tooltip"),
+        oilWellGenerationRate,
+        ConfigEntry.range(0.0, Double.MAX_VALUE)
+      ),
+      ConfigEntry.booleanOf(
+        "spawnOilSprings",
+        Component.translatable("screen.config.entry.energy.spawnOilSprings.title"),
+        Component.translatable("screen.config.entry.energy.spawnOilSprings.tooltip"),
+        spawnOilSprings
+      )
+    ).build();
+
+    return new ConfigSection[] { general, worldgen };
   }
 }

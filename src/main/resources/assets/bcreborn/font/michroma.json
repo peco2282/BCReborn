@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "bcreborn:ttf/michroma_regular.ttf",
+      "shift": [0, 1],
+      "size": 11,
+      "oversample": 2.0
+    }
+  ]
+}
