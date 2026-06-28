@@ -19,6 +19,13 @@ import java.util.StringJoiner;
 public class EnergyStorage implements IEnergyStorage {
   private int energy, maxEnergy, maxReceive, maxExtract;
 
+  // デバッグ用
+  private int lastTickReceived = 0;
+  private int lastTickExtracted = 0;
+  private int currentTickReceived = 0;
+  private int currentTickExtracted = 0;
+  private long lastUpdateTick = -1;
+
   public EnergyStorage(int maxEnergy, int maxReceive, int maxExtract) {
     this(maxEnergy, maxReceive, maxExtract, 0);
   }
@@ -28,6 +35,26 @@ public class EnergyStorage implements IEnergyStorage {
     this.maxReceive = maxReceive;
     this.maxExtract = maxExtract;
     this.energy = energy;
+  }
+
+  private void updateTick(long currentTick) {
+    if (lastUpdateTick != currentTick) {
+      lastTickReceived = currentTickReceived;
+      lastTickExtracted = currentTickExtracted;
+      currentTickReceived = 0;
+      currentTickExtracted = 0;
+      lastUpdateTick = currentTick;
+    }
+  }
+
+  public int getLastTickReceived(long currentTick) {
+    updateTick(currentTick);
+    return lastTickReceived;
+  }
+
+  public int getLastTickExtracted(long currentTick) {
+    updateTick(currentTick);
+    return lastTickExtracted;
   }
 
   public void read(CompoundTag tag) {
@@ -56,6 +83,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     if (!simulate) {
       energy += amountReceived;
+      currentTickReceived += amountReceived;
     }
 
     return amountReceived;
@@ -70,6 +98,7 @@ public class EnergyStorage implements IEnergyStorage {
 
     if (!simulate) {
       energy -= amountExtracted;
+      currentTickExtracted += amountExtracted;
     }
 
     return amountExtracted;

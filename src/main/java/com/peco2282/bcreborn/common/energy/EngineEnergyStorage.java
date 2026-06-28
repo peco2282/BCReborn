@@ -23,8 +23,38 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
 
   private int energy, maxEnergy, maxExtract;
 
+  // デバッグ用
+  private int lastTickGenerated = 0;
+  private int lastTickExtracted = 0;
+  private int currentTickGenerated = 0;
+  private int currentTickExtracted = 0;
+  private long lastUpdateTick = -1;
+
   public EngineEnergyStorage(E engine) {
     this.engine = engine;
+  }
+
+  private void updateTick() {
+    if (engine.getLevel() != null) {
+      long currentTick = engine.getLevel().getGameTime();
+      if (lastUpdateTick != currentTick) {
+        lastTickGenerated = currentTickGenerated;
+        lastTickExtracted = currentTickExtracted;
+        currentTickGenerated = 0;
+        currentTickExtracted = 0;
+        lastUpdateTick = currentTick;
+      }
+    }
+  }
+
+  public int getLastTickGenerated() {
+    updateTick();
+    return lastTickGenerated;
+  }
+
+  public int getLastTickExtracted() {
+    updateTick();
+    return lastTickExtracted;
   }
 
   public E getEngine() {
@@ -63,9 +93,11 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   }
 
   public void generateEnergy(int maxGenerate, boolean simulate) {
+    updateTick();
     maxGenerate = Math.min(maxGenerate, this.maxEnergy - this.energy);
     if (!simulate) {
       this.energy += maxGenerate;
+      currentTickGenerated += maxGenerate;
       this.engine.setChanged();
     }
   }
@@ -79,11 +111,13 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
    */
   @Override
   public int extractEnergy(int maxExtract, boolean simulate) {
+    updateTick();
     // 実際に取り出せる量は、要求量・現在量・最大抽出量の最小
     int toExtract = Math.min(maxExtract, Math.min(this.energy, this.maxExtract));
     if (toExtract <= 0) return 0;
     if (!simulate) {
       this.energy -= toExtract;
+      currentTickExtracted += toExtract;
       this.engine.setChanged();
     }
     return toExtract;

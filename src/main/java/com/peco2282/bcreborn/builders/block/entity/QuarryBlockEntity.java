@@ -491,7 +491,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   }
 
   @Override
-  public EnergyStorage getBattery() {
-    return Objects.requireNonNull(super.getBattery());
+  public EnergyStorage getEnergyStorage() {
+    return Objects.requireNonNull(getBattery());
   }
 }
