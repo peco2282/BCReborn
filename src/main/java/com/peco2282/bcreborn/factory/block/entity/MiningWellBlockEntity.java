@@ -26,12 +26,15 @@ import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.factory.block.PlainPipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
 public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHasWork, IPipeConnection, IControllable, ILEDProvider {
   private final SafeTimeTracker updateTracker = new SafeTimeTracker(CoreConfig.getUpdateFactor());
@@ -91,7 +94,12 @@ public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHas
 
       if (level.getBlockState(getBlockPos().atY(depth)).isAir() || level.getBlockState(getBlockPos().atY(depth)).canBeReplaced()) {
         ticksSinceAction = 0;
-        level.setBlock(getBlockPos().atY(depth), FactoryBlocks.PLAIN_PIPE.get().defaultBlockState(), 3);
+        BlockState pipeState = FactoryBlocks.PLAIN_PIPE.get().defaultBlockState();
+        FluidState fluidState = level.getFluidState(getBlockPos().atY(depth));
+        if (fluidState.getType() == Fluids.WATER) {
+          pipeState = pipeState.setValue(PlainPipeBlock.WATERLOGGED, true);
+        }
+        level.setBlock(getBlockPos().atY(depth), pipeState, 3);
       } else {
         miner = new BlockMiner(level, this, getBlockPos().getX(), depth, getBlockPos().getZ());
       }
