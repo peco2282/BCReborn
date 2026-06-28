@@ -69,7 +69,7 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    writeToNBT(nbt, "items");
+    writeToNBT(nbt, "Items");
   }
 
   public void writeToNBT(CompoundTag data, String tag) {
