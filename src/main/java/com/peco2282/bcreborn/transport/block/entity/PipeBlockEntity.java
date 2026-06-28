@@ -848,8 +848,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       info.add("Traveling Fluids");
     } else {
       info.add("Energy:");
-      info.add("  " + energyStorage.getEnergyStored() + " / " + energyStorage.getMaxEnergyStored());
-      info.add("  Energy Max Power: " + energyTransportModule.getMaxPower());
+      info.add(String.format("  Storage : %d / %d RF", energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()));
+      info.add(String.format("  Max Rate: %d RF/tick", energyTransportModule.getMaxPower()));
+      info.add(String.format("  Received: %.2f RF/tick (%.2f RF/s)", energyTransportModule.getLastTickReceived(), energyTransportModule.getLastTickReceived() * 20));
+      info.add(String.format("  Sent    : %.2f RF/tick (%.2f RF/s)", energyTransportModule.getLastTickSent(), energyTransportModule.getLastTickSent() * 20));
+      info.add(String.format("  Loss    : %.1f%%", energyTransportModule.getPowerResistance() * 100));
     }
   }
 

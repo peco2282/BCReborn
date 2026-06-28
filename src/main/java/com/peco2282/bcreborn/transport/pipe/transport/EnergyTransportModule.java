@@ -61,6 +61,12 @@ public class EnergyTransportModule {
   // 最後にステップした worldTime（同一tick内の二重ステップ防止）
   private long currentDate = Long.MIN_VALUE;
 
+  // デバッグ用: 直近1tickで送電されたエネルギー量
+  private double lastTickSent = 0;
+  private double lastTickReceived = 0;
+  private double currentTickSent = 0;
+  private double currentTickReceived = 0;
+
   public EnergyTransportModule(PipeBlockEntity pipe) {
     this.pipe = pipe;
     PipeMaterial mat = pipe.getPipeMaterial();
@@ -81,6 +87,9 @@ public class EnergyTransportModule {
     step(level);
 
     // 1. internalPower を隣接へ比例配分して送電
+    currentTickSent = 0;
+    currentTickReceived = 0;
+
     for (int i = 0; i < 6; i++) {
       if (internalPower[i] <= 0) continue;
 
@@ -113,6 +122,7 @@ public class EnergyTransportModule {
               double accepted = neighborModule.receiveEnergy(outDir.getOpposite(), toPush);
               if (accepted > 0) {
                 internalPower[i] -= accepted;
+                currentTickSent += accepted;
               }
             }
           } else if (be != null) {
@@ -126,6 +136,7 @@ public class EnergyTransportModule {
               double toPush = Math.min(internalPower[i], maxPower);
               int accepted = handler.receiveEnergy((int) toPush, false);
               internalPower[i] -= accepted;
+              currentTickSent += accepted;
             }
           }
           if (internalPower[i] <= 0) break;
@@ -170,6 +181,7 @@ public class EnergyTransportModule {
             double accepted = neighborModule.receiveEnergy(outDir.getOpposite(), share);
             internalPower[i] -= accepted;
             toDistribute -= accepted;
+            currentTickSent += accepted;
             // 比例配分で使用したRFをpowerQueryから引く（次の面での計算用）
             // powerQuery[j] = Math.max(0, powerQuery[j] - (int) accepted); // sumも再計算が必要になるのでここでは引かない
           }
@@ -184,6 +196,7 @@ public class EnergyTransportModule {
             int accepted = handler.receiveEnergy(iShare, false);
             internalPower[i] -= accepted;
             toDistribute -= accepted;
+            currentTickSent += accepted;
             // powerQuery[j] = Math.max(0, powerQuery[j] - accepted);
           }
         }
@@ -367,6 +380,7 @@ public class EnergyTransportModule {
     }
 
     internalNextPower[side] += accepted;
+    currentTickReceived += actualInput;
 
     if (internalNextPower[side] > maxPower) {
       internalNextPower[side] = maxPower;
@@ -440,6 +454,19 @@ public class EnergyTransportModule {
 
     powerQuery = nextPowerQuery;
     nextPowerQuery = new int[6];
+
+    lastTickSent = currentTickSent;
+    lastTickReceived = currentTickReceived;
+    currentTickSent = 0;
+    currentTickReceived = 0;
+  }
+
+  public double getLastTickSent() {
+    return lastTickSent;
+  }
+
+  public double getLastTickReceived() {
+    return lastTickReceived;
   }
 
   // ---- NBT ----

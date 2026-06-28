@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
+import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.power.IRedstoneEngine;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.EngineBlock;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,6 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.common.ForgeHooks;
+
+import java.util.List;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class EngineBlockEntity<T extends BlockEntity>
   extends BuildCraftBlockEntity
-  implements IEnergyHandler {
+  implements IEnergyHandler, IDebuggable {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
   public static final float MIN_HEAT = 20;
   public static final float IDEAL_HEAT = 100;
@@ -456,6 +460,19 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       return energyCap.cast();
     }
     return super.getCapability(cap, side);
+  }
+
+  @Override
+  public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
+    info.add("Engine Info:");
+    info.add("  Stage      : " + energyStage.name());
+    info.add(String.format("  Heat       : %.1f / %.1f", heat, MAX_HEAT * 4)); // computeStageFromHeatの閾値的に1000が上限っぽい
+    info.add("  Active     : " + isActive);
+    info.add("  Powered    : " + isRedstonePowered);
+    info.add(String.format("  Storage    : %d / %d RF", energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()));
+    info.add(String.format("  Generated  : %d RF/tick (%d RF/s)", energyStorage.getLastTickGenerated(), energyStorage.getLastTickGenerated() * 20));
+    info.add(String.format("  Extracted  : %d RF/tick (%d RF/s)", energyStorage.getLastTickExtracted(), energyStorage.getLastTickExtracted() * 20));
+    info.add(String.format("  Multiplier : %.2f", getOutputMultiplier()));
   }
 
   public enum EnergyStage {
