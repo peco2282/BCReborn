@@ -14,14 +14,13 @@ package com.peco2282.bcreborn.common.utils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
 
@@ -128,7 +127,7 @@ public class BlockMiner {
         hasFailed = true;
       }
     } else {
-      world.destroyBlockProgress(minerId, pos, MathUtils.clamp((int) Math.floor((double) (energyAccepted * 10) / energyRequired), 0, 9));
+      world.destroyBlockProgress(minerId, pos, (int) Mth.clamp(Math.floor((double) (energyAccepted * 10) / energyRequired), 0, 9));
     }
     return usedAmount;
   }

@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.common.gui.widgets;
 
 
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
-import com.peco2282.bcreborn.common.utils.MathUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -72,7 +72,7 @@ public class ScrollbarWidget extends Widget {
   }
 
   public void setPosition(int pos) {
-    this.pos = MathUtils.clamp(pos, 0, len);
+    this.pos = Mth.clamp(pos, 0, len);
   }
 
   public void setLength(int len) {
