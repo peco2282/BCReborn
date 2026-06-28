@@ -53,6 +53,12 @@ public class ItemTransportModule {
   // ---- 公開API ----
 
   public void tick(Level level, BlockPos pos) {
+    if (pipe.getTransportType() != PipeType.ITEM) {
+      if (!travelingItems.isEmpty()) {
+        dropItems();
+      }
+      return;
+    }
     // tick 中の inject による ConcurrentModificationException を防ぐため snapshot を使用する。
     // remove は元リスト (travelingItems) に対して行う。
     List<TravelingItem> snapshot = List.copyOf(travelingItems);
@@ -176,6 +182,10 @@ public class ItemTransportModule {
       TravelingItem.CODEC.listOf().parse(NbtOps.INSTANCE, tag.get("TravelingItems"))
         .resultOrPartial(System.err::println)
         .ifPresent(travelingItems::addAll);
+
+      if (pipe.getTransportType() != PipeType.ITEM && !travelingItems.isEmpty()) {
+        dropItems();
+      }
     }
   }
 }
