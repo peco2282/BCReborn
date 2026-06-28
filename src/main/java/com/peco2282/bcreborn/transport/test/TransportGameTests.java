@@ -72,9 +72,8 @@ public class TransportGameTests {
     });
   }
 
-  // Energy tests are temporarily disabled due to DEDICATED_SERVER environment issues in GameTestServer
-  // @PrefixGameTestTemplate(false)
-  // @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void testEnergyTransport(GameTestHelper helper) {
     // 構成: 木エンジン(0,1,1) -> 木エネルギーパイプ(1,1,1) -> 金エネルギーパイプ(2,1,1)
     // 木エンジンは北向き(Direction.NORTH, 負のZ方向)に設置するが、テンプレート内なので相対座標で調整
