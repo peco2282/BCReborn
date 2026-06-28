@@ -27,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 
@@ -121,7 +122,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
   }
 
   @Override
-  public BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
+  public @Nullable BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
     if (!buildList.isEmpty() || !clearList.isEmpty()) {
       BuildingSlotBlock slot = internalGetNextBlock(world, inv);
       checkDone();
@@ -134,6 +135,7 @@ public class BptBuilderTemplate extends BptBuilderBase {
     return null;
   }
 
+  @Nullable
   private BuildingSlotBlock internalGetNextBlock(Level world, AbstractBuilderBlockEntity builder) {
     BuildingSlotBlock result = null;
 
