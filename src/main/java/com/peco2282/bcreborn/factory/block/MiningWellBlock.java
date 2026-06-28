@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +61,11 @@ public class MiningWellBlock extends BuildCraftBlock {
       if (!(pipeState.getBlock() instanceof PlainPipeBlock)) {
         break;
       }
-      level.removeBlock(pipePos, false);
+      if (pipeState.hasProperty(PlainPipeBlock.WATERLOGGED) && pipeState.getValue(PlainPipeBlock.WATERLOGGED)) {
+        level.setBlock(pipePos, Fluids.WATER.getSource(false).createLegacyBlock(), 3);
+      } else {
+        level.removeBlock(pipePos, false);
+      }
     }
   }
 
