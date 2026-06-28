@@ -361,7 +361,10 @@ public class EnergyTransportModule {
   public double receiveEnergy(Direction from, double amount) {
     int side = from.get3DDataValue();
 
-    step(pipe.getLevel());
+    Level level = pipe.getLevel();
+    if (level != null) {
+      step(level);
+    }
 
     if (internalNextPower[side] >= maxPower) {
       return 0;
@@ -404,6 +407,10 @@ public class EnergyTransportModule {
    * @param amount 要求RF量
    */
   public void requestEnergy(Direction from, int amount) {
+    Level level = pipe.getLevel();
+    if (level != null) {
+      step(level);
+    }
     nextPowerQuery[from.get3DDataValue()] += amount;
   }
 
@@ -447,10 +454,12 @@ public class EnergyTransportModule {
     currentDate = worldTime;
 
     // バッファスワップ
-    double[] tmp = internalPower;
-    internalPower = internalNextPower;
-    internalNextPower = tmp;
-    Arrays.fill(internalNextPower, 0);
+    // 前のtickで internalNextPower に蓄積されたエネルギーを internalPower に移動し、
+    // internalNextPower をクリアして今tickの受信用にする。
+    for (int i = 0; i < 6; i++) {
+      internalPower[i] = internalNextPower[i];
+      internalNextPower[i] = 0;
+    }
 
     powerQuery = nextPowerQuery;
     nextPowerQuery = new int[6];
@@ -499,5 +508,6 @@ public class EnergyTransportModule {
       nextPowerQuery[i] = energyTag.getInt("nextPowerQuery" + i);
     }
     overload = energyTag.getInt("overload");
+    currentDate = Long.MIN_VALUE;
   }
 }
