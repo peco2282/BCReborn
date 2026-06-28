@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
+import net.minecraft.util.Mth;
+
 import java.util.Date;
 
 public class IterableAlgorithmRunner extends Thread {
@@ -43,7 +45,7 @@ public class IterableAlgorithmRunner extends Thread {
         pathFinding.iterate();
 
         long elapsedTime = new Date().getTime() - startTime;
-        int timeToWait = MathUtils.clamp((int) Math.ceil(elapsedTime * 1.5), 1, 500);
+        int timeToWait = (int) Mth.clamp(Math.ceil(elapsedTime * 1.5), 1, 500);
         sleep(timeToWait);
       }
     } catch (Throwable t) {
