@@ -33,6 +33,7 @@ import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviourManager;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import com.peco2282.bcreborn.transport.pipe.transport.FluidTransportModule;
 import com.peco2282.bcreborn.transport.pipe.transport.ItemTransportModule;
+import com.peco2282.bcreborn.transport.pipe.transport.PipeEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -93,6 +94,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
   private final LazyOptional<IFluidHandler> fluidHandlerCap;
   private final LazyOptional<IEnergyStorage> energyCap;
+  @SuppressWarnings("unchecked")
+  private final LazyOptional<IEnergyStorage>[] energySideCaps = new LazyOptional[6];
   private final boolean[] wireSignals = new boolean[4];
   private PipeType transportType;
   private PipeMaterial pipeMaterial;
@@ -139,6 +142,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       this.fluidHandlerCap = LazyOptional.empty();
     }
     this.energyCap = (energyStorage != null) ? LazyOptional.of(() -> energyStorage) : LazyOptional.empty();
+    if (energyTransportModule != null) {
+      for (Direction dir : Direction.values()) {
+        energySideCaps[dir.ordinal()] = LazyOptional.of(() -> new PipeEnergyStorage(energyTransportModule, dir));
+      }
+    } else {
+      Arrays.fill(energySideCaps, LazyOptional.empty());
+    }
     for (Direction dir : Direction.values()) {
       filters.put(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
     }
@@ -617,6 +627,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return fluidHandlerCap.cast();
     }
     if (cap == ForgeCapabilities.ENERGY && transportType == PipeType.ENERGY) {
+      if (side != null) {
+        return energySideCaps[side.ordinal()].cast();
+      }
       return energyCap.cast();
     }
     // Powered pipe (for extract)
@@ -635,6 +648,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     itemHandlerCap.invalidate();
     fluidHandlerCap.invalidate();
     energyCap.invalidate();
+    for (var cap : energySideCaps) {
+      if (cap != null) cap.invalidate();
+    }
   }
 
   // ---- Network ----

@@ -90,11 +90,38 @@ public class EnergyTransportModule {
           totalQuery += powerQuery[j];
         }
       }
-      if (totalQuery <= 0) continue;
+      if (totalQuery <= 0) {
+        // 需要がない場合でも、エネルギーを保持しているなら隣接パイプに
+        // ダミーの需要（1.0 RF）を通知して配送を試みる
+        for (int j = 0; j < 6; j++) {
+            Direction outDir = Direction.from3DDataValue(j);
+            BlockPos neighborPos = pos.relative(outDir);
+            if (!level.isLoaded(neighborPos)) continue;
+            BlockEntity be = level.getBlockEntity(neighborPos);
+            if (be instanceof PipeBlockEntity neighborPipe
+                    && neighborPipe.getTransportType() == PipeType.ENERGY) {
+                EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
+                if (neighborModule != null) {
+                    // 隣接パイプへ押し出し（最小量）
+                    double accepted = neighborModule.receiveEnergy(outDir.getOpposite(), 1.0);
+                    if (accepted > 0) {
+                        internalPower[i] -= accepted;
+                    }
+                }
+            }
+        }
+        continue;
+      }
 
-      int unusedQuery = totalQuery;
+      int currentQuerySum = 0;
       for (int j = 0; j < 6; j++) {
-        if (powerQuery[j] <= 0) continue;
+        currentQuerySum += powerQuery[j];
+      }
+      if (currentQuerySum <= 0) continue;
+
+      double toDistribute = internalPower[i];
+      for (int j = 0; j < 6; j++) {
+        if (powerQuery[j] <= 0 || toDistribute <= 0) continue;
 
         Direction outDir = Direction.from3DDataValue(j);
         BlockPos neighborPos = pos.relative(outDir);
@@ -105,10 +132,9 @@ public class EnergyTransportModule {
 
         // 比例配分量を計算（double精度）
         double share = Math.min(
-          internalPower[i] * powerQuery[j] / (double) unusedQuery,
-          internalPower[i]
+          toDistribute * powerQuery[j] / (double) currentQuerySum,
+          toDistribute
         );
-        unusedQuery -= powerQuery[j];
 
         if (be instanceof PipeBlockEntity neighborPipe
           && neighborPipe.getTransportType() == PipeType.ENERGY) {
@@ -117,6 +143,9 @@ public class EnergyTransportModule {
           if (neighborModule != null) {
             double accepted = neighborModule.receiveEnergy(outDir.getOpposite(), share);
             internalPower[i] -= accepted;
+            toDistribute -= accepted;
+            // 比例配分で使用したRFをpowerQueryから引く（次の面での計算用）
+            // powerQuery[j] = Math.max(0, powerQuery[j] - (int) accepted); // sumも再計算が必要になるのでここでは引かない
           }
         } else {
           // 一般機械（IEnergyStorage）へ転送
@@ -128,6 +157,8 @@ public class EnergyTransportModule {
             int iShare = (int) share;
             int accepted = handler.receiveEnergy(iShare, false);
             internalPower[i] -= accepted;
+            toDistribute -= accepted;
+            // powerQuery[j] = Math.max(0, powerQuery[j] - accepted);
           }
         }
       }
@@ -226,7 +257,8 @@ public class EnergyTransportModule {
         boolean hasIncomingPower = internalPower[i] > 0 || internalNextPower[i] > 0;
 
         // 2. 木のエネルギーパイプなど、自らエネルギーを抽出するパイプ、
-        // または現在エネルギーを保持しているパイプの場合は
+        // または現在エネルギーを保持しているパイプ、
+        // または需要（totalSystemQuery）がある場合は
         // 全方位に対して需要を伝播させる（そうしないと金パイプ等の隣接パイプが需要を感知できない）
         boolean isSourcePipe = pipe.getPipeMaterial() == PipeMaterial.WOOD;
         boolean hasInternalPower = false;
@@ -237,8 +269,23 @@ public class EnergyTransportModule {
           }
         }
 
-        if (!hasIncomingPower && !isSourcePipe && !hasInternalPower) {
-          continue;
+        if (hasIncomingPower || isSourcePipe || hasInternalPower || totalSystemQuery > 0) {
+          // 条件を満たす場合、需要を隣接パイプへ伝播する
+          // - hasIncomingPower: エネルギーが来ている方向へ（遡り）
+          // - isSourcePipe: 全方位へ（木パイプ等）
+          // - hasInternalPower: 全方位へ（保持している場合）
+          // - totalSystemQuery > 0: 需要がある場合、全方位へ（探索）
+        } else {
+          // 修正: 供給元（エンジン等）が隣接している場合も、そこに対して需要を伝播させる必要がある
+          boolean hasSource = false;
+          BlockEntity neighborBE = level.getBlockEntity(pos.relative(dir));
+          if (neighborBE != null) {
+              IEnergyStorage s = neighborBE.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).orElse(null);
+              if (s != null && s.canExtract()) {
+                  hasSource = true;
+              }
+          }
+          if (!hasSource) continue;
         }
 
         BlockPos neighborPos = pos.relative(dir);
