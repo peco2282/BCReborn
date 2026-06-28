@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.gates.IGate;
+import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.PipeManager;
@@ -73,7 +74,7 @@ import java.util.*;
  * </p>
  * Transport logic itself is delegated to transport modules.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeBlockEntity, Container {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeBlockEntity, Container, IDebuggable {
   public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
@@ -821,6 +822,26 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       injectItem(stack, from);
     }
     return stack.getCount();
+  }
+
+  @Override
+  public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
+    info.add("Type      : " + getPipeType().getSerializedName());
+    info.add("Material  : " + pipeMaterial.getSerializedName());
+    info.add("Color     : " + pipeColor);
+    if (getPipeType() == PipeType.ITEM) {
+      info.add("Traveling Items");
+      itemTransportModule.getTravelingItems().forEach(it -> {
+        info.add("  Item: " + it.getStack());
+        info.add("  Direction: " + it.getNextDirection().getSerializedName().toUpperCase());
+      });
+    } else if (getPipeType() == PipeType.FLUID) {
+      info.add("Traveling Fluids");
+    } else {
+      info.add("Energy:");
+      info.add("  " + energyStorage.getEnergyStored() + " / " + energyStorage.getMaxEnergyStored());
+      info.add("  Energy Max Power: " + energyTransportModule.getMaxPower());
+    }
   }
 
   public enum ExtractFilterMode {
