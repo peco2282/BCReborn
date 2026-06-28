@@ -100,9 +100,6 @@ public class BlockMiner {
       world.destroyBlockProgress(minerId, new BlockPos(x, y, z), -1);
 
       hasMined = true;
-
-      BlockState state = world.getBlockState(pos);
-
       BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(world, pos, world.getBlockState(pos),
         BCFakePlayer.createBuildCraftPlayer((ServerLevel) owner.getLevel(), owner.getBlockPos()));
       MinecraftForge.EVENT_BUS.post(breakEvent);
