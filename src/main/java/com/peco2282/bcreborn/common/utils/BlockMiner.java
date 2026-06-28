@@ -93,7 +93,7 @@ public class BlockMiner {
 
     int energyRequired = BlockUtils.computeBlockBreakEnergy(world, pos);
 
-    int usedAmount = MathUtils.clamp(offeredAmount, 0, Math.max(0, energyRequired - energyAccepted));
+    int usedAmount = Math.min(offeredAmount, energyRequired - energyAccepted);
     energyAccepted += usedAmount;
 
     if (energyAccepted >= energyRequired) {
@@ -109,7 +109,12 @@ public class BlockMiner {
 
       if (!breakEvent.isCanceled()) {
         BlockState currentState = world.getBlockState(pos);
-        List<ItemStack> stacks = BlockUtils.getItemStackFromBlock((ServerLevel) world, pos);
+        List<ItemStack> stacks;
+        if (world instanceof ServerLevel server) {
+          stacks = Block.getDrops(currentState, server, pos, world.getBlockEntity(pos));
+        } else {
+          stacks = List.of();
+        }
 
         if (!stacks.isEmpty()) {
           for (ItemStack s : stacks) {

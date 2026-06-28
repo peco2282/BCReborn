@@ -43,7 +43,6 @@ import java.util.List;
 
 public final class BlockUtils {
   // Dummy constants for missing ones in BCRebornCore
-  private static final float miningMultiplier = 1.0f;
   private static final boolean miningAllowPlayerProtectedBlocks = false;
 
   /**
@@ -284,7 +283,7 @@ public final class BlockUtils {
   }
 
   public static int computeBlockBreakEnergy(Level world, BlockPos pos) {
-    return (int) Math.floor(BuilderAPI.BREAK_ENERGY * miningMultiplier * ((world.getBlockState(pos).getDestroySpeed(world, pos) + 1) * 2));
+    return (int) Math.floor(BuilderAPI.BREAK_ENERGY * world.getBlockState(pos).getDestroySpeed(world, pos) * CoreConfig.getMiningUsageMultiplier());
   }
 
   /**
