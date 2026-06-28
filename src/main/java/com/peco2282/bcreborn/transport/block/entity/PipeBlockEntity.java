@@ -80,21 +80,21 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
   // 流体輸送モジュール（FLUID パイプのみ有効）
   @Nullable
-  private final FluidTransportModule fluidTransportModule;
+  private FluidTransportModule fluidTransportModule;
   // エネルギー輸送モジュール（ENERGY パイプのみ有効）
   @Nullable
-  private final EnergyTransportModule energyTransportModule;
+  private EnergyTransportModule energyTransportModule;
   // 流体ストレージ（FLUID パイプのみ生成）
   @Nullable
-  private final FluidTank fluidTank;
+  private FluidTank fluidTank;
   // エネルギーストレージ（ENERGY パイプのみ生成）
   @Nullable
-  private final EnergyStorage energyStorage;
+  private EnergyStorage energyStorage;
   private final EnumMap<Direction, SimpleInventory> filters = new EnumMap<>(Direction.class);
   // Capability lazy optionals
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
-  private final LazyOptional<IFluidHandler> fluidHandlerCap;
-  private final LazyOptional<IEnergyStorage> energyCap;
+  private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
+  private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
   @SuppressWarnings("unchecked")
   private final LazyOptional<IEnergyStorage>[] energySideCaps = new LazyOptional[6];
   private final boolean[] wireSignals = new boolean[4];
@@ -125,14 +125,18 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   public PipeBlockEntity(BlockPos pos, BlockState state, PipeType type, PipeMaterial material) {
     super(getBlockEntityType(type), pos, state);
+    initPipe(type, material);
+  }
+
+  private void initPipe(PipeType type, PipeMaterial material) {
     if (material.unsupports(type)) {
       throw new IllegalArgumentException("Pipe material does not support the specified pipe type");
     }
     this.transportType = type;
     this.pipeMaterial = material;
     this.fluidTank = (type == PipeType.FLUID) ? new FluidTank(1000) : null;
-    int energyCap = (type == PipeType.ENERGY) ? material.getEnergyTransferRate() * 2 : -1;
-    this.energyStorage = (type == PipeType.ENERGY) ? new EnergyStorage(energyCap, energyCap, energyCap, 0) : null;
+    int energyCapVal = (type == PipeType.ENERGY) ? material.getEnergyTransferRate() * 2 : -1;
+    this.energyStorage = (type == PipeType.ENERGY) ? new EnergyStorage(energyCapVal, energyCapVal, energyCapVal, 0) : null;
     this.fluidTransportModule = (type == PipeType.FLUID) ? new FluidTransportModule(this) : null;
     this.energyTransportModule = (type == PipeType.ENERGY) ? new EnergyTransportModule(this) : null;
     if (fluidTank != null) {
@@ -151,7 +155,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       Arrays.fill(energySideCaps, LazyOptional.empty());
     }
     for (Direction dir : Direction.values()) {
-      filters.put(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
+      filters.putIfAbsent(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
     }
     this.behaviour = PipeBehaviourManager.getBehaviour(type, material);
 
@@ -506,11 +510,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         wireSignals[i] = wires[i] != 0;
       }
     }
+    PipeType oldType = this.transportType;
+    PipeMaterial oldMaterial = this.pipeMaterial;
     if (tag.contains("TransportType")) {
       this.transportType = PipeType.valueOf(tag.getString("TransportType"));
     }
     if (tag.contains("PipeMaterial")) {
       this.pipeMaterial = PipeMaterial.valueOf(tag.getString("PipeMaterial").toUpperCase());
+    }
+    if (this.transportType != oldType || this.pipeMaterial != oldMaterial) {
+      initPipe(this.transportType, this.pipeMaterial);
     }
     if (tag.contains("IronPipeEnergyLimit")) {
       this.ironPipeEnergyLimit = tag.getInt("IronPipeEnergyLimit");
