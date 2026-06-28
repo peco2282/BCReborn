@@ -501,6 +501,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    return transportType == PipeType.ITEM;
+  }
+
+  @Override
   public void load(CompoundTag tag) {
     super.load(tag);
     ticksSincePull = tag.getInt("ticksSincePull");
@@ -822,11 +827,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public boolean canInjectItems(@Nullable Direction from) {
-    return true;
+    return transportType == PipeType.ITEM;
   }
 
   @Override
   public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color) {
+    if (transportType != PipeType.ITEM) {
+      return 0;
+    }
     if (doAdd) {
       injectItem(stack, from);
     }
