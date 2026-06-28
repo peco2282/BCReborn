@@ -29,11 +29,7 @@ public class SimpleInventory implements Container, INBTSerializable {
   private final LinkedList<BlockEntity> listener = new LinkedList<>();
 
   public SimpleInventory(int size, String invName, int invStackLimit) {
-    contents = CodingUtils.apply(new ItemStack[size], s -> {
-      for (int i = 0; i < size; i++) {
-        s[i] = ItemStack.EMPTY;
-      }
-    });
+    contents = CodingUtils.fillArray(new ItemStack[size], ItemStack.EMPTY);
     name = invName;
     stackLimit = invStackLimit;
   }

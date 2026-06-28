@@ -126,7 +126,7 @@ public class RobotEntity extends RobotEntityBase implements
     SynchedEntityData.defineId(RobotEntity.class, EntityDataSerializers.INT);
   private static final Set<Integer> blacklistedItemsForUpdate = Sets.newHashSet();
   private final List<ItemStack> wearables = new ArrayList<>();
-  private final ItemStack[] inv = CodingUtils.apply(new ItemStack[TRANSFER_INV_SLOTS], its -> Arrays.fill(its, ItemStack.EMPTY));
+  private final ItemStack[] inv = CodingUtils.fillArray(new ItemStack[TRANSFER_INV_SLOTS], ItemStack.EMPTY);
   private final int maxFluid = FluidType.BUCKET_VOLUME * 4;
   private final WeakHashMap<Entity, Long> unreachableEntities = new WeakHashMap<>();
   private final EnergyStorage battery = new EnergyStorage(MAX_ENERGY, MAX_ENERGY, 100);

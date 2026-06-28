@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,11 @@ public interface CodingUtils {
   static <T> T apply(T obj, Consumer<T> consumer) {
     consumer.accept(obj);
     return obj;
+  }
+
+  static <T> T[] fillArray(T[] array, T value) {
+    Arrays.fill(array, value);
+    return array;
   }
 
   static <T, R> List<R> map2List(Collection<T> list, Function<T, R> function) {
