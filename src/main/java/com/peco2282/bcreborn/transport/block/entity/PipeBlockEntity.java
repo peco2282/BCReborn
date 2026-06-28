@@ -95,8 +95,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
   private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
   private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
-  @SuppressWarnings("unchecked")
-  private final LazyOptional<IEnergyStorage>[] energySideCaps = new LazyOptional[6];
+  private final Map<Direction, LazyOptional<IEnergyStorage>> energySideCapsMap = new EnumMap<>(Direction.class);
   private final boolean[] wireSignals = new boolean[4];
   private PipeType transportType;
   private PipeMaterial pipeMaterial;
@@ -149,10 +148,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     this.energyCap = (energyStorage != null) ? LazyOptional.of(() -> energyStorage) : LazyOptional.empty();
     if (energyTransportModule != null) {
       for (Direction dir : Direction.values()) {
-        energySideCaps[dir.ordinal()] = LazyOptional.of(() -> new PipeEnergyStorage(energyTransportModule, dir));
+        energySideCapsMap.put(dir, LazyOptional.of(() -> new PipeEnergyStorage(energyTransportModule, dir)));
       }
     } else {
-      Arrays.fill(energySideCaps, LazyOptional.empty());
+      for (Direction dir : Direction.values()) {
+        energySideCapsMap.put(dir, LazyOptional.empty());
+      }
     }
     for (Direction dir : Direction.values()) {
       filters.putIfAbsent(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
@@ -643,7 +644,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
     if (cap == ForgeCapabilities.ENERGY && transportType == PipeType.ENERGY) {
       if (side != null) {
-        return energySideCaps[side.ordinal()].cast();
+        return energySideCapsMap.get(side).cast();
       }
       return energyCap.cast();
     }
@@ -663,7 +664,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     itemHandlerCap.invalidate();
     fluidHandlerCap.invalidate();
     energyCap.invalidate();
-    for (var cap : energySideCaps) {
+    for (var cap : energySideCapsMap.values()) {
       if (cap != null) cap.invalidate();
     }
   }
@@ -845,7 +846,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
     info.add("Type      : " + getPipeType().getSerializedName());
     info.add("Material  : " + pipeMaterial.getSerializedName());
-    info.add("Color     : " + pipeColor);
+    if (pipeColor != null) {
+      info.add("Color     : " + pipeColor);
+    }
     if (getPipeType() == PipeType.ITEM) {
       info.add("Traveling Items");
       itemTransportModule.getTravelingItems().forEach(it -> {
