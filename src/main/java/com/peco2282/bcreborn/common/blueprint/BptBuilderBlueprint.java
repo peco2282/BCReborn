@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -270,7 +271,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   @Override
-  public BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
+  public @Nullable BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv) {
     if (getBuildListCount() != 0) {
       BuildingSlot slot = internalGetNextBlock(world, inv);
       checkDone();

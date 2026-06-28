@@ -36,6 +36,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.level.BlockEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.BitSet;
 
@@ -89,6 +90,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 
   protected abstract BuildingSlot reserveNextBlock(Level world);
 
+  @Nullable
   protected abstract BuildingSlot getNextBlock(Level world, AbstractBuilderBlockEntity inv);
 
   public boolean buildNextSlot(Level world, AbstractBuilderBlockEntity builder, double x, double y, double z) {
@@ -100,7 +102,7 @@ public abstract class BptBuilderBase implements IAreaProvider {
 
     BuildingSlot slot = getNextBlock(world, builder);
 
-    if (buildSlot(world, builder, slot, x + 0.5F, y + 0.5F, z + 0.5F)) {
+    if (slot != null && buildSlot(world, builder, slot, x + 0.5F, y + 0.5F, z + 0.5F)) {
       nextBuildDate = world.getGameTime() + slot.buildTime();
       return true;
     } else {
