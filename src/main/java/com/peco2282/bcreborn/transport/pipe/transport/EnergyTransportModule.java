@@ -174,6 +174,18 @@ public class EnergyTransportModule {
       // 隣接エネルギーパイプは需要収集対象外（パイプ間は requestEnergy で伝播）
       if (be instanceof PipeBlockEntity neighborPipe
         && neighborPipe.getTransportType() == PipeType.ENERGY) {
+        // パイプにエネルギーを保持している場合、隣接パイプに需要（誘発用）を通知して配送を促す
+        // これにより、送り先のパイプが需要を感知し、さらにその先へ需要を伝播させる
+        boolean hasPower = false;
+        for (int i = 0; i < 6; i++) {
+          if (internalPower[i] > 0 || internalNextPower[i] > 0) {
+            hasPower = true;
+            break;
+          }
+        }
+        if (hasPower) {
+          requestEnergy(dir, 1);
+        }
         continue;
       }
 
@@ -208,10 +220,24 @@ public class EnergyTransportModule {
       for (int i = 0; i < 6; i++) {
         Direction dir = Direction.from3DDataValue(i);
 
-        // エネルギーが入ってきた方向（入力元）に対してのみ需要を伝播する
+        // 1. エネルギーが入ってきた方向（入力元）に対してのみ需要を伝播する
         // これにより需要が供給源に向かって遡る
         // internalPower[i] > 0 は「この面からエネルギーを受け取った」ことを示す
-        if (internalPower[i] <= 0 && internalNextPower[i] <= 0) {
+        boolean hasIncomingPower = internalPower[i] > 0 || internalNextPower[i] > 0;
+
+        // 2. 木のエネルギーパイプなど、自らエネルギーを抽出するパイプ、
+        // または現在エネルギーを保持しているパイプの場合は
+        // 全方位に対して需要を伝播させる（そうしないと金パイプ等の隣接パイプが需要を感知できない）
+        boolean isSourcePipe = pipe.getPipeMaterial() == PipeMaterial.WOOD;
+        boolean hasInternalPower = false;
+        for (int j = 0; j < 6; j++) {
+          if (internalPower[j] > 0 || internalNextPower[j] > 0) {
+            hasInternalPower = true;
+            break;
+          }
+        }
+
+        if (!hasIncomingPower && !isSourcePipe && !hasInternalPower) {
           continue;
         }
 
