@@ -479,6 +479,18 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   }
 
   @Override
+  public void setRemoved() {
+    super.setRemoved();
+    if (level != null && !level.isClientSide) {
+      if (!frameList.isEmpty())
+        level.destroyBlock(
+          frameList.getFirst(),
+          true
+        );
+    }
+  }
+
+  @Override
   public EnergyStorage getBattery() {
     return Objects.requireNonNull(super.getBattery());
   }
