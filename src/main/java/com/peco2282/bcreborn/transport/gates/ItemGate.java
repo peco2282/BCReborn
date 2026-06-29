@@ -205,6 +205,8 @@ public class ItemGate extends Item implements IPipePluggableItem {
 
   @Override
   public PipePluggable<?> createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
-    return new GatePluggable(GateFactory.makeGate(pipe, stack, side));
+    return GateFactory.makeGate(pipe, stack, side)
+      .map(GatePluggable::new)
+      .orElseGet(GatePluggable::new);
   }
 }

@@ -63,8 +63,9 @@ public class StatementParameterRobot extends StatementParameterItemStack {
   public void onClick(@Nullable IStatementContainer source, @Nullable IStatement stmt, ItemStack stack,
                       StatementMouseClick mouse) {
     if (stack.isEmpty() && (this.stack.isEmpty() || this.stack.getItem() instanceof RobotItem)) {
-      RedstoneBoardRobotNBT nextBoard = RobotUtils.getNextBoard(this.stack, mouse.button() > 0);
-      this.stack = RobotItem.createRobotStack(nextBoard, 0);
+      RobotUtils.getNextBoard(this.stack, mouse.button() > 0).ifPresent(nextBoard ->
+        this.stack = RobotItem.createRobotStack(nextBoard, 0)
+      );
     } else {
       super.onClick(source, stmt, stack, mouse);
     }

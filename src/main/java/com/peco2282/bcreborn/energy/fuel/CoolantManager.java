@@ -41,14 +41,16 @@ public class CoolantManager implements ICoolantManager {
 
   @Override
   public ICoolant addCoolant(Fluid fluid, float degreesCoolingPerMB) {
-    coolants.put(fluid.getFluidType(), new Coolant(fluid, degreesCoolingPerMB));
-    return null;
+    ICoolant coolant = new Coolant(fluid, degreesCoolingPerMB);
+    coolants.put(fluid.getFluidType(), coolant);
+    return coolant;
   }
 
   @Override
   public ICoolant addCoolant(FluidType fluid, float degreesCoolingPerMB) {
-    coolants.put(fluid, new Coolant(fluid, degreesCoolingPerMB));
-    return null;
+    ICoolant coolant = new Coolant(fluid, degreesCoolingPerMB);
+    coolants.put(fluid, coolant);
+    return coolant;
   }
 
   @Override
@@ -135,7 +137,7 @@ public class CoolantManager implements ICoolantManager {
     @Override
     public FluidStack getFluidFromSolidCoolant(ItemStack stack) {
       if (stack.isEmpty() || !ItemStack.isSameItemSameTags(stack, this.solid.stack())) {
-        return null;
+        return FluidStack.EMPTY;
       }
       int liquidAmount = (int) (stack.getCount() * liquid.fluidStack().getAmount() * multiplier / solid.stack().getCount());
 

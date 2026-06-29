@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.api.lists;
 
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,9 +20,8 @@ public abstract class ListMatchHandler {
 
   public abstract boolean isValidSource(Type type, ItemStack stack);
 
-  @Nullable
   public List<ItemStack> getClientExamples(Type type, ItemStack stack) {
-    return null;
+    return List.of();
   }
 
   public enum Type {

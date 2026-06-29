@@ -45,6 +45,6 @@ public class RobotsTriggerProvider implements ITriggerProvider {
 
   @Override
   public Collection<ITriggerExternal> getExternalTriggers(Direction side, BlockEntity tile) {
-    return null;
+    return List.of();
   }
 }

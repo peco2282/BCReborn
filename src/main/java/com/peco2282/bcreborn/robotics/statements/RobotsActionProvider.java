@@ -83,7 +83,7 @@ public class RobotsActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionExternal> getExternalActions(Direction side, BlockEntity tile) {
-    return null;
+    return List.of();
   }
 
 }

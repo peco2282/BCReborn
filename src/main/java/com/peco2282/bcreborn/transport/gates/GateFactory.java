@@ -23,6 +23,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.Optional;
+
 public final class GateFactory {
 
   /**
@@ -35,9 +37,9 @@ public final class GateFactory {
     return new Gate(pipe, material, logic, direction);
   }
 
-  public static Gate makeGate(IPipe pipe, ItemStack stack, Direction direction) {
+  public static Optional<Gate> makeGate(IPipe pipe, ItemStack stack, Direction direction) {
     if (stack.isEmpty() /* || !(stack.getItem() instanceof ItemGate) */) {
-      return null;
+      return Optional.empty();
     }
 
     // TODO: ItemGate
@@ -48,10 +50,10 @@ public final class GateFactory {
 		}
 		*/
 
-    return makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction);
+    return Optional.of(makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction));
   }
 
-  public static Gate makeGate(IPipe pipe, CompoundTag nbt) {
+  public static Optional<Gate> makeGate(IPipe pipe, CompoundTag nbt) {
     GateMaterial material = GateMaterial.REDSTONE;
     GateLogic logic = GateLogic.AND;
     Direction direction = Direction.UP;
@@ -60,14 +62,14 @@ public final class GateFactory {
       try {
         material = GateMaterial.valueOf(nbt.getString("material"));
       } catch (IllegalArgumentException ex) {
-        return null;
+        return Optional.empty();
       }
     }
     if (nbt.contains("logic")) {
       try {
         logic = GateLogic.valueOf(nbt.getString("logic"));
       } catch (IllegalArgumentException ex) {
-        return null;
+        return Optional.empty();
       }
     }
     if (nbt.contains("direction")) {
@@ -88,6 +90,6 @@ public final class GateFactory {
       }
     }
 
-    return gate;
+    return Optional.of(gate);
   }
 }

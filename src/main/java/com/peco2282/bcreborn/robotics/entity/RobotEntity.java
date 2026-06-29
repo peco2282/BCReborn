@@ -23,7 +23,6 @@ import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BCLog;
-import com.peco2282.bcreborn.api.core.BlockIndex;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.events.RobotEvent;
 import com.peco2282.bcreborn.api.robots.*;
@@ -486,14 +485,14 @@ public class RobotEntity extends RobotEntityBase implements
 
     if (linkedDockingStationIndex != null) {
       CompoundTag linkedStationNBT = new CompoundTag();
-      linkedStationNBT.putLong("index", linkedDockingStationIndex.asLong());
+      linkedStationNBT.putLong("pos", linkedDockingStationIndex.asLong());
       linkedStationNBT.putInt("side", linkedDockingStationSide.get3DDataValue());
       nbt.put("linkedStation", linkedStationNBT);
     }
 
     if (currentDockingStationIndex != null) {
       CompoundTag currentStationNBT = new CompoundTag();
-      currentStationNBT.putLong("index", currentDockingStationIndex.asLong());
+      currentStationNBT.putLong("pos", currentDockingStationIndex.asLong());
       currentStationNBT.putInt("side", currentDockingStationSide.get3DDataValue());
       nbt.put("currentStation", currentStationNBT);
     }
@@ -560,13 +559,13 @@ public class RobotEntity extends RobotEntityBase implements
 
     if (nbt.contains("linkedStation")) {
       CompoundTag linkedStationNBT = nbt.getCompound("linkedStation");
-      linkedDockingStationIndex = BlockPos.of(linkedStationNBT.getLong("index"));
+      linkedDockingStationIndex = BlockPos.of(linkedStationNBT.getLong("pos"));
       linkedDockingStationSide = Direction.from3DDataValue(linkedStationNBT.getInt("side"));
     }
 
     if (nbt.contains("currentStation")) {
       CompoundTag currentStationNBT = nbt.getCompound("currentStation");
-      currentDockingStationIndex = BlockPos.of(currentStationNBT.getLong("index"));
+      currentDockingStationIndex = BlockPos.of(currentStationNBT.getLong("pos"));
       currentDockingStationSide = Direction.from3DDataValue(currentStationNBT.getInt("side"));
 
     }
@@ -580,7 +579,7 @@ public class RobotEntity extends RobotEntityBase implements
       ListTag list = nbt.getList("wearables", 10);
       for (int i = 0; i < list.size(); i++) {
         ItemStack stack = ItemStack.of(list.getCompound(i));
-        if (stack != null && !stack.isEmpty()) {
+        if (!stack.isEmpty()) {
           wearables.add(stack);
         }
       }
@@ -588,9 +587,6 @@ public class RobotEntity extends RobotEntityBase implements
 
     if (nbt.contains("itemInUse")) {
       itemInUse = ItemStack.of(nbt.getCompound("itemInUse"));
-      if (itemInUse == null) {
-        itemInUse = ItemStack.EMPTY;
-      }
       itemActive = nbt.getBoolean("itemActive");
     }
 
@@ -643,7 +639,7 @@ public class RobotEntity extends RobotEntityBase implements
       currentDockingStation.side.getStepY(),
       currentDockingStation.side.getStepZ());
 
-    currentDockingStationIndex = currentDockingStation.index();
+    currentDockingStationIndex = currentDockingStation.pos();
     currentDockingStationSide = currentDockingStation.side();
   }
 
@@ -672,7 +668,7 @@ public class RobotEntity extends RobotEntityBase implements
     }
 
     linkedDockingStation = station;
-    linkedDockingStationIndex = linkedDockingStation.index();
+    linkedDockingStationIndex = linkedDockingStation.pos();
     linkedDockingStationSide = linkedDockingStation.side();
   }
 
@@ -1005,6 +1001,7 @@ public class RobotEntity extends RobotEntityBase implements
     return zone;
   }
 
+  @Nullable
   private IZone getZone(ActionRobotWorkInArea.AreaType areaType) {
     if (linkedDockingStation != null) {
       for (StatementSlot s : linkedDockingStation.getActiveActions()) {
@@ -1249,13 +1246,21 @@ public class RobotEntity extends RobotEntityBase implements
   @Override
   public ItemStack receiveItem(BlockEntity tile, ItemStack stack) {
     if (currentDockingStation != null
-      && BlockIndex.nextTo(currentDockingStation.index(), new BlockPos(tile.getBlockPos()))
+      && nextTo(currentDockingStation.pos(), tile.getBlockPos())
       && mainAI != null) {
 
       return mainAI.getActiveAI().receiveItem(stack);
     } else {
       return stack;
     }
+  }
+
+  static boolean nextTo(BlockPos a, BlockPos b) {
+    return
+        Math.abs(a.getX() - b.getX()) +
+        Math.abs(a.getY() - b.getY()) +
+        Math.abs(a.getZ() - b.getZ())
+            <= 1;
   }
 
   @Override
@@ -1265,7 +1270,7 @@ public class RobotEntity extends RobotEntityBase implements
 
   @Override
   public FluidStack getFluidInTank(int tank) {
-    return null;
+    return FluidStack.EMPTY;
   }
 
   @Override

@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.library.LibraryAPI;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -80,12 +81,13 @@ public class LibraryDatabase {
   public void deleteBlueprint(LibraryId id) {
     File blueprintFile = getBlueprintFile(id);
 
-    blueprintFile.delete();
+    if (blueprintFile != null) blueprintFile.delete();
     blueprintIds.remove(id);
     pages = new LibraryId[blueprintIds.size()];
     pages = blueprintIds.toArray(pages);
   }
 
+  @Nullable
   protected File getBlueprintFile(LibraryId id) {
     String name = String.format(Locale.ENGLISH, "%s." + id.extension, id);
 
