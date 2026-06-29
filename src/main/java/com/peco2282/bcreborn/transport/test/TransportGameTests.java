@@ -16,7 +16,6 @@ import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
-import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -86,7 +85,7 @@ public class TransportGameTests {
 
     // 木エンジンを設置
     helper.setBlock(enginePos, com.peco2282.bcreborn.core.CoreBlocks.WOODEN_ENGINE.get().defaultBlockState()
-            .setValue(com.peco2282.bcreborn.common.block.EngineBlock.FACING, Direction.EAST));
+      .setValue(com.peco2282.bcreborn.common.block.EngineBlock.FACING, Direction.EAST));
 
     // パイプを設置
     helper.setBlock(woodPipePos, TransportBlocks.get(PipeType.ENERGY, PipeMaterial.WOOD).get().defaultBlockState());
@@ -99,24 +98,25 @@ public class TransportGameTests {
     helper.setBlock(enginePos.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
 
     helper.runAtTickTime(100, () -> {
-        // 木エンジンの熱が上がってエネルギーが生成されるのを待つ
-        // Minerにエネルギーが届いているか確認
-        BlockEntity be = helper.getBlockEntity(minerPos);
-        if (be instanceof com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity minerBE) {
-            int stored = minerBE.getBattery().getEnergyStored();
-            if (stored <= 0) {
-                // まだ届いていない可能性もあるので、succeedWhen で継続チェック
-            }
+      // 木エンジンの熱が上がってエネルギーが生成されるのを待つ
+      // Minerにエネルギーが届いているか確認
+      BlockEntity be = helper.getBlockEntity(minerPos);
+      if (be instanceof com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity minerBE) {
+        int stored = minerBE.getBattery().getEnergyStored();
+        if (stored <= 0) {
+          // まだ届いていない可能性もあるので、succeedWhen で継続チェック
         }
+      }
     });
 
     helper.succeedWhen(() -> {
-        BlockEntity be = helper.getBlockEntity(minerPos);
-        if (!(be instanceof com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity)) helper.fail("Miner not found");
-        com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity minerBE = (com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity) be;
-        int stored = minerBE.getBattery().getEnergyStored();
-        // 100tick後にはエネルギーが蓄積されているはず
-        if (stored <= 0) helper.fail("Energy not reaching miner. Current stored: " + stored);
+      BlockEntity be = helper.getBlockEntity(minerPos);
+      if (!(be instanceof com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity))
+        helper.fail("Miner not found");
+      com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity minerBE = (com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity) be;
+      int stored = minerBE.getBattery().getEnergyStored();
+      // 100tick後にはエネルギーが蓄積されているはず
+      if (stored <= 0) helper.fail("Energy not reaching miner. Current stored: " + stored);
     });
   }
 }

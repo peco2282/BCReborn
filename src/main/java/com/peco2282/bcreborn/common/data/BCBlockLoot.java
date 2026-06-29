@@ -20,28 +20,27 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BCBlockLoot extends BlockLootSubProvider {
-    protected BCBlockLoot() {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
-    }
+  protected BCBlockLoot() {
+    super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+  }
 
-    @Override
-    protected void generate() {
-        // bcrebornで始まる全ブロックを自動的にドロップ対象にする
-        for (Block block : getKnownBlocks()) {
-            if (block.asItem() != Items.AIR) {
-                this.dropSelf(block);
-            }
-        }
+  @Override
+  protected void generate() {
+    // bcrebornで始まる全ブロックを自動的にドロップ対象にする
+    for (Block block : getKnownBlocks()) {
+      if (block.asItem() != Items.AIR) {
+        this.dropSelf(block);
+      }
     }
+  }
 
-    @Override
-    protected Iterable<Block> getKnownBlocks() {
-        return ForgeRegistries.BLOCKS.getEntries().stream()
-                .filter(entry -> entry.getKey().location().getNamespace().startsWith(BCReborn.MOD_ID_BASE))
-                .map(Map.Entry::getValue)
-                .toList();
-    }
+  @Override
+  protected Iterable<Block> getKnownBlocks() {
+    return ForgeRegistries.BLOCKS.getEntries().stream()
+      .filter(entry -> entry.getKey().location().getNamespace().startsWith(BCReborn.MOD_ID_BASE))
+      .map(Map.Entry::getValue)
+      .toList();
+  }
 }

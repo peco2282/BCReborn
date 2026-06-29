@@ -36,31 +36,31 @@ import java.util.List;
 public class RobotCommands {
   public static LiteralArgumentBuilder<CommandSourceStack> command() {
     return literal("robot")
-        .then(
-            literal("create")
-                .then(
-                    argument("type", EntityArgument.entity())
-                        .executes(RobotCommands::create)
-                        .then(
-                            argument("pos", Vec3Argument.vec3())
-                                .executes(RobotCommands::createWithPos)
-                        )
-                )
-        )
-        .then(
-            literal("delete")
-                .then(
-                    argument("id", IntegerArgumentType.integer(0))
-                        .executes(RobotCommands::delete)
-                )
-        )
-        .then(
-            literal("list")
-                .then(argument("sortBy", StringArgumentType.string())
-                    .executes(RobotCommands::listBy)
-                    .then(argument("pagent", IntegerArgumentType.integer(0)).executes(RobotCommands::listByPaged))
-                )
-        );
+      .then(
+        literal("create")
+          .then(
+            argument("type", EntityArgument.entity())
+              .executes(RobotCommands::create)
+              .then(
+                argument("pos", Vec3Argument.vec3())
+                  .executes(RobotCommands::createWithPos)
+              )
+          )
+      )
+      .then(
+        literal("delete")
+          .then(
+            argument("id", IntegerArgumentType.integer(0))
+              .executes(RobotCommands::delete)
+          )
+      )
+      .then(
+        literal("list")
+          .then(argument("sortBy", StringArgumentType.string())
+            .executes(RobotCommands::listBy)
+            .then(argument("pagent", IntegerArgumentType.integer(0)).executes(RobotCommands::listByPaged))
+          )
+      );
   }
 
   static LiteralArgumentBuilder<CommandSourceStack> literal(String name) {
@@ -97,7 +97,7 @@ public class RobotCommands {
   static int delete(CommandContext<CommandSourceStack> context) {
     int id = IntegerArgumentType.getInteger(context, "id");
     var robots = context.getSource().getLevel().getEntities(EntityTypeTest.forClass(RobotEntityBase.class), RobotEntityBase::isAlive).stream()
-        .filter(entity -> entity.getRobotId() == id).toList();
+      .filter(entity -> entity.getRobotId() == id).toList();
     if (robots.isEmpty()) {
       context.getSource().sendFailure(Component.literal("Robot not found"));
       return Command.SINGLE_SUCCESS;
@@ -161,11 +161,10 @@ public class RobotCommands {
 
     Comparator<RobotEntityBase> comparator = (switch (sortBy) {
       case "distance" -> Comparator.comparing(e -> e.distanceToSqr(context.getSource().getPosition()));
-      case "type" ->
-          Comparator.comparing(e -> {
-            var loc = ForgeRegistries.ENTITY_TYPES.getKey(e.getType());
-            return loc == null ? "" : loc.toString();
-          });
+      case "type" -> Comparator.comparing(e -> {
+        var loc = ForgeRegistries.ENTITY_TYPES.getKey(e.getType());
+        return loc == null ? "" : loc.toString();
+      });
       default -> Comparator.comparingLong(RobotEntityBase::getRobotId);
     });
 

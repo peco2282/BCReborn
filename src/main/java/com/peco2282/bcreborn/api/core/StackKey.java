@@ -35,9 +35,6 @@ import java.util.Objects;
  */
 public record StackKey(ItemStack stack, FluidStack fluidStack) {
   public static final StackKey EMPTY = new StackKey(ItemStack.EMPTY, FluidStack.EMPTY);
-  private static <T> T getOr(@Nullable T nullable, T def) {
-    return nullable == null ? def : nullable;
-  }
 
   public StackKey {
     if (stack.isEmpty() && fluidStack.isEmpty()) {
@@ -64,6 +61,10 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
    */
   public StackKey(ItemStack stack) {
     this(getOr(stack, ItemStack.EMPTY), FluidStack.EMPTY);
+  }
+
+  private static <T> T getOr(@Nullable T nullable, T def) {
+    return nullable == null ? def : nullable;
   }
 
   /**

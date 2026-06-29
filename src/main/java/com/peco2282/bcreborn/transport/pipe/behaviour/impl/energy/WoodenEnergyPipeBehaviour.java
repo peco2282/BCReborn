@@ -11,10 +11,8 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.energy;
 
-import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
-import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import net.minecraft.core.Direction;

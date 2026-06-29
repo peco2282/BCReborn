@@ -24,7 +24,7 @@ public class EventListenerContainer {
   private static final Map<Class<? extends BCEvent>, List<BCEventHolder>> listeners = new ConcurrentHashMap<>();
 
   public static <T extends BCEvent> void registerListener(
-      Class<T> clazz, BCEventHolder listener) {
+    Class<T> clazz, BCEventHolder listener) {
     var list = listeners.computeIfAbsent(clazz, ignore -> new CopyOnWriteArrayList<>());
     list.add(listener);
     list.sort(Comparator.comparingInt(BCEventHolder::getPriority).reversed());
@@ -36,6 +36,6 @@ public class EventListenerContainer {
 
   public static void unregisterListener(Class<?> declaringClass) {
     listeners.values().forEach(list ->
-        list.removeIf(holder -> holder.getDeclaringClass() == declaringClass));
+      list.removeIf(holder -> holder.getDeclaringClass() == declaringClass));
   }
 }

@@ -33,14 +33,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -50,22 +50,19 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
   public static final int REBUID_DELAY = 512;
   public static int MAX_LIQUID = 16000;
-  public Tank tank = new SingleUseTank("tank", MAX_LIQUID);
-
-//  private EntityBlock tube;
+  //  private EntityBlock tube;
   private final Int2ObjectRBTreeMap<Deque<BlockPos>> pumpLayerQueues = new Int2ObjectRBTreeMap<>();
+  private final SafeTimeTracker TIMER = new SafeTimeTracker(REBUID_DELAY);
+  // tick % 16 => min. 16 ticks per network update
+  private final SafeTimeTracker updateTracker = new SafeTimeTracker(Math.max(16, CoreConfig.getUpdateFactor()));
+  public Tank tank = new SingleUseTank("tank", MAX_LIQUID);
   private double tubeY = Double.NaN;
   private int aimY = -1;
-
-  private final SafeTimeTracker TIMER = new SafeTimeTracker(REBUID_DELAY);
   private int tick = Utils.RANDOM.nextInt(32);
   private int tickPumped = tick - 20;
   private int numFluidBlocksFound = 0;
   private boolean powered = false;
-
   private int ledState;
-  // tick % 16 => min. 16 ticks per network update
-  private final SafeTimeTracker updateTracker = new SafeTimeTracker(Math.max(16, CoreConfig.getUpdateFactor()));
 
 
   public PumpBlockEntity(BlockPos pos, BlockState state) {
@@ -123,7 +120,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     // Update tube height
     double targetTubeY = aimY;
     double tubeSpeed = 0.05; // 通常の下降速度
-    
+
     // 液体面までの下降ロジック
     // 下に液体があれば、一定のエネルギーで下降する
     if (Math.abs(tubeY - aimY) < 0.01) {
@@ -136,18 +133,18 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         }
       } else //noinspection StatementWithEmptyBody
         if (!isPumpableFluid(tubePos)) {
-        // ブロックされておらず、液体でもないなら下に伸ばす
-        // エネルギーを消費して下降（一定のエネルギー量 10RF/tick 程度を想定）
-        if (getBattery().useEnergy(10, 10, false) > 0) {
-          if (aimY > level.getMinBuildHeight()) {
-            aimY--;
-            setChanged();
+          // ブロックされておらず、液体でもないなら下に伸ばす
+          // エネルギーを消費して下降（一定のエネルギー量 10RF/tick 程度を想定）
+          if (getBattery().useEnergy(10, 10, false) > 0) {
+            if (aimY > level.getMinBuildHeight()) {
+              aimY--;
+              setChanged();
+            }
           }
+        } else {
+          // 現在の場所が液体面。
+          // TODO: Impl Fill fluid!
         }
-      } else {
-        // 現在の場所が液体面。
-        // TODO: Impl Fill fluid!
-      }
     }
 
     if (tubeY > targetTubeY + 0.01) {
@@ -182,7 +179,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         // 1回あたり100mBずつ吸う（少しずつ吸う感じを出す）
         int amountToDrain = Math.min(fluidToPump.getAmount(), 100);
         FluidStack smallFluid = new FluidStack(fluidToPump.getFluid(), amountToDrain);
-        
+
         if (tank.fill(smallFluid, FluidAction.SIMULATE) == smallFluid.getAmount()) {
           // エネルギー消費（100RF/1000mB相当なら、10RF/100mB）
           if (getBattery().useEnergy(10, 10, false) > 0) {

@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.common.utils.FluidUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListMatchHandlerFluid extends ListMatchHandler {

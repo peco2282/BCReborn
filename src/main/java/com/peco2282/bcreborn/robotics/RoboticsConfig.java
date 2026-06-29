@@ -85,6 +85,6 @@ public class RoboticsConfig {
       ConfigEntry.booleanOf("constructionMarkerBlock", Component.translatable("screen.config.entry.robotics.constructionMarkerBlock.title"), Component.translatable("screen.config.entry.robotics.constructionMarkerBlock.tooltip"), constructionMarkerBlock)
     ).build();
 
-    return new ConfigSection[] { items, blocks };
+    return new ConfigSection[]{items, blocks};
   }
 }

@@ -33,16 +33,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class FrameBlock extends BuildCraftBlock {
-  private static final ThreadLocal<Boolean> isRemovingFrames = new ThreadLocal<>();
-
   public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
   public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
   public static final BooleanProperty EAST = BlockStateProperties.EAST;
   public static final BooleanProperty WEST = BlockStateProperties.WEST;
   public static final BooleanProperty UP = BlockStateProperties.UP;
   public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-
   public static final Map<Direction, BooleanProperty> PROPERTY_MAP = new EnumMap<>(Direction.class);
+  private static final ThreadLocal<Boolean> isRemovingFrames = new ThreadLocal<>();
+  private static final float MIN = 0.25f;
+  private static final float MAX = 0.75f;
+  private static final VoxelShape CORE_SHAPE = Block.box(MIN * 16, MIN * 16, MIN * 16, MAX * 16, MAX * 16, MAX * 16);
+  private static final Map<Direction, VoxelShape> SIDE_SHAPES = new EnumMap<>(Direction.class);
 
   static {
     PROPERTY_MAP.put(Direction.NORTH, NORTH);
@@ -52,11 +54,6 @@ public class FrameBlock extends BuildCraftBlock {
     PROPERTY_MAP.put(Direction.UP, UP);
     PROPERTY_MAP.put(Direction.DOWN, DOWN);
   }
-
-  private static final float MIN = 0.25f;
-  private static final float MAX = 0.75f;
-  private static final VoxelShape CORE_SHAPE = Block.box(MIN * 16, MIN * 16, MIN * 16, MAX * 16, MAX * 16, MAX * 16);
-  private static final Map<Direction, VoxelShape> SIDE_SHAPES = new EnumMap<>(Direction.class);
 
   static {
     SIDE_SHAPES.put(Direction.NORTH, box(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 4.0D));

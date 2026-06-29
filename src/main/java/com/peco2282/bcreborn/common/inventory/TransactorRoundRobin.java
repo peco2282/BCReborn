@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.common.inventory;
 
-import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;

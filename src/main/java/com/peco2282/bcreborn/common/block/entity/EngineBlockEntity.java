@@ -12,8 +12,8 @@
 package com.peco2282.bcreborn.common.block.entity;
 
 import com.peco2282.bcreborn.api.energy.IEnergyHandler;
-import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.power.IRedstoneEngine;
+import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.common.energy.EngineEnergyStorage;
@@ -31,13 +31,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.common.ForgeHooks;
-
-import java.util.List;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public abstract class EngineBlockEntity<T extends BlockEntity>
   extends BuildCraftBlockEntity

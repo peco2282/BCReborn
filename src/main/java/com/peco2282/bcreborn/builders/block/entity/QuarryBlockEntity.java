@@ -38,28 +38,17 @@ import net.minecraft.world.phys.AABB;
 import java.util.*;
 
 public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBoxProvider {
-  public enum Stage {
-    BUILDING,
-    DIGGING,
-    MOVING,
-    IDLE,
-    DONE
-  }
-
   private final SimpleInventory inv = new SimpleInventory(18, "Quarry", 64);
+  private final Deque<int[]> visitList = new LinkedList<>();
+  private final Deque<BlockPos> frameList = new LinkedList<>();
   public Box box = new Box();
   private Stage stage = Stage.BUILDING;
-
   private int targetX, targetY, targetZ;
   private double headPosX, headPosY, headPosZ;
   private double prevHeadPosX, prevHeadPosY, prevHeadPosZ;
   private float headTrajectory;
   private boolean movingHorizontally, movingVertically;
-
   private BlockMiner miner;
-  private final Deque<int[]> visitList = new LinkedList<>();
-  private final Deque<BlockPos> frameList = new LinkedList<>();
-
   public QuarryBlockEntity(BlockPos pos, BlockState state) {
     super(BuildersBlockEntityTypes.QUARRY.get(), pos, state);
     box.kind = Box.Kind.STRIPES;
@@ -493,5 +482,13 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   @Override
   public EnergyStorage getEnergyStorage() {
     return Objects.requireNonNull(getBattery());
+  }
+
+  public enum Stage {
+    BUILDING,
+    DIGGING,
+    MOVING,
+    IDLE,
+    DONE
   }
 }

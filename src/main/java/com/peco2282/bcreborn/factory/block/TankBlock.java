@@ -13,9 +13,9 @@ package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.energy.fluids.TankUtils;
 import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
-import com.peco2282.bcreborn.energy.fluids.TankUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

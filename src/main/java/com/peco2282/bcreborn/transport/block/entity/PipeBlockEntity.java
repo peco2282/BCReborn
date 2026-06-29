@@ -78,6 +78,38 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public final SideProperties sideProperties = new SideProperties();
   // アイテム輸送
   private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
+  private final EnumMap<Direction, SimpleInventory> filters = new EnumMap<>(Direction.class);
+  // Capability lazy optionals
+  private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
+  private final Map<Direction, LazyOptional<IEnergyStorage>> energySideCapsMap = new EnumMap<>(Direction.class);
+  private final boolean[] wireSignals = new boolean[4];
+  private final IPipe pipeApi = new IPipe() {
+    @Override
+    public IPipeBlockEntity getBlockEntity() {
+      return PipeBlockEntity.this;
+    }
+
+    @Override
+    @Nullable
+    public IGate getGate(Direction side) {
+      return null;
+    }
+
+    @Override
+    public boolean hasGate(Direction side) {
+      return false;
+    }
+
+    @Override
+    public boolean isWired(PipeWire wire) {
+      return false;
+    }
+
+    @Override
+    public boolean isWireActive(PipeWire wire) {
+      return false;
+    }
+  };
   // 流体輸送モジュール（FLUID パイプのみ有効）
   @Nullable
   private FluidTransportModule fluidTransportModule;
@@ -90,13 +122,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   // エネルギーストレージ（ENERGY パイプのみ生成）
   @Nullable
   private EnergyStorage energyStorage;
-  private final EnumMap<Direction, SimpleInventory> filters = new EnumMap<>(Direction.class);
-  // Capability lazy optionals
-  private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
   private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
   private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
-  private final Map<Direction, LazyOptional<IEnergyStorage>> energySideCapsMap = new EnumMap<>(Direction.class);
-  private final boolean[] wireSignals = new boolean[4];
   private PipeType transportType;
   private PipeMaterial pipeMaterial;
   private int ticksSincePull = 0;
@@ -125,6 +152,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public PipeBlockEntity(BlockPos pos, BlockState state, PipeType type, PipeMaterial material) {
     super(getBlockEntityType(type), pos, state);
     initPipe(type, material);
+  }
+
+  public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
+    return switch (type) {
+      case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
+      case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
+      case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
+    };
   }
 
   private void initPipe(PipeType type, PipeMaterial material) {
@@ -166,14 +201,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
-    return switch (type) {
-      case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
-      case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
-      case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
-    };
-  }
-
   public int getTicksSincePull() {
     return ticksSincePull;
   }
@@ -189,6 +216,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public void setBehaviour(PipeBehaviour behaviour) {
     this.behaviour = behaviour;
   }
+
+  // ---- アイテム輸送 ----
 
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
@@ -224,8 +253,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  // ---- アイテム輸送 ----
-
   private void tickItems(Level level, BlockPos pos) {
     itemTransportModule.tick(level, pos);
   }
@@ -255,11 +282,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     itemTransportModule.dropItems();
   }
 
+  // ---- Fluid ----
+
   public List<TravelingItem> getTravelingItems() {
     return itemTransportModule.getTravelingItems();
   }
-
-  // ---- Fluid ----
 
   @Nullable
   public FluidTank getFluidTank() {
@@ -275,11 +302,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return fluidRoundRobinIndex;
   }
 
+  // ---- Energy ----
+
   public void advanceFluidRoundRobin(int size) {
     if (size > 0) fluidRoundRobinIndex = (fluidRoundRobinIndex + 1) % size;
   }
-
-  // ---- Energy ----
 
   @Nullable
   public EnergyTransportModule getEnergyTransportModule() {
@@ -291,11 +318,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return energyStorage;
   }
 
+  // ---- Wire signals ----
+
   public int getPipeEnergyStored() {
     return energyStorage != null ? energyStorage.getEnergyStored() : 0;
   }
-
-  // ---- Wire signals ----
 
   public void setWireSignal(DyeColor color, boolean signal) {
     int index = getWireIndex(color);
@@ -334,6 +361,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
+  // ---- Getters / Setters ----
+
   private int getWireIndex(@Nullable DyeColor color) {
     if (color == null) return -1;
     return switch (color) {
@@ -344,8 +373,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       default -> -1;
     };
   }
-
-  // ---- Getters / Setters ----
 
   public PipeType getTransportType() {
     return transportType;
@@ -444,6 +471,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return extractFilterMode;
   }
 
+  // ---- NBT ----
+
   public void setExtractFilterMode(ExtractFilterMode extractFilterMode) {
     this.extractFilterMode = extractFilterMode;
     setChanged();
@@ -451,8 +480,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
-
-  // ---- NBT ----
 
   // --- Container Implementation ---
   @Override
@@ -505,6 +532,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public boolean canPlaceItem(int slot, ItemStack stack) {
     return transportType == PipeType.ITEM;
   }
+  // --- End Container Implementation ---
 
   @Override
   public void load(CompoundTag tag) {
@@ -575,7 +603,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       sideProperties.readFromNBT(tag.getCompound("SideProperties"));
     }
   }
-  // --- End Container Implementation ---
+
+  // ---- Capabilities ----
 
   @Override
   protected void saveAdditional(CompoundTag tag) {
@@ -629,8 +658,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     tag.put("SideProperties", sideTag);
   }
 
-  // ---- Capabilities ----
-
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.ITEM_HANDLER && transportType == PipeType.ITEM) {
@@ -658,6 +685,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return super.getCapability(cap, side);
   }
 
+  // ---- Network ----
+
   @Override
   public void invalidateCaps() {
     super.invalidateCaps();
@@ -668,8 +697,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       if (cap != null) cap.invalidate();
     }
   }
-
-  // ---- Network ----
 
   public Item getPipeItem() {
     RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
@@ -701,34 +728,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
   }
-
-  private final IPipe pipeApi = new IPipe() {
-    @Override
-    public IPipeBlockEntity getBlockEntity() {
-      return PipeBlockEntity.this;
-    }
-
-    @Override
-    @Nullable
-    public IGate getGate(Direction side) {
-      return null;
-    }
-
-    @Override
-    public boolean hasGate(Direction side) {
-      return false;
-    }
-
-    @Override
-    public boolean isWired(PipeWire wire) {
-      return false;
-    }
-
-    @Override
-    public boolean isWireActive(PipeWire wire) {
-      return false;
-    }
-  };
 
   public boolean hasPipePluggable(Direction direction) {
     return sideProperties.pluggables[direction.ordinal()] != null;

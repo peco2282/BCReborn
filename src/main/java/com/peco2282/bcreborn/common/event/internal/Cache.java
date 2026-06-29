@@ -26,7 +26,7 @@ public class Cache {
   }
 
   public <I> Class<?> computeIfAbsent(
-      Method key, Supplier<I> factory, Function<I, Class<?>> finalizer) {
+    Method key, Supplier<I> factory, Function<I, Class<?>> finalizer) {
     var ret = get(key);
 
     if (ret != null) return ret;

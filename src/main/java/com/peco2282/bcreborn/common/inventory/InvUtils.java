@@ -77,7 +77,7 @@ public final class InvUtils {
    * Attempts to move a single item from one inventory to another.
    *
    * @param source The source inventory.
-   * @param dest The destination inventory.
+   * @param dest   The destination inventory.
    * @param filter an IStackFilter to match against
    * @return null if nothing was moved, the stack moved otherwise
    */

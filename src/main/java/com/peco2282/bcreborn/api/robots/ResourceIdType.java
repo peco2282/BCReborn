@@ -29,9 +29,9 @@ public record ResourceIdType<T extends ResourceId<T>>(ResourceLocation id, Suppl
   /**
    * Creates and registers a new ResourceIdType with the RobotManager.
    *
-   * @param id the unique identifier for this resource type
+   * @param id      the unique identifier for this resource type
    * @param factory the factory method for creating instances
-   * @param <T> the type of ResourceId
+   * @param <T>     the type of ResourceId
    * @return the registered ResourceIdType instance
    */
   private static <T extends ResourceId<T>> ResourceIdType<T> of(ResourceLocation id, Supplier<T> factory) {

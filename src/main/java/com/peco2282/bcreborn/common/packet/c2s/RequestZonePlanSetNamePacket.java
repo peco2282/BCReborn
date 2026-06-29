@@ -26,14 +26,14 @@ public record RequestZonePlanSetNamePacket(
   BlockPos pos,
   String name
 ) implements CustomPacket {
+  public static RequestZonePlanSetNamePacket decode(FriendlyByteBuf buffer) {
+    return new RequestZonePlanSetNamePacket(buffer.readBlockPos(), buffer.readUtf());
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     buffer.writeUtf(name);
-  }
-
-  public static RequestZonePlanSetNamePacket decode(FriendlyByteBuf buffer) {
-    return new RequestZonePlanSetNamePacket(buffer.readBlockPos(), buffer.readUtf());
   }
 
   @Override

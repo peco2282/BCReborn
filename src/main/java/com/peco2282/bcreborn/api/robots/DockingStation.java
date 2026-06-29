@@ -44,8 +44,8 @@ public abstract class DockingStation<T extends DockingStation<T>> implements INB
    * Constructs a new DockingStation with the specified pos and side.
    *
    * @param type The type of docking station.
-   * @param pos The block position pos.
-   * @param side  The side of the block.
+   * @param pos  The block position pos.
+   * @param side The side of the block.
    */
   public DockingStation(DockingStationType<T> type, BlockPos pos, Direction side) {
     this.type = type;

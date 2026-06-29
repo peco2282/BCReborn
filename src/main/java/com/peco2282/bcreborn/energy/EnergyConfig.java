@@ -227,6 +227,6 @@ public class EnergyConfig {
       )
     ).build();
 
-    return new ConfigSection[] { general, worldgen };
+    return new ConfigSection[]{general, worldgen};
   }
 }

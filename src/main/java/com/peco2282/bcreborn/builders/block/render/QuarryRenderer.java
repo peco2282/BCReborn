@@ -13,19 +13,16 @@ package com.peco2282.bcreborn.builders.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.builders.block.entity.QuarryBlockEntity;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.core.block.render.LaserRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -61,13 +58,13 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 
       poseStack.pushPose();
       poseStack.translate(headX, headY, headZ);
-      
+
       // BuildCraft's drill head rendering logic
       // For now, let's render a simple box for the drill head
       renderDrillHead(poseStack, buffer, combinedLight, combinedOverlay);
-      
+
       poseStack.popPose();
-      
+
       // Render the frame that connects to the quarry block
       renderDrillFrame(quarry, headX, headY, headZ, poseStack, buffer, combinedLight, combinedOverlay);
     }
@@ -75,14 +72,14 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 
   private void renderDrillHead(PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
     VertexConsumer builder = buffer.getBuffer(RenderType.entityCutout(DRILL_HEAD_TEXTURE));
-    
+
     poseStack.pushPose();
     poseStack.translate(-0.125, -0.25, -0.125);
     poseStack.scale(0.25f, 0.25f, 0.25f);
-    
+
     // Simple cube for drill head
     addBox(poseStack, builder, 0, 0, 0, 1, 1, 1, light, overlay);
-    
+
     poseStack.popPose();
   }
 
@@ -162,12 +159,12 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 
   private void addVertex(VertexConsumer builder, Matrix4f matrix4f, Matrix3f matrix3f, float x, float y, float z, float u, float v, float nx, float ny, float nz, int light, int overlay) {
     builder.vertex(matrix4f, x, y, z)
-        .color(255, 255, 255, 255)
-        .uv(u, v)
-        .overlayCoords(overlay)
-        .uv2(light)
-        .normal(matrix3f, nx, ny, nz)
-        .endVertex();
+      .color(255, 255, 255, 255)
+      .uv(u, v)
+      .overlayCoords(overlay)
+      .uv2(light)
+      .normal(matrix3f, nx, ny, nz)
+      .endVertex();
   }
 
   @Override

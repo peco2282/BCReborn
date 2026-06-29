@@ -23,11 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class BuildersActionProvider implements IActionProvider {
   private final HashMap<ResourceLocation, ActionFiller> actionMap = new HashMap<>();
