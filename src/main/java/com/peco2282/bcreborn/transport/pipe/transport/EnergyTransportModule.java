@@ -45,12 +45,12 @@ public class EnergyTransportModule {
   private final int[][] powerHistory = new int[6][AVERAGE_WINDOW];
   // 抵抗値（損失率）— PipeMaterial から初期化
   private final float powerResistance;
-  public int[] nextPowerQuery = new int[6];
-  // クライアント表示用移動平均（10tick窓）
-  public short[] displayPower = new short[6];
   // ダブルバッファ: 現tick / 次tick（double精度でoriginalに合わせる）
   private final double[] internalPower = new double[6];
   private final double[] internalNextPower = new double[6];
+  public int[] nextPowerQuery = new int[6];
+  // クライアント表示用移動平均（10tick窓）
+  public short[] displayPower = new short[6];
   // 需要バッファ: 現tick / 次tick
   private int[] powerQuery = new int[6];
   private int historyIndex = 0;

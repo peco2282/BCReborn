@@ -49,6 +49,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   private float headTrajectory;
   private boolean movingHorizontally, movingVertically;
   private BlockMiner miner;
+
   public QuarryBlockEntity(BlockPos pos, BlockState state) {
     super(BuildersBlockEntityTypes.QUARRY.get(), pos, state);
     box.kind = Box.Kind.STRIPES;
