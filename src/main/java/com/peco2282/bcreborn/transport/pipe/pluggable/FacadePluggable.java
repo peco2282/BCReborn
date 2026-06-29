@@ -62,13 +62,13 @@ public class FacadePluggable extends PipePluggable<FacadePluggable> {
   }
 
   @Override
-  public void writeToNBT(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     nbt.put("state", NbtUtils.writeBlockState(state));
     nbt.putBoolean("hollow", hollow);
   }
 
   @Override
-  public void readFromNBT(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
     hollow = nbt.getBoolean("hollow");
   }

@@ -96,7 +96,7 @@ public abstract class PipeManager {
 
   public static <T extends PipePluggable<T>> T createPipePluggable(ResourceLocation id, CompoundTag tag) {
     T pluggable = createPipePluggable(id);
-    pluggable.readFromNBT(tag);
+    pluggable.readTag(tag);
     return pluggable;
   }
 }

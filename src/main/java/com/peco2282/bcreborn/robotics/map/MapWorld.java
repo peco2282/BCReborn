@@ -61,7 +61,7 @@ public class MapWorld {
       if (target.exists()) {
         try {
           CompoundTag nbt = NbtIo.readCompressed(target);
-          region.readFromNBT(nbt);
+          region.readTag(nbt);
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -96,7 +96,7 @@ public class MapWorld {
       }
 
       CompoundTag output = new CompoundTag();
-      region.writeToNBT(output);
+      region.writeTag(output);
       File file = new File(location, "r" + MapUtils.getXFromID(id) + "," + MapUtils.getZFromID(id) + ".nbt");
 
       try {

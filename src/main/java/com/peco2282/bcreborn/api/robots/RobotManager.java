@@ -242,7 +242,7 @@ public abstract class RobotManager {
 
   public static <T extends DockingStation<T>> T createDockingStation(ResourceLocation id, CompoundTag tag) {
     var station = (T) createDockingStation(id);
-    station.readFromNBT(tag);
+    station.readTag(tag);
     return station;
   }
 
