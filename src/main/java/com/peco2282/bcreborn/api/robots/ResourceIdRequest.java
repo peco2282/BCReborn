@@ -21,7 +21,7 @@ import java.util.Objects;
  * Resource identifier for a request at a specific docking station and slot.
  */
 public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
-  private BlockPos index;
+  private BlockPos pos;
   private Direction side;
   private int slot;
 
@@ -36,11 +36,11 @@ public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
    * Constructs a ResourceIdRequest for the specified docking station and slot.
    *
    * @param station The docking station.
-   * @param slot    The slot index.
+   * @param slot    The slot pos.
    */
   public ResourceIdRequest(DockingStation<?> station, int slot) {
     this();
-    index = station.index();
+    pos = station.pos();
     side = station.side();
     this.slot = slot;
   }
@@ -51,22 +51,22 @@ public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
       return false;
     }
     ResourceIdRequest compareId = (ResourceIdRequest) obj;
-    return index.equals(compareId.index) && side == compareId.side && slot == compareId.slot;
+    return pos.equals(compareId.pos) && side == compareId.side && slot == compareId.slot;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(index, side, slot);
+    return Objects.hash(pos, side, slot);
   }
 
   @Override
   public void writeToNBT(CompoundTag nbt) {
     super.writeToNBT(nbt);
     CompoundTag indexNBT = new CompoundTag();
-    indexNBT.putInt("x", index.getX());
-    indexNBT.putInt("y", index.getY());
-    indexNBT.putInt("z", index.getZ());
-    nbt.put("index", indexNBT);
+    indexNBT.putInt("x", pos.getX());
+    indexNBT.putInt("y", pos.getY());
+    indexNBT.putInt("z", pos.getZ());
+    nbt.put("pos", indexNBT);
     nbt.putByte("side", (byte) (side != null ? side.ordinal() : 0));
     nbt.putInt("localId", slot);
   }
@@ -74,8 +74,8 @@ public class ResourceIdRequest extends ResourceId<ResourceIdRequest> {
   @Override
   protected void readFromNBT(CompoundTag nbt) {
     super.readFromNBT(nbt);
-    CompoundTag indexNBT = nbt.getCompound("index");
-    index = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
+    CompoundTag indexNBT = nbt.getCompound("pos");
+    pos = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
     side = Direction.values()[nbt.getByte("side")];
     slot = nbt.getInt("localId");
   }

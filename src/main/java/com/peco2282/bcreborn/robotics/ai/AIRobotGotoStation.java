@@ -34,7 +34,7 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
   public AIRobotGotoStation(RobotEntityBase iRobot, DockingStation<?> station) {
     this(iRobot);
 
-    stationIndex = station.index();
+    stationIndex = station.pos();
     stationSide = station.side();
     setSuccess(false);
   }
@@ -49,7 +49,7 @@ public class AIRobotGotoStation extends AIRobot<AIRobotGotoStation> {
       setSuccess(true);
       terminate();
     } else {
-      ResourceIdBlock resourceId = new ResourceIdBlock(station.index());
+      ResourceIdBlock resourceId = new ResourceIdBlock(station.pos());
       resourceId.side = station.side();
       if (robot.getRegistry().take(resourceId, robot)) {
         startDelegateAI(new AIRobotGotoBlock(robot,

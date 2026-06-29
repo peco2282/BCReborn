@@ -87,7 +87,7 @@ public class StackRequest {
 
   public void setStation(DockingStation<?> station) {
     this.station = station;
-    this.stationIndex = station.index();
+    this.stationIndex = station.pos();
     this.stationSide = station.side();
   }
 
@@ -99,7 +99,7 @@ public class StackRequest {
     nbt.put("stack", stackNBT);
 
     if (station != null) {
-      nbt.putLong("stationIndex", station.index().asLong());
+      nbt.putLong("stationIndex", station.pos().asLong());
       nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
     }
   }

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.api.robots;
 
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a location where a robot can dock and interact with the world.
  */
-public abstract class DockingStation<T extends DockingStation<T>> {
+public abstract class DockingStation<T extends DockingStation<T>> implements INBTSerializable {
   protected final DockingStationType<T> type;
   /**
    * The side of the block this docking station is on.
@@ -37,18 +38,19 @@ public abstract class DockingStation<T extends DockingStation<T>> {
   private long robotTakingId = RobotEntityBase.NULL_ROBOT_ID;
   private RobotEntityBase robotTaking;
   private boolean linkIsMain = false;
-  private BlockPos index;
+  private BlockPos pos;
 
   /**
-   * Constructs a new DockingStation with the specified index and side.
+   * Constructs a new DockingStation with the specified pos and side.
    *
-   * @param iIndex The block position index.
-   * @param iSide  The side of the block.
+   * @param type The type of docking station.
+   * @param pos The block position pos.
+   * @param side  The side of the block.
    */
-  public DockingStation(DockingStationType<T> iType, BlockPos iIndex, Direction iSide) {
-    type = iType;
-    index = iIndex;
-    side = iSide;
+  public DockingStation(DockingStationType<T> type, BlockPos pos, Direction side) {
+    this.type = type;
+    this.pos = pos;
+    this.side = side;
   }
 
   /**
@@ -73,7 +75,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The X coordinate.
    */
   public int x() {
-    return index.getX();
+    return pos.getX();
   }
 
   /**
@@ -82,7 +84,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The Y coordinate.
    */
   public int y() {
-    return index.getY();
+    return pos.getY();
   }
 
   /**
@@ -91,7 +93,7 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return The Z coordinate.
    */
   public int z() {
-    return index.getZ();
+    return pos.getZ();
   }
 
   /**
@@ -209,8 +211,9 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @param nbt The NBT tag to write to.
    */
-  public void writeToNBT(CompoundTag nbt) {
-    nbt.putLong("Pos", index.asLong());
+  @Override
+  public void writeTag(CompoundTag nbt) {
+    nbt.putLong("Pos", pos.asLong());
     nbt.putByte("side", (byte) side.ordinal());
     nbt.putBoolean("isMain", linkIsMain);
     nbt.putLong("robotId", robotTakingId);
@@ -221,8 +224,9 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    *
    * @param nbt The NBT tag to read from.
    */
-  public void readFromNBT(CompoundTag nbt) {
-    index = BlockPos.of(nbt.getLong("Pos"));
+  @Override
+  public void readTag(CompoundTag nbt) {
+    pos = BlockPos.of(nbt.getLong("Pos"));
     side = Direction.values()[nbt.getByte("side")];
     linkIsMain = nbt.getBoolean("isMain");
     robotTakingId = nbt.getLong("robotId");
@@ -247,17 +251,17 @@ public abstract class DockingStation<T extends DockingStation<T>> {
   }
 
   /**
-   * Returns the block index (position) of this station.
+   * Returns the block pos (position) of this station.
    *
-   * @return The block index.
+   * @return The block pos.
    */
-  public BlockPos index() {
-    return index;
+  public BlockPos pos() {
+    return pos;
   }
 
   @Override
   public String toString() {
-    return "{" + index.getX() + ", " + index.getY() + ", " + index.getZ() + ", " + side + " :" + robotTakingId
+    return "{" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ", " + side + " :" + robotTakingId
       + "}";
   }
 
@@ -267,8 +271,9 @@ public abstract class DockingStation<T extends DockingStation<T>> {
    * @return {@code true} if docked, {@code false} otherwise.
    */
   public boolean linkIsDocked() {
-    if (robotTaking() != null) {
-      return robotTaking().getDockingStation() == this;
+    var taking = robotTaking();
+    if (taking != null) {
+      return taking.getDockingStation() == this;
     } else {
       return false;
     }

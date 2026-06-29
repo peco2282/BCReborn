@@ -20,17 +20,17 @@ import net.minecraft.util.RandomSource;
 public interface IZone {
 
   /**
-   * Calculates the distance to a given block index.
+   * Calculates the distance to a given block pos.
    *
-   * @param index The block index.
+   * @param index The block pos.
    * @return The distance.
    */
   double distanceTo(BlockPos index);
 
   /**
-   * Calculates the squared distance to a given block index.
+   * Calculates the squared distance to a given block pos.
    *
-   * @param index The block index.
+   * @param index The block pos.
    * @return The squared distance.
    */
   double distanceToSquared(BlockPos index);
@@ -56,7 +56,7 @@ public interface IZone {
   }
 
   /**
-   * Gets a random block index within the zone.
+   * Gets a random block pos within the zone.
    *
    * @param rand The random instance to use.
    * @return A random {@link BlockPos}.

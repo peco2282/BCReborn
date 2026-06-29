@@ -55,7 +55,7 @@ public class DockingStationPipe extends DockingStation<DockingStationPipe> imple
   @Nullable
   public IPipeBlockEntity getPipe() {
     if (pipe == null) {
-      BlockEntity tile = world.getBlockEntity(index());
+      BlockEntity tile = world.getBlockEntity(pos());
       if (tile instanceof IPipeBlockEntity) {
         pipe = (IPipeBlockEntity) tile;
       }

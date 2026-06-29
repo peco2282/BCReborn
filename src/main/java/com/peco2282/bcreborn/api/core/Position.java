@@ -107,7 +107,7 @@ public class Position implements IBufferSerializable {
   /**
    * Creates a new Position from a BlockIndex with DOWN orientation.
    *
-   * @param index The block index whose coordinates to use.
+   * @param index The block pos whose coordinates to use.
    */
   public Position(BlockPos index) {
     x = index.getX();

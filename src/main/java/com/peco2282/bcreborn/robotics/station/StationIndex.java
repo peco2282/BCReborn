@@ -32,7 +32,7 @@ public class StationIndex {
 
   public StationIndex(DockingStation<?> station) {
     side = station.side();
-    index = station.index();
+    index = station.pos();
   }
 
   @Override
@@ -53,12 +53,12 @@ public class StationIndex {
   }
 
   public void writeToNBT(CompoundTag nbt) {
-    nbt.putLong("index", index.asLong());
+    nbt.putLong("pos", index.asLong());
     nbt.putByte("side", (byte) side.get3DDataValue());
   }
 
   protected void readFromNBT(CompoundTag nbt) {
-    index = BlockPos.of(nbt.getLong("index"));
+    index = BlockPos.of(nbt.getLong("pos"));
     side = Direction.from3DDataValue(nbt.getByte("side"));
   }
 }
