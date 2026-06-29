@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.apache.commons.lang3.ArrayUtils;
@@ -92,20 +94,20 @@ public class LibraryId implements INBTSerializable, Comparable<LibraryId>, IBuff
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putByteArray("uniqueBptId", uniqueId);
-    nbt.putString("name", name);
-    nbt.putString("extension", extension);
+    NbtWriter.of(nbt)
+      .putByteArray("uniqueBptId", uniqueId)
+      .putString("name", name)
+      .putString("extension", extension)
+      .done();
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    uniqueId = nbt.getByteArray("uniqueBptId");
-    name = nbt.getString("name");
-    if (nbt.contains("kind")) {
-      extension = nbt.getByte("kind") > 0 ? "bpt" : "tpl";
-    } else {
-      extension = nbt.getString("extension");
-    }
+    NbtReader.of(nbt)
+      .applyByteArray("uniqueBptId", it -> uniqueId = it)
+      .applyString("name", it -> name = it)
+      .applyString("extension", it -> extension = it)
+      .done();
   }
 
   @Override

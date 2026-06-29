@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.common.energy;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -185,19 +187,19 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
 
   @Override
   public void readTag(CompoundTag nbt) {
-    this.maxEnergy = Math.max(0, nbt.getInt("MaxEnergy"));
-    this.maxExtract = Math.max(0, nbt.getInt("MaxExtract"));
-    // 保存された値を0..maxEnergyにクランプ
-    int saved = nbt.getInt("Energy");
-    if (saved < 0) saved = 0;
-    if (saved > this.maxEnergy) saved = this.maxEnergy;
-    this.energy = saved;
+    NbtReader.of(nbt)
+      .applyInt("MaxEnergy", this::setMaxEnergy)
+      .applyInt("MaxExtract", this::setMaxExtract)
+      .applyInt("Energy", saved -> this.energy = Math.min(Math.max(0, saved), this.maxEnergy))
+      .done();
   }
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putInt("MaxEnergy", this.maxEnergy);
-    nbt.putInt("MaxExtract", this.maxExtract);
-    nbt.putInt("Energy", this.energy);
+    NbtWriter.of(nbt)
+      .putInt("MaxEnergy", this.maxEnergy)
+      .putInt("MaxExtract", this.maxExtract)
+      .putInt("Energy", this.energy)
+      .done();
   }
 }

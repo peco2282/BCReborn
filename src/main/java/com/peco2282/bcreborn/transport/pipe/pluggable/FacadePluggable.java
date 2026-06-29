@@ -15,6 +15,8 @@ import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.item.FacadeItem;
 import net.minecraft.core.Direction;
@@ -63,14 +65,16 @@ public class FacadePluggable extends PipePluggable<FacadePluggable> {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.put("state", NbtUtils.writeBlockState(state));
-    nbt.putBoolean("hollow", hollow);
+    NbtWriter.of(nbt)
+      .putBlockState("state", state)
+      .putBoolean("hollow", hollow);
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
-    hollow = nbt.getBoolean("hollow");
+    NbtReader.of(nbt)
+      .applyBlockState("state", state -> this.state = state)
+      .applyBoolean("hollow", hollow -> this.hollow = hollow);
   }
 
   @Override

@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.transport.gates;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
@@ -31,7 +32,7 @@ public final class GateDefinition {
     }
   }
 
-  public enum GateMaterial {
+  public enum GateMaterial implements StringRepresentable {
 
     REDSTONE("gate_interface_1.png", 146, 1, 0, 0, 1),
     IRON("gate_interface_2.png", 164, 2, 0, 0, 2),
@@ -68,9 +69,14 @@ public final class GateDefinition {
     public String getTag() {
       return name().toLowerCase(Locale.ENGLISH);
     }
+
+    @Override
+    public String getSerializedName() {
+      return getTag();
+    }
   }
 
-  public enum GateLogic {
+  public enum GateLogic implements StringRepresentable {
 
     AND, OR;
     public static final GateLogic[] VALUES = values();
@@ -84,6 +90,11 @@ public final class GateDefinition {
 
     public String getTag() {
       return name().toLowerCase(Locale.ENGLISH);
+    }
+
+    @Override
+    public String getSerializedName() {
+      return getTag();
     }
   }
 }

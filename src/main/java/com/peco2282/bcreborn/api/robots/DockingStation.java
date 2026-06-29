@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.api.robots;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IInjectable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -213,10 +215,12 @@ public abstract class DockingStation<T extends DockingStation<T>> implements INB
    */
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putLong("Pos", pos.asLong());
-    nbt.putByte("side", (byte) side.ordinal());
-    nbt.putBoolean("isMain", linkIsMain);
-    nbt.putLong("robotId", robotTakingId);
+    NbtWriter.of(nbt)
+      .putLong("Pos", pos.asLong())
+      .putDirection("side", side)
+      .putBoolean("isMain", linkIsMain)
+      .putLong("robotId", robotTakingId)
+      .done();
   }
 
   /**
@@ -226,10 +230,12 @@ public abstract class DockingStation<T extends DockingStation<T>> implements INB
    */
   @Override
   public void readTag(CompoundTag nbt) {
-    pos = BlockPos.of(nbt.getLong("Pos"));
-    side = Direction.values()[nbt.getByte("side")];
-    linkIsMain = nbt.getBoolean("isMain");
-    robotTakingId = nbt.getLong("robotId");
+    NbtReader.of(nbt)
+      .applyLong("Pos", pos -> this.pos = BlockPos.of(pos))
+      .applyDirection("side", side -> this.side = side)
+      .applyBoolean("isMain", linkIsMain -> this.linkIsMain = linkIsMain)
+      .applyLong("robotId", robotTakingId -> this.robotTakingId = robotTakingId)
+      .done();
   }
 
   /**

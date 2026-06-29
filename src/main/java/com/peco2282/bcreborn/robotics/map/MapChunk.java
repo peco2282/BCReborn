@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.robotics.map;
 
 import com.peco2282.bcreborn.api.core.BCLog;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -82,9 +84,11 @@ public class MapChunk implements INBTSerializable {
       BCLog.logger.error("Unsupported MapChunk version: " + version);
       return;
     }
-    x = compound.getInt("x");
-    z = compound.getInt("z");
-    data = compound.getByteArray("data");
+    NbtReader.of(compound)
+      .applyInt("x", it -> x = it)
+      .applyInt("z", it -> z = it)
+      .applyByteArray("data", it -> data = it)
+      .done();
     if (data.length != 256) {
       BCLog.logger.error("Invalid MapChunk data length: " + data.length);
       data = new byte[256];
@@ -93,10 +97,12 @@ public class MapChunk implements INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag compound) {
-    compound.putShort("version", (short) VERSION);
-    compound.putInt("x", x);
-    compound.putInt("z", z);
-    compound.putByteArray("data", data);
+    NbtWriter.of(compound)
+      .putShort("version", (short) VERSION)
+      .putInt("x", x)
+      .putInt("z", z)
+      .putByteArray("data", data)
+      .done();
   }
 
   @Override
