@@ -80,14 +80,14 @@ public class ResourceIdBlock extends ResourceId<ResourceIdBlock> {
     indexNBT.putInt("x", index.getX());
     indexNBT.putInt("y", index.getY());
     indexNBT.putInt("z", index.getZ());
-    nbt.put("index", indexNBT);
+    nbt.put("pos", indexNBT);
     nbt.putByte("side", (byte) (side != null ? side.ordinal() : 0));
   }
 
   @Override
   protected void readFromNBT(CompoundTag nbt) {
     super.readFromNBT(nbt);
-    CompoundTag indexNBT = nbt.getCompound("index");
+    CompoundTag indexNBT = nbt.getCompound("pos");
     index = new BlockPos(indexNBT.getInt("x"), indexNBT.getInt("y"), indexNBT.getInt("z"));
     side = Direction.values()[nbt.getByte("side")];
   }
