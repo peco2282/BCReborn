@@ -55,11 +55,9 @@ public class ListMatchHandlerFluid extends ListMatchHandler {
     // We will return the stack itself for now.
     if (type == Type.MATERIAL || type == Type.TYPE) {
       if (isValidSource(type, stack)) {
-        List<ItemStack> examples = new ArrayList<>();
-        examples.add(stack);
-        return examples;
+        return List.of(stack);
       }
     }
-    return null;
+    return List.of();
   }
 }

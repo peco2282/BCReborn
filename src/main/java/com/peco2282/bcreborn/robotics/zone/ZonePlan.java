@@ -128,7 +128,7 @@ public class ZonePlan implements IZone, IBufferSerializable {
   @Override
   public BlockPos getRandomBlockIndex(RandomSource rand) {
     if (chunkMapping.isEmpty()) {
-      return null;
+      return BlockPos.ZERO;
     }
 
     int chunkId = rand.nextInt(chunkMapping.size());

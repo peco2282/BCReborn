@@ -119,6 +119,6 @@ public class ActionParameterSignal implements IStatementParameter {
 
   @Override
   public ItemStack getItemStack() {
-    return null;
+    return ItemStack.EMPTY;
   }
 }

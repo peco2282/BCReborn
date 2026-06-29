@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class Gate implements IGate, ISidedStatementContainer, IRedstoneStatementContainer {
@@ -662,7 +663,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   @Override
   public List<IStatementParameter> getTriggerParameters(int index) {
     if (index < 0 || index >= material.numSlots) {
-      return null;
+      return Collections.emptyList();
     }
     return Arrays.asList(triggerParameters[index]).subList(0, material.numTriggerParameters);
   }
@@ -670,7 +671,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   @Override
   public List<IStatementParameter> getActionParameters(int index) {
     if (index < 0 || index >= material.numSlots) {
-      return null;
+      return Collections.emptyList();
     }
     return Arrays.asList(actionParameters[index]).subList(0, material.numActionParameters);
   }

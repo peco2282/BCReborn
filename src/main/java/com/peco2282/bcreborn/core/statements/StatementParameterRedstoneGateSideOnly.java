@@ -41,7 +41,7 @@ public class StatementParameterRedstoneGateSideOnly implements
 
   @Override
   public ItemStack getItemStack() {
-    return null;
+    return ItemStack.EMPTY;
   }
 
   @Override

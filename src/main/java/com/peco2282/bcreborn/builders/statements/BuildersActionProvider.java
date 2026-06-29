@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BuildersActionProvider implements IActionProvider {
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 
 public final class RobotUtils {
@@ -56,13 +57,13 @@ public final class RobotUtils {
   }
 
 
-  public static RedstoneBoardRobotNBT getNextBoard(ItemStack stack, boolean reverse) {
+  public static Optional<RedstoneBoardRobotNBT> getNextBoard(ItemStack stack, boolean reverse) {
     Collection<RedstoneBoardNBT<?>> boards = RegistryUtil.getRedstoneBoardsList();
     if (stack.isEmpty() || !(stack.getItem() instanceof RobotItem)) {
       if (!reverse) {
-        return (RedstoneBoardRobotNBT) Iterables.getFirst(boards, null);
+        return Optional.ofNullable((RedstoneBoardRobotNBT) Iterables.getFirst(boards, null));
       } else {
-        return (RedstoneBoardRobotNBT) Iterables.getLast(boards, null);
+        return Optional.ofNullable((RedstoneBoardRobotNBT) Iterables.getLast(boards, null));
       }
     } else {
       if (reverse) {
@@ -71,12 +72,12 @@ public final class RobotUtils {
       boolean found = false;
       for (RedstoneBoardNBT<?> boardNBT : boards) {
         if (found) {
-          return (RedstoneBoardRobotNBT) boardNBT;
+          return Optional.of((RedstoneBoardRobotNBT) boardNBT);
         } else if (RobotItem.getRobotNBT(stack) == boardNBT) {
           found = true;
         }
       }
-      return null;
+      return Optional.empty();
     }
   }
 }

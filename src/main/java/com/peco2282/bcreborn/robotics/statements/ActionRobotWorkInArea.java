@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -38,6 +39,7 @@ public class ActionRobotWorkInArea extends BCStatement implements IActionInterna
     areaType = iAreaType;
   }
 
+  @Nullable
   public static IZone getArea(StatementSlot slot) {
     if (slot.parameters[0] == null) {
       return null;
