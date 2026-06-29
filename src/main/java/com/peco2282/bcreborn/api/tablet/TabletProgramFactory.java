@@ -22,7 +22,7 @@ package com.peco2282.bcreborn.api.tablet;
  * display name, and provide an icon for visual representation.
  */
 public abstract class TabletProgramFactory {
-  
+
   /**
    * Create an instance of the tablet program specified by this Factory.
    * <p>

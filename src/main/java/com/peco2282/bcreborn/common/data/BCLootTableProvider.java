@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 public class BCLootTableProvider extends LootTableProvider {
-    public BCLootTableProvider(PackOutput output) {
-        super(output, Set.of(), List.of(
-                new SubProviderEntry(BCBlockLoot::new, LootContextParamSets.BLOCK)
-        ));
-    }
+  public BCLootTableProvider(PackOutput output) {
+    super(output, Set.of(), List.of(
+      new SubProviderEntry(BCBlockLoot::new, LootContextParamSets.BLOCK)
+    ));
+  }
 }

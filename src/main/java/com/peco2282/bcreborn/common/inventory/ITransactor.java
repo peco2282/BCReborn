@@ -21,9 +21,9 @@ public interface ITransactor {
   /**
    * Adds an Item to the inventory.
    *
-   * @param stack The item stack to add.
+   * @param stack       The item stack to add.
    * @param orientation The orientation of the inventory.
-   * @param doAdd Whether to actually add the item.
+   * @param doAdd       Whether to actually add the item.
    * @return The ItemStack, with stackSize equal to amount moved.
    */
   ItemStack add(ItemStack stack, Direction orientation, boolean doAdd);
@@ -31,9 +31,9 @@ public interface ITransactor {
   /**
    * Removes and returns a single item from the inventory matching the filter.
    *
-   * @param filter The filter to match against.
+   * @param filter      The filter to match against.
    * @param orientation The orientation of the inventory.
-   * @param doRemove Whether to actually remove the item.
+   * @param doRemove    Whether to actually remove the item.
    */
   ItemStack remove(IStackFilter filter, Direction orientation, boolean doRemove);
 }

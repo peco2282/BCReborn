@@ -11,7 +11,6 @@
  */
 package com.peco2282.bcreborn.common.inventory;
 
-import com.peco2282.bcreborn.api.StackHelper;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
 import net.minecraft.core.Direction;
@@ -83,10 +82,10 @@ public class TransactorSimple extends Transactor {
    * the number of items already injected, and whether the stacks can merge. If {@code doAdd} is
    * true, the items are actually moved into the slot; otherwise, this is a simulation.
    *
-   * @param slot the inventory slot to add items to
-   * @param stack the item stack containing items to be added
+   * @param slot     the inventory slot to add items to
+   * @param stack    the item stack containing items to be added
    * @param injected the number of items already injected from the stack (not to be moved again)
-   * @param doAdd if true, actually perform the addition; if false, only simulate
+   * @param doAdd    if true, actually perform the addition; if false, only simulate
    * @return the number of items that were (or would be) added to the slot
    */
   protected int addToSlot(IInvSlot slot, ItemStack stack, int injected, boolean doAdd) {

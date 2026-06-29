@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.common.block;
 
 import com.peco2282.bcreborn.api.blocks.IRotatable;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;

@@ -108,6 +108,6 @@ public class FactoryConfig {
       ConfigEntry.booleanOf("packageItem", Component.translatable("screen.config.entry.factory.packageItem.title"), Component.translatable("screen.config.entry.factory.packageItem.tooltip"), packageItem)
     ).build();
 
-    return new ConfigSection[] { blocks, items };
+    return new ConfigSection[]{blocks, items};
   }
 }

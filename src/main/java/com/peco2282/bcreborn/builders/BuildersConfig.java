@@ -151,6 +151,6 @@ public class BuildersConfig {
       )
     ).build();
 
-    return new ConfigSection[] { general, quarry, blueprints };
+    return new ConfigSection[]{general, quarry, blueprints};
   }
 }

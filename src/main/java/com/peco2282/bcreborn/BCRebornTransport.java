@@ -45,10 +45,6 @@ public class BCRebornTransport implements BCReborn {
   private static final BCRegistry REGISTRY = BCRegistry.getRegistry(MODID);
   private static final ContextProcessor processor = ContextProcessor.create(MODID);
 
-  public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
-  public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
-  public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robot_station"), RobotStationPluggable::new);
-
   public BCRebornTransport(FMLJavaModLoadingContext context) {
     IEventBus modEventBus = context.getModEventBus();
 
@@ -62,15 +58,15 @@ public class BCRebornTransport implements BCReborn {
     REGISTRY.register(modEventBus);
 
     MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 7));
-  }
+  }  public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
 
   public static BCRegistry getRegistry() {
     return REGISTRY;
-  }
+  }  public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
 
   public static ResourceLocation location(String path) {
     return BCReborn.getLocation(BCReborn.Type.TRANSPORT, path);
-  }
+  }  public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robot_station"), RobotStationPluggable::new);
 
   private void commonSetup(final FMLCommonSetupEvent event) {
     // Some common setup code
@@ -100,4 +96,10 @@ public class BCRebornTransport implements BCReborn {
     // Do something when the server starts
     LOGGER.info("HELLO from server starting");
   }
+
+
+
+
+
+
 }

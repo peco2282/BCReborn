@@ -29,7 +29,8 @@ import java.util.List;
 public class RobotsActionProvider implements IActionProvider {
   public static final RobotsActionProvider INSTANCE = new RobotsActionProvider();
 
-  private RobotsActionProvider() {}
+  private RobotsActionProvider() {
+  }
 
   @Override
   public Collection<IActionInternal> getInternalActions(IStatementContainer container) {

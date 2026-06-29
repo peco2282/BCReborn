@@ -27,6 +27,7 @@ public class BCRebornEventBus implements BCEventBus {
   private static final Logger LOGGER = BCReborn.commonLogger();
   private boolean isStarted = false;
   private boolean isShutdown = false;
+
   private BCRebornEventBus() {
   }
 
@@ -51,7 +52,7 @@ public class BCRebornEventBus implements BCEventBus {
 
   private static boolean isValidMethod(Method method) {
     return
-        Modifier.isPublic(method.getModifiers()) &&
+      Modifier.isPublic(method.getModifiers()) &&
         method.getParameterCount() == 1 &&
         method.getReturnType() == void.class &&
         BCEvent.class.isAssignableFrom(method.getParameterTypes()[0]) &&
@@ -80,7 +81,7 @@ public class BCRebornEventBus implements BCEventBus {
   }
 
   private void register(
-      Class<?> declaringClass, Class<BCEvent> eventClass, Method method, @Nullable Object instance) {
+    Class<?> declaringClass, Class<BCEvent> eventClass, Method method, @Nullable Object instance) {
     try {
       EventListenerContainer.registerListener(eventClass, new BCEventHolder(method, instance));
       LOGGER.info("Registered listener for {}#{}", declaringClass.getName(), method.getName());
@@ -115,6 +116,7 @@ public class BCRebornEventBus implements BCEventBus {
     LOGGER.info("{}: {} events dispatched.", event.getClass().getSimpleName(), list.size());
     return true;
   }
+
   private void checkState() {
     if (isShutdown) {
       throw new IllegalStateException("EventBus is shutdown");

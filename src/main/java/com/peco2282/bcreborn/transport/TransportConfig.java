@@ -450,6 +450,6 @@ public class TransportConfig {
       ConfigEntry.booleanOf("pipeStructureCobblestone", Component.translatable("screen.config.entry.transport.pipeStructureCobblestone.title"), Component.translatable("screen.config.entry.transport.pipeStructureCobblestone.tooltip"), pipeStructureCobblestone)
     ).build();
 
-    return new ConfigSection[] { general, items, fluids, power };
+    return new ConfigSection[]{general, items, fluids, power};
   }
 }

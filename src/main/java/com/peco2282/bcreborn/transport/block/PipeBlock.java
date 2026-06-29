@@ -118,6 +118,17 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     return pipe != null && !pipe.isRemoved();
   }
 
+  public static boolean isConnected(BlockState state, Direction dir) {
+    return switch (dir) {
+      case DOWN -> state.getValue(DOWN);
+      case UP -> state.getValue(UP);
+      case NORTH -> state.getValue(NORTH);
+      case SOUTH -> state.getValue(SOUTH);
+      case WEST -> state.getValue(WEST);
+      case EAST -> state.getValue(EAST);
+    };
+  }
+
   @Override
   public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
     builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, WATERLOGGED, EXTRACTION_SIDE);
@@ -305,16 +316,5 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       pipe.setPipeColor(null);
     }
     return false;
-  }
-
-  public static boolean isConnected(BlockState state, Direction dir) {
-    return switch (dir) {
-      case DOWN -> state.getValue(DOWN);
-      case UP -> state.getValue(UP);
-      case NORTH -> state.getValue(NORTH);
-      case SOUTH -> state.getValue(SOUTH);
-      case WEST -> state.getValue(WEST);
-      case EAST -> state.getValue(EAST);
-    };
   }
 }

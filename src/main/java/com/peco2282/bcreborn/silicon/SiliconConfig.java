@@ -146,6 +146,6 @@ public class SiliconConfig {
       )
     ).build();
 
-    return new ConfigSection[] { items, blocks, power };
+    return new ConfigSection[]{items, blocks, power};
   }
 }

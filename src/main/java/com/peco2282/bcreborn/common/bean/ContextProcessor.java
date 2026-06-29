@@ -188,8 +188,8 @@ public class ContextProcessor {
       decodeMethod = cls.getDeclaredMethod("decode", FriendlyByteBuf.class);
     } catch (NoSuchMethodException e) {
       var msg = """
-          @Packet annotated class must have a static decode(FriendlyByteBuf) method
-          """;
+        @Packet annotated class must have a static decode(FriendlyByteBuf) method
+        """;
       log.error("Packet class {} must have a static decode(FriendlyByteBuf) method", cls.getName(), e);
 
       throw new RuntimeException(msg, e);

@@ -74,11 +74,11 @@ public class GeneralConfig {
       Component.translatable("screen.config.section.general.display.title")
     ).addEntries(
       ConfigEntry.booleanOf(
-      "colorBlindMode",
-      Component.translatable("screen.config.entry.general.colorBlindMode.title"),
-      Component.translatable("screen.config.entry.general.colorBlindMode.tooltip"),
-      colorBlindMode
-    ),
+        "colorBlindMode",
+        Component.translatable("screen.config.entry.general.colorBlindMode.title"),
+        Component.translatable("screen.config.entry.general.colorBlindMode.tooltip"),
+        colorBlindMode
+      ),
       ConfigEntry.booleanOf(
         "hideFluidValues",
         Component.translatable("screen.config.entry.general.hideFluidValues.title"),
@@ -96,11 +96,11 @@ public class GeneralConfig {
       Component.translatable("screen.config.section.general.debug.title")
     ).addEntries(
       ConfigEntry.booleanOf(
-      "printFacadeList",
-      Component.translatable("screen.config.entry.general.printFacadeList.title"),
-      Component.translatable("screen.config.entry.general.printFacadeList.tooltip"),
-      printFacadeList
-    ),
+        "printFacadeList",
+        Component.translatable("screen.config.entry.general.printFacadeList.title"),
+        Component.translatable("screen.config.entry.general.printFacadeList.tooltip"),
+        printFacadeList
+      ),
       ConfigEntry.booleanOf(
         "printBlueprintSchematicList",
         Component.translatable("screen.config.entry.general.printBlueprintSchematicList.title"),
@@ -109,6 +109,6 @@ public class GeneralConfig {
       )
     ).build();
 
-    return new ConfigSection[] { display, debug };
+    return new ConfigSection[]{display, debug};
   }
 }

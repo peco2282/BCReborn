@@ -30,8 +30,6 @@ public final class StatementManager {
   private static final List<IActionProvider> actionProviders = new LinkedList<>();
   private static final Map<ResourceLocation, IStatement> STATEMENTS = new HashMap<>();
   private static final Map<ResourceLocation, Parameter<?>> PARAMETERS = new HashMap<>();
-  private record Parameter<P extends IStatementParameter>(P parameter, Codec<P> codec) {
-  }
 
   private StatementManager() {
   }
@@ -154,6 +152,7 @@ public final class StatementManager {
   public static IStatementParameter createParameter(String kind) {
     return createParameter(ResourceLocation.parse(kind));
   }
+
   public static IStatementParameter createParameter(ResourceLocation kind) {
     var parameter = PARAMETERS.get(kind);
     if (parameter != null) return parameter.parameter();
@@ -169,5 +168,8 @@ public final class StatementManager {
     for (Parameter<?> parameter : PARAMETERS.values()) {
       parameter.parameter().registerIcons(textureGetter);
     }
+  }
+
+  private record Parameter<P extends IStatementParameter>(P parameter, Codec<P> codec) {
   }
 }

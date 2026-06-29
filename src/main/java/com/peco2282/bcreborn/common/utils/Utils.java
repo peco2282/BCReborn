@@ -79,7 +79,7 @@ public final class Utils {
    *
    * @param stack the item stack to be added
    * @param world the world where the inventories are located
-   * @param pos the position of the inventories
+   * @param pos   the position of the inventories
    * @return amount used
    */
   public static int addToRandomInventoryAround(Level world, BlockPos pos, ItemStack stack) {

@@ -193,6 +193,14 @@ public class RobotEntity extends RobotEntityBase implements
     itemInUse = ItemStack.EMPTY;
   }
 
+  static boolean nextTo(BlockPos a, BlockPos b) {
+    return
+      Math.abs(a.getX() - b.getX()) +
+        Math.abs(a.getY() - b.getY()) +
+        Math.abs(a.getZ() - b.getZ())
+        <= 1;
+  }
+
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
@@ -446,13 +454,6 @@ public class RobotEntity extends RobotEntityBase implements
     init();
   }
 
-  @Override
-  public void setItemSlot(EquipmentSlot slot, ItemStack itemstack) {
-    if (slot == EquipmentSlot.MAINHAND) {
-      itemInUse = itemstack;
-    }
-  }
-
 //  @Override
 //  public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
 //    return false;
@@ -461,6 +462,13 @@ public class RobotEntity extends RobotEntityBase implements
 //  @Override
 //  protected void checkFallDamage(double p_20990_, boolean p_20991_, BlockState p_20992_, BlockPos p_20993_) {
 //  }
+
+  @Override
+  public void setItemSlot(EquipmentSlot slot, ItemStack itemstack) {
+    if (slot == EquipmentSlot.MAINHAND) {
+      itemInUse = itemstack;
+    }
+  }
 
   @Override
   public void travel(Vec3 travelVector) {
@@ -477,7 +485,6 @@ public class RobotEntity extends RobotEntityBase implements
   public ResourceLocation getTexture() {
     return texture;
   }
-
 
   @Override
   public void addAdditionalSaveData(CompoundTag nbt) {
@@ -755,6 +762,11 @@ public class RobotEntity extends RobotEntityBase implements
     BCNetworkManager.sendEntityClientSetItemInUse(this, this.getId(), stack);
   }
 
+//  @Override
+//  public void setHealth(float par1) {
+//    // deactivate health management
+//  }
+
   public void setSteamDirection(final int x, final int y, final int z) {
     if (!level().isClientSide) {
       BCNetworkManager.sendSetSteamDirection(this, this.getId(), x, y, z);
@@ -767,11 +779,6 @@ public class RobotEntity extends RobotEntityBase implements
       steamDz = (int) v.z;
     }
   }
-
-//  @Override
-//  public void setHealth(float par1) {
-//    // deactivate health management
-//  }
 
   @Override
   public boolean hurt(DamageSource source, float f) {
@@ -1253,14 +1260,6 @@ public class RobotEntity extends RobotEntityBase implements
     } else {
       return stack;
     }
-  }
-
-  static boolean nextTo(BlockPos a, BlockPos b) {
-    return
-        Math.abs(a.getX() - b.getX()) +
-        Math.abs(a.getY() - b.getY()) +
-        Math.abs(a.getZ() - b.getZ())
-            <= 1;
   }
 
   @Override

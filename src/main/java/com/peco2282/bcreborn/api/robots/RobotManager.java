@@ -43,6 +43,7 @@ public abstract class RobotManager {
    * Provider for the robot registry.
    */
   private static IRobotRegistryProvider registryProvider;
+  private static AIRobotType<? extends RedstoneBoardRobot<?>> emptyBoard;
 
   public static IRobotRegistryProvider registry() {
     return registryProvider;
@@ -52,8 +53,6 @@ public abstract class RobotManager {
   public static void registry(IRobotRegistryProvider provider) {
     registryProvider = provider;
   }
-
-  private static AIRobotType<? extends RedstoneBoardRobot<?>> emptyBoard;
 
   @ApiStatus.Internal
   public static void setEmpty(AIRobotType<? extends RedstoneBoardRobot<?>> empty) {

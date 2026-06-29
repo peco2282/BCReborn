@@ -19,47 +19,47 @@ import net.minecraftforge.energy.IEnergyStorage;
  * EnergyTransportModule へ処理を委譲する。
  */
 public class PipeEnergyStorage implements IEnergyStorage {
-    private final EnergyTransportModule module;
-    private final Direction side;
+  private final EnergyTransportModule module;
+  private final Direction side;
 
-    public PipeEnergyStorage(EnergyTransportModule module, Direction side) {
-        this.module = module;
-        this.side = side;
-    }
+  public PipeEnergyStorage(EnergyTransportModule module, Direction side) {
+    this.module = module;
+    this.side = side;
+  }
 
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (!canReceive()) return 0;
-        if (simulate) {
-            double space = module.getMaxPower() - module.getInternalPower()[side.get3DDataValue()];
-            return (int) Math.min(maxReceive, space);
-        }
-        return module.receiveEnergy(side, maxReceive);
+  @Override
+  public int receiveEnergy(int maxReceive, boolean simulate) {
+    if (!canReceive()) return 0;
+    if (simulate) {
+      double space = module.getMaxPower() - module.getInternalPower()[side.get3DDataValue()];
+      return (int) Math.min(maxReceive, space);
     }
+    return module.receiveEnergy(side, maxReceive);
+  }
 
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        // パイプからの積極的な抽出はサポートしない（module.tick で配送されるため）
-        return 0;
-    }
+  @Override
+  public int extractEnergy(int maxExtract, boolean simulate) {
+    // パイプからの積極的な抽出はサポートしない（module.tick で配送されるため）
+    return 0;
+  }
 
-    @Override
-    public int getEnergyStored() {
-        return (int) module.getInternalPower()[side.get3DDataValue()];
-    }
+  @Override
+  public int getEnergyStored() {
+    return (int) module.getInternalPower()[side.get3DDataValue()];
+  }
 
-    @Override
-    public int getMaxEnergyStored() {
-        return module.getMaxPower();
-    }
+  @Override
+  public int getMaxEnergyStored() {
+    return module.getMaxPower();
+  }
 
-    @Override
-    public boolean canExtract() {
-        return false;
-    }
+  @Override
+  public boolean canExtract() {
+    return false;
+  }
 
-    @Override
-    public boolean canReceive() {
-        return true;
-    }
+  @Override
+  public boolean canReceive() {
+    return true;
+  }
 }

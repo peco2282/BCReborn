@@ -45,12 +45,12 @@ public class SingleUseTank extends Tank {
     acceptedFluid = null;
   }
 
-  public void setAcceptedFluid(Fluid fluid) {
-    this.acceptedFluid = fluid;
-  }
-
   public Fluid getAcceptedFluid() {
     return acceptedFluid;
+  }
+
+  public void setAcceptedFluid(Fluid fluid) {
+    this.acceptedFluid = fluid;
   }
 
   @Override

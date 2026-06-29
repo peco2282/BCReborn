@@ -49,8 +49,8 @@ public class EnergyTransportModule {
   // クライアント表示用移動平均（10tick窓）
   public short[] displayPower = new short[6];
   // ダブルバッファ: 現tick / 次tick（double精度でoriginalに合わせる）
-  private double[] internalPower = new double[6];
-  private double[] internalNextPower = new double[6];
+  private final double[] internalPower = new double[6];
+  private final double[] internalNextPower = new double[6];
   // 需要バッファ: 現tick / 次tick
   private int[] powerQuery = new int[6];
   private int historyIndex = 0;
@@ -265,18 +265,18 @@ public class EnergyTransportModule {
       //noinspection ConstantValue
       if (handler != null) {
         if (handler.canReceive()) {
-            // 機械が受け入れ可能な最大量を問い合わせる
-            // maxPower ではなく、十分大きな値（100万RF等）で問い合わせて真の需要を知る
-            int request = handler.receiveEnergy(1000000, true); // simulate
-            if (request > 0) {
-              requestEnergy(dir, request);
-            }
+          // 機械が受け入れ可能な最大量を問い合わせる
+          // maxPower ではなく、十分大きな値（100万RF等）で問い合わせて真の需要を知る
+          int request = handler.receiveEnergy(1000000, true); // simulate
+          if (request > 0) {
+            requestEnergy(dir, request);
+          }
         } else if (handler.canExtract()) {
-            // エンジン等の供給源の場合、パイプに空きがあれば1RFの「誘発用需要」を登録する
-            // これにより需要が遡り、木エンジンからの押し込みや木パイプの吸い出しが機能し始める
-            if (internalNextPower[dir.get3DDataValue()] < maxPower) {
-                requestEnergy(dir, 1);
-            }
+          // エンジン等の供給源の場合、パイプに空きがあれば1RFの「誘発用需要」を登録する
+          // これにより需要が遡り、木エンジンからの押し込みや木パイプの吸い出しが機能し始める
+          if (internalNextPower[dir.get3DDataValue()] < maxPower) {
+            requestEnergy(dir, 1);
+          }
         }
       }
     }
@@ -307,43 +307,43 @@ public class EnergyTransportModule {
           }
         }
 
-      // 2. 需要を伝播させる条件:
-      // - その方向からエネルギーが来ている
-      // - その方向にエネルギー供給源がある
-      // - 木のエネルギーパイプなど、自らエネルギーを抽出するパイプ
-      // - 現在エネルギーを保持している場合（全方位へ広めるため）
-      // - システム全体に需要がある場合（全方位へ探索するため）
-      boolean isSourcePipe = pipe.getPipeMaterial() == PipeMaterial.WOOD;
-      boolean hasInternalPower = false;
-      for (int j = 0; j < 6; j++) {
-        if (internalPower[j] > 0 || internalNextPower[j] > 0) {
-          hasInternalPower = true;
-          break;
-        }
-      }
-
-      // 需要を伝播させる量を計算
-      // 保持しているエネルギーがある場合は、そのエネルギーを流したいので、
-      // 転送可能量（maxPower）程度の需要を伝播させて供給源（エンジン）からの出力を促す
-      int queryToSend = totalSystemQuery;
-      if (hasInternalPower || isSourcePipe) {
-        queryToSend = Math.max(queryToSend, maxPower);
-      }
-
-      if (hasIncomingPower || hasSource || isSourcePipe || hasInternalPower || totalSystemQuery > 0) {
-        // 条件を満たす場合、需要を隣接パイプへ伝播する
-        BlockPos neighborPos = pos.relative(dir);
-        if (!level.isLoaded(neighborPos)) continue;
-
-        BlockEntity be = level.getBlockEntity(neighborPos);
-        if (be instanceof PipeBlockEntity neighborPipe
-          && neighborPipe.getTransportType() == PipeType.ENERGY) {
-          EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
-          if (neighborModule != null) {
-            neighborModule.requestEnergy(dir.getOpposite(), queryToSend);
+        // 2. 需要を伝播させる条件:
+        // - その方向からエネルギーが来ている
+        // - その方向にエネルギー供給源がある
+        // - 木のエネルギーパイプなど、自らエネルギーを抽出するパイプ
+        // - 現在エネルギーを保持している場合（全方位へ広めるため）
+        // - システム全体に需要がある場合（全方位へ探索するため）
+        boolean isSourcePipe = pipe.getPipeMaterial() == PipeMaterial.WOOD;
+        boolean hasInternalPower = false;
+        for (int j = 0; j < 6; j++) {
+          if (internalPower[j] > 0 || internalNextPower[j] > 0) {
+            hasInternalPower = true;
+            break;
           }
         }
-      }
+
+        // 需要を伝播させる量を計算
+        // 保持しているエネルギーがある場合は、そのエネルギーを流したいので、
+        // 転送可能量（maxPower）程度の需要を伝播させて供給源（エンジン）からの出力を促す
+        int queryToSend = totalSystemQuery;
+        if (hasInternalPower || isSourcePipe) {
+          queryToSend = Math.max(queryToSend, maxPower);
+        }
+
+        if (hasIncomingPower || hasSource || isSourcePipe || hasInternalPower || totalSystemQuery > 0) {
+          // 条件を満たす場合、需要を隣接パイプへ伝播する
+          BlockPos neighborPos = pos.relative(dir);
+          if (!level.isLoaded(neighborPos)) continue;
+
+          BlockEntity be = level.getBlockEntity(neighborPos);
+          if (be instanceof PipeBlockEntity neighborPipe
+            && neighborPipe.getTransportType() == PipeType.ENERGY) {
+            EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
+            if (neighborModule != null) {
+              neighborModule.requestEnergy(dir.getOpposite(), queryToSend);
+            }
+          }
+        }
       }
     }
 

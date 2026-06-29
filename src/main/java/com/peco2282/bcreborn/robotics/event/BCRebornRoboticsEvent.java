@@ -55,7 +55,7 @@ public class BCRebornRoboticsEvent {
     event.put(RoboticsEntityTypes.ROBOT.get(), RobotEntity.createMobAttributes().build());
   }
 
-//  @SubscribeEvent
+  //  @SubscribeEvent
   public static void onRegisterCommand(RegisterCommandsEvent event) {
     event.getDispatcher().register(RobotCommands.command());
   }

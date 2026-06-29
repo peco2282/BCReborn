@@ -29,48 +29,48 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public final class TankUtils {
 
-	/**
-	 * Deactivate constructor
-	 */
-	private TankUtils() {
-	}
+  /**
+   * Deactivate constructor
+   */
+  private TankUtils() {
+  }
 
-	public static boolean handleRightClick(IFluidHandler tank, Direction side, Player player, boolean fill, boolean drain) {
+  public static boolean handleRightClick(IFluidHandler tank, Direction side, Player player, boolean fill, boolean drain) {
     ItemStack current = player.getItemInHand(InteractionHand.MAIN_HAND);
-		if (!current.isEmpty()) {
-			if (fill && FluidUtil.getFluidContained(current).isPresent()) {
+    if (!current.isEmpty()) {
+      if (fill && FluidUtil.getFluidContained(current).isPresent()) {
         return FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank);
-			} else if (drain) {
+      } else if (drain) {
         return FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, tank);
-			}
-		}
-		return false;
-	}
+      }
+    }
+    return false;
+  }
 
-	public static Block getFluidBlock(Fluid fluid, boolean moving) {
-		if (fluid == Fluids.WATER) {
-			return moving ? Blocks.WATER_CAULDRON : Blocks.WATER;
-		}
-		if (fluid == Fluids.LAVA) {
-			return moving ? Blocks.LAVA_CAULDRON : Blocks.LAVA;
-		}
-		return fluid.defaultFluidState().createLegacyBlock().getBlock();
-	}
+  public static Block getFluidBlock(Fluid fluid, boolean moving) {
+    if (fluid == Fluids.WATER) {
+      return moving ? Blocks.WATER_CAULDRON : Blocks.WATER;
+    }
+    if (fluid == Fluids.LAVA) {
+      return moving ? Blocks.LAVA_CAULDRON : Blocks.LAVA;
+    }
+    return fluid.defaultFluidState().createLegacyBlock().getBlock();
+  }
 
-	public static void pushFluidToConsumers(IFluidTank tank, int flowCap, BlockEntityBuffer[] tileBuffer) {
-		for (Direction side : Direction.values()) {
-			FluidStack fluidStack = tank.drain(flowCap, IFluidHandler.FluidAction.SIMULATE);
-			if (!fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
-				BlockEntity tile = tileBuffer[side.ordinal()].getTile();
-				if (tile != null) {
-					tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
-						int used = handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-						if (used > 0) {
-							tank.drain(used, IFluidHandler.FluidAction.EXECUTE);
-						}
-					});
-				}
-			}
-		}
-	}
+  public static void pushFluidToConsumers(IFluidTank tank, int flowCap, BlockEntityBuffer[] tileBuffer) {
+    for (Direction side : Direction.values()) {
+      FluidStack fluidStack = tank.drain(flowCap, IFluidHandler.FluidAction.SIMULATE);
+      if (!fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
+        BlockEntity tile = tileBuffer[side.ordinal()].getTile();
+        if (tile != null) {
+          tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
+            int used = handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+            if (used > 0) {
+              tank.drain(used, IFluidHandler.FluidAction.EXECUTE);
+            }
+          });
+        }
+      }
+    }
+  }
 }

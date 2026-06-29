@@ -16,29 +16,29 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class RestrictedTank extends Tank {
 
-	private final Fluid[] acceptedFluids;
+  private final Fluid[] acceptedFluids;
 
-	public RestrictedTank(String name, int capacity, Fluid... acceptedFluids) {
-		super(name, capacity);
-		this.acceptedFluids = acceptedFluids;
-	}
+  public RestrictedTank(String name, int capacity, Fluid... acceptedFluids) {
+    super(name, capacity);
+    this.acceptedFluids = acceptedFluids;
+  }
 
   @Override
   public int fill(FluidStack resource, FluidAction action) {
-		if (!acceptsFluid(resource.getFluid())) {
-			return 0;
-		} else {
-			return super.fill(resource, action);
-		}
-	}
+    if (!acceptsFluid(resource.getFluid())) {
+      return 0;
+    } else {
+      return super.fill(resource, action);
+    }
+  }
 
-	public boolean acceptsFluid(Fluid fluid) {
-		for (Fluid accepted : acceptedFluids) {
-			if (accepted.equals(fluid)) {
-				return true;
-			}
-		}
+  public boolean acceptsFluid(Fluid fluid) {
+    for (Fluid accepted : acceptedFluids) {
+      if (accepted.equals(fluid)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

@@ -35,9 +35,11 @@ import java.util.function.*;
 
 public class NbtReader {
   private final CompoundTag nbt;
+
   private NbtReader(CompoundTag nbt) {
     this.nbt = nbt;
   }
+
   public static NbtReader of(CompoundTag nbt) {
     return new NbtReader(nbt);
   }

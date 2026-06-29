@@ -56,19 +56,19 @@ public class BCRebornCreativeTabs {
   );
 
   public static final RegistryObject<CreativeModeTab> BUILDERS = register("builders", () -> CreativeModeTab.builder()
-      .title(Component.literal("BCReborn Builders"))
-      .icon(() -> new ItemStack(BuildersBlock.QUARRY.get()))
-      .displayItems(BuildersBlock::registerCreativeTab)
-      .withTabsAfter(CORE_ID)
-      .build()
+    .title(Component.literal("BCReborn Builders"))
+    .icon(() -> new ItemStack(BuildersBlock.QUARRY.get()))
+    .displayItems(BuildersBlock::registerCreativeTab)
+    .withTabsAfter(CORE_ID)
+    .build()
   );
 
   public static final RegistryObject<CreativeModeTab> ENERGY = register("energy", () -> CreativeModeTab.builder()
-      .title(Component.literal("BCReborn Energy"))
-      .icon(() -> new ItemStack(EnergyBlocks.CREATIVE_ENGINE.get()))
-      .displayItems(EnergyBlocks::registerCreativeTab)
-      .withTabsAfter(BUILDERS_ID)
-      .build()
+    .title(Component.literal("BCReborn Energy"))
+    .icon(() -> new ItemStack(EnergyBlocks.CREATIVE_ENGINE.get()))
+    .displayItems(EnergyBlocks::registerCreativeTab)
+    .withTabsAfter(BUILDERS_ID)
+    .build()
   );
 
   public static final RegistryObject<CreativeModeTab> FACTORY = register("factory", () -> CreativeModeTab.builder()

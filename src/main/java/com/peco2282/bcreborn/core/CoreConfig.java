@@ -191,6 +191,6 @@ public class CoreConfig {
       )
     ).build();
 
-    return new ConfigSection[] { general, network, power };
+    return new ConfigSection[]{general, network, power};
   }
 }

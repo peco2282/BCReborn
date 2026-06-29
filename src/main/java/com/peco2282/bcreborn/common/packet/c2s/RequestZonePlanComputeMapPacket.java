@@ -38,6 +38,19 @@ public record RequestZonePlanComputeMapPacket(BlockPos pos, int cx, int cz, int 
     );
   }
 
+  private static void computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
+    final byte[] textureData = new byte[width * height];
+    // TODO: implement actual map computation or delegate to BE
+    // For now, let's assume we send it in chunks
+    int MAX_PACKET_LENGTH = 30000;
+    for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
+      int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
+      byte[] chunk = new byte[len];
+      System.arraycopy(textureData, i, chunk, 0, len);
+      BCNetworkManager.sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
+    }
+  }
+
   @Override
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
@@ -58,18 +71,5 @@ public record RequestZonePlanComputeMapPacket(BlockPos pos, int cx, int cz, int 
         .ifPresent(be -> computeMap(be, cx, cz, width, height, blocksPerPixel, player));
     });
     ctx.setPacketHandled(true);
-  }
-
-  private static void computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
-    final byte[] textureData = new byte[width * height];
-    // TODO: implement actual map computation or delegate to BE
-    // For now, let's assume we send it in chunks
-    int MAX_PACKET_LENGTH = 30000;
-    for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
-      int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
-      byte[] chunk = new byte[len];
-      System.arraycopy(textureData, i, chunk, 0, len);
-      BCNetworkManager.sendSyncZonePlanImage(player, be.getBlockPos(), textureData.length, i, chunk);
-    }
   }
 }

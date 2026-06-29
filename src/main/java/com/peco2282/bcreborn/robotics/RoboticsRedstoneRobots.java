@@ -48,6 +48,11 @@ public class RoboticsRedstoneRobots {
   public static final RegistryObject<BCBoardNBT> ROBOT_STRIPES = register("robot_stripes", () -> new BCBoardNBT(loc("robot_stripes"), "stripes", BoardRobotStripes::new, "yellow", RedstoneBoardNBT.COST_HIGH));
 
   public static final RegistryObject<BCBoardNBT> ROBOT_BUILDER = register("robot_builder", () -> new BCBoardNBT(loc("robot_builder"), "builder", BoardRobotBuilder::new, "yellow", RedstoneBoardNBT.COST_VERY_HIGH));
+  public static final List<RegistryObject<BCBoardNBT>> ALL = List.of(
+    ROBOT_PICKER, ROBOT_CARRIER, ROBOT_FLUID_CARRIER,
+    ROBOT_LUMBERJACK, ROBOT_HARVESTER, ROBOT_MINER, ROBOT_PLANTER, ROBOT_FARMER, ROBOT_LEAVE_CUTTER, ROBOT_BUTCHER, ROBOT_SHOVELMAN, ROBOT_PUMP,
+    ROBOT_DELIVERY, ROBOT_KNIGHT, ROBOT_BOMBER, ROBOT_STRIPES, ROBOT_BUILDER
+  );
 
   private static ResourceLocation loc(String name) {
     return BCRebornRobotics.location(name);
@@ -56,10 +61,4 @@ public class RoboticsRedstoneRobots {
   private static <T, R extends RedstoneBoardNBT<T>> RegistryObject<R> register(String name, Supplier<R> supplier) {
     return REGISTRY.registerRedstoneBoard(name, supplier);
   }
-
-  public static final List<RegistryObject<BCBoardNBT>> ALL = List.of(
-    ROBOT_PICKER, ROBOT_CARRIER, ROBOT_FLUID_CARRIER,
-    ROBOT_LUMBERJACK, ROBOT_HARVESTER, ROBOT_MINER, ROBOT_PLANTER, ROBOT_FARMER, ROBOT_LEAVE_CUTTER, ROBOT_BUTCHER, ROBOT_SHOVELMAN, ROBOT_PUMP,
-    ROBOT_DELIVERY, ROBOT_KNIGHT, ROBOT_BOMBER, ROBOT_STRIPES, ROBOT_BUILDER
-  );
 }

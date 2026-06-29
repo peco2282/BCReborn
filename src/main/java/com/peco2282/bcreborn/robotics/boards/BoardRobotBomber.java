@@ -56,7 +56,7 @@ public class BoardRobotBomber extends RedstoneBoardRobot<BoardRobotBomber> {
       if (ai.success()) {
         startDelegateAI(new AIRobotGotoBlock(robot, searchAI.blockFound.getX(),
           searchAI.blockFound.getY() + flyingHeight,
-                searchAI.blockFound.getZ()));
+          searchAI.blockFound.getZ()));
       } else {
         startDelegateAI(new AIRobotGotoSleep(robot));
       }

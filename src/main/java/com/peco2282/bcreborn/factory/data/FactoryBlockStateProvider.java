@@ -228,7 +228,7 @@ public class FactoryBlockStateProvider extends BCBlockStateHelper {
       .end()
     );
 
-     simpleBlockWithItem(FactoryBlocks.PLAIN_PIPE.get(), models().getBuilder("block/plain_pipe")
+    simpleBlockWithItem(FactoryBlocks.PLAIN_PIPE.get(), models().getBuilder("block/plain_pipe")
       .texture("particle", modLoc("block/plain_pipe_block/default"))
       .element()
       .from(4, 0, 4)

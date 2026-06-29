@@ -27,7 +27,21 @@ import java.util.Set;
  * Provides access to global registries and utility methods.
  */
 public final class BuildCraftAPI {
+  /**
+   * Set of blocks that are considered "soft" (easily breakable by machines).
+   */
+  public static final Set<Block> softBlocks = new HashSet<>();
+  /**
+   * Map of world properties, used to query various states of the world at specific positions.
+   */
+  public static final HashMap<String, IWorldProperty> worldProperties = new HashMap<>();
   private static BCEventBus bus;
+
+  /**
+   * Private constructor to prevent instantiation.
+   */
+  private BuildCraftAPI() {
+  }
 
   public static BCEventBus bus() {
     return bus;
@@ -36,22 +50,6 @@ public final class BuildCraftAPI {
   @ApiStatus.Internal
   public static void bus(BCEventBus bus) {
     BuildCraftAPI.bus = bus;
-  }
-
-  /**
-   * Set of blocks that are considered "soft" (easily breakable by machines).
-   */
-  public static final Set<Block> softBlocks = new HashSet<>();
-
-  /**
-   * Map of world properties, used to query various states of the world at specific positions.
-   */
-  public static final HashMap<String, IWorldProperty> worldProperties = new HashMap<>();
-
-  /**
-   * Private constructor to prevent instantiation.
-   */
-  private BuildCraftAPI() {
   }
 
   /**
