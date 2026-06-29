@@ -40,13 +40,7 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public void readTag(CompoundTag nbt) {
-    if (nbt.contains("items")) {
-      // this is to support legacy item load, the new format should be
-      // "Items"
-      readFromNBT(nbt, "items");
-    } else {
-      readFromNBT(nbt, "Items");
-    }
+    readFromNBT(nbt, "Items");
   }
 
 

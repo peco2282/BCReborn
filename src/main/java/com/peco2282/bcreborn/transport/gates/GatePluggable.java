@@ -20,6 +20,8 @@ import com.peco2282.bcreborn.api.transport.IPipeBlockEntity;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableDynamicRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -63,8 +65,10 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putByte(ItemGate.NBT_TAG_MAT, (byte) material.ordinal());
-    nbt.putByte(ItemGate.NBT_TAG_LOGIC, (byte) logic.ordinal());
+    NbtWriter.of(nbt)
+      .putEnum(ItemGate.NBT_TAG_MAT, material)
+      .putEnum(ItemGate.NBT_TAG_LOGIC, logic)
+      .done();
 
     ListTag expansionsList = new ListTag();
     for (IGateExpansion expansion : expansions) {
@@ -75,8 +79,10 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void readTag(CompoundTag nbt) {
-    material = GateDefinition.GateMaterial.fromOrdinal(nbt.getByte(ItemGate.NBT_TAG_MAT));
-    logic = GateDefinition.GateLogic.fromOrdinal(nbt.getByte(ItemGate.NBT_TAG_LOGIC));
+    NbtReader.of(nbt)
+      .applyEnum(ItemGate.NBT_TAG_MAT, GateDefinition.GateMaterial.class, mat -> material = mat)
+      .applyEnum(ItemGate.NBT_TAG_LOGIC, GateDefinition.GateLogic.class, logic -> this.logic = logic)
+      .done();
 
     ListTag expansionsList = nbt.getList(ItemGate.NBT_TAG_EX, Tag.TAG_STRING);
     final int expansionsSize = expansionsList.size();
