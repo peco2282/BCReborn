@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.robotics.map;
 
-import com.peco2282.bcreborn.api.core.INBTStoreable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 
-public class MapRegion implements INBTStoreable {
+public class MapRegion implements INBTSerializable {
   private final Int2ObjectOpenHashMap<MapChunk> chunks = new Int2ObjectOpenHashMap<>();
   private final int x, z;
 
@@ -47,7 +47,7 @@ public class MapRegion implements INBTStoreable {
   }
 
   @Override
-  public void readFromNBT(CompoundTag tag) {
+  public void readTag(CompoundTag tag) {
     chunks.clear();
 
     if (tag != null) {
@@ -61,13 +61,13 @@ public class MapRegion implements INBTStoreable {
   }
 
   @Override
-  public void writeToNBT(CompoundTag tag) {
+  public void writeTag(CompoundTag tag) {
     for (int i = 0; i < 256; i++) {
       MapChunk chunk = chunks.get(i);
       if (chunk != null) {
         CompoundTag chunkNBT = new CompoundTag();
         synchronized (chunk) {
-          chunk.writeToNBT(chunkNBT);
+          chunk.writeTag(chunkNBT);
         }
         tag.put("r" + i, chunkNBT);
       }
