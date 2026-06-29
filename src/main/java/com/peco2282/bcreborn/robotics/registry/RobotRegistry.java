@@ -257,7 +257,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
     ListTag stationList = new ListTag();
     for (DockingStation<?> station : stations.values()) {
       CompoundTag cpt = new CompoundTag();
-      station.writeToNBT(cpt);
+      station.writeTag(cpt);
       String name = station.getType().id().toString();
       cpt.putString("stationType", name);
       stationList.add(cpt);
@@ -305,7 +305,7 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   public void onChunkUnload(ChunkEvent.Unload e) {
     if (e.getLevel() == this.level) {
       for (DockingStation<?> station : new ArrayList<>(stations.values())) {
-        if (!level.isLoaded(station.index())) {
+        if (!level.isLoaded(station.pos())) {
           station.onChunkUnload();
         }
       }

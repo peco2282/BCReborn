@@ -55,11 +55,11 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   }
 
   @Override
-  public void writeToNBT(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
   }
 
   @Override
-  public void readFromNBT(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
   }
 
   @Override

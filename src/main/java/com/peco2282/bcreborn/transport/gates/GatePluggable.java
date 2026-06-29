@@ -62,7 +62,7 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   }
 
   @Override
-  public void writeToNBT(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     nbt.putByte(ItemGate.NBT_TAG_MAT, (byte) material.ordinal());
     nbt.putByte(ItemGate.NBT_TAG_LOGIC, (byte) logic.ordinal());
 
@@ -74,7 +74,7 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   }
 
   @Override
-  public void readFromNBT(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     material = GateDefinition.GateMaterial.fromOrdinal(nbt.getByte(ItemGate.NBT_TAG_MAT));
     logic = GateDefinition.GateLogic.fromOrdinal(nbt.getByte(ItemGate.NBT_TAG_LOGIC));
 

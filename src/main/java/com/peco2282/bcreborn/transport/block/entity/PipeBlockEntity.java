@@ -671,7 +671,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   // ---- Network ----
 
-  @Nullable
   public Item getPipeItem() {
     RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
     if (block != null) {
@@ -891,7 +890,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
           String name = pluggable.getType().id().toString();
           pluggableData.putString("pluggableName", name);
 
-          pluggable.writeToNBT(pluggableData);
+          pluggable.writeTag(pluggableData);
           nbt.put(key, pluggableData);
         }
       }
