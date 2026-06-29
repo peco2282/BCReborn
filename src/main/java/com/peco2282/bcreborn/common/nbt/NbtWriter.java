@@ -30,6 +30,23 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 import java.util.function.*;
 
+/**
+ * A fluent builder for creating and populating NBT {@link CompoundTag} objects.
+ * <p>
+ * This class provides a convenient chain-based API for writing various data types
+ * to NBT tags, supporting primitives, collections, Minecraft objects, and custom serializable objects.
+ * </p>
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * CompoundTag tag = NbtWriter.create()
+ *     .putInt("count", 5)
+ *     .putString("name", "example")
+ *     .putBlockPos("position", new BlockPos(0, 64, 0))
+ *     .build();
+ * }</pre>
+ * </p>
+ */
 public class NbtWriter {
   private final CompoundTag tag;
 
@@ -37,218 +54,526 @@ public class NbtWriter {
     this.tag = tag;
   }
 
+  /**
+   * Creates a new NbtWriter with an empty CompoundTag.
+   *
+   * @return A new NbtWriter instance.
+   */
   public static NbtWriter create() {
     return new NbtWriter(new CompoundTag());
   }
 
+  /**
+   * Creates a new NbtWriter wrapping an existing CompoundTag.
+   *
+   * @param tag The CompoundTag to wrap.
+   * @return A new NbtWriter instance.
+   */
   public static NbtWriter of(CompoundTag tag) {
     return new NbtWriter(tag);
   }
 
+  /**
+   * Puts an integer value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The integer value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putInt(String key, int value) {
     tag.putInt(key, value);
     return this;
   }
 
+  /**
+   * Puts an integer value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the integer value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putInt(String key, IntSupplier supplier) {
     tag.putInt(key, supplier.getAsInt());
     return this;
   }
 
+  /**
+   * Puts a long value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The long value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLong(String key, long value) {
     tag.putLong(key, value);
     return this;
   }
 
+  /**
+   * Puts a long value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the long value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLong(String key, LongSupplier supplier) {
     tag.putLong(key, supplier.getAsLong());
     return this;
   }
 
+  /**
+   * Puts a float value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The float value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putFloat(String key, float value) {
     tag.putFloat(key, value);
     return this;
   }
 
+  /**
+   * Puts a float value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the double value (cast to float).
+   * @return This writer for method chaining.
+   */
   public NbtWriter putFloat(String key, DoubleSupplier supplier) {
     tag.putFloat(key, (float) supplier.getAsDouble());
     return this;
   }
 
+  /**
+   * Puts a double value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The double value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putDouble(String key, double value) {
     tag.putDouble(key, value);
     return this;
   }
 
+  /**
+   * Puts a double value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the double value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putDouble(String key, DoubleSupplier supplier) {
     tag.putDouble(key, supplier.getAsDouble());
     return this;
   }
 
+  /**
+   * Puts a byte value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The byte value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putByte(String key, byte value) {
     tag.putByte(key, value);
     return this;
   }
 
+  /**
+   * Puts a short value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The short value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putShort(String key, short value) {
     tag.putShort(key, value);
     return this;
   }
 
+  /**
+   * Puts a boolean value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The boolean value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putBoolean(String key, boolean value) {
     tag.putBoolean(key, value);
     return this;
   }
 
+  /**
+   * Puts a boolean value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the boolean value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putBoolean(String key, BooleanSupplier supplier) {
     tag.putBoolean(key, supplier.getAsBoolean());
     return this;
   }
 
+  /**
+   * Puts a string value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The string value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putString(String key, String value) {
     tag.putString(key, value);
     return this;
   }
 
+  /**
+   * Puts a string value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the string value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putString(String key, Supplier<String> supplier) {
     tag.putString(key, supplier.get());
     return this;
   }
 
+  /**
+   * Puts a UUID value into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The UUID value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putUUID(String key, UUID value) {
     tag.putUUID(key, value);
     return this;
   }
 
+  /**
+   * Puts a UUID value from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the UUID value.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putUUID(String key, Supplier<UUID> supplier) {
     tag.putUUID(key, supplier.get());
     return this;
   }
 
+  /**
+   * Puts a byte array into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The byte array to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putByteArray(String key, byte[] value) {
     tag.putByteArray(key, value);
     return this;
   }
 
+  /**
+   * Puts a byte collection into the tag as a byte array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The byte collection to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putByteArray(String key, ByteCollection value) {
     tag.putByteArray(key, value.toByteArray());
     return this;
   }
 
+  /**
+   * Puts a list of bytes into the tag as a byte array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The list of bytes to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putByteArray(String key, List<Byte> value) {
     tag.putByteArray(key, value);
     return this;
   }
 
+  /**
+   * Puts a byte array from a supplier into the tag.
+   *
+   * @param key      The key to store the value under.
+   * @param supplier The supplier providing the byte array.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putByteArray(String key, Supplier<byte[]> supplier) {
     tag.putByteArray(key, supplier.get());
     return this;
   }
 
+  /**
+   * Puts an integer array into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The integer array to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putIntArray(String key, int[] value) {
     tag.putIntArray(key, value);
     return this;
   }
 
+  /**
+   * Puts an integer collection into the tag as an integer array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The integer collection to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putIntArray(String key, IntCollection value) {
     tag.putIntArray(key, value.toIntArray());
     return this;
   }
 
+  /**
+   * Puts a list of integers into the tag as an integer array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The list of integers to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putIntArray(String key, List<Integer> value) {
     tag.putIntArray(key, value);
     return this;
   }
 
+  /**
+   * Puts an integer array from a supplier into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The supplier providing the integer array.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putIntArray(String key, Supplier<int[]> value) {
     tag.putIntArray(key, value.get());
     return this;
   }
 
+  /**
+   * Puts a long array into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The long array to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLongArray(String key, long[] value) {
     tag.putLongArray(key, value);
     return this;
   }
 
+  /**
+   * Puts a long collection into the tag as a long array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The long collection to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLongArray(String key, LongCollection value) {
     tag.putLongArray(key, value.toLongArray());
     return this;
   }
 
+  /**
+   * Puts a list of longs into the tag as a long array.
+   *
+   * @param key   The key to store the value under.
+   * @param value The list of longs to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLongArray(String key, List<Long> value) {
     tag.putLongArray(key, value);
     return this;
   }
 
+  /**
+   * Puts a long array from a supplier into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The supplier providing the long array.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putLongArray(String key, Supplier<long[]> value) {
     tag.putLongArray(key, value.get());
     return this;
   }
 
+  /**
+   * Puts a Direction into the tag.
+   *
+   * @param key       The key to store the value under.
+   * @param direction The Direction to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putDirection(String key, Direction direction) {
     return putEnum(key, direction);
   }
 
+  /**
+   * Puts a BlockPos into the tag as a long.
+   *
+   * @param key The key to store the value under.
+   * @param pos The BlockPos to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putBlockPos(String key, BlockPos pos) {
     tag.putLong(key, pos.asLong());
     return this;
   }
 
+  /**
+   * Puts a BlockState into the tag by storing its registry name.
+   *
+   * @param key   The key to store the value under.
+   * @param state The BlockState to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putBlockState(String key, BlockState state) {
     tag.putString(key, Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(state.getBlock())).toString());
     return this;
   }
 
+  /**
+   * Puts a ResourceLocation into the tag as a string.
+   *
+   * @param key   The key to store the value under.
+   * @param value The ResourceLocation to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putResourceLocation(String key, ResourceLocation value) {
     tag.putString(key, value.toString());
     return this;
   }
 
+  /**
+   * Puts an enum value into the tag using its serialized name.
+   *
+   * @param key   The key to store the value under.
+   * @param value The enum value to store.
+   * @param <E>   The enum type that implements StringRepresentable.
+   * @return This writer for method chaining.
+   */
   public <E extends Enum<E> & StringRepresentable> NbtWriter putEnum(String key, E value) {
     tag.putString(key, value.getSerializedName());
     return this;
   }
 
+  /**
+   * Puts a StringRepresentable value into the tag using its serialized name.
+   *
+   * @param key   The key to store the value under.
+   * @param value The StringRepresentable value to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putStringRepresentable(String key, StringRepresentable value) {
     tag.putString(key, value.getSerializedName());
     return this;
   }
 
+  /**
+   * Puts an ItemStack into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The ItemStack to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putItemStack(String key, ItemStack value) {
     tag.put(key, value.save(new CompoundTag()));
     return this;
   }
 
+  /**
+   * Puts an ItemStack from a supplier into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The supplier providing the ItemStack.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putItemStack(String key, Supplier<ItemStack> value) {
     tag.put(key, value.get().save(new CompoundTag()));
     return this;
   }
 
+  /**
+   * Puts a FluidStack into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The FluidStack to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putFluidStack(String key, FluidStack value) {
     tag.put(key, value.writeToNBT(new CompoundTag()));
     return this;
   }
 
+  /**
+   * Puts a FluidStack from a supplier into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The supplier providing the FluidStack.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putFluidStack(String key, Supplier<FluidStack> value) {
     tag.put(key, value.get().writeToNBT(new CompoundTag()));
     return this;
   }
 
+  /**
+   * Puts a CompoundTag into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The CompoundTag to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putTag(String key, CompoundTag value) {
     tag.put(key, value);
     return this;
   }
 
+  /**
+   * Puts a ListTag into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The ListTag to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putList(String key, ListTag value) {
     tag.put(key, value);
     return this;
   }
 
+  /**
+   * Puts an INBTSerializable object into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The INBTSerializable object to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putSerializable(String key, INBTSerializable value) {
     tag.put(key, value.serializeNBT());
     return this;
   }
 
+  /**
+   * Puts a collection into the tag as a ListTag, with each element serialized using the provided writer.
+   *
+   * @param key           The key to store the value under.
+   * @param collection    The collection to store.
+   * @param elementWriter The consumer that writes each element.
+   * @param <T>           The type of elements in the collection.
+   * @return This writer for method chaining.
+   */
   public <T> NbtWriter putCollection(String key, Collection<T> collection, BiConsumer<NbtWriter, T> elementWriter) {
     ListTag list = new ListTag();
     for (T element : collection) {
@@ -260,6 +585,16 @@ public class NbtWriter {
     return this;
   }
 
+  /**
+   * Conditionally puts a value into the tag if the condition is met.
+   *
+   * @param key       The key to store the value under.
+   * @param value     The value to potentially store.
+   * @param condition The predicate to test the condition.
+   * @param writer    The consumer that writes the value if the condition is true.
+   * @param <T>       The type of the value.
+   * @return This writer for method chaining.
+   */
   public <T> NbtWriter putIf(String key, T value, Predicate<T> condition, BiConsumer<NbtWriter, T> writer) {
     if (condition.test(value)) {
       writer.accept(this, value);
@@ -267,33 +602,94 @@ public class NbtWriter {
     return this;
   }
 
+  /**
+   * Puts a value into the tag if the Optional is present.
+   *
+   * @param key    The key to store the value under.
+   * @param value  The Optional containing the potential value.
+   * @param writer The consumer that writes the value if present.
+   * @param <T>    The type of the value.
+   * @return This writer for method chaining.
+   */
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   public <T> NbtWriter putIfPresent(String key, Optional<T> value, BiConsumer<NbtWriter, T> writer) {
     value.ifPresent(v -> writer.accept(this, v));
     return this;
   }
 
+  /**
+   * Puts another NbtWriter's tag into this tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The NbtWriter whose tag to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter putWriter(String key, NbtWriter value) {
     tag.put(key, value.build());
     return this;
   }
 
+  /**
+   * Creates a nested NbtWriter and writes it into this tag using the provided consumer.
+   *
+   * @param key   The key to store the value under.
+   * @param value The consumer that configures the nested writer.
+   * @return This writer for method chaining.
+   */
   public NbtWriter withWriter(String key, Consumer<NbtWriter> value) {
     var writer = create();
     value.accept(writer);
     return putWriter(key, writer);
   }
 
+  /**
+   * Puts a generic Tag into the tag.
+   *
+   * @param key   The key to store the value under.
+   * @param value The Tag to store.
+   * @return This writer for method chaining.
+   */
   public NbtWriter put(String key, Tag value) {
     tag.put(key, value);
     return this;
   }
 
+  /**
+   * Builds and returns the CompoundTag.
+   *
+   * @return The built CompoundTag.
+   */
   public CompoundTag build() {
     return tag;
   }
 
+  /**
+   * Gets the underlying CompoundTag.
+   *
+   * @return The CompoundTag being built.
+   */
   public CompoundTag getTag() {
     return tag;
+  }
+
+  /**
+   * Terminal operation that does nothing but consumes the builder chain.
+   * <p>
+   * This method is intended to be called at the end of a builder chain to suppress
+   * "method return value not used" warnings when the final {@link CompoundTag} is
+   * not needed to be stored or returned.
+   * </p>
+   * <p>
+   * Example usage:
+   * <pre>{@code
+   * NbtWriter.create()
+   *     .putInt("count", 5)
+   *     .putString("name", "example")
+   *     .done(); // Suppress warning
+   * }</pre>
+   * </p>
+   */
+  public void done() {
+    // No-op - intentionally empty to suppress unused return value warnings
   }
 }
