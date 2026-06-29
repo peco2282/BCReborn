@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.robotics.map;
 
 import com.peco2282.bcreborn.api.core.BCLog;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.MapColor;
 
-public class MapChunk {
+public class MapChunk implements INBTSerializable {
   private static final int VERSION = 1;
 
   private int x, z;
@@ -32,7 +33,7 @@ public class MapChunk {
   }
 
   public MapChunk(CompoundTag compound) {
-    readFromNBT(compound);
+    readTag(compound);
   }
 
   public int getX() {
@@ -74,7 +75,8 @@ public class MapChunk {
     }
   }
 
-  public void readFromNBT(CompoundTag compound) {
+  @Override
+  public void readTag(CompoundTag compound) {
     int version = compound.getShort("version");
     if (version > MapChunk.VERSION) {
       BCLog.logger.error("Unsupported MapChunk version: " + version);
@@ -89,7 +91,8 @@ public class MapChunk {
     }
   }
 
-  public void writeToNBT(CompoundTag compound) {
+  @Override
+  public void writeTag(CompoundTag compound) {
     compound.putShort("version", (short) VERSION);
     compound.putInt("x", x);
     compound.putInt("z", z);
