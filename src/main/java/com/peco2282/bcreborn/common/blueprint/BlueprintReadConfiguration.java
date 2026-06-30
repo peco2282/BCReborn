@@ -12,21 +12,24 @@
 package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class BlueprintReadConfiguration implements IBufferSerializable {
+public class BlueprintReadConfiguration implements IBufferSerializable, INBTSerializable {
   public boolean rotate = true;
   public boolean excavate = true;
   public boolean allowCreative = false;
 
-  public void writeToNBT(CompoundTag nbttagcompound) {
+  @Override
+  public void writeTag(CompoundTag nbttagcompound) {
     nbttagcompound.putBoolean("rotate", rotate);
     nbttagcompound.putBoolean("excavate", excavate);
     nbttagcompound.putBoolean("allowCreative", allowCreative);
   }
 
-  public void readFromNBT(CompoundTag nbttagcompound) {
+  @Override
+  public void readTag(CompoundTag nbttagcompound) {
     rotate = nbttagcompound.getBoolean("rotate");
     excavate = nbttagcompound.getBoolean("excavate");
     allowCreative = nbttagcompound.getBoolean("allowCreative");

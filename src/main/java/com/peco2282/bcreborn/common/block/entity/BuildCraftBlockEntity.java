@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.block.BlockEntityBuffer;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 
-public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, IBufferSerializable {
+public abstract class BuildCraftBlockEntity extends BlockEntity implements IEnergyHandler, IBufferSerializable, INBTSerializable {
   private final String owner = "[BuildCraft]";
   protected boolean init = false;
   protected IControllable.Mode mode;
@@ -114,6 +115,28 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
   protected boolean hasNeighborSignal(BlockPos pos) {
     //noinspection DataFlowIssue
     return level.hasNeighborSignal(pos);
+  }
+
+  @Override
+  public CompoundTag serializeNBT() {
+    CompoundTag nbt = super.serializeNBT();
+    writeTag(nbt);
+    return nbt;
+  }
+
+  @Override
+  public void deserializeNBT(CompoundTag nbt) {
+    readTag(nbt);
+  }
+
+  @Override
+  public void writeTag(CompoundTag nbt) {
+    saveAdditional(nbt);
+  }
+
+  @Override
+  public void readTag(CompoundTag nbt) {
+    load(nbt);
   }
 
   @Override

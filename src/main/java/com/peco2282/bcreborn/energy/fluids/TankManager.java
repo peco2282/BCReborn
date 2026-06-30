@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.energy.fluids;
 
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.google.common.collect.ForwardingList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TankManager<T extends Tank> extends ForwardingList<T> implements IFluidHandler, List<T> {
+public class TankManager<T extends Tank> extends ForwardingList<T> implements IFluidHandler, List<T>, IBufferSerializable, INBTSerializable {
 
   private final List<T> tanks = new ArrayList<>();
 
@@ -139,18 +141,21 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
     return true;
   }
 
-  public void writeToNBT(CompoundTag data) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     for (Tank tank : tanks) {
-      tank.writeToNBT(data);
+      tank.writeTag(nbt);
     }
   }
 
-  public void readFromNBT(CompoundTag data) {
+  @Override
+  public void readTag(CompoundTag nbt) {
     for (Tank tank : tanks) {
-      tank.readFromNBT(data);
+      tank.readTag(nbt);
     }
   }
 
+  @Override
   public void writeData(FriendlyByteBuf data) {
     for (Tank tank : tanks) {
       FluidStack fluidStack = tank.getFluid();
@@ -164,6 +169,7 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
   }
 
   @OnlyIn(Dist.CLIENT)
+  @Override
   public void readData(FriendlyByteBuf data) {
     for (Tank tank : tanks) {
       int fluidId = data.readShort();

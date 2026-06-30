@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.robotics.zone;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.common.ChunkIndex;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ZonePlan implements IZone, IBufferSerializable {
+public class ZonePlan implements IZone, IBufferSerializable, INBTSerializable {
   private final HashMap<ChunkIndex, ZoneChunk> chunkMapping = new HashMap<>();
 
   public boolean get(int x, int z) {
@@ -65,30 +66,32 @@ public class ZonePlan implements IZone, IBufferSerializable {
     }
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     ListTag list = new ListTag();
 
     for (Map.Entry<ChunkIndex, ZoneChunk> e : chunkMapping.entrySet()) {
       CompoundTag subNBT = new CompoundTag();
-      e.getKey().writeToNBT(subNBT);
-      e.getValue().writeToNBT(subNBT);
+      e.getKey().writeTag(subNBT);
+      e.getValue().writeTag(subNBT);
       list.add(subNBT);
     }
 
     nbt.put("chunkMapping", list);
   }
 
-  public void readFromNBT(CompoundTag nbt) {
+  @Override
+  public void readTag(CompoundTag nbt) {
     ListTag list = nbt.getList("chunkMapping", ListTag.TAG_COMPOUND);
 
     for (int i = 0; i < list.size(); ++i) {
       CompoundTag subNBT = list.getCompound(i);
 
       ChunkIndex id = new ChunkIndex();
-      id.readFromNBT(subNBT);
+      id.readTag(subNBT);
 
       ZoneChunk chunk = new ZoneChunk();
-      chunk.readFromNBT(subNBT);
+      chunk.readTag(subNBT);
 
       chunkMapping.put(id, chunk);
     }

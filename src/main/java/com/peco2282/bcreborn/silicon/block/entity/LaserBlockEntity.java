@@ -209,7 +209,7 @@ public class LaserBlockEntity extends BuildCraftBlockEntity implements IHasWork,
   public void load(CompoundTag nbt) {
     super.load(nbt);
     if (nbt.contains("laser")) {
-      laser.readFromNBT(nbt.getCompound("laser"));
+      laser.readTag(nbt.getCompound("laser"));
     }
   }
 
@@ -217,7 +217,7 @@ public class LaserBlockEntity extends BuildCraftBlockEntity implements IHasWork,
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     CompoundTag laserNbt = new CompoundTag();
-    laser.writeToNBT(laserNbt);
+    laser.writeTag(laserNbt);
     nbt.put("laser", laserNbt);
   }
 

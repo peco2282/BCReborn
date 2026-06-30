@@ -43,7 +43,7 @@ public class SimpleInventory implements Container, INBTSerializable {
     readFromNBT(nbt, "Items");
   }
 
-
+  @Deprecated
   public void readFromNBT(CompoundTag data, String tag) {
     ListTag nbttaglist = data.getList(tag, CompoundTag.TAG_COMPOUND);
 
@@ -66,6 +66,7 @@ public class SimpleInventory implements Container, INBTSerializable {
     writeToNBT(nbt, "Items");
   }
 
+  @Deprecated
   public void writeToNBT(CompoundTag data, String tag) {
     ListTag slots = new ListTag();
     for (byte index = 0; index < contents.length; ++index) {

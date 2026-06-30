@@ -148,7 +148,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     currentAuthorName = nbt.getString("lastAuthor");
 
     if (nbt.contains("readConfiguration")) {
-      readConfiguration.readFromNBT(nbt.getCompound("readConfiguration"));
+      readConfiguration.readTag(nbt.getCompound("readConfiguration"));
     }
 
     long[] subBptList = nbt.getLongArray("subBlueprints");
@@ -165,7 +165,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
 
     if (box.isInitialized()) {
       CompoundTag boxStore = new CompoundTag();
-      box.writeToNBT(boxStore);
+      box.writeTag(boxStore);
       nbt.put("box", boxStore);
     }
 
@@ -176,7 +176,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     nbt.putString("lastAuthor", currentAuthorName);
 
     CompoundTag readConf = new CompoundTag();
-    readConfiguration.writeToNBT(readConf);
+    readConfiguration.writeTag(readConf);
     nbt.put("readConfiguration", readConf);
 
     LongArrayTag subBptList = new LongArrayTag(subBlueprints.stream().mapToLong(BlockPos::asLong).toArray());

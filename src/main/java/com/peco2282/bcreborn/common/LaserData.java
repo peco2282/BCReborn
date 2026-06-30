@@ -13,13 +13,14 @@ package com.peco2282.bcreborn.common;
 
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
-public class LaserData implements IBufferSerializable {
+public class LaserData implements IBufferSerializable, INBTSerializable {
   public LaserKind kind = LaserKind.Red;
   public Position head = new Position(0, 0, 0);
   public Position tail = new Position(0, 0, 0);
@@ -61,7 +62,7 @@ public class LaserData implements IBufferSerializable {
   }
 
   public LaserData(CompoundTag nbt) {
-    readFromNBT(nbt);
+    readTag(nbt);
   }
 
   public void update() {
@@ -88,13 +89,14 @@ public class LaserData implements IBufferSerializable {
     laserTexAnimation = (laserTexAnimation + 1) % 40;
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     CompoundTag headNbt = new CompoundTag();
-    head.writeToNBT(headNbt);
+    head.writeTag(headNbt);
     nbt.put("head", headNbt);
 
     CompoundTag tailNbt = new CompoundTag();
-    tail.writeToNBT(tailNbt);
+    tail.writeTag(tailNbt);
     nbt.put("tail", tailNbt);
 
     nbt.putBoolean("isVisible", isVisible);
@@ -102,9 +104,10 @@ public class LaserData implements IBufferSerializable {
     nbt.putInt("kind", kind.ordinal());
   }
 
-  public void readFromNBT(CompoundTag nbt) {
-    head.readFromNBT(nbt.getCompound("head"));
-    tail.readFromNBT(nbt.getCompound("tail"));
+  @Override
+  public void readTag(CompoundTag nbt) {
+    head.readTag(nbt.getCompound("head"));
+    tail.readTag(nbt.getCompound("tail"));
     isVisible = nbt.getBoolean("isVisible");
     isGlowing = nbt.getBoolean("isGlowing");
     if (nbt.contains("kind")) {
@@ -114,7 +117,7 @@ public class LaserData implements IBufferSerializable {
 
   public CompoundTag toNBT() {
     CompoundTag nbt = new CompoundTag();
-    writeToNBT(nbt);
+    writeTag(nbt);
     return nbt;
   }
 

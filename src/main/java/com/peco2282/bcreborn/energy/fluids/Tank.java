@@ -12,7 +12,10 @@
 package com.peco2282.bcreborn.energy.fluids;
 
 
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -22,7 +25,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Locale;
 
-public class Tank extends FluidTank {
+public class Tank extends FluidTank implements IBufferSerializable, INBTSerializable {
   private final String name;
   public int colorRenderCache = 0xFFFFFF;
   protected Component toolTip;
@@ -46,16 +49,21 @@ public class Tank extends FluidTank {
   }
 
   @Override
-  public final CompoundTag writeToNBT(CompoundTag nbt) {
+  public void writeTag(CompoundTag nbt) {
     CompoundTag tankData = new CompoundTag();
     super.writeToNBT(tankData);
     writeTankToNBT(tankData);
     nbt.put(name, tankData);
+  }
+
+  @Override
+  public final CompoundTag writeToNBT(CompoundTag nbt) {
+    writeTag(nbt);
     return nbt;
   }
 
   @Override
-  public final FluidTank readFromNBT(CompoundTag nbt) {
+  public void readTag(CompoundTag nbt) {
     if (nbt.contains(name)) {
       // allow to readTag empty tanks
       setFluid(FluidStack.EMPTY);
@@ -64,6 +72,11 @@ public class Tank extends FluidTank {
       super.readFromNBT(tankData);
       readTankFromNBT(tankData);
     }
+  }
+
+  @Override
+  public final FluidTank readFromNBT(CompoundTag nbt) {
+    readTag(nbt);
     return this;
   }
 
@@ -75,6 +88,30 @@ public class Tank extends FluidTank {
 
   public Component getToolTip() {
     return refreshTooltip();
+  }
+
+  @Override
+  public void writeData(FriendlyByteBuf data) {
+    FluidStack fluidStack = getFluid();
+    if (fluidStack.getFluid() != null) {
+      fluidStack.writeToPacket(data);
+      data.writeInt(colorRenderCache);
+    } else {
+      data.writeShort(-1);
+    }
+  }
+
+  @Override
+  public void readData(FriendlyByteBuf data) {
+    int fluidId = data.readShort();
+    FluidStack fs = FluidStack.readFromPacket(data);
+    if (fs != null && fs != FluidStack.EMPTY) {
+      setFluid(fs);
+      colorRenderCache = data.readInt();
+    } else {
+      setFluid(FluidStack.EMPTY);
+      colorRenderCache = 0xFFFFFF;
+    }
   }
 
   protected Component refreshTooltip() {
