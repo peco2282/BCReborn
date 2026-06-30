@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.IBox;
+import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
@@ -26,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Box implements IBox {
+public class Box implements IBox, IBufferSerializable, INBTSerializable {
   public static final Box EMPTY = new Box();
   public Kind kind = Kind.LASER_RED;
   public int xMin, yMin, zMin, xMax, yMax, zMax;
@@ -227,7 +229,8 @@ public class Box implements IBox {
     lasersData = LaserUtils.createLaserDataBox(xMin, yMin, zMin, xMax, yMax, zMax, LaserKind.Blue).toArray(new LaserData[0]);
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     nbt.putInt("xMin", xMin);
     nbt.putInt("yMin", yMin);
     nbt.putInt("zMin", zMin);
@@ -299,6 +302,15 @@ public class Box implements IBox {
     return new BlockPos(x, y, z);
   }
 
+  @Override
+  public void readTag(CompoundTag nbt) {
+    initialize(
+      nbt.getInt("xMin"), nbt.getInt("yMin"), nbt.getInt("zMin"),
+      nbt.getInt("xMax"), nbt.getInt("yMax"), nbt.getInt("zMax")
+    );
+  }
+
+  @Override
   public void readData(FriendlyByteBuf stream) {
     byte flags = stream.readByte();
     xMin = stream.readInt();
@@ -310,6 +322,7 @@ public class Box implements IBox {
     initialized = (flags & 64) != 0;
   }
 
+  @Override
   public void writeData(FriendlyByteBuf stream) {
     stream.writeByte(initialized ? 64 : 0);
     stream.writeInt(xMin);

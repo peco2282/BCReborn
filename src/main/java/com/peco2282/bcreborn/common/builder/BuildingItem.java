@@ -199,11 +199,11 @@ public class BuildingItem implements IBufferSerializable, IBuildingItem {
 
   public void writeToNBT(CompoundTag nbt) {
     CompoundTag originNBT = new CompoundTag();
-    origin.writeToNBT(originNBT);
+    origin.writeTag(originNBT);
     nbt.put("origin", originNBT);
 
     CompoundTag destinationNBT = new CompoundTag();
-    destination.writeToNBT(destinationNBT);
+    destination.writeTag(destinationNBT);
     nbt.put("destination", destinationNBT);
 
     nbt.putFloat("lifetime", lifetime);

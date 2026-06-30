@@ -12,11 +12,12 @@
 package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 
-public class ChunkIndex implements IBufferSerializable {
+public class ChunkIndex implements IBufferSerializable, INBTSerializable {
   public int x, z;
 
   public ChunkIndex() {
@@ -44,12 +45,14 @@ public class ChunkIndex implements IBufferSerializable {
     return x * 37 + z;
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     nbt.putInt("x", x);
     nbt.putInt("z", z);
   }
 
-  public void readFromNBT(CompoundTag nbt) {
+  @Override
+  public void readTag(CompoundTag nbt) {
     x = nbt.getInt("x");
     z = nbt.getInt("z");
   }

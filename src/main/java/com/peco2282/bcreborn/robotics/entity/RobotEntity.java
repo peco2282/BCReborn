@@ -505,7 +505,7 @@ public class RobotEntity extends RobotEntityBase implements
     }
 
     CompoundTag nbtLaser = new CompoundTag();
-    laser.writeToNBT(nbtLaser);
+    laser.writeTag(nbtLaser);
     nbt.put("laser", nbtLaser);
 
     CompoundTag batteryNBT = new CompoundTag();
@@ -577,7 +577,7 @@ public class RobotEntity extends RobotEntityBase implements
 
     }
 
-    laser.readFromNBT(nbt.getCompound("laser"));
+    laser.readTag(nbt.getCompound("laser"));
 
     battery.read(nbt.getCompound("battery"));
 

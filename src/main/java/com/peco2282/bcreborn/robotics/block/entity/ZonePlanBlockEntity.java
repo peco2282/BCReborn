@@ -138,7 +138,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     for (int i = 0; i < selectedAreas.length; ++i) {
       if (selectedAreas[i] != null) {
         CompoundTag subNBT = new CompoundTag();
-        selectedAreas[i].writeToNBT(subNBT);
+        selectedAreas[i].writeTag(subNBT);
         nbt.put("selectedArea[" + i + "]", subNBT);
       }
     }
@@ -155,7 +155,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     for (int i = 0; i < selectedAreas.length; ++i) {
       if (nbt.contains("selectedArea[" + i + "]")) {
         selectedAreas[i] = new ZonePlan();
-        selectedAreas[i].readFromNBT(nbt.getCompound("selectedArea[" + i + "]"));
+        selectedAreas[i].readTag(nbt.getCompound("selectedArea[" + i + "]"));
       }
     }
   }

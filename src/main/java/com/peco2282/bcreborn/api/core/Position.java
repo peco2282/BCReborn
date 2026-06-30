@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * This class provides methods for movement relative to orientation and serialization
  * to/from NBT and network packets.
  */
-public class Position implements IBufferSerializable {
+public class Position implements IBufferSerializable, INBTSerializable {
   public double x, y, z;
   public Direction orientation;
 
@@ -89,7 +89,7 @@ public class Position implements IBufferSerializable {
    * @param nbttagcompound The NBT tag to read from.
    */
   public Position(CompoundTag nbttagcompound) {
-    readFromNBT(nbttagcompound);
+    readTag(nbttagcompound);
   }
 
   /**
@@ -218,8 +218,8 @@ public class Position implements IBufferSerializable {
    *
    * @param nbttagcompound The NBT tag to write to.
    */
-  public void writeToNBT(CompoundTag nbttagcompound) {
-
+  @Override
+  public void writeTag(CompoundTag nbttagcompound) {
     nbttagcompound.putDouble("i", x);
     nbttagcompound.putDouble("j", y);
     nbttagcompound.putDouble("k", z);
@@ -231,7 +231,8 @@ public class Position implements IBufferSerializable {
    *
    * @param nbttagcompound The NBT tag to read from.
    */
-  public void readFromNBT(CompoundTag nbttagcompound) {
+  @Override
+  public void readTag(CompoundTag nbttagcompound) {
     x = nbttagcompound.getDouble("i");
     y = nbttagcompound.getDouble("j");
     z = nbttagcompound.getDouble("k");

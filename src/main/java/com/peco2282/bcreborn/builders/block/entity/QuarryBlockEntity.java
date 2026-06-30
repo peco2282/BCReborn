@@ -390,7 +390,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     CompoundTag boxTag = new CompoundTag();
-    box.writeToNBT(boxTag);
+    box.writeTag(boxTag);
     nbt.put("box", boxTag);
     nbt.putInt("stage", stage.ordinal());
     nbt.putInt("targetX", targetX);

@@ -167,7 +167,7 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     nbt.putInt("delta", currentPattern);
     if (box.isInitialized()) {
       CompoundTag boxNbt = new CompoundTag();
-      box.writeToNBT(boxNbt);
+      box.writeTag(boxNbt);
       nbt.put("box", boxNbt);
     }
     nbt.putBoolean("done", done);

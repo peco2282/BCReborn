@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.common.utils;
 
 
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Iterator;
 
-public class BlockScanner implements Iterable<BlockPos> {
+public class BlockScanner implements Iterable<BlockPos>, INBTSerializable {
 
   Box box = new Box();
   Level world;
@@ -54,18 +55,20 @@ public class BlockScanner implements Iterable<BlockPos> {
     return totalBlocks() - blocksDone;
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     nbt.putInt("x", x);
     nbt.putInt("y", y);
     nbt.putInt("z", z);
     nbt.putInt("blocksDone", blocksDone);
     nbt.putInt("iterationsPerCycle", iterationsPerCycle);
     CompoundTag boxNBT = new CompoundTag();
-    box.writeToNBT(boxNBT);
+    box.writeTag(boxNBT);
     nbt.put("box", boxNBT);
   }
 
-  public void readFromNBT(CompoundTag nbt) {
+  @Override
+  public void readTag(CompoundTag nbt) {
     x = nbt.getInt("x");
     y = nbt.getInt("y");
     z = nbt.getInt("z");

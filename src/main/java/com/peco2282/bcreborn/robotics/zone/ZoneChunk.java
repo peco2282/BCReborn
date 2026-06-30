@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.robotics.zone;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
+import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +21,7 @@ import net.minecraft.util.RandomSource;
 
 import java.util.BitSet;
 
-public class ZoneChunk implements IBufferSerializable {
+public class ZoneChunk implements IBufferSerializable, INBTSerializable {
 
   public BitSet property;
   private boolean fullSet = false;
@@ -68,7 +69,8 @@ public class ZoneChunk implements IBufferSerializable {
     }
   }
 
-  public void writeToNBT(CompoundTag nbt) {
+  @Override
+  public void writeTag(CompoundTag nbt) {
     nbt.putBoolean("fullSet", fullSet);
 
     if (property != null) {
@@ -76,7 +78,8 @@ public class ZoneChunk implements IBufferSerializable {
     }
   }
 
-  public void readFromNBT(CompoundTag nbt) {
+  @Override
+  public void readTag(CompoundTag nbt) {
     fullSet = nbt.getBoolean("fullSet");
 
     if (nbt.contains("bits")) {

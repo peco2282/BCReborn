@@ -149,7 +149,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   @Override
   public void load(CompoundTag data) {
     super.load(data);
-    tankManager.readFromNBT(data);
+    tankManager.readTag(data);
     burnTime = data.getInt("burnTime");
     totalBurnTime = data.getInt("totalBurnTime");
     penaltyCoolingTime = data.getInt("penaltyCoolingTime");
@@ -158,7 +158,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   @Override
   public void saveAdditional(CompoundTag data) {
     super.saveAdditional(data);
-    tankManager.writeToNBT(data);
+    tankManager.writeTag(data);
     data.putInt("burnTime", burnTime);
     data.putInt("totalBurnTime", totalBurnTime);
     data.putInt("penaltyCoolingTime", penaltyCoolingTime);
