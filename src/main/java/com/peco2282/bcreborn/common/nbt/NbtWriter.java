@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
@@ -482,14 +483,16 @@ public class NbtWriter {
   }
 
   /**
-   * Puts an ItemStack into the tag.
+   * Puts an ItemStack into the tag, if it's not empty.
    *
    * @param key   The key to store the value under.
    * @param value The ItemStack to store.
    * @return This writer for method chaining.
    */
   public NbtWriter putItemStack(String key, ItemStack value) {
-    tag.put(key, value.save(new CompoundTag()));
+    if (!value.isEmpty()) {
+      tag.put(key, value.save(new CompoundTag()));
+    }
     return this;
   }
 
@@ -506,14 +509,16 @@ public class NbtWriter {
   }
 
   /**
-   * Puts a FluidStack into the tag.
+   * Puts a FluidStack into the tag, if it's not empty.
    *
    * @param key   The key to store the value under.
    * @param value The FluidStack to store.
    * @return This writer for method chaining.
    */
   public NbtWriter putFluidStack(String key, FluidStack value) {
-    tag.put(key, value.writeToNBT(new CompoundTag()));
+    if (!value.isEmpty()) {
+      tag.put(key, value.writeToNBT(new CompoundTag()));
+    }
     return this;
   }
 
@@ -603,6 +608,22 @@ public class NbtWriter {
   }
 
   /**
+   * Puts a value into the tag if it is not null.
+   *
+   * @param key    The key to store the value under.
+   * @param value  The value to store (can be null).
+   * @param writer The consumer that writes the value if it's not null.
+   * @param <T>    The type of the value.
+   * @return This writer for method chaining.
+   */
+  public <T> NbtWriter putNullable(String key, @Nullable T value, BiConsumer<NbtWriter, T> writer) {
+    if (value != null) {
+      writer.accept(this, value);
+    }
+    return this;
+  }
+
+  /**
    * Puts a value into the tag if the Optional is present.
    *
    * @param key    The key to store the value under.
@@ -614,6 +635,29 @@ public class NbtWriter {
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   public <T> NbtWriter putIfPresent(String key, Optional<T> value, BiConsumer<NbtWriter, T> writer) {
     value.ifPresent(v -> writer.accept(this, v));
+    return this;
+  }
+
+  /**
+   * Puts a map into the tag as a ListTag of CompoundTags, each containing a key and a value.
+   *
+   * @param key         The key to store the map under.
+   * @param map         The map to store.
+   * @param keyWriter   The consumer that writes each key.
+   * @param valueWriter The consumer that writes each value.
+   * @param <K>         The type of keys in the map.
+   * @param <V>         The type of values in the map.
+   * @return This writer for method chaining.
+   */
+  public <K, V> NbtWriter putMap(String key, Map<K, V> map, BiConsumer<NbtWriter, K> keyWriter, BiConsumer<NbtWriter, V> valueWriter) {
+    ListTag list = new ListTag();
+    map.forEach((k, v) -> {
+      NbtWriter entryWriter = create();
+      keyWriter.accept(entryWriter, k);
+      valueWriter.accept(entryWriter, v);
+      list.add(entryWriter.build());
+    });
+    tag.put(key, list);
     return this;
   }
 
@@ -651,6 +695,20 @@ public class NbtWriter {
    */
   public NbtWriter put(String key, Tag value) {
     tag.put(key, value);
+    return this;
+  }
+
+  /**
+   * Runs the provided consumer if the key is not present in the tag.
+   *
+   * @param key    The key to check.
+   * @param action The action to run if the key is absent.
+   * @return This writer for method chaining.
+   */
+  public NbtWriter ifAbsent(String key, Consumer<NbtWriter> action) {
+    if (!tag.contains(key)) {
+      action.accept(this);
+    }
     return this;
   }
 
