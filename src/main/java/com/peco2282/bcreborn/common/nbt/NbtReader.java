@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.*;
 
@@ -711,6 +712,22 @@ public class NbtReader {
   }
 
   /**
+   * Reads a value from the tag if it exists.
+   *
+   * @param key          the key to read from
+   * @param reader       a function that converts an NbtReader to an element of type T
+   * @param defaultValue the value to return if the key doesn't exist
+   * @param <T>          the type of the value
+   * @return the read value or defaultValue
+   */
+  public <T> T getNullable(String key, Function<NbtReader, T> reader, @Nullable T defaultValue) {
+    if (nbt.contains(key)) {
+      return reader.apply(getCompoundReader(key));
+    }
+    return defaultValue;
+  }
+
+  /**
    * Reads a ListTag from the NBT data with a specific element type.
    *
    * @param key  the key to read from
@@ -762,6 +779,28 @@ public class NbtReader {
    */
   public NbtReader getCompoundReader(String key) {
     return of(getCompound(key));
+  }
+
+  /**
+   * Reads a map of objects from a ListTag in the NBT data.
+   *
+   * @param key         the key to read from
+   * @param map         the map to populate
+   * @param keyReader   a function that converts an NbtReader to a key of type K
+   * @param valueReader a function that converts an NbtReader to a value of type V
+   * @param <K>         the type of keys in the map
+   * @param <V>         the type of values in the map
+   * @return the NbtReader instance for method chaining
+   */
+  public <K, V> NbtReader readMap(String key, Map<K, V> map, Function<NbtReader, K> keyReader, Function<NbtReader, V> valueReader) {
+    ListTag list = nbt.getList(key, Tag.TAG_COMPOUND);
+    for (int i = 0; i < list.size(); i++) {
+      NbtReader entryReader = of(list.getCompound(i));
+      K k = keyReader.apply(entryReader);
+      V v = valueReader.apply(entryReader);
+      map.put(k, v);
+    }
+    return this;
   }
 
   /**
