@@ -99,13 +99,13 @@ public class PackagerBlockEntity extends BuildCraftBlockEntity implements MenuPr
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.readFromNBT(nbt, "inv");
+    inv.readTag(nbt);
   }
 
   @Override
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
-    inv.writeToNBT(nbt, "inv");
+    inv.writeTag(nbt);
   }
 
   @Override

@@ -12,13 +12,15 @@
 package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -40,44 +42,37 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public void readTag(CompoundTag nbt) {
-    readFromNBT(nbt, "Items");
-  }
-
-  @Deprecated
-  public void readFromNBT(CompoundTag data, String tag) {
-    ListTag nbttaglist = data.getList(tag, CompoundTag.TAG_COMPOUND);
-
-    for (int j = 0; j < nbttaglist.size(); ++j) {
-      CompoundTag slot = nbttaglist.getCompound(j);
-      int index;
-      if (slot.contains("index")) {
-        index = slot.getInt("index");
-      } else {
-        index = slot.getByte("Slot");
-      }
-      if (index >= 0 && index < contents.length) {
-        setItem(index, ItemStack.of(slot));
-      }
-    }
+    NbtReader.of(nbt)
+      .readCollection("Items", new ArrayList<ItemStack>(), r -> {
+        CompoundTag slot = r.getTag();
+        int index;
+        if (slot.contains("index")) {
+          index = slot.getInt("index");
+        } else {
+          index = slot.getByte("Slot");
+        }
+        if (index >= 0 && index < contents.length) {
+          setItem(index, ItemStack.of(slot));
+        }
+        return null;
+      })
+      .done();
   }
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    writeToNBT(nbt, "Items");
-  }
-
-  @Deprecated
-  public void writeToNBT(CompoundTag data, String tag) {
-    ListTag slots = new ListTag();
-    for (byte index = 0; index < contents.length; ++index) {
-      if (contents[index] != null && contents[index].getCount() > 0) {
-        CompoundTag slot = new CompoundTag();
-        slots.add(slot);
-        slot.putByte("Slot", index);
-        contents[index].save(slot);
-      }
-    }
-    data.put(tag, slots);
+    NbtWriter.of(nbt)
+      .putList("Items", slots -> {
+        for (byte index = 0; index < contents.length; ++index) {
+          if (contents[index] != null && !contents[index].isEmpty()) {
+            CompoundTag slot = new CompoundTag();
+            slot.putByte("Slot", index);
+            contents[index].save(slot);
+            slots.add(slot);
+          }
+        }
+      })
+      .done();
   }
 
   public void addListener(BlockEntity listner) {

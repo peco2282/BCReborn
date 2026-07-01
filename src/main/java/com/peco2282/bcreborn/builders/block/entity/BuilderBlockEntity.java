@@ -159,7 +159,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.readFromNBT(nbt, "Items");
+    inv.readTag(nbt);
     done = nbt.getBoolean("done");
     if (nbt.contains("initNBT")) {
       initNBT = nbt.getCompound("initNBT");
@@ -169,7 +169,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   @Override
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
-    inv.writeToNBT(nbt, "Items");
+    inv.writeTag(nbt);
     nbt.putBoolean("done", done);
     if (initNBT != null) {
       nbt.put("initNBT", initNBT);
