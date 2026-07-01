@@ -9,7 +9,7 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.common.nbt;
+package com.peco2282.bcreborn.api.serialization;
 
 /**
  * A functional interface that represents a supplier of float-valued results.

@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.Position;
-import com.peco2282.bcreborn.common.nbt.NbtWriter;
+import com.peco2282.bcreborn.api.serialization.NbtWriter;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

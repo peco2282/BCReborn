@@ -14,8 +14,8 @@ package com.peco2282.bcreborn.common.utils;
 
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.Box;
-import com.peco2282.bcreborn.common.nbt.NbtReader;
-import com.peco2282.bcreborn.common.nbt.NbtWriter;
+import com.peco2282.bcreborn.api.serialization.NbtReader;
+import com.peco2282.bcreborn.api.serialization.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

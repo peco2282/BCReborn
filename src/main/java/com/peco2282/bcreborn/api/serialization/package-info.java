@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package com.peco2282.bcreborn.common.nbt;
+package com.peco2282.bcreborn.api.serialization;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
