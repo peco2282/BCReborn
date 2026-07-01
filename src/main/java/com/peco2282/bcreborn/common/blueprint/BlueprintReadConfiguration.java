@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -23,16 +25,20 @@ public class BlueprintReadConfiguration implements IBufferSerializable, INBTSeri
 
   @Override
   public void writeTag(CompoundTag nbttagcompound) {
-    nbttagcompound.putBoolean("rotate", rotate);
-    nbttagcompound.putBoolean("excavate", excavate);
-    nbttagcompound.putBoolean("allowCreative", allowCreative);
+    NbtWriter.of(nbttagcompound)
+      .putBoolean("rotate", rotate)
+      .putBoolean("excavate", excavate)
+      .putBoolean("allowCreative", allowCreative)
+      .done();
   }
 
   @Override
   public void readTag(CompoundTag nbttagcompound) {
-    rotate = nbttagcompound.getBoolean("rotate");
-    excavate = nbttagcompound.getBoolean("excavate");
-    allowCreative = nbttagcompound.getBoolean("allowCreative");
+    NbtReader.of(nbttagcompound)
+      .applyBoolean("rotate", it -> rotate = it)
+      .applyBoolean("excavate", it -> excavate = it)
+      .applyBoolean("allowCreative", it -> allowCreative = it)
+      .done();
   }
 
   @Override

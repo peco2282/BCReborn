@@ -11,10 +11,17 @@
  */
 package com.peco2282.bcreborn.common;
 
-public enum LaserKind {
+import net.minecraft.util.StringRepresentable;
+
+public enum LaserKind implements StringRepresentable {
   Red,
   Blue,
   Stripes,
   Yellow,
-  Green
+  Green;
+
+  @Override
+  public String getSerializedName() {
+    return name().toLowerCase();
+  }
 }

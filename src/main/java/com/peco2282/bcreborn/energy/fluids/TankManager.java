@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.energy.fluids;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.google.common.collect.ForwardingList;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
@@ -143,15 +145,17 @@ public class TankManager<T extends Tank> extends ForwardingList<T> implements IF
 
   @Override
   public void writeTag(CompoundTag nbt) {
+    NbtWriter writer = NbtWriter.of(nbt);
     for (Tank tank : tanks) {
-      tank.writeTag(nbt);
+      tank.writeTag(writer.getTag());
     }
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
+    NbtReader reader = NbtReader.of(nbt);
     for (Tank tank : tanks) {
-      tank.readTag(nbt);
+      tank.readTag(reader.getTag());
     }
   }
 

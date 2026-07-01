@@ -15,6 +15,8 @@ import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.common.ChunkIndex;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -68,33 +70,24 @@ public class ZonePlan implements IZone, IBufferSerializable, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    ListTag list = new ListTag();
-
-    for (Map.Entry<ChunkIndex, ZoneChunk> e : chunkMapping.entrySet()) {
-      CompoundTag subNBT = new CompoundTag();
-      e.getKey().writeTag(subNBT);
-      e.getValue().writeTag(subNBT);
-      list.add(subNBT);
-    }
-
-    nbt.put("chunkMapping", list);
+    NbtWriter.of(nbt)
+      .putMap("chunkMapping", chunkMapping, (w, k) -> k.writeTag(w.getTag()), (w, v) -> v.writeTag(w.getTag()))
+      .done();
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    ListTag list = nbt.getList("chunkMapping", ListTag.TAG_COMPOUND);
-
-    for (int i = 0; i < list.size(); ++i) {
-      CompoundTag subNBT = list.getCompound(i);
-
-      ChunkIndex id = new ChunkIndex();
-      id.readTag(subNBT);
-
-      ZoneChunk chunk = new ZoneChunk();
-      chunk.readTag(subNBT);
-
-      chunkMapping.put(id, chunk);
-    }
+    NbtReader.of(nbt)
+      .readMap("chunkMapping", chunkMapping, r -> {
+        ChunkIndex id = new ChunkIndex();
+        id.readTag(r.getTag());
+        return id;
+      }, r -> {
+        ZoneChunk chunk = new ZoneChunk();
+        chunk.readTag(r.getTag());
+        return chunk;
+      })
+      .done();
   }
 
   @Override

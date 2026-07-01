@@ -32,7 +32,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.*;
@@ -712,6 +714,47 @@ public class NbtReader {
   }
 
   /**
+   * Reads a list of strings from the NBT data.
+   *
+   * @param key the key to read from
+   * @return a list of strings, or an empty list if the key doesn't exist or is not a list of strings
+   */
+  public List<String> getStrings(String key) {
+    ListTag list = nbt.getList(key, Tag.TAG_STRING);
+    List<String> result = new ArrayList<>(list.size());
+    for (int i = 0; i < list.size(); i++) {
+      result.add(list.getString(i));
+    }
+    return result;
+  }
+
+  /**
+   * Reads a list of strings from the NBT data and applies it to a consumer.
+   *
+   * @param key      the key to read from
+   * @param consumer the consumer to apply the list to
+   * @return the NbtReader instance for method chaining
+   */
+  public NbtReader applyStrings(String key, Consumer<List<String>> consumer) {
+    consumer.accept(getStrings(key));
+    return this;
+  }
+
+  /**
+   * Reads a nested CompoundTag and passes it to the given consumer as an NbtReader.
+   *
+   * @param key      the key to read from
+   * @param consumer the consumer to accept the NbtReader for the nested tag
+   * @return the NbtReader instance for method chaining
+   */
+  public NbtReader apply(String key, Consumer<NbtReader> consumer) {
+    if (nbt.contains(key)) {
+      consumer.accept(getCompoundReader(key));
+    }
+    return this;
+  }
+
+  /**
    * Reads a value from the tag if it exists.
    *
    * @param key          the key to read from
@@ -720,7 +763,8 @@ public class NbtReader {
    * @param <T>          the type of the value
    * @return the read value or defaultValue
    */
-  public <T> T getNullable(String key, Function<NbtReader, T> reader, @Nullable T defaultValue) {
+  @Nullable
+  public <T> T getNullable(String key, Function<NbtReader, @Nullable T> reader, @Nullable T defaultValue) {
     if (nbt.contains(key)) {
       return reader.apply(getCompoundReader(key));
     }
@@ -746,10 +790,15 @@ public class NbtReader {
    * @param target the target object to deserialize into
    * @return the NbtReader instance for method chaining
    */
-  public NbtReader getSerializable(String key, INBTSerializable target) {
+  public NbtReader applySerializable(String key, INBTSerializable target) {
     if (nbt.contains(key)) {
       target.deserializeNBT(nbt.getCompound(key));
     }
+    return this;
+  }
+
+  public NbtReader rawTagAction(Consumer<CompoundTag> action) {
+    action.accept(nbt);
     return this;
   }
 
@@ -847,5 +896,12 @@ public class NbtReader {
    */
   public void done() {
     // No-op
+  }
+
+  public NbtReader applyIf(String key, INBTSerializable serializable) {
+    if (nbt.contains(key)) {
+      serializable.deserializeNBT(nbt.getCompound(key));
+    }
+    return this;
   }
 }

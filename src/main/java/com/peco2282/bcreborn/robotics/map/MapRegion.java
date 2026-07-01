@@ -12,6 +12,8 @@
 package com.peco2282.bcreborn.robotics.map;
 
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 
@@ -51,10 +53,11 @@ public class MapRegion implements INBTSerializable {
     chunks.clear();
 
     if (tag != null) {
+      NbtReader reader = NbtReader.of(tag);
       for (int i = 0; i < 256; i++) {
-        if (tag.contains("r" + i)) {
-          MapChunk chunk = new MapChunk(tag.getCompound("r" + i));
-          chunks.put(i, chunk);
+        String key = "r" + i;
+        if (reader.contains(key)) {
+          chunks.put(i, new MapChunk(reader.getCompound(key)));
         }
       }
     }
@@ -62,14 +65,13 @@ public class MapRegion implements INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag tag) {
+    NbtWriter writer = NbtWriter.of(tag);
     for (int i = 0; i < 256; i++) {
       MapChunk chunk = chunks.get(i);
       if (chunk != null) {
-        CompoundTag chunkNBT = new CompoundTag();
         synchronized (chunk) {
-          chunk.writeTag(chunkNBT);
+          writer.putSerializable("r" + i, chunk);
         }
-        tag.put("r" + i, chunkNBT);
       }
     }
   }

@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.robotics.zone;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import com.peco2282.bcreborn.common.utils.BitSetUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -71,20 +73,16 @@ public class ZoneChunk implements IBufferSerializable, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putBoolean("fullSet", fullSet);
-
-    if (property != null) {
-      nbt.putByteArray("bits", BitSetUtils.toByteArray(property));
-    }
+    NbtWriter.of(nbt)
+        .putBoolean("fullSet", fullSet)
+        .putByteArray("bits", property == null ? new byte[0] : BitSetUtils.toByteArray(property));
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    fullSet = nbt.getBoolean("fullSet");
-
-    if (nbt.contains("bits")) {
-      property = BitSetUtils.fromByteArray(nbt.getByteArray("bits"));
-    }
+    NbtReader.of(nbt)
+        .applyBoolean("fullSet", fullSet -> this.fullSet = fullSet)
+        .applyByteArray("bits", bits -> property = BitSetUtils.fromByteArray(bits));
   }
 
   public BlockPos getRandomBlockIndex(RandomSource rand) {

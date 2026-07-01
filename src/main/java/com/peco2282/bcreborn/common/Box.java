@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -231,12 +232,14 @@ public class Box implements IBox, IBufferSerializable, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putInt("xMin", xMin);
-    nbt.putInt("yMin", yMin);
-    nbt.putInt("zMin", zMin);
-    nbt.putInt("xMax", xMax);
-    nbt.putInt("yMax", yMax);
-    nbt.putInt("zMax", zMax);
+    NbtWriter.of(nbt)
+      .putInt("xMin", xMin)
+      .putInt("yMin", yMin)
+      .putInt("zMin", zMin)
+      .putInt("xMax", xMax)
+      .putInt("yMax", yMax)
+      .putInt("zMax", zMax)
+      .done();
   }
 
   public Box extendToEncompass(Box toBeContained) {

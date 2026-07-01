@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.api.core;
 
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -220,10 +222,11 @@ public class Position implements IBufferSerializable, INBTSerializable {
    */
   @Override
   public void writeTag(CompoundTag nbttagcompound) {
-    nbttagcompound.putDouble("i", x);
-    nbttagcompound.putDouble("j", y);
-    nbttagcompound.putDouble("k", z);
-    nbttagcompound.putByte("orientation", (byte) orientation.get3DDataValue());
+    NbtWriter.of(nbttagcompound)
+      .putDouble("i", x)
+      .putDouble("j", y)
+      .putDouble("k", z)
+      .putDirection("orientation", orientation);
   }
 
   /**
@@ -233,10 +236,11 @@ public class Position implements IBufferSerializable, INBTSerializable {
    */
   @Override
   public void readTag(CompoundTag nbttagcompound) {
-    x = nbttagcompound.getDouble("i");
-    y = nbttagcompound.getDouble("j");
-    z = nbttagcompound.getDouble("k");
-    orientation = Direction.from3DDataValue(nbttagcompound.getByte("orientation"));
+    NbtReader.of(nbttagcompound)
+      .applyDouble("i", it -> x = it)
+      .applyDouble("j", it -> y = it)
+      .applyDouble("k", it -> z = it)
+      .applyDirection("orientation", it -> orientation = it);
   }
 
   /**

@@ -13,6 +13,8 @@ package com.peco2282.bcreborn.common;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -47,14 +49,18 @@ public class ChunkIndex implements IBufferSerializable, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putInt("x", x);
-    nbt.putInt("z", z);
+    NbtWriter.of(nbt)
+      .putInt("x", x)
+      .putInt("z", z)
+      .done();
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    x = nbt.getInt("x");
-    z = nbt.getInt("z");
+    NbtReader.of(nbt)
+      .applyInt("x", it -> x = it)
+      .applyInt("z", it -> z = it)
+      .done();
   }
 
   @Override
