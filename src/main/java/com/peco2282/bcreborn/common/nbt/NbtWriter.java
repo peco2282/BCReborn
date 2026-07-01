@@ -138,11 +138,11 @@ public class NbtWriter {
    * Puts a float value from a supplier into the tag.
    *
    * @param key      The key to store the value under.
-   * @param supplier The supplier providing the double value (cast to float).
+   * @param supplier The supplier providing the float value.
    * @return This writer for method chaining.
    */
-  public NbtWriter putFloat(String key, DoubleSupplier supplier) {
-    tag.putFloat(key, (float) supplier.getAsDouble());
+  public NbtWriter putFloat(String key, FloatSupplier supplier) {
+    tag.putFloat(key, supplier.getAsFloat());
     return this;
   }
 
