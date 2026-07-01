@@ -158,14 +158,14 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
   @Override
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
-    inv.writeToNBT(nbt, "inv");
+    inv.writeTag(nbt);
     nbt.putInt("energy", energy);
   }
 
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.readFromNBT(nbt, "inv");
+    inv.readTag(nbt);
     energy = nbt.getInt("energy");
   }
 

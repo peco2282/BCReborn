@@ -152,7 +152,7 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.readFromNBT(nbt, "Items");
+    inv.readTag(nbt);
     currentPattern = nbt.getInt("delta");
     if (nbt.contains("box")) {
       box.initialize(nbt.getCompound("box"));
@@ -163,7 +163,7 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
   @Override
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
-    inv.writeToNBT(nbt, "Items");
+    inv.writeTag(nbt);
     nbt.putInt("delta", currentPattern);
     if (box.isInitialized()) {
       CompoundTag boxNbt = new CompoundTag();

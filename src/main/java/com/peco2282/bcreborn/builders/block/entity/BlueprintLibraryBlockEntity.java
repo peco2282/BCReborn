@@ -67,7 +67,7 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
-    inv.readFromNBT(nbt, "Items");
+    inv.readTag(nbt);
     if (nbt.contains("selected")) {
       selected = nbt.getInt("selected");
     }
@@ -76,7 +76,7 @@ public class BlueprintLibraryBlockEntity extends BuildCraftBlockEntity implement
   @Override
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
-    inv.writeToNBT(nbt, "Items");
+    inv.writeTag(nbt);
     nbt.putInt("selected", selected);
   }
 
