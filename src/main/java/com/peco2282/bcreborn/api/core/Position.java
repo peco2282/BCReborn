@@ -11,8 +11,8 @@
  */
 package com.peco2282.bcreborn.api.core;
 
-import com.peco2282.bcreborn.common.nbt.NbtReader;
-import com.peco2282.bcreborn.common.nbt.NbtWriter;
+import com.peco2282.bcreborn.api.serialization.NbtReader;
+import com.peco2282.bcreborn.api.serialization.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

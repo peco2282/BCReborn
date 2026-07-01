@@ -9,7 +9,7 @@
  * Licensed under the Minecraft Mod Public License 1.0 (MMPL).
  * See LICENSE for details.
  */
-package com.peco2282.bcreborn.common.nbt;
+package com.peco2282.bcreborn.api.serialization;
 
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
