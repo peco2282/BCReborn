@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.common.utils;
 
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.common.Box;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -57,24 +59,26 @@ public class BlockScanner implements Iterable<BlockPos>, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    nbt.putInt("x", x);
-    nbt.putInt("y", y);
-    nbt.putInt("z", z);
-    nbt.putInt("blocksDone", blocksDone);
-    nbt.putInt("iterationsPerCycle", iterationsPerCycle);
-    CompoundTag boxNBT = new CompoundTag();
-    box.writeTag(boxNBT);
-    nbt.put("box", boxNBT);
+    NbtWriter.of(nbt)
+      .putInt("x", x)
+      .putInt("y", y)
+      .putInt("z", z)
+      .putInt("blocksDone", blocksDone)
+      .putInt("iterationsPerCycle", iterationsPerCycle)
+      .putSerializable("box", box)
+      .done();
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    x = nbt.getInt("x");
-    y = nbt.getInt("y");
-    z = nbt.getInt("z");
-    blocksDone = nbt.getInt("blocksDone");
-    iterationsPerCycle = nbt.getInt("iterationsPerCycle");
-    box.initialize(nbt.getCompound("box"));
+    NbtReader.of(nbt)
+      .applyInt("x", it -> x = it)
+      .applyInt("y", it -> y = it)
+      .applyInt("z", it -> z = it)
+      .applyInt("blocksDone", it -> blocksDone = it)
+      .applyInt("iterationsPerCycle", it -> iterationsPerCycle = it)
+      .applyCompound("box", it -> box.initialize(it))
+      .done();
   }
 
   public BlockPos nextBlockPos() {

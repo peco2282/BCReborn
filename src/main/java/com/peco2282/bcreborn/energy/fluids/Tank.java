@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.energy.fluids;
 
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.CommonComponents;
@@ -50,10 +52,10 @@ public class Tank extends FluidTank implements IBufferSerializable, INBTSerializ
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    CompoundTag tankData = new CompoundTag();
-    super.writeToNBT(tankData);
-    writeTankToNBT(tankData);
-    nbt.put(name, tankData);
+    NbtWriter.of(nbt).withWriter(name, w -> {
+      super.writeToNBT(w.getTag());
+      writeTankToNBT(w.getTag());
+    });
   }
 
   @Override
@@ -64,14 +66,11 @@ public class Tank extends FluidTank implements IBufferSerializable, INBTSerializ
 
   @Override
   public void readTag(CompoundTag nbt) {
-    if (nbt.contains(name)) {
-      // allow to readTag empty tanks
+    NbtReader.of(nbt).apply(name, r -> {
       setFluid(FluidStack.EMPTY);
-
-      CompoundTag tankData = nbt.getCompound(name);
-      super.readFromNBT(tankData);
-      readTankFromNBT(tankData);
-    }
+      super.readFromNBT(r.getTag());
+      readTankFromNBT(r.getTag());
+    });
   }
 
   @Override

@@ -216,7 +216,7 @@ public abstract class DockingStation<T extends DockingStation<T>> implements INB
   @Override
   public void writeTag(CompoundTag nbt) {
     NbtWriter.of(nbt)
-      .putLong("Pos", pos.asLong())
+      .putBlockPos("Pos", pos)
       .putDirection("side", side)
       .putBoolean("isMain", linkIsMain)
       .putLong("robotId", robotTakingId)
@@ -231,7 +231,7 @@ public abstract class DockingStation<T extends DockingStation<T>> implements INB
   @Override
   public void readTag(CompoundTag nbt) {
     NbtReader.of(nbt)
-      .applyLong("Pos", pos -> this.pos = BlockPos.of(pos))
+      .applyBlockPos("Pos", pos -> this.pos = pos)
       .applyDirection("side", side -> this.side = side)
       .applyBoolean("isMain", linkIsMain -> this.linkIsMain = linkIsMain)
       .applyLong("robotId", robotTakingId -> this.robotTakingId = robotTakingId)

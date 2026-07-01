@@ -34,6 +34,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
 import java.util.Set;
 
 public class GatePluggable extends PipePluggable<GatePluggable> {
@@ -68,13 +69,8 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
     NbtWriter.of(nbt)
       .putEnum(ItemGate.NBT_TAG_MAT, material)
       .putEnum(ItemGate.NBT_TAG_LOGIC, logic)
+      .putCollection(ItemGate.NBT_TAG_EX, List.of(expansions), expansion -> StringTag.valueOf(expansion.getUniqueIdentifier().toString()))
       .done();
-
-    ListTag expansionsList = new ListTag();
-    for (IGateExpansion expansion : expansions) {
-      expansionsList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
-    }
-    nbt.put(ItemGate.NBT_TAG_EX, expansionsList);
   }
 
   @Override
@@ -82,14 +78,12 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
     NbtReader.of(nbt)
       .applyEnum(ItemGate.NBT_TAG_MAT, GateDefinition.GateMaterial.class, mat -> material = mat)
       .applyEnum(ItemGate.NBT_TAG_LOGIC, GateDefinition.GateLogic.class, logic -> this.logic = logic)
+      .applyStrings(ItemGate.NBT_TAG_EX, list -> {
+        expansions = list.stream()
+          .map(GateExpansions::getExpansion)
+          .toArray(IGateExpansion[]::new);
+      })
       .done();
-
-    ListTag expansionsList = nbt.getList(ItemGate.NBT_TAG_EX, Tag.TAG_STRING);
-    final int expansionsSize = expansionsList.size();
-    expansions = new IGateExpansion[expansionsSize];
-    for (int i = 0; i < expansionsSize; i++) {
-      expansions[i] = GateExpansions.getExpansion(expansionsList.getString(i));
-    }
   }
 
   @Override

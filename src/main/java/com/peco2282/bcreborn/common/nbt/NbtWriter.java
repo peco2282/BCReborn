@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -558,6 +559,11 @@ public class NbtWriter {
     return this;
   }
 
+  public NbtWriter putList(String key, Consumer<ListTag> value) {
+    value.accept(new ListTag());
+    return this;
+  }
+
   /**
    * Puts an INBTSerializable object into the tag.
    *
@@ -568,6 +574,46 @@ public class NbtWriter {
   public NbtWriter putSerializable(String key, INBTSerializable value) {
     tag.put(key, value.serializeNBT());
     return this;
+  }
+
+  /**
+   * Puts a collection into the tag as a ListTag, with each element serialized using the provided function.
+   *
+   * @param key               The key to store the value under.
+   * @param collection        The collection to store.
+   * @param elementSerializer The function that serializes each element to a Tag.
+   * @param <T>               The type of elements in the collection.
+   * @return This writer for method chaining.
+   */
+  public <T> NbtWriter putCollection(String key, Collection<T> collection, Function<T, Tag> elementSerializer) {
+    ListTag list = new ListTag();
+    for (T element : collection) {
+      list.add(elementSerializer.apply(element));
+    }
+    tag.put(key, list);
+    return this;
+  }
+
+  /**
+   * Puts a collection of strings into the tag as a ListTag of StringTags.
+   *
+   * @param key     The key to store the value under.
+   * @param strings The collection of strings to store.
+   * @return This writer for method chaining.
+   */
+  public NbtWriter putStrings(String key, Collection<String> strings) {
+    return putCollection(key, strings, StringTag::valueOf);
+  }
+
+  /**
+   * Puts an array of strings into the tag as a ListTag of StringTags.
+   *
+   * @param key     The key to store the value under.
+   * @param strings The array of strings to store.
+   * @return This writer for method chaining.
+   */
+  public NbtWriter putStrings(String key, String[] strings) {
+    return putStrings(key, Arrays.asList(strings));
   }
 
   /**
@@ -604,6 +650,18 @@ public class NbtWriter {
     if (condition.test(value)) {
       writer.accept(this, value);
     }
+    return this;
+  }
+
+  public <T extends INBTSerializable> NbtWriter putIf(String key, T value, boolean condition) {
+    if (condition) {
+      putSerializable(key, value);
+    }
+    return this;
+  }
+
+  public NbtWriter rawTagAction(Consumer<CompoundTag> action) {
+    action.accept(tag);
     return this;
   }
 

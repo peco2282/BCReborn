@@ -25,13 +25,17 @@ import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
 import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.common.internal.ILEDProvider;
+import com.peco2282.bcreborn.common.nbt.BufferReader;
+import com.peco2282.bcreborn.common.nbt.BufferWriter;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,6 +49,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILEDProvider, Container, IBlockEntityContainer, IBoxProvider {
 
@@ -135,92 +140,75 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   @Override
   public void load(CompoundTag nbt) {
-    super.load(nbt);
+    NbtReader.of(nbt)
+      .rawTagAction(super::load)
+      .applySerializable("box", box)
+      .applySerializable("Items", inv)
+      .applyEnum("mode", Mode.class, it -> mode = it)
+      .applyString("name", it -> name = it)
+      .applyString("lastAuthor", it -> currentAuthorName = it)
+      .applySerializable("readConfiguration", readConfiguration)
+      .applyLongArray("subBlueprints", la -> {
+        subBlueprints.clear();
+        subLasers.clear();
+        for (long tag : la) {
+          addSubBlueprint(BlockPos.of(tag));
+        }
+      })
 
-    if (nbt.contains("box")) {
-      box.initialize(nbt.getCompound("box"));
-    }
-
-    inv.readFromNBT(nbt, "Items");
-
-    mode = Mode.values()[nbt.getByte("mode")];
-    name = nbt.getString("name");
-    currentAuthorName = nbt.getString("lastAuthor");
-
-    if (nbt.contains("readConfiguration")) {
-      readConfiguration.readTag(nbt.getCompound("readConfiguration"));
-    }
-
-    long[] subBptList = nbt.getLongArray("subBlueprints");
-    subBlueprints.clear();
-    subLasers.clear();
-    for (long tag : subBptList) {
-      addSubBlueprint(BlockPos.of(tag));
-    }
+    ;
   }
 
   @Override
   protected void saveAdditional(CompoundTag nbt) {
-    super.saveAdditional(nbt);
-
-    if (box.isInitialized()) {
-      CompoundTag boxStore = new CompoundTag();
-      box.writeTag(boxStore);
-      nbt.put("box", boxStore);
-    }
-
-    inv.writeToNBT(nbt, "Items");
-
-    nbt.putByte("mode", (byte) mode.ordinal());
-    nbt.putString("name", name);
-    nbt.putString("lastAuthor", currentAuthorName);
-
-    CompoundTag readConf = new CompoundTag();
-    readConfiguration.writeTag(readConf);
-    nbt.put("readConfiguration", readConf);
-
-    LongArrayTag subBptList = new LongArrayTag(subBlueprints.stream().mapToLong(BlockPos::asLong).toArray());
-    nbt.put("subBlueprints", subBptList);
+    NbtWriter.of(nbt)
+      .rawTagAction(super::saveAdditional)
+      .putIf("box", box, box.isInitialized())
+      .putSerializable("Items", inv)
+      .putEnum("mode", mode)
+      .putString("name", name)
+      .putString("lastAuthor", currentAuthorName)
+      .putSerializable("readConfiguration", readConfiguration)
+      .putLongArray("subBlueprints", subBlueprints.stream().mapToLong(BlockPos::asLong).toArray());
   }
 
   @Override
   public void writeData(FriendlyByteBuf data) {
-    box.writeData(data);
-    data.writeUtf(name);
-    data.writeBoolean(getIsWorking());
-    data.writeByte(mode.ordinal());
-    if (mode == Mode.COPY) {
-      readConfiguration.writeData(data);
-      data.writeShort(subLasers.size());
-      for (LaserData ld : subLasers) {
-        ld.writeData(data);
-      }
-    }
+    BufferWriter.of(data)
+      .writeSerializable(box)
+      .writeString(name)
+      .writeBoolean(getIsWorking())
+      .writeEnum(mode)
+      .writeIf(mode == Mode.COPY, buf -> buf
+        .writeSerializable(readConfiguration)
+        .writeCollection(subLasers)
+      )
+      .done();
   }
 
   @Override
   public void readData(FriendlyByteBuf stream) {
-    box.readData(stream);
-    name = stream.readUtf();
-    clientIsWorking = stream.readBoolean();
-    mode = Mode.values()[stream.readByte()];
+    BufferReader.of(stream)
+      .applySerializable(box)
+      .applyString(it -> name = it)
+      .applyBoolean(it -> clientIsWorking = it)
+      .applyEnum(Mode.class, e -> mode = e)
+      .apply(it -> {
+        if (level != null && level.isClientSide) {
+          if (box.isInitialized()) {
+            box.createLaserData();
+          }
+        }
 
-    if (level != null && level.isClientSide) {
-      if (box.isInitialized()) {
-        box.createLaserData();
-      }
-    }
-
-    if (mode == Mode.COPY) {
-      readConfiguration.readData(stream);
-      int size = stream.readUnsignedShort();
-      subLasers.clear();
-      for (int i = 0; i < size; i++) {
-        LaserData ld = new LaserData();
-        ld.readData(stream);
-        subLasers.add(ld);
-      }
-    }
+        if (mode == Mode.COPY) {
+          it
+            .applySerializable(readConfiguration)
+            .applySerializableCollection(LaserData::new, list -> {
+              subLasers.clear();
+              subLasers.addAll(list);
+            });
+        }
+      });
   }
 
   private boolean getIsWorking() {
@@ -374,7 +362,12 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     return completeBox.getBoundingBox();
   }
 
-  public enum Mode {
-    NONE, EDIT, COPY
+  public enum Mode implements StringRepresentable {
+    NONE, EDIT, COPY;
+
+    @Override
+    public String getSerializedName() {
+      return name().toLowerCase(Locale.ROOT);
+    }
   }
 }

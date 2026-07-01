@@ -15,6 +15,8 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.api.core.IBufferSerializable;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -91,28 +93,22 @@ public class LaserData implements IBufferSerializable, INBTSerializable {
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    CompoundTag headNbt = new CompoundTag();
-    head.writeTag(headNbt);
-    nbt.put("head", headNbt);
-
-    CompoundTag tailNbt = new CompoundTag();
-    tail.writeTag(tailNbt);
-    nbt.put("tail", tailNbt);
-
-    nbt.putBoolean("isVisible", isVisible);
-    nbt.putBoolean("isGlowing", isGlowing);
-    nbt.putInt("kind", kind.ordinal());
+    NbtWriter.of(nbt)
+      .putSerializable("head", head)
+      .putSerializable("tail", tail)
+      .putBoolean("isVisible", isVisible)
+      .putBoolean("isGlowing", isGlowing)
+      .putEnum("kind", kind);
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
-    head.readTag(nbt.getCompound("head"));
-    tail.readTag(nbt.getCompound("tail"));
-    isVisible = nbt.getBoolean("isVisible");
-    isGlowing = nbt.getBoolean("isGlowing");
-    if (nbt.contains("kind")) {
-      kind = LaserKind.values()[nbt.getInt("kind") % LaserKind.values().length];
-    }
+    NbtReader.of(nbt)
+      .applySerializable("head", head)
+      .applySerializable("tail", tail)
+      .applyBoolean("isVisible", it -> isVisible = it)
+      .applyBoolean("isGlowing", it -> isGlowing = it)
+      .applyEnum("kind", LaserKind.class, it -> kind = it);
   }
 
   public CompoundTag toNBT() {

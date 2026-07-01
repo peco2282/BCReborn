@@ -16,6 +16,8 @@ import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
+import com.peco2282.bcreborn.common.nbt.NbtReader;
+import com.peco2282.bcreborn.common.nbt.NbtWriter;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateLogic;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateMaterial;
@@ -86,58 +88,27 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   public static void addGateExpansion(ItemStack stack, IGateExpansion expansion) {
-    CompoundTag nbt = getNBT(stack);
-
-    if (nbt.isEmpty()) {
-      return;
-    }
-
-    ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-    expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
-    nbt.put(NBT_TAG_EX, expansionList);
+    NbtWriter.of(stack.getOrCreateTag())
+      .putList(NBT_TAG_EX, expansionList -> {
+        expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
+      })
+      .done();
   }
 
   public static boolean hasGateExpansion(ItemStack stack, IGateExpansion expansion) {
-    CompoundTag nbt = getNBT(stack);
-
-    if (nbt.isEmpty()) {
-      return false;
-    }
-
-    try {
-      ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-
-      for (int i = 0; i < expansionList.size(); i++) {
-        String ex = expansionList.getString(i);
-
-        if (ex.equals(expansion.getUniqueIdentifier().toString())) {
-          return true;
-        }
-      }
-    } catch (RuntimeException ignored) {
-    }
-
-    return false;
+    return NbtReader.of(getNBT(stack))
+      .getStrings(NBT_TAG_EX)
+      .contains(expansion.getUniqueIdentifier().toString());
   }
 
   public static Set<IGateExpansion> getInstalledExpansions(ItemStack stack) {
     Set<IGateExpansion> expansions = new HashSet<>();
-    CompoundTag nbt = getNBT(stack);
-
-    if (nbt.isEmpty()) {
-      return expansions;
-    }
-
-    try {
-      ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
-      for (int i = 0; i < expansionList.size(); i++) {
-        String exTag = expansionList.getString(i);
-        IGateExpansion ex = GateExpansions.getExpansion(exTag);
-        expansions.add(ex);
-      }
-    } catch (RuntimeException ignored) {
-    }
-
+    NbtReader.of(getNBT(stack))
+      .applyStrings(NBT_TAG_EX, list -> {
+        for (String exTag : list) {
+          expansions.add(GateExpansions.getExpansion(exTag));
+        }
+      });
     return expansions;
   }
 
