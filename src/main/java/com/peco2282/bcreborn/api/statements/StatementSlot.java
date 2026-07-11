@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 public class StatementSlot {
   @Nullable
   public IStatement statement;
-  @Nullable
   public IStatementParameter[] parameters;
 
   @Override

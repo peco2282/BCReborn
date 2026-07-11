@@ -20,7 +20,7 @@ public class PassThroughFluidFilter implements IFluidFilter {
 
   @Override
   public boolean matches(Fluid fluid) {
-    return fluid != null;
+    return true;
   }
 
 }

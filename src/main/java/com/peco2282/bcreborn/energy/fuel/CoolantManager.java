@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -77,16 +78,19 @@ public class CoolantManager implements ICoolantManager {
   }
 
   @Override
+  @Nullable
   public ICoolant getCoolant(Fluid fluid) {
     return coolants.get(fluid.getFluidType());
   }
 
   @Override
+  @Nullable
   public ICoolant getCoolant(FluidType fluid) {
     return coolants.get(fluid);
   }
 
   @Override
+  @Nullable
   public ISolidCoolant getSolidCoolant(StackKey solid) {
     return solidCoolants.get(solid);
   }

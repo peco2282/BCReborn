@@ -50,7 +50,7 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
       waited++;
     } else {
       FluidStack fluidStack = BlockUtils.drainBlock(robot.level(), blockToPump, false);
-      if (fluidStack != null) {
+      if (!fluidStack.isEmpty()) {
         if (robot.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE) > 0) {
           BlockUtils.drainBlock(robot.level(), blockToPump, true);
         }

@@ -97,6 +97,7 @@ public abstract class RobotEntityBase extends PathfinderMob implements Container
    *
    * @return The redstone board.
    */
+  @Nullable
   public abstract RedstoneBoardRobot<?> getBoard();
 
   /**

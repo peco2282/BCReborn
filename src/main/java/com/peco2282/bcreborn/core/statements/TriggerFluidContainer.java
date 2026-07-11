@@ -54,12 +54,10 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
 
   @Override
   public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer statementContainer, IStatementParameter[] parameters) {
-    if (tile == null) return false;
-
     return tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).map(handler -> {
       FluidStack searchedFluid = FluidStack.EMPTY;
 
-      if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
+      if (parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
         searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(FluidStack.EMPTY);
       }
 

@@ -30,10 +30,6 @@ public class AIRobotUnload extends AIRobot<AIRobotUnload> {
   }
 
   public static boolean unload(RobotEntityBase robot, DockingStation<?> station, boolean doUnload) {
-    if (station == null) {
-      return false;
-    }
-
     IInjectable output = station.getItemOutput();
     if (output == null) {
       return false;

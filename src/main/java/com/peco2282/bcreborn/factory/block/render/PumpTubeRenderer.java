@@ -86,9 +86,7 @@ public class PumpTubeRenderer implements BlockEntityRenderer<PumpBlockEntity> {
     renderQuad(matrix, consumer, maxX, minY, minZ, maxX, maxY, maxZ, 0, 0, 8, 16 * h, packedLight, packedOverlay, 1, 0, 0);
 
     // 底面 (Bottom Face)
-    if (true) {
-      renderQuad(matrix, consumer, minX, minY, minZ, maxX, minY, maxZ, 0, 0, 8, 8, packedLight, packedOverlay, 0, -1, 0);
-    }
+    renderQuad(matrix, consumer, minX, minY, minZ, maxX, minY, maxZ, 0, 0, 8, 8, packedLight, packedOverlay, 0, -1, 0);
 
     // 内側の4面をレンダリング（必要であれば）
     // North Face (Inner)

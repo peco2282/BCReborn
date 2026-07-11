@@ -215,26 +215,24 @@ public class Blueprint extends BlueprintBase {
 
             if (block != null) {
               SchematicBlockBase schematic = SchematicRegistry.INSTANCE.createSchematicBlock(block);
-              if (schematic != null) {
-                schematic.readSchematicFromNBT(cpt, mapping);
-                if (!schematic.doNotUse()) {
-                  schematic.idsToWorld(mapping);
-                  switch (schematic.getBuildingPermission()) {
-                    case ALL:
-                      break;
-                    case CREATIVE_ONLY:
-                      if (buildingPermission == BuildingPermission.ALL) {
-                        buildingPermission = BuildingPermission.CREATIVE_ONLY;
-                      }
-                      break;
-                    case NONE:
-                      buildingPermission = BuildingPermission.NONE;
-                      break;
-                  }
-                } else {
-                  schematic = null;
-                  isComplete = false;
+              schematic.readSchematicFromNBT(cpt, mapping);
+              if (!schematic.doNotUse()) {
+                schematic.idsToWorld(mapping);
+                switch (schematic.getBuildingPermission()) {
+                  case ALL:
+                    break;
+                  case CREATIVE_ONLY:
+                    if (buildingPermission == BuildingPermission.ALL) {
+                      buildingPermission = BuildingPermission.CREATIVE_ONLY;
+                    }
+                    break;
+                  case NONE:
+                    buildingPermission = BuildingPermission.NONE;
+                    break;
                 }
+              } else {
+                schematic = null;
+                isComplete = false;
               }
               put(x, y, z, schematic);
             } else {

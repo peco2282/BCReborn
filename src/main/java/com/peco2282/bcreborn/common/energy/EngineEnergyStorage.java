@@ -37,15 +37,13 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
   }
 
   private void updateTick() {
-    if (engine.getLevel() != null) {
-      long currentTick = engine.getLevel().getGameTime();
-      if (lastUpdateTick != currentTick) {
-        lastTickGenerated = currentTickGenerated;
-        lastTickExtracted = currentTickExtracted;
-        currentTickGenerated = 0;
-        currentTickExtracted = 0;
-        lastUpdateTick = currentTick;
-      }
+    long currentTick = engine.getLevel().getGameTime();
+    if (lastUpdateTick != currentTick) {
+      lastTickGenerated = currentTickGenerated;
+      lastTickExtracted = currentTickExtracted;
+      currentTickGenerated = 0;
+      currentTickExtracted = 0;
+      lastUpdateTick = currentTick;
     }
   }
 

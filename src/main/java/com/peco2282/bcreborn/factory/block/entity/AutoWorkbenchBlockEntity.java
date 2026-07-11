@@ -474,6 +474,7 @@ public class AutoWorkbenchBlockEntity extends BuildCraftBlockEntity implements W
       return currentRecipe.assemble(this, level.registryAccess());
     }
 
+    @Nullable
     private CraftingRecipe findRecipe() {
       if (level == null) return null;
       return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this, level).orElse(null);

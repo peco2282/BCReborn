@@ -102,7 +102,7 @@ public class ListOldScreen extends AdvancedInterfaceScreen<ListOldMenu> {
     RenderSystem.setShaderTexture(0, TEXTURE_BASE);
 
     for (int i = 0; i < 6; ++i) {
-      if (container.lines[i].getStack(7) != null) {
+      if (!container.lines[i].getStack(7).isEmpty()) {
         drawTexturedModalRect(graphics, getGuiLeft() + 152, getGuiTop() + 31 + 18 * i, 177, 37, 16, 16);
       }
     }
@@ -198,8 +198,8 @@ public class ListOldScreen extends AdvancedInterfaceScreen<ListOldMenu> {
     public ItemStack getItemStack() {
       ListOldMenu container = (ListOldMenu) gui.getMenu();
 
-      if (slotIndex == 6 && container.lines[lineIndex].getStack(7) != null) {
-        return null;
+      if (slotIndex == 6 && !container.lines[lineIndex].getStack(7).isEmpty()) {
+        return ItemStack.EMPTY;
       }
 
       return container.lines[lineIndex].getStack(slotIndex);

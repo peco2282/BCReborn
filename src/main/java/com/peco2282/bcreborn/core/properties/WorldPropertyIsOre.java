@@ -22,9 +22,6 @@ public class WorldPropertyIsOre extends WorldProperty {
 
   @Override
   public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-    if (state == null) {
-      return false;
-    }
     return state.is(Tags.Blocks.ORES);
   }
 }

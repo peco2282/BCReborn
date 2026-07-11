@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
@@ -322,6 +323,7 @@ public class BufferReader {
    *
    * @return The BlockState read, or null if the block is not found
    */
+  @Nullable
   public BlockState readBlockState() {
     ResourceLocation rl = buf.readResourceLocation();
     Block block = ForgeRegistries.BLOCKS.getValue(rl);

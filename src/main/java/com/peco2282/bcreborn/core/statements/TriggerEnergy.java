@@ -42,7 +42,6 @@ public class TriggerEnergy extends BCStatement implements ITriggerInternal {
   }
 
   protected boolean isActive(BlockEntity tile, Direction side) {
-    if (tile == null) return false;
     return tile.getCapability(ForgeCapabilities.ENERGY, side).map(storage -> {
       if (storage.getMaxEnergyStored() > 0) {
         float level = (float) storage.getEnergyStored() / (float) storage.getMaxEnergyStored();

@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,7 @@ public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity i
 
   public abstract List<ItemStack> getInventoryList();
 
+  @Nullable
   public EnergyStorage getEnergyStorage() {
     return null; // Should be overridden if needed
   }

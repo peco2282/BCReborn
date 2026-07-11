@@ -19,16 +19,4 @@ import net.minecraft.world.level.block.Rotation;
 import java.util.LinkedList;
 
 public class SchematicTripWireHook extends SchematicBlock {
-
-  @Override
-  public void rotateLeft(IBuilderContext context) {
-    if (null != state) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
-  }
-
-  @Override
-  public void placeInWorld(IBuilderContext context, int x, int y, int z, LinkedList<ItemStack> stacks) {
-    super.placeInWorld(context, x, y, z, stacks);
-  }
 }

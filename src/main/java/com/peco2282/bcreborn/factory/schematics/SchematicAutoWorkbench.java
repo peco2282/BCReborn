@@ -39,7 +39,7 @@ public class SchematicAutoWorkbench extends SchematicBlockEntity {
 
       for (IInvSlot slot : InventoryIterator.getIterable(autoWb.craftMatrix, Direction.UP)) {
         ItemStack stack = slot.getStackInSlot();
-        if (stack != null) {
+        if (!stack.isEmpty()) {
           stack = stack.copy();
           stack.setCount(1);
           rqs.add(stack);

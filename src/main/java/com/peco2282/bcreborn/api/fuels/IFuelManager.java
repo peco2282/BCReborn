@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.api.fuels;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -25,7 +26,9 @@ public interface IFuelManager {
 
   Collection<IFuel> getFuels();
 
+  @Nullable
   IFuel getFuel(FluidType fluid);
 
+  @Nullable
   IFuel getFuel(Fluid fluid);
 }

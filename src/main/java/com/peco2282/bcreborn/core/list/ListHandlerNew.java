@@ -87,7 +87,7 @@ public final class ListHandlerNew {
     public static Line fromNBT(CompoundTag data) {
       Line line = new Line();
 
-      if (data != null && data.contains("st")) {
+      if (data.contains("st")) {
         ListTag l = data.getList("st", CompoundTag.TAG_COMPOUND);
         for (int i = 0; i < l.size() && i < WIDTH; i++) {
           line.stacks.set(i, ItemStack.of(l.getCompound(i)));
@@ -203,7 +203,7 @@ public final class ListHandlerNew {
         for (ListMatchHandler h : handlers) {
           if (h.isValidSource(type, stacks.get(0))) {
             List<ItemStack> examples = h.getClientExamples(type, stacks.get(0));
-            if (examples != null) {
+            if (!examples.isEmpty()) {
               stackList.addAll(examples);
             } else {
               handlersCustom.add(h);

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.event.internal;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,7 @@ public class Cache {
   private final Object lock = new Object();
   private final Map<Method, Class<?>> map = new ConcurrentHashMap<>(32);
 
+  @Nullable
   public Class<?> get(Method method) {
     return map.get(method);
   }

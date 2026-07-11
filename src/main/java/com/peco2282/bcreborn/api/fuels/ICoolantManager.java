@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.api.fuels;
 import com.peco2282.bcreborn.api.core.StackKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -32,9 +33,12 @@ public interface ICoolantManager {
 
   Collection<ISolidCoolant> getSolidCoolants();
 
+  @Nullable
   ICoolant getCoolant(Fluid fluid);
 
+  @Nullable
   ICoolant getCoolant(FluidType fluid);
 
+  @Nullable
   ISolidCoolant getSolidCoolant(StackKey solid);
 }

@@ -257,9 +257,6 @@ public class MappingRegistry {
    * @param state The block state.
    */
   public void writeBlockStateToNBT(CompoundTag nbt, BlockState state) {
-    if (state == null) {
-      return;
-    }
     nbt.putInt("blockId", getIdForBlock(state.getBlock()));
     CompoundTag props = new CompoundTag();
     for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {

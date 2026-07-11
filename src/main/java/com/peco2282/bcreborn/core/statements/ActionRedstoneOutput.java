@@ -59,7 +59,7 @@ public class ActionRedstoneOutput extends BCStatement implements IActionInternal
   }
 
   protected boolean isSideOnly(IStatementParameter[] parameters) {
-    if (parameters != null && parameters.length >= 1 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly) {
+    if (parameters.length >= 1 && parameters[0] instanceof StatementParameterRedstoneGateSideOnly) {
       return ((StatementParameterRedstoneGateSideOnly) parameters[0]).isOn;
     }
 
