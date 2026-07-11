@@ -38,10 +38,6 @@ public class AIRobotLoad extends AIRobot<AIRobotLoad> {
   }
 
   public static ItemStack takeSingle(DockingStation<?> station, IStackFilter filter, boolean doTake) {
-    if (station == null) {
-      return ItemStack.EMPTY;
-    }
-
     Container tileInventory = station.getItemInput();
     if (tileInventory == null) {
       return ItemStack.EMPTY;
@@ -66,10 +62,6 @@ public class AIRobotLoad extends AIRobot<AIRobotLoad> {
 
   public static boolean load(RobotEntityBase robot, DockingStation<?> station, IStackFilter filter,
                              int quantity, boolean doLoad) {
-    if (station == null) {
-      return false;
-    }
-
     Container tileInventory = station.getItemInput();
     if (tileInventory == null) {
       return false;

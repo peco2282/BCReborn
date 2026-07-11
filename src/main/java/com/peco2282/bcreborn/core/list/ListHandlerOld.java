@@ -70,11 +70,9 @@ public final class ListHandlerOld {
   public static boolean matches(ItemStack stackList, ItemStack item) {
     StackLine[] lines = getLines(stackList);
 
-    if (lines != null) {
-      for (StackLine line : lines) {
-        if (line != null && line.matches(item)) {
-          return true;
-        }
+    for (StackLine line : lines) {
+      if (line != null && line.matches(item)) {
+        return true;
       }
     }
 

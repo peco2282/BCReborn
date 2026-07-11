@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class WorldPropertyIsReplaceable extends WorldProperty {
   @Override
   public boolean get(BlockGetter blockAccess, BlockState state, BlockPos pos) {
-    return state == null
-      || state.isAir()
-      || state.canBeReplaced();
+    return state.isAir() || state.canBeReplaced();
   }
 }

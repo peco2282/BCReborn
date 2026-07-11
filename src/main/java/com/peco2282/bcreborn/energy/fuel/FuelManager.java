@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.api.fuels.IFuel;
 import com.peco2282.bcreborn.api.fuels.IFuelManager;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,11 +54,13 @@ public class FuelManager implements IFuelManager {
   }
 
   @Override
+  @Nullable
   public IFuel getFuel(FluidType fluid) {
     return fuels.get(fluid);
   }
 
   @Override
+  @Nullable
   public IFuel getFuel(Fluid fluid) {
     return getFuel(fluid.getFluidType());
   }

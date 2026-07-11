@@ -56,11 +56,9 @@ public class TriggerInventoryLevel extends BCStatement implements ITriggerExtern
   @Override
   public boolean isTriggerActive(BlockEntity tile, Direction side, IStatementContainer container, IStatementParameter[] parameters) {
     // A parameter is required
-    if (parameters == null || parameters.length < 1 || parameters[0] == null) {
+    if (parameters.length < 1 || parameters[0] == null) {
       return false;
     }
-
-    if (tile == null) return false;
 
     return tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).map(handler -> {
       ItemStack searchStack = parameters[0].getItemStack();

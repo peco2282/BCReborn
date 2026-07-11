@@ -96,7 +96,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-
+@SuppressWarnings("unused")
 public class RobotEntity extends RobotEntityBase implements
   IEntityAdditionalSpawnData, Container, IFluidHandler, IDebuggable {
 
@@ -138,7 +138,7 @@ public class RobotEntity extends RobotEntityBase implements
   public boolean isDocked = false;
   public RedstoneBoardRobot<?> board;
   public AIRobotMain mainAI;
-  public ItemStack itemInUse;
+  public ItemStack itemInUse = ItemStack.EMPTY;
   public float itemAngle1 = 0;
   public float itemAngle2 = 0;
   public boolean itemActive = false;
@@ -1153,7 +1153,8 @@ public class RobotEntity extends RobotEntityBase implements
 
   private void initSkullItem(ItemStack skullStack) {
     if (skullStack.hasTag()) {
-      CompoundTag nbttagcompound = skullStack.getTag();
+      skullStack.getOrCreateTag();
+      CompoundTag nbttagcompound = skullStack.getOrCreateTag();
       GameProfile gameProfile = null;
 
       if (nbttagcompound.contains("SkullOwner", CompoundTag.TAG_COMPOUND)) {

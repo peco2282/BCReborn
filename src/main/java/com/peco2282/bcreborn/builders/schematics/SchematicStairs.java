@@ -22,19 +22,12 @@ public class SchematicStairs extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (null != state) {
-      requirements.add(new ItemStack(state.getBlock()));
-    }
+    requirements.add(new ItemStack(state.getBlock()));
   }
 
   @Override
   public void storeRequirements(IBuilderContext context, int x, int y, int z) {
 
-  }
-
-  @Override
-  public boolean isAlreadyBuilt(IBuilderContext context, int x, int y, int z) {
-    return state == context.world().getBlockState(new BlockPos(x, y, z));
   }
 
   @Override

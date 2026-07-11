@@ -40,7 +40,7 @@ public class AIRobotDisposeItems extends AIRobot<AIRobotDisposeItems> {
         }
       } else {
         for (IInvSlot slot : InventoryIterator.getIterable(robot)) {
-          if (slot.getStackInSlot() != null) {
+          if (!slot.getStackInSlot().isEmpty()) {
             final ItemEntity entity = new ItemEntity(
               robot.level(),
               robot.getX(),

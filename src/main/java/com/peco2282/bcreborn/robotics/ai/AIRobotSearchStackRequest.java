@@ -21,6 +21,7 @@ import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.station.IStationFilter;
 import com.peco2282.bcreborn.robotics.station.StackRequest;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,6 +78,7 @@ public class AIRobotSearchStackRequest extends AIRobot<AIRobotSearchStackRequest
     return false;
   }
 
+  @Nullable
   private StackRequest getOrderFromRequestingStation(DockingStation<?> station, boolean take) {
 
     for (StackRequest req : getAvailableRequests(station)) {
@@ -104,7 +106,7 @@ public class AIRobotSearchStackRequest extends AIRobot<AIRobotSearchStackRequest
     }
 
     for (int i = 0; i < provider.getRequestsCount(); i++) {
-      if (provider.getRequest(i) == null) {
+      if (provider.getRequest(i).isEmpty()) {
         continue;
       }
       StackRequest req = new StackRequest(provider, i, provider.getRequest(i));

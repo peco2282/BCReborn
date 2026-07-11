@@ -43,6 +43,7 @@ public class StackRequest {
     this.stationSide = stationSide;
   }
 
+  @Nullable
   public static StackRequest loadFromNBT(CompoundTag nbt) {
     if (nbt.contains("stationIndex")) {
       int slot = nbt.getInt("slot");
@@ -58,6 +59,7 @@ public class StackRequest {
     }
   }
 
+  @Nullable
   public IRequestProvider getRequester(Level world) {
     if (requester == null) {
       DockingStation<?> dockingStation = getStation(world);
@@ -104,7 +106,9 @@ public class StackRequest {
     }
   }
 
+  @Nullable
   public ResourceId<?> getResourceId(Level world) {
-    return getStation(world) != null ? new ResourceIdRequest(getStation(world), slot) : null;
+    var station = getStation(world);
+    return station != null ? new ResourceIdRequest(station, slot) : null;
   }
 }

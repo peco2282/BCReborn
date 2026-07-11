@@ -35,7 +35,7 @@ public class SchematicFluid extends SchematicBlock {
 
   @Override
   public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-    if (state != null && state.hasProperty(LiquidBlock.LEVEL) && state.getValue(LiquidBlock.LEVEL) == 0) {
+    if (state.hasProperty(LiquidBlock.LEVEL) && state.getValue(LiquidBlock.LEVEL) == 0) {
       requirements.add(fluidItem.copy());
     }
   }
@@ -52,7 +52,7 @@ public class SchematicFluid extends SchematicBlock {
 
   @Override
   public boolean doNotBuild() {
-    if (state != null && state.hasProperty(LiquidBlock.LEVEL)) {
+    if (state.hasProperty(LiquidBlock.LEVEL)) {
       return state.getValue(LiquidBlock.LEVEL) != 0;
     }
     return false;

@@ -78,7 +78,7 @@ public class AIRobotGoAndLinkToDock extends AIRobot<AIRobotGoAndLinkToDock> {
   public void writeSelfToNBT(CompoundTag nbt) {
     super.writeSelfToNBT(nbt);
 
-    if (station != null && station.pos() != null) {
+    if (station != null && station.pos() != BlockPos.ZERO) {
       nbt.putLong("stationIndex", station.pos().asLong());
       nbt.putByte("stationSide", (byte) station.side().get3DDataValue());
     }

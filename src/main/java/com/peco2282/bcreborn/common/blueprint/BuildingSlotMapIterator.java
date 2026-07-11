@@ -19,6 +19,7 @@ import com.peco2282.bcreborn.energy.fluids.Tank;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -45,18 +46,16 @@ public class BuildingSlotMapIterator {
   public void refresh(AbstractBuilderBlockEntity builder) {
     if (!isCreative) {
       availablePairs.clear();
-      availablePairs.add(new BuilderItemMetaPair(null));
+      availablePairs.add(new BuilderItemMetaPair(ItemStack.EMPTY));
 
-      if (builder != null) {
-        for (ItemStack stack : builder.getInventoryList()) {
-          if (stack != null && !stack.isEmpty()) {
-            availablePairs.add(new BuilderItemMetaPair(stack));
-          }
+      for (ItemStack stack : builder.getInventoryList()) {
+        if (stack != null && !stack.isEmpty()) {
+          availablePairs.add(new BuilderItemMetaPair(stack));
         }
-        for (Tank t : builder.getFluidTanks()) {
-          if (!t.getFluid().isEmpty() && t.getFluid().getFluid() != null) {
-            availablePairs.add(new BuilderItemMetaPair(new ItemStack(Items.BUCKET)));
-          }
+      }
+      for (Tank t : builder.getFluidTanks()) {
+        if (!t.getFluid().isEmpty() && t.getFluid().getFluid() != null) {
+          availablePairs.add(new BuilderItemMetaPair(new ItemStack(Items.BUCKET)));
         }
       }
     }
@@ -82,6 +81,7 @@ public class BuildingSlotMapIterator {
     this.keyIterator = slotMap.keySet().iterator();
   }
 
+  @Nullable
   public BuildingSlotBlock next() {
     if (slots == null) {
       findNextKey();

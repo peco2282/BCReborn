@@ -41,10 +41,6 @@ public class AIRobotLoadFluids extends AIRobot<AIRobotLoadFluids> {
 
   public static int load(RobotEntityBase robot, DockingStation<?> station, IFluidFilter filter,
                          boolean doLoad) {
-    if (station == null) {
-      return 0;
-    }
-
     if (!ActionRobotFilter.canInteractWithFluid(station, filter,
       ActionStationProvideFluids.class)) {
       return 0;

@@ -39,8 +39,6 @@ public class SchematicSign extends SchematicBlockEntity {
 
   @Override
   public void rotateLeft(IBuilderContext context) {
-    if (null != state) {
-      state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
-    }
+    state = state.rotate(Rotation.COUNTERCLOCKWISE_90);
   }
 }

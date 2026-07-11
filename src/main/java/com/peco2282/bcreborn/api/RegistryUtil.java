@@ -143,11 +143,8 @@ public interface RegistryUtil {
    * @throws IllegalArgumentException if the key is null.
    */
   @SuppressWarnings("UnstableApiUsage")
-  @Contract(value = "null->fail; _->!null", pure = true)
+  @Contract(value = "_->!null", pure = true)
   static <T> IForgeRegistry<T> getRegistry(ResourceKey<Registry<T>> key) {
-    if (key == null) {
-      throw new IllegalArgumentException("ResourceKey cannot be null");
-    }
     return RegistryManager.ACTIVE.getRegistry(key);
   }
 }

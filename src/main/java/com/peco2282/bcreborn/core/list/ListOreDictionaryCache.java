@@ -76,10 +76,6 @@ public final class ListOreDictionaryCache {
   }
 
   private void addToNamingCache(String s, int id) {
-    if (s == null) {
-      return;
-    }
-
     Set<Integer> ll = namingCache.get(s);
 
     if (ll == null) {

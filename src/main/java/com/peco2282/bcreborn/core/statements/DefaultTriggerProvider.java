@@ -60,7 +60,7 @@ public class DefaultTriggerProvider implements ITriggerProvider {
       blockFluidHandlerTriggers = ((IBlockDefaultTriggers) tile).blockFluidHandlerTriggers(side);
     }
 
-    if (!blockInventoryTriggers && tile != null && tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent()) {
+    if (!blockInventoryTriggers && tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent()) {
       res.add(triggerEmptyInventory);
       res.add(triggerContainsInventory);
       res.add(triggerSpaceInventory);
@@ -70,7 +70,7 @@ public class DefaultTriggerProvider implements ITriggerProvider {
       res.add(triggerInventoryBelow75);
     }
 
-    if (!blockFluidHandlerTriggers && tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
+    if (!blockFluidHandlerTriggers && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
       res.add(triggerEmptyFluid);
       res.add(triggerContainsFluid);
       res.add(triggerSpaceFluid);

@@ -32,10 +32,6 @@ public class AIRobotUnloadFluids extends AIRobot<AIRobotUnloadFluids> {
   }
 
   public static int unload(RobotEntityBase robot, DockingStation<?> station, boolean doUnload) {
-    if (station == null) {
-      return 0;
-    }
-
     if (!ActionRobotFilter.canInteractWithFluid(station,
       new SimpleFluidFilter(robot.getFluidInTank(100)),
       ActionStationAcceptFluids.class)) {
