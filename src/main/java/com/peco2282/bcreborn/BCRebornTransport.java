@@ -33,6 +33,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
+import com.peco2282.bcreborn.api.gates.GateExpansions;
+import com.peco2282.bcreborn.api.statements.StatementManager;
+import com.peco2282.bcreborn.core.statements.DefaultTriggerProvider;
+import com.peco2282.bcreborn.transport.gates.GateExpansionPulsar;
 
 import static com.peco2282.bcreborn.api.transport.PipeManager.registerPipePluggable;
 
@@ -73,6 +77,13 @@ public class BCRebornTransport implements BCReborn {
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
+    event.enqueueWork(() -> {
+      GateExpansions.registerExpansion(
+        GateExpansionPulsar.INSTANCE);
+      // 保存されたゲート条件を読む前に、標準条件を登録しておく。
+      StatementManager.registerTriggerProvider(
+        new DefaultTriggerProvider());
+    });
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));

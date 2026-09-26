@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "bcreborntransport:item/gates/gate_logic_and" }
+}

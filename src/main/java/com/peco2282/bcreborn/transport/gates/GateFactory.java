@@ -38,21 +38,13 @@ public final class GateFactory {
   }
 
   public static Optional<Gate> makeGate(IPipe pipe, ItemStack stack, Direction direction) {
-    if (stack.isEmpty() /* || !(stack.getItem() instanceof ItemGate) */) {
-      return Optional.empty();
+    if (stack.isEmpty() || !(stack.getItem() instanceof ItemGate)) return Optional.empty();
+    Gate gate = makeGate(pipe, ItemGate.getMaterial(stack), ItemGate.getLogic(stack), direction);
+    for (IGateExpansion expansion : ItemGate.getInstalledExpansions(stack)) {
+      if (expansion != null) gate.addGateExpansion(expansion);
     }
-
-    // TODO: ItemGate
-
-		/*
-		for (IGateExpansion expansion : ItemGate.getInstalledExpansions(stack)) {
-			gate.addGateExpansion(expansion);
-		}
-		*/
-
-    return Optional.of(makeGate(pipe, GateMaterial.REDSTONE, GateLogic.AND, direction));
+    return Optional.of(gate);
   }
-
   public static Optional<Gate> makeGate(IPipe pipe, CompoundTag nbt) {
     GateMaterial material = GateMaterial.REDSTONE;
     GateLogic logic = GateLogic.AND;

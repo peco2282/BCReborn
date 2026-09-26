@@ -27,11 +27,13 @@ import java.util.Optional;
  * and processing delay.
  *
  * @param id        The unique identifier for this recipe.
- * @param primary   The primary ingredient required for this recipe.
- * @param secondary An optional secondary ingredient required for this recipe.
+ * @param primary   Bucket ingredient identifying the primary fluid (the bucket itself is not consumed).
+ * @param secondary Optional bucket ingredient identifying the second fluid.
  * @param result    The fluid stack produced by this recipe.
- * @param energy    The energy cost (in MJ) required to process this recipe.
+ * @param energy    The energy cost (in RF/FE) required to process this recipe.
  * @param delay     The processing time delay (in ticks) for this recipe.
+ * @param primaryAmount Primary fluid consumed per operation, in mB.
+ * @param secondaryAmount Secondary fluid consumed per operation, in mB.
  */
 public record RefineryRecipe(
   ResourceLocation id,
@@ -39,8 +41,14 @@ public record RefineryRecipe(
   Optional<Ingredient> secondary,
   FluidStack result,
   int energy,
-  int delay
+  int delay,
+  int primaryAmount,
+  int secondaryAmount
 ) implements BCRecipe {
+  public RefineryRecipe(ResourceLocation id, Ingredient primary, Optional<Ingredient> secondary,
+                        FluidStack result, int energy, int delay) {
+    this(id, primary, secondary, result, energy, delay, 1, 1);
+  }
   /**
    * Codec for serializing and deserializing RefineryRecipe instances.
    */
@@ -49,7 +57,9 @@ public record RefineryRecipe(
     Codecs.INGREDIENT_CODEC.fieldOf("primary").forGetter(RefineryRecipe::primary),
     Codecs.INGREDIENT_CODEC.optionalFieldOf("secondary").forGetter(RefineryRecipe::secondary),
     FluidStack.CODEC.fieldOf("result").forGetter(RefineryRecipe::result),
-    Codec.INT.fieldOf("energy").forGetter(RefineryRecipe::energy),
-    Codec.INT.fieldOf("delay").forGetter(RefineryRecipe::delay)
+    Codec.intRange(0, Integer.MAX_VALUE).fieldOf("energy").forGetter(RefineryRecipe::energy),
+    Codec.intRange(1, Integer.MAX_VALUE).fieldOf("delay").forGetter(RefineryRecipe::delay),
+    Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("primary_amount", 1).forGetter(RefineryRecipe::primaryAmount),
+    Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("secondary_amount", 1).forGetter(RefineryRecipe::secondaryAmount)
   ).apply(instance, RefineryRecipe::new));
 }

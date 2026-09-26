@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.peco2282.bcreborn.transport.TransportItems;
 
 public class ItemGate extends Item implements IPipePluggableItem {
 
@@ -104,15 +105,16 @@ public class ItemGate extends Item implements IPipePluggableItem {
     NbtReader.of(getNBT(stack))
       .applyStrings(NBT_TAG_EX, list -> {
         for (String exTag : list) {
-          expansions.add(GateExpansions.getExpansion(exTag));
+          IGateExpansion expansion = GateExpansions.getExpansion(exTag);
+          if (expansion != null) expansions.add(expansion);
         }
       });
     return expansions;
   }
 
   public static ItemStack makeGateItem(GateMaterial material, GateLogic logic) {
-    // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
-    ItemStack stack = ItemStack.EMPTY;
+
+    ItemStack stack = new ItemStack(TransportItems.GATE.get());
     if (stack.isEmpty()) return stack;
     CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_MAT, (byte) material.ordinal());
@@ -122,8 +124,8 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   public static ItemStack makeGateItem(Gate gate) {
-    // ItemStack stack = new ItemStack(BuildCraftTransport.pipeGate); // TODO
-    ItemStack stack = ItemStack.EMPTY;
+
+    ItemStack stack = new ItemStack(TransportItems.GATE.get());
     if (stack.isEmpty()) return stack;
     CompoundTag nbt = stack.getOrCreateTag();
     nbt.putByte(NBT_TAG_MAT, (byte) gate.material.ordinal());

@@ -20,6 +20,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
+import com.peco2282.bcreborn.transport.statements.ActionEnergyPulsar;
+import com.peco2282.bcreborn.transport.statements.ActionSingleEnergyPulse;
+import com.peco2282.bcreborn.transport.TransportStatements;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public final class GateExpansionPulsar extends GateExpansionBuildcraft implements IGateExpansion {
 
@@ -50,7 +54,7 @@ public final class GateExpansionPulsar extends GateExpansionBuildcraft implement
       // one single moment would do the work at the same time. This
       // spreads a bit work load. Note, this is not a problem for
       // existing gates since tick is stored in NBT
-      tick = (int) (Math.random() * PULSE_PERIOD);
+      tick = pipeTile != null && pipeTile.getLevel() != null ? pipeTile.getLevel().random.nextInt(PULSE_PERIOD) : 0;
     }
 
     @Override
@@ -62,17 +66,26 @@ public final class GateExpansionPulsar extends GateExpansionBuildcraft implement
 
     @Override
     public boolean resolveAction(IStatement action, int count) {
-      // TODO: ActionEnergyPulsar, ActionSingleEnergyPulse
+      if (action instanceof ActionEnergyPulsar) {
+        enablePulse(count);
+        return true;
+      } else if (action instanceof ActionSingleEnergyPulse) {
+        enableSinglePulse(count);
+        return true;
+      }
       return false;
     }
 
     @Override
     public void addActions(List<IActionInternal> list) {
       super.addActions(list);
+      list.add(TransportStatements.ACTION_ENERGY_PULSAR.get());
+      list.add(TransportStatements.ACTION_SINGLE_ENERGY_PULSE.get());
     }
 
     @Override
     public void tick(IGate gate) {
+      if (pipeTile == null || pipeTile.getLevel() == null || pipeTile.getLevel().isClientSide) return;
       if (!isActive && hasPulsed) {
         hasPulsed = false;
       }
@@ -87,7 +100,13 @@ public final class GateExpansionPulsar extends GateExpansionBuildcraft implement
         return;
       }
 
-      // TODO: Energy pulse
+      if ((!singlePulse || !hasPulsed) && count > 0) {
+        int energy = (1 << Math.min(6, count - 1)) * 10;
+        pipeTile.getCapability(ForgeCapabilities.ENERGY).ifPresent(
+          storage -> storage.receiveEnergy(energy, false));
+        hasPulsed = true;
+        pipeTile.setChanged();
+      }
       gate.setPulsing(true);
     }
 

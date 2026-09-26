@@ -34,6 +34,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Set;
+import com.mojang.math.Axis;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.world.item.ItemDisplayContext;
 
 public class GatePluggable extends PipePluggable<GatePluggable> {
 
@@ -43,9 +48,13 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
   public boolean isLit, isPulsing;
   public Gate realGate, instantiatedGate;
   private float pulseStage;
+  private CompoundTag savedGate;
 
   public GatePluggable() {
     super(BCRebornTransport.GATE);
+    material = GateDefinition.GateMaterial.REDSTONE;
+    logic = GateDefinition.GateLogic.AND;
+    expansions = new IGateExpansion[0];
   }
 
   public GatePluggable(Gate gate) {
@@ -64,6 +73,15 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void writeTag(CompoundTag nbt) {
+    if (realGate != null) {
+      CompoundTag gateTag = new CompoundTag();
+      realGate.writeToNBT(gateTag);
+      nbt.put("gate", gateTag);
+      nbt.putBoolean("lit", realGate.isGateActive());
+      nbt.putBoolean("pulsing", realGate.isGatePulsing());
+    } else if (savedGate != null) {
+      nbt.put("gate", savedGate.copy());
+    }
     NbtWriter.of(nbt)
       .putEnum(ItemGate.NBT_TAG_MAT, material)
       .putEnum(ItemGate.NBT_TAG_LOGIC, logic)
@@ -73,12 +91,16 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void readTag(CompoundTag nbt) {
+    savedGate = nbt.contains("gate") ? nbt.getCompound("gate").copy() : null;
+    isLit = nbt.getBoolean("lit");
+    isPulsing = nbt.getBoolean("pulsing");
     NbtReader.of(nbt)
       .applyEnum(ItemGate.NBT_TAG_MAT, GateDefinition.GateMaterial.class, mat -> material = mat)
       .applyEnum(ItemGate.NBT_TAG_LOGIC, GateDefinition.GateLogic.class, logic -> this.logic = logic)
       .applyStrings(ItemGate.NBT_TAG_EX, list -> {
         expansions = list.stream()
           .map(GateExpansions::getExpansion)
+          .filter(java.util.Objects::nonNull)
           .toArray(IGateExpansion[]::new);
       })
       .done();
@@ -132,6 +154,13 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void update(IPipeBlockEntity pipe, Direction direction) {
+    if (realGate == null) onAttachedPipe(pipe, direction);
+    if (!pipe.getWorld().isClientSide && realGate != null) {
+      realGate.resolveActions();
+      realGate.tick();
+      isLit = realGate.isGateActive();
+      isPulsing = realGate.isGatePulsing();
+    }
     if (isPulsing || pulseStage > 0.11F) {
       // if it is moving, or is still in a moved state, then complete
       // the current movement
@@ -143,12 +172,24 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
   @Override
   public void onAttachedPipe(IPipeBlockEntity pipe, Direction direction) {
-    // TODO: Implement logic without BuildCraft 1.7.10 classes
+    if (realGate != null) return;
+    if (!(pipe instanceof PipeBlockEntity entity)) return;
+    if (savedGate != null) {
+      realGate = GateFactory.makeGate(entity.getPipe(), savedGate).orElse(null);
+      savedGate = null;
+    } else if (instantiatedGate != null) {
+      realGate = instantiatedGate;
+    } else {
+      realGate = GateFactory.makeGate(entity.getPipe(), material, logic, direction);
+      for (IGateExpansion expansion : expansions) if (expansion != null) realGate.addGateExpansion(expansion);
+    }
+    if (realGate != null) realGate.setDirection(direction);
   }
 
   @Override
   public void onDetachedPipe(IPipeBlockEntity pipe, Direction direction) {
-    // TODO: Implement logic without BuildCraft 1.7.10 classes
+    realGate = null;
+    instantiatedGate = null;
   }
 
   @Override
@@ -226,12 +267,29 @@ public class GatePluggable extends PipePluggable<GatePluggable> {
 
     @Override
     public void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, int renderPass, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-      // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
+      renderPluggable(pipe, side, pipePluggable, poseStack, buffer, packedLight, packedOverlay);
     }
 
     @Override
     public void renderPluggable(IPipe pipe, Direction side, PipePluggable<?> pipePluggable, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-      // PipeRendererTESR.renderGate(x, y, z, (GatePluggable) pipePluggable, side);
+      GatePluggable gate = (GatePluggable) pipePluggable;
+      poseStack.pushPose();
+      double offset = 0.27 + (gate.isPulsing ? Math.sin(gate.pulseStage * Math.PI * 2) * 0.02 : 0);
+      poseStack.translate(0.5 + side.getStepX() * offset, 0.5 + side.getStepY() * offset, 0.5 + side.getStepZ() * offset);
+      switch (side) {
+        case NORTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180));
+        case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(-90));
+        case UP -> poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        case DOWN -> poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        default -> { }
+      }
+      poseStack.scale(0.4f, 0.4f, 0.4f);
+      Minecraft.getInstance().getItemRenderer().renderStatic(
+        ItemGate.makeGateItem(gate.material, gate.logic), ItemDisplayContext.FIXED,
+        gate.isLit ? LightTexture.FULL_BRIGHT : packedLight,
+        packedOverlay, poseStack, buffer, pipe.getBlockEntity().getWorld(), 0);
+      poseStack.popPose();
     }
   }
 }

@@ -14,7 +14,6 @@ package com.peco2282.bcreborn.builders.block.entity;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
-import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.block.FrameBlock;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.SimpleInventory;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 
 import java.util.*;
 
@@ -47,6 +47,8 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   private double headPosX, headPosY, headPosZ;
   private double prevHeadPosX, prevHeadPosY, prevHeadPosZ;
   private float headTrajectory;
+  private double headSpeed;
+  private boolean restoredHead;
   private boolean movingHorizontally, movingVertically;
   private BlockMiner miner;
 
@@ -59,12 +61,14 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   @Override
   public void initialize() {
     if (!getLevel().isClientSide) {
-      if (!box.isInitialized()) {
+      if (!box.isInitialized() || box.xMax - box.xMin < 2 || box.zMax - box.zMin < 2) {
         setBoundaries();
       }
-      headPosX = worldPosition.getX() + 0.5;
-      headPosY = worldPosition.getY() + 1.0;
-      headPosZ = worldPosition.getZ() + 0.5;
+      if (!restoredHead) {
+        headPosX = box.xMin + 1.5;
+        headPosY = worldPosition.getY() + 2.0;
+        headPosZ = box.zMin + 1.5;
+      }
       prevHeadPosX = headPosX;
       prevHeadPosY = headPosY;
       prevHeadPosZ = headPosZ;
@@ -114,13 +118,20 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
       }
     }
 
-    if (!box.isInitialized()) {
-      // Default boundaries logic (optional, BuildCraft uses 11x11 by default)
+    if (!box.isInitialized() || box.xMax - box.xMin < 2 || box.zMax - box.zMin < 2) {
+      Direction facing = getBlockState().getValue(BuildCraftBlock.HORIZONTAL_FACING).getOpposite();
       int xMin = worldPosition.getX() - 5;
       int zMin = worldPosition.getZ() - 5;
-      box.initialize(xMin, worldPosition.getY(), zMin, xMin + 10, worldPosition.getY() + 5, zMin + 10);
-      box.createLaserData();
+      switch (facing) {
+        case EAST -> xMin = worldPosition.getX() + 1;
+        case WEST -> xMin = worldPosition.getX() - 11;
+        case SOUTH -> zMin = worldPosition.getZ() + 1;
+        default -> zMin = worldPosition.getZ() - 11;
+      }
+      box.initialize(xMin, worldPosition.getY(), zMin, xMin + 10, worldPosition.getY() + 4, zMin + 10);
     }
+    box.yMax = Math.min(getLevel().getMaxBuildHeight() - 1, Math.max(box.yMax, box.yMin + 4));
+    box.createLaserData();
     createFrameList();
     stage = Stage.BUILDING;
     setChanged();
@@ -134,8 +145,8 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     prevHeadPosZ = headPosZ;
 
     if (level.isClientSide) {
-      if (stage != Stage.DONE) {
-        moveHead(0.1); // Constant speed for client side prediction
+      if (stage == Stage.MOVING && headSpeed > 0) {
+        moveHead(headSpeed);
       }
       return;
     }
@@ -192,10 +203,12 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
       }
       case MOVING -> {
-        int energyUsed = getBattery().useEnergy(20, 100, false);
-        if (energyUsed >= 20) {
-          moveHead(0.1 + energyUsed / 1000.0);
-        }
+        int energyUsed = getBattery().useEnergy(20, 200, false);
+        headSpeed = energyUsed >= 20 ? 0.1 + energyUsed / 2000.0 : 0;
+        if (movingHorizontally && movingVertically) headSpeed *= 0.7;
+        if (headSpeed > 0) moveHead(headSpeed);
+        if (stage != Stage.MOVING) headSpeed = 0;
+        setChanged();
       }
       case DONE -> {
       }
@@ -203,6 +216,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   }
 
   private void moveHead(double speed) {
+    if (speed <= 0) return;
     if (movingHorizontally) {
       double dx = targetX + 0.5 - headPosX;
       double dz = targetZ + 0.5 - headPosZ;
@@ -244,10 +258,10 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
         stage = Stage.IDLE;
         return;
       }
-      if (findTarget(false)) { // Check if we still have targets
+      if (isQuarriableBlock(targetX, targetY, targetZ)) {
         miner = new BlockMiner(getLevel(), this, targetX, targetY, targetZ);
       } else {
-        stage = Stage.DONE;
+        stage = Stage.IDLE;
         return;
       }
     }
@@ -279,46 +293,36 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
 
   private void createColumnVisitList() {
     visitList.clear();
-    int sizeX = box.xMax - box.xMin + 1;
-    int sizeZ = box.zMax - box.zMin + 1;
+    int sizeX = box.xMax - box.xMin - 1;
+    int sizeZ = box.zMax - box.zMin - 1;
+    if (sizeX <= 0 || sizeZ <= 0) return;
     boolean[][] blockedColumns = new boolean[sizeX][sizeZ];
-
-    int maxY = Math.min(box.yMax, BuildersConfig.getMiningDepth());
-    for (int searchY = maxY; searchY >= getLevel().getMinBuildHeight(); --searchY) {
-      for (int searchX = 0; searchX < sizeX; searchX++) {
-        for (int searchZ = 0; searchZ < sizeZ; searchZ++) {
-          if (!blockedColumns[searchX][searchZ]) {
-            int bx = box.xMin + searchX;
-            int bz = box.zMin + searchZ;
-
-            if (isQuarriableBlock(bx, searchY, bz)) {
-              visitList.add(new int[]{bx, searchY, bz});
-            } else {
-              BlockPos pos = new BlockPos(bx, searchY, bz);
-              BlockState state = getLevel().getBlockState(pos);
-              if (!state.isAir() && state.getFluidState().isEmpty()) {
-                // If it's not quarriable, not air, and not a fluid, it might be unbreakable
-                if (BlockUtils.isUnbreakableBlock(getLevel(), pos)) {
-                  blockedColumns[searchX][searchZ] = true;
-                }
-              }
-              // If it's a fluid, we don't block the column, so we can search below it in the next Y iteration.
-            }
+    int maxY = Math.min(worldPosition.getY() + 3, getLevel().getMaxBuildHeight() - 1);
+    for (int y = maxY; y >= getLevel().getMinBuildHeight(); y--) {
+      for (int ix = 0; ix < sizeX; ix++) {
+        int x = (y & 1) == 0 ? ix : sizeX - 1 - ix;
+        for (int iz = 0; iz < sizeZ; iz++) {
+          int z = (x & 1) == (y & 1) ? iz : sizeZ - 1 - iz;
+          if (blockedColumns[x][z]) continue;
+          int bx = box.xMin + x + 1;
+          int bz = box.zMin + z + 1;
+          BlockPos pos = new BlockPos(bx, y, bz);
+          if (BlockUtils.isUnbreakableBlock(getLevel(), pos)) {
+            blockedColumns[x][z] = true;
+          } else if (isQuarriableBlock(bx, y, bz)) {
+            visitList.add(new int[]{bx, y, bz});
           }
         }
       }
-      if (!visitList.isEmpty()) {
-        break; // Process one layer at a time like BuildCraft
-      }
+      if (!visitList.isEmpty()) break;
     }
   }
-
   private void createFrameList() {
     frameList.clear();
     if (!box.isInitialized()) return;
 
     List<BlockPos> list = new ArrayList<>();
-    int yMax = Math.min(box.yMax, BuildersConfig.getMiningDepth());
+    int yMax = Math.min(box.yMax, getLevel().getMaxBuildHeight() - 1);
 
     // Horizontal frames at top
     for (int x = box.xMin; x <= box.xMax; x++) {
@@ -335,7 +339,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     }
 
     // Vertical frames
-    for (int y = box.yMin + 1; y < Math.min(box.yMax, BuildersConfig.getMiningDepth()); y++) {
+    for (int y = box.yMin + 1; y < Math.min(box.yMax, getLevel().getMaxBuildHeight() - 1); y++) {
       list.add(new BlockPos(box.xMin, y, box.zMin));
       list.add(new BlockPos(box.xMax, y, box.zMin));
       list.add(new BlockPos(box.xMin, y, box.zMax));
@@ -350,6 +354,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
 
   private boolean isQuarriableBlock(int bx, int by, int bz) {
     BlockPos pos = new BlockPos(bx, by, bz);
+    if (pos.equals(worldPosition)) return false;
     BlockState state = getLevel().getBlockState(pos);
     if (state.getBlock() == BuildersBlock.FRAME.get()) return false;
     if (state.isAir()) return false;
@@ -370,9 +375,14 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     targetX = nbt.getInt("targetX");
     targetY = nbt.getInt("targetY");
     targetZ = nbt.getInt("targetZ");
+    restoredHead = nbt.contains("headPosX");
+    headSpeed = nbt.getDouble("headSpeed");
     headPosX = nbt.getDouble("headPosX");
     headPosY = nbt.getDouble("headPosY");
     headPosZ = nbt.getDouble("headPosZ");
+    prevHeadPosX = headPosX;
+    prevHeadPosY = headPosY;
+    prevHeadPosZ = headPosZ;
     headTrajectory = nbt.getFloat("headTrajectory");
     movingHorizontally = nbt.getBoolean("movingHorizontally");
     movingVertically = nbt.getBoolean("movingVertically");
@@ -396,6 +406,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     nbt.putInt("targetX", targetX);
     nbt.putInt("targetY", targetY);
     nbt.putInt("targetZ", targetZ);
+    nbt.putDouble("headSpeed", headSpeed);
     nbt.putDouble("headPosX", headPosX);
     nbt.putDouble("headPosY", headPosY);
     nbt.putDouble("headPosZ", headPosZ);
@@ -418,6 +429,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     super.writeData(data);
     box.writeData(data);
     data.writeEnum(stage);
+    data.writeDouble(headSpeed);
     data.writeDouble(headPosX);
     data.writeDouble(headPosY);
     data.writeDouble(headPosZ);
@@ -434,6 +446,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     super.readData(data);
     box.readData(data);
     stage = data.readEnum(Stage.class);
+    headSpeed = data.readDouble();
     headPosX = data.readDouble();
     headPosY = data.readDouble();
     headPosZ = data.readDouble();
@@ -471,13 +484,6 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
   @Override
   public void setRemoved() {
     super.setRemoved();
-    if (level != null && !level.isClientSide) {
-      if (!frameList.isEmpty())
-        level.destroyBlock(
-          frameList.getFirst(),
-          true
-        );
-    }
   }
 
   @Override
