@@ -16,7 +16,13 @@ import net.minecraftforge.fluids.FluidType;
 public interface IFuel {
   FluidType getFluid();
 
+  /** Historical method name; BCReborn values are ticks per 1 mB, not per bucket. */
   int getTotalBurningTime();
 
+  default int getBurnTimePerMilliBucket() {
+    return getTotalBurningTime();
+  }
+
+  /** Energy generated per burning tick, in Forge Energy (FE). */
   int getPowerPerCycle();
 }

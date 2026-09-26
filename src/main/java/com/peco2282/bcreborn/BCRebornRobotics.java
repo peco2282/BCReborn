@@ -17,7 +17,7 @@ import com.peco2282.bcreborn.api.robots.RobotManager;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
-import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
+import com.peco2282.bcreborn.common.config.ConfigScreenRegistration;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.event.BCRebornRoboticsEvent;
@@ -57,7 +57,7 @@ public class BCRebornRobotics implements BCReborn {
     processor.initRegister();
     REGISTRY.register(modEventBus);
 
-    MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 5));
+    ConfigScreenRegistration.register(5);
   }
 
   public static BCRegistry getRegistry() {

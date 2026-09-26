@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.packet.s2c;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
-import net.minecraft.client.Minecraft;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -46,7 +46,7 @@ public record SyncZonePlanImagePacket(BlockPos pos, int totalSize, int offset, b
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      AbstractContainerMenu menu = Minecraft.getInstance().player.containerMenu;
+      AbstractContainerMenu menu = ClientPacketAccess.player().containerMenu;
       if (menu instanceof ZonePlanMenu zonePlanMenu && zonePlanMenu.gui != null) {
         zonePlanMenu.gui.applyMapImageBytes(offset, data);
         // TODO: use dynamic texture from screen

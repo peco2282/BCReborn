@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
-import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
+import com.peco2282.bcreborn.common.config.ConfigScreenRegistration;
 import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.gates.GatePluggable;
@@ -61,7 +61,7 @@ public class BCRebornTransport implements BCReborn {
 
     REGISTRY.register(modEventBus);
 
-    MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 7));
+    ConfigScreenRegistration.register(7);
   }
 
   public static BCRegistry getRegistry() {

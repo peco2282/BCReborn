@@ -38,7 +38,9 @@ public record UploadBlueprintEndPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    // TODO: implement when LibraryAPI is available
-    getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(BlueprintLibraryBlockEntity::completeDownload);
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
+      .filter(be -> be.getBlueprintDownload() != null)
+      .ifPresent(BlueprintLibraryBlockEntity::completeDownload));
+    ctx.setPacketHandled(true);
   }
 }

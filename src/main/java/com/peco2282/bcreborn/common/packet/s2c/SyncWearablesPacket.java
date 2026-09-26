@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.packet.s2c;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
-import net.minecraft.client.Minecraft;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -61,10 +61,10 @@ public record SyncWearablesPacket(
 
   @OnlyIn(Dist.CLIENT)
   private void handleClient() {
-    if (Minecraft.getInstance().level == null) {
+    if (ClientPacketAccess.level() == null) {
       return;
     }
-    Entity entity = Minecraft.getInstance().level.getEntity(entityId);
+    Entity entity = ClientPacketAccess.level().getEntity(entityId);
     if (entity instanceof RobotEntity robot) {
       robot.doSyncWearables(wearables);
     }

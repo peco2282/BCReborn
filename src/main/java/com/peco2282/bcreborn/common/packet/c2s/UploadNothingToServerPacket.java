@@ -11,13 +11,12 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
-import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
+import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -38,13 +37,10 @@ public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket 
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
 
-    ctx.enqueueWork(() -> {
-      BlockEntity entity = ctx.getSender().level().getBlockEntity(pos);
-      if (!(entity instanceof BlueprintLibraryBlockEntity library)) return;
-
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(library -> {
       library.setItem(3, library.getItem(2));
-      library.setItem(4, ItemStack.EMPTY);
-    });
+      library.setItem(2, ItemStack.EMPTY);
+    }));
 
     ctx.setPacketHandled(true);
   }

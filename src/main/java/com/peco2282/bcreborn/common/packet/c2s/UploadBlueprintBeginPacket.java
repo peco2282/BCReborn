@@ -46,7 +46,12 @@ public record UploadBlueprintBeginPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(be -> be.setBlueprintDownloadAndId(libraryId, new byte[BlueprintLibraryBlockEntity.CHUNK_SIZE * chunk])));
+    ctx.enqueueWork(() -> {
+      // Bound the allocation before accepting a client-supplied chunk count (16 MiB).
+      if (chunk <= 0 || chunk > 1024) return;
+      getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
+        .ifPresent(be -> be.setBlueprintDownloadAndId(libraryId, new byte[BlueprintLibraryBlockEntity.CHUNK_SIZE * chunk]));
+    });
     ctx.setPacketHandled(true);
   }
 }

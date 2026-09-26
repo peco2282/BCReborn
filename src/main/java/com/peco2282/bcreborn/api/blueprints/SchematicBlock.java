@@ -31,7 +31,7 @@ public class SchematicBlock extends SchematicBlockBase {
 
   /**
    * Relative indexes used to identify neighbor positions.
-   * 0: UP, 1: DOWN, 2: NORTH, 3: SOUTH, 4: WEST, 5: EAST
+   * 0: DOWN, 1: UP, 2: NORTH, 3: SOUTH, 4: WEST, 5: EAST
    */
   public static final BlockPos[] RELATIVE_INDEXES = new BlockPos[]{
     new BlockPos(0, -1, 0),
@@ -155,7 +155,7 @@ public class SchematicBlock extends SchematicBlockBase {
   public Set<BlockPos> getPrerequisiteBlocks(IBuilderContext context) {
     Set<BlockPos> indexes = new HashSet<>();
     if (state.getBlock() instanceof FallingBlock) {
-      indexes.add(RELATIVE_INDEXES[1]); // DOWN index
+      indexes.add(BlockPos.ZERO.below());
     }
     return indexes;
   }
@@ -220,13 +220,11 @@ public class SchematicBlock extends SchematicBlockBase {
       ArrayList<ItemStack> rqs = new ArrayList<>();
       for (int i = 0; i < rq.size(); ++i) {
         try {
-          CompoundTag sub = rq.getCompound(i);
-          if (sub.getInt("id") >= 0) {
-            registry.stackToWorld(sub);
-            ItemStack stack = ItemStack.of(sub);
-            if (!stack.isEmpty()) {
-              rqs.add(stack);
-            }
+          CompoundTag sub = rq.getCompound(i).copy();
+          registry.stackToWorld(sub);
+          ItemStack stack = ItemStack.of(sub);
+          if (!stack.isEmpty()) {
+            rqs.add(stack);
           } else {
             defaultPermission = BuildingPermission.CREATIVE_ONLY;
           }

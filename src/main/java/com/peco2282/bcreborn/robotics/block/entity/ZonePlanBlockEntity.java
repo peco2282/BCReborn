@@ -167,6 +167,10 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     return selectedAreas[index];
   }
 
+  public boolean isValidAreaIndex(int index) {
+    return index >= 0 && index < selectedAreas.length;
+  }
+
   public void setArea(int index, ZonePlan area) {
     selectedAreas[index] = area;
   }

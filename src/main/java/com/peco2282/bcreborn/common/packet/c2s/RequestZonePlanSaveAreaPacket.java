@@ -42,8 +42,13 @@ public record RequestZonePlanSaveAreaPacket(BlockPos pos, int index, ZonePlan pl
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
-      .ifPresent(be -> be.setArea(index, plan)));
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
+      .ifPresent(be -> {
+        if (be.isValidAreaIndex(index)) {
+          be.setArea(index, plan);
+          be.setChanged();
+        }
+      }));
     ctx.setPacketHandled(true);
   }
 }

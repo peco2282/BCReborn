@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.common.packet.c2s;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
+import com.peco2282.bcreborn.common.registry.BCFillerPatterns;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
@@ -36,8 +37,10 @@ public record SetFillerPatternPacket(BlockPos pos, int delta) implements CustomP
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.FILLER.get())
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.FILLER.get())
       .ifPresent(be -> {
+        int patternCount = BCFillerPatterns.collection().size();
+        if (patternCount == 0 || delta < -1 || (delta >= patternCount && delta != 1)) return;
         if (delta == 1) {
           be.nextPattern();
         } else if (delta == -1) {

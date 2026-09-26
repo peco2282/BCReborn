@@ -25,12 +25,13 @@ import com.peco2282.bcreborn.factory.screen.RefineryScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 
-@Mod.EventBusSubscriber(modid = BCRebornFactory.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BCRebornFactory.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class BCRebornFactoryEvent {
   public static final ModelLayerLocation HOPPER_LAYER = new ModelLayerLocation(BCRebornFactory.location("hopper"), "main");
   public static final ModelLayerLocation REFINERY_LAYER = new ModelLayerLocation(BCRebornFactory.location("refinery"), "main");

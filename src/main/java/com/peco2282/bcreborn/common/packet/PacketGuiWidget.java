@@ -13,8 +13,8 @@ package com.peco2282.bcreborn.common.packet;
 
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -38,7 +38,7 @@ public record PacketGuiWidget(int windowId, int widgetId, byte[] data) implement
     // In 1.20.1, we often handle this in the menu itself via a custom message
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      LocalPlayer player = Minecraft.getInstance().player;
+      Player player = ClientPacketAccess.player();
       if (player != null && player.containerMenu.containerId == windowId) {
         if (player.containerMenu instanceof BuildCraftMenu<?> menu) {
           menu.handleWidgetClientData(widgetId, new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));

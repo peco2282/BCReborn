@@ -16,7 +16,7 @@ import com.peco2282.bcreborn.builders.blueprints.LibraryDatabase;
 import com.peco2282.bcreborn.builders.event.BCRebornBuildersEvent;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
-import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
+import com.peco2282.bcreborn.common.config.ConfigScreenRegistration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,7 +57,7 @@ public class BCRebornBuilders implements BCReborn {
 
 
     REGISTRY.register(modEventBus);
-    MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 2));
+    ConfigScreenRegistration.register(2);
   }
 
   public static BlueprintServerDatabase getServerDB() {

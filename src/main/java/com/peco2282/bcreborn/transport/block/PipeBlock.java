@@ -231,6 +231,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     BlockEntity thisBE = level.getBlockEntity(pos);
 
     if (thisBE instanceof PipeBlockEntity pipeBE) {
+      if (transportType == PipeType.ENERGY && !pipeBE.canTransferEnergy(direction)) return false;
       var behaviour = pipeBE.getBehaviour();
       if (behaviour != null) {
         if (!behaviour.canConnectTo(pipeBE, direction, neighborState)) {

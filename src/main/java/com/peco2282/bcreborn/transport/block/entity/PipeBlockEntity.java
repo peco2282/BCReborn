@@ -128,13 +128,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   @Nullable
   private EnergyStorage energyStorage;
   private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
+  private final Map<Direction, LazyOptional<IFluidHandler>> fluidSideCaps = new EnumMap<>(Direction.class);
   private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
   private PipeType transportType;
   private PipeMaterial pipeMaterial;
   private int ticksSincePull = 0;
-  // 流体流入方向を記録するためのラッパー（逆流防止用）
-  @Nullable
-  private PipeFluidHandler pipeFluidHandler = null;
   // Clay流体パイプのラウンドロビンカウンタ
   private int fluidRoundRobinIndex = 0;
   private PipeBehaviour behaviour;
@@ -168,6 +166,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   private void initPipe(PipeType type, PipeMaterial material) {
+    fluidHandlerCap.invalidate();
+    fluidSideCaps.values().forEach(LazyOptional::invalidate);
+    fluidSideCaps.clear();
     if (material.unsupports(type)) {
       throw new IllegalArgumentException("Pipe material does not support the specified pipe type");
     }
@@ -181,7 +182,10 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (fluidTank != null) {
       var handler = new PipeFluidHandler(this, fluidTank);
       this.fluidHandlerCap = LazyOptional.of(() -> handler);
-      this.pipeFluidHandler = handler;
+      for (Direction dir : Direction.values()) {
+        PipeFluidHandler sidedHandler = new PipeFluidHandler(this, fluidTank, dir);
+        fluidSideCaps.put(dir, LazyOptional.of(() -> sidedHandler));
+      }
     } else {
       this.fluidHandlerCap = LazyOptional.empty();
     }
@@ -670,16 +674,15 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return itemHandlerCap.cast();
     }
     if (cap == ForgeCapabilities.FLUID_HANDLER && transportType == PipeType.FLUID) {
-      if (pipeFluidHandler != null && side != null) {
-        pipeFluidHandler.setFillDirection(side);
-      }
-      return fluidHandlerCap.cast();
+      return (side == null ? fluidHandlerCap : fluidSideCaps.get(side)).cast();
     }
     if (cap == ForgeCapabilities.ENERGY && transportType == PipeType.ENERGY) {
       if (side != null) {
+        if (!canTransferEnergy(side)) return LazyOptional.empty();
         return energySideCapsMap.get(side).cast();
       }
-      return energyCap.cast();
+      // Transport needs an incoming face; the legacy standalone buffer is not routed.
+      return LazyOptional.empty();
     }
     // Powered pipe (for extract)
     if (cap == ForgeCapabilities.ENERGY && pipeMaterial == PipeMaterial.WOOD) {
@@ -698,6 +701,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     super.invalidateCaps();
     itemHandlerCap.invalidate();
     fluidHandlerCap.invalidate();
+    fluidSideCaps.values().forEach(LazyOptional::invalidate);
     energyCap.invalidate();
     for (var cap : energySideCapsMap.values()) {
       if (cap != null) cap.invalidate();
@@ -785,6 +789,23 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return state.getValue(PipeBlock.PROPERTY_MAP.get(with));
     }
     return false;
+  }
+
+  /** Shared by energy capabilities, demand propagation and actual transfers. */
+  public boolean canTransferEnergy(Direction side) {
+    if (side == null || transportType != PipeType.ENERGY || isRemoved() || hasBlockingPluggable(side)) return false;
+    if (level == null) return true;
+    BlockPos neighborPos = worldPosition.relative(side);
+    if (!level.hasChunkAt(neighborPos)) return false;
+    BlockState neighborState = level.getBlockState(neighborPos);
+    if (behaviour != null && !behaviour.canConnectTo(this, side, neighborState)) return false;
+    if (neighborState.getBlock() instanceof PipeBlock otherBlock && otherBlock.getTransportType() != PipeType.ENERGY) return false;
+    if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other) {
+      return other.transportType == PipeType.ENERGY && !other.isRemoved()
+        && !other.hasBlockingPluggable(side.getOpposite())
+        && (other.behaviour == null || other.behaviour.canConnectTo(other, side.getOpposite(), getBlockState()));
+    }
+    return true;
   }
 
   @Override

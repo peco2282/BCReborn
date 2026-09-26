@@ -15,7 +15,7 @@ import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.blueprint.RequirementItemStack;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
-import net.minecraft.client.Minecraft;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -54,8 +54,8 @@ public record SyncBuilderRequirementsPacket(BlockPos pos,
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      if (Minecraft.getInstance().level != null) {
-        Minecraft.getInstance().level.getBlockEntity(pos, BuildersBlockEntityTypes.BUILDER.get())
+      if (ClientPacketAccess.level() != null) {
+        ClientPacketAccess.level().getBlockEntity(pos, BuildersBlockEntityTypes.BUILDER.get())
           .ifPresent(be -> be.setItemRequirements(requirements));
       }
     });
