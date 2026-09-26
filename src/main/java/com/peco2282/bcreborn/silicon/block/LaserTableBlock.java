@@ -15,25 +15,26 @@ import com.peco2282.bcreborn.api.power.ILaserTargetBlock;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
-import com.peco2282.bcreborn.silicon.block.entity.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
+
+import com.peco2282.bcreborn.silicon.block.entity.*;
 
 public class LaserTableBlock extends BuildCraftBlock implements ILaserTargetBlock {
   protected static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 8, 16);
@@ -100,5 +101,13 @@ public class LaserTableBlock extends BuildCraftBlock implements ILaserTargetBloc
   @Override
   public boolean isRotatable() {
     return false;
+  }
+
+  @Override
+  public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
+    if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof LaserTableBaseBlockEntity table) {
+      table.dropRealInventory();
+    }
+    super.onRemove(state, level, pos, replacement, moving);
   }
 }

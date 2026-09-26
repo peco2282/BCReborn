@@ -11,10 +11,11 @@
  */
 package com.peco2282.bcreborn.silicon.menu;
 
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.gui.slots.SlotPhantom;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.block.entity.PackagerBlockEntity;
+import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,12 +44,12 @@ public class PackagerMenu extends BuildCraftMenu<PackagerMenu> {
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 3; x++) {
-        addSlot(new SlotPackager(tile, x + y * 3, 30 + x * 18, 17 + y * 18));
+        addSlot(new SlotPackager(tile.pattern, x + y * 3, 30 + x * 18, 17 + y * 18));
       }
     }
 
     // addSlot(new Slot(tile, 10, 108, 31));
-    addSlot(new Slot(tile, 11, 123, 59));
+    addSlot(new SlotOutput(tile, 11, 123, 59));
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 9; x++) {
@@ -63,7 +64,7 @@ public class PackagerMenu extends BuildCraftMenu<PackagerMenu> {
 
   @Override
   public void clicked(int slotNum, int mouseButton, ClickType clickType, Player player) {
-    Slot slot = slotNum < 0 ? null : getSlot(slotNum);
+    Slot slot = slotNum < 0 || slotNum >= slots.size() ? null : getSlot(slotNum);
     if (slot instanceof SlotPackager) {
       slotClickPhantom(slot, slotNum, mouseButton, clickType, player);
       return;

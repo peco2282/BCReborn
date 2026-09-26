@@ -14,15 +14,14 @@ package com.peco2282.bcreborn.common;
 import com.peco2282.bcreborn.api.core.INBTSerializable;
 import com.peco2282.bcreborn.api.serialization.NbtReader;
 import com.peco2282.bcreborn.api.serialization.NbtWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 
 public class SimpleInventory implements Container, INBTSerializable {
   private final ItemStack[] contents;
@@ -42,6 +41,7 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public void readTag(CompoundTag nbt) {
+    Arrays.fill(contents, ItemStack.EMPTY);
     NbtReader.of(nbt)
       .readCollection("Items", new ArrayList<ItemStack>(), r -> {
         CompoundTag slot = r.getTag();
@@ -86,7 +86,7 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public boolean isEmpty() {
-    return Arrays.stream(contents).noneMatch(s -> s == null || s.isEmpty());
+    return Arrays.stream(contents).allMatch(s -> s == null || s.isEmpty());
   }
 
   @Override
@@ -96,12 +96,9 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public ItemStack removeItem(int i, int i1) {
-    if (i < contents.length && contents[i] != null) {
+    if (i >= 0 && i < contents.length && i1 > 0 && contents[i] != null) {
       if (contents[i].getCount() > i1) {
         return contents[i].split(i1);
-      }
-      if (contents[i].getCount() < i1) {
-        return ItemStack.EMPTY;
       }
       ItemStack stack = contents[i];
       setItem(i, ItemStack.EMPTY);
@@ -144,8 +141,12 @@ public class SimpleInventory implements Container, INBTSerializable {
 
   @Override
   public void clearContent() {
-
+    Arrays.fill(contents, ItemStack.EMPTY);
+    setChanged();
   }
+
+  @Override
+  public int getMaxStackSize() { return stackLimit; }
 
   public String getName() {
     return name;
