@@ -31,8 +31,21 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
+import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
+import com.peco2282.bcreborn.api.recipes.RefineryRecipe;
+import java.util.Comparator;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluidHandler, IHasWork, IEnergyStorage, MenuProvider {
+  private int progress;
+  private String recipeId = "";
+  private LazyOptional<IFluidHandler> fluidCapability =
+    LazyOptional.of(() -> this);
 
   public static int LIQUID_PER_SLOT = 4000;
   private final SafeTimeTracker updateNetworkTime = new SafeTimeTracker(20);
@@ -65,8 +78,69 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
       level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
     }
 
+    int previousProgress = progress;
+    String previousRecipe = recipeId;
+    var manager = BuildcraftRecipeRegistry.refinery();
+    var recipe = manager == null ? null : manager.getRecipes().stream()
+      .filter(r -> inputOrder(r) >= 0 && r.energy() >= 0 && !r.result().isEmpty())
+      .sorted(Comparator.comparing(r -> r.id().toString())).findFirst().orElse(null);
+    boolean wasActive = isActive;
     isActive = false;
-    // Crafting logic placeholder
+    if (recipe == null) {
+      progress = 0;
+      recipeId = "";
+    } else {
+      if (!recipe.id().toString().equals(recipeId)) {
+        progress = 0;
+        recipeId = recipe.id().toString();
+      }
+      if (result.fill(recipe.result(), FluidAction.SIMULATE) == recipe.result().getAmount()
+        && getBattery().getEnergyStored() >= recipe.energy()) {
+        isActive = true;
+        if (++progress >= Math.max(1, recipe.delay())) {
+          int first = inputOrder(recipe);
+          getBattery().useEnergy(recipe.energy(), recipe.energy(), false);
+          tanks[first].drain(recipe.primaryAmount(), FluidAction.EXECUTE);
+          if (recipe.secondary().isPresent()) tanks[1 - first].drain(recipe.secondaryAmount(), FluidAction.EXECUTE);
+          result.fill(recipe.result().copy(), FluidAction.EXECUTE);
+          progress = 0;
+        }
+      }
+    }
+    if (wasActive != isActive || isActive || previousProgress != progress || !previousRecipe.equals(recipeId)) setChanged();
+  }
+
+  private int inputOrder(RefineryRecipe recipe) {
+    for (int first = 0; first < 2; first++) {
+      if (matches(tanks[first], recipe.primary(), recipe.primaryAmount())
+        && (recipe.secondary().isEmpty() || matches(tanks[1 - first], recipe.secondary().get(), recipe.secondaryAmount()))) return first;
+    }
+    return -1;
+  }
+
+  private boolean matches(FluidTank tank, Ingredient ingredient, int amount) {
+    // 既存の Ingredient API は液体のバケツを識別子として使い、消費量はmBで指定する。
+    return amount > 0 && tank.getFluidAmount() >= amount
+      && ingredient.test(new ItemStack(tank.getFluid().getFluid().getBucket()));
+  }
+
+  @Override
+  public <T> LazyOptional<T> getCapability(
+    Capability<T> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.FLUID_HANDLER) return fluidCapability.cast();
+    return super.getCapability(cap, side);
+  }
+
+  @Override
+  public void invalidateCaps() {
+    super.invalidateCaps();
+    fluidCapability.invalidate();
+  }
+
+  @Override
+  public void reviveCaps() {
+    super.reviveCaps();
+    fluidCapability = LazyOptional.of(() -> this);
   }
 
   @Override
@@ -78,6 +152,8 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
     animationStage = data.getShort("animationStage");
     animationSpeed = data.getFloat("animationSpeed");
     isActive = data.getBoolean("isActive");
+    progress = data.getInt("progress");
+    recipeId = data.getString("recipeId");
   }
 
   @Override
@@ -95,6 +171,8 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
     data.putShort("animationStage", animationStage);
     data.putFloat("animationSpeed", animationSpeed);
     data.putBoolean("isActive", isActive);
+    data.putInt("progress", progress);
+    data.putString("recipeId", recipeId);
   }
 
   @Override
@@ -144,17 +222,22 @@ public class RefineryBlockEntity extends BuildCraftBlockEntity implements IFluid
     // Simplified fill logic
     int filled = tanks[0].fill(resource, action);
     if (filled == 0) filled = tanks[1].fill(resource, action);
+    if (filled > 0 && action.execute()) setChanged();
     return filled;
   }
 
   @Override
   public FluidStack drain(FluidStack resource, FluidAction action) {
-    return result.drain(resource, action);
+    FluidStack drained = result.drain(resource, action);
+    if (!drained.isEmpty() && action.execute()) setChanged();
+    return drained;
   }
 
   @Override
   public FluidStack drain(int maxDrain, FluidAction action) {
-    return result.drain(maxDrain, action);
+    FluidStack drained = result.drain(maxDrain, action);
+    if (!drained.isEmpty() && action.execute()) setChanged();
+    return drained;
   }
 
   @Override

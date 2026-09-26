@@ -42,6 +42,7 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     recentEnergyAverageUtil.tick();
+    recentEnergyAverage = (int) Math.round(recentEnergyAverageUtil.getAverage());
   }
 
   public int getEnergy() {
@@ -85,8 +86,10 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
 
   @Override
   public void receiveLaserEnergy(int energy) {
-    this.energy += energy;
+    if (level == null || level.isClientSide || energy <= 0) return;
+    this.energy = (int) Math.min(Integer.MAX_VALUE, (long) this.energy + energy);
     recentEnergyAverageUtil.push(energy);
+    setChanged();
   }
 
   @Override
@@ -137,6 +140,7 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
   @Override
   public void setItem(int slot, ItemStack stack) {
     inv.setItem(slot, stack);
+    setChanged();
   }
 
   @Override
@@ -160,6 +164,7 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
     super.saveAdditional(nbt);
     inv.writeTag(nbt);
     nbt.putInt("energy", energy);
+    nbt.putInt("recentEnergyAverage", recentEnergyAverage);
   }
 
   @Override
@@ -167,6 +172,7 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
     super.load(nbt);
     inv.readTag(nbt);
     energy = nbt.getInt("energy");
+    recentEnergyAverage = nbt.getInt("recentEnergyAverage");
   }
 
   protected void outputStack(ItemStack remaining, boolean autoEject) {

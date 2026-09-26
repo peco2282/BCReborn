@@ -86,6 +86,8 @@ public class EnergyTransportModule {
 
     step(level);
 
+    double[] transferred = new double[6];
+
     // 1. internalPower を隣接へ比例配分して送電
     currentTickSent = 0;
     currentTickReceived = 0;
@@ -139,6 +141,8 @@ public class EnergyTransportModule {
             internalPower[i] -= accepted;
             toDistribute -= accepted;
             currentTickSent += accepted;
+            transferred[i] += accepted;
+            transferred[j] += accepted;
           }
         } else {
           // 一般機械（IEnergyStorage）へ転送
@@ -152,6 +156,8 @@ public class EnergyTransportModule {
             internalPower[i] -= accepted;
             toDistribute -= accepted;
             currentTickSent += accepted;
+            transferred[i] += accepted;
+            transferred[j] += accepted;
           }
         }
       }
@@ -159,7 +165,7 @@ public class EnergyTransportModule {
 
     // 2. displayPower 更新（移動平均）
     for (int i = 0; i < 6; i++) {
-      powerHistory[i][historyIndex] = (int) Math.ceil(internalPower[i]);
+      powerHistory[i][historyIndex] = (int) Math.ceil(transferred[i]);
     }
     historyIndex = (historyIndex + 1) % AVERAGE_WINDOW;
 
@@ -169,7 +175,7 @@ public class EnergyTransportModule {
       for (int k = 0; k < AVERAGE_WINDOW; k++) {
         sum += powerHistory[i][k];
       }
-      displayPower[i] = (short) Math.round(sum / (double) AVERAGE_WINDOW);
+      displayPower[i] = (short) Math.min(Short.MAX_VALUE, Math.round(sum / (double) AVERAGE_WINDOW));
       if (displayPower[i] > highestPower) highestPower = displayPower[i];
     }
 
@@ -178,13 +184,6 @@ public class EnergyTransportModule {
       overload = Math.min(overload + 1, OVERLOAD_TICKS);
     } else {
       overload = Math.max(overload - 1, 0);
-    }
-
-    // オーバーロード時に爆発（originalと同様）
-    if (overload >= OVERLOAD_TICKS) {
-      overload = 0;
-      level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-        1.0f, Level.ExplosionInteraction.BLOCK);
     }
 
     // 4. 隣接機械から需要を収集（次tick用）
@@ -370,6 +369,7 @@ public class EnergyTransportModule {
   public void save(CompoundTag tag) {
     CompoundTag energyTag = new CompoundTag();
     for (int i = 0; i < 6; i++) {
+      energyTag.putShort("displayPower" + i, displayPower[i]);
       energyTag.putDouble("internalPower" + i, internalPower[i]);
       energyTag.putDouble("internalNextPower" + i, internalNextPower[i]);
       energyTag.putInt("powerQuery" + i, powerQuery[i]);
@@ -383,6 +383,7 @@ public class EnergyTransportModule {
     if (!tag.contains("EnergyTransport")) return;
     CompoundTag energyTag = tag.getCompound("EnergyTransport");
     for (int i = 0; i < 6; i++) {
+      displayPower[i] = energyTag.getShort("displayPower" + i);
       // 後方互換: 旧int形式も読み込める
       if (energyTag.contains("internalPower" + i, 6 /* DOUBLE */)) {
         internalPower[i] = energyTag.getDouble("internalPower" + i);

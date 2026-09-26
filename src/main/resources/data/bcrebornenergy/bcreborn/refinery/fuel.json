@@ -1,0 +1,8 @@
+{
+  "id": "bcrebornenergy:fuel",
+  "primary": { "item": "bcrebornenergy:oil_bucket" },
+  "primary_amount": 1,
+  "result": { "FluidName": "bcrebornenergy:fuel", "Amount": 1 },
+  "energy": 120,
+  "delay": 1
+}

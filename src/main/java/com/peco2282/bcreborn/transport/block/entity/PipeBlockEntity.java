@@ -60,6 +60,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
+import com.peco2282.bcreborn.transport.gates.GatePluggable;
 
 import java.util.*;
 
@@ -92,12 +93,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     @Override
     @Nullable
     public IGate getGate(Direction side) {
+      if (getPipePluggable(side) instanceof GatePluggable gate) {
+        gate.onAttachedPipe(PipeBlockEntity.this, side);
+        return gate.realGate;
+      }
       return null;
     }
 
     @Override
     public boolean hasGate(Direction side) {
-      return false;
+      return getGate(side) != null;
     }
 
     @Override
@@ -221,6 +226,10 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public void tick(Level level, BlockPos pos, BlockState state) {
+    for (Direction side : Direction.values()) {
+      var pluggable = getPipePluggable(side);
+      if (pluggable != null) pluggable.update(this, side);
+    }
     if (level.isClientSide) {
       if (transportType == PipeType.ITEM) {
         tickItems(level, pos);
@@ -718,7 +727,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     sideProperties.pluggables[direction.ordinal()] = pluggable;
 
-    pluggable.onAttachedPipe(this, direction);
+    if (pluggable != null) pluggable.onAttachedPipe(this, direction);
 
     setChanged();
     if (level != null) {
@@ -742,6 +751,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public void scheduleRenderUpdate() {
+    setChanged();
   }
 
   @Override
@@ -896,6 +906,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       for (int i = 0; i < Direction.values().length; i++) {
         final String key = "pluggable[" + i + "]";
         if (!nbt.contains(key)) {
+          pluggables[i] = null;
           continue;
         }
         CompoundTag pluggableData = nbt.getCompound(key);

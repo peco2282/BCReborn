@@ -66,7 +66,7 @@ public class EnergyPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> 
     EnergyTransportModule module = blockEntity.getEnergyTransportModule();
     if (module == null) return;
 
-    double[] internalPower = module.getInternalPower();
+    short[] internalPower = module.displayPower;
     int maxPower = module.getMaxPower();
     boolean overloaded = module.isOverloaded();
 

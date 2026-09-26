@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class Gate implements IGate, ISidedStatementContainer, IRedstoneStatementContainer {
 
@@ -294,7 +295,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   public void openGui(Player player) {
     if (!player.level().isClientSide) {
       NetworkHooks.openScreen(
-        (net.minecraft.server.level.ServerPlayer) player,
+        (ServerPlayer) player,
         new MenuProvider() {
           @Override
           public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
@@ -560,7 +561,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
     for (Direction o : Direction.values()) {
       BlockEntity tile = pipe.getBlockEntity().getNeighborBlockEntity(o);
-      allTriggers.addAll(StatementManager.getExternalTriggers(o, tile));
+      if (tile != null) allTriggers.addAll(StatementManager.getExternalTriggers(o, tile));
     }
 
     return allTriggers;
@@ -585,7 +586,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
     for (Direction o : Direction.values()) {
       BlockEntity tile = pipe.getBlockEntity().getNeighborBlockEntity(o);
-      allActions.addAll(StatementManager.getExternalActions(o, tile));
+      if (tile != null) allActions.addAll(StatementManager.getExternalActions(o, tile));
     }
 
     return allActions;
@@ -678,8 +679,10 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
 
   @Override
   public int getRedstoneInput(@Nullable Direction side) {
-    // return side == Direction.UNKNOWN ? pipe.container.redstoneInput : pipe.container.redstoneInputSide[side.ordinal()];
-    return 0; // TODO
+    var tile = pipe.getBlockEntity();
+    if (tile.getWorld() == null) return 0;
+    return side == null ? tile.getWorld().getBestNeighborSignal(tile.getPos())
+      : tile.getWorld().getSignal(tile.getPos().relative(side), side);
   }
 
   @Override

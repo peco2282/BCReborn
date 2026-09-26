@@ -52,6 +52,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Map;
+import com.peco2282.bcreborn.transport.menu.GateInterfaceMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraftforge.network.NetworkHooks;
 
 public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock, IColorRemovable {
   public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
@@ -153,6 +158,17 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
         }
       }
 
+      if (!player.isShiftKeyDown() && stack.isEmpty() && pipeBE.getPipe().hasGate(hit.getDirection())) {
+        if (player instanceof ServerPlayer serverPlayer) {
+          Direction side = hit.getDirection();
+          NetworkHooks.openScreen(serverPlayer,
+            new SimpleMenuProvider((id, inventory, user) ->
+              new GateInterfaceMenu(id, inventory, pipeBE, side),
+              Component.translatable("item.bcreborntransport.gate")),
+            buf -> { buf.writeBlockPos(pos); buf.writeEnum(side); });
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
+      }
       if (pipeBE.getBehaviour() != null && !player.isShiftKeyDown()) {
         if (stack.getItem() instanceof IToolWrench) {
           return pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);

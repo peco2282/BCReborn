@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.function.Function;
+import net.minecraft.client.gui.components.Button;
 
 public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMenu> {
   private static final Function<String, ResourceLocation> TEXTURE = s -> {
@@ -43,6 +44,23 @@ public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMe
   };
   private IPipe pipe;
   private Gate gate;
+  private int row;
+  private Button rowButton, triggerButton, actionButton;
+
+  @Override
+  protected void init() {
+    super.init();
+    rowButton = addRenderableWidget(Button.builder(Component.empty(), b -> {
+      Gate current = menu.getGate();
+      if (current != null) row = (row + 1) % current.material.numSlots;
+    }).bounds(leftPos + 8, topPos + 18, 160, 16).build());
+    triggerButton = addRenderableWidget(Button.builder(Component.empty(), b ->
+      minecraft.gameMode.handleInventoryButtonClick(menu.containerId, row * 2))
+      .bounds(leftPos + 8, topPos + 36, 160, 16).build());
+    actionButton = addRenderableWidget(Button.builder(Component.empty(), b ->
+      minecraft.gameMode.handleInventoryButtonClick(menu.containerId, row * 2 + 1))
+      .bounds(leftPos + 8, topPos + 54, 160, 16).build());
+  }
 
   public GateInterfaceScreen(GateInterfaceMenu p_97741_, Inventory p_97742_, Component p_97743_) {
     super(p_97741_, p_97742_, p_97743_);
@@ -70,6 +88,13 @@ public class GateInterfaceScreen extends AdvancedInterfaceScreen<GateInterfaceMe
 
   @Override
   public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    gate = menu.getGate();
+    if (gate != null) {
+      row = Math.min(row, gate.material.numSlots - 1);
+      rowButton.setMessage(Component.translatable("screen.bcreborntransport.gate.row", row + 1, gate.material.numSlots));
+      triggerButton.setMessage(Component.literal(gate.getTrigger(row) == null ? "—" : gate.getTrigger(row).getDescription()));
+      actionButton.setMessage(Component.literal(gate.getAction(row) == null ? "—" : gate.getAction(row).getDescription()));
+    }
     this.renderBackground(guiGraphics);
     super.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.renderTooltip(guiGraphics, mouseX, mouseY);

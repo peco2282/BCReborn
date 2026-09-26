@@ -31,6 +31,15 @@ public class RefineryRecipeBuilder extends BCRecipeBuilder<RefineryRecipe> {
   private FluidStack result;
   private int energy;
   private int delay;
+  private int primaryAmount = 1;
+  private int secondaryAmount = 1;
+
+  public RefineryRecipeBuilder setInputAmounts(int primaryAmount, int secondaryAmount) {
+    if (primaryAmount <= 0 || secondaryAmount <= 0) throw new IllegalArgumentException("Fluid amounts must be positive");
+    this.primaryAmount = primaryAmount;
+    this.secondaryAmount = secondaryAmount;
+    return this;
+  }
 
   /**
    * Creates a new refinery recipe builder with the specified recipe ID.
@@ -39,6 +48,10 @@ public class RefineryRecipeBuilder extends BCRecipeBuilder<RefineryRecipe> {
    */
   private RefineryRecipeBuilder(ResourceLocation id) {
     super(id);
+  }
+
+  public static RefineryRecipeBuilder create(ResourceLocation id) {
+    return new RefineryRecipeBuilder(id);
   }
 
   /**
@@ -103,6 +116,6 @@ public class RefineryRecipeBuilder extends BCRecipeBuilder<RefineryRecipe> {
    */
   @Override
   public RefineryRecipe build() {
-    return new RefineryRecipe(id, primary, Optional.ofNullable(secondary), result, energy, delay);
+    return new RefineryRecipe(id, primary, Optional.ofNullable(secondary), result, energy, delay, primaryAmount, secondaryAmount);
   }
 }

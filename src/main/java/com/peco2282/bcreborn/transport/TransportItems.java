@@ -19,14 +19,28 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import com.peco2282.bcreborn.transport.gates.GateDefinition;
+import com.peco2282.bcreborn.transport.gates.GateExpansionPulsar;
+import com.peco2282.bcreborn.transport.gates.ItemGate;
 
 @InitRegister(modId = BCRebornTransport.MODID)
 public class TransportItems {
   private static final BCRegistry REGISTRY = BCRebornTransport.getRegistry();
 
   public static final RegistryObject<FacadeItem> FACADE = REGISTRY.registerItem("facade", FacadeItem::new);
+  public static final RegistryObject<ItemGate> GATE =
+    REGISTRY.registerItem("gate", ItemGate::new);
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    for (var material : GateDefinition.GateMaterial.values()) {
+      for (var logic : GateDefinition.GateLogic.values()) {
+        var gate = ItemGate.makeGateItem(material, logic);
+        output.accept(gate.copy());
+        ItemGate.addGateExpansion(gate,
+          GateExpansionPulsar.INSTANCE);
+        output.accept(gate);
+      }
+    }
     // 全ての有効なブロックのFacadeを追加
     if (TransportConfig.isFacadeShowAllInCreative()) {
       //noinspection deprecation
