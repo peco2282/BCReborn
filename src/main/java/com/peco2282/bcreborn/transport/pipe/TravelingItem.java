@@ -38,8 +38,7 @@ public class TravelingItem {
    * このアイテムが「現在のパイプに入ってきた方向」。
    * 例: 北から入ってきた場合は NORTH。
    * <p>
-   * bounce back 時は entryDirection.getOpposite() を nextDirection に設定することで
-   * 来た道を戻る挙動を実現する。
+   * 折り返し時は入口と出口を交換し、到達した面から来た道を戻る。
    * <p>
    * 注意: 「現在の進行方向」は nextDirection が担う。
    * entryDirection は「どこから来たか」の記録であり、routing 除外判定にも使用される。
@@ -47,7 +46,7 @@ public class TravelingItem {
    * 将来 Diamond pipe / Iron pipe でフィルタリングを実装する際も、
    * この責務分離（来た方向 vs 次の方向）を維持すること。
    */
-  private final Direction entryDirection;
+  private Direction entryDirection;
 
   private float progress; // 0.0 to 1.0
   private float prevProgress; // 前tickのprogress（partialTick補間用）
@@ -106,10 +105,21 @@ public class TravelingItem {
   /**
    * このアイテムが現在のパイプに入ってきた方向を返す。
    * routing 時の除外判定（来た方向には戻らない）に使用する。
-   * bounce back 時は getEntryDirection().getOpposite() を nextDirection に設定する。
+   * 折り返し時の出口は、元の entryDirection と同じ面になる。
    */
   public Direction getEntryDirection() {
     return entryDirection;
+  }
+
+  public void reverse() {
+    if (nextDirection == null) return;
+    Direction previousEntry = entryDirection;
+    entryDirection = nextDirection;
+    nextDirection = previousEntry;
+    progress = 0;
+    prevProgress = 0;
+    centerReached = false;
+    incrementBounceCount();
   }
 
   public float getProgress() {

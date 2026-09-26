@@ -53,6 +53,14 @@ public class ItemTransportModule {
   // ---- 公開API ----
 
   public void tick(Level level, BlockPos pos) {
+    if (level.isClientSide) {
+      // 表示側は同期された経路を補間するだけで、搬送や経路選択を行わない。
+      for (TravelingItem item : travelingItems) {
+        item.tick(level, pos);
+        item.setProgress(Math.min(item.getProgress(), item.getNextDirection() == null ? 0.5f : 1.0f));
+      }
+      return;
+    }
     if (pipe.getTransportType() != PipeType.ITEM) {
       if (!travelingItems.isEmpty()) {
         dropItems();
@@ -65,6 +73,10 @@ public class ItemTransportModule {
     PipeBehaviour behaviour = pipe.getBehaviour();
 
     for (TravelingItem item : snapshot) {
+      // 古い保存データの出口未決定アイテムにも、中央へ到達する前に経路を与える。
+      if (item.getNextDirection() == null) {
+        chooseDestination(item, behaviour);
+      }
       if (behaviour instanceof ItemPipeBehaviour ib) {
         ib.adjustSpeed(pipe, item);
       } else {
@@ -87,19 +99,6 @@ public class ItemTransportModule {
       }
 
       if (item.isReached()) {
-        if (item.getNextDirection() == null) {
-          Direction next;
-          if (behaviour instanceof ItemPipeBehaviour ib) {
-            next = ib.chooseNextDirection(pipe, item);
-            if (next == null) {
-              next = routingHelper.chooseNextDirection(pipe, item);
-            }
-          } else {
-            next = routingHelper.chooseNextDirection(pipe, item);
-          }
-          item.setNextDirection(next);
-        }
-
         MovementResult result = MovementHelper.moveItemToNext(pipe, item);
         switch (result) {
           case SUCCESS -> {
@@ -112,16 +111,27 @@ public class ItemTransportModule {
             // 意図的に簡易実装: jam system / queue は導入しない。
             // 2pipe ping-pong（無限折り返し）は BuildCraft 的に許容される挙動。
             // 将来 congestion / jam 対応が必要になった場合はここを起点に拡張する。
-            Direction back = item.getEntryDirection().getOpposite();
-            item.setNextDirection(back);
-            item.setProgress(0.0f);
-            item.setPrevProgress(0.0f);
-            item.incrementBounceCount();
+            item.reverse();
             pipe.setChanged();
           }
         }
       }
     }
+    // 最後のアイテムが出たときも、空になった状態を描画側へ送る。
+    if (!snapshot.isEmpty()) {
+      level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), 3);
+    }
+  }
+
+  private void chooseDestination(TravelingItem item, PipeBehaviour behaviour) {
+    Direction next = null;
+    if (behaviour instanceof ItemPipeBehaviour ib) {
+      next = ib.chooseNextDirection(pipe, item);
+    }
+    if (next == null) {
+      next = routingHelper.chooseNextDirection(pipe, item);
+    }
+    item.setNextDirection(next);
   }
 
   /**
@@ -145,6 +155,9 @@ public class ItemTransportModule {
     }
 
     TravelingItem travelingItem = new TravelingItem(stack.copy(), from, speed);
+    if (!pipe.getLevel().isClientSide) {
+      chooseDestination(travelingItem, behaviour);
+    }
     travelingItems.add(travelingItem);
     pipe.setChanged();
 
