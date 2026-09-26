@@ -75,10 +75,22 @@ public class ProductionCompatibilityGameTests {
     check(helper, table.getItem(0).getCount() == 1 && table.requiresLaserEnergy(), "Unpowered table must retain inputs and request laser power");
     table.receiveLaserEnergy(recipe.energy());
     BuildCraftBlockEntity.<AssemblyTableBlockEntity>ticker().tick(helper.getLevel(), table.getBlockPos(), table.getBlockState(), table);
-    check(helper, table.getItem(0).isEmpty() && table.getEnergy() == 0, "Craft must consume ingredients and laser energy once");
+    check(helper, table.getItem(0).isEmpty() && table.getEnergy() == 0, "Craft must consume ingredients and laser energy once: " + table.getItem(0) + ", energy=" + table.getEnergy() + ", state=" + table.saveWithFullMetadata());
     var outputs = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
       new net.minecraft.world.phys.AABB(table.getBlockPos()).inflate(1));
     check(helper, outputs.stream().anyMatch(e -> ItemStack.isSameItemSameTags(e.getItem(), recipe.result())), "Crafted chipset must be output");
+    table.setItem(0, new ItemStack(Items.DIAMOND));
+    check(helper, !table.canCraft(), "Diamond alone must not satisfy the redstone and diamond recipe");
+    table.setItem(1, new ItemStack(Items.REDSTONE));
+    var diamondRecipe = BuildcraftRecipeRegistry.assembly().getRecipe(ResourceLocation.parse("bcrebornsilicon:diamond_chipset"));
+    check(helper, diamondRecipe != null && diamondRecipe.ingredients().size() == 2,
+      "Diamond chipset recipe must retain two separate requirements");
+    table.receiveLaserEnergy(diamondRecipe.energy());
+    BuildCraftBlockEntity.<AssemblyTableBlockEntity>ticker().tick(helper.getLevel(), table.getBlockPos(), table.getBlockState(), table);
+    check(helper, table.getItem(0).isEmpty() && table.getItem(1).isEmpty() && table.getEnergy() == 0,
+      "Diamond chipset must consume both ingredients and its full energy cost");
+    check(helper, BuildcraftRecipeRegistry.assembly().getRecipe(ResourceLocation.parse("bcrebornsilicon:comp_chipset")) != null,
+      "Comparator chipset recipe must have a distinct ID");
     helper.succeed();
   }
 

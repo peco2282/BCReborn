@@ -12,6 +12,9 @@
 package com.peco2282.bcreborn.energy.block;
 
 import com.peco2282.bcreborn.common.block.EngineBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -26,6 +29,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 public class StoneEngineBlock extends EngineBlock {
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return createTickerHelper(type, EnergyBlockEntityTypes.STONE_ENGINE.get(), BuildCraftBlockEntity.ticker());
+  }
+
   @Override
   public StoneEngineBlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
     return EnergyBlockEntityTypes.STONE_ENGINE.get().create(p_153215_, p_153216_);

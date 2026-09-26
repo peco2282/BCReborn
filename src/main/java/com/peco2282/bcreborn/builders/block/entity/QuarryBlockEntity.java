@@ -166,24 +166,19 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
         int energyNeeded = 25;
         if (getBattery().getEnergyStored() >= energyNeeded) {
           BlockPos framePos = frameList.peek();
-          if (framePos != null) {
+          if (framePos != null && level.hasChunkAt(framePos)) {
             if (level.getBlockState(framePos).isAir() || level.getBlockState(framePos).getBlock() instanceof FrameBlock) {
-              getBattery().useEnergy(energyNeeded, energyNeeded, false);
-              level.setBlock(framePos, BuildersBlock.FRAME.get().defaultBlockState(), 3);
-              frameList.poll();
-              if (frameList.isEmpty()) {
-                stage = Stage.IDLE;
+              if (!(level.getBlockState(framePos).getBlock() instanceof FrameBlock)) {
+                if (!level.setBlock(framePos, BuildersBlock.FRAME.get().defaultBlockState(), 3)) return;
+                getBattery().useEnergy(energyNeeded, energyNeeded, false);
               }
-              setChanged();
-            } else {
-              // Something is in the way, skip this frame or wait?
-              // BuildCraft usually breaks the block if it's not unbreakable
               frameList.poll();
               if (frameList.isEmpty()) {
                 stage = Stage.IDLE;
               }
               setChanged();
             }
+            // Keep obstructed positions queued until cleared; never finish an incomplete frame.
           }
         }
       }
@@ -359,7 +354,7 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     if (state.getBlock() == BuildersBlock.FRAME.get()) return false;
     if (state.isAir()) return false;
     // We want to skip liquids and mine blocks below them
-    if (!state.getFluidState().isEmpty()) return false;
+    if (!state.getFluidState().isEmpty() && state.equals(state.getFluidState().createLegacyBlock())) return false;
     Block block = state.getBlock();
     // Original BuildCraft logic also excludes Fluid blocks unless specifically handled
     return !BlockUtils.isUnbreakableBlock(getLevel(), pos, block);

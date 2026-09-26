@@ -12,12 +12,21 @@
 package com.peco2282.bcreborn.energy.block;
 
 import com.peco2282.bcreborn.common.block.EngineBlock;
+import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeEngineBlock extends EngineBlock {
+  @Override
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return createTickerHelper(type, EnergyBlockEntityTypes.CREATIVE_ENGINE.get(), BuildCraftBlockEntity.ticker());
+  }
+
   @Override
   public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
     return EnergyBlockEntityTypes.CREATIVE_ENGINE.get().create(p_153215_, p_153216_);

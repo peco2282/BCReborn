@@ -280,7 +280,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   public void eraseTank(int tankId) {
     List<Tank> tanks = getFluidTanks();
     if (tankId >= 0 && tankId < tanks.size()) {
-      tanks.get(tankId).setFluid(null);
+      tanks.get(tankId).setFluid(net.minecraftforge.fluids.FluidStack.EMPTY);
       setChanged();
     }
   }

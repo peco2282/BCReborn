@@ -29,12 +29,7 @@ public class PipeEnergyStorage implements IEnergyStorage {
 
   @Override
   public int receiveEnergy(int maxReceive, boolean simulate) {
-    if (!canReceive()) return 0;
-    if (simulate) {
-      double space = module.getMaxPower() - module.getInternalPower()[side.get3DDataValue()];
-      return (int) Math.min(maxReceive, space);
-    }
-    return module.receiveEnergy(side, maxReceive);
+    return module.receiveEnergy(side, maxReceive, simulate);
   }
 
   @Override
@@ -60,6 +55,7 @@ public class PipeEnergyStorage implements IEnergyStorage {
 
   @Override
   public boolean canReceive() {
-    return true;
+    // Cached capabilities must also respect changes to connections/pluggables.
+    return module.canTransfer(side);
   }
 }

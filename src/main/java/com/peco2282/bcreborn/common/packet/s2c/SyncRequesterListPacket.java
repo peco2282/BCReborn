@@ -14,7 +14,7 @@ package com.peco2282.bcreborn.common.packet.s2c;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import com.peco2282.bcreborn.robotics.menu.RequesterMenu;
-import net.minecraft.client.Minecraft;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -49,7 +49,7 @@ public record SyncRequesterListPacket(BlockPos pos, ItemStack[] requests) implem
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      AbstractContainerMenu menu = Minecraft.getInstance().player.containerMenu;
+      AbstractContainerMenu menu = ClientPacketAccess.player().containerMenu;
       if (menu instanceof RequesterMenu requesterMenu) {
         requesterMenu.requests = requests;
       }

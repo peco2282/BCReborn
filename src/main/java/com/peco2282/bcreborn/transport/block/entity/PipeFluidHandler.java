@@ -26,19 +26,16 @@ public class PipeFluidHandler implements IFluidHandler {
 
   private final PipeBlockEntity pipe;
   private final FluidTank tank;
-  private Direction fillDirection = null;
+  private final Direction fillDirection;
 
   public PipeFluidHandler(PipeBlockEntity pipe, FluidTank tank) {
-    this.pipe = pipe;
-    this.tank = tank;
+    this(pipe, tank, null);
   }
 
-  /**
-   * fill() を呼ぶ前に方向を設定する。
-   * Capability の side 情報を利用するため、PipeBlockEntity.getCapability() で設定する。
-   */
-  public void setFillDirection(Direction dir) {
-    this.fillDirection = dir;
+  public PipeFluidHandler(PipeBlockEntity pipe, FluidTank tank, Direction fillDirection) {
+    this.pipe = pipe;
+    this.tank = tank;
+    this.fillDirection = fillDirection;
   }
 
   @Override

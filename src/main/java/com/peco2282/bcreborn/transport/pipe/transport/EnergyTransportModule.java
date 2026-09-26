@@ -94,6 +94,7 @@ public class EnergyTransportModule {
 
     boolean[] receivers = new boolean[6];
     for (Direction dir : Direction.values()) {
+      if (!canTransfer(dir)) continue;
       BlockPos neighborPos = pos.relative(dir);
       if (!level.isLoaded(neighborPos)) continue;
       BlockEntity neighbor = level.getBlockEntity(neighborPos);
@@ -188,6 +189,7 @@ public class EnergyTransportModule {
 
     // 4. 隣接機械から需要を収集（次tick用）
     for (Direction dir : Direction.values()) {
+      if (!canTransfer(dir)) continue;
       BlockPos neighborPos = pos.relative(dir);
       if (!level.isLoaded(neighborPos)) continue;
 
@@ -220,10 +222,11 @@ public class EnergyTransportModule {
     for (int i = 0; i < 6; i++) {
       long query = 0;
       for (int j = 0; j < 6; j++) {
-        if (j != i) query += powerQuery[j];
+        if (j != i && canTransfer(Direction.from3DDataValue(j))) query += powerQuery[j];
       }
       int request = (int) Math.min(query, maxPower);
       Direction dir = Direction.from3DDataValue(i);
+      if (!canTransfer(dir)) continue;
       BlockPos neighborPos = pos.relative(dir);
       if (request <= 0 || !level.isLoaded(neighborPos)) continue;
       if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity neighbor
@@ -241,9 +244,10 @@ public class EnergyTransportModule {
    *
    * @param from   エネルギーが入ってきた方向
    * @param amount 受け取るRF量（double精度）
-   * @return 実際に受け取ったRF量（損失後）
+   * @return 消費した入力RF量（損失前）
    */
   public double receiveEnergy(Direction from, double amount) {
+    if (!canTransfer(from) || amount <= 0 || !Double.isFinite(amount)) return 0;
     int side = from.get3DDataValue();
 
     Level level = pipe.getLevel();
@@ -251,37 +255,36 @@ public class EnergyTransportModule {
       step(level);
     }
 
-    if (internalNextPower[side] >= maxPower) {
-      return 0;
-    }
-
-    // 抵抗による損失を適用
-    double effective = amount * (1.0 - powerResistance);
-
-    double space = maxPower - internalNextPower[side];
-    double accepted = Math.min(effective, space);
-
-    // 実際に受け取れる量（損失前）を逆算して返す
-    double actualInput = Math.min(amount, space / (1.0 - powerResistance + 1e-9));
-    if (powerResistance <= 0) {
-      actualInput = accepted;
-    }
-
-    internalNextPower[side] += accepted;
+    double actualInput = receivableEnergy(from, amount);
+    internalNextPower[side] = Math.min(maxPower, internalNextPower[side] + actualInput * (1.0 - powerResistance));
     currentTickReceived += actualInput;
-
-    if (internalNextPower[side] > maxPower) {
-      internalNextPower[side] = maxPower;
-    }
-
+    if (actualInput > 0) pipe.setChanged();
     return actualInput;
+  }
+
+  /** No stepping or other mutation: SIMULATE observes the buffer EXECUTE will use. */
+  public double receivableEnergy(Direction from, double amount) {
+    if (!canTransfer(from) || amount <= 0 || !Double.isFinite(amount)) return 0;
+    double efficiency = 1.0 - powerResistance;
+    if (efficiency <= 0) return 0;
+    Level level = pipe.getLevel();
+    boolean newTick = level != null && currentDate != level.getGameTime();
+    double stored = newTick ? 0 : internalNextPower[from.get3DDataValue()];
+    return Math.max(0, Math.min(amount, (maxPower - stored) / efficiency));
   }
 
   /**
    * int版 receiveEnergy（外部capability経由用）。
    */
   public int receiveEnergy(Direction from, int amount) {
-    return (int) receiveEnergy(from, (double) amount);
+    return receiveEnergy(from, amount, false);
+  }
+
+  public int receiveEnergy(Direction from, int amount, boolean simulate) {
+    int accepted = (int) receivableEnergy(from, amount);
+    // Commit only whole input FE, so fractional space cannot create uncharged power.
+    if (!simulate && accepted > 0) receiveEnergy(from, (double) accepted);
+    return accepted;
   }
 
   /**
@@ -292,12 +295,17 @@ public class EnergyTransportModule {
    * @param amount 要求RF量
    */
   public void requestEnergy(Direction from, int amount) {
+    if (!canTransfer(from)) return;
     Level level = pipe.getLevel();
     if (level != null) {
       step(level);
     }
     int side = from.get3DDataValue();
     nextPowerQuery[side] = (int) Math.min(maxPower, (long) nextPowerQuery[side] + Math.max(0, amount));
+  }
+
+  public boolean canTransfer(Direction side) {
+    return pipe.canTransferEnergy(side);
   }
 
   public boolean isOverloaded() {

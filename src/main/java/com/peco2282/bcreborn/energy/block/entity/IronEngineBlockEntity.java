@@ -21,8 +21,10 @@ import com.peco2282.bcreborn.energy.fluids.TankManager;
 import com.peco2282.bcreborn.energy.menu.IronEngineMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -49,6 +51,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   private int totalBurnTime = 0;
   private int penaltyCoolingTime = 0;
   private IFuel currentFuel;
+  private ResourceLocation currentFuelId;
 
   public IronEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(EnergyBlockEntityTypes.IRON_ENGINE.get(), p_155229_, p_155230_, 1);
@@ -67,21 +70,46 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public boolean isBurning() {
-    return burnTime > 0;
+    return isRedstonePowered && burnTime > 0 && currentFuel != null && penaltyCoolingTime <= 0 && !isOverheated();
+  }
+
+  @Override
+  protected void engineUpdate() {
+    super.engineUpdate();
+    // Fuel registries may not yet be initialized when NBT is loaded.
+    if (burnTime > 0 && currentFuel == null && BuildcraftFuelRegistry.getFuelManager() != null) {
+      if (currentFuelId != null) {
+        BuiltInRegistries.FLUID.getOptional(currentFuelId).ifPresent(fluid ->
+          currentFuel = BuildcraftFuelRegistry.getFuelManager().getFuel(fluid));
+      }
+      if (currentFuel == null) {
+        // Missing/removed fuel, or an old save with an empty tank: stop safely, never deadlock.
+        burnTime = 0;
+        currentFuelId = null;
+      }
+      setChanged();
+    }
   }
 
   @Override
   public void updateProgress() {
-    if (burnTime <= 0 && !isOverheated() && penaltyCoolingTime <= 0) {
+    // This runs on every server tick, including while the engine is stopped.
+    if (penaltyCoolingTime > 0) {
+      penaltyCoolingTime--;
+      setChanged();
+    }
+    if (isRedstonePowered && burnTime <= 0 && !isOverheated() && penaltyCoolingTime <= 0) {
       FluidStack fuelStack = tankManager.get(TANK_FUEL).getFluid();
       if (!fuelStack.isEmpty()) {
         IFuel fuel = BuildcraftFuelRegistry.getFuelManager().getFuel(fuelStack.getFluid());
-        if (fuel != null && fuelStack.getAmount() >= 1) {
+        if (fuel != null && fuel.getBurnTimePerMilliBucket() > 0 && fuelStack.getAmount() >= 1) {
           currentFuel = fuel;
-          burnTime = fuel.getTotalBurningTime();
+          currentFuelId = BuiltInRegistries.FLUID.getKey(fuelStack.getFluid());
+          burnTime = fuel.getBurnTimePerMilliBucket();
           totalBurnTime = burnTime;
           tankManager.get(TANK_FUEL).drain(1, FluidAction.EXECUTE);
           setActive(true);
+          setChanged();
         }
       }
     }
@@ -91,6 +119,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   public void overheat() {
     burnTime = 0;
     penaltyCoolingTime = 1000;
+    setChanged();
   }
 
   @Override
@@ -101,18 +130,16 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public void burning() {
-    if (penaltyCoolingTime > 0) {
-      penaltyCoolingTime--;
-    }
-
+    if (!isBurning()) return;
     if (burnTime > 0 && currentFuel != null) {
       if (this.energyStorage != null) {
         float mult = getOutputMultiplier();
-        // currentFuel.getPowerPerCycle() は 1MJ/t = 10 相当を想定
+        // The fuel API supplies FE/t; do not apply an implicit MJ conversion here.
         int gen = Math.round(currentFuel.getPowerPerCycle() * mult);
         this.energyStorage.generateEnergy(gen, false);
       }
       burnTime--;
+      setChanged();
 
       // 冷却ロジック
       float heatToAdd = 0.4f; // 燃焼による発熱
@@ -153,6 +180,12 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
     burnTime = data.getInt("burnTime");
     totalBurnTime = data.getInt("totalBurnTime");
     penaltyCoolingTime = data.getInt("penaltyCoolingTime");
+    currentFuel = null;
+    currentFuelId = data.contains("currentFuel") ? ResourceLocation.tryParse(data.getString("currentFuel")) : null;
+    if (!data.contains("currentFuel") && burnTime > 0 && !tankManager.get(TANK_FUEL).isEmpty()) {
+      // Older saves did not record the in-progress fuel independently of the tank.
+      currentFuelId = BuiltInRegistries.FLUID.getKey(tankManager.get(TANK_FUEL).getFluid().getFluid());
+    }
   }
 
   @Override
@@ -162,6 +195,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
     data.putInt("burnTime", burnTime);
     data.putInt("totalBurnTime", totalBurnTime);
     data.putInt("penaltyCoolingTime", penaltyCoolingTime);
+    if (burnTime > 0 && currentFuelId != null) data.putString("currentFuel", currentFuelId.toString());
   }
 
   @Override

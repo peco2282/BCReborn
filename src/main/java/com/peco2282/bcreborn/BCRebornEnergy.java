@@ -14,7 +14,7 @@ package com.peco2282.bcreborn;
 import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
-import com.peco2282.bcreborn.common.config.BCRebornConfigScreen;
+import com.peco2282.bcreborn.common.config.ConfigScreenRegistration;
 import com.peco2282.bcreborn.energy.EnergyFluids;
 import com.peco2282.bcreborn.energy.fuel.CoolantManager;
 import com.peco2282.bcreborn.energy.fuel.FuelManager;
@@ -56,7 +56,7 @@ public class BCRebornEnergy implements BCReborn {
     EnergyFluids.registerFluidTypes(modEventBus);
     REGISTRY.register(modEventBus);
 
-    MinecraftForge.registerConfigScreen((mc, sc) -> new BCRebornConfigScreen(mc, sc, 3));
+    ConfigScreenRegistration.register(3);
   }
 
   public static BCRegistry getRegistry() {

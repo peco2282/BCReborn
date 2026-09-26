@@ -40,8 +40,9 @@ public record RequestZonePlanSetNamePacket(
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get()).ifPresent(be -> {
+      getMenuBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get()).ifPresent(be -> {
         be.doSetName(name);
+        be.setChanged();
       });
     });
     ctx.setPacketHandled(true);

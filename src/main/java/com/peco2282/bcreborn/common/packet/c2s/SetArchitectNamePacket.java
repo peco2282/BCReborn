@@ -41,7 +41,8 @@ public record SetArchitectNamePacket(
     NetworkEvent.Context ctx = supplier.get();
 
     ctx.enqueueWork(() ->
-      getBlockEntity(ctx, pos, BuildersBlockEntityTypes.ARCHITECT.get())
+      getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.ARCHITECT.get())
         .ifPresent(be -> be.setName(name)));
+    ctx.setPacketHandled(true);
   }
 }

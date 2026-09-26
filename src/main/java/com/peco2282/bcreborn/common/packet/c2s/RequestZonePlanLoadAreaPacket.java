@@ -42,8 +42,9 @@ public record RequestZonePlanLoadAreaPacket(BlockPos pos, int index) implements 
     ctx.enqueueWork(() -> {
       ServerPlayer player = ctx.getSender();
       if (player == null) return;
-      getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
+      getMenuBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
         .ifPresent(be -> {
+          if (!be.isValidAreaIndex(index)) return;
           ZonePlan plan = be.selectArea(index);
           BCNetworkManager.sendSyncZonePlanAreaLoaded(player, pos, plan);
         });

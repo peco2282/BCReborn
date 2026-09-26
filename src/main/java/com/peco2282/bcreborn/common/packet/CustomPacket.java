@@ -11,7 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet;
 
-import net.minecraft.client.Minecraft;
+import com.peco2282.bcreborn.common.packet.ClientPacketAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -27,25 +27,31 @@ public interface CustomPacket {
 
   void handle(Supplier<NetworkEvent.Context> supplier);
 
+  default <BE extends BlockEntity> Optional<BE> getMenuBlockEntity(NetworkEvent.Context ctx, BlockPos pos, BlockEntityType<BE> type) {
+    return ServerPacketAccess.getMenuBlockEntity(ctx.getSender(), pos, type);
+  }
+
   default <BE extends BlockEntity> Optional<BE> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos, BlockEntityType<BE> clazz) {
     Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
+      if (ctx.getSender() == null) return Optional.empty();
       level = ctx.getSender().level();
     } else {
-      level = Minecraft.getInstance().level;
+      level = ClientPacketAccess.level();
     }
-    if (level == null) return Optional.empty();
+    if (level == null || !level.hasChunkAt(pos)) return Optional.empty();
     return level.getBlockEntity(pos, clazz);
   }
 
   default Optional<BlockEntity> getBlockEntity(NetworkEvent.Context ctx, BlockPos pos) {
     Level level;
     if (ctx.getDirection().getReceptionSide().isServer()) {
+      if (ctx.getSender() == null) return Optional.empty();
       level = ctx.getSender().level();
     } else {
-      level = Minecraft.getInstance().level;
+      level = ClientPacketAccess.level();
     }
-    if (level == null) return Optional.empty();
+    if (level == null || !level.hasChunkAt(pos)) return Optional.empty();
     return Optional.ofNullable(level.getBlockEntity(pos));
   }
 }

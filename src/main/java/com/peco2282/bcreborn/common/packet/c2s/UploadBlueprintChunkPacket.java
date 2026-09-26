@@ -37,7 +37,7 @@ public record UploadBlueprintChunkPacket(
     return new UploadBlueprintChunkPacket(
       buffer.readBlockPos(),
       buffer.readInt(),
-      buffer.readByteArray()
+      buffer.readByteArray(BlueprintLibraryBlockEntity.CHUNK_SIZE)
     );
   }
 
@@ -51,11 +51,12 @@ public record UploadBlueprintChunkPacket(
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(be -> {
-      int start = chunk * BlueprintLibraryBlockEntity.CHUNK_SIZE;
-      if (be.getBlueprintDownload().length > 0) {
-        be.setBlueprintDownload(start, data);
-      }
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(be -> {
+      byte[] destination = be.getBlueprintDownload();
+      long start = (long) chunk * BlueprintLibraryBlockEntity.CHUNK_SIZE;
+      if (destination == null || chunk < 0 || data.length > BlueprintLibraryBlockEntity.CHUNK_SIZE
+        || start + data.length > destination.length) return;
+      be.setBlueprintDownload((int) start, data);
     }));
     ctx.setPacketHandled(true);
   }

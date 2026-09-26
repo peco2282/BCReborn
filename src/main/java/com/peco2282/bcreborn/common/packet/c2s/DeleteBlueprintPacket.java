@@ -36,7 +36,7 @@ public record DeleteBlueprintPacket(BlockPos pos) implements CustomPacket {
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
       .ifPresent(BlueprintLibraryBlockEntity::deleteSelectedBpt));
     ctx.setPacketHandled(true);
   }
