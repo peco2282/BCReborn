@@ -77,12 +77,6 @@ public class ItemTransportModule {
       if (item.getNextDirection() == null) {
         chooseDestination(item, behaviour);
       }
-      if (behaviour instanceof ItemPipeBehaviour ib) {
-        ib.adjustSpeed(pipe, item);
-      } else {
-        SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
-      }
-
       item.tick(level, pos);
 
       // 中央到達時コールバック（Voidパイプ等）
@@ -112,6 +106,7 @@ public class ItemTransportModule {
             // 2pipe ping-pong（無限折り返し）は BuildCraft 的に許容される挙動。
             // 将来 congestion / jam 対応が必要になった場合はここを起点に拡張する。
             item.reverse();
+            adjustSpeed(item, behaviour);
             pipe.setChanged();
           }
         }
@@ -134,6 +129,14 @@ public class ItemTransportModule {
     item.setNextDirection(next);
   }
 
+  private void adjustSpeed(TravelingItem item, PipeBehaviour behaviour) {
+    if (behaviour instanceof ItemPipeBehaviour ib) {
+      ib.adjustSpeed(pipe, item);
+    } else {
+      SpeedHelper.readjustSpeed(item, SpeedHelper.SLOWDOWN);
+    }
+  }
+
   /**
    * 外部からアイテムをパイプに注入する。
    * <p>
@@ -145,6 +148,7 @@ public class ItemTransportModule {
    * @param from アイテムが入ってきた方向（TravelingItem.entryDirection に直接格納される）
    */
   public void injectItem(ItemStack stack, Direction from, float speed) {
+    if (pipe.getLevel() == null || pipe.getLevel().isClientSide) return;
     if (pipe.getTransportType() != PipeType.ITEM) return;
 
     PipeBehaviour behaviour = pipe.getBehaviour();
@@ -155,6 +159,7 @@ public class ItemTransportModule {
     }
 
     TravelingItem travelingItem = new TravelingItem(stack.copy(), from, speed);
+    adjustSpeed(travelingItem, behaviour);
     if (!pipe.getLevel().isClientSide) {
       chooseDestination(travelingItem, behaviour);
     }
@@ -170,6 +175,10 @@ public class ItemTransportModule {
 
   public void dropItems() {
     Level level = pipe.getLevel();
+    if (level == null || level.isClientSide) {
+      travelingItems.clear();
+      return;
+    }
     BlockPos pos = pipe.getBlockPos();
     for (TravelingItem item : travelingItems) {
       Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), item.getStack());

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.transport.pipe.behaviour;
 
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
+import com.peco2282.bcreborn.transport.pipe.transport.SpeedHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -36,10 +37,10 @@ public interface ItemPipeBehaviour extends PipeBehaviour {
   }
 
   /**
-   * アイテムの移動速度を調整する
+   * 進入・折り返し時に一度だけ移動速度を調整する。
    */
   default void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    item.setSpeed(pipe.getPipeMaterial().getItemSpeed());
+    SpeedHelper.readjustSpeed(item, SpeedHelper.SLOWDOWN);
   }
 
   /**

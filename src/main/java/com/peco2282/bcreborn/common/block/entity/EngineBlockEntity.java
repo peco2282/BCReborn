@@ -227,11 +227,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     // ピストンアニメーション更新
     updatePistonProgress();
 
-    if (this instanceof IRedstoneEngine) {
-      if (isRedstonePowered && isActive()) {
-        pushEnergyToNeighbor();
-      }
-    }
   }
 
   protected void onPistonCycled() {

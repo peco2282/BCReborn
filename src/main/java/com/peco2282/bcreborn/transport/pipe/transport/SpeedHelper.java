@@ -22,8 +22,8 @@ import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 public final class SpeedHelper {
 
   private static final float MIN_SPEED = 0.01f;
-  private static final float MAX_SPEED = 0.4f;
-  private static final float SLOWDOWN = 0.002f;
+  private static final float MAX_SPEED = 0.15f;
+  public static final float SLOWDOWN = 0.01f;
 
   private SpeedHelper() {
   }
@@ -33,13 +33,11 @@ public final class SpeedHelper {
    * <p>
    * 基本的な減衰ロジックを提供。
    */
-  public static void readjustSpeed(TravelingItem item, float defaultSpeed) {
-    float speed = item.getSpeed();
-    if (speed > defaultSpeed) {
-      speed = Math.max(defaultSpeed, speed - SLOWDOWN);
-    } else if (speed < defaultSpeed) {
-      speed = Math.min(defaultSpeed, speed + SLOWDOWN);
-    }
-    item.setSpeed(Math.max(MIN_SPEED, Math.min(MAX_SPEED, speed)));
+  public static void readjustSpeed(TravelingItem item, float slowdown) {
+    item.setSpeed(Math.max(MIN_SPEED, Math.min(MAX_SPEED, item.getSpeed()) - slowdown));
+  }
+
+  public static void boost(TravelingItem item) {
+    item.setSpeed(Math.max(MIN_SPEED * 4, Math.min(MAX_SPEED, item.getSpeed() * 4)));
   }
 }
