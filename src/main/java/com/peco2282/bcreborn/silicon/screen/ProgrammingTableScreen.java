@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.silicon.screen;
 
 import com.peco2282.bcreborn.silicon.block.entity.ProgrammingTableBlockEntity;
 import com.peco2282.bcreborn.silicon.menu.ProgrammingTableMenu;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,17 @@ public class ProgrammingTableScreen extends LaserTableScreen<ProgrammingTableMen
     this.imageWidth = 176;
     this.imageHeight = 205;
     this.inventoryLabelY = this.imageHeight - 94;
+  }
+
+  @Override
+  protected void init() {
+    super.init();
+    addRenderableWidget(Button.builder(Component.literal("<"), button ->
+      minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0))
+      .bounds(leftPos + 49, topPos + 52, 20, 20).build());
+    addRenderableWidget(Button.builder(Component.literal(">"), button ->
+      minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 1))
+      .bounds(leftPos + 107, topPos + 52, 20, 20).build());
   }
 
   @Override

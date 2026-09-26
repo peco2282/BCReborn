@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.silicon.menu;
 
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.block.entity.IntegrationTableBlockEntity;
+import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -37,13 +37,13 @@ public class IntegrationTableMenu extends BuildCraftMenu<IntegrationTableMenu> {
   public IntegrationTableMenu(int windowId, Inventory playerInventory, IntegrationTableBlockEntity table) {
     super(SiliconMenuTypes.INTEGRATION_TABLE.get(), windowId, playerInventory);
     this.table = table;
+    addDataSlots(new LaserTableData(table));
 
     for (int i = 0; i < 9; i++) {
       addSlot(new Slot(table, i, SLOT_X[i], SLOT_Y[i]));
     }
 
-    addSlot(new Slot(table, 9, 138, 49));
-    addSlot(new Slot(new SimpleContainer(1), 0, 101, 36));
+    addSlot(new SlotOutput(table, 9, 138, 49));
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 9; x++) {

@@ -560,7 +560,9 @@ public class NbtWriter {
   }
 
   public NbtWriter putList(String key, Consumer<ListTag> value) {
-    value.accept(new ListTag());
+    ListTag list = new ListTag();
+    value.accept(list);
+    tag.put(key, list);
     return this;
   }
 

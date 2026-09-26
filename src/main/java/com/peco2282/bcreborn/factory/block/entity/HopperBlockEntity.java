@@ -23,21 +23,50 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 public class HopperBlockEntity extends BuildCraftBlockEntity implements Container, IRedstoneEngineReceiver, IEnergyStorage, MenuProvider {
 
   private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
   private boolean isEmpty = true;
+  private LazyOptional<IItemHandler> itemCapability =
+    LazyOptional.of(() -> new InvWrapper(this));
+
+  @Override
+  public <T> LazyOptional<T> getCapability(
+      Capability<T> cap, Direction side) {
+    if (cap == ForgeCapabilities.ITEM_HANDLER) return itemCapability.cast();
+    return super.getCapability(cap, side);
+  }
+
+  @Override
+  public void invalidateCaps() {
+    super.invalidateCaps();
+    itemCapability.invalidate();
+  }
+
+  @Override
+  public void reviveCaps() {
+    super.reviveCaps();
+    itemCapability = LazyOptional.of(() -> new InvWrapper(this));
+  }
 
   public HopperBlockEntity(BlockPos pos, BlockState state) {
     super(FactoryBlockEntityTypes.HOPPER.get(), pos, state);
@@ -79,6 +108,7 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
     super.load(nbt);
     ContainerHelper.loadAllItems(nbt, this.inventory);
     updateIsEmpty();
+    setChanged();
   }
 
   @Override
@@ -93,45 +123,28 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
       return;
     }
 
+    if (!level.hasChunkAt(pos.below())) return;
     BlockEntity outputTile = level.getBlockEntity(pos.below());
     if (outputTile == null) return;
-
-    // TODO: Implement item injection logic using capabilities or IInjectable
-    // For now, simple implementation if it's a Container
-    if (outputTile instanceof Container container) {
-      for (int i = 0; i < getContainerSize(); i++) {
-        ItemStack stack = getItem(i);
-        if (!stack.isEmpty()) {
-          ItemStack copy = stack.copy();
-          copy.setCount(1);
-          ItemStack remaining = insertItem(container, copy);
-          if (remaining.isEmpty()) {
-            removeItem(i, 1);
-            return;
-          }
-        }
+    IItemHandler handler = outputTile.getCapability(
+      ForgeCapabilities.ITEM_HANDLER, Direction.UP).orElse(null);
+    if (handler == null && outputTile instanceof WorldlyContainer sided) {
+      handler = new SidedInvWrapper(sided, Direction.UP);
+    } else if (handler == null && outputTile instanceof Container container) {
+      handler = new InvWrapper(container);
+    }
+    if (handler == null) return;
+    for (int slot = 0; slot < getContainerSize(); slot++) {
+      if (getItem(slot).isEmpty()) continue;
+      ItemStack offered = getItem(slot).copyWithCount(1);
+      ItemStack remaining = ItemHandlerHelper.insertItemStacked(handler, offered, false);
+      if (remaining.isEmpty()) {
+        removeItem(slot, 1);
+        outputTile.setChanged();
+        return;
       }
     }
   }
-
-  private ItemStack insertItem(Container container, ItemStack stack) {
-    for (int i = 0; i < container.getContainerSize(); i++) {
-      if (container.canPlaceItem(i, stack)) {
-        ItemStack target = container.getItem(i);
-        if (target.isEmpty()) {
-          container.setItem(i, stack);
-          return ItemStack.EMPTY;
-        } else if (ItemStack.isSameItemSameTags(target, stack)) {
-          int count = Math.min(stack.getCount(), target.getMaxStackSize() - target.getCount());
-          target.grow(count);
-          stack.shrink(count);
-          if (stack.isEmpty()) return ItemStack.EMPTY;
-        }
-      }
-    }
-    return stack;
-  }
-
   private void updateIsEmpty() {
     isEmpty = true;
     for (ItemStack stack : inventory) {
@@ -161,6 +174,7 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
   public ItemStack removeItem(int slot, int count) {
     ItemStack stack = ContainerHelper.removeItem(inventory, slot, count);
     updateIsEmpty();
+    setChanged();
     return stack;
   }
 
@@ -168,6 +182,7 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
   public ItemStack removeItemNoUpdate(int slot) {
     ItemStack stack = ContainerHelper.takeItem(inventory, slot);
     updateIsEmpty();
+    setChanged();
     return stack;
   }
 
@@ -175,6 +190,7 @@ public class HopperBlockEntity extends BuildCraftBlockEntity implements Containe
   public void setItem(int slot, ItemStack stack) {
     inventory.set(slot, stack);
     updateIsEmpty();
+    setChanged();
   }
 
   @Override

@@ -18,20 +18,20 @@ import com.peco2282.bcreborn.common.gui.widgets.Widget;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.PacketGuiWidget;
 import io.netty.buffer.ByteBufInputStream;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.world.inventory.*;
 
 public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends AbstractContainerMenu {
   private final List<Widget> widgets = new ArrayList<>();
@@ -276,6 +276,8 @@ public abstract class BuildCraftMenu<M extends BuildCraftMenu<M>> extends Abstra
 
   @Override
   public ItemStack quickMoveStack(Player player, int slotIndex) {
+    if (slotIndex < 0 || slotIndex >= slots.size() || slots.get(slotIndex) instanceof IPhantomSlot
+      || !slots.get(slotIndex).mayPickup(player)) return ItemStack.EMPTY;
     ItemStack originalStack = ItemStack.EMPTY;
     Slot slot = slots.get(slotIndex);
     int numSlots = slots.size();

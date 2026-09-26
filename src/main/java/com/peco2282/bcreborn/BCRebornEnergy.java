@@ -72,7 +72,9 @@ public class BCRebornEnergy implements BCReborn {
       FuelManager.INSTANCE
     );
 
-    BuildcraftFuelRegistry.getFuelManager().addFuel(EnergyFluids.OIL_SOURCE.get(), 1, 1);
+    // Legacy bucket durations (5000/25000 ticks) expressed in ticks per mB.
+    BuildcraftFuelRegistry.getFuelManager().addFuel(EnergyFluids.OIL_SOURCE.get(), 30, 5);
+    BuildcraftFuelRegistry.getFuelManager().addFuel(EnergyFluids.FUEL_SOURCE.get(), 60, 25);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {

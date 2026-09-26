@@ -11,15 +11,16 @@
  */
 package com.peco2282.bcreborn.silicon.menu;
 
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.gui.slots.SlotPhantom;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
-import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.block.entity.AdvancedCraftingTableBlockEntity;
+import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class AdvancedCraftingTableMenu extends BuildCraftMenu<AdvancedCraftingTableMenu> {
 
@@ -32,17 +33,23 @@ public class AdvancedCraftingTableMenu extends BuildCraftMenu<AdvancedCraftingTa
   public AdvancedCraftingTableMenu(int windowId, Inventory playerInventory, AdvancedCraftingTableBlockEntity table) {
     super(SiliconMenuTypes.ADVANCED_CRAFTING_TABLE.get(), windowId, playerInventory);
     this.workbench = table;
+    addDataSlots(new LaserTableData(table));
 
-    // 1.7.10 のロジックを再現。スロット番号などは調整が必要かもしれない
+    // Recipe ghosts live separately from the 15 inputs and 9 outputs.
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 3; x++) {
         // CraftingSlots
-        addSlot(new SlotPhantom(new SimpleContainer(9), x + y * 3, 33 + x * 18, 16 + y * 18));
+        addSlot(new SlotPhantom(workbench, 24 + x + y * 3, 33 + x * 18, 16 + y * 18) {
+          @Override public int getMaxStackSize() { return 1; }
+        });
       }
     }
 
     // Output slot
-    addSlot(new Slot(new SimpleContainer(1), 0, 127, 34));
+    addSlot(new Slot(workbench, 33, 127, 34) {
+      @Override public boolean mayPlace(ItemStack stack) { return false; }
+      @Override public boolean mayPickup(Player player) { return false; }
+    });
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 5; x++) {
@@ -52,7 +59,7 @@ public class AdvancedCraftingTableMenu extends BuildCraftMenu<AdvancedCraftingTa
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 3; x++) {
-        addSlot(new Slot(workbench, 15 + x + y * 3, 109 + x * 18, 85 + y * 18));
+        addSlot(new SlotOutput(workbench, 15 + x + y * 3, 109 + x * 18, 85 + y * 18));
       }
     }
 

@@ -13,20 +13,26 @@ package com.peco2282.bcreborn.silicon.block.entity;
 
 import com.peco2282.bcreborn.api.power.ILaserTarget;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
-import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.common.inventory.MachineItemHandler;
+import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.utils.AverageInt;
 import com.peco2282.bcreborn.common.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.MenuProvider;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity implements MenuProvider, ILaserTarget, Container, IHasWork {
   private final AverageInt recentEnergyAverageUtil = new AverageInt(20);
@@ -34,6 +40,47 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
   protected SimpleInventory inv = new SimpleInventory(getContainerSize(), "inv", 64);
   private int energy = 0;
   private int recentEnergyAverage;
+  private LazyOptional<IItemHandler> itemCapability =
+    LazyOptional.of(() -> new MachineItemHandler(
+      this, this::isMachineInput, this::isMachineOutput));
+
+  protected boolean isMachineInput(int slot) { return true; }
+  protected boolean isMachineOutput(int slot) { return true; }
+
+  public void dropRealInventory() {
+    if (level == null || level.isClientSide) return;
+    for (int slot = 0; slot < getContainerSize(); slot++) {
+      if (isMachineInput(slot) || isMachineOutput(slot)) {
+        Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(),
+          worldPosition.getZ(), getItem(slot).copy());
+      }
+    }
+    clearContent();
+    setChanged();
+  }
+
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) { return isMachineInput(slot); }
+
+  @Override
+  public <T> LazyOptional<T> getCapability(
+      Capability<T> cap, Direction side) {
+    if (cap == ForgeCapabilities.ITEM_HANDLER) return itemCapability.cast();
+    return super.getCapability(cap, side);
+  }
+
+  @Override
+  public void invalidateCaps() {
+    super.invalidateCaps();
+    itemCapability.invalidate();
+  }
+
+  @Override
+  public void reviveCaps() {
+    super.reviveCaps();
+    itemCapability = LazyOptional.of(() ->
+      new MachineItemHandler(this, this::isMachineInput, this::isMachineOutput));
+  }
 
   public LaserTableBaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
@@ -129,7 +176,9 @@ public abstract class LaserTableBaseBlockEntity extends BuildCraftBlockEntity im
 
   @Override
   public ItemStack removeItem(int slot, int amount) {
-    return inv.removeItem(slot, amount);
+    ItemStack removed = inv.removeItem(slot, amount);
+    if (!removed.isEmpty()) setChanged();
+    return removed;
   }
 
   @Override

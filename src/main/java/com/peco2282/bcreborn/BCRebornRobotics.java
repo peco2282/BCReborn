@@ -18,10 +18,12 @@ import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
 import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import com.peco2282.bcreborn.common.config.ConfigScreenRegistration;
+import com.peco2282.bcreborn.core.recipes.ProgrammingRecipeManager;
+import com.peco2282.bcreborn.robotics.event.BCRebornRoboticsEvent;
+import com.peco2282.bcreborn.robotics.recipe.BoardProgrammingRecipe;
+import com.peco2282.bcreborn.robotics.registry.RobotRegistryProvider;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
-import com.peco2282.bcreborn.robotics.event.BCRebornRoboticsEvent;
-import com.peco2282.bcreborn.robotics.registry.RobotRegistryProvider;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -79,6 +81,8 @@ public class BCRebornRobotics implements BCReborn {
     BCRebornAPIRegistry.schematic(SchematicRegistry.INSTANCE);
     RobotManager.registry(RobotRegistryProvider.INSTANCE);
     RobotManager.setEmpty(RoboticsAIType.EMPTY);
+    event.enqueueWork(() -> ProgrammingRecipeManager.INSTANCE.register(
+      new BoardProgrammingRecipe()));
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

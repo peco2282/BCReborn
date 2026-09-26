@@ -13,28 +13,36 @@ package com.peco2282.bcreborn.factory.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
-import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import com.peco2282.bcreborn.factory.block.entity.HopperBlockEntity;
+import com.peco2282.bcreborn.factory.FactoryBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class HopperBlock extends BuildCraftBlock {
+  @Override
+  public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
+    if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof HopperBlockEntity hopper) {
+      if (!level.isClientSide) Containers.dropContents(level, pos, hopper);
+    }
+    super.onRemove(state, level, pos, replacement, moving);
+  }
   public HopperBlock() {
     super(Properties.of()
       .mapColor(MapColor.METAL)
