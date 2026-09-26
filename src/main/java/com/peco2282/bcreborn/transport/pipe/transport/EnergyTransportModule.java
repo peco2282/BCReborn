@@ -90,69 +90,31 @@ public class EnergyTransportModule {
     currentTickSent = 0;
     currentTickReceived = 0;
 
+    boolean[] receivers = new boolean[6];
+    for (Direction dir : Direction.values()) {
+      BlockPos neighborPos = pos.relative(dir);
+      if (!level.isLoaded(neighborPos)) continue;
+      BlockEntity neighbor = level.getBlockEntity(neighborPos);
+      if (neighbor instanceof PipeBlockEntity other && other.getTransportType() == PipeType.ENERGY) {
+        receivers[dir.ordinal()] = other.getEnergyTransportModule() != null;
+      } else if (neighbor != null) {
+        IEnergyStorage handler = neighbor.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).orElse(null);
+        receivers[dir.ordinal()] = handler != null && handler.canReceive();
+      }
+    }
     for (int i = 0; i < 6; i++) {
       if (internalPower[i] <= 0) continue;
 
-      int totalQuery = 0;
-      for (int j = 0; j < 6; j++) {
-        if (powerQuery[j] > 0) {
-          totalQuery += powerQuery[j];
-        }
-      }
-      if (totalQuery <= 0) {
-        // 需要がない場合でも、エネルギーを保持しているなら隣接パイプへ押し出しを試みる
-        // これにより、需要がない状態でもエネルギーがパイプネットワーク全体に広がるようにする
-        for (int j = 0; j < 6; j++) {
-          Direction outDir = Direction.from3DDataValue(j);
-          if (i == j) continue; // 入力面には返さない（効率のため）
-
-          BlockPos neighborPos = pos.relative(outDir);
-          if (!level.isLoaded(neighborPos)) continue;
-          BlockEntity be = level.getBlockEntity(neighborPos);
-
-          if (be instanceof PipeBlockEntity neighborPipe
-            && neighborPipe.getTransportType() == PipeType.ENERGY) {
-            EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
-            if (neighborModule != null) {
-              // 隣接パイプへ押し出し（現在の保持量の半分を上限に試行）
-              // 修正：10.0 固定ではなく、パイプの最大能力に近い量を押し出せるようにする
-              double toPush = Math.min(internalPower[i] / 2.0, maxPower);
-              if (toPush < 0.1) toPush = internalPower[i]; // 残りわずかなら全部
-
-              double accepted = neighborModule.receiveEnergy(outDir.getOpposite(), toPush);
-              if (accepted > 0) {
-                internalPower[i] -= accepted;
-                currentTickSent += accepted;
-              }
-            }
-          } else if (be != null) {
-            // 一般機械に対しても、需要がなくてもエネルギーを押し出す（積極的に供給するため）
-            Direction incomingFace = outDir.getOpposite();
-            //noinspection DataFlowIssue
-            IEnergyStorage handler = be.getCapability(ForgeCapabilities.ENERGY, incomingFace).orElse(null);
-            //noinspection ConstantValue
-            if (handler != null && handler.canReceive()) {
-              // 需要がない場合でも、パイプが保持しているエネルギーを最大限押し込む
-              double toPush = Math.min(internalPower[i], maxPower);
-              int accepted = handler.receiveEnergy((int) toPush, false);
-              internalPower[i] -= accepted;
-              currentTickSent += accepted;
-            }
-          }
-          if (internalPower[i] <= 0) break;
-        }
-        continue;
-      }
-
       int currentQuerySum = 0;
       for (int j = 0; j < 6; j++) {
-        currentQuerySum += powerQuery[j];
+        if (j != i && receivers[j] && powerQuery[j] > 0) {
+          currentQuerySum += powerQuery[j];
+        }
       }
       if (currentQuerySum <= 0) continue;
-
       double toDistribute = internalPower[i];
       for (int j = 0; j < 6; j++) {
-        if (powerQuery[j] <= 0 || toDistribute <= 0) continue;
+        if (j == i || !receivers[j] || powerQuery[j] <= 0 || toDistribute <= 0) continue;
 
         Direction outDir = Direction.from3DDataValue(j);
         BlockPos neighborPos = pos.relative(outDir);
@@ -167,12 +129,7 @@ public class EnergyTransportModule {
           toDistribute
         );
 
-        // 需要が極端に小さい場合や、浮動小数点の計算で切り捨てられてしまう場合でも、
-        // 保持しているエネルギーがあれば最低限 1RF は送るようにする（デッドロック防止）
-        if (share < 1.0 && toDistribute >= 1.0 && powerQuery[j] > 0) {
-          share = 1.0;
-        }
-
+        currentQuerySum -= powerQuery[j];
         if (be instanceof PipeBlockEntity neighborPipe
           && neighborPipe.getTransportType() == PipeType.ENERGY) {
           // 隣接エネルギーパイプへ転送
@@ -182,8 +139,6 @@ public class EnergyTransportModule {
             internalPower[i] -= accepted;
             toDistribute -= accepted;
             currentTickSent += accepted;
-            // 比例配分で使用したRFをpowerQueryから引く（次の面での計算用）
-            // powerQuery[j] = Math.max(0, powerQuery[j] - (int) accepted); // sumも再計算が必要になるのでここでは引かない
           }
         } else {
           // 一般機械（IEnergyStorage）へ転送
@@ -197,7 +152,6 @@ public class EnergyTransportModule {
             internalPower[i] -= accepted;
             toDistribute -= accepted;
             currentTickSent += accepted;
-            // powerQuery[j] = Math.max(0, powerQuery[j] - accepted);
           }
         }
       }
@@ -244,18 +198,6 @@ public class EnergyTransportModule {
       // 隣接エネルギーパイプは需要収集対象外（パイプ間は requestEnergy で伝播）
       if (be instanceof PipeBlockEntity neighborPipe
         && neighborPipe.getTransportType() == PipeType.ENERGY) {
-        // パイプにエネルギーを保持している場合、隣接パイプに需要（誘発用）を通知して配送を促す
-        // これにより、送り先のパイプが需要を感知し、さらにその先へ需要を伝播させる
-        boolean hasPower = false;
-        for (int i = 0; i < 6; i++) {
-          if (internalPower[i] > 0 || internalNextPower[i] > 0) {
-            hasPower = true;
-            break;
-          }
-        }
-        if (hasPower) {
-          requestEnergy(dir, 1);
-        }
         continue;
       }
 
@@ -266,87 +208,31 @@ public class EnergyTransportModule {
       if (handler != null) {
         if (handler.canReceive()) {
           // 機械が受け入れ可能な最大量を問い合わせる
-          // maxPower ではなく、十分大きな値（100万RF等）で問い合わせて真の需要を知る
-          int request = handler.receiveEnergy(1000000, true); // simulate
+          // パイプの転送上限までの需要を問い合わせる。
+          int request = handler.receiveEnergy(maxPower, true); // simulate
           if (request > 0) {
             requestEnergy(dir, request);
           }
-        } else if (handler.canExtract()) {
-          // エンジン等の供給源の場合、パイプに空きがあれば1RFの「誘発用需要」を登録する
-          // これにより需要が遡り、木エンジンからの押し込みや木パイプの吸い出しが機能し始める
-          if (internalNextPower[dir.get3DDataValue()] < maxPower) {
-            requestEnergy(dir, 1);
-          }
         }
       }
     }
 
-    // 5. 需要を隣接エネルギーパイプへ伝播（入力側を探す）
-    int totalSystemQuery = 0;
-    for (int j = 0; j < 6; j++) {
-      totalSystemQuery += powerQuery[j];
-    }
-    totalSystemQuery = Math.min(totalSystemQuery, maxPower);
-
-    if (totalSystemQuery > 0) {
-      for (int i = 0; i < 6; i++) {
-        Direction dir = Direction.from3DDataValue(i);
-
-        // 1. エネルギーが入ってきた方向（入力元）、またはエネルギー供給源に対して需要を伝播する
-        // これにより需要が供給源に向かって遡る
-        // internalPower[i] > 0 は「この面からエネルギーを受け取った」ことを示す
-        boolean hasIncomingPower = internalPower[i] > 0 || internalNextPower[i] > 0;
-
-        // 供給元（エンジン等）が隣接しているかチェック
-        boolean hasSource = false;
-        BlockEntity neighborBE = level.getBlockEntity(pos.relative(dir));
-        if (neighborBE != null) {
-          IEnergyStorage s = neighborBE.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).orElse(null);
-          if (s != null && s.canExtract()) {
-            hasSource = true;
-          }
-        }
-
-        // 2. 需要を伝播させる条件:
-        // - その方向からエネルギーが来ている
-        // - その方向にエネルギー供給源がある
-        // - 木のエネルギーパイプなど、自らエネルギーを抽出するパイプ
-        // - 現在エネルギーを保持している場合（全方位へ広めるため）
-        // - システム全体に需要がある場合（全方位へ探索するため）
-        boolean isSourcePipe = pipe.getPipeMaterial() == PipeMaterial.WOOD;
-        boolean hasInternalPower = false;
-        for (int j = 0; j < 6; j++) {
-          if (internalPower[j] > 0 || internalNextPower[j] > 0) {
-            hasInternalPower = true;
-            break;
-          }
-        }
-
-        // 需要を伝播させる量を計算
-        // 保持しているエネルギーがある場合は、そのエネルギーを流したいので、
-        // 転送可能量（maxPower）程度の需要を伝播させて供給源（エンジン）からの出力を促す
-        int queryToSend = totalSystemQuery;
-        if (hasInternalPower || isSourcePipe) {
-          queryToSend = Math.max(queryToSend, maxPower);
-        }
-
-        if (hasIncomingPower || hasSource || isSourcePipe || hasInternalPower || totalSystemQuery > 0) {
-          // 条件を満たす場合、需要を隣接パイプへ伝播する
-          BlockPos neighborPos = pos.relative(dir);
-          if (!level.isLoaded(neighborPos)) continue;
-
-          BlockEntity be = level.getBlockEntity(neighborPos);
-          if (be instanceof PipeBlockEntity neighborPipe
-            && neighborPipe.getTransportType() == PipeType.ENERGY) {
-            EnergyTransportModule neighborModule = neighborPipe.getEnergyTransportModule();
-            if (neighborModule != null) {
-              neighborModule.requestEnergy(dir.getOpposite(), queryToSend);
-            }
-          }
-        }
+    // 各面には、その面自身を除く需要だけを伝える。架空の需要は生成しない。
+    for (int i = 0; i < 6; i++) {
+      long query = 0;
+      for (int j = 0; j < 6; j++) {
+        if (j != i) query += powerQuery[j];
+      }
+      int request = (int) Math.min(query, maxPower);
+      Direction dir = Direction.from3DDataValue(i);
+      BlockPos neighborPos = pos.relative(dir);
+      if (request <= 0 || !level.isLoaded(neighborPos)) continue;
+      if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity neighbor
+        && neighbor.getTransportType() == PipeType.ENERGY
+        && neighbor.getEnergyTransportModule() != null) {
+        neighbor.getEnergyTransportModule().requestEnergy(dir.getOpposite(), request);
       }
     }
-
     pipe.setChanged();
   }
 
@@ -411,7 +297,8 @@ public class EnergyTransportModule {
     if (level != null) {
       step(level);
     }
-    nextPowerQuery[from.get3DDataValue()] += amount;
+    int side = from.get3DDataValue();
+    nextPowerQuery[side] = (int) Math.min(maxPower, (long) nextPowerQuery[side] + Math.max(0, amount));
   }
 
   public boolean isOverloaded() {

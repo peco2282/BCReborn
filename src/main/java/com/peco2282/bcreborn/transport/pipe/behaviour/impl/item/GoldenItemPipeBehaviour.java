@@ -25,28 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 public class GoldenItemPipeBehaviour implements ItemPipeBehaviour {
 
   public static final GoldenItemPipeBehaviour INSTANCE = new GoldenItemPipeBehaviour();
-  // 金パイプ通過後の加速距離（ブロック数）。丸石/焼石パイプが減衰に使用する。
-  public static final int BOOST_DISTANCE = 32;
-  private static final float MAX_SPEED = 0.6f;
-
   private GoldenItemPipeBehaviour() {
   }
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    if (!pipe.getLevel().hasNeighborSignal(pipe.getBlockPos())) {
-      SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
-      return;
-    }
-    float speed = item.getSpeed();
-    if (speed < 0.15f) {
-      speed *= 2.0f;
-    } else {
-      speed += 0.04f;
-    }
-    item.setSpeed(Math.min(speed, MAX_SPEED));
-    // 加速後の残り距離カウンタをセット（丸石/焼石パイプが減衰に使用）
-    item.setBoostedBlocksRemaining(BOOST_DISTANCE);
+    SpeedHelper.boost(item);
   }
 
   @Override

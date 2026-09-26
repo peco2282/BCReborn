@@ -27,9 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CobblestoneItemPipeBehaviour implements ItemPipeBehaviour {
 
   public static final CobblestoneItemPipeBehaviour INSTANCE = new CobblestoneItemPipeBehaviour();
-  // 丸石パイプは金パイプ加速後16ブロックで元の速度に戻る
-  private static final int COBBLESTONE_DECAY_DISTANCE = 16;
-
   private CobblestoneItemPipeBehaviour() {
   }
 
@@ -44,10 +41,6 @@ public class CobblestoneItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    int remaining = item.getBoostedBlocksRemaining();
-    if (remaining > 0) {
-      item.setBoostedBlocksRemaining(remaining - 1);
-    }
-    SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
+    SpeedHelper.readjustSpeed(item, SpeedHelper.SLOWDOWN);
   }
 }

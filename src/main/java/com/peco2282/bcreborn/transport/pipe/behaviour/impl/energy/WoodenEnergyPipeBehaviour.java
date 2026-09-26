@@ -61,7 +61,7 @@ public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
 
       // 吸い出し可能量を計算（maxPower との差分を上限とする）
       // 需要がない場合でも、パイプに空きがあれば最小限（1RF）は吸い出すようにして、需要を誘発させる
-      int currentPower = (int) module.getInternalPower()[dir.getOpposite().get3DDataValue()];
+      int currentPower = (int) module.getInternalPower()[dir.get3DDataValue()];
       int canReceive = maxTransfer - currentPower;
       if (canReceive <= 0) continue;
 
@@ -70,7 +70,7 @@ public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
       if (extracted <= 0) continue;
 
       // EnergyTransportModule へ注入
-      int accepted = module.receiveEnergy(dir.getOpposite(), extracted);
+      int accepted = module.receiveEnergy(dir, extracted);
       if (accepted > 0) {
         source.extractEnergy(accepted, false); // 実際に抽出
       }

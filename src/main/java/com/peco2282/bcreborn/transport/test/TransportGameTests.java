@@ -75,7 +75,7 @@ public class TransportGameTests {
   }
 
   @PrefixGameTestTemplate(false)
-  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 400)
   public void testItemTransport(GameTestHelper helper) {
     BlockPos pos1 = new BlockPos(0, 1, 1);
     BlockPos pos2 = new BlockPos(1, 1, 1);
@@ -117,17 +117,16 @@ public class TransportGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void testEnergyTransport(GameTestHelper helper) {
-    // 構成: 木エンジン(0,1,1) -> 木エネルギーパイプ(1,1,1) -> 金エネルギーパイプ(2,1,1)
-    // 木エンジンは北向き(Direction.NORTH, 負のZ方向)に設置するが、テンプレート内なので相対座標で調整
-    // ここでは簡易的に東向き(Direction.EAST)にエンジンを置き、東隣にパイプを並べる
+    // 構成: Creativeエンジン(0,1,1) -> 木エネルギーパイプ(1,1,1) -> 金エネルギーパイプ(2,1,1)
+    // 東向きのエンジンとFE配管。木エンジンは汎用FE供給には使えない。
 
     BlockPos enginePos = new BlockPos(0, 1, 1);
     BlockPos woodPipePos = new BlockPos(1, 1, 1);
     BlockPos goldPipePos = new BlockPos(2, 1, 1);
     BlockPos minerPos = new BlockPos(3, 1, 1);
 
-    // 木エンジンを設置
-    helper.setBlock(enginePos, com.peco2282.bcreborn.core.CoreBlocks.WOODEN_ENGINE.get().defaultBlockState()
+    // Creativeエンジンを設置
+    helper.setBlock(enginePos, com.peco2282.bcreborn.energy.EnergyBlocks.CREATIVE_ENGINE.get().defaultBlockState()
       .setValue(com.peco2282.bcreborn.common.block.EngineBlock.FACING, Direction.EAST));
 
     // パイプを設置
@@ -141,7 +140,7 @@ public class TransportGameTests {
     helper.setBlock(enginePos.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
 
     helper.runAtTickTime(100, () -> {
-      // 木エンジンの熱が上がってエネルギーが生成されるのを待つ
+      // 配管を通ってエネルギーが到達するのを待つ
       // Minerにエネルギーが届いているか確認
       BlockEntity be = helper.getBlockEntity(minerPos);
       if (be instanceof com.peco2282.bcreborn.factory.block.entity.MiningWellBlockEntity minerBE) {

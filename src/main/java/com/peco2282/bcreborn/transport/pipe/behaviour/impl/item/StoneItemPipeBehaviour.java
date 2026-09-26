@@ -26,9 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class StoneItemPipeBehaviour implements ItemPipeBehaviour {
   public static final StoneItemPipeBehaviour INSTANCE = new StoneItemPipeBehaviour();
-  // 焼石パイプは金パイプ加速後32ブロックで元の速度に戻る
-  private static final int STONE_DECAY_DISTANCE = 32;
-
   private StoneItemPipeBehaviour() {
   }
 
@@ -43,12 +40,6 @@ public class StoneItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    int remaining = item.getBoostedBlocksRemaining();
-    if (remaining > 0) {
-      item.setBoostedBlocksRemaining(remaining - 1);
-      // 石パイプでは速度を維持する（readjustSpeedを呼ばない）
-    } else {
-      SpeedHelper.readjustSpeed(item, pipe.getPipeMaterial().getItemSpeed());
-    }
+    SpeedHelper.readjustSpeed(item, SpeedHelper.SLOWDOWN / 2);
   }
 }
