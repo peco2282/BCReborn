@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
+import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -31,6 +32,48 @@ import net.minecraftforge.items.IItemHandler;
 
 @GameTestHolder(BCRebornTransport.MODID)
 public class TransportGameTests {
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void testItemRouteAvailableBeforeCenter(GameTestHelper helper) {
+    BlockPos pos = new BlockPos(1, 1, 1);
+    helper.setBlock(pos, TransportBlocks.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState());
+    helper.setBlock(pos.north(), Blocks.CHEST.defaultBlockState());
+    helper.runAtTickTime(10, () -> {
+      PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(pos);
+      pipe.injectItem(new ItemStack(Items.DIAMOND), Direction.WEST);
+      TravelingItem item = pipe.getTravelingItems().get(0);
+      if (item.getProgress() != 0 || item.getNextDirection() != Direction.NORTH) {
+        helper.fail("The west-to-north route must be available immediately on injection");
+      }
+      TravelingItem synced = TravelingItem.load(item.save());
+      if (synced.getEntryDirection() != Direction.WEST || synced.getNextDirection() != Direction.NORTH) {
+        helper.fail("The route must survive serialization for client rendering");
+      }
+      helper.succeed();
+    });
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void testItemReverseAtBlockedExit(GameTestHelper helper) {
+    for (Direction entry : Direction.values()) {
+      for (Direction exit : Direction.values()) {
+        TravelingItem item = new TravelingItem(new ItemStack(Items.DIAMOND), entry);
+        item.setNextDirection(exit);
+        item.setProgress(1);
+        item.setCenterReached(true);
+        item.reverse();
+        TravelingItem synced = TravelingItem.load(item.save());
+        if (synced.getEntryDirection() != exit || synced.getNextDirection() != entry
+          || synced.getProgress() != 0 || synced.getPrevProgress() != 0
+          || item.isCenterReached() || synced.getBounceCount() != 1) {
+          helper.fail("A reversed item must start at its blocked exit and return to its original entrance");
+        }
+      }
+    }
+    helper.succeed();
+  }
+
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void testItemTransport(GameTestHelper helper) {

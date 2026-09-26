@@ -76,8 +76,8 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
     if (progress < 0.5f) {
       // エントリー方向から中心へ向かっている
-      // entryDirの逆方向の端（progress=0）から中心（progress=0.5）へ
-      Direction fromEdge = entryDir.getOpposite();
+      // entryDir は入ってきた面。端（progress=0）から中心（progress=0.5）へ。
+      Direction fromEdge = entryDir;
       float t = progress * 2.0f; // 0.0 -> 1.0 (端から中心へ)
       x = 0.5f + fromEdge.getStepX() * 0.5f * (1.0f - t);
       y = 0.5f + fromEdge.getStepY() * 0.5f * (1.0f - t);
