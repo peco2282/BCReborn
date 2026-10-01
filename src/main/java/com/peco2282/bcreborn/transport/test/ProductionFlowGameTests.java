@@ -105,7 +105,7 @@ public class ProductionFlowGameTests {
     var table = (AdvancedCraftingTableBlockEntity) helper.getBlockEntity(pos);
     table.setItem(24, new ItemStack(Items.OAK_PLANKS));
     table.setItem(27, new ItemStack(Items.OAK_PLANKS));
-    table.setItem(0, new ItemStack(Items.OAK_PLANKS, 2));
+    table.setItem(0, new ItemStack(Items.BIRCH_PLANKS, 2));
     tick(helper, table);
     check(helper, table.getItem(0).getCount() == 2 && table.getItem(15).isEmpty(), "Unpowered crafting must retain materials");
     for (int i = 15; i < 24; i++) table.setItem(i, new ItemStack(Items.DIRT, 64));
@@ -118,7 +118,7 @@ public class ProductionFlowGameTests {
     tick(helper, table);
     check(helper, table.getItem(15).is(Items.STICK) && table.getItem(15).getCount() == 4
       && table.getItem(0).isEmpty() && table.getEnergy() == 0 && table.getItem(24).is(Items.OAK_PLANKS),
-      "Restored recipe must consume two real inputs while keeping its ghost pattern");
+      "Restored recipe must accept tag-equivalent real inputs while keeping its ghost pattern");
     var cap = table.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP);
     var handler = cap.orElseThrow(IllegalStateException::new);
     check(helper, handler.extractItem(24, 1, false).isEmpty()
