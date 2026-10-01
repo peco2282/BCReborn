@@ -119,12 +119,17 @@ public class TransportCompatibilityGameTests {
       .setValue(EngineBlock.FACING, Direction.EAST));
     helper.setBlock(receiverPos, FactoryBlocks.HOPPER.get().defaultBlockState());
     helper.setBlock(pos.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
-    helper.runAtTickTime(20, () -> helper.setBlock(receiverPos, Blocks.AIR.defaultBlockState()));
-    helper.runAtTickTime(60, () -> {
+    helper.runAtTickTime(20, () -> {
+      WoodEngineBlockEntity engine = (WoodEngineBlockEntity) helper.getBlockEntity(pos);
+      if (engine.getEnergyStored() <= 0) helper.fail("Wood engine did not buffer a pulse before receiver removal");
+      helper.setBlock(receiverPos, Blocks.AIR.defaultBlockState());
+    });
+    // Piston speed depends on the engine's energy/heat and the world's tick phase.
+    // Wait for the active stroke to reach its dispatch point instead of assuming a fixed tick.
+    helper.runAtTickTime(21, () -> helper.succeedWhen(() -> {
       WoodEngineBlockEntity engine = (WoodEngineBlockEntity) helper.getBlockEntity(pos);
       assertNear(helper, 0, engine.getEnergyStored());
-      helper.succeed();
-    });
+    }));
   }
 
   private static void assertNear(GameTestHelper helper, double expected, double actual) {
