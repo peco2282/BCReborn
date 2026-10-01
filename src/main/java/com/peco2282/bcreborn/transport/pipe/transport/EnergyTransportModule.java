@@ -68,10 +68,13 @@ public class EnergyTransportModule {
   private double currentTickReceived = 0;
 
   public EnergyTransportModule(PipeBlockEntity pipe) {
+    this(pipe, pipe.getPipeMaterial());
+  }
+
+  public EnergyTransportModule(PipeBlockEntity pipe, PipeMaterial material) {
     this.pipe = pipe;
-    PipeMaterial mat = pipe.getPipeMaterial();
-    this.maxPower = mat.getEnergyTransferRate();
-    this.powerResistance = mat.getPowerResistance();
+    this.maxPower = material.getEnergyTransferRate();
+    this.powerResistance = material.getPowerResistance();
   }
 
   // ---- 公開API ----

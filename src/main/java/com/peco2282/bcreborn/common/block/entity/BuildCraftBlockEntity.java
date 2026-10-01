@@ -90,7 +90,7 @@ public abstract class BuildCraftBlockEntity extends BlockEntity implements IEner
     return battery;
   }
 
-  public void setBattery(EnergyStorage battery) {
+  public void setBattery(@Nullable EnergyStorage battery) {
     this.battery = battery;
   }
 

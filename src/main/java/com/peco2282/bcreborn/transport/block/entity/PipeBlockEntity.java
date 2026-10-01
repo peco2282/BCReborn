@@ -28,18 +28,15 @@ import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
-import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
-import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviourManager;
+import com.peco2282.bcreborn.transport.pipe.runtime.PipeRuntime;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import com.peco2282.bcreborn.transport.pipe.transport.FluidTransportModule;
-import com.peco2282.bcreborn.transport.pipe.transport.ItemTransportModule;
 import com.peco2282.bcreborn.transport.pipe.transport.PipeEnergyStorage;
+import com.peco2282.bcreborn.transport.gates.GatePluggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -60,30 +57,30 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
-import com.peco2282.bcreborn.transport.gates.GatePluggable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Forge BlockEntity lifecycle holder.
  * <p>
  * Responsibilities:
- * - NBT serialization
+ * - Minecraft/Forge lifecycle and network serialization entry points
  * - Capability exposure
  * - tick delegation
- * - module ownership
+ * - pluggable hosting
  * </p>
- * Transport logic itself is delegated to transport modules.
+ * Pipe state and transport selection are owned by {@link PipeRuntime}.
  */
 public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeBlockEntity, Container, IDebuggable {
   public final SideProperties sideProperties = new SideProperties();
-  // アイテム輸送
-  private final ItemTransportModule itemTransportModule = new ItemTransportModule(this);
-  private final EnumMap<Direction, SimpleInventory> filters = new EnumMap<>(Direction.class);
+  private final PipeRuntime runtime;
   // Capability lazy optionals
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
   private final Map<Direction, LazyOptional<IEnergyStorage>> energySideCapsMap = new EnumMap<>(Direction.class);
-  private final boolean[] wireSignals = new boolean[4];
   private final IPipe pipeApi = new IPipe() {
     @Override
     public IPipeBlockEntity getBlockEntity() {
@@ -115,38 +112,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return false;
     }
   };
-  // 流体輸送モジュール（FLUID パイプのみ有効）
-  @Nullable
-  private FluidTransportModule fluidTransportModule;
-  // エネルギー輸送モジュール（ENERGY パイプのみ有効）
-  @Nullable
-  private EnergyTransportModule energyTransportModule;
-  // 流体ストレージ（FLUID パイプのみ生成）
-  @Nullable
-  private FluidTank fluidTank;
-  // エネルギーストレージ（ENERGY パイプのみ生成）
-  @Nullable
-  private EnergyStorage energyStorage;
   private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
   private final Map<Direction, LazyOptional<IFluidHandler>> fluidSideCaps = new EnumMap<>(Direction.class);
   private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
-  private PipeType transportType;
-  private PipeMaterial pipeMaterial;
-  private int ticksSincePull = 0;
-  // Clay流体パイプのラウンドロビンカウンタ
-  private int fluidRoundRobinIndex = 0;
-  private PipeBehaviour behaviour;
-  private Direction ironPipeOutput = Direction.UP;
-  private int ironPipeEnergyLimit = 1280;
-  private Direction extractionSide = Direction.DOWN;
-  private int filterSlotIndex = 0;
-  // Diamond Pipe: 使用済みフィルタースロットのbitmask（方向ordinal * 9 + slotIndex）
-  private long usedFilters = 0L;
-  // Lapis Pipe: パイプの色（0〜15、EnumColor互換）
-//  private int pipeColor = 0;
-  @Nullable // if null will be no color
-  private DyeColor pipeColor = null;
-  private ExtractFilterMode extractFilterMode = ExtractFilterMode.WHITE_LIST;
 
   public PipeBlockEntity(BlockPos pos, BlockState state) {
     this(pos, state, PipeType.ITEM, PipeMaterial.IRON);
@@ -154,7 +122,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   public PipeBlockEntity(BlockPos pos, BlockState state, PipeType type, PipeMaterial material) {
     super(getBlockEntityType(type), pos, state);
-    initPipe(type, material);
+    runtime = new PipeRuntime(this, type, material);
+    rebuildCapabilities();
+    configureExtractionBattery();
   }
 
   public static BlockEntityType<PipeBlockEntity> getBlockEntityType(PipeType type) {
@@ -165,20 +135,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     };
   }
 
-  private void initPipe(PipeType type, PipeMaterial material) {
+  private void rebuildCapabilities() {
     fluidHandlerCap.invalidate();
     fluidSideCaps.values().forEach(LazyOptional::invalidate);
     fluidSideCaps.clear();
-    if (material.unsupports(type)) {
-      throw new IllegalArgumentException("Pipe material does not support the specified pipe type");
-    }
-    this.transportType = type;
-    this.pipeMaterial = material;
-    this.fluidTank = (type == PipeType.FLUID) ? new FluidTank(1000) : null;
-    int energyCapVal = (type == PipeType.ENERGY) ? material.getEnergyTransferRate() * 2 : -1;
-    this.energyStorage = (type == PipeType.ENERGY) ? new EnergyStorage(energyCapVal, energyCapVal, energyCapVal, 0) : null;
-    this.fluidTransportModule = (type == PipeType.FLUID) ? new FluidTransportModule(this) : null;
-    this.energyTransportModule = (type == PipeType.ENERGY) ? new EnergyTransportModule(this) : null;
+    energyCap.invalidate();
+    energySideCapsMap.values().forEach(LazyOptional::invalidate);
+    energySideCapsMap.clear();
+    FluidTank fluidTank = runtime.fluidTank();
+    EnergyStorage energyStorage = runtime.energyStorage();
+    EnergyTransportModule energyTransportModule = runtime.energyTransport();
     if (fluidTank != null) {
       var handler = new PipeFluidHandler(this, fluidTank);
       this.fluidHandlerCap = LazyOptional.of(() -> handler);
@@ -199,31 +165,36 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         energySideCapsMap.put(dir, LazyOptional.empty());
       }
     }
-    for (Direction dir : Direction.values()) {
-      filters.putIfAbsent(dir, new SimpleInventory(9, "Filter " + dir.name(), 1));
-    }
-    this.behaviour = PipeBehaviourManager.getBehaviour(type, material);
+  }
 
-    // Powered pipe (for extract)
-    if (material == PipeMaterial.WOOD && (type == PipeType.ITEM || type == PipeType.FLUID)) {
-      this.setBattery(new EnergyStorage(1024, 64, 64, 0));
+  private void configureExtractionBattery() {
+    boolean needsBattery = runtime.material() == PipeMaterial.WOOD
+        && (runtime.type() == PipeType.ITEM || runtime.type() == PipeType.FLUID);
+    if (needsBattery && getBattery() == null) {
+      setBattery(new EnergyStorage(1024, 64, 64, 0));
+    } else if (!needsBattery) {
+      setBattery(null);
     }
+  }
+
+  public PipeRuntime getRuntime() {
+    return runtime;
   }
 
   public int getTicksSincePull() {
-    return ticksSincePull;
+    return runtime.ticksSincePull();
   }
 
   public void resetTicksSincePull() {
-    ticksSincePull = 0;
+    runtime.resetTicksSincePull();
   }
 
   public PipeBehaviour getBehaviour() {
-    return behaviour;
+    return runtime.behaviour();
   }
 
   public void setBehaviour(PipeBehaviour behaviour) {
-    this.behaviour = behaviour;
+    runtime.setBehaviour(behaviour);
   }
 
   // ---- アイテム輸送 ----
@@ -234,37 +205,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       var pluggable = getPipePluggable(side);
       if (pluggable != null) pluggable.update(this, side);
     }
-    if (level.isClientSide) {
-      if (transportType == PipeType.ITEM) {
-        tickItems(level, pos);
-      }
-      return;
-    }
-    ticksSincePull++;
-
-    if (behaviour != null) {
-      behaviour.tick(this, level, pos, state);
-    }
-
-    if (transportType == PipeType.ITEM) {
-      tickItems(level, pos);
-    } else if (transportType == PipeType.FLUID) {
-      if (fluidTransportModule != null) {
-        fluidTransportModule.tick(level, pos);
-      }
-    } else if (transportType == PipeType.ENERGY) {
-      // エネルギー吸い出し（Wood パイプ等）を先に実行してからモジュールをtick
-      if (behaviour instanceof EnergyPipeBehaviour eb) {
-        eb.extractEnergy(this);
-      }
-      if (energyTransportModule != null) {
-        energyTransportModule.tick(level, pos);
-      }
-    }
-  }
-
-  private void tickItems(Level level, BlockPos pos) {
-    itemTransportModule.tick(level, pos);
+    runtime.tick(level, pos, state);
   }
 
   public int getExtractionEnergy() {
@@ -281,133 +222,80 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public void injectItem(ItemStack stack, Direction from) {
-    injectItemWithSpeed(stack, from, pipeMaterial.getItemSpeed());
+    injectItemWithSpeed(stack, from, runtime.material().getItemSpeed());
   }
 
   public void injectItemWithSpeed(ItemStack stack, Direction from, float speed) {
-    itemTransportModule.injectItem(stack, from, speed);
+    runtime.injectItem(stack, from, speed);
   }
 
   public void dropItems() {
-    itemTransportModule.dropItems();
+    runtime.dropItems();
   }
 
   // ---- Fluid ----
 
   public List<TravelingItem> getTravelingItems() {
-    return itemTransportModule.getTravelingItems();
+    return runtime.travelingItems();
   }
 
   @Nullable
   public FluidTank getFluidTank() {
-    return fluidTank;
+    return runtime.fluidTank();
   }
 
   @Nullable
   public FluidTransportModule getFluidTransportModule() {
-    return fluidTransportModule;
+    return runtime.fluidTransport();
   }
 
   public int getFluidRoundRobinIndex() {
-    return fluidRoundRobinIndex;
+    return runtime.fluidRoundRobinIndex();
   }
 
   // ---- Energy ----
 
   public void advanceFluidRoundRobin(int size) {
-    if (size > 0) fluidRoundRobinIndex = (fluidRoundRobinIndex + 1) % size;
+    runtime.advanceFluidRoundRobin(size);
   }
 
   @Nullable
   public EnergyTransportModule getEnergyTransportModule() {
-    return energyTransportModule;
+    return runtime.energyTransport();
   }
 
   @Nullable
   public EnergyStorage getPipeEnergyStorage() {
-    return energyStorage;
+    return runtime.energyStorage();
   }
 
   // ---- Wire signals ----
 
   public int getPipeEnergyStored() {
-    return energyStorage != null ? energyStorage.getEnergyStored() : 0;
+    EnergyStorage storage = runtime.energyStorage();
+    return storage != null ? storage.getEnergyStored() : 0;
   }
 
   public void setWireSignal(DyeColor color, boolean signal) {
-    int index = getWireIndex(color);
-    if (index >= 0 && wireSignals[index] != signal) {
-      wireSignals[index] = signal;
-      Set<BlockPos> visited = new HashSet<>();
-      visited.add(worldPosition);
-      propagateWireSignal(color, signal, visited);
-      setChanged();
-    }
-  }
-
-  /**
-   * visited Set を共有しながら再帰 DFS でワイヤー信号を伝播する。
-   * A→B→C→A のようなループも visited により安全に停止する。
-   * unloaded chunk は level.isLoaded() でスキップする。
-   */
-  private void propagateWireSignal(DyeColor color, boolean signal, Set<BlockPos> visited) {
-    if (level == null) return;
-    int index = getWireIndex(color);
-    if (index < 0) return;
-
-    for (Direction dir : Direction.values()) {
-      BlockPos neighborPos = worldPosition.relative(dir);
-      if (!visited.add(neighborPos)) continue;          // 既訪問ならスキップ
-      if (!level.isLoaded(neighborPos)) continue;       // unloaded chunk をスキップ
-
-      BlockEntity be = level.getBlockEntity(neighborPos);
-      if (!(be instanceof PipeBlockEntity neighbor)) continue;
-
-      if (neighbor.wireSignals[index] != signal) {
-        neighbor.wireSignals[index] = signal;
-        neighbor.setChanged();
-        neighbor.propagateWireSignal(color, signal, visited);
-      }
-    }
+    runtime.setWireSignal(color, signal);
   }
 
   // ---- Getters / Setters ----
 
-  private int getWireIndex(@Nullable DyeColor color) {
-    if (color == null) return -1;
-    return switch (color) {
-      case RED -> 0;
-      case BLUE -> 1;
-      case YELLOW -> 2;
-      case GREEN -> 3;
-      default -> -1;
-    };
-  }
-
   public PipeType getTransportType() {
-    return transportType;
-  }
-
-  public void setTransportType(PipeType transportType) {
-    this.transportType = transportType;
-    setChanged();
+    return runtime.type();
   }
 
   public PipeMaterial getPipeMaterial() {
-    return pipeMaterial;
-  }
-
-  public void setPipeMaterial(PipeMaterial pipeMaterial) {
-    this.pipeMaterial = pipeMaterial;
-    setChanged();
+    return runtime.material();
   }
 
   public int getIronPipeEnergyLimit() {
-    return ironPipeEnergyLimit;
+    return runtime.ironPipeEnergyLimit();
   }
 
   public void setIronPipeEnergyLimit(int ironPipeEnergyLimit) {
-    this.ironPipeEnergyLimit = ironPipeEnergyLimit;
+    runtime.setIronPipeEnergyLimit(ironPipeEnergyLimit);
     setChanged();
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -415,11 +303,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public Direction getIronPipeOutput() {
-    return ironPipeOutput;
+    return runtime.ironPipeOutput();
   }
 
   public void setIronPipeOutput(Direction ironPipeOutput) {
-    this.ironPipeOutput = ironPipeOutput;
+    runtime.setIronPipeOutput(ironPipeOutput);
     setChanged();
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -427,11 +315,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public Direction getExtractionSide() {
-    return extractionSide;
+    return runtime.extractionSide();
   }
 
   public void setExtractionSide(Direction extractionSide) {
-    this.extractionSide = extractionSide;
+    runtime.setExtractionSide(extractionSide);
     setChanged();
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -439,36 +327,36 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public int getFilterSlotIndex() {
-    return filterSlotIndex;
+    return runtime.filterSlotIndex();
   }
 
   public void setFilterSlotIndex(int filterSlotIndex) {
-    this.filterSlotIndex = filterSlotIndex;
+    runtime.setFilterSlotIndex(filterSlotIndex);
   }
 
   public Map<Direction, SimpleInventory> getFilters() {
-    return Collections.unmodifiableMap(filters);
+    return runtime.filters();
   }
 
   public SimpleInventory getFilter(Direction direction) {
-    return filters.get(direction);
+    return runtime.filter(direction);
   }
 
   public long getUsedFilters() {
-    return usedFilters;
+    return runtime.usedFilters();
   }
 
   public void setUsedFilters(long usedFilters) {
-    this.usedFilters = usedFilters;
+    runtime.setUsedFilters(usedFilters);
     setChanged();
   }
 
   public @Nullable DyeColor getPipeColor() {
-    return pipeColor;
+    return runtime.pipeColor();
   }
 
   public void setPipeColor(@Nullable DyeColor color) {
-    this.pipeColor = color;
+    runtime.setPipeColor(color);
     setChanged();
     Level level = getLevel();
     BlockPos pos = getBlockPos();
@@ -478,13 +366,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public ExtractFilterMode getExtractFilterMode() {
-    return extractFilterMode;
+    return runtime.extractFilterMode();
   }
 
   // ---- NBT ----
 
   public void setExtractFilterMode(ExtractFilterMode extractFilterMode) {
-    this.extractFilterMode = extractFilterMode;
+    runtime.setExtractFilterMode(extractFilterMode);
     setChanged();
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -540,74 +428,22 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public boolean canPlaceItem(int slot, ItemStack stack) {
-    return transportType == PipeType.ITEM;
+    return runtime.type() == PipeType.ITEM;
   }
   // --- End Container Implementation ---
 
   @Override
   public void load(CompoundTag tag) {
     super.load(tag);
-    ticksSincePull = tag.getInt("ticksSincePull");
-    if (tag.contains("Wires")) {
-      byte[] wires = tag.getByteArray("Wires");
-      for (int i = 0; i < wireSignals.length && i < wires.length; i++) {
-        wireSignals[i] = wires[i] != 0;
+    PipeType oldType = runtime.type();
+    PipeMaterial oldMaterial = runtime.material();
+    runtime.load(tag);
+    if (runtime.type() != oldType || runtime.material() != oldMaterial) {
+      rebuildCapabilities();
+      configureExtractionBattery();
+      if (getBattery() != null && tag.contains("battery")) {
+        getBattery().read(tag.getCompound("battery"));
       }
-    }
-    PipeType oldType = this.transportType;
-    PipeMaterial oldMaterial = this.pipeMaterial;
-    if (tag.contains("TransportType")) {
-      this.transportType = PipeType.valueOf(tag.getString("TransportType"));
-    }
-    if (tag.contains("PipeMaterial")) {
-      this.pipeMaterial = PipeMaterial.valueOf(tag.getString("PipeMaterial").toUpperCase());
-    }
-    if (this.transportType != oldType || this.pipeMaterial != oldMaterial) {
-      initPipe(this.transportType, this.pipeMaterial);
-    }
-    if (tag.contains("IronPipeEnergyLimit")) {
-      this.ironPipeEnergyLimit = tag.getInt("IronPipeEnergyLimit");
-    }
-    if (tag.contains("IronPipeOutput")) {
-      this.ironPipeOutput = Direction.from3DDataValue(tag.getInt("IronPipeOutput"));
-    }
-    if (tag.contains("ExtractionSide")) {
-      this.extractionSide = Direction.from3DDataValue(tag.getInt("ExtractionSide"));
-    }
-    if (tag.contains("usedFilters")) {
-      this.usedFilters = tag.getLong("usedFilters");
-    }
-    if (tag.contains("PipeColor")) {
-      this.pipeColor = DyeColor.byId(tag.getInt("PipeColor"));
-    }
-    if (tag.contains("ExtractFilterMode")) {
-      this.extractFilterMode = ExtractFilterMode.values()[tag.getInt("ExtractFilterMode")];
-    }
-    if (tag.contains("Filters")) {
-      ListTag filtersTag = tag.getList("Filters", Tag.TAG_COMPOUND);
-      for (int i = 0; i < filtersTag.size(); i++) {
-        CompoundTag entry = filtersTag.getCompound(i);
-        if (entry.contains("Dir")) {
-          Direction dir = Direction.from3DDataValue(entry.getInt("Dir"));
-          filters.get(dir).readTag(entry);
-        } else if (i < 6) {
-          // legacy fallback: index-based
-          filters.get(Direction.from3DDataValue(i)).readTag(entry);
-        }
-      }
-    }
-    itemTransportModule.load(tag);
-    if (energyTransportModule != null) {
-      energyTransportModule.load(tag);
-    }
-    if (fluidTransportModule != null) {
-      fluidTransportModule.load(tag);
-    }
-    if (fluidTank != null && tag.contains("Fluid")) {
-      fluidTank.readFromNBT(tag.getCompound("Fluid"));
-    }
-    if (energyStorage != null && tag.contains("Energy")) {
-      energyStorage.read(tag.getCompound("Energy"));
     }
     if (tag.contains("SideProperties")) {
       sideProperties.readFromNBT(tag.getCompound("SideProperties"));
@@ -619,50 +455,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   @Override
   protected void saveAdditional(CompoundTag tag) {
     super.saveAdditional(tag);
-    tag.putInt("ticksSincePull", ticksSincePull);
-    tag.putString("TransportType", transportType.name());
-    tag.putString("PipeMaterial", pipeMaterial.name());
-    tag.putInt("IronPipeOutput", ironPipeOutput.get3DDataValue());
-    tag.putInt("IronPipeEnergyLimit", ironPipeEnergyLimit);
-    tag.putInt("ExtractionSide", extractionSide.get3DDataValue());
-
-    ListTag filtersTag = new ListTag();
-    for (Direction dir : Direction.values()) {
-      CompoundTag filterTag = new CompoundTag();
-      filterTag.putInt("Dir", dir.get3DDataValue());
-      filters.get(dir).writeTag(filterTag);
-      filtersTag.add(filterTag);
-    }
-    tag.put("Filters", filtersTag);
-    tag.putLong("usedFilters", usedFilters);
-    if (pipeColor != null)
-      tag.putInt("PipeColor", pipeColor.getId());
-    tag.putInt("ExtractFilterMode", extractFilterMode.ordinal());
-
-    byte[] wires = new byte[wireSignals.length];
-    for (int i = 0; i < wireSignals.length; i++) {
-      wires[i] = (byte) (wireSignals[i] ? 1 : 0);
-    }
-    tag.putByteArray("Wires", wires);
-
-    itemTransportModule.save(tag);
-    if (energyTransportModule != null) {
-      energyTransportModule.save(tag);
-    }
-    if (fluidTransportModule != null) {
-      fluidTransportModule.save(tag);
-    }
-
-    if (fluidTank != null) {
-      CompoundTag fluidTag = new CompoundTag();
-      fluidTank.writeToNBT(fluidTag);
-      tag.put("Fluid", fluidTag);
-    }
-    if (energyStorage != null) {
-      var energy = new CompoundTag();
-      energyStorage.write(energy);
-      tag.put("Energy", energy);
-    }
+    runtime.save(tag);
     CompoundTag sideTag = new CompoundTag();
     sideProperties.writeToNBT(sideTag);
     tag.put("SideProperties", sideTag);
@@ -670,13 +463,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-    if (cap == ForgeCapabilities.ITEM_HANDLER && transportType == PipeType.ITEM) {
+    if (cap == ForgeCapabilities.ITEM_HANDLER && runtime.type() == PipeType.ITEM) {
       return itemHandlerCap.cast();
     }
-    if (cap == ForgeCapabilities.FLUID_HANDLER && transportType == PipeType.FLUID) {
+    if (cap == ForgeCapabilities.FLUID_HANDLER && runtime.type() == PipeType.FLUID) {
       return (side == null ? fluidHandlerCap : fluidSideCaps.get(side)).cast();
     }
-    if (cap == ForgeCapabilities.ENERGY && transportType == PipeType.ENERGY) {
+    if (cap == ForgeCapabilities.ENERGY && runtime.type() == PipeType.ENERGY) {
       if (side != null) {
         if (!canTransferEnergy(side)) return LazyOptional.empty();
         return energySideCapsMap.get(side).cast();
@@ -685,7 +478,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return LazyOptional.empty();
     }
     // Powered pipe (for extract)
-    if (cap == ForgeCapabilities.ENERGY && pipeMaterial == PipeMaterial.WOOD) {
+    if (cap == ForgeCapabilities.ENERGY && runtime.material() == PipeMaterial.WOOD) {
       var battery = getBattery();
       if (battery != null) {
         return LazyOptional.of(() -> battery).cast();
@@ -709,7 +502,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   }
 
   public Item getPipeItem() {
-    RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(transportType, pipeMaterial);
+    RegistryObject<PipeBlock> block = TransportBlocks.PIPES.get(runtime.type(), runtime.material());
     if (block != null) {
       return block.get().asItem();
     }
@@ -765,11 +558,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public PipeType getPipeType() {
-    return switch (transportType) {
-      case ITEM -> PipeType.ITEM;
-      case FLUID -> PipeType.FLUID;
-      case ENERGY -> PipeType.ENERGY;
-    };
+    return runtime.type();
   }
 
   @Override
@@ -793,17 +582,19 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   /** Shared by energy capabilities, demand propagation and actual transfers. */
   public boolean canTransferEnergy(Direction side) {
-    if (side == null || transportType != PipeType.ENERGY || isRemoved() || hasBlockingPluggable(side)) return false;
+    if (side == null || runtime.type() != PipeType.ENERGY || isRemoved() || hasBlockingPluggable(side)) return false;
     if (level == null) return true;
     BlockPos neighborPos = worldPosition.relative(side);
     if (!level.hasChunkAt(neighborPos)) return false;
     BlockState neighborState = level.getBlockState(neighborPos);
+    PipeBehaviour behaviour = runtime.behaviour();
     if (behaviour != null && !behaviour.canConnectTo(this, side, neighborState)) return false;
     if (neighborState.getBlock() instanceof PipeBlock otherBlock && otherBlock.getTransportType() != PipeType.ENERGY) return false;
     if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other) {
-      return other.transportType == PipeType.ENERGY && !other.isRemoved()
+      PipeBehaviour otherBehaviour = other.runtime.behaviour();
+      return other.runtime.type() == PipeType.ENERGY && !other.isRemoved()
         && !other.hasBlockingPluggable(side.getOpposite())
-        && (other.behaviour == null || other.behaviour.canConnectTo(other, side.getOpposite(), getBlockState()));
+        && (otherBehaviour == null || otherBehaviour.canConnectTo(other, side.getOpposite(), getBlockState()));
     }
     return true;
   }
@@ -846,7 +637,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public boolean recolorBlock(BlockState state, Level level, BlockPos pos, Direction side, DyeColor color) {
-    this.pipeColor = color;
+    runtime.setPipeColor(color);
     setChanged();
     level.sendBlockUpdated(pos, state, state, 3);
     return true;
@@ -854,12 +645,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   @Override
   public boolean canInjectItems(@Nullable Direction from) {
-    return transportType == PipeType.ITEM;
+    return runtime.type() == PipeType.ITEM;
   }
 
   @Override
   public int injectItem(ItemStack stack, boolean doAdd, @Nullable Direction from, @Nullable Integer color) {
-    if (transportType != PipeType.ITEM) {
+    if (runtime.type() != PipeType.ITEM) {
       return 0;
     }
     if (doAdd) {
@@ -871,19 +662,22 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   @Override
   public void getDebugInfo(List<String> info, Direction side, ItemStack debugger, Player player) {
     info.add("Type      : " + getPipeType().getSerializedName());
-    info.add("Material  : " + pipeMaterial.getSerializedName());
-    if (pipeColor != null) {
-      info.add("Color     : " + pipeColor);
+    info.add("Material  : " + runtime.material().getSerializedName());
+    if (runtime.pipeColor() != null) {
+      info.add("Color     : " + runtime.pipeColor());
     }
     if (getPipeType() == PipeType.ITEM) {
       info.add("Traveling Items");
-      itemTransportModule.getTravelingItems().forEach(it -> {
+      runtime.travelingItems().forEach(it -> {
         info.add("  Item: " + it.getStack());
         info.add("  Direction: " + it.getNextDirection().getSerializedName().toUpperCase());
       });
     } else if (getPipeType() == PipeType.FLUID) {
       info.add("Traveling Fluids");
     } else {
+      EnergyStorage energyStorage = runtime.energyStorage();
+      EnergyTransportModule energyTransportModule = runtime.energyTransport();
+      if (energyStorage == null || energyTransportModule == null) return;
       info.add("Energy:");
       info.add(String.format("  Storage : %d / %d RF", energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()));
       info.add(String.format("  Max Rate: %d RF/tick", energyTransportModule.getMaxPower()));
