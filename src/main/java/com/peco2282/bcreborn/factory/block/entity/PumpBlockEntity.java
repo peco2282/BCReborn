@@ -44,7 +44,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, IFluidHandler, IRedstoneEngineReceiver, ILEDProvider, IEnergyStorage {
 
@@ -88,32 +87,15 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
 
     if (Double.isNaN(tubeY)) {
       tubeY = pos.getY();
-      aimY = pos.getY();
+      aimY = pos.getY() - 1;
       setChanged();
     }
 
     pushToConsumers();
 
-    // 隣接する液体コンテナがあるかチェック（BuildCraft仕様：出力先がないと動作しない）
-
-    IFluidHandler handler = getFluidCapability();
-    if (handler == null) { // No Fluid Capability
-      return;
-    }
-    boolean hasConsumer = false;
-    if (cache == null) {
-      cache = BlockEntityBuffer.makeBuffer(level, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), false);
-    }
-    for (Direction side : Direction.values()) {
-      BlockEntity tile = cache[side.ordinal()].getTile();
-      if (tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent()) {
-        hasConsumer = true;
-        break;
-      }
-    }
-
-    if (!hasConsumer && tank.getFluidAmount() >= tank.getCapacity()) {
-      // タンクが満タンで、かつ出力先がない場合は何もしない
+    // The pump buffers fluid internally. An adjacent consumer is optional;
+    // only a full internal tank prevents further pumping.
+    if (tank.getFluidAmount() >= tank.getCapacity()) {
       return;
     }
 
@@ -181,27 +163,27 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         FluidStack smallFluid = new FluidStack(fluidToPump.getFluid(), amountToDrain);
 
         if (tank.fill(smallFluid, FluidAction.SIMULATE) == smallFluid.getAmount()) {
-          // エネルギー消費（100RF/1000mB相当なら、10RF/100mB）
-          if (getBattery().useEnergy(10, 10, false) > 0) {
-            boolean consumeWater = EnergyConfig.isPumpsConsumeWater();
-            // 無限水源チェック: 水であり、かつ9ブロック以上の水源がある場合
-            boolean infiniteWater = smallFluid.getFluid() == Fluids.WATER && numFluidBlocksFound >= 9 && !consumeWater;
+          boolean consumeWater = EnergyConfig.isPumpsConsumeWater();
+          // 無限水源チェック: 水であり、かつ9ブロック以上の水源がある場合
+          boolean infiniteWater = smallFluid.getFluid() == Fluids.WATER && numFluidBlocksFound >= 9 && !consumeWater;
 
-            if (infiniteWater) {
+          if (infiniteWater) {
+            // Infinite water is produced in 100 mB increments, so charge the
+            // corresponding 10 RF atomically for each increment.
+            if (getBattery().useEnergy(10, 10, false) == 10) {
               tank.fill(smallFluid, FluidAction.EXECUTE);
               tickPumped = tick;
-            } else {
-              // 1ブロック吸える時に吸う。
-              // タンクに余裕がある時に1ブロック丸ごと消す。
-              if (tank.getCapacity() - tank.getFluidAmount() >= 1000) {
-                if (getBattery().useEnergy(90, 90, false) > 0) { // 残り900RF
-                  index = getNextIndexToPump(true);
-                  if (index != BlockPos.ZERO) {
-                    BlockUtils.drainBlock(level, index, true);
-                    tank.fill(fluidToPump, FluidAction.EXECUTE);
-                    tickPumped = tick;
-                  }
-                }
+            }
+          } else if (tank.fill(fluidToPump, FluidAction.SIMULATE) == fluidToPump.getAmount()
+            && getBattery().useEnergy(100, 100, true) == 100) {
+            // A finite source costs 100 RF as one transaction. Do not consume
+            // a 10 RF deposit when the remaining 90 RF is unavailable.
+            index = getNextIndexToPump(true);
+            if (index != BlockPos.ZERO) {
+              FluidStack drained = BlockUtils.drainBlock(level, index, true);
+              if (!drained.isEmpty() && getBattery().useEnergy(100, 100, false) == 100) {
+                tank.fill(drained, FluidAction.EXECUTE);
+                tickPumped = tick;
               }
             }
           }
@@ -223,18 +205,6 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
         }
       }
     }
-  }
-
-  @Nullable
-  private IFluidHandler getFluidCapability() {
-    AtomicReference<IFluidHandler> handler = new AtomicReference<>(null);
-    for (Direction dir : Direction.values()) {
-      var be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-      if (be != null) {
-        be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir).ifPresent(handler::set);
-      }
-    }
-    return handler.get();
   }
 
   public void onNeighborBlockChange(Block block) {
@@ -301,8 +271,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
 
     BlockPos tubePos = getBlockPos().atY(aimY);
-    Block block = getLevel().getBlockState(tubePos).getBlock();
-    Fluid pumpingFluid = BlockUtils.getFluid(block);
+    Fluid pumpingFluid = getLevel().getFluidState(tubePos).getType();
 
     if (pumpingFluid == Fluids.EMPTY) {
       return;
@@ -347,7 +316,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     for (int x = -1; x <= 1; x++) {
       for (int z = -1; z <= 1; z++) {
         BlockPos p = center.offset(x, 0, z);
-        if (BlockUtils.getFluid(getLevel().getBlockState(p).getBlock()) == water && level.getFluidState(p).isSource()) {
+        if (getLevel().getFluidState(p).getType() == water && getLevel().getFluidState(p).isSource()) {
           numFluidBlocksFound++;
         }
       }
@@ -371,7 +340,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       }
 
       Block block = getLevel().getBlockState(pos).getBlock();
-      Fluid fluidAt = BlockUtils.getFluid(block);
+      Fluid fluidAt = getLevel().getFluidState(pos).getType();
 
       if (fluidAt == pumpingFluid) {
         fluidsToExpand.add(pos);
@@ -384,7 +353,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
   }
 
   private boolean isPumpableFluid(BlockPos pos) {
-    Fluid fluid = BlockUtils.getFluid(BlockUtils.getBlock(getLevel(), pos));
+    Fluid fluid = getLevel().getFluidState(pos).getType();
 
     if (fluid == Fluids.EMPTY) {
       return false;
