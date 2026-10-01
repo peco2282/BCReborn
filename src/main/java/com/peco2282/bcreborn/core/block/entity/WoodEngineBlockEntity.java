@@ -113,7 +113,12 @@ public class WoodEngineBlockEntity extends EngineBlockEntity<WoodEngineBlockEnti
   protected void pushEnergyToNeighbor() {
     if (level == null || level.isClientSide) return;
     IEnergyStorage receiver = getReceiver();
-    if (receiver == null) return;
+    if (receiver == null) {
+      // Original TileEngineWood discards its entire pulse buffer if the
+      // redstone-engine receiver disappears during an active piston stroke.
+      energyStorage.clearEnergy();
+      return;
+    }
     int available = energyStorage.extractEnergy(10, true);
     int accepted = receiver.receiveEnergy(available, false);
     energyStorage.extractEnergy(accepted, false);

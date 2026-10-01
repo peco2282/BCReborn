@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.transport.test;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.core.CoreBlocks;
 import com.peco2282.bcreborn.core.block.entity.WoodEngineBlockEntity;
+import com.peco2282.bcreborn.common.block.EngineBlock;
+import com.peco2282.bcreborn.factory.FactoryBlocks;
 import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -106,6 +108,22 @@ public class TransportCompatibilityGameTests {
         assertNear(helper, 1000, engine.getMaxEnergyStored());
         helper.succeed();
       });
+    });
+  }
+
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 200)
+  public void woodEngineDiscardsBufferedPulseWhenReceiverDisappears(GameTestHelper helper) {
+    BlockPos pos = new BlockPos(1, 1, 1);
+    BlockPos receiverPos = pos.east();
+    helper.setBlock(pos, CoreBlocks.WOODEN_ENGINE.get().defaultBlockState()
+      .setValue(EngineBlock.FACING, Direction.EAST));
+    helper.setBlock(receiverPos, FactoryBlocks.HOPPER.get().defaultBlockState());
+    helper.setBlock(pos.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
+    helper.runAtTickTime(20, () -> helper.setBlock(receiverPos, Blocks.AIR.defaultBlockState()));
+    helper.runAtTickTime(60, () -> {
+      WoodEngineBlockEntity engine = (WoodEngineBlockEntity) helper.getBlockEntity(pos);
+      assertNear(helper, 0, engine.getEnergyStored());
+      helper.succeed();
     });
   }
 

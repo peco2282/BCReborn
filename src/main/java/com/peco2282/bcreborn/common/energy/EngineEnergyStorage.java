@@ -102,6 +102,12 @@ public class EngineEnergyStorage<E extends EngineBlockEntity<?>> implements IEne
     }
   }
 
+  public void clearEnergy() {
+    if (energy == 0) return;
+    energy = 0;
+    engine.setChanged();
+  }
+
   /**
    * Removes energy from the storage. Returns quantity of energy that was removed.
    *

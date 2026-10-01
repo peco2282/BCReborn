@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
@@ -37,7 +38,7 @@ public class AdvancedCraftingTableBlockEntity extends LaserTableBaseBlockEntity 
   @Override
   protected boolean isMachineOutput(int slot) { return slot >= 15 && slot < 24; }
 
-  private CraftingContainer grid(boolean actual, int[] used) {
+  private CraftingContainer patternGrid() {
     var grid = new TransientCraftingContainer(
       new AbstractContainerMenu(null, -1) {
         @Override public boolean stillValid(Player player) { return false; }
@@ -47,30 +48,44 @@ public class AdvancedCraftingTableBlockEntity extends LaserTableBaseBlockEntity 
       }, 3, 3);
     for (int i = 0; i < 9; i++) {
       var pattern = getItem(PATTERN_START + i);
-      if (pattern.isEmpty()) continue;
-      if (!actual) { grid.setItem(i, pattern.copyWithCount(1)); continue; }
-      int found = -1;
-      for (int slot = 0; slot < 15; slot++) {
-        if (used[slot] < getItem(slot).getCount()
-          && ItemStack.isSameItemSameTags(pattern, getItem(slot))) {
-          found = slot;
-          break;
-        }
-      }
-      if (found < 0) return null;
-      used[found]++;
-      grid.setItem(i, getItem(found).copyWithCount(1));
+      if (!pattern.isEmpty()) grid.setItem(i, pattern.copyWithCount(1));
     }
     return grid;
+  }
+
+  private CraftingContainer bindIngredients(CraftingRecipe recipe, int[] used) {
+    var grid = patternGrid();
+    for (int i = 0; i < grid.getContainerSize(); i++) grid.setItem(i, ItemStack.EMPTY);
+    return bindIngredient(recipe, grid, used, 0) ? grid : null;
+  }
+
+  private boolean bindIngredient(CraftingRecipe recipe, CraftingContainer grid, int[] used, int gridSlot) {
+    if (gridSlot == 9) return recipe.matches(grid, level);
+    if (getItem(PATTERN_START + gridSlot).isEmpty()) {
+      grid.setItem(gridSlot, ItemStack.EMPTY);
+      return bindIngredient(recipe, grid, used, gridSlot + 1);
+    }
+
+    for (int slot = 0; slot < 15; slot++) {
+      ItemStack candidate = getItem(slot);
+      if (candidate.isEmpty() || used[slot] >= candidate.getCount()
+        || recipe.getIngredients().stream().noneMatch(ingredient -> ingredient.test(candidate))) continue;
+      used[slot]++;
+      grid.setItem(gridSlot, candidate.copyWithCount(1));
+      if (bindIngredient(recipe, grid, used, gridSlot + 1)) return true;
+      used[slot]--;
+    }
+    grid.setItem(gridSlot, ItemStack.EMPTY);
+    return false;
   }
 
   private ItemStack[] plan() {
     if (level == null) return null;
     int[] used = new int[15];
-    var grid = grid(true, used);
-    if (grid == null) return null;
-    var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, grid, level).orElse(null);
+    var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, patternGrid(), level).orElse(null);
     if (recipe == null) return null;
+    var grid = bindIngredients(recipe, used);
+    if (grid == null) return null;
     var result = recipe.assemble(grid, level.registryAccess());
     if (result.isEmpty()) return null;
     var next = MachineInventory.copy(this);
@@ -86,7 +101,7 @@ public class AdvancedCraftingTableBlockEntity extends LaserTableBaseBlockEntity 
   protected void tick(Level level, BlockPos pos, BlockState state) {
     super.tick(level, pos, state);
     if (level.isClientSide) return;
-    var grid = grid(false, null);
+    var grid = patternGrid();
     var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, grid, level).orElse(null);
     var preview = recipe == null ? ItemStack.EMPTY : recipe.assemble(grid, level.registryAccess());
     if (!ItemStack.matches(getItem(PREVIEW), preview)) setItem(PREVIEW, preview);
