@@ -276,6 +276,20 @@ tasks.named('test', Test).configure {
     }
 }
 
+// Forge's GameTest runner loads SNBT templates from the run directory rather
+// than from the normal mod resource path. Stage the tracked templates for every
+// invocation so clean checkouts (including GitHub Actions) behave like local runs.
+TaskProvider<Copy> stageGameTestStructures = tasks.register('stageGameTestStructures', Copy.class) {
+    from layout.projectDirectory.dir('src/main/resources/data/bcreborntransport/gameteststructures')
+    into layout.projectDirectory.dir('run/gameteststructures')
+}
+
+tasks.configureEach {
+    if (name == 'prepareRunGameTestServer') {
+        dependsOn(stageGameTestStructures)
+    }
+}
+
 TaskProvider<Jar> core = tasks.register('core', Jar.class) {
     include(createIncludePath("core"))
     archiveClassifier.set("core")
