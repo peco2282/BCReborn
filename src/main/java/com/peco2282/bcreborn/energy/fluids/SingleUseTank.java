@@ -71,7 +71,6 @@ public class SingleUseTank extends Tank {
   public void readTankFromNBT(CompoundTag nbt) {
     super.readTankFromNBT(nbt);
     acceptedFluid = null;
-    // Stored contents have a stable registry name and take precedence over legacy IDs.
     if (!isEmpty()) {
       acceptedFluid = getFluidType();
     } else if (nbt.contains("acceptedFluid", Tag.TAG_STRING)) {
@@ -79,11 +78,6 @@ public class SingleUseTank extends Tank {
       // Unknown saved fluids must not silently unlock the tank for another fluid.
       acceptedFluid = id != null && ForgeRegistries.FLUIDS.containsKey(id)
         ? ForgeRegistries.FLUIDS.getValue(id) : Fluids.EMPTY;
-    } else if (nbt.contains("acceptedFluid", Tag.TAG_INT)) {
-      var state = Fluid.FLUID_STATE_REGISTRY.byId(nbt.getInt("acceptedFluid"));
-      acceptedFluid = state == null ? Fluids.EMPTY : state.getType();
-      // Old saves could accidentally persist EMPTY when the key was originally absent.
-      if (state != null && acceptedFluid == Fluids.EMPTY) acceptedFluid = null;
     }
   }
 

@@ -120,23 +120,10 @@ public class PumpRegressionGameTests {
   }
 
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
-  public void legacyFluidLocksMigrateAndUnknownNamesStayClosed(GameTestHelper helper) {
+  public void unknownNamedFluidLocksStayClosed(GameTestHelper helper) {
     SingleUseTank tank = new SingleUseTank("tank", 16000);
     CompoundTag saved = tank.writeToNBT(new CompoundTag());
     CompoundTag inner = saved.getCompound("tank");
-    inner.putInt("acceptedFluid", Fluid.FLUID_STATE_REGISTRY.getId(Fluids.WATER.defaultFluidState()));
-    tank.readFromNBT(saved);
-    check(helper, tank.getAcceptedFluid() == Fluids.WATER, "Known legacy integer must migrate");
-    check(helper, tank.writeToNBT(new CompoundTag()).getCompound("tank").contains("acceptedFluid", Tag.TAG_STRING),
-      "Migrated save must use the named format");
-    tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.EXECUTE);
-    CompoundTag contents = tank.writeToNBT(new CompoundTag());
-    contents.getCompound("tank").putInt("acceptedFluid", Fluid.FLUID_STATE_REGISTRY.getId(Fluids.LAVA.defaultFluidState()));
-    tank.readFromNBT(contents);
-    check(helper, tank.getAcceptedFluid() == Fluids.WATER, "Named contents must override stale legacy numeric lock");
-    inner.putInt("acceptedFluid", Fluid.FLUID_STATE_REGISTRY.getId(Fluids.EMPTY.defaultFluidState()));
-    tank.readFromNBT(saved);
-    check(helper, tank.getAcceptedFluid() == null, "Legacy accidental EMPTY must restore an unassigned tank");
     for (String id : new String[]{"missing_mod:removed_fluid", "invalid fluid name"}) {
       inner.putString("acceptedFluid", id);
       tank.readFromNBT(saved);

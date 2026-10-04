@@ -28,7 +28,7 @@ public class TravelingItem {
     Direction.CODEC.fieldOf("entry_direction").forGetter(TravelingItem::getEntryDirection),
     Codec.FLOAT.optionalFieldOf("progress", 0.0f).forGetter(TravelingItem::getProgress),
     Direction.CODEC.optionalFieldOf("next_direction").forGetter(item -> Optional.ofNullable(item.getNextDirection())),
-    Codec.FLOAT.optionalFieldOf("speed", 0.05f).forGetter(TravelingItem::getSpeed),
+    Codec.FLOAT.optionalFieldOf("speed", 0.01f).forGetter(TravelingItem::getSpeed),
     Codec.INT.optionalFieldOf("bounce_count", 0).forGetter(TravelingItem::getBounceCount),
     Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining)
   ).apply(instance, TravelingItem::new));
@@ -52,7 +52,8 @@ public class TravelingItem {
   private float prevProgress; // 前tickのprogress（partialTick補間用）
   private boolean centerReached; // 中央到達フラグ（Voidパイプ等で使用）
   private Direction nextDirection;
-  private float speed = 0.05f;
+  /** BuildCraft 1.7.10 TransportConstants.PIPE_DEFAULT_SPEED. */
+  private float speed = 0.01f;
   // bounceCount は将来の jam detection / congestion system 用。
   // 現時点では挙動変更には使用しない。
   private int bounceCount;

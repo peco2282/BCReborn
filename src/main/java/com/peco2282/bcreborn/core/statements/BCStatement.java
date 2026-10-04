@@ -29,13 +29,7 @@ public abstract class BCStatement implements IStatement {
   @OnlyIn(Dist.CLIENT)
   protected TextureAtlasSprite icon;
 
-  /**
-   * UniqueTag accepts multiple possible tags, use this feature to migrate to
-   * more standardized tags if needed, otherwise just pass a single string.
-   * The first passed string will be the one used when saved to disk.
-   *
-   * @param uniqueTag the unique tag for the statement
-   */
+  /** @param uniqueTag the unique tag for the statement */
   public BCStatement(ResourceLocation uniqueTag) {
     this.uniqueTag = uniqueTag;
     StatementManager.registerStatement(this);

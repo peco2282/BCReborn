@@ -24,6 +24,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraft.world.item.Items;
+import net.minecraft.util.Mth;
 
 public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngineBlockEntity> {
   public static final float MAX_OUTPUT = 10;
@@ -35,11 +37,12 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
   private int burnTime = 0;
   private int totalBurnTime = 0;
   private ItemStack burnItem;
+  private double esum;
 
   public StoneEngineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(EnergyBlockEntityTypes.STONE_ENGINE.get(), p_155229_, p_155230_, 1);
     // 中容量・中出力
-    configureEnergy(20000, 80);
+    configureEnergy(10000, 10);
   }
 
   @Override
@@ -59,8 +62,8 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
 
   @Override
   public void updateProgress() {
-    // 燃焼していない場合、燃料があれば新規に燃焼開始
-    if (burnTime <= 0 && !isOverheated()) {
+    // TileEngineStone only consumes the next item while redstone-powered.
+    if (burnTime <= 0 && isRedstonePowered && !isOverheated()) {
       ItemStack stack = getItem(0);
       if (!stack.isEmpty() && isFuelable(stack)) {
         int time = ForgeHooks.getBurnTime(stack, null);
@@ -78,6 +81,7 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
 
   @Override
   public void overheat() {
+    super.overheat();
     burnTime = 0;
   }
 
@@ -90,15 +94,10 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
   @Override
   public void burning() {
     if (burnTime > 0) {
-      // 発電（段階倍率を適用）
-      if (this.energyStorage != null) {
-        float mult = getOutputMultiplier();
-        // オリジナル: 1 MJ/t = 10 FE/t
-        int base = 10;
-        int gen = Math.max(0, Math.round(base * mult));
-        this.energyStorage.generateEnergy(gen, false);
-      }
       burnTime--;
+      if (isRedstonePowered && this.energyStorage != null) {
+        this.energyStorage.generateEnergy(getIdealOutput(), false);
+      }
       setPumping(true); // 石エンジンは常にピストンを動かそうとする
     } else {
       burnItem = null;
@@ -108,10 +107,16 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
     }
   }
 
+  private int getIdealOutput() {
+    if (burnItem != null && burnItem.is(Items.PAPER)) return 1;
+    double error = TARGET_OUTPUT * getMaxEnergyStored() - getEnergyStored();
+    esum = Mth.clamp(esum + error, -eLimit, eLimit);
+    return (int) Math.round(Mth.clamp(error * kp + esum * ki, MIN_OUTPUT, MAX_OUTPUT));
+  }
+
   @Override
-  protected void onPistonCycled() {
-    // ピストンが戻るタイミング（サイクル完了）でエネルギーを出力
-    pushEnergyToNeighbor();
+  protected int getCurrentOutputLimit() {
+    return (int) Math.floor(getIdealOutput() * heat / IDEAL_HEAT);
   }
 
   @Override
@@ -137,11 +142,18 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
   @Override
   public void load(CompoundTag data) {
     super.load(data);
+    configureEnergy(10000, 10);
+    burnTime = data.getInt("burnTime");
+    totalBurnTime = data.getInt("totalBurnTime");
+    esum = data.getDouble("outputIntegral");
   }
 
   @Override
   public void saveAdditional(CompoundTag data) {
     super.saveAdditional(data);
+    data.putInt("burnTime", burnTime);
+    data.putInt("totalBurnTime", totalBurnTime);
+    data.putDouble("outputIntegral", esum);
   }
 
   @Override

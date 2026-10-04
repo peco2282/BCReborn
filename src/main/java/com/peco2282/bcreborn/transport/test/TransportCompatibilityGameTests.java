@@ -20,6 +20,7 @@ import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
+import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,6 +37,15 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(BCRebornTransport.MODID)
 @PrefixGameTestTemplate(false)
 public class TransportCompatibilityGameTests {
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void travelingItemsUseThe1710DefaultSpeed(GameTestHelper helper) {
+    TravelingItem item = new TravelingItem(new ItemStack(Items.DIAMOND), Direction.WEST);
+    assertNear(helper, 0.01f, item.getSpeed());
+    TravelingItem restored = TravelingItem.load(item.save());
+    assertNear(helper, 0.01f, restored.getSpeed());
+    helper.succeed();
+  }
+
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void speedsChangeOnEntryOnly(GameTestHelper helper) {
     PipeMaterial[] materials = {PipeMaterial.GOLD, PipeMaterial.STONE, PipeMaterial.COBBLESTONE};

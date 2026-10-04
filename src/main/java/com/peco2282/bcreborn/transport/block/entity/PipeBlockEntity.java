@@ -474,7 +474,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
         if (!canTransferEnergy(side)) return LazyOptional.empty();
         return energySideCapsMap.get(side).cast();
       }
-      // Transport needs an incoming face; the legacy standalone buffer is not routed.
+      // Transport needs an incoming face, so unsided input is not routed.
       return LazyOptional.empty();
     }
     // Powered pipe (for extract)
