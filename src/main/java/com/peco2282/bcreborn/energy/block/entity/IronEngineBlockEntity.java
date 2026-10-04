@@ -39,6 +39,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngineBlockEntity> implements IFluidHandler {
 
+  public static final float HEAT_PER_FE = 0.00023F;
+  public static final float COOLDOWN_RATE = 0.05F;
+  public static final int MAX_COOLANT_PER_TICK = 40;
+
   public static final int TANK_FUEL = 0;
   public static final int TANK_COOLANT = 1;
 
@@ -83,7 +87,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
           currentFuel = BuildcraftFuelRegistry.getFuelManager().getFuel(fluid));
       }
       if (currentFuel == null) {
-        // Missing/removed fuel, or an old save with an empty tank: stop safely, never deadlock.
+        // Missing or removed fuel stops safely rather than leaving a deadlocked burn.
         burnTime = 0;
         currentFuelId = null;
       }
@@ -93,11 +97,6 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public void updateProgress() {
-    // This runs on every server tick, including while the engine is stopped.
-    if (penaltyCoolingTime > 0) {
-      penaltyCoolingTime--;
-      setChanged();
-    }
     if (isRedstonePowered && burnTime <= 0 && !isOverheated() && penaltyCoolingTime <= 0) {
       FluidStack fuelStack = tankManager.get(TANK_FUEL).getFluid();
       if (!fuelStack.isEmpty()) {
@@ -117,8 +116,10 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
 
   @Override
   public void overheat() {
+    super.overheat();
     burnTime = 0;
-    penaltyCoolingTime = 1000;
+    penaltyCoolingTime = 10;
+    tankManager.get(TANK_COOLANT).drain(Integer.MAX_VALUE, FluidAction.EXECUTE);
     setChanged();
   }
 
@@ -141,26 +142,7 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
       burnTime--;
       setChanged();
 
-      // 冷却ロジック
-      float heatToAdd = 0.4f; // 燃焼による発熱
-      float heatToReduce = 0.05f; // 自然冷却
-      FluidStack coolantStack = tankManager.get(TANK_COOLANT).getFluid();
-      if (!coolantStack.isEmpty()) {
-        ICoolant coolant = BuildcraftFuelRegistry.getCoolantManager().getCoolant(coolantStack.getFluid());
-        if (coolant != null) {
-          float cooling = coolant.getDegreesCoolingPerMB(heat);
-          // ヒートレベルに応じて冷却水を消費 (1mB/t 最小)
-          int toDrain = Math.max(1, Math.round(heat / 100f));
-          FluidStack drained = tankManager.get(TANK_COOLANT).drain(toDrain, FluidAction.EXECUTE);
-          heatToReduce += cooling * drained.getAmount();
-        }
-      }
-
-      heat = Math.max(0, heat + heatToAdd - heatToReduce);
-
-      if (heat > 1000 && level.random.nextFloat() < (heat - 1000) / 1000f) {
-        explode();
-      }
+      heat += currentFuel.getPowerPerCycle() * HEAT_PER_FE;
 
       setPumping(true);
       if (burnTime <= 0) {
@@ -168,9 +150,41 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
       }
     } else {
       setPumping(false);
-      // 非燃焼時の冷却
-      heat = Math.max(0, heat - 0.1f);
     }
+  }
+
+  @Override
+  protected void updateHeatAndStage(boolean burning) {
+    // TileEngineIron owns a real temperature rather than deriving it from its
+    // energy buffer. Match the 1.7.10 natural/coolant cooling thresholds.
+    if (heat > MIN_HEAT && (penaltyCoolingTime > 0 || !isRedstonePowered)) {
+      heat = Math.max(MIN_HEAT, heat - COOLDOWN_RATE);
+      coolEngine(MIN_HEAT);
+    } else if (heat > IDEAL_HEAT) {
+      coolEngine(IDEAL_HEAT);
+    }
+    if (heat <= MIN_HEAT) {
+      heat = MIN_HEAT;
+      if (penaltyCoolingTime > 0) penaltyCoolingTime--;
+    }
+
+    EnergyStage next = computeStageFromHeat(heat);
+    if (next != energyStage) {
+      energyStage = next;
+      if (next == EnergyStage.OVERHEAT) overheat();
+      setChanged();
+    }
+  }
+
+  private void coolEngine(float targetHeat) {
+    FluidStack coolantStack = tankManager.get(TANK_COOLANT).getFluid();
+    if (coolantStack.isEmpty()) return;
+    ICoolant coolant = BuildcraftFuelRegistry.getCoolantManager().getCoolant(coolantStack.getFluid());
+    if (coolant == null) return;
+    int amount = Math.min(MAX_COOLANT_PER_TICK, coolantStack.getAmount());
+    float cooling = amount * coolant.getDegreesCoolingPerMB(heat);
+    tankManager.get(TANK_COOLANT).drain(amount, FluidAction.EXECUTE);
+    heat = Math.max(targetHeat, heat - cooling);
   }
 
   @Override
@@ -182,10 +196,6 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
     penaltyCoolingTime = data.getInt("penaltyCoolingTime");
     currentFuel = null;
     currentFuelId = data.contains("currentFuel") ? ResourceLocation.tryParse(data.getString("currentFuel")) : null;
-    if (!data.contains("currentFuel") && burnTime > 0 && !tankManager.get(TANK_FUEL).isEmpty()) {
-      // Older saves did not record the in-progress fuel independently of the tank.
-      currentFuelId = BuiltInRegistries.FLUID.getKey(tankManager.get(TANK_FUEL).getFluid().getFluid());
-    }
   }
 
   @Override

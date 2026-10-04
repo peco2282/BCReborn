@@ -212,12 +212,6 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
         actions[i] = StatementManager.getStatement(ResourceLocation.parse(data.getString("action[" + i + "]")));
       }
 
-      // This is for legacy trigger loading
-      if (data.contains("triggerParameters[" + i + "]")) {
-        triggerParameters[i][0] = new StatementParameterItemStack(ItemStack.EMPTY);
-        triggerParameters[i][0].readFromNBT(data.getCompound("triggerParameters[" + i + "]"));
-      }
-
       for (int j = 0; j < material.numTriggerParameters; ++j) {
         if (data.contains("triggerParameters[" + i + "][" + j + "]")) {
           CompoundTag cpt = data.getCompound("triggerParameters[" + i + "][" + j + "]");

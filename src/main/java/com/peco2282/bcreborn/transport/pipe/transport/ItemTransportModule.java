@@ -73,7 +73,7 @@ public class ItemTransportModule {
     PipeBehaviour behaviour = pipe.getBehaviour();
 
     for (TravelingItem item : snapshot) {
-      // 古い保存データの出口未決定アイテムにも、中央へ到達する前に経路を与える。
+      // 出口未決定のアイテムには、中央へ到達する前に経路を与える。
       if (item.getNextDirection() == null) {
         chooseDestination(item, behaviour);
       }

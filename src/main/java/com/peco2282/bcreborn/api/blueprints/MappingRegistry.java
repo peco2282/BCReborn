@@ -183,21 +183,6 @@ public class MappingRegistry {
    * @throws MappingNotFoundException if the mapping does not exist.
    */
   public void stackToWorld(CompoundTag nbt) throws MappingNotFoundException {
-    if (nbt.contains("id", Tag.TAG_ANY_NUMERIC)) {
-      // Legacy blueprint IDs refer to its saved palette, never today's runtime IDs.
-      Item item = getItemForId(nbt.getInt("id"));
-      int damage = nbt.getShort("Damage");
-      if (damage != 0 && !item.canBeDepleted()) {
-        throw new MappingNotFoundException("Legacy item metadata needs an explicit migration: " + damage);
-      }
-      nbt.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
-      if (damage != 0) {
-        CompoundTag itemTag = nbt.getCompound("tag");
-        itemTag.putInt("Damage", damage);
-        nbt.put("tag", itemTag);
-      }
-      nbt.remove("Damage");
-    }
     ResourceLocation id = ResourceLocation.tryParse(nbt.getString("id"));
     if (!nbt.contains("id", Tag.TAG_STRING) || id == null || !BuiltInRegistries.ITEM.containsKey(id)) {
       throw new MappingNotFoundException("Unknown item ID in blueprint: " + nbt.get("id"));
@@ -206,7 +191,7 @@ public class MappingRegistry {
 
   private boolean isStackLayout(CompoundTag nbt) {
     return nbt.contains("Count", Tag.TAG_BYTE)
-      && (nbt.contains("id", Tag.TAG_STRING) || nbt.contains("id", Tag.TAG_ANY_NUMERIC));
+      && nbt.contains("id", Tag.TAG_STRING);
   }
 
   /**
@@ -321,7 +306,6 @@ public class MappingRegistry {
    * @param nbt The NBT tag.
    */
   public void write(CompoundTag nbt) {
-    nbt.putInt("itemStackFormat", 2); // String IDs; absent in legacy numeric-palette blueprints.
     ListTag blocksMapping = new ListTag();
 
     for (Block b : BLOCK) {

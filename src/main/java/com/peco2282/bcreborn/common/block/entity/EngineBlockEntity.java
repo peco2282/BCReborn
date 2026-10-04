@@ -49,7 +49,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   private final boolean checkOrientation = false;
   public boolean isRedstonePowered = false;
   public float progress;
-  public float heat = 0;
+  public float heat = MIN_HEAT;
   public EnergyStage energyStage = EnergyStage.BLUE;
   public Direction orientation = Direction.UP;
   // ピストンアニメーション用
@@ -146,15 +146,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       if (progressPart != 0) {
         progress += getPistonSpeed();
 
-        if (progress >= 1) {
-          progress -= 1;
-          prevPistonProgress -= 1; // 補間の連続性を維持するために prev も調整
-          if (!isActive() && !isPumping) {
-            progress = 0;
-            progressPart = 0;
-            prevPistonProgress = 0;
-            pistonProgress = 0;
-          }
+        if (progress > 0.5f && progressPart == 1) {
+          progressPart = 2;
+        } else if (progress >= 1) {
+          progress = 0;
+          progressPart = 0;
         }
       } else if (this.isPumping || (isRedstonePowered && isActive())) {
         progressPart = 1;
@@ -186,29 +182,21 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       setActive(burning);
     }
 
-    if (burning) {
-      burning();
-    }
+    if (burning) burning();
 
     // 温度の更新と段階計算 (木エンジンなどは独自の updateHeatAndStage を持つ場合があるが、基本はこれ)
-    if (!(this instanceof IRedstoneEngine)) {
-      updateHeatAndStage(burning);
-    }
+    if (!(this instanceof IRedstoneEngine)) updateHeatAndStage(burning);
 
     // ピストンロジック (TileEngineBase.updateEntity より)
     if (progressPart != 0) {
       progress += getPistonSpeed();
 
-      if (progress >= 1) {
-        progress -= 1;
-        prevPistonProgress -= 1; // 補間の連続性を維持するために prev も調整
+      if (progress > 0.5f && progressPart == 1) {
+        progressPart = 2;
+      } else if (progress >= 1) {
+        progress = 0;
+        progressPart = 0;
         onPistonCycled(); // サイクル完了時の処理
-        if (!isRedstonePowered || !isActive()) {
-          progress = 0;
-          progressPart = 0;
-          prevPistonProgress = 0;
-          pistonProgress = 0;
-        }
       }
     } else if (isRedstonePowered && isActive()) {
       // 実際には出力先があるかどうかのチェックが必要
@@ -223,6 +211,12 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     }
 
     updateProgress();
+
+    // TileEngineBase sends stored power every active tick. Wood engines retain
+    // their special one-pulse-per-stroke behaviour in WoodEngineBlockEntity.
+    if (!(this instanceof IRedstoneEngine) && isRedstonePowered && isActive()) {
+      pushEnergyToNeighbor();
+    }
 
     // ピストンアニメーション更新
     updatePistonProgress();
@@ -297,16 +291,9 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected void updateHeatAndStage(boolean burning) {
-    if (burning) {
-      heat += 0.2f;
-    } else {
-      heat -= 0.1f;
-    }
-
-    if (heat < 0) heat = 0;
-    if (heat > 2000) heat = 2000;
-
-    // 段階更新
+    // TileEngineBase.updateHeat(): ordinary engines derive heat directly from
+    // their internal energy buffer. Combustion engines override this method.
+    heat = MIN_HEAT + (MAX_HEAT - MIN_HEAT) * (float) getEnergyLevel();
     EnergyStage newStage = computeStageFromHeat(heat);
     if (newStage != energyStage) {
       energyStage = newStage;
@@ -318,7 +305,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   public float getHeatLevel() {
-    return heat / 1000f;
+    return (heat - MIN_HEAT) / (MAX_HEAT - MIN_HEAT);
   }
 
   public double getEnergyLevel() {
@@ -326,13 +313,14 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected EnergyStage computeStageFromHeat(float h) {
-    if (h < 250) {
+    float heatLevel = (h - MIN_HEAT) / (MAX_HEAT - MIN_HEAT);
+    if (heatLevel < 0.25f) {
       return EnergyStage.BLUE;
-    } else if (h < 500) {
+    } else if (heatLevel < 0.5f) {
       return EnergyStage.GREEN;
-    } else if (h < 750) {
+    } else if (heatLevel < 0.75f) {
       return EnergyStage.YELLOW;
-    } else if (h < 1000) {
+    } else if (heatLevel < 1f) {
       return EnergyStage.RED;
     } else {
       return EnergyStage.OVERHEAT;
@@ -340,13 +328,12 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   }
 
   protected float getOutputMultiplier() {
-    return switch (energyStage) {
-      case BLUE -> 0.6f;
-      case GREEN -> 1.0f;
-      case YELLOW -> 1.25f;
-      case RED -> 1.5f;
-      default -> 0.0f; // OVERHEAT: 出力不可
-    };
+    return 1.0f;
+  }
+
+  /** Maximum power emitted per tick, matching TileEngineBase's output limit. */
+  protected int getCurrentOutputLimit() {
+    return energyStorage == null ? 0 : energyStorage.getMaxExtract();
   }
 
   public int getEnergyStored() {
@@ -367,7 +354,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     if (be == null) return;
 
     be.getCapability(ForgeCapabilities.ENERGY, orientation.getOpposite()).ifPresent(target -> {
-      int canExtract = energyStorage.getMaxExtract();
+      int canExtract = Math.min(energyStorage.getMaxExtract(), getCurrentOutputLimit());
       if (canExtract <= 0) return;
       int available = energyStorage.getEnergyStored();
       if (available <= 0) return;

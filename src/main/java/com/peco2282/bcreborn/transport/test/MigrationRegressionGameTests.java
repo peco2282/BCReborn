@@ -82,16 +82,8 @@ public class MigrationRegressionGameTests {
   }
 
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
-  public void blueprintRejectsMissingIdsAndReadsLegacyPalette(GameTestHelper helper) throws MappingNotFoundException {
+  public void blueprintRejectsMissingIds(GameTestHelper helper) throws MappingNotFoundException {
     MappingRegistry mapping = new MappingRegistry();
-    CompoundTag legacy = new CompoundTag();
-    legacy.putShort("id", (short) mapping.getIdForItem(Items.DIAMOND_PICKAXE));
-    legacy.putByte("Count", (byte) 1);
-    legacy.putShort("Damage", (short) 17);
-    mapping.stackToWorld(legacy);
-    check(helper, ItemStack.of(legacy).is(Items.DIAMOND_PICKAXE) && ItemStack.of(legacy).getDamageValue() == 17,
-      "Legacy palette ID and durability must translate to modern ItemStack NBT");
-
     CompoundTag missing = new CompoundTag();
     missing.putString("id", "missing_mod:missing_item");
     missing.putByte("Count", (byte) 1);
@@ -209,22 +201,22 @@ public class MigrationRegressionGameTests {
   }
 
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
-  public void ironEngineCooldownAdvancesWhileStoppedAndAfterReload(GameTestHelper helper) {
+  public void ironEnginePenaltyWaitsForFullCooldownAndSurvivesReload(GameTestHelper helper) {
     BlockPos relative = new BlockPos(1, 1, 1);
     helper.setBlock(relative, EnergyBlocks.IRON_ENGINE.get().defaultBlockState());
     IronEngineBlockEntity engine = (IronEngineBlockEntity) helper.getBlockEntity(relative);
     engine.overheat();
     var ticker = BuildCraftBlockEntity.<IronEngineBlockEntity>ticker();
-    for (int i = 0; i < 500; i++) ticker.tick(helper.getLevel(), engine.getBlockPos(), engine.getBlockState(), engine);
+    for (int i = 0; i < 5; i++) ticker.tick(helper.getLevel(), engine.getBlockPos(), engine.getBlockState(), engine);
     CompoundTag saved = engine.saveWithFullMetadata();
-    check(helper, saved.getInt("penaltyCoolingTime") == 500 && !engine.isBurning(),
-      "Stopped engines must count down their cooldown every tick");
+    check(helper, saved.getInt("penaltyCoolingTime") == 5 && !engine.isBurning(),
+      "The 1.7.10 ten-tick restart penalty must count down only after reaching minimum heat");
     IronEngineBlockEntity restored = new IronEngineBlockEntity(engine.getBlockPos(), engine.getBlockState());
     restored.setLevel(helper.getLevel());
     restored.load(saved);
     restored.fill(new FluidStack(EnergyFluids.OIL_SOURCE.get(), 10), FluidAction.EXECUTE);
     helper.setBlock(relative.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
-    for (int i = 0; i < 499; i++) ticker.tick(helper.getLevel(), restored.getBlockPos(), restored.getBlockState(), restored);
+    for (int i = 0; i < 4; i++) ticker.tick(helper.getLevel(), restored.getBlockPos(), restored.getBlockState(), restored);
     check(helper, !restored.isBurning(), "Restored engine must wait for the remaining cooldown");
     ticker.tick(helper.getLevel(), restored.getBlockPos(), restored.getBlockState(), restored);
     check(helper, restored.isBurning() && restored.saveWithFullMetadata().getInt("penaltyCoolingTime") == 0,
@@ -301,26 +293,17 @@ public class MigrationRegressionGameTests {
   }
 
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
-  public void ironEngineHandlesLegacyOrMissingFuelIds(GameTestHelper helper) {
+  public void ironEngineHandlesMissingFuelIds(GameTestHelper helper) {
     BlockPos pos = helper.absolutePos(new BlockPos(1, 1, 1));
     var state = EnergyBlocks.IRON_ENGINE.get().defaultBlockState();
     IronEngineBlockEntity engine = new IronEngineBlockEntity(pos, state);
     engine.setLevel(helper.getLevel());
-    engine.fill(new FluidStack(EnergyFluids.OIL_SOURCE.get(), 3), FluidAction.EXECUTE);
-    CompoundTag legacy = engine.saveWithFullMetadata();
-    legacy.putInt("burnTime", 20);
-    legacy.remove("currentFuel");
-    engine.load(legacy);
-    helper.setBlock(new BlockPos(1, 0, 1), Blocks.REDSTONE_BLOCK.defaultBlockState());
-    var ticker = BuildCraftBlockEntity.<IronEngineBlockEntity>ticker();
-    ticker.tick(helper.getLevel(), pos, state, engine);
-    check(helper, engine.getBurnTime() == 19 && engine.getFluidInTank(0).getAmount() == 3,
-      "Legacy save with fuel in tank must restore without consuming an extra mB");
     CompoundTag missing = engine.saveWithFullMetadata();
+    missing.putInt("burnTime", 20);
     missing.putString("currentFuel", "missing_mod:deleted_fuel");
     engine.load(missing);
     helper.setBlock(new BlockPos(1, 0, 1), Blocks.AIR.defaultBlockState());
-    ticker.tick(helper.getLevel(), pos, state, engine);
+    BuildCraftBlockEntity.<IronEngineBlockEntity>ticker().tick(helper.getLevel(), pos, state, engine);
     check(helper, engine.getBurnTime() == 0 && !engine.isBurning(), "Missing saved fuel must stop safely instead of freezing");
     helper.succeed();
   }

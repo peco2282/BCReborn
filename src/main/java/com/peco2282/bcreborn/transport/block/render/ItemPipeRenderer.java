@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
@@ -21,7 +20,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +29,8 @@ import java.util.List;
 public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
   private static final int MAX_ITEMS_TO_RENDER = 10;
-  private static final float ITEM_SCALE = 0.4f;
+  // PipeTransportItemsRenderer used 0.7 and explicitly disabled bobbing/spreading.
+  private static final float ITEM_SCALE = 0.7f;
 
   private final ItemRenderer itemRenderer;
 
@@ -94,12 +93,6 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
     poseStack.pushPose();
     poseStack.translate(x, y, z);
     poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
-
-    // アイテムモデルが3Dブロック系の場合は少し回転させて見栄えを良くする
-    BakedModel model = itemRenderer.getModel(stack, null, null, 0);
-    if (model.isGui3d()) {
-      poseStack.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 36000L) / 100.0f));
-    }
 
     itemRenderer.renderStatic(stack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
       poseStack, bufferSource, null, 0);
