@@ -13,8 +13,12 @@ package com.peco2282.bcreborn.energy.fluids;
 
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class SingleUseTank extends Tank {
 
@@ -30,12 +34,12 @@ public class SingleUseTank extends Tank {
       return 0;
     }
 
-    if (action.execute() && acceptedFluid == null) {
-      acceptedFluid = resource.getFluid();
-    }
-
     if (acceptedFluid == null || acceptedFluid == resource.getFluid()) {
-      return super.fill(resource, action);
+      int filled = super.fill(resource, action);
+      if (action.execute() && filled > 0 && acceptedFluid == null) {
+        acceptedFluid = resource.getFluid();
+      }
+      return filled;
     }
 
     return 0;
@@ -57,17 +61,36 @@ public class SingleUseTank extends Tank {
   public void writeTankToNBT(CompoundTag nbt) {
     super.writeTankToNBT(nbt);
     if (acceptedFluid != null) {
-      int id = Fluid.FLUID_STATE_REGISTRY.getId(acceptedFluid.defaultFluidState());
-      nbt.putInt("acceptedFluid", id);
+      nbt.putString("acceptedFluid", ForgeRegistries.FLUIDS.getKey(acceptedFluid).toString());
+    } else {
+      nbt.remove("acceptedFluid");
     }
   }
 
   @Override
   public void readTankFromNBT(CompoundTag nbt) {
     super.readTankFromNBT(nbt);
-    var fld = Fluid.FLUID_STATE_REGISTRY.byId(nbt.getInt("acceptedFluid"));
-    if (fld != null) {
-      acceptedFluid = fld.getType();
+    acceptedFluid = null;
+    // Stored contents have a stable registry name and take precedence over legacy IDs.
+    if (!isEmpty()) {
+      acceptedFluid = getFluidType();
+    } else if (nbt.contains("acceptedFluid", Tag.TAG_STRING)) {
+      ResourceLocation id = ResourceLocation.tryParse(nbt.getString("acceptedFluid"));
+      // Unknown saved fluids must not silently unlock the tank for another fluid.
+      acceptedFluid = id != null && ForgeRegistries.FLUIDS.containsKey(id)
+        ? ForgeRegistries.FLUIDS.getValue(id) : Fluids.EMPTY;
+    } else if (nbt.contains("acceptedFluid", Tag.TAG_INT)) {
+      var state = Fluid.FLUID_STATE_REGISTRY.byId(nbt.getInt("acceptedFluid"));
+      acceptedFluid = state == null ? Fluids.EMPTY : state.getType();
+      // Old saves could accidentally persist EMPTY when the key was originally absent.
+      if (state != null && acceptedFluid == Fluids.EMPTY) acceptedFluid = null;
     }
+  }
+
+  @Override
+  public void readTag(CompoundTag nbt) {
+    acceptedFluid = null;
+    setFluid(FluidStack.EMPTY);
+    super.readTag(nbt);
   }
 }
