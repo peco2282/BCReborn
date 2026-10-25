@@ -278,7 +278,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
     }
 
     if (tank instanceof SingleUseTank sut) {
-      if (pumpingFluid != sut.getAcceptedFluid()) {
+      if (sut.getAcceptedFluid() != null && pumpingFluid != sut.getAcceptedFluid()) {
         return;
       }
     }
@@ -359,7 +359,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
       return false;
     } else {
       if (tank instanceof SingleUseTank sut) {
-        return sut.getAcceptedFluid() == fluid;
+        return sut.getAcceptedFluid() == null || sut.getAcceptedFluid() == fluid;
       }
       return true;
     }
