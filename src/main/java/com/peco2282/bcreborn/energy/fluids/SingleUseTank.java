@@ -19,6 +19,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 public class SingleUseTank extends Tank {
 
@@ -49,6 +50,7 @@ public class SingleUseTank extends Tank {
     acceptedFluid = null;
   }
 
+  @Nullable
   public Fluid getAcceptedFluid() {
     return acceptedFluid;
   }
