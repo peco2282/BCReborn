@@ -12,6 +12,8 @@
 package com.peco2282.bcreborn.common.utils;
 
 import com.peco2282.bcreborn.api.core.IAreaProvider;
+import com.peco2282.bcreborn.api.tiles.IBlockEntityAreaProvider;
+import com.peco2282.bcreborn.common.block.entity.MarkerBlockEntity;
 import com.peco2282.bcreborn.api.power.IEngine;
 import com.peco2282.bcreborn.api.power.ILaserTarget;
 import com.peco2282.bcreborn.api.transport.IInjectable;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
@@ -141,10 +144,32 @@ public final class Utils {
     InvUtils.dropItems(world, stack, pos.getX(), pos.getY(), pos.getZ());
   }
 
+  /**
+   * Port of the original {@code Utils.getNearbyAreaProvider()}: finds a loaded area provider (a landmark group)
+   * whose box the given position touches, according to {@link IBlockEntityAreaProvider#isValidFromLocation}.
+   * <p>
+   * The original scanned {@code world.loadedTileEntityList}; here only the already-loaded chunks within
+   * {@link MarkerBlockEntity#MARKER_RANGE} are scanned, since a valid provider's box can never be further away.
+   * No chunk is loaded by this lookup.
+   */
+  @Nullable
   public static IAreaProvider getNearbyAreaProvider(Level world, BlockPos pos) {
-    // Loaded tile entity list is not directly accessible like this in 1.20.1.
-    // Usually handled via area registries or searching nearby block entities.
-    // TODO: Implement correctly for 1.20.1
+    int range = MarkerBlockEntity.MARKER_RANGE + 1;
+    int minChunkX = (pos.getX() - range) >> 4;
+    int maxChunkX = (pos.getX() + range) >> 4;
+    int minChunkZ = (pos.getZ() - range) >> 4;
+    int maxChunkZ = (pos.getZ() + range) >> 4;
+    for (int cx = minChunkX; cx <= maxChunkX; cx++) {
+      for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
+        LevelChunk chunk = world.getChunkSource().getChunkNow(cx, cz);
+        if (chunk == null) continue;
+        for (BlockEntity tile : chunk.getBlockEntities().values()) {
+          if (tile instanceof IBlockEntityAreaProvider provider && !tile.isRemoved() && provider.isValidFromLocation(pos)) {
+            return provider;
+          }
+        }
+      }
+    }
     return null;
   }
 

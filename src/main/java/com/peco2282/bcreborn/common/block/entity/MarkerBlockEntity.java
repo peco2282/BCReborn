@@ -16,31 +16,48 @@ import com.peco2282.bcreborn.api.tiles.IBlockEntityAreaProvider;
 import com.peco2282.bcreborn.common.LaserData;
 import com.peco2282.bcreborn.common.LaserKind;
 import com.peco2282.bcreborn.common.utils.LaserUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Port of the original {@code buildcraft.core.TileMarker} (the Land Mark).
+ * <ul>
+ *   <li>Right-click ({@link #tryConnection}) links to another landmark of the same block on each unlinked axis,
+ *       within {@link #MARKER_RANGE}. Up to three landmarks join one {@link Origin} and form a box.</li>
+ *   <li>The origin landmark shows the box as red lasers ({@link #lasers}) for as long as the group exists.</li>
+ *   <li>While powered by redstone, blue signal beams ({@link #signals}) are shown along every axis that is not
+ *       linked yet, to help place the next landmark.</li>
+ *   <li>Machines (Quarry, Filler, Architect Table) take the box through {@link #isValidFromLocation} and then
+ *       {@link #removeFromWorld} the landmarks.</li>
+ * </ul>
+ * Lasers and signals are computed on the server and synced to the client as data only.
+ */
 public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEntityAreaProvider {
   public static final int MARKER_RANGE = 64;
-  // -----------------------------------------------------------------------
-  // Fields
-  // -----------------------------------------------------------------------
+
   public Origin origin = new Origin();
   public boolean showSignals = false;
+  /** Box lasers; only the origin landmark of a group holds them. */
   public List<LaserData> lasers = new ArrayList<>();
+  /** Redstone signal beams along the unlinked axes. */
   public List<LaserData> signals = new ArrayList<>();
+
   // Positions loaded from NBT, resolved in initialize()
+  @Nullable
   private BlockPos initVectO = null;
+  @Nullable
   private BlockPos[] initVect = null;
 
   public MarkerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -50,35 +67,40 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   // -----------------------------------------------------------------------
   // Lifecycle
   // -----------------------------------------------------------------------
+
+  /**
+   * Original {@code initialize()}: the origin landmark restores its group from NBT and re-links the
+   * landmarks that are loaded. Unlike the original, links to landmarks that are not loaded yet are kept,
+   * so the box survives chunk load order.
+   */
   @Override
   public void initialize() {
     super.initialize();
+    if (level == null || level.isClientSide) {
+      return;
+    }
 
-    updateSignals();
-    if (initVectO != null) {
+    if (initVectO != null && initVectO.equals(worldPosition)) {
       origin = new Origin();
-      origin.vectO = new TileWrapper(initVectO);
-
+      origin.vectO = new TileWrapper(worldPosition);
       if (initVect != null) {
         for (int i = 0; i < 3; ++i) {
-          if (initVect[i] != null) {
-            origin.vect[i] = new TileWrapper(initVect[i]);
+          if (initVect[i] == null) continue;
+          origin.vect[i] = new TileWrapper(initVect[i]);
+          MarkerBlockEntity marker = origin.vect[i].getMarker(level);
+          if (marker != null && marker != this && !marker.origin.isSet()) {
+            marker.origin = origin;
+            marker.updateSignals();
           }
         }
       }
-      if (origin.vectO.pos.equals(worldPosition)) {
-        updateBounds();
-      }
-      initVectO = null;
-      initVect = null;
+      updateBounds();
+      createLasers();
     }
+    initVectO = null;
+    initVect = null;
 
-    if (!level.isClientSide) {
-      if (origin.isSet() && origin.vectO.pos.equals(worldPosition)) {
-        createLasers();
-      }
-      updateSignalsLasers();
-    }
+    updateSignals();
   }
 
   @Override
@@ -87,279 +109,135 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   }
 
   // -----------------------------------------------------------------------
-  // Signal / connection
+  // Signals
   // -----------------------------------------------------------------------
+
+  /**
+   * Original {@code updateSignals()}: re-reads the redstone input and rebuilds the signal beams.
+   */
   public void updateSignals() {
-    if (!level.isClientSide) {
-      boolean oldSignals = showSignals;
-      showSignals = level.hasNeighborSignal(worldPosition);
-      if (oldSignals != showSignals) {
-        switchSignals();
-      }
-      setChanged();
-    }
-  }
-
-  public void switchSignals() {
-    if (origin.isSet()) {
-      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      if (showSignals) {
-        originMarker.createLasers();
-      } else {
-        originMarker.destroyLasers();
-      }
-      // Also notify end markers to update their lasers
-      for (int i = 0; i < 3; i++) {
-        if (origin.vect[i].isSet()) {
-          MarkerBlockEntity endMarker = origin.vect[i].getMarker(level);
-          endMarker.updateSignalsLasers();
-        }
-      }
-    }
-    updateSignalsLasers();
-  }
-
-  public void updateSignalsLasers() {
-    signals.clear();
-    if (level.isClientSide || !origin.isSet()) {
+    if (level == null || level.isClientSide) {
       return;
     }
-
-    BlockPos originPos = origin.vectO.pos;
-    if (originPos.equals(worldPosition)) {
-      for (int i = 0; i < 3; i++) {
-        if (origin.vect[i].isSet()) {
-          LaserData laser = new LaserData(
-            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-            new Vec3(origin.vect[i].pos.getX() + 0.5, origin.vect[i].pos.getY() + 0.5, origin.vect[i].pos.getZ() + 0.5),
-            LaserKind.Blue
-          );
-          laser.isVisible = showSignals;
-          signals.add(laser);
-        }
-      }
-    } else {
-      // If we are one of the end markers, we also render the beam back to the origin
-      // to ensure visibility and multi-hop rendering consistency.
-      for (int i = 0; i < 3; i++) {
-        if (origin.vect[i].isSet() && origin.vect[i].pos.equals(worldPosition)) {
-          LaserData laser = new LaserData(
-            new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5),
-            new Vec3(originPos.getX() + 0.5, originPos.getY() + 0.5, originPos.getZ() + 0.5),
-            LaserKind.Blue
-          );
-          laser.isVisible = showSignals;
-          signals.add(laser);
-        }
-      }
-    }
-
-    if (!level.isClientSide) {
-      setChanged();
-      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    }
-  }
-
-  public void createLasers() {
-    if (level.isClientSide) {
-      return;
-    }
-    if (!origin.isSet()) {
-      return;
-    }
-    destroyLasers();
-
-    Origin o = origin;
-    int xCoord = worldPosition.getX();
-    int yCoord = worldPosition.getY();
-    int zCoord = worldPosition.getZ();
-
-    if (!origin.vect[0].isSet()) {
-      o.posMin.setX(origin.vectO.pos.getX());
-      o.posMax.setX(origin.vectO.pos.getX());
-    } else if (origin.vect[0].pos.getX() < xCoord) {
-      o.posMin.setX(origin.vect[0].pos.getX());
-      o.posMax.setX(xCoord);
-    } else {
-      o.posMin.setX(xCoord);
-      o.posMax.setX(origin.vect[0].pos.getX());
-    }
-
-    if (!origin.vect[1].isSet()) {
-      o.posMin.setY(origin.vectO.pos.getY());
-      o.posMax.setY(origin.vectO.pos.getY());
-    } else if (origin.vect[1].pos.getY() < yCoord) {
-      o.posMin.setY(origin.vect[1].pos.getY());
-      o.posMax.setY(yCoord);
-    } else {
-      o.posMin.setY(yCoord);
-      o.posMax.setY(origin.vect[1].pos.getY());
-    }
-
-    if (!origin.vect[2].isSet()) {
-      o.posMin.setZ(origin.vectO.pos.getZ());
-      o.posMax.setZ(origin.vectO.pos.getZ());
-    } else if (origin.vect[2].pos.getZ() < zCoord) {
-      o.posMin.setZ(origin.vect[2].pos.getZ());
-      o.posMax.setZ(zCoord);
-    } else {
-      o.posMin.setZ(zCoord);
-      o.posMax.setZ(origin.vect[2].pos.getZ());
-    }
-
-    BlockPos posMin = origin.posMin;
-    BlockPos posMax = origin.posMax;
-
-    if (posMin.equals(posMax)) {
-      return;
-    }
-
-    lasers = LaserUtils.createLaserDataBox(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ(), LaserKind.Blue);
-    for (LaserData ld : lasers) {
-      ld.isGlowing = true;
-    }
-
+    showSignals = level.hasNeighborSignal(worldPosition);
+    rebuildSignals();
     setChanged();
-    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
   }
 
-  public void destroyLasers() {
-    if (lasers.isEmpty()) return;
-    lasers.clear();
-    setChanged();
-    if (!level.isClientSide) {
-      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+  /**
+   * Original {@code switchSignals()}: while powered, a beam of {@code MARKER_RANGE - 1} blocks in both directions
+   * along every axis that is not linked yet.
+   */
+  private void rebuildSignals() {
+    signals = new ArrayList<>();
+    if (!showSignals) {
+      return;
+    }
+    Vec3 center = Vec3.atCenterOf(worldPosition);
+    int reach = MARKER_RANGE - 1;
+    for (int axis = 0; axis < 3; axis++) {
+      if (origin.isSet() && origin.vect[axis].isSet()) {
+        continue;
+      }
+      Vec3 step = new Vec3(axis == 0 ? reach : 0, axis == 1 ? reach : 0, axis == 2 ? reach : 0);
+      signals.add(new LaserData(center, center.add(step), LaserKind.Blue));
+      signals.add(new LaserData(center.subtract(step), center, LaserKind.Blue));
     }
   }
 
+  // -----------------------------------------------------------------------
+  // Connection
+  // -----------------------------------------------------------------------
+
+  /**
+   * Original {@code tryConnection()}: links each axis that is not linked yet.
+   */
   public void tryConnection() {
-    if (level.isClientSide) {
+    if (level == null || level.isClientSide) {
       return;
     }
-
-
-    // If the origin exists but its marker is missing/removed, clear it
-    if (origin.isSet()) {
-      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      if (originMarker.isRemoved()) {
-        origin = new Origin();
-      }
-    }
-
-    // Always try to find connections if not fully connected
     for (int j = 0; j < 3; ++j) {
       if (!origin.isSet() || !origin.vect[j].isSet()) {
         setVect(j);
       }
     }
-
-    if (origin.isSet()) {
-      MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
-      originMarker.createLasers();
-    }
-
     setChanged();
   }
 
+  /**
+   * Original {@code setVect(n)}: searches outwards on axis {@code n} (0 = X, 1 = Y, 2 = Z), alternating the
+   * positive and negative side, for a landmark of the same block to link with.
+   */
   void setVect(int n) {
-    // n=0 → X axis, n=1 → Y axis, n=2 → Z axis
-    int x = worldPosition.getX();
-    int y = worldPosition.getY();
-    int z = worldPosition.getZ();
-
-    int[] coords = {x, y, z};
-
-    if (!origin.isSet() || !origin.vect[n].isSet()) {
-      for (int j = 1; j < MARKER_RANGE; ++j) {
-        coords[n] += j;
-
-        BlockPos posA = new BlockPos(coords[0], coords[1], coords[2]);
-
-        BlockEntity block = level.getBlockEntity(posA);
-
-        if (block instanceof MarkerBlockEntity marker) {
-          if (linkTo(marker, n)) {
-            break;
-          }
-        }
-
-        coords[n] -= j;
-        coords[n] -= j;
-
-        BlockPos posB = new BlockPos(coords[0], coords[1], coords[2]);
-
-        block = level.getBlockEntity(posB);
-
-        if (block instanceof MarkerBlockEntity marker) {
-          if (linkTo(marker, n)) {
-            break;
-          }
-        }
-
-        coords[n] += j;
-
-//        BlockPos posPlus = offset(x, y, z, n, j);
-//        BlockEntity tePlus = level.getBlockEntity(posPlus);
-//        if (tePlus instanceof MarkerBlockEntity marker) {
-//          if (linkTo(marker, n)) {
-//            return;
-//          }
-//        }
-//
-//        BlockPos posMinus = offset(x, y, z, n, -j);
-//        BlockEntity teMinus = level.getBlockEntity(posMinus);
-//        if (teMinus instanceof MarkerBlockEntity marker) {
-//          if (linkTo(marker, n)) {
-//            return;
-//          }
-//        }
+    if (origin.isSet() && origin.vect[n].isSet()) {
+      return;
+    }
+    for (int j = 1; j < MARKER_RANGE; ++j) {
+      MarkerBlockEntity plus = findLinkCandidate(offset(n, j));
+      if (plus != null && linkTo(plus, n)) {
+        return;
+      }
+      MarkerBlockEntity minus = findLinkCandidate(offset(n, -j));
+      if (minus != null && linkTo(minus, n)) {
+        return;
       }
     }
   }
 
+  private BlockPos offset(int axis, int delta) {
+    return switch (axis) {
+      case 0 -> worldPosition.offset(delta, 0, 0);
+      case 1 -> worldPosition.offset(0, delta, 0);
+      default -> worldPosition.offset(0, 0, delta);
+    };
+  }
+
+  /**
+   * Original: {@code world.getBlock(...) == BuildCraftCore.markerBlock}. Only landmarks of the same block link,
+   * and unloaded positions are never loaded by the search.
+   */
+  @Nullable
+  private MarkerBlockEntity findLinkCandidate(BlockPos pos) {
+    if (!level.isLoaded(pos) || !level.getBlockState(pos).is(getBlockState().getBlock())) {
+      return null;
+    }
+    return level.getBlockEntity(pos) instanceof MarkerBlockEntity marker ? marker : null;
+  }
+
+  /**
+   * Original {@code linkTo(marker, n)}. Two landmarks that already belong to groups are never merged.
+   */
   private boolean linkTo(MarkerBlockEntity marker, int n) {
     if (marker == this) {
       return false;
     }
-
-
     if (origin.isSet() && marker.origin.isSet()) {
-      if (origin == marker.origin) {
-        return false;
-      }
+      return false;
+    }
 
-      // If both have origins but different, and one is not fully formed, we might want to merge.
-      // For now, prioritize the one that is already an origin.
-      if (origin.vectO.pos.equals(worldPosition)) {
-        marker.origin = origin;
-        origin.vect[n] = new TileWrapper(marker.getBlockPos());
-      } else if (marker.origin.vectO.pos.equals(marker.worldPosition)) {
-        origin = marker.origin;
-        origin.vect[n] = new TileWrapper(getBlockPos());
-      } else {
-        origin = marker.origin;
-        origin.vect[n] = new TileWrapper(getBlockPos());
-      }
-    } else if (!origin.isSet() && !marker.origin.isSet()) {
+    if (!origin.isSet() && !marker.origin.isSet()) {
       origin = new Origin();
       marker.origin = origin;
-      origin.vectO = new TileWrapper(getBlockPos());
+      origin.vectO = new TileWrapper(worldPosition);
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
     } else if (!origin.isSet()) {
       origin = marker.origin;
-      origin.vect[n] = new TileWrapper(getBlockPos());
+      origin.vect[n] = new TileWrapper(worldPosition);
     } else {
       marker.origin = origin;
       origin.vect[n] = new TileWrapper(marker.getBlockPos());
     }
 
-    MarkerBlockEntity mO = origin.vectO.getMarker(level);
-    mO.updateBounds();
-    mO.createLasers();
-    mO.updateSignals();
+    MarkerBlockEntity originMarker = origin.vectO.getMarker(level);
+    if (originMarker != null) {
+      originMarker.updateBounds();
+      originMarker.createLasers();
+      if (originMarker != this && originMarker != marker) {
+        originMarker.updateSignals();
+      }
+    }
     updateSignals();
     marker.updateSignals();
-
     return true;
   }
 
@@ -367,51 +245,58 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     if (!origin.isSet()) {
       return;
     }
-
-    int ox = origin.vectO.pos.getX();
-    int oy = origin.vectO.pos.getY();
-    int oz = origin.vectO.pos.getZ();
-
-    int xMin, xMax, yMin, yMax, zMin, zMax;
-
-    if (!origin.vect[0].isSet()) {
-      xMin = ox;
-      xMax = ox;
-    } else {
-      int vx = origin.vect[0].pos.getX();
-      xMin = Math.min(ox, vx);
-      xMax = Math.max(ox, vx);
+    BlockPos o = origin.vectO.pos;
+    int xMin = o.getX(), xMax = o.getX();
+    int yMin = o.getY(), yMax = o.getY();
+    int zMin = o.getZ(), zMax = o.getZ();
+    if (origin.vect[0].isSet()) {
+      int v = origin.vect[0].pos.getX();
+      xMin = Math.min(xMin, v);
+      xMax = Math.max(xMax, v);
     }
-
-    if (!origin.vect[1].isSet()) {
-      yMin = oy;
-      yMax = oy;
-    } else {
-      int vy = origin.vect[1].pos.getY();
-      yMin = Math.min(oy, vy);
-      yMax = Math.max(oy, vy);
+    if (origin.vect[1].isSet()) {
+      int v = origin.vect[1].pos.getY();
+      yMin = Math.min(yMin, v);
+      yMax = Math.max(yMax, v);
     }
-
-    if (!origin.vect[2].isSet()) {
-      zMin = oz;
-      zMax = oz;
-    } else {
-      int vz = origin.vect[2].pos.getZ();
-      zMin = Math.min(oz, vz);
-      zMax = Math.max(oz, vz);
+    if (origin.vect[2].isSet()) {
+      int v = origin.vect[2].pos.getZ();
+      zMin = Math.min(zMin, v);
+      zMax = Math.max(zMax, v);
     }
-
-    origin.posMin = new BlockPos(xMin, yMin, zMin).mutable();
-    origin.posMax = new BlockPos(xMax, yMax, zMax).mutable();
+    origin.posMin = new BlockPos(xMin, yMin, zMin);
+    origin.posMax = new BlockPos(xMax, yMax, zMax);
   }
 
-//  private static BlockPos offset(int x, int y, int z, int axis, int delta) {
-//    return switch (axis) {
-//      case 0 -> new BlockPos(x + delta, y, z);
-//      case 1 -> new BlockPos(x, y + delta, z);
-//      default -> new BlockPos(x, y, z + delta);
-//    };
-//  }
+  /**
+   * Original {@code createLasers()}: the box as red lasers, held by the origin landmark.
+   */
+  public void createLasers() {
+    if (level == null || level.isClientSide || !origin.isSet()) {
+      return;
+    }
+    BlockPos min = origin.posMin;
+    BlockPos max = origin.posMax;
+    List<LaserData> box = new ArrayList<>();
+    for (LaserData laser : LaserUtils.createLaserDataBox(min.getX(), min.getY(), min.getZ(),
+      max.getX(), max.getY(), max.getZ(), LaserKind.Red)) {
+      // Degenerate edges of a flat or line-shaped box come back as null.
+      if (laser != null) {
+        laser.isGlowing = true;
+        box.add(laser);
+      }
+    }
+    lasers = box;
+    setChanged();
+  }
+
+  public void destroyLasers() {
+    if (lasers.isEmpty()) return;
+    lasers = new ArrayList<>();
+    if (level != null && !level.isClientSide) {
+      setChanged();
+    }
+  }
 
   // -----------------------------------------------------------------------
   // IBlockEntityAreaProvider / IAreaProvider
@@ -446,17 +331,17 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     return origin.isSet() ? origin.posMax.getZ() : worldPosition.getZ();
   }
 
+  /**
+   * Original {@code isValidFromLocation()}. The position must share one or two (not three) coordinates with this
+   * landmark, touch the box from outside on exactly one axis, and not be inside the box.
+   */
   @Override
   public boolean isValidFromLocation(BlockPos pos) {
     int x = pos.getX();
     int y = pos.getY();
     int z = pos.getZ();
-    int mx = worldPosition.getX();
-    int my = worldPosition.getY();
-    int mz = worldPosition.getZ();
 
-    int equal = (x == mx ? 1 : 0) + (y == my ? 1 : 0) + (z == mz ? 1 : 0);
-
+    int equal = (x == worldPosition.getX() ? 1 : 0) + (y == worldPosition.getY() ? 1 : 0) + (z == worldPosition.getZ() ? 1 : 0);
     if (equal == 0 || equal == 3) {
       return false;
     }
@@ -479,66 +364,64 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     return touching == 1;
   }
 
+  /**
+   * Original {@code removeFromWorld()}: breaks every landmark of the group and drops it as an item.
+   * Only positions that still hold this landmark block are broken.
+   */
   @Override
   public void removeFromWorld() {
-    if (!origin.isSet()) {
+    if (level == null || !origin.isSet()) {
       return;
     }
-
     Origin o = origin;
+    List<BlockPos> positions = new ArrayList<>(4);
+    for (TileWrapper m : o.vect) {
+      if (m.isSet()) positions.add(m.pos);
+    }
+    positions.add(o.vectO.pos);
 
-    for (TileWrapper m : o.vect.clone()) {
-      if (m.isSet()) {
-        Block.dropResources(getLevel().getBlockState(m.pos), getLevel(), m.pos, this);
-        getLevel().removeBlock(m.pos, false);
+    var block = getBlockState().getBlock();
+    for (BlockPos p : positions) {
+      if (level.isLoaded(p) && level.getBlockState(p).is(block)) {
+        level.destroyBlock(p, true);
       }
     }
-
-    Block.dropResources(getLevel().getBlockState(o.vectO.pos), getLevel(), o.vectO.pos, this);
-    getLevel().removeBlock(o.vectO.pos, false);
   }
 
   // -----------------------------------------------------------------------
-  // Destroy / invalidate
+  // Destroy
   // -----------------------------------------------------------------------
-  @Override
-  public void setRemoved() {
-    super.setRemoved();
-    destroyLasers();
-  }
 
+  /**
+   * Original {@code destroy()}: called when this landmark is broken. Dissolves the whole group, clears the box
+   * lasers and lets the remaining landmarks update their signal beams.
+   */
   public void destroy() {
-    destroyLasers();
-
+    if (level == null || level.isClientSide) {
+      return;
+    }
     if (origin.isSet()) {
       Origin o = origin;
-
-      // 1. Notify origin marker to destroy its box lasers
       MarkerBlockEntity originMarker = o.vectO.getMarker(level);
-      originMarker.destroyLasers();
 
-      // 2. Clear origin reference from all markers in this group
-      List<MarkerBlockEntity> affectedMarkers = new ArrayList<>();
-
-      MarkerBlockEntity mO = o.vectO.getMarker(level);
-      affectedMarkers.add(mO);
-
-      for (TileWrapper m : o.vect) {
-        MarkerBlockEntity mark = m.getMarker(level);
-        affectedMarkers.add(mark);
+      List<MarkerBlockEntity> others = new ArrayList<>(4);
+      if (originMarker != null && originMarker != this) others.add(originMarker);
+      for (TileWrapper w : o.vect) {
+        MarkerBlockEntity mark = w.getMarker(level);
+        if (mark != null && mark != this && !others.contains(mark)) others.add(mark);
       }
 
-      for (MarkerBlockEntity mark : affectedMarkers) {
+      for (MarkerBlockEntity mark : others) {
         mark.origin = new Origin();
+        mark.destroyLasers();
       }
-
-      // 3. Update signals/lasers for all affected markers
-      for (MarkerBlockEntity mark : affectedMarkers) {
-        if (mark != this && !mark.isRemoved()) {
-          mark.updateSignals();
-        }
+      for (MarkerBlockEntity mark : others) {
+        if (!mark.isRemoved()) mark.updateSignals();
       }
     }
+    origin = new Origin();
+    lasers = new ArrayList<>();
+    signals = new ArrayList<>();
   }
 
   // -----------------------------------------------------------------------
@@ -548,59 +431,69 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
 
-    if (origin.isSet() && origin.vectO.getMarker(level) == this) {
+    if (origin.isSet() && origin.vectO.pos.equals(worldPosition)) {
       nbt.putLong("vectO", origin.vectO.pos.asLong());
-
       for (int i = 0; i < 3; ++i) {
         if (origin.vect[i].isSet()) {
           nbt.putLong("vect" + i, origin.vect[i].pos.asLong());
         }
       }
     }
-//    saveLaserList(nbt, "lasers", lasers);
-//    saveLaserList(nbt, "signals", signals);
   }
 
-  private void saveLaserList(CompoundTag nbt, String key, List<LaserData> list) {
-    if (list.isEmpty()) return;
-    ListTag tagList = new ListTag();
+  /**
+   * The chunk-load update tag also carries the computed lasers, so a player who joins later sees the box and
+   * signal beams without waiting for the next change.
+   */
+  @Override
+  public CompoundTag getUpdateTag() {
+    CompoundTag tag = super.getUpdateTag();
+    tag.put("lasers", toLaserTag(lasers));
+    tag.put("signals", toLaserTag(signals));
+    tag.putBoolean("showSignals", showSignals);
+    return tag;
+  }
+
+  private static ListTag toLaserTag(List<LaserData> list) {
+    ListTag tag = new ListTag();
     for (LaserData ld : list) {
-      tagList.add(ld.toNBT());
+      tag.add(ld.toNBT());
     }
-    nbt.put(key, tagList);
+    return tag;
+  }
+
+  private static List<LaserData> fromLaserTag(ListTag tag) {
+    List<LaserData> list = new ArrayList<>(tag.size());
+    for (int i = 0; i < tag.size(); i++) {
+      list.add(new LaserData(tag.getCompound(i)));
+    }
+    return list;
   }
 
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
 
+    // Only present in the client update tag, never in saved data.
+    if (nbt.contains("lasers", Tag.TAG_LIST)) {
+      lasers = fromLaserTag(nbt.getList("lasers", Tag.TAG_COMPOUND));
+      signals = fromLaserTag(nbt.getList("signals", Tag.TAG_COMPOUND));
+      showSignals = nbt.getBoolean("showSignals");
+    }
+
     if (nbt.contains("vectO")) {
       initVectO = BlockPos.of(nbt.getLong("vectO"));
       initVect = new BlockPos[3];
-
       for (int i = 0; i < 3; ++i) {
         if (nbt.contains("vect" + i)) {
           initVect[i] = BlockPos.of(nbt.getLong("vect" + i));
         }
       }
     }
-//    lasers = loadLaserList(nbt, "lasers");
-//    signals = loadLaserList(nbt, "signals");
-  }
-
-  private List<LaserData> loadLaserList(CompoundTag nbt, String key) {
-    List<LaserData> list = new ArrayList<>();
-    if (nbt.contains(key, CompoundTag.TAG_LIST)) {
-      ListTag tagList = nbt.getList(key, CompoundTag.TAG_COMPOUND);
-      for (int i = 0; i < tagList.size(); i++) {
-        list.add(new LaserData(tagList.getCompound(i)));
-      }
-    }
-    return list;
   }
 
   // -----------------------------------------------------------------------
-  // Network sync
+  // Network sync (server -> client, data only)
   // -----------------------------------------------------------------------
   @Override
   public void writeData(FriendlyByteBuf stream) {
@@ -610,41 +503,29 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
     writeLaserList(stream, signals);
   }
 
-  private void writeLaserList(FriendlyByteBuf stream, List<LaserData> list) {
-    stream.writeInt(list.size());
+  @Override
+  public void readData(FriendlyByteBuf stream) {
+    Origin received = new Origin();
+    received.readData(stream);
+    origin = received;
+    showSignals = stream.readBoolean();
+    lasers = readLaserList(stream);
+    signals = readLaserList(stream);
+  }
+
+  private static void writeLaserList(FriendlyByteBuf stream, List<LaserData> list) {
+    stream.writeVarInt(list.size());
     for (LaserData ld : list) {
       stream.writeNbt(ld.toNBT());
     }
   }
 
-  @Override
-  public void readData(FriendlyByteBuf stream) {
-    origin.readData(stream);
-    showSignals = stream.readBoolean();
-    lasers = readLaserList(stream);
-    signals = readLaserList(stream);
-    switchSignals();
-    if (origin.vectO.isSet()) {
-      origin.vectO.getMarker(level);
-      origin.vectO.getMarker(level).updateSignals();
-      for (TileWrapper w : origin.vect) {
-        MarkerBlockEntity m = w.getMarker(level);
-
-        m.updateSignals();
-      }
-    }
-
-    if (origin.isSet() && origin.vectO.pos.equals(worldPosition)) {
-      updateBounds();
-      createLasers();
-    }
-  }
-
-  private List<LaserData> readLaserList(FriendlyByteBuf stream) {
-    int size = stream.readInt();
+  private static List<LaserData> readLaserList(FriendlyByteBuf stream) {
+    int size = stream.readVarInt();
     List<LaserData> list = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
-      list.add(new LaserData(stream.readNbt()));
+      CompoundTag tag = stream.readNbt();
+      if (tag != null) list.add(new LaserData(tag));
     }
     return list;
   }
@@ -652,66 +533,93 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
   // -----------------------------------------------------------------------
   // TileWrapper
   // -----------------------------------------------------------------------
-  public static class TileWrapper implements IBufferSerializable {
 
+  /**
+   * Original {@code TileMarker.TileWrapper}: a lazily resolved reference to a landmark. Unset is {@code null}
+   * (the original used {@code Integer.MAX_VALUE}), so a landmark at (0, 0, 0) is still valid.
+   */
+  public static class TileWrapper implements IBufferSerializable {
+    @Nullable
     public BlockPos pos;
+    @Nullable
     private MarkerBlockEntity marker;
 
     public TileWrapper() {
-      pos = BlockPos.ZERO;
+      pos = null;
     }
 
     public TileWrapper(BlockPos pos) {
-      this.pos = pos;
+      this.pos = pos.immutable();
     }
 
     public boolean isSet() {
-      return pos != null && !pos.equals(BlockPos.ZERO);
+      return pos != null;
     }
 
+    /**
+     * @return the landmark at {@link #pos}, or null if unset, not loaded or no longer a landmark
+     */
+    @Nullable
     public MarkerBlockEntity getMarker(Level world) {
-      if (!isSet()) {
+      if (pos == null) {
         return null;
       }
-
-      if (marker == null) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof MarkerBlockEntity) {
-          marker = (MarkerBlockEntity) tile;
-        }
+      if (marker != null && !marker.isRemoved()) {
+        return marker;
       }
-
+      marker = null;
+      if (world.isLoaded(pos) && world.getBlockEntity(pos) instanceof MarkerBlockEntity m) {
+        marker = m;
+      }
       return marker;
     }
 
     public void reset() {
-      pos = BlockPos.ZERO;
+      pos = null;
       marker = null;
     }
 
     @Override
     public void readData(FriendlyByteBuf stream) {
-      pos = BlockPos.of(stream.readLong());
+      pos = stream.readBoolean() ? stream.readBlockPos() : null;
       marker = null;
     }
 
     @Override
     public void writeData(FriendlyByteBuf stream) {
-      stream.writeLong(pos.asLong());
+      stream.writeBoolean(pos != null);
+      if (pos != null) {
+        stream.writeBlockPos(pos);
+      }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return o instanceof TileWrapper other && Objects.equals(pos, other.pos);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(pos);
     }
   }
 
   // -----------------------------------------------------------------------
   // Origin
   // -----------------------------------------------------------------------
+
+  /**
+   * Original {@code TileMarker.Origin}: the group shared by up to four landmarks. {@code vectO} is the origin
+   * landmark and {@code vect[n]} the landmark linked on axis {@code n}.
+   */
   public static class Origin implements IBufferSerializable {
     public TileWrapper vectO = new TileWrapper();
     public TileWrapper[] vect = {new TileWrapper(), new TileWrapper(), new TileWrapper()};
-    public BlockPos.MutableBlockPos posMin = BlockPos.ZERO.mutable();
-    public BlockPos.MutableBlockPos posMax = BlockPos.ZERO.mutable();
+    public BlockPos posMin = BlockPos.ZERO;
+    public BlockPos posMax = BlockPos.ZERO;
 
     public boolean isSet() {
-      return vectO != null && vectO.isSet();
+      return vectO.isSet();
     }
 
     @Override
@@ -720,8 +628,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
       for (TileWrapper tw : vect) {
         tw.writeData(stream);
       }
-      stream.writeLong(posMin.asLong());
-      stream.writeLong(posMax.asLong());
+      stream.writeBlockPos(posMin);
+      stream.writeBlockPos(posMax);
     }
 
     @Override
@@ -730,8 +638,8 @@ public class MarkerBlockEntity extends BuildCraftBlockEntity implements IBlockEn
       for (TileWrapper tw : vect) {
         tw.readData(stream);
       }
-      posMin = BlockPos.of(stream.readLong()).mutable();
-      posMax = BlockPos.of(stream.readLong()).mutable();
+      posMin = stream.readBlockPos();
+      posMax = stream.readBlockPos();
     }
   }
 }

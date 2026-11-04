@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.core.IAreaProvider;
+import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
 import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
@@ -71,15 +72,13 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     super.initialize();
     cache = BlockEntityBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
     if (!box.isInitialized()) {
-      for (Direction dir : Direction.values()) {
-        BlockEntity tile = level.getBlockEntity(worldPosition.relative(dir));
-        if (tile instanceof IAreaProvider provider) {
-          box.initialize(provider.xMin(), provider.yMin(), provider.zMin(), provider.xMax(), provider.yMax(), provider.zMax());
-          if (box.isInitialized()) {
-            box.createLaserData();
-            provider.removeFromWorld();
-            break;
-          }
+      // Original TileFiller.initialize(): take a landmark box that this filler touches.
+      IAreaProvider provider = level.isClientSide ? null : Utils.getNearbyAreaProvider(level, worldPosition);
+      if (provider != null) {
+        box.initialize(provider.xMin(), provider.yMin(), provider.zMin(), provider.xMax(), provider.yMax(), provider.zMax());
+        if (box.isInitialized()) {
+          box.createLaserData();
+          provider.removeFromWorld();
         }
       }
     } else {

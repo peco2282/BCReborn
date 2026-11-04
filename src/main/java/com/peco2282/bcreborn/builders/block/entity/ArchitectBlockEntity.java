@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
+import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.blueprints.RecursiveBlueprintReader;
@@ -85,17 +86,15 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     super.initialize();
     if (!level.isClientSide && !initialized) {
       if (!box.isInitialized()) {
-        for (Direction dir : Direction.values()) {
-          BlockEntity tile = level.getBlockEntity(worldPosition.relative(dir));
-          if (tile instanceof IAreaProvider a) {
-            mode = Mode.COPY;
-            box.initialize(a.xMin(), a.yMin(), a.zMin(), a.xMax(), a.yMax(), a.zMax());
-            if (box.isInitialized()) {
-              box.createLaserData();
-            }
-            a.removeFromWorld();
-            break;
+        // Original TileArchitect.initialize(): take a landmark box that this table touches.
+        IAreaProvider a = Utils.getNearbyAreaProvider(level, worldPosition);
+        if (a != null) {
+          mode = Mode.COPY;
+          box.initialize(a.xMin(), a.yMin(), a.zMin(), a.xMax(), a.yMax(), a.zMax());
+          if (box.isInitialized()) {
+            box.createLaserData();
           }
+          a.removeFromWorld();
         }
         if (!box.isInitialized()) {
           if (BCRebornCore.DEVELOPER_MODE) {
