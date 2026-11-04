@@ -71,6 +71,11 @@ public class BCLanguageProvider extends LanguageProvider {
   @Override
   protected void addTranslations() {
     add("itemGroup.bcreborn", "BCReborn");
+    // Ledgers (original GuiEngine / GuiAssemblyTable labels)
+    add("gui.energy", "Energy");
+    add("gui.currentOutput", "Current Output");
+    add("gui.stored", "Stored");
+    add("gui.heat", "Heat");
     add("chat.bcreborn.quarry.tooSmall", "Quarry area is too small (%s x %s, at least 3 x 3 is needed); using the default area.");
 
     // Block and Item Names

@@ -52,6 +52,26 @@ public abstract class BuildCraftScreen<M extends BuildCraftMenu<M>> extends Abst
     return null;
   }
 
+  /** Draws the ledgers on top of the GUI (original {@code drawLedgers()} in the foreground layer). */
+  @Override
+  public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    if (!ledgerManager.isEmpty()) {
+      guiGraphics.pose().pushPose();
+      guiGraphics.pose().translate(0, 0, 300);
+      ledgerManager.drawLedgers(guiGraphics, font, mouseX, mouseY);
+      guiGraphics.pose().popPose();
+    }
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    if (ledgerManager.handleMouseClicked(mouseX, mouseY, button)) {
+      return true;
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
+  }
+
   public int getXSize() {
     return this.imageWidth;
   }
