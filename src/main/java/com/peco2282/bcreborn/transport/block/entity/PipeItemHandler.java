@@ -45,6 +45,7 @@ public class PipeItemHandler implements IItemHandler {
     if (pipe.getTransportType() != PipeType.ITEM) return stack;
     PipeMaterial mat = pipe.getPipeMaterial();
     if (mat == PipeMaterial.WOOD || mat == PipeMaterial.EMERALD) return stack;
+    if (side != null && !pipe.isInputOpen(side)) return stack;
     if (!simulate) {
       pipe.injectItem(stack.copy(), side != null ? side : Direction.UP);
     }

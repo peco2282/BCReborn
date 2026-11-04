@@ -11,6 +11,14 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.energy;
 
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
+import com.peco2282.bcreborn.api.transport.PowerMode;
+import com.peco2282.bcreborn.transport.TransportStatements;
+import com.peco2282.bcreborn.transport.statements.ActionPowerLimiter;
+import java.util.Collection;
+import java.util.List;
+import net.minecraft.world.level.block.state.BlockState;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import net.minecraft.core.BlockPos;
@@ -50,6 +58,39 @@ public class IronEnergyPipeBehaviour extends StandardEnergyPipeBehaviour {
       }
     }
     return TRANSFER_STEPS[0];
+  }
+
+  /** Original {@code PipePowerIron.getActions()}: one power limiter action per {@link PowerMode}. */
+  @Override
+  public void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    for (PowerMode mode : PowerMode.VALUES) {
+      actions.add(TransportStatements.ACTION_POWER_LIMITER.get(mode).get());
+    }
+  }
+
+  /** Original {@code PipePowerIron.actionsActivated()}: the first active limiter sets the mode. */
+  @Override
+  public void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    for (StatementSlot slot : actions) {
+      if (slot.statement instanceof ActionPowerLimiter limiter) {
+        if (pipe.getIronPipeEnergyLimit() != limiter.limit.maxPower) {
+          pipe.setIronPipeEnergyLimit(limiter.limit.maxPower);
+        }
+        break;
+      }
+    }
+  }
+
+  /**
+   * Original {@code PipePowerIron.updateEntity()}: {@code transport.maxPower = getMode().maxPower} every tick, so
+   * the limit also holds after a reload (the module is rebuilt with the material default).
+   */
+  @Override
+  public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
+    var module = pipe.getEnergyTransportModule();
+    if (module != null && module.getMaxPower() != pipe.getIronPipeEnergyLimit()) {
+      module.setMaxPower(pipe.getIronPipeEnergyLimit());
+    }
   }
 
   @Override

@@ -60,6 +60,7 @@ public class PipeFluidHandler implements IFluidHandler {
 
   @Override
   public int fill(FluidStack resource, FluidAction action) {
+    if (fillDirection != null && !pipe.isInputOpen(fillDirection)) return 0; // original valve
     // 異種流体混入防止: タンクに既に別の流体がある場合は拒否
     FluidStack existing = tank.getFluid();
     if (!existing.isEmpty() && !existing.isFluidEqual(resource)) {

@@ -17,11 +17,16 @@ import net.minecraft.util.StringRepresentable;
  * Represents different power levels for transport systems.
  */
 public enum PowerMode implements StringRepresentable {
-  OFF(0),
-  LOW(10),
-  MEDIUM(100),
-  HIGH(1000),
-  MAX(10000);
+  // Original buildcraft.core.PowerMode: the iron kinesis pipe limits, 2..128 MJ/t = 20..1280 RF/t.
+  M2(20),
+  M4(40),
+  M8(80),
+  M16(160),
+  M32(320),
+  M64(640),
+  M128(1280);
+
+  public static final PowerMode[] VALUES = values();
 
   /**
    * The maximum power value associated with this mode.
@@ -30,6 +35,22 @@ public enum PowerMode implements StringRepresentable {
 
   PowerMode(int maxPower) {
     this.maxPower = maxPower;
+  }
+
+  public PowerMode getNext() {
+    return VALUES[(ordinal() + 1) % VALUES.length];
+  }
+
+  public PowerMode getPrevious() {
+    return VALUES[(ordinal() + VALUES.length - 1) % VALUES.length];
+  }
+
+  /** @return the mode whose limit is {@code maxPower}, or {@link #M128} */
+  public static PowerMode fromMaxPower(int maxPower) {
+    for (PowerMode mode : VALUES) {
+      if (mode.maxPower == maxPower) return mode;
+    }
+    return M128;
   }
 
   @Override

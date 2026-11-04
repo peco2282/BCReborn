@@ -56,6 +56,7 @@ class RoutingHelper {
     for (Direction dir : Direction.values()) {
       if (dir == from) continue;
       if (!pipe.getBlockState().getValue(PipeBlock.PROPERTY_MAP.get(dir))) continue;
+      if (!isOpenTowards(pipe, dir)) continue;
       possibleDirections.add(dir);
     }
 
@@ -83,5 +84,18 @@ class RoutingHelper {
     Direction chosen = possibleDirections.get(random.nextInt(possibleDirections.size()));
     PipeDebugLogger.logRouting(pipe, item, chosen);
     return chosen;
+  }
+
+  /**
+   * Original {@code PipeTransportItems.getPossibleMovements()}: this pipe's output and the next pipe's input must
+   * be open (gate valve action).
+   */
+  static boolean isOpenTowards(PipeBlockEntity pipe, Direction dir) {
+    if (!pipe.isOutputOpen(dir)) return false;
+    Level level = pipe.getLevel();
+    if (level == null) return true;
+    BlockPos next = pipe.getBlockPos().relative(dir);
+    return !(level.isLoaded(next) && level.getBlockEntity(next) instanceof PipeBlockEntity nextPipe)
+      || nextPipe.isInputOpen(dir.getOpposite());
   }
 }

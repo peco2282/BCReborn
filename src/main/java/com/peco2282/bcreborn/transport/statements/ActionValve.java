@@ -22,6 +22,8 @@ import com.peco2282.bcreborn.core.statements.StatementParameterDirection;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Direction;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -63,10 +65,14 @@ public class ActionValve extends BCStatement implements IActionInternal {
 
   @Override
   public void actionActivate(IStatementContainer container, IStatementParameter[] parameters) {
-    IPipe pipe = ((Gate) container).getPipe();
-
-    if (pipe != null) {
-      // TODO: IPipe または PipeBlockEntity に allowInput/allowOutput を実装し、ここで呼び出す
+    // Original: with a direction parameter only that side, otherwise every side.
+    if (!(container.getTile() instanceof PipeBlockEntity pipe)) return;
+    if (parameters.length > 0 && parameters[0] instanceof StatementParameterDirection param && param.direction != null) {
+      pipe.setValve(param.direction, state.inputOpen, state.outputOpen);
+    } else {
+      for (Direction side : Direction.values()) {
+        pipe.setValve(side, state.inputOpen, state.outputOpen);
+      }
     }
   }
 

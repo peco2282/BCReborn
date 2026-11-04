@@ -54,9 +54,13 @@ final class MovementHelper {
     BlockPos nextPos = pos.relative(dir);
     Level level = pipe.getLevel();
 
+    // Original valve: a closed output, or a closed input on the next pipe, sends the item back.
+    if (!pipe.isOutputOpen(dir)) return MovementResult.BLOCKED;
+
     BlockEntity be = level.getBlockEntity(nextPos);
 
     if (be instanceof PipeBlockEntity nextPipe) {
+      if (!nextPipe.isInputOpen(dir.getOpposite())) return MovementResult.BLOCKED;
       nextPipe.injectItemWithSpeed(item.getStack(), dir.getOpposite(), item.getSpeed());
       return MovementResult.SUCCESS;
     } else if (be != null) {

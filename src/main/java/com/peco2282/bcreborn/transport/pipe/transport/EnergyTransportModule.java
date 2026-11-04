@@ -125,6 +125,7 @@ public class EnergyTransportModule {
         Direction outDir = Direction.from3DDataValue(j);
         BlockPos neighborPos = pos.relative(outDir);
         if (!level.isLoaded(neighborPos)) continue;
+        if (!pipe.isOutputOpen(outDir)) continue; // original valve
 
         BlockEntity be = level.getBlockEntity(neighborPos);
         if (be == null) continue;
@@ -251,6 +252,7 @@ public class EnergyTransportModule {
    */
   public double receiveEnergy(Direction from, double amount) {
     if (!canTransfer(from) || amount <= 0 || !Double.isFinite(amount)) return 0;
+    if (!pipe.isInputOpen(from)) return 0; // original valve
     int side = from.get3DDataValue();
 
     Level level = pipe.getLevel();

@@ -41,6 +41,8 @@ public class TransportStatements {
   public static final RegistryObject<ActionEnergyPulsar> ACTION_ENERGY_PULSAR = register("action_energy_pulsar", ActionEnergyPulsar::new);
   public static final RegistryEnumObject<DyeColor, ActionExtractionPreset> ACTION_EXTRACTION_PRESET = registerEnum("action_extraction_preset", ActionExtractionPreset::new, DyeColor.class);
   public static final RegistryEnumObject<DyeColor, ActionPipeColor> ACTION_PARAMETER_SIGNAL = registerEnum("action_parameter_signal", ActionPipeColor::new, DyeColor.class);
+  /** The pipe colour actions (registered under the older "action_parameter_signal" name). */
+  public static final RegistryEnumObject<DyeColor, ActionPipeColor> ACTION_PIPE_COLOR = ACTION_PARAMETER_SIGNAL;
   public static final RegistryEnumObject<Direction, ActionPipeDirection> ACTION_PIPE_DIRECTION = registerEnum("action_pipe_direction", ActionPipeDirection::new, Direction.class);
   public static final RegistryEnumObject<PowerMode, ActionPowerLimiter> ACTION_POWER_LIMITER = registerEnum("action_power_limiter", ActionPowerLimiter::new, PowerMode.class);
   public static final RegistrySizedObject<ActionRedstoneFaderOutput> ACTION_REDSTONE_FADER_OUTPUT = registerSized("action_redstone_fader_output", ActionRedstoneFaderOutput::new, 15);

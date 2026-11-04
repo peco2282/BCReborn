@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.api.statements.IActionExternal;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
 import com.peco2282.bcreborn.api.statements.IActionProvider;
 import com.peco2282.bcreborn.api.statements.IStatementContainer;
+import com.peco2282.bcreborn.transport.TransportStatements;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import java.util.Collection;
@@ -25,9 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 /**
  * Port of the original {@code buildcraft.transport.PipeActionProvider}: the gate's own actions (wire and expansion
  * actions) plus the pipe-specific actions of the pipe material ({@code Pipe.getActions()}).
- * <p>
- * The original base {@code Pipe.getActions()} also offered the valve actions; they are not offered here until the
- * valve behaviour itself is ported, so the GUI never shows an action that does nothing.
+ * Every pipe offers the valve actions (original base {@code Pipe.getActions()}).
  */
 public final class PipeActionProvider implements IActionProvider {
   public static final PipeActionProvider INSTANCE = new PipeActionProvider();
@@ -41,8 +40,13 @@ public final class PipeActionProvider implements IActionProvider {
     if (container instanceof Gate gate) {
       gate.addActions(result);
     }
-    if (container.getTile() instanceof PipeBlockEntity pipe && pipe.getBehaviour() != null) {
-      pipe.getBehaviour().addActions(pipe, result);
+    if (container.getTile() instanceof PipeBlockEntity pipe) {
+      for (ActionValve.ValveState state : ActionValve.ValveState.VALUES) {
+        result.add(TransportStatements.ACTION_VALVE.get(state).get());
+      }
+      if (pipe.getBehaviour() != null) {
+        pipe.getBehaviour().addActions(pipe, result);
+      }
     }
     return result;
   }

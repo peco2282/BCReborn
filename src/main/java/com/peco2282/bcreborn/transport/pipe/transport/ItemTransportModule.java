@@ -123,6 +123,10 @@ public class ItemTransportModule {
     if (behaviour instanceof ItemPipeBehaviour ib) {
       next = ib.chooseNextDirection(pipe, item);
     }
+    // A material's own choice must still respect closed valves.
+    if (next != null && next != item.getEntryDirection() && !RoutingHelper.isOpenTowards(pipe, next)) {
+      next = null;
+    }
     if (next == null) {
       next = routingHelper.chooseNextDirection(pipe, item);
     }

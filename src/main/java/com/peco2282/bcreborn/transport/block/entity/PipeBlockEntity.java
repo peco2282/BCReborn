@@ -83,6 +83,16 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private final PipeRuntime runtime;
   // Capability lazy optionals
   private final LazyOptional<IItemHandler> itemHandlerCap = LazyOptional.of(() -> new PipeItemHandler(this, null));
+  /**
+   * One item handler per side so inserted items enter from the side they came from (they used to always enter
+   * from UP) and closed valve inputs can refuse them.
+   */
+  private final Map<Direction, LazyOptional<IItemHandler>> itemSideCaps = new EnumMap<>(Direction.class);
+  {
+    for (Direction dir : Direction.values()) {
+      itemSideCaps.put(dir, LazyOptional.of(() -> new PipeItemHandler(this, dir)));
+    }
+  }
   private final Map<Direction, LazyOptional<IEnergyStorage>> energySideCapsMap = new EnumMap<>(Direction.class);
   private final IPipe pipeApi = new IPipe() {
     @Override
@@ -388,6 +398,24 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return output;
   }
 
+  /** Original {@code PipeTransport.inputOpen()}: whether contents may enter from {@code side} (valve). */
+  public boolean isInputOpen(Direction side) {
+    return runtime.inputOpen(side);
+  }
+
+  /** Original {@code PipeTransport.outputOpen()}: whether contents may leave towards {@code side} (valve). */
+  public boolean isOutputOpen(Direction side) {
+    return runtime.outputOpen(side);
+  }
+
+  /** Original {@code ActionValve.actionActivate()} -> {@code allowInput / allowOutput}. */
+  public void setValve(Direction side, boolean inputOpen, boolean outputOpen) {
+    if (runtime.inputOpen(side) == inputOpen && runtime.outputOpen(side) == outputOpen) return;
+    runtime.allowInput(side, inputOpen);
+    runtime.allowOutput(side, outputOpen);
+    setChanged();
+  }
+
   @Nullable
   public Boolean getIronLastRedstonePower() {
     return runtime.ironLastRedstonePower();
@@ -547,7 +575,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   @Override
   public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
     if (cap == ForgeCapabilities.ITEM_HANDLER && runtime.type() == PipeType.ITEM) {
-      return itemHandlerCap.cast();
+      return (side == null ? itemHandlerCap : itemSideCaps.get(side)).cast();
     }
     if (cap == ForgeCapabilities.FLUID_HANDLER && runtime.type() == PipeType.FLUID) {
       return (side == null ? fluidHandlerCap : fluidSideCaps.get(side)).cast();
@@ -576,6 +604,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   public void invalidateCaps() {
     super.invalidateCaps();
     itemHandlerCap.invalidate();
+    itemSideCaps.values().forEach(LazyOptional::invalidate);
     fluidHandlerCap.invalidate();
     fluidSideCaps.values().forEach(LazyOptional::invalidate);
     energyCap.invalidate();

@@ -95,6 +95,7 @@ public class FluidTransportModule {
       }
 
       if (!isConnected(pos, dir)) continue;
+      if (!pipe.isOutputOpen(dir)) continue; // original valve
 
       BlockEntity neighbor = level.getBlockEntity(pos.relative(dir));
       if (neighbor == null) continue;

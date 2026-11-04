@@ -12,6 +12,12 @@
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
 import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
+import com.peco2282.bcreborn.transport.TransportStatements;
+import com.peco2282.bcreborn.transport.statements.ActionPipeColor;
+import java.util.Collection;
+import java.util.List;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
@@ -49,6 +55,27 @@ public class LapisItemPipeBehaviour implements ItemPipeBehaviour {
     if (!stack.isEmpty()) {
       var tag = stack.getOrCreateTag();
       tag.putInt("BCPipeColor", pipe.getPipeColor().getId());
+    }
+  }
+
+  /** Original {@code PipeItemsLapis.getActions()}: one "pipe colour" action per dye colour. */
+  @Override
+  public void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    for (DyeColor color : DyeColor.values()) {
+      actions.add(TransportStatements.ACTION_PIPE_COLOR.get(color).get());
+    }
+  }
+
+  /** Original {@code PipeItemsLapis.actionsActivated()}: the first active colour action recolours the pipe. */
+  @Override
+  public void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    for (StatementSlot slot : actions) {
+      if (slot.statement instanceof ActionPipeColor color) {
+        if (pipe.getPipeColor() != color.color) {
+          pipe.setPipeColor(color.color);
+        }
+        break;
+      }
     }
   }
 

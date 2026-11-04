@@ -82,6 +82,9 @@ public final class PipeRuntime {
   private int fluidRoundRobinIndex;
   private Direction ironPipeOutput = Direction.UP;
   private int ironPipeEnergyLimit = 1280;
+  /** Original {@code PipeTransport.inputsOpen / outputsOpen}: set by the gate valve action, saved. */
+  private final boolean[] inputsOpen = {true, true, true, true, true, true};
+  private final boolean[] outputsOpen = {true, true, true, true, true, true};
   // Equivalent to the original PipeLogicIron.lastPower. Not saved to NBT (initialized from the current signal on initialize)
   @Nullable private Boolean ironLastRedstonePower;
   private Direction extractionSide = Direction.DOWN;
@@ -160,6 +163,14 @@ public final class PipeRuntime {
     if (loadedType != type || loadedMaterial != material) reconfigure(loadedType, loadedMaterial);
 
     if (tag.contains("IronPipeEnergyLimit")) ironPipeEnergyLimit = tag.getInt("IronPipeEnergyLimit");
+    if (tag.contains("inputOpen") && tag.contains("outputOpen")) {
+      int in = tag.getByte("inputOpen");
+      int out = tag.getByte("outputOpen");
+      for (int i = 0; i < 6; i++) {
+        inputsOpen[i] = (in & (1 << i)) != 0;
+        outputsOpen[i] = (out & (1 << i)) != 0;
+      }
+    }
     if (tag.contains("IronPipeOutput")) ironPipeOutput = Direction.from3DDataValue(tag.getInt("IronPipeOutput"));
     if (tag.contains("ExtractionSide")) extractionSide = Direction.from3DDataValue(tag.getInt("ExtractionSide"));
     if (tag.contains("usedFilters")) usedFilters = tag.getLong("usedFilters");
@@ -194,6 +205,14 @@ public final class PipeRuntime {
     tag.putString("PipeMaterial", material.name());
     tag.putInt("IronPipeOutput", ironPipeOutput.get3DDataValue());
     tag.putInt("IronPipeEnergyLimit", ironPipeEnergyLimit);
+    int in = 0;
+    int out = 0;
+    for (int i = 0; i < 6; i++) {
+      if (inputsOpen[i]) in |= 1 << i;
+      if (outputsOpen[i]) out |= 1 << i;
+    }
+    tag.putByte("inputOpen", (byte) in);
+    tag.putByte("outputOpen", (byte) out);
     tag.putInt("ExtractionSide", extractionSide.get3DDataValue());
     ListTag filtersTag = new ListTag();
     for (Direction direction : Direction.values()) {
@@ -408,6 +427,10 @@ public final class PipeRuntime {
   public void setIronPipeOutput(Direction value) { ironPipeOutput = value; }
   @Nullable public Boolean ironLastRedstonePower() { return ironLastRedstonePower; }
   public void setIronLastRedstonePower(@Nullable Boolean value) { ironLastRedstonePower = value; }
+  public boolean inputOpen(Direction side) { return inputsOpen[side.get3DDataValue()]; }
+  public boolean outputOpen(Direction side) { return outputsOpen[side.get3DDataValue()]; }
+  public void allowInput(Direction side, boolean allow) { inputsOpen[side.get3DDataValue()] = allow; }
+  public void allowOutput(Direction side, boolean allow) { outputsOpen[side.get3DDataValue()] = allow; }
   public int ironPipeEnergyLimit() { return ironPipeEnergyLimit; }
   public void setIronPipeEnergyLimit(int value) { ironPipeEnergyLimit = value; }
   public Direction extractionSide() { return extractionSide; }
