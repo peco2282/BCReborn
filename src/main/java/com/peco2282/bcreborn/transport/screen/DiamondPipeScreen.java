@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.transport.screen;
 
 import com.peco2282.bcreborn.BCRebornTransport;
+import com.peco2282.bcreborn.common.GeneralConfig;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import com.peco2282.bcreborn.transport.menu.DiamondPipeMenu;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DiamondPipeScreen extends BuildCraftScreen<DiamondPipeMenu> {
   private static final ResourceLocation TEXTURE = BCRebornTransport.location("textures/gui/filter.png");
+  private static final ResourceLocation TEXTURE_CB = BCRebornTransport.location("textures/gui/filter_cb.png");
 
   public DiamondPipeScreen(DiamondPipeMenu p_97741_, Inventory p_97742_, Component p_97743_) {
     super(p_97741_, p_97742_, p_97743_);
@@ -38,7 +40,9 @@ public class DiamondPipeScreen extends BuildCraftScreen<DiamondPipeMenu> {
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     int x = (this.width - this.imageWidth) / 2;
     int y = (this.height - this.imageHeight) / 2;
-    guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+    // Original GuiDiamondPipe: switch to filter_cb.png in colorBlindMode
+    ResourceLocation texture = GeneralConfig.isColorBlindMode() ? TEXTURE_CB : TEXTURE;
+    guiGraphics.blit(texture, x, y, 0, 0, this.imageWidth, this.imageHeight);
   }
 
   @Override

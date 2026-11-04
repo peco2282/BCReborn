@@ -11,9 +11,9 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.transport.TransportMenuTypes;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.menu.DiamondPipeMenu;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
 import net.minecraft.core.BlockPos;
@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -137,14 +138,32 @@ public class DiamondItemPipeBehaviour implements ItemPipeBehaviour {
     return false;
   }
 
+  /**
+   * Equivalent to the original {@code PipeItemsDiamond.blockActivated()}.
+   * Placement takes priority when holding a pipe; otherwise (empty hand or wrench included) the filter GUI opens.
+   */
+  @Override
+  public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    return openFilterGui(pipe, level, pos, player, hand);
+  }
+
   @Override
   public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-    if (level.isClientSide) return InteractionResult.PASS;
-    NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider(
-        (id, inv, plyr) -> TransportMenuTypes.DIAMOND_PIPE_MENU.get().create(id, inv),
-        Component.translatable("menu.bcreborntransport.diamond_pipe_menu")
-      ), buf -> buf.writeBlockPos(pos)
-    );
-    return InteractionResult.SUCCESS;
+    return openFilterGui(pipe, level, pos, player, hand);
+  }
+
+  private InteractionResult openFilterGui(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    ItemStack held = player.getItemInHand(hand);
+    if (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock) {
+      return InteractionResult.PASS;
+    }
+    if (player instanceof ServerPlayer serverPlayer) {
+      NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+          (id, inv, user) -> new DiamondPipeMenu(id, inv, pipe),
+          Component.translatable("menu.bcreborntransport.diamond_pipe_menu")
+        ), buf -> buf.writeBlockPos(pos)
+      );
+    }
+    return InteractionResult.sidedSuccess(level.isClientSide);
   }
 }
