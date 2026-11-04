@@ -31,6 +31,10 @@ Tests use the **Forge GameTest** framework, not JUnit directly.
 - Run headless: `gradlew.bat runGameTestServer`
 - Run in-game: `/test` command in a running client/server.
 - Example: `com.peco2282.bcreborn.transport.test.TransportGameTests`
+- Only the `bcreborntransport` GameTest namespace is enabled, so every test class uses `@GameTestHolder(BCRebornTransport.MODID)` and lives under `transport/test/`, whatever module it covers.
+- Templates live in `src/main/resources/data/bcreborntransport/gameteststructures/` (`empty_3x3`, `quarry_13x8x13`); `build.gradle` stages them into `run/` before `runGameTestServer`.
+- The GameTest world in `run/` is reused between runs, so blocks from an earlier (aborted) run can still be there. Tests that search an area (e.g. landmarks, 64 blocks) must not depend on the surroundings being empty.
+- The IntelliJ `runGameTestServer` configuration needs "Build and run using: IntelliJ IDEA" and a Java 17 SDK; with Gradle delegation the module path is dropped and the launch fails.
 
 ## Module Structure
 
@@ -104,8 +108,8 @@ After adding blocks, items, or recipes, run `gradlew.bat runData` to regenerate 
 
 ## Current Focus Areas
 
-See `ROADMAP.md` for full status. Active work (as of last update):
-- **Transport UI**: Diamond Pipe filter GUI, Iron Pipe output-direction GUI.
-- **Builder logic**: `QuarryBlockEntity` / `FillerBlockEntity` tick logic; Landmark range system.
-- **Engine polish**: Piston animation client-server sync; Stone/Iron Engine GUI.
-- **Item rendering**: Dynamic `TravelingItem` rendering inside pipes.
+See `ROADMAP.md` for full status (including the client-side verification checklist). Active work (as of last update):
+- **Client verification**: GUIs and rendering (Diamond Pipe GUI, wires, gates, Landmarks, Assembly Table, engines) are implemented and GameTest-verified server-side, but not yet checked in a real client.
+- **Emzuli / Daizuli pipes**: the current implementations differ from the original; port the pipes, then their gate actions.
+- **Builders leftovers**: Filler parameter / excavate GUI, Quarry chunk loading, building-item flight sync to clients.
+- **Jam handling**: `bounceCount`-based jam detection in item pipes.

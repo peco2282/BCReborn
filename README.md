@@ -11,7 +11,7 @@ BCReborn は、往年の BuildCraft が持つ以下の機能群を現代の Forg
 - **パイプシステム** — アイテム・液体・エネルギーの搬送
 - **エンジンシステム** — 木材・石・鉄エンジンによる MJ/FE 発電
 - **Builders モジュール** — Quarry・Filler・Architect Table などの自動建築・採掘
-- **Silicon モジュール** — Assembly Table・Gate などのオートメーション拡張 *(実装予定)*
+- **Silicon モジュール** — Assembly Table・Gate などのオートメーション拡張
 
 ---
 
@@ -44,6 +44,8 @@ BCReborn は、往年の BuildCraft が持つ以下の機能群を現代の Forg
 - **アイテムパイプ** — Wood / Stone / Cobblestone / Iron / Golden / Diamond / Emerald / Obsidian / Void など全 16 種の Behaviour 実装
 - **液体パイプ** — Wood / Stone / Iron / Diamond など主要種の Behaviour 実装
 - **エネルギーパイプ** — Wood / Stone / Iron / Golden / Diamond など主要種の Behaviour 実装
+- **ゲート** — 条件（パイプの中身・ワイヤー信号・レッドストーンなど）とアクション（レッドストーン出力・機械の Off/On/Loop・Iron の出力方向・Valve・Lapis の色・電力制限など）
+- **パイプワイヤー** — 4色、ゲート間の信号伝達
 - `ItemTransportModule` による TravelingItem ライフサイクル管理
 - `RoutingHelper` / `MovementHelper` / `SpeedHelper` による搬送ロジック
 
@@ -51,11 +53,12 @@ BCReborn は、往年の BuildCraft が持つ以下の機能群を現代の Forg
 
 - **Wood Engine** — 基本動作
 - **Stone Engine** — 燃料・PI 制御・過熱・冷却・爆発
-- **Iron Engine** — 液体燃料対応
+- **Iron Engine** — 液体燃料・冷却液対応
 - **Creative Engine** — 無限エネルギー供給 (開発用)
 
 ### Builders モジュール
 
+- **Landmark** — Quarry・Filler・Architect Table の範囲指定
 - **Quarry** — 自動採掘
 - **Filler** — 各種パターンによる自動建築
 - **Architect Table** — 建築スキャン
@@ -122,9 +125,9 @@ com.peco2282.bcreborn
 詳細な進捗状況と今後の計画については、[ROADMAP.md](ROADMAP.md) を参照してください。
 
 ### 🚀 現在の注力タスク
-- **Transport UI**: Diamond Pipe / Iron Pipe の設定 GUI 実装
-- **Heavy Machines**: Quarry / Filler の動作ロジック実装
-- **Landmarks**: 範囲指定システムの基盤構築
+- **実機確認**: 実装済みの GUI・描画を実際のクライアントで確認する（チェックリストは ROADMAP.md）
+- **Emzuli / Daizuli Pipe**: 原作準拠への作り直し
+- **Builders の残り**: Filler の設定 GUI、Quarry のチャンクローディング
 
 ---
 
