@@ -1,6 +1,6 @@
 # BCReborn — 実装ロードマップ (Original BuildCraft 準拠)
 
-> 最終更新: 2026-06-14
+> 最終更新: 2026-11-04
 > 対象バージョン: Minecraft 1.20.1 / Forge 47.x
 
 ---
@@ -21,7 +21,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 ---
 
 ## 🛠 最優先タスク (Immediate Priority)
-1.  **Transport UI の実装**: Diamond Pipe のフィルター設定、Iron Pipe の方向指定を GUI で可能にする。
+1.  **Transport UI の仕上げ**: Diamond Pipe フィルター GUI の実機確認。Iron Pipe はオリジナル準拠でレンチ/レッドストーン操作（GUI なし）として実装済み。出力方向の見た目表示が未実装。
 2.  **建築マシンの基本ロジック**: Landmark による範囲指定の実装と、Quarry/Filler の動作開始。
 3.  **エンジンの安定化と演出**: ピストンアニメーションの同期と GUI の完成。
 
@@ -36,9 +36,9 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 | 基本輸送ロジック | ✅ | TravelingItem, MovementHelper, SpeedHelper |
 | Wood / Emerald | ✅ | 抽出ロジック実装済み |
 | Stone / Cobblestone | ✅ | 基本輸送・摩擦の違い |
-| Iron | 🔧 | 挙動は実装済み。GUI による出力方向固定が未実装 |
+| Iron | ✅ | PipeLogicIron 準拠: レンチ（アーム/中央）・レッドストーンで出力切替、全方向接続・出力1方向。オリジナル同様 GUI なし。出力面の描画と Gate Action 連携は未実装 |
 | Golden | ✅ | 加速ロジック |
-| Diamond | 🔧 | ルーティングは実装済み。GUI によるフィルター設定が未実装 |
+| Diamond | 🔧 | ルーティング・フィルター GUI（54 ゴーストスロット、保存対応）実装済み。GameTest で検証済み、実機での GUI 表示確認待ち |
 | Obsidian | ✅ | 地面のアイテムを吸引するロジック実装済み |
 | Void | ✅ | アイテムを消去するロジック実装済み |
 | Daizuli / Emzuli | ⬜ | 高度な色分けルーティング |
@@ -120,7 +120,9 @@ BC を象徴する大型マシン。
 ## 🚀 ROADMAP: 今後のリリース計画
 
 ### Phase 1: 輸送と UI の完成 (Transport & UI)
-*   [ ] Diamond/Iron Pipe GUI の完全実装（設定の保存と同期）
+*   [x] Diamond Pipe フィルター GUI / Iron Pipe 出力切替の実装（設定の保存と同期）
+*   [ ] Diamond Pipe GUI の実機確認
+*   [ ] Iron Pipe 出力方向の描画（出力以外の面を solid 表示）
 *   [ ] パイプ内アイテムレンダリングの実装 (ワクワク感の向上)
 *   [ ] パイプの動的接続モデル (見た目の改善)
 
