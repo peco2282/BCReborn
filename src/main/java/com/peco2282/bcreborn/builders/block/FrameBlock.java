@@ -154,7 +154,11 @@ public class FrameBlock extends BuildCraftBlock {
     super.onRemove(state, level, pos, newState, isMoving);
   }
 
-  private void removeNeighboringFrames(Level level, BlockPos origin) {
+  /**
+   * Original {@code BlockFrame.removeNeighboringFrames()}: removes every frame connected to {@code origin}.
+   * Also used by the quarry when it is broken.
+   */
+  public static void removeNeighboringFrames(Level level, BlockPos origin) {
     isRemovingFrames.set(true);
     try {
       Set<BlockPos> visited = new HashSet<>();

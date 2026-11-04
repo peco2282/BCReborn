@@ -71,6 +71,7 @@ public class BCLanguageProvider extends LanguageProvider {
   @Override
   protected void addTranslations() {
     add("itemGroup.bcreborn", "BCReborn");
+    add("chat.bcreborn.quarry.tooSmall", "Quarry area is too small (%s x %s, at least 3 x 3 is needed); using the default area.");
 
     // Block and Item Names
     addBuilders();
