@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn;
 
+import net.minecraft.world.level.material.Fluids;
+import com.peco2282.bcreborn.api.core.StackKey;
 import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.ContextProcessor;
@@ -87,6 +89,13 @@ public class BCRebornEnergy implements BCReborn {
     BuildcraftFuelRegistry.setCoolantManager(
       CoolantManager.INSTANCE
     );
+
+    // Original BuildCraftEnergy.init(): water cools the combustion engine; ice and packed ice melt into it.
+    // No coolant was registered, so iron engines could not be cooled at all.
+    var coolants = BuildcraftFuelRegistry.getCoolantManager();
+    coolants.addCoolant(Fluids.WATER, 0.0023f);
+    coolants.addSolidCoolant(StackKey.stack(Blocks.ICE), StackKey.fluid(Fluids.WATER), 1.5f);
+    coolants.addSolidCoolant(StackKey.stack(Blocks.PACKED_ICE), StackKey.fluid(Fluids.WATER), 2.0f);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

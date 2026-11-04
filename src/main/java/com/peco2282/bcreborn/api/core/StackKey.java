@@ -37,9 +37,8 @@ public record StackKey(ItemStack stack, FluidStack fluidStack) {
   public static final StackKey EMPTY = new StackKey(ItemStack.EMPTY, FluidStack.EMPTY);
 
   public StackKey {
-    if (stack.isEmpty() && fluidStack.isEmpty()) {
-      throw new IllegalArgumentException("StackKey cannot be created with both components null");
-    }
+    // Both empty is allowed: that is EMPTY. (Rejecting it made the EMPTY constant itself throw, so the class could
+    // not even be loaded.)
     if (!stack.isEmpty() && !fluidStack.isEmpty()) {
       throw new IllegalArgumentException("StackKey cannot be created with both components non-null");
     }
