@@ -314,6 +314,15 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
+  @Nullable
+  public Boolean getIronLastRedstonePower() {
+    return runtime.ironLastRedstonePower();
+  }
+
+  public void setIronLastRedstonePower(@Nullable Boolean power) {
+    runtime.setIronLastRedstonePower(power);
+  }
+
   public Direction getExtractionSide() {
     return runtime.extractionSide();
   }

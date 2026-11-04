@@ -33,4 +33,10 @@ public interface PipeBlockEvent {
 
   default void onPlace(PipeBlockEntity entity, Level level, BlockState oldState, boolean isMoving) {
   }
+
+  /**
+   * Called when a neighbouring block changes (including redstone input changes). Server side only.
+   */
+  default void onNeighborChanged(PipeBlockEntity entity, Level level, BlockPos fromPos) {
+  }
 }

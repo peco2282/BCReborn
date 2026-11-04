@@ -1,5 +1,6 @@
 {
   "item.bcreborntransport.gate": "Gate",
   "screen.bcreborntransport.gate.row": "Rule %s / %s",
-  "menu.bcreborntransport.diamond_pipe_menu": "Filters"
+  "menu.bcreborntransport.diamond_pipe_menu": "Filters",
+  "message.bcreborntransport.iron_pipe.output": "Output direction: %s"
 }

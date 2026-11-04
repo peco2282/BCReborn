@@ -11,12 +11,11 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
 
-import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.behaviour.FluidPipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -42,36 +41,34 @@ public class IronFluidPipeBehaviour implements FluidPipeBehaviour {
 
 
   @Override
-  public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
-    if (neighbor.getBlock() instanceof PipeBlock) {
-      return true;
-    }
-    // マシン側は出力方向のみ接続
-    return pipe.getIronPipeOutput() == dir;
-  }
-
-  @Override
   public boolean canOutputFluid(PipeBlockEntity pipe, Direction dir) {
     return dir == pipe.getIronPipeOutput();
   }
 
+  /**
+   * The original {@code PipeFluidsIron} also shares {@code PipeLogicIron} (switched by wrench and redstone).
+   */
   @Override
-  public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
-                                 Player player, InteractionHand hand, BlockHitResult hit) {
-    if (!level.isClientSide) {
-      Direction current = pipe.getIronPipeOutput();
-      Direction next = Direction.values()[(current.ordinal() + 1) % Direction.values().length];
-      pipe.setIronPipeOutput(next);
-      BlockState state = level.getBlockState(pos);
-      BlockState newState = state;
-      for (Direction dir : Direction.values()) {
-        newState = newState.setValue(PipeBlock.PROPERTY_MAP.get(dir),
-          state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
-      }
-      level.setBlock(pos, newState, 3);
-      player.displayClientMessage(Component.literal("Output direction: " + next.name()), true);
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
+                                       Player player, InteractionHand hand, BlockHitResult hit) {
+    return IronPipeLogic.onWrenchUse(pipe, level, pos, player, hand, hit);
+  }
+
+  @Override
+  public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
+    if (!oldState.is(pipe.getBlockState().getBlock())) {
+      IronPipeLogic.onPlaced(pipe, level);
     }
-    return InteractionResult.sidedSuccess(level.isClientSide);
+  }
+
+  @Override
+  public void onNeighborChanged(PipeBlockEntity pipe, Level level, BlockPos fromPos) {
+    IronPipeLogic.switchOnRedstone(pipe, level);
+  }
+
+  @Override
+  public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
+    IronPipeLogic.ensureInitialized(pipe, level);
   }
 
   @Override

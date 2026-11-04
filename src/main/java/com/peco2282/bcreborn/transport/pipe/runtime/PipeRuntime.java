@@ -68,6 +68,8 @@ public final class PipeRuntime {
   private int fluidRoundRobinIndex;
   private Direction ironPipeOutput = Direction.UP;
   private int ironPipeEnergyLimit = 1280;
+  // Equivalent to the original PipeLogicIron.lastPower. Not saved to NBT (initialized from the current signal on initialize)
+  @Nullable private Boolean ironLastRedstonePower;
   private Direction extractionSide = Direction.DOWN;
   private int filterSlotIndex;
   private long usedFilters;
@@ -251,6 +253,8 @@ public final class PipeRuntime {
   public void advanceFluidRoundRobin(int size) { if (size > 0) fluidRoundRobinIndex = (fluidRoundRobinIndex + 1) % size; }
   public Direction ironPipeOutput() { return ironPipeOutput; }
   public void setIronPipeOutput(Direction value) { ironPipeOutput = value; }
+  @Nullable public Boolean ironLastRedstonePower() { return ironLastRedstonePower; }
+  public void setIronLastRedstonePower(@Nullable Boolean value) { ironLastRedstonePower = value; }
   public int ironPipeEnergyLimit() { return ironPipeEnergyLimit; }
   public void setIronPipeEnergyLimit(int value) { ironPipeEnergyLimit = value; }
   public Direction extractionSide() { return extractionSide; }

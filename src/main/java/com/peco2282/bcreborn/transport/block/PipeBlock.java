@@ -265,12 +265,24 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
     super.onPlace(state, level, pos, oldState, isMoving);
     if (level.isClientSide) return;
-    if (this.material != PipeMaterial.WOOD || this.transportType != PipeType.ITEM) return;
+    boolean woodItem = this.material == PipeMaterial.WOOD && this.transportType == PipeType.ITEM;
+    boolean iron = this.material == PipeMaterial.IRON && this.transportType != PipeType.ENERGY;
+    if (!woodItem && !iron) return;
 
     BlockEntity thisBE = level.getBlockEntity(pos);
     if (!(thisBE instanceof PipeBlockEntity pipeBE)) return;
 
     pipeBE.getBehaviour().onPlace(pipeBE, level, oldState, isMoving);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean isMoving) {
+    super.neighborChanged(state, level, pos, neighborBlock, fromPos, isMoving);
+    if (level.isClientSide) return;
+    if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipeBE && pipeBE.getBehaviour() != null) {
+      pipeBE.getBehaviour().onNeighborChanged(pipeBE, level, fromPos);
+    }
   }
 
   @Override

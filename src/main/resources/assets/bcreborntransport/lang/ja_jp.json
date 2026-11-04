@@ -1,5 +1,6 @@
 {
   "item.bcreborntransport.gate": "ゲート",
   "screen.bcreborntransport.gate.row": "条件行 %s / %s",
-  "menu.bcreborntransport.diamond_pipe_menu": "フィルター"
+  "menu.bcreborntransport.diamond_pipe_menu": "フィルター",
+  "message.bcreborntransport.iron_pipe.output": "出力方向: %s"
 }
