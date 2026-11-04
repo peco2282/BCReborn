@@ -47,6 +47,17 @@ public class LandmarkGameTests {
     if (!condition) helper.fail(message);
   }
 
+  /**
+   * Removes this test's landmarks before succeeding. Test structures of earlier batches stay in the world, so
+   * leftover landmarks would be found by later tests' 64-block search.
+   */
+  private static void finish(GameTestHelper helper) {
+    for (BlockPos pos : new BlockPos[]{A, B, C}) {
+      helper.setBlock(pos, Blocks.AIR.defaultBlockState());
+    }
+    helper.succeed();
+  }
+
   private static MarkerBlockEntity placeMarker(GameTestHelper helper, BlockPos pos) {
     helper.setBlock(pos.below(), Blocks.STONE.defaultBlockState());
     helper.setBlock(pos, CoreBlocks.BLUE_MARKER.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP));
@@ -73,7 +84,7 @@ public class LandmarkGameTests {
     check(helper, !a.lasers.isEmpty() && a.lasers.stream().allMatch(l -> l != null && l.kind == LaserKind.Red),
       "The origin landmark must hold non-null red box lasers");
     check(helper, b.lasers.isEmpty() && c.lasers.isEmpty(), "Only the origin landmark holds the box lasers");
-    helper.succeed();
+    finish(helper);
   }
 
   @PrefixGameTestTemplate(false)
@@ -82,14 +93,18 @@ public class LandmarkGameTests {
     MarkerBlockEntity a = placeMarker(helper, A);
     placeMarker(helper, B);
     a.tryConnection();
-    check(helper, a.origin.isSet() && !a.origin.vect[2].isSet(), "Only the X axis must be linked");
+    // The GameTest world is reused between runs, so a landmark left over from an earlier run may also be linked.
+    // What matters is that X links to B and at least one axis stays unlinked (the case that used to crash).
+    check(helper, a.origin.isSet() && helper.absolutePos(B).equals(a.origin.vect[0].pos)
+        && (!a.origin.vect[1].isSet() || !a.origin.vect[2].isSet()),
+      "X must link to B and at least one axis must stay unlinked");
 
     // Previously threw a NullPointerException for the unlinked axes.
     helper.setBlock(B, Blocks.AIR.defaultBlockState());
 
     check(helper, !a.origin.isSet(), "Breaking a linked landmark must dissolve the group");
     check(helper, a.lasers.isEmpty(), "Box lasers must be cleared when the group dissolves");
-    helper.succeed();
+    finish(helper);
   }
 
   @PrefixGameTestTemplate(false)
@@ -108,7 +123,7 @@ public class LandmarkGameTests {
     helper.setBlock(A.above(), Blocks.AIR.defaultBlockState());
     check(helper, !a.showSignals && a.signals.isEmpty(), "Removing power must hide the signal beams");
     check(helper, !a.lasers.isEmpty(), "Box lasers must not disappear when power is removed");
-    helper.succeed();
+    finish(helper);
   }
 
   @PrefixGameTestTemplate(false)
@@ -127,7 +142,7 @@ public class LandmarkGameTests {
       "A position inside the box must not be valid");
     check(helper, Utils.getNearbyAreaProvider(helper.getLevel(), helper.absolutePos(new BlockPos(-1, 1, -1))) == null,
       "A diagonal corner position must not be valid");
-    helper.succeed();
+    finish(helper);
   }
 
   @PrefixGameTestTemplate(false)
@@ -149,6 +164,6 @@ public class LandmarkGameTests {
       "A landmark at (0, 0, 0) must still count as set");
     LaserData any = a.lasers.get(0);
     check(helper, any != null, "Lasers must never contain null entries");
-    helper.succeed();
+    finish(helper);
   }
 }
