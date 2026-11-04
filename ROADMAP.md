@@ -54,8 +54,8 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 ### 1-3. 拡張機能 (Gates & Logistics)
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| パイプワイヤー (4色) | ✅ | 基本的な信号伝播ロジック実装済み |
-| ゲート (Gate) | 🔧 | 条件評価・アクション解決、提供元（Default/Pipe Trigger・Action Provider）、パイプへのアクション通知（Iron の方向）、レッドストーン出力、機械制御（Off/On/Loop）を実装。GameTest 検証済み。ワイヤー（設置・信号強度・ワイヤー系トリガー/アクション）、Valve・Lapis 色・Emzuli・電力制限のアクション、GUI の実機確認は未対応 |
+| パイプワイヤー (4色) | 🔧 | 原作準拠: 4色のワイヤーアイテム（Assembly Table で作成）、右クリックで設置・スニークで撤去、パイプ破壊でドロップ、ゲートからの信号は強度255から1本ごとに-1、ワイヤー系トリガー/アクション。GameTest 検証済み。ワイヤーの描画は未実装 |
+| ゲート (Gate) | 🔧 | 条件評価・アクション解決、提供元（Default/Pipe Trigger・Action Provider）、パイプへのアクション通知（Iron の方向）、レッドストーン出力、機械制御（Off/On/Loop）を実装。GameTest 検証済み。Valve・Lapis 色・Emzuli・電力制限のアクション、GUI の実機確認は未対応 |
 | 外装 (Facade) | ✅ | FacadeItem と基本的な描画ロジック実装済み |
 | プラグ (Plug/Lens) | ⬜ | 信号遮断や特殊機能 |
 
@@ -133,7 +133,7 @@ BC を象徴する大型マシン。
 *   [x] フィラー (Filler) の基本パターン動作（パラメータ GUI は未実装）
 
 ### Phase 3: ゲートと論理制御 (Logistics & Silicon)
-*   [ ] ゲート (Gate) の基本システム (Trigger/Action) と GUI（Trigger/Action の解決・通知・レッドストーン出力は実装済み。ワイヤーと一部アクションは未対応）
+*   [ ] ゲート (Gate) の基本システム (Trigger/Action) と GUI（Trigger/Action の解決・通知・レッドストーン出力・ワイヤーは実装済み。一部アクションは未対応）
 *   [ ] 基本的なチップ製造 (Assembly Table)
 
 ### Phase 4: 高度な自動化と仕上げ (Advanced Features & Polish)
