@@ -90,7 +90,7 @@ BC を象徴する大型マシン。
 |----------------------|----|-------------------------------------------|
 | Quarry (クァーリー) | 🔧 | TileQuarry 準拠: フレーム建設（障害物は採掘、岩盤・機械は待機）→ 列単位の掘削、Off/On/Loop、雨天減速、ヘッド周辺のアイテム回収、フレーム破損時の再建設、レンチで再起動、破壊時フレーム撤去。GameTest 検証済み。チャンクローディング（quarryDoChunkLoading）は未実装 |
 | Mining Well | ⬜ | 1ブロック直下掘削 |
-| Filler (フィラー) | 🔧 | ブロック/Entity/GUI はあるが、掘削・充填ロジックが未実装 |
+| Filler (フィラー) | 🔧 | TileFiller 準拠: 全9パターン（パラメータ付き）、パターンを ID で保存、done の永続化、excavate、Off/On/Loop、500RF で稼働。テンプレート建設の土台（AbstractBuilder のエネルギー/建材アイテム、SchematicMask 設置、soft 判定、負の Y 座標）を修正し実際に充填できるようになった。GameTest 検証済み。パラメータ/excavate の GUI 操作と建材アイテムの飛行アニメーション同期は未実装 |
 | Builder (ビルダー) | ⬜ | 設計図 (Blueprint) に基づく自動建築 |
 | Architect Table | ⬜ | 範囲内を設計図として記録 |
 
@@ -130,7 +130,7 @@ BC を象徴する大型マシン。
 ### Phase 2: 採掘と建築の始動 (Heavy Machines & Logic)
 *   [x] ランドマーク (Landmark) とレーザー表示の実装（実機確認待ち）
 *   [x] クァーリー (Quarry) の動作開始 (フレーム設置、掘削、アイテム排出)（チャンクローディングは未実装）
-*   [ ] フィラー (Filler) の基本パターン動作
+*   [x] フィラー (Filler) の基本パターン動作（パラメータ GUI は未実装）
 
 ### Phase 3: ゲートと論理制御 (Logistics & Silicon)
 *   [ ] ゲート (Gate) の基本システム (Trigger/Action) と GUI
