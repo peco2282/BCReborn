@@ -43,38 +43,26 @@ public class StripesHandlerPipeWires implements IStripesHandler {
   public boolean handle(Level world, BlockPos pos, Direction direction, ItemStack stack, Player player, IStripesActivator activator) {
     int pipesToTry = 8;
 
-    PipeWire wire = null;
-    for (PipeWire w : PipeWire.VALUES) {
-      if (w.isPipeWire(stack)) {
-        wire = w;
-        break;
-      }
-    }
-
+    PipeWire wire = PipeWire.fromStack(stack);
     if (wire == null) return false;
-
-    DyeColor wireColor = DyeColor.values()[wire.ordinal()]; // Red, Blue, Green, Yellow
 
     Position p = new Position(pos.getX(), pos.getY(), pos.getZ());
     p.orientation = direction;
 
-    //noinspection ConstantValue,LoopStatementThatDoesntLoop
+    // Original: walk back along the stripes pipe line and install the wire on the first pipe without it.
     while (pipesToTry > 0) {
       p.moveBackwards(1.0);
 
       PipeBlockEntity pipeBE = PipeBlock.getPipe(world, p.toBlockPos());
-      if (pipeBE != null) {
-        // TODO: check if wired
-        // PipeBlockEntity doesn't have a simple isWired, but we can check if we want to set it.
-        // Based on BuildCraft logic, it sets the wire if it's not already there.
-        pipeBE.setWireSignal(wireColor, true);
-        pipeBE.setChanged();
-        world.sendBlockUpdated(pipeBE.getBlockPos(), pipeBE.getBlockState(), pipeBE.getBlockState(), 3);
-        return true;
-      } else {
+      if (pipeBE == null) {
         // Not a pipe, don't follow chain
         break;
       }
+      if (pipeBE.addWire(wire)) {
+        world.updateNeighborsAt(pipeBE.getBlockPos(), pipeBE.getBlockState().getBlock());
+        return true;
+      }
+      pipesToTry--;
     }
 
     return false;

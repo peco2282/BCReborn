@@ -19,6 +19,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import com.peco2282.bcreborn.api.transport.PipeWire;
+import com.peco2282.bcreborn.transport.item.PipeWireItem;
 import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import com.peco2282.bcreborn.transport.gates.GateExpansionPulsar;
 import com.peco2282.bcreborn.transport.gates.ItemGate;
@@ -30,8 +32,24 @@ public class TransportItems {
   public static final RegistryObject<FacadeItem> FACADE = REGISTRY.registerItem("facade", FacadeItem::new);
   public static final RegistryObject<ItemGate> GATE =
     REGISTRY.registerItem("gate", ItemGate::new);
+  public static final RegistryObject<PipeWireItem> PIPE_WIRE_RED = REGISTRY.registerItem("pipe_wire_red", () -> new PipeWireItem(PipeWire.RED));
+  public static final RegistryObject<PipeWireItem> PIPE_WIRE_BLUE = REGISTRY.registerItem("pipe_wire_blue", () -> new PipeWireItem(PipeWire.BLUE));
+  public static final RegistryObject<PipeWireItem> PIPE_WIRE_GREEN = REGISTRY.registerItem("pipe_wire_green", () -> new PipeWireItem(PipeWire.GREEN));
+  public static final RegistryObject<PipeWireItem> PIPE_WIRE_YELLOW = REGISTRY.registerItem("pipe_wire_yellow", () -> new PipeWireItem(PipeWire.YELLOW));
+
+  /** Links each {@link PipeWire} colour to its item (original: {@code PipeWire.item = pipeWire}). */
+  public static void bindPipeWires() {
+    PipeWire.RED.setItem(PIPE_WIRE_RED.get());
+    PipeWire.BLUE.setItem(PIPE_WIRE_BLUE.get());
+    PipeWire.GREEN.setItem(PIPE_WIRE_GREEN.get());
+    PipeWire.YELLOW.setItem(PIPE_WIRE_YELLOW.get());
+  }
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+    output.accept(PIPE_WIRE_RED.get());
+    output.accept(PIPE_WIRE_BLUE.get());
+    output.accept(PIPE_WIRE_GREEN.get());
+    output.accept(PIPE_WIRE_YELLOW.get());
     for (var material : GateDefinition.GateMaterial.values()) {
       for (var logic : GateDefinition.GateLogic.values()) {
         var gate = ItemGate.makeGateItem(material, logic);

@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents different colors of pipe wires.
@@ -29,9 +30,36 @@ public enum PipeWire implements StringRepresentable {
   public static final PipeWire[] VALUES = values();
 
   /**
-   * The item representing the pipe wire.
+   * The original used one item with a damage value per colour. 1.20 has no damage subtypes, so each colour has its
+   * own item ({@link #setItem}); this field is kept for compatibility and is the red wire item.
    */
+  @Deprecated
   public static Item item;
+
+  private Item wireItem;
+
+  /** Registers the item of this wire colour. */
+  public void setItem(Item wireItem) {
+    this.wireItem = wireItem;
+    if (this == RED) {
+      item = wireItem;
+    }
+  }
+
+  @Nullable
+  public Item getItem() {
+    return wireItem;
+  }
+
+  /** @return the wire colour of {@code stack}, or null if it is not a pipe wire */
+  @Nullable
+  public static PipeWire fromStack(ItemStack stack) {
+    if (stack.isEmpty()) return null;
+    for (PipeWire wire : VALUES) {
+      if (wire.wireItem != null && stack.getItem() == wire.wireItem) return wire;
+    }
+    return null;
+  }
 
   /**
    * Gets a pipe wire from its ordinal ID.
@@ -89,10 +117,10 @@ public enum PipeWire implements StringRepresentable {
    * @return The stack, or {@link ItemStack#EMPTY} if the item is not registered.
    */
   public ItemStack getStack(int qty) {
-    if (item == null) {
+    if (wireItem == null) {
       return ItemStack.EMPTY;
     } else {
-      return new ItemStack(item, qty);
+      return new ItemStack(wireItem, qty);
     }
   }
 
@@ -103,11 +131,8 @@ public enum PipeWire implements StringRepresentable {
    * @return True if it is a pipe wire.
    */
   public boolean isPipeWire(ItemStack stack) {
-    if (stack.isEmpty()) {
-      return false;
-    } else {
-      return stack.getItem() == item;
-    }
+    // Original also compared the damage value (colour); each colour now has its own item.
+    return !stack.isEmpty() && wireItem != null && stack.getItem() == wireItem;
   }
 
   @Override

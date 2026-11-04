@@ -97,6 +97,7 @@ public class BCRebornTransport implements BCReborn {
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
     FacadeAPI.facadeItem(TransportItems.FACADE.get());
+    TransportItems.bindPipeWires();
 
     PipeManager.registerStripesHandler(StripesHandlerArrow.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerBucket.INSTANCE);

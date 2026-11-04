@@ -2,5 +2,9 @@
   "item.bcreborntransport.gate": "Gate",
   "screen.bcreborntransport.gate.row": "Rule %s / %s",
   "menu.bcreborntransport.diamond_pipe_menu": "Filters",
-  "message.bcreborntransport.iron_pipe.output": "Output direction: %s"
+  "message.bcreborntransport.iron_pipe.output": "Output direction: %s",
+  "item.bcreborntransport.pipe_wire_red": "Red Pipe Wire",
+  "item.bcreborntransport.pipe_wire_blue": "Blue Pipe Wire",
+  "item.bcreborntransport.pipe_wire_green": "Green Pipe Wire",
+  "item.bcreborntransport.pipe_wire_yellow": "Yellow Pipe Wire"
 }

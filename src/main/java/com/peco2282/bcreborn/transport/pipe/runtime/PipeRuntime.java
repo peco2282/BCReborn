@@ -35,6 +35,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.ArrayDeque;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.gates.Gate;
+import com.peco2282.bcreborn.api.transport.IPipe;
+import com.peco2282.bcreborn.api.transport.PipeWire;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -51,10 +58,17 @@ import java.util.Set;
  * block entity without duplicating the pipe rules.</p>
  */
 public final class PipeRuntime {
+  public static final int MAX_WIRE_STRENGTH = 255;
+
   private final PipeBlockEntity host;
   private final ItemTransportModule itemTransport;
   private final EnumMap<Direction, SimpleInventory> filters = new EnumMap<>(Direction.class);
-  private final boolean[] wireSignals = new boolean[4];
+  /** Original {@code Pipe.wireSet}: which wire colours are installed (indexed by {@link PipeWire#ordinal()}). */
+  private final boolean[] wireSet = new boolean[PipeWire.VALUES.length];
+  /** Original {@code Pipe.wireSignalStrength}: 255 at a broadcasting gate, -1 per pipe; not saved, recomputed. */
+  private final int[] wireSignalStrength = new int[PipeWire.VALUES.length];
+  /** Recompute every installed wire's network on the next server tick (after load, placement or shape change). */
+  private boolean wiresDirty = true;
 
   private PipeType type;
   private PipeMaterial material;
@@ -102,6 +116,9 @@ public final class PipeRuntime {
   }
 
   public void tick(Level level, BlockPos pos, BlockState state) {
+    if (!level.isClientSide) {
+      tickWires();
+    }
     if (level.isClientSide) {
       if (type == PipeType.ITEM) itemTransport.tick(level, pos);
       return;
@@ -124,10 +141,18 @@ public final class PipeRuntime {
 
   public void load(CompoundTag tag) {
     ticksSincePull = tag.getInt("ticksSincePull");
+    // "Wires" holds the installed wire colours (PipeWire order). Older saves used the same key for a flag that
+    // stripes pipes set when "installing" a wire, so it is read as installed wires as well.
     if (tag.contains("Wires")) {
       byte[] wires = tag.getByteArray("Wires");
-      for (int i = 0; i < wireSignals.length && i < wires.length; i++) wireSignals[i] = wires[i] != 0;
+      for (int i = 0; i < wireSet.length && i < wires.length; i++) wireSet[i] = wires[i] != 0;
     }
+    if (tag.contains("WireSignals")) {
+      // Client sync only; the server always recomputes strengths.
+      byte[] active = tag.getByteArray("WireSignals");
+      for (int i = 0; i < wireSignalStrength.length && i < active.length; i++) wireSignalStrength[i] = active[i] != 0 ? 1 : 0;
+    }
+    wiresDirty = true;
     PipeType loadedType = tag.contains("TransportType")
         ? PipeType.valueOf(tag.getString("TransportType")) : type;
     PipeMaterial loadedMaterial = tag.contains("PipeMaterial")
@@ -181,9 +206,10 @@ public final class PipeRuntime {
     tag.putLong("usedFilters", usedFilters);
     if (pipeColor != null) tag.putInt("PipeColor", pipeColor.getId());
     tag.putInt("ExtractFilterMode", extractFilterMode.ordinal());
-    byte[] wires = new byte[wireSignals.length];
-    for (int i = 0; i < wireSignals.length; i++) wires[i] = (byte) (wireSignals[i] ? 1 : 0);
+    byte[] wires = new byte[wireSet.length];
+    for (int i = 0; i < wireSet.length; i++) wires[i] = (byte) (wireSet[i] ? 1 : 0);
     tag.putByteArray("Wires", wires);
+    writeWireSignals(tag);
     itemTransport.save(tag);
     if (energyTransport != null) energyTransport.save(tag);
     if (fluidTransport != null) fluidTransport.save(tag);
@@ -199,44 +225,167 @@ public final class PipeRuntime {
     }
   }
 
-  public void setWireSignal(DyeColor color, boolean signal) {
-    int index = wireIndex(color);
-    if (index < 0 || wireSignals[index] == signal) return;
-    wireSignals[index] = signal;
-    Set<BlockPos> visited = new HashSet<>();
-    visited.add(host.getBlockPos());
-    propagateWireSignal(color, signal, visited);
-    host.setChanged();
+  // ---- Pipe wires (original Pipe.wireSet / wireSignalStrength / updateSignalState) ----
+
+  public boolean isWired(PipeWire wire) {
+    return wireSet[wire.ordinal()];
   }
 
-  private void propagateWireSignal(DyeColor color, boolean signal, Set<BlockPos> visited) {
+  public boolean isWireActive(PipeWire wire) {
+    return wireSignalStrength[wire.ordinal()] > 0;
+  }
+
+  public int wireSignalStrength(PipeWire wire) {
+    return wireSignalStrength[wire.ordinal()];
+  }
+
+  /**
+   * Original {@code BlockGenericPipe.addWire()}.
+   *
+   * @return false if the wire was already installed
+   */
+  public boolean addWire(PipeWire wire) {
+    if (wireSet[wire.ordinal()]) return false;
+    wireSet[wire.ordinal()] = true;
+    wireSignalStrength[wire.ordinal()] = 0;
+    updateWireNetwork(wire);
+    host.setChanged();
+    return true;
+  }
+
+  /**
+   * Original {@code BlockGenericPipe.stripWire()}: removes the wire and lets the rest of the network recompute.
+   *
+   * @return false if the wire was not installed
+   */
+  public boolean removeWire(PipeWire wire) {
+    if (!wireSet[wire.ordinal()]) return false;
+    wireSet[wire.ordinal()] = false;
+    wireSignalStrength[wire.ordinal()] = 0;
+    for (Direction dir : Direction.values()) {
+      PipeBlockEntity neighbor = wireNeighbor(dir, wire);
+      if (neighbor != null) neighbor.getRuntime().updateWireNetwork(wire);
+    }
+    host.setChanged();
+    return true;
+  }
+
+  public void markWiresDirty() {
+    wiresDirty = true;
+  }
+
+  /** Server tick: recompute after load / placement / shape changes (original initialize -> updateSignalState). */
+  private void tickWires() {
+    if (!wiresDirty) return;
+    wiresDirty = false;
+    for (PipeWire wire : PipeWire.VALUES) {
+      if (wireSet[wire.ordinal()]) updateWireNetwork(wire);
+    }
+  }
+
+  /**
+   * Recomputes the signal strength of every pipe in this pipe's {@code wire} network.
+   * <p>
+   * The original updated strengths with recursive neighbour updates. Here the connected network is collected with
+   * a breadth-first search ({@code Set<BlockPos> visited}, {@code level.isLoaded} guard) and the strengths are
+   * assigned by distance from the broadcasting pipes: 255 at a source, one less per pipe, never below 0. The
+   * result is the same, and switching one source off can no longer cut the signal of another source.
+   */
+  public void updateWireNetwork(PipeWire wire) {
     Level level = host.getLevel();
-    if (level == null) return;
-    int index = wireIndex(color);
-    for (Direction direction : Direction.values()) {
-      BlockPos neighborPos = host.getBlockPos().relative(direction);
-      if (!visited.add(neighborPos) || !level.isLoaded(neighborPos)) continue;
-      BlockEntity blockEntity = level.getBlockEntity(neighborPos);
-      if (!(blockEntity instanceof PipeBlockEntity neighbor)) continue;
-      PipeRuntime neighborRuntime = neighbor.getRuntime();
-      if (neighborRuntime.wireSignals[index] != signal) {
-        neighborRuntime.wireSignals[index] = signal;
-        neighbor.setChanged();
-        neighborRuntime.propagateWireSignal(color, signal, visited);
+    if (level == null || level.isClientSide) return;
+    int index = wire.ordinal();
+    if (!wireSet[index]) return;
+
+    List<PipeBlockEntity> network = new ArrayList<>();
+    Set<BlockPos> visited = new HashSet<>();
+    ArrayDeque<PipeBlockEntity> queue = new ArrayDeque<>();
+    visited.add(host.getBlockPos());
+    queue.add(host);
+    while (!queue.isEmpty()) {
+      PipeBlockEntity current = queue.poll();
+      network.add(current);
+      for (Direction dir : Direction.values()) {
+        BlockPos next = current.getBlockPos().relative(dir);
+        if (visited.contains(next)) continue;
+        PipeBlockEntity neighbor = current.getRuntime().wireNeighbor(dir, wire);
+        if (neighbor != null) {
+          visited.add(next);
+          queue.add(neighbor);
+        }
+      }
+    }
+
+    // Multi-source BFS from the broadcasting pipes, staying inside the network.
+    Map<BlockPos, Integer> strength = new HashMap<>();
+    ArrayDeque<PipeBlockEntity> frontier = new ArrayDeque<>();
+    for (PipeBlockEntity pipe : network) {
+      if (pipe.getRuntime().isBroadcasting(wire)) {
+        strength.put(pipe.getBlockPos(), MAX_WIRE_STRENGTH);
+        frontier.add(pipe);
+      }
+    }
+    while (!frontier.isEmpty()) {
+      PipeBlockEntity current = frontier.poll();
+      int next = strength.get(current.getBlockPos()) - 1;
+      if (next <= 0) continue;
+      for (Direction dir : Direction.values()) {
+        PipeBlockEntity neighbor = current.getRuntime().wireNeighbor(dir, wire);
+        if (neighbor != null && !strength.containsKey(neighbor.getBlockPos())) {
+          strength.put(neighbor.getBlockPos(), next);
+          frontier.add(neighbor);
+        }
+      }
+    }
+
+    for (PipeBlockEntity pipe : network) {
+      int value = strength.getOrDefault(pipe.getBlockPos(), 0);
+      PipeRuntime runtime = pipe.getRuntime();
+      boolean wasActive = runtime.wireSignalStrength[index] > 0;
+      runtime.wireSignalStrength[index] = value;
+      runtime.wiresDirty = false;
+      if (wasActive != (value > 0)) {
+        // Original: scheduleRenderUpdate; also lets gates on that pipe see the new trigger state.
+        pipe.setChanged();
       }
     }
   }
 
-  private static int wireIndex(@Nullable DyeColor color) {
-    if (color == null) return -1;
-    return switch (color) {
-      case RED -> 0;
-      case BLUE -> 1;
-      case YELLOW -> 2;
-      case GREEN -> 3;
-      default -> -1;
-    };
+  private boolean isBroadcasting(PipeWire wire) {
+    IPipe pipe = host.getPipe();
+    for (Direction side : Direction.values()) {
+      if (pipe.getGate(side) instanceof Gate gate && (gate.broadcastSignal & (1 << wire.ordinal())) != 0) {
+        return true;
+      }
+    }
+    return false;
   }
+
+  /**
+   * Original {@code Pipe.isWireConnectedTo()}: the neighbour is a loaded pipe with the same wire, the two pipes are
+   * connected to each other and no blocking pluggable sits between them.
+   */
+  @Nullable
+  private PipeBlockEntity wireNeighbor(Direction dir, PipeWire wire) {
+    Level level = host.getLevel();
+    if (level == null) return null;
+    BlockPos pos = host.getBlockPos().relative(dir);
+    if (!level.isLoaded(pos) || !(level.getBlockEntity(pos) instanceof PipeBlockEntity neighbor)) return null;
+    if (!neighbor.getRuntime().wireSet[wire.ordinal()]) return null;
+    if (!PipeBlock.isConnected(host.getBlockState(), dir) || !PipeBlock.isConnected(neighbor.getBlockState(), dir.getOpposite())) {
+      return null;
+    }
+    if (host.hasBlockingPluggable(dir) || neighbor.hasBlockingPluggable(dir.getOpposite())) return null;
+    return neighbor;
+  }
+
+  /** Client sync of which wires are active, for rendering. */
+  public void writeWireSignals(CompoundTag tag) {
+    byte[] active = new byte[wireSignalStrength.length];
+    for (int i = 0; i < active.length; i++) active[i] = (byte) (wireSignalStrength[i] > 0 ? 1 : 0);
+    tag.putByteArray("WireSignals", active);
+  }
+
 
   public PipeType type() { return type; }
   public PipeMaterial material() { return material; }

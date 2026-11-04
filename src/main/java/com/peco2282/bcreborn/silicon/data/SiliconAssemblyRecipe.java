@@ -17,6 +17,11 @@ import com.peco2282.bcreborn.api.recipes.AssemblyRecipeProvider;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.Tags;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.TagKey;
+import com.peco2282.bcreborn.transport.TransportItems;
 import net.minecraft.world.item.Items;
 
 public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
@@ -26,6 +31,12 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
 
   @Override
   public void create() {
+    // Original TransportSiliconRecipes: dye + redstone dust + iron ingot -> 8 pipe wire, 5000 RF.
+    addWireRecipe("red_pipe_wire", Tags.Items.DYES_RED, TransportItems.PIPE_WIRE_RED.get());
+    addWireRecipe("blue_pipe_wire", Tags.Items.DYES_BLUE, TransportItems.PIPE_WIRE_BLUE.get());
+    addWireRecipe("green_pipe_wire", Tags.Items.DYES_GREEN, TransportItems.PIPE_WIRE_GREEN.get());
+    addWireRecipe("yellow_pipe_wire", Tags.Items.DYES_YELLOW, TransportItems.PIPE_WIRE_YELLOW.get());
+
     addRecipe(
       AssemblyRecipeBuilder.create(loc("redstone_chipset"))
         .addIngredient(Items.REDSTONE)
@@ -94,6 +105,17 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
         .addIngredient(Items.REDSTONE_BLOCK)
         .setEnergy(10000000)
         .setResult(new ItemStack(SiliconItems.REDSTONE_CRYSTAL.get()))
+    );
+  }
+
+  private void addWireRecipe(String name, TagKey<Item> dye, Item wire) {
+    addRecipe(
+      AssemblyRecipeBuilder.create(loc(name))
+        .addIngredient(Ingredient.of(dye))
+        .addIngredient(Ingredient.of(Tags.Items.DUSTS_REDSTONE))
+        .addIngredient(Ingredient.of(Tags.Items.INGOTS_IRON))
+        .setEnergy(5000)
+        .setResult(new ItemStack(wire, 8))
     );
   }
 }

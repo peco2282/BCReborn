@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.statements.*;
+import com.peco2282.bcreborn.transport.TransportStatements;
 import net.minecraft.world.level.Level;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContainer;
@@ -485,8 +486,9 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
       }
     }
 
-    if (prevBroadcastSignal != broadcastSignal) {
-      // pipe.scheduleWireUpdate();
+    if (prevBroadcastSignal != broadcastSignal && getTile() instanceof PipeBlockEntity wiredPipe) {
+      // Original: pipe.scheduleWireUpdate()
+      wiredPipe.scheduleWireUpdate();
     }
 
     boolean isActive = !activeActions.isEmpty();
@@ -548,8 +550,8 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   public void addTriggers(List<ITriggerInternal> list) {
     for (PipeWire wire : PipeWire.VALUES) {
       if (pipe.isWired(wire) && wire.ordinal() < material.maxWireColor) {
-        // list.add(BuildCraftTransport.triggerPipeWireActive[wire.ordinal()]);
-        // list.add(BuildCraftTransport.triggerPipeWireInactive[wire.ordinal()]);
+        list.add(TransportStatements.TRIGGER_PIPE_SIGNAL.get(true, wire).get());
+        list.add(TransportStatements.TRIGGER_PIPE_SIGNAL.get(false, wire).get());
       }
     }
 
@@ -574,7 +576,7 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
   public void addActions(List<IActionInternal> list) {
     for (PipeWire wire : PipeWire.VALUES) {
       if (pipe.isWired(wire) && wire.ordinal() < material.maxWireColor) {
-        // list.add(BuildCraftTransport.actionPipeWire[wire.ordinal()]);
+        list.add(TransportStatements.ACTION_SIGNAL_OUTPUT.get(wire).get());
       }
     }
 

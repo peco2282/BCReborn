@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.api.transport.PipeWire;
+import com.peco2282.bcreborn.common.utils.Utils;
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.api.blocks.IColorRemovable;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
@@ -119,6 +122,45 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     return null;
   }
 
+  /**
+   * The side the player aimed at: the connection arm (or pluggable) that was hit, otherwise the clicked face.
+   */
+  private static Direction clickedSide(BlockPos pos, BlockHitResult hit) {
+    Direction arm = IronPipeLogic.resolveHitArm(pos, hit);
+    return arm != null ? arm : hit.getDirection();
+  }
+
+  private static boolean hasAnyWire(PipeBlockEntity pipe) {
+    for (PipeWire wire : PipeWire.VALUES) {
+      if (pipe.isWired(wire)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Original {@code BlockGenericPipe.stripEquipment()}: removes the pluggable on {@code side} if there is one,
+   * otherwise one installed wire, and gives the item to the player.
+   */
+  private static void stripEquipment(Level level, BlockPos pos, PipeBlockEntity pipe, Player player, Direction side) {
+    PipePluggable<?> pluggable = pipe.getPipePluggable(side);
+    if (pluggable != null) {
+      ItemStack[] drops = pluggable.getDropItems(pipe);
+      pipe.setPipePluggable(side, null);
+      if (drops != null) {
+        for (ItemStack drop : drops) {
+          if (drop != null && !drop.isEmpty()) Utils.dropTryIntoPlayerInventory(level, pos, drop, player);
+        }
+      }
+      return;
+    }
+    for (PipeWire wire : PipeWire.VALUES) {
+      if (pipe.removeWire(wire)) {
+        Utils.dropTryIntoPlayerInventory(level, pos, wire.getStack(), player);
+        return;
+      }
+    }
+  }
+
   public static boolean isValid(@Nullable PipeBlockEntity pipe) {
     return pipe != null && !pipe.isRemoved();
   }
@@ -144,6 +186,38 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     BlockEntity be = level.getBlockEntity(pos);
     if (be instanceof PipeBlockEntity pipeBE) {
       ItemStack stack = player.getItemInHand(hand);
+
+      // Original: sneak + empty hand strips the pluggable on the clicked side first, then a wire.
+      if (player.isShiftKeyDown() && stack.isEmpty()) {
+        Direction side = clickedSide(pos, hit);
+        if (pipeBE.hasPipePluggable(side) || hasAnyWire(pipeBE)) {
+          if (!level.isClientSide) {
+            stripEquipment(level, pos, pipeBE, player, side);
+          }
+          return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+      }
+
+      // Original addOrStripWire(): a wire item installs its colour, or strips it while sneaking.
+      PipeWire wire = PipeWire.fromStack(stack);
+      if (wire != null) {
+        if (!pipeBE.isWired(wire)) {
+          if (!level.isClientSide) {
+            pipeBE.addWire(wire);
+            if (!player.getAbilities().instabuild) {
+              stack.shrink(1);
+            }
+          }
+          return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        if (player.isShiftKeyDown()) {
+          if (!level.isClientSide && pipeBE.removeWire(wire)) {
+            Utils.dropTryIntoPlayerInventory(level, pos, wire.getStack(), player);
+          }
+          return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+      }
+
       if (!stack.isEmpty() && stack.getItem() instanceof IPipePluggableItem pluggableItem) {
         Direction side = hit.getDirection();
         if (!pipeBE.hasPipePluggable(side)) {
@@ -215,7 +289,11 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     };
 
     // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
-    level.getBlockEntity(currentPos, bet).ifPresent(be -> be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos));
+    level.getBlockEntity(currentPos, bet).ifPresent(be -> {
+      be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos);
+      // Connections may change, which changes the wire network.
+      be.scheduleWireUpdate();
+    });
 
     BlockState newState = state;
     for (Direction dir : Direction.values()) {
@@ -310,6 +388,19 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       BlockEntity blockEntity = level.getBlockEntity(pos);
       if (blockEntity instanceof PipeBlockEntity pipeBE) {
         pipeBE.dropItems();
+        // Original Pipe.computeItemDrop(): installed wires drop with the pipe.
+        for (PipeWire wire : PipeWire.VALUES) {
+          if (pipeBE.isWired(wire)) {
+            popResource(level, pos, wire.getStack());
+          }
+        }
+        // Neighbouring wire networks lose this pipe; let them recompute.
+        for (Direction dir : Direction.values()) {
+          BlockPos neighborPos = pos.relative(dir);
+          if (level.isLoaded(neighborPos) && level.getBlockEntity(neighborPos) instanceof PipeBlockEntity neighbor) {
+            neighbor.scheduleWireUpdate();
+          }
+        }
         for (PipePluggable pluggable : pipeBE.sideProperties.pluggables) {
           if (pluggable != null) {
             for (ItemStack stack : pluggable.getDropItems(null)) {

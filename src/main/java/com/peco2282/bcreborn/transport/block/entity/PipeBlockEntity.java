@@ -107,12 +107,12 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     @Override
     public boolean isWired(PipeWire wire) {
-      return false;
+      return runtime.isWired(wire);
     }
 
     @Override
     public boolean isWireActive(PipeWire wire) {
-      return false;
+      return runtime.isWireActive(wire);
     }
   };
   private LazyOptional<IFluidHandler> fluidHandlerCap = LazyOptional.empty();
@@ -279,8 +279,39 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return storage != null ? storage.getEnergyStored() : 0;
   }
 
-  public void setWireSignal(DyeColor color, boolean signal) {
-    runtime.setWireSignal(color, signal);
+  /**
+   * Original {@code BlockGenericPipe.addWire()}; server side.
+   *
+   * @return false if the wire was already installed
+   */
+  public boolean addWire(PipeWire wire) {
+    return runtime.addWire(wire);
+  }
+
+  /**
+   * Original {@code BlockGenericPipe.stripWire()}; server side. Does not drop the item.
+   *
+   * @return false if the wire was not installed
+   */
+  public boolean removeWire(PipeWire wire) {
+    return runtime.removeWire(wire);
+  }
+
+  public boolean isWired(PipeWire wire) {
+    return runtime.isWired(wire);
+  }
+
+  public boolean isWireActive(PipeWire wire) {
+    return runtime.isWireActive(wire);
+  }
+
+  public int getWireSignalStrength(PipeWire wire) {
+    return runtime.wireSignalStrength(wire);
+  }
+
+  /** Recompute this pipe's wire networks on the next tick (placement, shape change, gate broadcast change). */
+  public void scheduleWireUpdate() {
+    runtime.markWiresDirty();
   }
 
   // ---- Getters / Setters ----
