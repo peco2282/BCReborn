@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.transport.test;
 import com.mojang.authlib.GameProfile;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.transport.TransportBlocks;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.menu.DiamondPipeMenu;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -88,8 +89,8 @@ public class IronDiamondPipeGameTests {
     helper.setBlock(CENTER.south(), Blocks.CHEST.defaultBlockState());
     PipeBlockEntity pipe = placePipe(helper, PipeType.ITEM, PipeMaterial.IRON);
 
-    check(helper, pipe.getBlockState().getValue(com.peco2282.bcreborn.transport.block.PipeBlock.SOUTH)
-        && pipe.getBlockState().getValue(com.peco2282.bcreborn.transport.block.PipeBlock.NORTH),
+    check(helper, pipe.getBlockState().getValue(PipeBlock.SOUTH)
+        && pipe.getBlockState().getValue(PipeBlock.NORTH),
       "Iron pipe must connect to inventories on every side like the original");
     check(helper, IronPipeLogic.setFacing(pipe, Direction.SOUTH), "SOUTH must be a valid iron output");
     check(helper, !IronPipeLogic.setFacing(pipe, Direction.WEST), "Unconnected side must be rejected");
@@ -104,6 +105,25 @@ public class IronDiamondPipeGameTests {
     check(helper, fromOutput.getNextDirection() == Direction.SOUTH,
       "Items entering from the output side must bounce back, got " + fromOutput.getNextDirection());
     helper.succeed();
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void ironPipeMirrorsOutputIntoAppearance(GameTestHelper helper) {
+    helper.setBlock(CENTER.north(), Blocks.CHEST.defaultBlockState());
+    helper.setBlock(CENTER.east(), Blocks.CHEST.defaultBlockState());
+    PipeBlockEntity pipe = placePipe(helper, PipeType.ITEM, PipeMaterial.IRON);
+    helper.runAfterDelay(2, () -> {
+      check(helper, helper.getBlockState(CENTER).getValue(PipeBlock.EXTRACTION_SIDE) == Direction.NORTH.get3DDataValue(),
+        "Iron pipe appearance must show the NORTH output arm after placement");
+      IronPipeLogic.setFacing(pipe, Direction.EAST);
+      helper.runAfterDelay(2, () -> {
+        check(helper, helper.getBlockState(CENTER).getValue(PipeBlock.EXTRACTION_SIDE) == Direction.EAST.get3DDataValue(),
+          "Iron pipe appearance must follow output changes");
+        check(helper, helper.getBlockEntity(CENTER) == pipe, "Appearance sync must keep the same block entity");
+        helper.succeed();
+      });
+    });
   }
 
   @PrefixGameTestTemplate(false)

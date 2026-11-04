@@ -59,6 +59,7 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
     IronPipeLogic.ensureInitialized(pipe, level);
+    IronPipeLogic.syncAppearance(pipe, level);
   }
 
   /**

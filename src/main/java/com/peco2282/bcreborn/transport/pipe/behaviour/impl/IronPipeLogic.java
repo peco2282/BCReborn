@@ -23,7 +23,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -38,7 +40,9 @@ import org.jetbrains.annotations.Nullable;
  *   <li>Redstone input changes: {@link #switchPosition}</li>
  *   <li>On placement: start from UP and {@link #switchPosition}</li>
  * </ul>
- * The output direction lives in the block entity ({@link PipeBlockEntity#getIronPipeOutput()}), never in the BlockState.
+ * The output direction lives in the block entity ({@link PipeBlockEntity#getIronPipeOutput()}). It is only mirrored
+ * into {@link PipeBlock#EXTRACTION_SIDE} as appearance, so the output arm can be rendered differently
+ * (see {@link #syncAppearance}).
  */
 public final class IronPipeLogic {
   /** Half extent of CORE_SHAPE (4..12 / 16). Hits outside it are treated as a connection arm. */
@@ -89,6 +93,20 @@ public final class IronPipeLogic {
   public static void ensureInitialized(PipeBlockEntity pipe, Level level) {
     if (pipe.getIronLastRedstonePower() == null) {
       pipe.setIronLastRedstonePower(level.hasNeighborSignal(pipe.getBlockPos()));
+    }
+  }
+
+  /**
+   * Mirrors the output side into {@link PipeBlock#EXTRACTION_SIDE} so the model shows the output arm with the
+   * standard texture and every other arm as solid (original {@code PipeItemsIron.getIconIndex()}).
+   * Runs from the server tick rather than from {@code onPlace}, so it never re-enters {@code setBlock}.
+   */
+  public static void syncAppearance(PipeBlockEntity pipe, Level level) {
+    BlockState state = pipe.getBlockState();
+    if (!state.hasProperty(PipeBlock.EXTRACTION_SIDE)) return;
+    int wanted = pipe.getIronPipeOutput().get3DDataValue();
+    if (state.getValue(PipeBlock.EXTRACTION_SIDE) != wanted) {
+      level.setBlock(pipe.getBlockPos(), state.setValue(PipeBlock.EXTRACTION_SIDE, wanted), Block.UPDATE_CLIENTS);
     }
   }
 

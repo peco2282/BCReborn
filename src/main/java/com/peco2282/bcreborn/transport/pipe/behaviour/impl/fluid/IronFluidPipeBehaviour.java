@@ -69,6 +69,7 @@ public class IronFluidPipeBehaviour implements FluidPipeBehaviour {
   @Override
   public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
     IronPipeLogic.ensureInitialized(pipe, level);
+    IronPipeLogic.syncAppearance(pipe, level);
   }
 
   @Override

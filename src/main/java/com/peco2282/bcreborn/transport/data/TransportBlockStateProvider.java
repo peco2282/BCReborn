@@ -30,7 +30,7 @@ import java.util.Set;
 
 public class TransportBlockStateProvider extends BlockStateProvider {
   private static final Set<PipeMaterial> EXTRACTION_OVERLAY_MATERIALS = Set.of(
-    PipeMaterial.WOOD, PipeMaterial.DAIZULI, PipeMaterial.EMERALD, PipeMaterial.EMZULI, PipeMaterial.IRON
+    PipeMaterial.WOOD, PipeMaterial.DAIZULI, PipeMaterial.EMERALD, PipeMaterial.EMZULI
   );
 
   public TransportBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -73,32 +73,36 @@ public class TransportBlockStateProvider extends BlockStateProvider {
     // 現時点では基本色のみ対応
     builder.part().modelFile(centerModel).addModel();
 
-    // 各方向の接続パーツ
+    // Connection arms. Iron item/fluid pipes mirror their output side into EXTRACTION_SIDE (appearance only):
+    // as in the original PipeItemsIron.getIconIndex(), the output arm uses the standard texture and
+    // every other arm uses pipe_all_iron_solid.
+    boolean ironOutputSkin = material == PipeMaterial.IRON && type != PipeType.ENERGY;
     for (Direction side : Direction.values()) {
-      float[] from = getSideFrom(side);
-      float[] to = getSideTo(side);
-
       ResourceLocation sideTex = getPipeTexture(material, type, side.getName());
-      BlockModelBuilder sideModel = models().withExistingParent("block/pipe/" + baseName + "_" + typeName + "_" + side.getName(), "block/block")
-        .texture("particle", sideTex)
-        .texture("texture", sideTex)
-        .renderType("cutout");
+      BlockModelBuilder sideModel = buildArmModel("block/pipe/" + baseName + "_" + typeName + "_" + side.getName(), side, sideTex);
 
-      var element = sideModel.element()
-        .from(from[0], from[1], from[2])
-        .to(to[0], to[1], to[2]);
-
-      for (Direction dir : Direction.values()) {
-        float[] uv = getSideUV(side, dir);
-        element.face(dir).texture("#texture").uvs(uv[0], uv[1], uv[2], uv[3]).end();
+      if (!ironOutputSkin) {
+        builder.part()
+          .modelFile(sideModel)
+          .addModel()
+          .condition(PipeBlock.PROPERTY_MAP.get(side), true);
+        continue;
       }
 
-      element.end();
-
+      int sideValue = side.get3DDataValue();
       builder.part()
         .modelFile(sideModel)
         .addModel()
-        .condition(PipeBlock.PROPERTY_MAP.get(side), true);
+        .condition(PipeBlock.PROPERTY_MAP.get(side), true)
+        .condition(PipeBlock.EXTRACTION_SIDE, sideValue);
+
+      BlockModelBuilder solidModel = buildArmModel("block/pipe/" + baseName + "_" + typeName + "_" + side.getName() + "_solid",
+        side, modLoc("block/pipes/pipe_all_iron_solid"));
+      builder.part()
+        .modelFile(solidModel)
+        .addModel()
+        .condition(PipeBlock.PROPERTY_MAP.get(side), true)
+        .condition(PipeBlock.EXTRACTION_SIDE, otherSideValues(sideValue));
     }
 
     // 搬入口オーバーレイモデルの追加（対応マテリアルのみ）
@@ -226,6 +230,35 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       // DAIZULIはカラーバリアントのみ → blueをデフォルトとして使用
       case DAIZULI -> "block/pipes/pipe_items_daizuli_blue";
     };
+  }
+
+  private BlockModelBuilder buildArmModel(String name, Direction side, ResourceLocation texture) {
+    float[] from = getSideFrom(side);
+    float[] to = getSideTo(side);
+    BlockModelBuilder model = models().withExistingParent(name, "block/block")
+      .texture("particle", texture)
+      .texture("texture", texture)
+      .renderType("cutout");
+
+    var element = model.element()
+      .from(from[0], from[1], from[2])
+      .to(to[0], to[1], to[2]);
+    for (Direction dir : Direction.values()) {
+      float[] uv = getSideUV(side, dir);
+      element.face(dir).texture("#texture").uvs(uv[0], uv[1], uv[2], uv[3]).end();
+    }
+    element.end();
+    return model;
+  }
+
+  /** Every EXTRACTION_SIDE value (0..6, including NONE) except {@code sideValue}. */
+  private static Integer[] otherSideValues(int sideValue) {
+    Integer[] values = new Integer[PipeBlock.EXTRACTION_SIDE_NONE];
+    int i = 0;
+    for (int v = 0; v <= PipeBlock.EXTRACTION_SIDE_NONE; v++) {
+      if (v != sideValue) values[i++] = v;
+    }
+    return values;
   }
 
   private float[] getSideFrom(Direction side) {
