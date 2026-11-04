@@ -71,6 +71,9 @@ public class ProductionCompatibilityGameTests {
     var recipe = BuildcraftRecipeRegistry.assembly().getRecipe(ResourceLocation.parse("bcrebornsilicon:redstone_chipset"));
     check(helper, recipe != null, "Assembly recipe was not loaded");
     table.setItem(0, new ItemStack(Items.REDSTONE));
+    // Original TileAssemblyTable only crafts planned recipes.
+    check(helper, !table.requiresLaserEnergy(), "An unplanned table must not request laser power");
+    table.planOutput(recipe.id());
     BuildCraftBlockEntity.<AssemblyTableBlockEntity>ticker().tick(helper.getLevel(), table.getBlockPos(), table.getBlockState(), table);
     check(helper, table.getItem(0).getCount() == 1 && table.requiresLaserEnergy(), "Unpowered table must retain inputs and request laser power");
     table.receiveLaserEnergy(recipe.energy());
@@ -83,6 +86,9 @@ public class ProductionCompatibilityGameTests {
     check(helper, !table.canCraft(), "Diamond alone must not satisfy the redstone and diamond recipe");
     table.setItem(1, new ItemStack(Items.REDSTONE));
     var diamondRecipe = BuildcraftRecipeRegistry.assembly().getRecipe(ResourceLocation.parse("bcrebornsilicon:diamond_chipset"));
+    // The redstone chipset is still planned and would be crafted first from the redstone; drop it from the plan.
+    table.cancelPlanOutput(recipe.id());
+    table.planOutput(diamondRecipe.id());
     check(helper, diamondRecipe != null && diamondRecipe.ingredients().size() == 2,
       "Diamond chipset recipe must retain two separate requirements");
     table.receiveLaserEnergy(diamondRecipe.energy());
