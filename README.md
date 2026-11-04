@@ -24,7 +24,7 @@ BCReborn aims to bring back the following features of classic BuildCraft on a mo
 | Minecraft | 1.20.1 |
 | Forge | 47.4.8 |
 | Java | 17 |
-| License | GNU LGPL 3.0 |
+| License | Minecraft Mod Public License (MMPL) 1.0.1 |
 
 ---
 

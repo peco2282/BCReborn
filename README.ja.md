@@ -24,7 +24,7 @@ BCReborn は、往年の BuildCraft が持つ以下の機能群を現代の Forg
 | Minecraft | 1.20.1 |
 | Forge | 47.4.8 |
 | Java | 17 |
-| ライセンス | GNU LGPL 3.0 |
+| ライセンス | Minecraft Mod Public License (MMPL) 1.0.1 |
 
 ---
 
