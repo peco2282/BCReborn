@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.peco2282.bcreborn.api.blueprints.SchematicMask;
@@ -44,19 +46,27 @@ public class PatternFlatten extends FillerPattern {
     return CODEC;
   }
 
+  /**
+   * Original: the template reaches one layer below the box, which is filled so the area ends up flat.
+   * The original assumed the world bottom was y = 0; this uses the level's minimum build height.
+   */
+  private static int bottomLayer(Box box, Level world) {
+    return box.yMin > world.getMinBuildHeight() ? box.yMin - 1 : world.getMinBuildHeight();
+  }
+
   @Override
   public Template getTemplate(Box box, Level world, IStatementParameter[] parameters) {
-    int xMin = (int) box.pMin().x;
-    int yMin = box.pMin().y > 0 ? (int) box.pMin().y - 1 : 0;
-    int zMin = (int) box.pMin().z;
+    int xMin = box.xMin;
+    int yMin = bottomLayer(box, world);
+    int zMin = box.zMin;
 
-    int xMax = (int) box.pMax().x;
-    int yMax = (int) box.pMax().y;
-    int zMax = (int) box.pMax().z;
+    int xMax = box.xMax;
+    int yMax = box.yMax;
+    int zMax = box.zMax;
 
     Template bpt = new Template(box.sizeX(), yMax - yMin + 1, box.sizeZ());
 
-    if (box.pMin().y > 0) {
+    if (box.yMin > world.getMinBuildHeight()) {
       for (int x = xMin; x <= xMax; ++x) {
         for (int z = zMin; z <= zMax; ++z) {
           bpt.put(x - xMin, 0, z - zMin, new SchematicMask(true));
@@ -65,5 +75,10 @@ public class PatternFlatten extends FillerPattern {
     }
 
     return bpt;
+  }
+
+  @Override
+  public BptBuilderTemplate getTemplateBuilder(Box box, Level world, IStatementParameter[] parameters) {
+    return new BptBuilderTemplate(getTemplate(box, world, parameters), world, box.xMin, bottomLayer(box, world), box.zMin);
   }
 }

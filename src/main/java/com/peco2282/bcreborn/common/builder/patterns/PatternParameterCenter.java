@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -31,7 +33,9 @@ public class PatternParameterCenter implements IStatementParameter {
   public static final Codec<PatternParameterCenter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     Codec.INT.fieldOf("direction").forGetter(p -> p.direction)
   ).apply(instance, PatternParameterCenter::new));
-  private static final TextureAtlasSprite[] ICONS = new TextureAtlasSprite[9];
+  // Object[] instead of TextureAtlasSprite[]: creating a TextureAtlasSprite array in the static initializer loads
+  // the client-only class and crashed dedicated servers as soon as a Pyramid pattern was selected.
+  private static final Object[] ICONS = new Object[9];
   private static final int[] shiftLeft = {6, 3, 0, 7, 4, 1, 8, 5, 2};
   private int direction;
 
@@ -48,8 +52,9 @@ public class PatternParameterCenter implements IStatementParameter {
   }
 
   @Override
+  @OnlyIn(Dist.CLIENT)
   public TextureAtlasSprite getIcon() {
-    return ICONS[direction];
+    return (TextureAtlasSprite) ICONS[direction];
   }
 
   @Override
@@ -58,6 +63,7 @@ public class PatternParameterCenter implements IStatementParameter {
   }
 
   @Override
+  @OnlyIn(Dist.CLIENT)
   public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
     for (int i = 0; i < 9; i++) {
       ICONS[i] = textureGetter.apply(BCRebornCore.location("item/filler_parameter/center_" + i + ".png"));

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.builder.patterns;
 
+import com.peco2282.bcreborn.common.blueprint.BptBuilderTemplate;
+
 import com.mojang.serialization.Codec;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornCore;
@@ -154,6 +156,14 @@ public abstract class FillerPattern implements IFillerPattern {
   }
 
   public abstract Template getTemplate(Box box, Level world, IStatementParameter[] parameters);
+
+  /**
+   * Original {@code FillerPattern.getTemplateBuilder()}: the builder that places this pattern's template.
+   * Patterns whose template does not start at the box's lowest layer override it (see {@link PatternFlatten}).
+   */
+  public BptBuilderTemplate getTemplateBuilder(Box box, Level world, IStatementParameter[] parameters) {
+    return new BptBuilderTemplate(getTemplate(box, world, parameters), world, box.xMin, box.yMin, box.zMin);
+  }
 
   public Blueprint getBlueprint(Box box, Level world, IStatementParameter[] parameters, BlockState meta) {
     Blueprint result = new Blueprint(box.sizeX(), box.sizeY(), box.sizeZ());

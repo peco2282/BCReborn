@@ -22,6 +22,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -45,6 +47,7 @@ public class PatternParameterYDir implements IStatementParameter {
   }
 
   @Override
+  @OnlyIn(Dist.CLIENT)
   public TextureAtlasSprite getIcon() {
     return null;
   }
@@ -55,6 +58,7 @@ public class PatternParameterYDir implements IStatementParameter {
   }
 
   @Override
+  @OnlyIn(Dist.CLIENT)
   public void registerIcons(Function<ResourceLocation, TextureAtlasSprite> textureGetter) {
   }
 

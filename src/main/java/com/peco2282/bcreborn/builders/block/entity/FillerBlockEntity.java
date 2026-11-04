@@ -14,7 +14,9 @@ package com.peco2282.bcreborn.builders.block.entity;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.statements.IStatementParameter;
 import com.peco2282.bcreborn.api.tiles.IControllable;
+import com.peco2282.bcreborn.api.tiles.IHasWork;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.menu.FillerMenu;
 import com.peco2282.bcreborn.common.Box;
@@ -33,8 +35,11 @@ import com.peco2282.bcreborn.common.registry.BCFillerPatterns;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,20 +56,33 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FillerBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, IBlockEntityContainer, ILEDProvider, IAreaProvider, IBoxProvider, IBoxesProvider, IDropControlInventory {
-  public static final int POWER_ACTIVATION = 25;
+/**
+ * Port of the original {@code buildcraft.builders.TileFiller}.
+ * <p>
+ * Takes a landmark box, then builds the selected filler pattern into it with {@link BptBuilderTemplate}
+ * (which charges its own break / build energy). Works while at least {@link #POWER_ACTIVATION} RF is stored and
+ * accepts the Off / On / Loop control modes from gates.
+ */
+public class FillerBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, IBlockEntityContainer, ILEDProvider, IAreaProvider, IBoxProvider, IBoxesProvider, IDropControlInventory, IControllable, IHasWork {
+  /** Original: the filler only works while at least this much energy is stored (it is not consumed). */
+  public static final int POWER_ACTIVATION = 500;
   private final SimpleInventory inv = new SimpleInventory(28, "Filler", 64);
   public int currentPattern = 0;
   public Box box = new Box();
   public boolean excavate = true;
   private boolean isWorking = false;
-  private boolean done = true;
+  private boolean done = false;
+  @Nullable
   private BptBuilderTemplate currentTemplate;
-  private int lastPattern = -1;
+  /** Parameters of the current pattern; never null (patterns read {@code parameters.length}). */
+  private IStatementParameter[] patternParameters = new IStatementParameter[0];
 
   public FillerBlockEntity(BlockPos pos, BlockState state) {
     super(BuildersBlockEntityTypes.FILLER.get(), pos, state);
     setBattery(new EnergyStorage(10000, 1000, 1000));
+    // Original default pattern: PatternFill
+    currentPattern = indexOf(BCFillerPatterns.FILL.getId());
+    initPatternParameters();
   }
 
   @Override
@@ -86,36 +104,26 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     }
   }
 
+  /**
+   * Original {@code TileFiller.updateEntity()}.
+   */
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) return;
+    // Original: super.updateEntity() (TileAbstractBuilder) moves the building items and places their blocks.
+    updateBuildingItems();
 
-    if (mode == IControllable.Mode.Off) {
-      isWorking = false;
+    if (getControlMode() == IControllable.Mode.Off || !box.isInitialized()
+      || getBattery().getEnergyStored() < POWER_ACTIVATION) {
+      setWorking(false);
       return;
-    }
-
-    if (!box.isInitialized()) {
-      isWorking = false;
-      return;
-    }
-
-    if (getBattery().getEnergyStored() < POWER_ACTIVATION) {
-      isWorking = false;
-      return;
-    }
-
-    if (lastPattern != currentPattern) {
-      currentTemplate = null;
-      lastPattern = currentPattern;
-      done = false;
     }
 
     if (done) {
-      if (mode == IControllable.Mode.Loop) {
+      if (getControlMode() == IControllable.Mode.Loop) {
         done = false;
       } else {
-        isWorking = false;
+        setWorking(false);
         return;
       }
     }
@@ -125,51 +133,208 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     }
 
     if (currentTemplate != null) {
-      isWorking = currentTemplate.buildNextSlot(level, this, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
-      if (isWorking) {
-        getBattery().useEnergy(POWER_ACTIVATION, POWER_ACTIVATION, false);
-      }
+      currentTemplate.buildNextSlot(level, this, pos.getX(), pos.getY(), pos.getZ());
+      setWorking(hasBuildingItemsInFlight());
       if (currentTemplate.isDone(this)) {
         done = true;
         currentTemplate = null;
+        setWorking(false);
+        setChanged();
       }
     } else {
-      isWorking = false;
+      setWorking(false);
     }
   }
 
-  private void initTemplate() {
-    var patterns = BCFillerPatterns.collection();
-    if (currentPattern < 0 || currentPattern >= patterns.size()) return;
-    IFillerPattern pattern = patterns.get(currentPattern).getValue();
-    if (pattern instanceof FillerPattern fp) {
-      currentTemplate = new BptBuilderTemplate(fp.getTemplate(box, level, null), level, box.xMin, box.yMin, box.zMin);
-      done = false;
+  private void setWorking(boolean working) {
+    if (isWorking != working) {
+      isWorking = working;
+      setChanged();
     }
+  }
+
+  /**
+   * Original {@code initTemplate()}: builds the template of the current pattern with its parameters and the
+   * excavate flag.
+   */
+  private void initTemplate() {
+    IFillerPattern pattern = getPatternOrNull();
+    if (pattern instanceof FillerPattern fp && box.isInitialized() && box.sizeX() > 0 && box.sizeY() > 0 && box.sizeZ() > 0) {
+      currentTemplate = fp.getTemplateBuilder(box, level, patternParameters);
+      currentTemplate.blueprint.excavate = excavate;
+    }
+  }
+
+  /**
+   * Original {@code initPatternParameters()}: the first {@code minParameters()} slots get the pattern's defaults.
+   */
+  private void initPatternParameters() {
+    IFillerPattern pattern = getPatternOrNull();
+    if (pattern == null) {
+      patternParameters = new IStatementParameter[0];
+      return;
+    }
+    patternParameters = new IStatementParameter[pattern.maxParameters()];
+    for (int i = 0; i < pattern.minParameters(); i++) {
+      patternParameters[i] = pattern.createParameter(i);
+    }
+  }
+
+  /**
+   * Original {@code setPattern()}: a different pattern restarts the filler with default parameters.
+   */
+  public void setPattern(int index) {
+    int size = BCFillerPatterns.collection().size();
+    if (size == 0 || index < 0 || index >= size || index == currentPattern) {
+      return;
+    }
+    currentPattern = index;
+    currentTemplate = null;
+    done = false;
+    initPatternParameters();
+    setChanged();
+  }
+
+  public IStatementParameter[] getPatternParameters() {
+    return patternParameters.clone();
+  }
+
+  /**
+   * Original {@code setParameters} command: replaces one parameter and restarts the pattern.
+   */
+  public void setPatternParameter(int index, @Nullable IStatementParameter parameter) {
+    if (index < 0 || index >= patternParameters.length) return;
+    patternParameters[index] = parameter;
+    currentTemplate = null;
+    done = false;
+    setChanged();
+  }
+
+  public boolean isExcavate() {
+    return excavate;
+  }
+
+  /**
+   * Original {@code setFlags} command.
+   */
+  public void setExcavate(boolean excavate) {
+    if (this.excavate == excavate) return;
+    this.excavate = excavate;
+    currentTemplate = null;
+    done = false;
+    setChanged();
+  }
+
+  public boolean isDone() {
+    return done;
+  }
+
+  @Nullable
+  private IFillerPattern getPatternOrNull() {
+    var patterns = BCFillerPatterns.collection();
+    if (currentPattern < 0 || currentPattern >= patterns.size()) return null;
+    return patterns.get(currentPattern).getValue();
+  }
+
+  private static int indexOf(@Nullable ResourceLocation id) {
+    if (id == null) return 0;
+    var patterns = BCFillerPatterns.collection();
+    for (int i = 0; i < patterns.size(); i++) {
+      if (patterns.get(i).getKey().location().equals(id)) return i;
+    }
+    return 0;
+  }
+
+  @Override
+  public Mode getControlMode() {
+    return mode == null ? Mode.On : mode;
+  }
+
+  @Override
+  public void setControlMode(Mode mode) {
+    this.mode = mode;
+    setChanged();
+  }
+
+  @Override
+  public boolean acceptsControlMode(Mode mode) {
+    return mode == Mode.On || mode == Mode.Off || mode == Mode.Loop;
+  }
+
+  @Override
+  public boolean hasWork() {
+    return !done && getControlMode() != Mode.Off;
   }
 
   @Override
   public void load(CompoundTag nbt) {
     super.load(nbt);
     inv.readTag(nbt);
-    currentPattern = nbt.getInt("delta");
+    // Pattern is stored by id (original: getUniqueTag()); "delta" is the older registry-index format.
+    if (nbt.contains("pattern", Tag.TAG_STRING)) {
+      currentPattern = indexOf(ResourceLocation.tryParse(nbt.getString("pattern")));
+    } else if (nbt.contains("delta")) {
+      currentPattern = nbt.getInt("delta");
+    }
+    initPatternParameters();
+    if (nbt.contains("pp", Tag.TAG_LIST)) {
+      readParameters(nbt.getList("pp", Tag.TAG_COMPOUND));
+    }
     if (nbt.contains("box")) {
       box.initialize(nbt.getCompound("box"));
     }
     done = nbt.getBoolean("done");
+    excavate = !nbt.contains("excavate") || nbt.getBoolean("excavate");
+    currentTemplate = null;
   }
 
   @Override
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     inv.writeTag(nbt);
-    nbt.putInt("delta", currentPattern);
+    IFillerPattern pattern = getPatternOrNull();
+    if (pattern != null) {
+      nbt.putString("pattern", BCFillerPatterns.collection().get(currentPattern).getKey().location().toString());
+    }
+    nbt.put("pp", writeParameters());
+    nbt.putBoolean("excavate", excavate);
     if (box.isInitialized()) {
       CompoundTag boxNbt = new CompoundTag();
       box.writeTag(boxNbt);
       nbt.put("box", boxNbt);
     }
     nbt.putBoolean("done", done);
+  }
+
+  /**
+   * Parameters are saved per index; on load each one is recreated with the pattern's own
+   * {@code createParameter(i)} and then read, so no parameter registry is needed.
+   */
+  private ListTag writeParameters() {
+    ListTag list = new ListTag();
+    for (int i = 0; i < patternParameters.length; i++) {
+      if (patternParameters[i] == null) continue;
+      CompoundTag tag = new CompoundTag();
+      tag.putInt("index", i);
+      patternParameters[i].writeToNBT(tag);
+      list.add(tag);
+    }
+    return list;
+  }
+
+  private void readParameters(ListTag list) {
+    IFillerPattern pattern = getPatternOrNull();
+    if (pattern == null) return;
+    for (int i = 0; i < list.size(); i++) {
+      CompoundTag tag = list.getCompound(i);
+      int index = tag.getInt("index");
+      if (index < 0 || index >= patternParameters.length) continue;
+      IStatementParameter parameter = pattern.createParameter(index);
+      if (parameter != null) {
+        parameter.readFromNBT(tag);
+        patternParameters[index] = parameter;
+      }
+    }
   }
 
   public Container getInventory() {
@@ -244,20 +409,39 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
     super.writeData(data);
     data.writeInt(currentPattern);
     data.writeBoolean(isWorking);
+    data.writeBoolean(done);
+    data.writeBoolean(excavate);
+    data.writeNbt(wrapParameters());
     box.writeData(data);
   }
 
   @Override
   public void readData(FriendlyByteBuf data) {
     super.readData(data);
-    currentPattern = data.readInt();
+    int pattern = data.readInt();
+    if (pattern != currentPattern) {
+      currentPattern = pattern;
+      initPatternParameters();
+    }
     isWorking = data.readBoolean();
+    done = data.readBoolean();
+    excavate = data.readBoolean();
+    CompoundTag parameters = data.readNbt();
+    if (parameters != null) {
+      readParameters(parameters.getList("pp", Tag.TAG_COMPOUND));
+    }
     box.readData(data);
     if (level != null && level.isClientSide) {
       if (box.isInitialized()) {
         box.createLaserData();
       }
     }
+  }
+
+  private CompoundTag wrapParameters() {
+    CompoundTag tag = new CompoundTag();
+    tag.put("pp", writeParameters());
+    return tag;
   }
 
   @Override
@@ -322,7 +506,8 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
 
   @Override
   public int getLEDLevel(int led) {
-    return isWorking ? 15 : 0;
+    // Original: LED 0 = done, LED 1 = building
+    return (led == 0 ? done : isWorking) ? 15 : 0;
   }
 
   @Override
@@ -331,14 +516,16 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
   }
 
   public IFillerPattern getPattern() {
-    return BCFillerPatterns.collection().get(currentPattern).getValue();
+    return BCFillerPatterns.getCurrentlySelected(currentPattern);
   }
 
   public void nextPattern() {
-    currentPattern = (currentPattern + 1) % BCFillerPatterns.collection().size();
+    int size = BCFillerPatterns.collection().size();
+    if (size > 0) setPattern((currentPattern + 1) % size);
   }
 
   public void previousPattern() {
-    currentPattern = (currentPattern - 1 + BCFillerPatterns.collection().size()) % BCFillerPatterns.collection().size();
+    int size = BCFillerPatterns.collection().size();
+    if (size > 0) setPattern((currentPattern - 1 + size) % size);
   }
 }

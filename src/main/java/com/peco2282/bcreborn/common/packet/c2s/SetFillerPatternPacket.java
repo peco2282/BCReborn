@@ -46,7 +46,7 @@ public record SetFillerPatternPacket(BlockPos pos, int delta) implements CustomP
         } else if (delta == -1) {
           be.previousPattern();
         } else {
-          be.currentPattern = delta;
+          be.setPattern(delta);
         }
         be.setChanged();
       }));
