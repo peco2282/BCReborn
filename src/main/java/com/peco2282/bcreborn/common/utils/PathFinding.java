@@ -214,7 +214,7 @@ public class PathFinding implements IIterableAlgorithm {
           int y = from.index.getY() + dy;
           int z = from.index.getZ() + dz;
 
-          if (y < 0 || y >= world.getMaxBuildHeight()) {
+          if (world.isOutsideBuildHeight(y)) {
             resultMoves[dx + 1][dy + 1][dz + 1] = 0;
           } else if (endReached(x, y, z)) {
             resultMoves[dx + 1][dy + 1][dz + 1] = 2;

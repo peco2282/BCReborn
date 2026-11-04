@@ -29,6 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +40,10 @@ import java.util.List;
 public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity implements IBuildingItemsProvider, IBlockEntityContainer, IDebuggable {
 
   public List<RequirementItemStack> requiredToBuild = new ArrayList<>();
+  /** Original {@code buildersInAction}: building items in flight towards their destination. */
+  protected final Set<BuildingItem> buildersInAction = new LinkedHashSet<>();
+  private int rfPrev = 0;
+  private int rfUnchangedCycles = 0;
 
   public AbstractBuilderBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
@@ -57,8 +64,13 @@ public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity i
     return false;
   }
 
+  /**
+   * Original {@code TileAbstractBuilder.energyAvailable()}: the stored energy. (Previously a stub returning 0,
+   * which made every template / blueprint builder unable to break or place anything.)
+   */
   public int energyAvailable() {
-    return 0;
+    EnergyStorage battery = getBattery();
+    return battery == null ? 0 : battery.getEnergyStored();
   }
 
   public boolean isBuildingMaterial(int i) {
@@ -71,11 +83,55 @@ public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity i
 
   @Override
   public Collection<BuildingItem> getBuilders() {
-    return Collections.emptyList();
+    return buildersInAction;
   }
 
+  /**
+   * Original {@code TileAbstractBuilder.consumeEnergy()}: takes exactly {@code energy}, or nothing.
+   */
   public boolean consumeEnergy(int energy) {
-    return false;
+    EnergyStorage battery = getBattery();
+    return battery != null && battery.useEnergy(energy, energy, false) > 0;
+  }
+
+  /**
+   * Original {@code TileAbstractBuilder.updateEntity()}: advances the building items in flight (each places its
+   * block when it arrives) and, after 100 ticks without any energy change, slowly drains the battery so a builder
+   * is not used as an energy buffer. Subclasses call this every server tick.
+   */
+  protected void updateBuildingItems() {
+    EnergyStorage battery = getBattery();
+    if (battery != null && rfPrev != battery.getEnergyStored()) {
+      rfPrev = battery.getEnergyStored();
+      rfUnchangedCycles = 0;
+    }
+
+    Iterator<BuildingItem> iterator = buildersInAction.iterator();
+    while (iterator.hasNext()) {
+      BuildingItem item = iterator.next();
+      item.update();
+      if (item.isDone()) {
+        iterator.remove();
+      }
+    }
+
+    if (battery == null) return;
+    if (rfPrev != battery.getEnergyStored()) {
+      rfPrev = battery.getEnergyStored();
+      rfUnchangedCycles = 0;
+    }
+    rfUnchangedCycles++;
+    if (rfUnchangedCycles > 100) {
+      battery.useEnergy(0, 1000, false);
+      rfPrev = battery.getEnergyStored();
+    }
+  }
+
+  /**
+   * Original {@code TileAbstractBuilder.isWorking()}.
+   */
+  public boolean hasBuildingItemsInFlight() {
+    return !buildersInAction.isEmpty();
   }
 
   public boolean isBuildingMaterialSlot(int index) {
@@ -125,8 +181,14 @@ public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity i
   public void clearContent() {
   }
 
+  /**
+   * Original {@code addAndLaunchBuildingItem()}. The original also sent the item to nearby clients for the
+   * flying-item animation; that client sync is not ported yet.
+   */
   @Override
   public void addAndLaunchBuildingItem(BuildingItem item) {
+    item.initialize();
+    buildersInAction.add(item);
   }
 
   @Override

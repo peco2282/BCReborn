@@ -62,7 +62,8 @@ public class BptBuilderBlueprint extends BptBuilderBase {
     for (int j = blueprint.sizeY - 1; j >= 0; --j) {
       int yCoord = j + y - blueprint.anchorY;
 
-      if (yCoord < 0 || yCoord >= context.world.getHeight()) {
+      // 1.7.10 worlds spanned y = 0..height; use the level's real build range (negative y included).
+        if (context.world.isOutsideBuildHeight(yCoord)) {
         continue;
       }
 
@@ -99,7 +100,8 @@ public class BptBuilderBlueprint extends BptBuilderBase {
     for (int j = 0; j < blueprint.sizeY; ++j) {
       int yCoord = j + y - blueprint.anchorY;
 
-      if (yCoord < 0 || yCoord >= context.world.getHeight()) {
+      // 1.7.10 worlds spanned y = 0..height; use the level's real build range (negative y included).
+        if (context.world.isOutsideBuildHeight(yCoord)) {
         continue;
       }
 

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.builder;
 
 import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.Position;
+import com.peco2282.bcreborn.api.core.BCLog;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -44,15 +45,33 @@ public class BuildingSlotBlock extends BuildingSlot {
   }
 
   @Override
+  /**
+   * Original {@code BuildingSlotBlock.writeToWorld()}.
+   * <ul>
+   *   <li>Clear: an invalid block is set to air (the template builder already collected its drops).</li>
+   *   <li>Build: places the schematic with the consumed stacks. This branch was missing, so builders and fillers
+   *       consumed items without placing anything. A failure while placing sets the position back to air
+   *       instead of leaving a half-written block.</li>
+   * </ul>
+   */
   public boolean writeToWorld(IBuilderContext context) {
+    BlockPos pos = new BlockPos(x, y, z);
     if (mode == Mode.ClearIfInvalid) {
-      if (getSchematic().isAlreadyBuilt(context, x, y, z)) {
-        return context.world().destroyBlock(new BlockPos(x, y, z), true);
-      } else {
-        context.world().setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+      if (!getSchematic().isAlreadyBuilt(context, x, y, z)) {
+        context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        return true;
       }
+      return false;
     }
-    return false;
+
+    try {
+      getSchematic().placeInWorld(context, x, y, z, stackConsumed == null ? new LinkedList<>() : stackConsumed);
+      return true;
+    } catch (Throwable t) {
+      BCLog.logger.error("Failed to place a building slot at {}; setting it to air", pos, t);
+      context.world().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+      return false;
+    }
   }
 
   @Override

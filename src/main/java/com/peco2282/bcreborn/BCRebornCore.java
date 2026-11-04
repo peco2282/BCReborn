@@ -37,6 +37,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsDirt;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsFarmland;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsFluidSource;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsHarvestable;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsLeaf;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsOre;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsReplaceable;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsShoveled;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsSoft;
+import com.peco2282.bcreborn.core.properties.WorldPropertyIsWood;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -122,6 +132,28 @@ public class BCRebornCore implements BCReborn {
 
     CropManager.register(CropHandlerReeds.INSTANCE);
     CropManager.register(CropHandlerPlantable.INSTANCE);
+
+    registerWorldProperties();
+  }
+
+  /**
+   * Original {@code BuildCraftCore.init()}: world properties used by builders, fillers, quarries and robots.
+   * They were never registered, so e.g. {@code BuildCraftAPI.isSoftBlock()} was always false and the filler
+   * dropped every position it had to build.
+   */
+  private static void registerWorldProperties() {
+    BuildCraftAPI.registerWorldProperty("replaceable", new WorldPropertyIsReplaceable());
+    BuildCraftAPI.registerWorldProperty("soft", new WorldPropertyIsSoft());
+    BuildCraftAPI.registerWorldProperty("wood", new WorldPropertyIsWood());
+    BuildCraftAPI.registerWorldProperty("leaves", new WorldPropertyIsLeaf());
+    for (int i = 0; i < 4; i++) {
+      BuildCraftAPI.registerWorldProperty("ore@hardness=" + i, new WorldPropertyIsOre(i));
+    }
+    BuildCraftAPI.registerWorldProperty("harvestable", new WorldPropertyIsHarvestable());
+    BuildCraftAPI.registerWorldProperty("farmland", new WorldPropertyIsFarmland());
+    BuildCraftAPI.registerWorldProperty("shoveled", new WorldPropertyIsShoveled());
+    BuildCraftAPI.registerWorldProperty("dirt", new WorldPropertyIsDirt());
+    BuildCraftAPI.registerWorldProperty("fluidSource", new WorldPropertyIsFluidSource());
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

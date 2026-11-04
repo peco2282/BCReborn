@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import org.jetbrains.annotations.Nullable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -262,7 +263,11 @@ public class BuildingItem implements IBufferSerializable, IBuildingItem {
     slotToBuild.readFromNBT(nbt.getCompound("slotToBuild"), registry);
   }
 
-  public void setStacksToDisplay(List<ItemStack> stacks) {
+  public void setStacksToDisplay(@Nullable List<ItemStack> stacks) {
+    // Original: clearing slots consume nothing and pass null.
+    if (stacks == null) {
+      return;
+    }
     for (ItemStack s : stacks) {
       for (int i = 0; i < s.getCount(); ++i) {
         StackAtPosition sPos = new StackAtPosition();

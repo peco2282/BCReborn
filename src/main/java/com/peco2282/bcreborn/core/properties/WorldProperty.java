@@ -25,15 +25,21 @@ public abstract class WorldProperty implements IWorldProperty {
 
   public Map<ResourceKey<Level>, DimensionProperty> properties = new HashMap<>();
 
+  /**
+   * Evaluates the property for a loaded position directly from its current block state; unloaded positions are
+   * false (as in the original) and are never loaded.
+   * <p>
+   * The original cached results per chunk ({@link DimensionProperty}) and invalidated them through an
+   * {@code IWorldAccess} block-update listener, which 1.20.1 does not have. Without invalidation the cache went
+   * stale as soon as a block changed (and {@code putIfAbsent} returned null on first use), so results are no
+   * longer cached.
+   */
   @Override
-  public synchronized boolean get(Level world, BlockPos pos) {
-    return getDimension(world).get(pos.getX(), pos.getY(), pos.getZ());
-  }
-
-  private DimensionProperty getDimension(Level world) {
-    ResourceKey<Level> key = world.dimension();
-
-    return properties.putIfAbsent(key, new DimensionProperty(world, this));
+  public boolean get(Level world, BlockPos pos) {
+    if (!world.isLoaded(pos)) {
+      return false;
+    }
+    return get(world, world.getBlockState(pos), pos);
   }
 
   @Override
