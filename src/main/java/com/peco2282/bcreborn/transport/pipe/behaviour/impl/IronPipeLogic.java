@@ -12,7 +12,13 @@
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl;
 
 import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
+import com.peco2282.bcreborn.transport.TransportStatements;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.statements.ActionPipeDirection;
+import java.util.Collection;
+import java.util.List;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -123,6 +129,29 @@ public final class IronPipeLogic {
     if (currentPower != lastPower) {
       switchPosition(pipe);
       pipe.setIronLastRedstonePower(currentPower);
+    }
+  }
+
+  /**
+   * Original {@code PipeItemsIron.getActions()}: one "pipe direction" action per connected side.
+   */
+  public static void addDirectionActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    for (Direction dir : Direction.values()) {
+      if (PipeBlock.isConnected(pipe.getBlockState(), dir)) {
+        actions.add(TransportStatements.ACTION_PIPE_DIRECTION.get(dir).get());
+      }
+    }
+  }
+
+  /**
+   * Original {@code PipeItemsIron.actionsActivated()}: the first active "pipe direction" action sets the output.
+   */
+  public static void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    for (StatementSlot slot : actions) {
+      if (slot.statement instanceof ActionPipeDirection direction) {
+        setFacing(pipe, direction.direction);
+        break;
+      }
     }
   }
 

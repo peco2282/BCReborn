@@ -57,6 +57,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
+import java.util.Collection;
+import com.peco2282.bcreborn.transport.gates.Gate;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -312,6 +315,38 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (level != null && !level.isClientSide) {
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
+  }
+
+  /**
+   * Original {@code Pipe.actionsActivated()}: hands the gates' active actions to the material behaviour.
+   */
+  public void actionsActivated(Collection<StatementSlot> actions) {
+    PipeBehaviour behaviour = getBehaviour();
+    if (behaviour != null) {
+      behaviour.onActionsActivated(this, actions);
+    }
+  }
+
+  /**
+   * Original {@code Pipe.isPoweringTo()} / {@code getMaxRedstoneOutput()}: the strongest gate redstone output
+   * towards {@code towards}; a gate's sided output only counts on its own side. Connected pipes get no signal.
+   */
+  public int getGateRedstoneOutput(Direction towards) {
+    if (level != null && PipeBlock.isConnected(getBlockState(), towards)
+      && level.getBlockEntity(worldPosition.relative(towards)) instanceof PipeBlockEntity) {
+      return 0;
+    }
+    int output = 0;
+    IPipe pipe = getPipe();
+    for (Direction side : Direction.values()) {
+      if (pipe.getGate(side) instanceof Gate gate) {
+        output = Math.max(output, gate.getRedstoneOutput());
+        if (side == towards) {
+          output = Math.max(output, gate.getSidedRedstoneOutput());
+        }
+      }
+    }
+    return output;
   }
 
   @Nullable

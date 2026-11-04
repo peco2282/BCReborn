@@ -18,6 +18,8 @@ import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.statements.*;
+import net.minecraft.world.level.Level;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.api.statements.containers.IRedstoneStatementContainer;
 import com.peco2282.bcreborn.api.statements.containers.ISidedStatementContainer;
 import com.peco2282.bcreborn.api.transport.IPipe;
@@ -470,10 +472,17 @@ public final class Gate implements IGate, ISidedStatementContainer, IRedstoneSta
       }
     }
 
-    // pipe.actionsActivated(activeActions);
+    // Original: pipe.actionsActivated(activeActions) -> pipe-specific actions (e.g. iron pipe direction).
+    if (getTile() instanceof PipeBlockEntity pipeBE) {
+      pipeBE.actionsActivated(activeActions);
 
-    if (oldRedstoneOutput != redstoneOutput || oldRedstoneOutputSide != redstoneOutputSide) {
-      // pipe.updateNeighbors(true);
+      // Original: pipe.updateNeighbors(true) so neighbours see the new redstone output.
+      if (oldRedstoneOutput != redstoneOutput || oldRedstoneOutputSide != redstoneOutputSide) {
+        Level level = pipeBE.getLevel();
+        if (level != null) {
+          level.updateNeighborsAt(pipeBE.getBlockPos(), pipeBE.getBlockState().getBlock());
+        }
+      }
     }
 
     if (prevBroadcastSignal != broadcastSignal) {

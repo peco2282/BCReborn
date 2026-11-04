@@ -275,6 +275,25 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     pipeBE.getBehaviour().onPlace(pipeBE, level, oldState, isMoving);
   }
 
+  /**
+   * Original {@code BlockGenericPipe.canProvidePower()}: gates can emit redstone.
+   */
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isSignalSource(BlockState state) {
+    return true;
+  }
+
+  /**
+   * Original {@code BlockGenericPipe.isProvidingWeakPower()} -> {@code Pipe.isPoweringTo()}.
+   * {@code direction} points from the receiving block to this pipe, so the output goes the opposite way.
+   */
+  @Override
+  @SuppressWarnings("deprecation")
+  public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    return level.getBlockEntity(pos) instanceof PipeBlockEntity pipe ? pipe.getGateRedstoneOutput(direction.getOpposite()) : 0;
+  }
+
   @Override
   @SuppressWarnings("deprecation")
   public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean isMoving) {

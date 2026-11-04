@@ -11,7 +11,11 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour;
 
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import java.util.Collection;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -65,5 +69,18 @@ public interface PipeBehaviour extends PipeBlockEvent {
   default InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                   Player player, InteractionHand hand, BlockHitResult hit) {
     return InteractionResult.PASS;
+  }
+
+  /**
+   * Original {@code Pipe.getActions()}: pipe-specific gate actions offered by this material
+   * (e.g. the iron pipe's output direction).
+   */
+  default void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+  }
+
+  /**
+   * Original {@code Pipe.actionsActivated()}: called after every gate resolution with the active actions.
+   */
+  default void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
   }
 }

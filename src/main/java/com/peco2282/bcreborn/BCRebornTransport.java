@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.transport.statements.PipeTriggerProvider;
+import com.peco2282.bcreborn.transport.statements.PipeActionProvider;
+import com.peco2282.bcreborn.core.statements.DefaultActionProvider;
 import com.peco2282.bcreborn.api.facades.FacadeAPI;
 import com.peco2282.bcreborn.api.transport.PipeManager;
 import com.peco2282.bcreborn.api.transport.pluggable.PluggableType;
@@ -83,6 +86,11 @@ public class BCRebornTransport implements BCReborn {
       // 保存されたゲート条件を読む前に、標準条件を登録しておく。
       StatementManager.registerTriggerProvider(
         new DefaultTriggerProvider());
+      // Original BuildCraftCore / BuildCraftTransport registered these too; without them gates offered no
+      // redstone output, machine control or pipe-specific statements.
+      StatementManager.registerActionProvider(new DefaultActionProvider());
+      StatementManager.registerTriggerProvider(PipeTriggerProvider.INSTANCE);
+      StatementManager.registerActionProvider(PipeActionProvider.INSTANCE);
     });
     // Some common setup code
     LOGGER.info("HELLO FROM COMMON SETUP");

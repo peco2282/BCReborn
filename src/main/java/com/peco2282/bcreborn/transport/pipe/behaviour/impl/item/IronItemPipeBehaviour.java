@@ -12,7 +12,11 @@
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
 import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import java.util.Collection;
+import java.util.List;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
@@ -49,6 +53,16 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
     if (!oldState.is(pipe.getBlockState().getBlock())) {
       IronPipeLogic.onPlaced(pipe, level);
     }
+  }
+
+  @Override
+  public void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    IronPipeLogic.addDirectionActions(pipe, actions);
+  }
+
+  @Override
+  public void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    IronPipeLogic.onActionsActivated(pipe, actions);
   }
 
   @Override

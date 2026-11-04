@@ -11,7 +11,11 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
 
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import java.util.Collection;
+import java.util.List;
 import com.peco2282.bcreborn.transport.pipe.behaviour.FluidPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
 import net.minecraft.core.BlockPos;
@@ -59,6 +63,16 @@ public class IronFluidPipeBehaviour implements FluidPipeBehaviour {
     if (!oldState.is(pipe.getBlockState().getBlock())) {
       IronPipeLogic.onPlaced(pipe, level);
     }
+  }
+
+  @Override
+  public void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    IronPipeLogic.addDirectionActions(pipe, actions);
+  }
+
+  @Override
+  public void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    IronPipeLogic.onActionsActivated(pipe, actions);
   }
 
   @Override
