@@ -49,6 +49,8 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   private final boolean checkOrientation = false;
   public boolean isRedstonePowered = false;
   public float progress;
+  /** Original {@code currentOutput}: RF sent in the last active tick, shown in the engine ledger. */
+  public int currentOutput;
   public float heat = MIN_HEAT;
   public EnergyStage energyStage = EnergyStage.BLUE;
   public Direction orientation = Direction.UP;
@@ -143,16 +145,15 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
+      // Original TileEngineBase client loop: the client animates on its own from the synced pumping flag and
+      // stage; the server never overwrites the piston position (that made the piston jump).
       if (progressPart != 0) {
         progress += getPistonSpeed();
-
-        if (progress > 0.5f && progressPart == 1) {
-          progressPart = 2;
-        } else if (progress >= 1) {
-          progress = 0;
+        if (progress > 1) {
           progressPart = 0;
+          progress = 0;
         }
-      } else if (this.isPumping || (isRedstonePowered && isActive())) {
+      } else if (this.isPumping) {
         progressPart = 1;
       }
       updatePistonProgress();
@@ -214,7 +215,9 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
     // TileEngineBase sends stored power every active tick. Wood engines retain
     // their special one-pulse-per-stroke behaviour in WoodEngineBlockEntity.
-    if (!(this instanceof IRedstoneEngine) && isRedstonePowered && isActive()) {
+    if (!isRedstonePowered) {
+      currentOutput = 0;
+    } else if (!(this instanceof IRedstoneEngine) && isActive()) {
       pushEnergyToNeighbor();
     }
 
@@ -223,8 +226,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
 
   }
 
+  /**
+   * Called on the server when a piston stroke completes. Ordinary engines send power every active tick
+   * (original {@code sendPower()}), so there is nothing to do here; the redstone engine overrides it.
+   */
   protected void onPistonCycled() {
-    pushEnergyToNeighbor();
   }
 
   protected boolean canPushEnergy() {
@@ -250,16 +256,20 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     }
   }
 
+  /**
+   * Original {@code TileEngineBase.getPistonSpeed()}: on the server it follows the heat, on the client the synced
+   * stage (0.02 / 0.04 / 0.08 / 0.16).
+   */
   protected float getPistonSpeed() {
-    if (!isActive()) {
-      return 0;
+    if (level != null && !level.isClientSide) {
+      return Math.max(0.16f * getHeatLevel(), 0.01f);
     }
     return switch (energyStage) {
-      case BLUE -> 0.01f;
-      case GREEN -> 0.02f;
-      case YELLOW -> 0.04f;
-      case RED -> 0.08f;
-      default -> 0.01f;
+      case BLUE -> 0.02f;
+      case GREEN -> 0.04f;
+      case YELLOW -> 0.08f;
+      case RED -> 0.16f;
+      default -> 0;
     };
   }
 
@@ -360,6 +370,7 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
       if (available <= 0) return;
       int toSend = Math.min(canExtract, available);
       int accepted = target.receiveEnergy(toSend, false);
+      currentOutput = accepted;
       if (accepted > 0) {
         energyStorage.extractEnergy(accepted, false);
       }
@@ -384,8 +395,11 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     }
 
     orientation = Direction.values()[data.getByte("orientation")];
-    progress = data.getFloat("progress");
-    progressPart = data.getInt("progressPart");
+    // The client runs its own piston animation; update packets must not reset it.
+    if (level == null || !level.isClientSide) {
+      progress = data.getFloat("progress");
+      progressPart = data.getInt("progressPart");
+    }
     heat = data.getFloat("heat");
     if (data.contains("engineEnergy")) {
       energyStorage.readTag(data.getCompound("engineEnergy"));
@@ -418,9 +432,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     isActive = (flags & 0x20) != 0;
 
     orientation = Direction.values()[stream.readByte()];
-    progressPart = stream.readByte();
-    progress = stream.readFloat();
-    updatePistonProgress();
   }
 
   @Override
@@ -432,8 +443,6 @@ public abstract class EngineBlockEntity<T extends BlockEntity>
     stream.writeByte(flags);
 
     stream.writeByte(orientation.ordinal());
-    stream.writeByte(progressPart);
-    stream.writeFloat(progress);
   }
 
   @Override

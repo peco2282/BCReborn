@@ -19,34 +19,13 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
+public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> implements EngineMenuInfo {
   private IronEngineBlockEntity engine;
-  private final ContainerData data = new ContainerData() {
-    @Override
-    public int get(int index) {
-      if (engine == null) return 0;
-      return switch (index) {
-        case 0 -> engine.getTotalBurnTime() == 0 ? 0 : (engine.getBurnTime() * 100 / engine.getTotalBurnTime());
-        case 1 -> engine.getEnergyStored();
-        case 2 -> (int) engine.heat;
-        case 3 -> engine.energyStage.ordinal();
-        case 4 -> engine.getMaxEnergyStored();
-        default -> 0;
-      };
-    }
-
-    @Override
-    public void set(int index, int value) {
-    }
-
-    @Override
-    public int getCount() {
-      return 5;
-    }
-  };
+  private final ContainerData data;
 
   public IronEngineMenu(int p_38852_, Inventory p_38853_) {
     this(p_38852_, p_38853_, new SimpleContainer(1));
@@ -57,6 +36,13 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
     if (engine instanceof IronEngineBlockEntity) {
       this.engine = (IronEngineBlockEntity) engine;
     }
+    IronEngineBlockEntity e = this.engine;
+    this.data = EngineMenuData.create(e,
+      () -> e.getTotalBurnTime() == 0 ? 0 : e.getBurnTime() * 100 / e.getTotalBurnTime(),
+      () -> EngineMenuData.fluidId(e.getFluidInTank(IronEngineBlockEntity.TANK_FUEL)),
+      () -> e.getFluidInTank(IronEngineBlockEntity.TANK_FUEL).getAmount(),
+      () -> EngineMenuData.fluidId(e.getFluidInTank(IronEngineBlockEntity.TANK_COOLANT)),
+      () -> e.getFluidInTank(IronEngineBlockEntity.TANK_COOLANT).getAmount());
     addSlot(new Slot(engine, 0, 52, 41));
 
 
@@ -74,32 +60,44 @@ public class IronEngineMenu extends BuildCraftMenu<IronEngineMenu> {
 
   // ---- client accessors (Screen から参照) ----
   public int getScaledBurn() {
-    return data.get(0);
+    return data.get(EngineMenuData.BURN);
   }
 
+  @Override
   public int getEnergy() {
-    return data.get(1);
+    return EngineMenuData.combine(data, EngineMenuData.ENERGY_LO, EngineMenuData.ENERGY_HI);
   }
 
+  @Override
   public int getHeat() {
-    return data.get(2);
+    return data.get(EngineMenuData.HEAT);
   }
 
   public int getStageOrdinal() {
-    return data.get(3);
+    return data.get(EngineMenuData.STAGE);
   }
 
   public int getMaxEnergy() {
-    return data.get(4);
+    return EngineMenuData.combine(data, EngineMenuData.MAX_LO, EngineMenuData.MAX_HI);
   }
 
   @Override
-  public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-    return ItemStack.EMPTY;
+  public int getCurrentOutput() {
+    return data.get(EngineMenuData.OUTPUT);
   }
+
+  public FluidStack getFuel() {
+    return EngineMenuData.fluid(data.get(EngineMenuData.BASE_COUNT), data.get(EngineMenuData.BASE_COUNT + 1));
+  }
+
+  public FluidStack getCoolant() {
+    return EngineMenuData.fluid(data.get(EngineMenuData.BASE_COUNT + 2), data.get(EngineMenuData.BASE_COUNT + 3));
+  }
+
+  // Shift-click uses BuildCraftMenu's machine / player inventory handling.
 
   @Override
   public boolean stillValid(Player p_38874_) {
-    return engine.stillValid(p_38874_);
+    return engine != null && engine.stillValid(p_38874_);
   }
 }

@@ -23,32 +23,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
-public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
+public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> implements EngineMenuInfo {
   private StoneEngineBlockEntity engine;
-  private final ContainerData data = new ContainerData() {
-    @Override
-    public int get(int index) {
-      if (engine == null) return 0;
-      return switch (index) {
-        case 0 -> engine.getLeftBurnTime(100); // scaled burn time
-        case 1 -> engine.getEnergyStored();
-        case 2 -> (int) engine.heat;
-        case 3 -> engine.energyStage.ordinal();
-        case 4 -> engine.getMaxEnergyStored();
-        default -> 0;
-      };
-    }
-
-    @Override
-    public void set(int index, int value) {
-      // クライアント側のみ想定、サーバー書き換えなし
-    }
-
-    @Override
-    public int getCount() {
-      return 5;
-    }
-  };
+  private final ContainerData data;
 
   public StoneEngineMenu(int id, Inventory inventory) {
     this(id, inventory, new SimpleContainer(1));
@@ -59,6 +36,8 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
     if (engine instanceof StoneEngineBlockEntity) {
       this.engine = (StoneEngineBlockEntity) engine;
     }
+    StoneEngineBlockEntity e = this.engine;
+    this.data = EngineMenuData.create(e, () -> e.getLeftBurnTime(100));
 
     addSlot(new Slot(engine, 0, 80, 41));
 
@@ -77,32 +56,36 @@ public class StoneEngineMenu extends BuildCraftMenu<StoneEngineMenu> {
 
   // ---- client accessors (Screen から参照) ----
   public int getScaledBurn() {
-    return data.get(0);
+    return data.get(EngineMenuData.BURN);
   }
 
+  @Override
   public int getEnergy() {
-    return data.get(1);
+    return EngineMenuData.combine(data, EngineMenuData.ENERGY_LO, EngineMenuData.ENERGY_HI);
   }
 
+  @Override
   public int getHeat() {
-    return data.get(2);
+    return data.get(EngineMenuData.HEAT);
   }
 
   public int getStageOrdinal() {
-    return data.get(3);
+    return data.get(EngineMenuData.STAGE);
   }
 
   public int getMaxEnergy() {
-    return data.get(4);
+    return EngineMenuData.combine(data, EngineMenuData.MAX_LO, EngineMenuData.MAX_HI);
   }
 
   @Override
-  public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-    return new ItemStack(Blocks.ACACIA_DOOR);
+  public int getCurrentOutput() {
+    return data.get(EngineMenuData.OUTPUT);
   }
+
+  // Shift-click uses BuildCraftMenu's machine / player inventory handling.
 
   @Override
   public boolean stillValid(Player p_38874_) {
-    return this.engine.stillValid(p_38874_);
+    return engine != null && engine.stillValid(p_38874_);
   }
 }

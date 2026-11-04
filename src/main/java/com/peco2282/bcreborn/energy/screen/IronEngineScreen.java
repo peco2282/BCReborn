@@ -11,83 +11,79 @@
  */
 package com.peco2282.bcreborn.energy.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.energy.menu.IronEngineMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
+/**
+ * Port of the original {@code GuiCombustionEngine}: fuel (104, 19) and coolant (122, 19) tanks drawn with the
+ * fluid texture under the gauge overlay (texture region 176, 0), fluid name tooltips, and the energy ledger.
+ */
 public class IronEngineScreen extends EngineScreen<IronEngineMenu> {
   private static final ResourceLocation TEXTURE = ResourceBuilder.energy("combustion_engine_gui.png").build(ResourceBuilder.ResourceType.GUI);
-  // 簡易ゲージ領域
-  private static final int BURN_X = 52, BURN_Y = 24, BURN_W = 14, BURN_H = 14;
-  private static final int EN_X = 152, EN_Y = 16, EN_W = 12, EN_H = 54;
-  private static final int STAGE_X = 8, STAGE_Y = 8, STAGE_W = 10, STAGE_H = 10;
+  /** Original {@code TileEngineIron.MAX_LIQUID}. */
+  private static final int TANK_CAPACITY = 10000;
+  private static final int FUEL_X = 104;
+  private static final int COOLANT_X = 122;
+  private static final int TANK_Y = 19;
+  private static final int TANK_W = 16;
+  private static final int TANK_H = 58;
 
-  public IronEngineScreen(IronEngineMenu p_97741_, Inventory p_97742_, Component p_97743_) {
-    super(p_97741_, p_97742_, p_97743_);
+  public IronEngineScreen(IronEngineMenu menu, Inventory inventory, Component title) {
+    super(menu, inventory, title);
   }
 
   @Override
-  protected void initilaizeLedger(Inventory p_97742_) {
-
+  protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    drawFluid(graphics, menu.getFuel(), leftPos + FUEL_X, topPos + TANK_Y);
+    drawFluid(graphics, menu.getCoolant(), leftPos + COOLANT_X, topPos + TANK_Y);
+    graphics.blit(TEXTURE, leftPos + FUEL_X, topPos + TANK_Y, 176, 0, 16, 60);
+    graphics.blit(TEXTURE, leftPos + COOLANT_X, topPos + TANK_Y, 176, 0, 16, 60);
   }
 
-  @Override
-  protected void renderBg(GuiGraphics p_283065_, float p_97788_, int p_97789_, int p_97790_) {
-    p_283065_.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-
-    // 燃焼ゲージ
-    int burn = this.menu.getScaledBurn();
-    int burnPix = (BURN_H * burn) / 100;
-    int bx = this.leftPos + BURN_X;
-    int by = this.topPos + BURN_Y + (BURN_H - burnPix);
-    if (burnPix > 0) {
-      p_283065_.fill(bx, by, bx + BURN_W, by + burnPix, 0xFFFFA000);
+  /** Original {@code GuiBuildCraft.drawFluid()}: the still texture, tinted, filled from the bottom. */
+  private static void drawFluid(GuiGraphics graphics, FluidStack stack, int x, int y) {
+    if (stack.isEmpty()) return;
+    int height = Math.min(TANK_H, Math.max(1, stack.getAmount() * TANK_H / TANK_CAPACITY));
+    IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(stack.getFluid());
+    TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+      .apply(ext.getStillTexture(stack));
+    int color = ext.getTintColor(stack);
+    RenderSystem.setShaderColor(((color >> 16) & 0xff) / 255F, ((color >> 8) & 0xff) / 255F, (color & 0xff) / 255F, 1F);
+    int drawn = 0;
+    while (drawn < height) {
+      int part = Math.min(16, height - drawn);
+      graphics.blit(x, y + TANK_H - drawn - part, 0, TANK_W, part, sprite);
+      drawn += part;
     }
-
-    // FE バー
-    int energy = this.menu.getEnergy();
-    int max = Math.max(1, this.menu.getMaxEnergy());
-    int ePix = (int) Math.round((double) energy * EN_H / max);
-    int ex = this.leftPos + EN_X;
-    int ey = this.topPos + EN_Y + (EN_H - ePix);
-    p_283065_.fill(ex - 1, this.topPos + EN_Y - 1, ex + EN_W + 1, this.topPos + EN_Y + EN_H + 1, 0xFF202020);
-    if (ePix > 0) {
-      p_283065_.fill(ex, ey, ex + EN_W, ey + ePix, 0xFF00C853);
-    }
-
-    // 段階インジケータ
-    int stage = this.menu.getStageOrdinal();
-    int color = switch (stage) {
-      case 0 -> 0xFF2196F3; // BLUE
-      case 1 -> 0xFF4CAF50; // GREEN
-      case 2 -> 0xFFFFC107; // YELLOW
-      case 3 -> 0xFFF44336; // RED
-      default -> 0xFFFF5722; // OVERHEAT
-    };
-    int sx = this.leftPos + STAGE_X, sy = this.topPos + STAGE_Y;
-    p_283065_.fill(sx, sy, sx + STAGE_W, sy + STAGE_H, color);
+    RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
   }
 
+  /** Original: the fluid name when hovering a tank. */
   @Override
-  public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
-    super.render(gui, mouseX, mouseY, partialTicks);
-
-    int ex = this.leftPos + EN_X;
-    int ey = this.topPos + EN_Y;
-    if (isHovering(ex, ey, EN_W, EN_H, mouseX, mouseY)) {
-      int energy = this.menu.getEnergy();
-      int max = Math.max(1, this.menu.getMaxEnergy());
-      gui.renderTooltip(this.font, Component.translatable("tooltip.bcreborn.energy", energy, max), mouseX, mouseY);
+  protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    super.renderTooltip(graphics, mouseX, mouseY);
+    FluidStack stack = FluidStack.EMPTY;
+    if (mouseY >= topPos + TANK_Y && mouseY < topPos + TANK_Y + 60) {
+      if (mouseX >= leftPos + FUEL_X && mouseX < leftPos + FUEL_X + 16) {
+        stack = menu.getFuel();
+      } else if (mouseX >= leftPos + COOLANT_X && mouseX < leftPos + COOLANT_X + 16) {
+        stack = menu.getCoolant();
+      }
     }
-
-    int bx = this.leftPos + BURN_X;
-    int by = this.topPos + BURN_Y;
-    if (isHovering(bx, by, BURN_W, BURN_H, mouseX, mouseY)) {
-      int burn = this.menu.getScaledBurn();
-      gui.renderTooltip(this.font, Component.translatable("tooltip.bcreborn.burn", burn), mouseX, mouseY);
+    if (!stack.isEmpty()) {
+      graphics.renderTooltip(font, Component.literal("").append(stack.getDisplayName())
+        .append(" (" + stack.getAmount() + " mB)"), mouseX, mouseY);
     }
   }
 }

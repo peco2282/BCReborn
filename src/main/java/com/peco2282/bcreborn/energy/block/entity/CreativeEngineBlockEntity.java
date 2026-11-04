@@ -65,8 +65,4 @@ public class CreativeEngineBlockEntity extends EngineBlockEntity<CreativeEngineB
     heat = 800;
   }
 
-  @Override
-  protected void onPistonCycled() {
-    pushEnergyToNeighbor();
-  }
 }
