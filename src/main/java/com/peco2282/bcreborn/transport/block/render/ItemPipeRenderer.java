@@ -42,6 +42,7 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     renderPluggables(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
+    PipeWireRenderer.render(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
 
     List<TravelingItem> items = blockEntity.getTravelingItems();
     if (items.isEmpty()) return;

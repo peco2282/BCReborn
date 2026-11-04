@@ -47,6 +47,7 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   public void render(PipeBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                      MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
     renderPluggables(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
+    PipeWireRenderer.render(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
 
     FluidTank tank = blockEntity.getFluidTank();
     if (tank == null) return;

@@ -309,6 +309,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return runtime.wireSignalStrength(wire);
   }
 
+  /**
+   * Original {@code PipeRenderState.wireMatrix.isWireConnected()}: whether {@code wire} continues into the
+   * neighbouring pipe on {@code side}. Works on both sides (the client uses it for rendering).
+   */
+  public boolean isWireConnected(PipeWire wire, Direction side) {
+    return runtime.isWireConnected(wire, side);
+  }
+
   /** Recompute this pipe's wire networks on the next tick (placement, shape change, gate broadcast change). */
   public void scheduleWireUpdate() {
     runtime.markWiresDirty();

@@ -379,6 +379,10 @@ public final class PipeRuntime {
     return neighbor;
   }
 
+  public boolean isWireConnected(PipeWire wire, Direction side) {
+    return wireSet[wire.ordinal()] && wireNeighbor(side, wire) != null;
+  }
+
   /** Client sync of which wires are active, for rendering. */
   public void writeWireSignals(CompoundTag tag) {
     byte[] active = new byte[wireSignalStrength.length];
