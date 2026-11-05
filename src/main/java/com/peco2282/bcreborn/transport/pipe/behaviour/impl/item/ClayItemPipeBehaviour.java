@@ -14,9 +14,13 @@ package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
+/**
+ * Port of the original {@code PipeItemsClay}: items prefer an inventory over the next pipe.
+ */
 public class ClayItemPipeBehaviour implements ItemPipeBehaviour {
 
   public static final ClayItemPipeBehaviour INSTANCE = new ClayItemPipeBehaviour();
@@ -24,21 +28,26 @@ public class ClayItemPipeBehaviour implements ItemPipeBehaviour {
   private ClayItemPipeBehaviour() {
   }
 
+  /** Original {@code transport.allowBouncing = true}. */
   @Override
-  public boolean canAcceptItem(PipeBlockEntity pipe, ItemStack stack, Direction from) {
-    return ItemPipeBehaviour.super.canAcceptItem(pipe, stack, from);
+  public boolean allowsBouncing() {
+    return true;
   }
 
+  /**
+   * Original {@code eventHandler(PipeEventItem.FindDest)}: if any candidate side is not a pipe (an inventory that can
+   * take the item), only those sides are kept; otherwise the pipes are kept.
+   */
   @Override
-  public Direction chooseNextDirection(PipeBlockEntity pipe, TravelingItem item) {
-    // 粘土パイプは接続するインベントリがある場合、それを優先する
-    for (Direction dir : Direction.values()) {
-      if (dir == item.getEntryDirection()) continue; // 来た方向には戻らない
-      var be = pipe.getLevel().getBlockEntity(pipe.getBlockPos().relative(dir));
-      if (be != null && !(be instanceof PipeBlockEntity)) {
-        return dir;
+  public void filterDestinations(PipeBlockEntity pipe, TravelingItem item, List<Direction> destinations) {
+    List<Direction> nonPipes = new ArrayList<>();
+    for (Direction dir : destinations) {
+      if (!(pipe.getLevel().getBlockEntity(pipe.getBlockPos().relative(dir)) instanceof PipeBlockEntity)) {
+        nonPipes.add(dir);
       }
     }
-    return null; // なければデフォルトルーティング
+    if (!nonPipes.isEmpty()) {
+      destinations.retainAll(nonPipes);
+    }
   }
 }

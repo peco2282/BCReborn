@@ -54,6 +54,12 @@ public class DaizuliItemPipeBehaviour implements ItemPipeBehaviour {
   private DaizuliItemPipeBehaviour() {
   }
 
+  /** Original {@code transport.allowBouncing = true}. */
+  @Override
+  public boolean allowsBouncing() {
+    return true;
+  }
+
   /** Original {@code eventHandler(PipeEventItem.FindDest)}. */
   @Override
   public void filterDestinations(PipeBlockEntity pipe, TravelingItem item, List<Direction> destinations) {

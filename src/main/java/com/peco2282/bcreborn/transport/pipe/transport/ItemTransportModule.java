@@ -11,7 +11,10 @@
  */
 package com.peco2282.bcreborn.transport.pipe.transport;
 
+import com.mojang.logging.LogUtils;
+import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
@@ -20,7 +23,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +37,7 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
 
 /**
  * Owns TravelingItem lifecycle and transport ticking.
@@ -41,6 +50,7 @@ import java.util.List;
  * - SpeedHelper    : 速度調整
  */
 public class ItemTransportModule {
+  private static final Logger LOGGER = LogUtils.getLogger();
 
   private final PipeBlockEntity pipe;
   private final List<TravelingItem> travelingItems = new ArrayList<>();
@@ -93,6 +103,13 @@ public class ItemTransportModule {
           }
         }
       }
+      // Original: an item whose output is UNKNOWN (nowhere to go) is dropped when it reaches the centre.
+      if (item.isCenterReached() && item.getNextDirection() == null && pipe.getPipeMaterial() != PipeMaterial.VOID) {
+        dropItem(level, item);
+        travelingItems.remove(item);
+        pipe.setChanged();
+        continue;
+      }
 
       if (item.isReached()) {
         MovementResult result = MovementHelper.moveItemToNext(pipe, item);
@@ -102,13 +119,19 @@ public class ItemTransportModule {
             travelingItems.remove(item);
             pipe.setChanged();
           }
-          case BLOCKED, NO_TARGET -> {
-            // 行き場がない・満杯の場合は来た方向へ折り返す（bounce back）。
-            // 意図的に簡易実装: jam system / queue は導入しない。
-            // 2pipe ping-pong（無限折り返し）は BuildCraft 的に許容される挙動。
-            // 将来 congestion / jam 対応が必要になった場合はここを起点に拡張する。
+          case BLOCKED -> {
+            // Original reverseItem(): the item re-enters this pipe from the side that refused it and picks a new
+            // destination (which may be none, so it is dropped at the centre).
             item.reverse();
+            item.setNextDirection(null);
             adjustSpeed(item, behaviour);
+            chooseDestination(item, behaviour);
+            pipe.setChanged();
+          }
+          case NO_TARGET -> {
+            // Original handleTileReached(): neither a pipe nor an inventory at the end, so the item is dropped.
+            dropItem(level, item);
+            travelingItems.remove(item);
             pipe.setChanged();
           }
         }
@@ -184,7 +207,83 @@ public class ItemTransportModule {
     BlockPos pos = pipe.getBlockPos();
     if (!level.isClientSide) {
       level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), 3);
+      checkOverflow(level, pos);
     }
+  }
+
+  /** Original {@code PipeTransportItems.MAX_PIPE_STACKS}: more stacks than this make the pipe burst. */
+  public static final int MAX_PIPE_STACKS = 64;
+  /** Original {@code PipeTransportItems.MAX_PIPE_ITEMS}: more items than this make the pipe burst. */
+  public static final int MAX_PIPE_ITEMS = 1024;
+
+  /**
+   * Original {@code injectItem()} overflow handling: from half of {@link #MAX_PIPE_STACKS} on, similar items are
+   * merged ({@link #groupItems()}); above {@link #MAX_PIPE_STACKS} stacks or {@link #MAX_PIPE_ITEMS} items the
+   * pipe bursts ({@code destroyPipe()}): it breaks with an explosion effect and drops itself and its contents.
+   */
+  private void checkOverflow(Level level, BlockPos pos) {
+    if (travelingItems.size() >= MAX_PIPE_STACKS / 2) {
+      groupItems();
+    }
+    int items = 0;
+    for (TravelingItem item : travelingItems) items += item.getStack().getCount();
+    if (travelingItems.size() > MAX_PIPE_STACKS || items > MAX_PIPE_ITEMS) {
+      LOGGER.warn("Pipe exploded at {} because it had too many stacks ({}) or items ({})", pos, travelingItems.size(), items);
+      if (level instanceof ServerLevel server) {
+        // Original BlockUtils.explodeBlock(): explosion effect only, the pipe itself is the one block affected.
+        server.sendParticles(ParticleTypes.EXPLOSION, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, 0, 0, 0, 0);
+        level.playSound(null, pos, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+          (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+      }
+      level.destroyBlock(pos, true);
+    }
+  }
+
+  /**
+   * Original {@code groupEntities()} / {@code TravelingItem.tryMergeInto()}: an item merges into another one that
+   * is on the same leg (before or after the centre), goes the same way, has the same paint and whose stack can take
+   * the whole of it.
+   */
+  public void groupItems() {
+    List<TravelingItem> merged = new ArrayList<>();
+    for (TravelingItem item : travelingItems) {
+      if (merged.contains(item)) continue;
+      for (TravelingItem other : travelingItems) {
+        if (other == item || merged.contains(other)) continue;
+        if (item.isCenterReached() != other.isCenterReached()
+          || item.getNextDirection() != other.getNextDirection()
+          || item.getColor() != other.getColor()
+          || !ItemStack.isSameItemSameTags(item.getStack(), other.getStack())
+          || item.getStack().getCount() + other.getStack().getCount() > other.getStack().getMaxStackSize()) {
+          continue;
+        }
+        other.getStack().grow(item.getStack().getCount());
+        merged.add(item);
+        break;
+      }
+    }
+    if (!merged.isEmpty()) {
+      travelingItems.removeAll(merged);
+      pipe.setChanged();
+    }
+  }
+
+  /** Original {@code dropItem()} / {@code TravelingItem.toEntityItem()}. */
+  private void dropItem(Level level, TravelingItem item) {
+    ItemStack stack = item.getStack();
+    if (stack.isEmpty()) return;
+    BlockPos pos = pipe.getBlockPos();
+    ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack.copy());
+    entity.lifespan = CoreConfig.getItemLifespan() * 20;
+    entity.setPickUpDelay(10);
+    Direction dir = item.getNextDirection();
+    double push = dir == null ? 0 : 0.1 + item.getSpeed() * 2F;
+    float spread = level.random.nextFloat() * 0.04F - 0.02F;
+    entity.setDeltaMovement(
+      level.random.nextGaussian() * spread + (dir == null ? 0 : dir.getStepX() * push),
+      level.random.nextGaussian() * spread + (dir == null ? 0 : dir.getStepY() * push),
+      level.random.nextGaussian() * spread + (dir == null ? 0 : dir.getStepZ() * push));
+    level.addFreshEntity(entity);
   }
 
   public void dropItems() {

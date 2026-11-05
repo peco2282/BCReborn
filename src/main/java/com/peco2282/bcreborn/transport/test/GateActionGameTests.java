@@ -113,8 +113,8 @@ public class GateActionGameTests {
         "INPUT_ONLY must close every output and keep inputs open");
       pipe.injectItem(new ItemStack(Items.COBBLESTONE), Direction.NORTH);
       TravelingItem item = pipe.getTravelingItems().get(0);
-      check(helper, item.getNextDirection() == Direction.NORTH,
-        "With every output closed the item must bounce back, got " + item.getNextDirection());
+      check(helper, item.getNextDirection() == null,
+        "With every output closed a cobblestone pipe has no destination (original: dropped, no bouncing), got " + item.getNextDirection());
 
       CompoundTag saved = pipe.saveWithoutMetadata();
       PipeBlockEntity restored = new PipeBlockEntity(pipe.getBlockPos(), pipe.getBlockState(), PipeType.ITEM, PipeMaterial.COBBLESTONE);

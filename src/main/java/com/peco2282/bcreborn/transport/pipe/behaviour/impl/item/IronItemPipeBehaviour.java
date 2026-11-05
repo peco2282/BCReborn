@@ -42,6 +42,12 @@ public class IronItemPipeBehaviour implements ItemPipeBehaviour {
   private IronItemPipeBehaviour() {
   }
 
+  /** Original {@code transport.allowBouncing = true}. */
+  @Override
+  public boolean allowsBouncing() {
+    return true;
+  }
+
   @Override
   public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                        Player player, InteractionHand hand, BlockHitResult hit) {

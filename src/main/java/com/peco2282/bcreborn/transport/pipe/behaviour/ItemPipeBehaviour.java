@@ -61,6 +61,14 @@ public interface ItemPipeBehaviour extends PipeBehaviour {
   }
 
   /**
+   * Original {@code PipeTransportItems.allowBouncing}: when no side can take the item, send it back the way it came
+   * instead of dropping it. Only the Iron, Daizuli and Clay pipes do this in the original.
+   */
+  default boolean allowsBouncing() {
+    return false;
+  }
+
+  /**
    * Whether the pipe accepts the item.
    */
   default boolean canAcceptItem(PipeBlockEntity pipe, ItemStack stack, Direction from) {

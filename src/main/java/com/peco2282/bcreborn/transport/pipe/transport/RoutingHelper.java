@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.transport.pipe.transport;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
@@ -21,7 +22,12 @@ import com.peco2282.bcreborn.transport.pipe.debug.PipeDebugLogger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,8 @@ class RoutingHelper {
   /**
    * TravelingItem の次進行方向を決定する。
    * VOID パイプの場合は null を返す。
-   * 行き場がない場合は来た方向（折り返し）を返す。
+   * With no destination, pipes that allow bouncing return the entry side; every other pipe returns null and
+   * the item is dropped at the centre (original PipeTransportItems.resolveDestination / allowBouncing).
    * <p>
    * ランダム選択には Level.random (RandomSource) を使用する。
    * java.util.Random は Forge/NeoForge 1.20.1 では非推奨扱いのため使用しない。
@@ -57,6 +64,7 @@ class RoutingHelper {
       if (dir == from) continue;
       if (!pipe.getBlockState().getValue(PipeBlock.PROPERTY_MAP.get(dir))) continue;
       if (!isOpenTowards(pipe, dir)) continue;
+      if (!canReceive(pipe, dir, item.getStack())) continue;
       possibleDirections.add(dir);
     }
 
@@ -77,7 +85,13 @@ class RoutingHelper {
     }
 
     if (possibleDirections.isEmpty()) {
-      return from;
+      // Original allowBouncing (Iron, Daizuli, Clay): send the item back if the side it came from takes it.
+      // Every other pipe has no destination, and the item is dropped at the centre.
+      if (behaviour instanceof ItemPipeBehaviour ib && ib.allowsBouncing()
+        && PipeBlock.isConnected(pipe.getBlockState(), from) && isOpenTowards(pipe, from) && canReceive(pipe, from, item.getStack())) {
+        return from;
+      }
+      return null;
     }
 
     Level level = pipe.getLevel();
@@ -91,6 +105,24 @@ class RoutingHelper {
    * Original {@code PipeTransportItems.getPossibleMovements()}: this pipe's output and the next pipe's input must
    * be open (gate valve action).
    */
+  /**
+   * Original {@code canReceivePipeObjects()}: the neighbour must be an item pipe, or an inventory that accepts at
+   * least part of the stack.
+   */
+  static boolean canReceive(PipeBlockEntity pipe, Direction dir, ItemStack stack) {
+    Level level = pipe.getLevel();
+    if (level == null) return true;
+    BlockPos next = pipe.getBlockPos().relative(dir);
+    if (!level.isLoaded(next)) return false;
+    BlockEntity be = level.getBlockEntity(next);
+    if (be instanceof PipeBlockEntity nextPipe) {
+      return nextPipe.getPipeType() == PipeType.ITEM;
+    }
+    if (be == null) return false;
+    IItemHandler handler = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).orElse(null);
+    return handler != null && ItemHandlerHelper.insertItemStacked(handler, stack.copy(), true).getCount() < stack.getCount();
+  }
+
   static boolean isOpenTowards(PipeBlockEntity pipe, Direction dir) {
     if (!pipe.isOutputOpen(dir)) return false;
     Level level = pipe.getLevel();
