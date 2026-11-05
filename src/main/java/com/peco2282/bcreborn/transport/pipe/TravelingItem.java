@@ -17,10 +17,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
 public class TravelingItem {
   public static final Codec<TravelingItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -30,7 +32,8 @@ public class TravelingItem {
     Direction.CODEC.optionalFieldOf("next_direction").forGetter(item -> Optional.ofNullable(item.getNextDirection())),
     Codec.FLOAT.optionalFieldOf("speed", 0.01f).forGetter(TravelingItem::getSpeed),
     Codec.INT.optionalFieldOf("bounce_count", 0).forGetter(TravelingItem::getBounceCount),
-    Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining)
+    Codec.INT.optionalFieldOf("boosted_blocks", 0).forGetter(TravelingItem::getBoostedBlocksRemaining),
+    DyeColor.CODEC.optionalFieldOf("color").forGetter(item -> Optional.ofNullable(item.getColor()))
   ).apply(instance, TravelingItem::new));
   private final ItemStack stack;
 
@@ -59,6 +62,12 @@ public class TravelingItem {
   private int bounceCount;
   // 金パイプ加速後の残り距離カウンタ（ブロック数）。丸石=16、焼石=32 で減衰完了。
   private int boostedBlocksRemaining;
+  /**
+   * Original {@code TravelingItem.color}: the paint applied by a Lapis or Emzuli pipe, or null if unpainted.
+   * It belongs to the travelling item, not to the stack, so it is lost when the item leaves the pipe network.
+   */
+  @Nullable
+  private DyeColor color;
 
   public TravelingItem(ItemStack stack, Direction from) {
     this.stack = stack;
@@ -76,7 +85,7 @@ public class TravelingItem {
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  private TravelingItem(ItemStack stack, Direction entryDirection, float progress, Optional<Direction> nextDirection, float speed, int bounceCount, int boostedBlocksRemaining) {
+  private TravelingItem(ItemStack stack, Direction entryDirection, float progress, Optional<Direction> nextDirection, float speed, int bounceCount, int boostedBlocksRemaining, Optional<DyeColor> color) {
     this.stack = stack;
     this.entryDirection = entryDirection;
     this.progress = progress;
@@ -85,6 +94,7 @@ public class TravelingItem {
     this.speed = speed;
     this.bounceCount = bounceCount;
     this.boostedBlocksRemaining = boostedBlocksRemaining;
+    this.color = color.orElse(null);
   }
 
   public static TravelingItem load(CompoundTag tag) {
@@ -97,6 +107,15 @@ public class TravelingItem {
 
   public void setNextDirection(Direction nextDirection) {
     this.nextDirection = nextDirection;
+  }
+
+  @Nullable
+  public DyeColor getColor() {
+    return color;
+  }
+
+  public void setColor(@Nullable DyeColor color) {
+    this.color = color;
   }
 
   public ItemStack getStack() {

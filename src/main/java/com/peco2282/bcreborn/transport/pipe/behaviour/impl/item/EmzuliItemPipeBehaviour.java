@@ -11,32 +11,45 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
-import com.peco2282.bcreborn.api.IToolWrench;
+import com.peco2282.bcreborn.api.statements.IActionInternal;
+import com.peco2282.bcreborn.api.statements.StatementSlot;
+import com.peco2282.bcreborn.transport.TransportStatements;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
-import com.peco2282.bcreborn.transport.pipe.TravelingItem;
+import com.peco2282.bcreborn.transport.menu.EmzuliPipeMenu;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.extraction.StandardItemExtractionModule;
+import com.peco2282.bcreborn.transport.pipe.runtime.EmzuliState;
+import com.peco2282.bcreborn.transport.statements.ActionExtractionPreset;
+import java.util.Collection;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
- * Emzuli Pipe: Lapis + Daizuliの機能を組み合わせたパイプ。
+ * Port of the original {@code PipeItemsEmzuli}: a Wood pipe with four extraction presets.
  * <p>
- * originalのPipeItemsEmzuliと同様に:
- * - アイテムにパイプの色タグを付与する（Lapisと同様）
- * - 色タグに基づいてフィルタースロットが一致する方向へルーティングする（Daizuliと同様）
- * - レンチで右クリックすると色を変更できる（Lapisと同様）
- * <p>
- * Lapis: 色タグを付与するだけでルーティングはしない
- * Daizuli: 既存の色タグでルーティングするが付与はしない
- * Emzuli: 色タグを付与しつつ、その色でルーティングも行う
+ * Each of the four filter slots belongs to a preset (red, blue, green, yellow). A slot extracts only while a gate
+ * on the pipe runs the matching "extraction preset" action, and only items matching its filter. Items extracted
+ * through a slot are painted with that slot's colour (set in the GUI), so a Daizuli pipe can sort them. The pipe
+ * cycles through the usable slots every tick. Without an active preset nothing is extracted.
+ * <ul>
+ *   <li>Right click: open the GUI (filters and paint buttons)</li>
+ *   <li>Wrench: switch the extraction side, like the Wood pipe</li>
+ * </ul>
  */
 public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
 
@@ -45,78 +58,76 @@ public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
   private EmzuliItemPipeBehaviour() {
   }
 
+  /** Same connection rules as the Wood pipe (the original extends {@code PipeItemsWood}). */
   @Override
-  public void onReachedCenter(PipeBlockEntity pipe, TravelingItem item) {
-    // Lapisと同様: 中央到達時にアイテムを色付けする
-    ItemStack stack = item.getStack();
-    if (!stack.isEmpty()) {
-      var tag = stack.getOrCreateTag();
-      tag.putInt("BCPipeColor", pipe.getPipeColor().getId());
-    }
+  public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
+    return WoodenItemPipeBehaviour.INSTANCE.canConnectTo(pipe, dir, neighbor);
   }
 
   @Override
-  public void adjustSpeed(PipeBlockEntity pipe, TravelingItem item) {
-    // Lapisと同様: 速度低下を1/4に抑制する
-    float speed = item.getSpeed();
-    float slowdown = (speed - 0.01f) * 0.01f;
-    float adjustedSlowdown = slowdown / 4f;
-    item.setSpeed(Math.max(0.01f, speed - adjustedSlowdown));
+  public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
+    WoodenItemPipeBehaviour.INSTANCE.onPlace(pipe, level, oldState, isMoving);
   }
 
+  @Override
+  public void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
+    WoodenItemPipeBehaviour.INSTANCE.updateShape(entity, direction, neighbor, level, neighborPos);
+  }
+
+  /** The wrench switches the extraction side (original {@code PipeItemsWood.blockActivated()}). */
+  @Override
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
+                                       Player player, InteractionHand hand, BlockHitResult hit) {
+    return WoodenItemPipeBehaviour.INSTANCE.onUse(pipe, level, pos, player, hand, hit);
+  }
+
+  /** Original {@code blockActivated()}: opens the GUI unless the player holds a pipe. */
   @Override
   public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
-    ItemStack heldItem = player.getItemInHand(hand);
-    if (!(heldItem.getItem() instanceof IToolWrench wrench)) {
+    ItemStack held = player.getItemInHand(hand);
+    if (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock) {
       return InteractionResult.PASS;
     }
-    if (!wrench.canWrench(player, pos)) {
-      return InteractionResult.PASS;
-    }
-    if (!level.isClientSide) {
-      int current = pipe.getPipeColor().getId();
-      int next;
-      int len = DyeColor.values().length;
-      if (player.isShiftKeyDown()) {
-        next = (current + len - 1) % len;
-      } else {
-        next = (current + 1) % len;
-      }
-      pipe.setPipeColor(DyeColor.byId(next));
-      player.displayClientMessage(Component.literal("Pipe color: " + next), true);
-      wrench.wrenchUsed(player, pos);
+    if (player instanceof ServerPlayer serverPlayer && pipe.getEmzuliState() != null) {
+      NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+        (id, inv, user) -> new EmzuliPipeMenu(id, inv, pipe),
+        Component.translatable("menu.bcreborntransport.emzuli_pipe_menu")
+      ), buf -> buf.writeBlockPos(pos));
     }
     return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
+  /** Original {@code checkExtract()} + {@code onPostTick()}: extract through the current slot, then move on. */
   @Override
-  public Direction chooseNextDirection(PipeBlockEntity pipe, TravelingItem item) {
-    // Daizuliと同様: BCPipeColorタグに一致するフィルタースロットを持つ方向へルーティング
-    // onInjectItemで色タグを付与済みなので、自パイプの色と一致する方向を選ぶ
-    ItemStack stack = item.getStack();
-    if (stack.isEmpty() || !stack.hasTag()) {
-      return null;
+  public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
+    EmzuliState emzuli = pipe.getEmzuliState();
+    if (emzuli == null) return;
+    if (emzuli.canExtractCurrent()) {
+      ItemStack filter = emzuli.getCurrentFilter();
+      StandardItemExtractionModule.INSTANCE.extract(pipe, stack -> ItemStack.isSameItem(stack, filter), emzuli.currentPaint());
     }
-    var tag = stack.getTag();
-    if (tag == null || !tag.contains("BCPipeColor")) {
-      return null;
+    emzuli.incrementFilter();
+  }
+
+  /** Original {@code getActions()}: the four extraction presets. */
+  @Override
+  public void addActions(PipeBlockEntity pipe, List<IActionInternal> actions) {
+    for (var color : EmzuliState.PRESET_COLORS) {
+      actions.add(TransportStatements.ACTION_EXTRACTION_PRESET.get(color).get());
     }
-    int color = tag.getInt("BCPipeColor");
-    for (Direction dir : Direction.values()) {
-      if (dir == item.getEntryDirection()) continue;
-      var filter = pipe.getFilter(dir);
-      for (int i = 0; i < filter.getContainerSize(); i++) {
-        ItemStack filterStack = filter.getItem(i);
-        if (!filterStack.isEmpty() && filterStack.hasTag()) {
-          var filterTag = filterStack.getTag();
-          if (filterTag != null && filterTag.contains("BCPipeColor")
-            && filterTag.getInt("BCPipeColor") == color) {
-            return dir;
-          }
-        }
+  }
+
+  /** Original {@code actionsActivated()}: the active presets are replaced by this gate's active preset actions. */
+  @Override
+  public void onActionsActivated(PipeBlockEntity pipe, Collection<StatementSlot> actions) {
+    EmzuliState emzuli = pipe.getEmzuliState();
+    if (emzuli == null) return;
+    emzuli.clearPresets();
+    for (StatementSlot slot : actions) {
+      if (slot.statement instanceof ActionExtractionPreset preset) {
+        emzuli.activatePreset(preset.color);
       }
     }
-    return null;
   }
 }

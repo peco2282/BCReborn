@@ -6,5 +6,6 @@
   "item.bcreborntransport.pipe_wire_red": "赤のパイプワイヤー",
   "item.bcreborntransport.pipe_wire_blue": "青のパイプワイヤー",
   "item.bcreborntransport.pipe_wire_green": "緑のパイプワイヤー",
-  "item.bcreborntransport.pipe_wire_yellow": "黄のパイプワイヤー"
+  "item.bcreborntransport.pipe_wire_yellow": "黄のパイプワイヤー",
+  "message.bcreborntransport.pipe_color": "パイプの色: %s"
 }

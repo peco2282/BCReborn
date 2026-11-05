@@ -45,8 +45,8 @@ public class WoodenItemPipeBehaviour implements ItemPipeBehaviour {
   public boolean canConnectTo(PipeBlockEntity pipe, Direction dir, BlockState neighbor) {
     if (neighbor.getBlock() instanceof PipeBlock otherPipe) {
       PipeMaterial otherMat = otherPipe.getPipeMaterial();
-      // 木・エメラルドパイプ同士は接続しない
-      return otherMat != PipeMaterial.WOOD && otherMat != PipeMaterial.EMERALD;
+      // Wood-family pipes (Wood, Emerald, Emzuli; original PipeItemsWood subclasses) never connect to each other.
+      return otherMat != PipeMaterial.WOOD && otherMat != PipeMaterial.EMERALD && otherMat != PipeMaterial.EMZULI;
     }
     // 抽出面として設定されている方向のインベントリのみ接続
     if (pipe.getExtractionSide() == dir) {

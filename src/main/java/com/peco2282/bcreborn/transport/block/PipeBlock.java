@@ -243,10 +243,12 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
       }
-      if (pipeBE.getBehaviour() != null && !player.isShiftKeyDown()) {
+      if (pipeBE.getBehaviour() != null) {
+        // The wrench reaches the pipe while sneaking too (original ItemWrench.doesSneakBypassUse), so pipes such as
+        // Lapis and Daizuli can use sneak + wrench.
         if (stack.getItem() instanceof IToolWrench) {
           return pipeBE.getBehaviour().onWrenchUse(pipeBE, level, pos, player, hand, hit);
-        } else {
+        } else if (!player.isShiftKeyDown()) {
           return pipeBE.getBehaviour().onUse(pipeBE, level, pos, player, hand, hit);
         }
       }
@@ -343,12 +345,9 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
     super.onPlace(state, level, pos, oldState, isMoving);
     if (level.isClientSide) return;
-    boolean woodItem = this.material == PipeMaterial.WOOD && this.transportType == PipeType.ITEM;
-    boolean iron = this.material == PipeMaterial.IRON && this.transportType != PipeType.ENERGY;
-    if (!woodItem && !iron) return;
-
+    // Every behaviour gets the placement hook (default no-op); Wood, Emzuli, Iron and Daizuli use it.
     BlockEntity thisBE = level.getBlockEntity(pos);
-    if (!(thisBE instanceof PipeBlockEntity pipeBE)) return;
+    if (!(thisBE instanceof PipeBlockEntity pipeBE) || pipeBE.getBehaviour() == null) return;
 
     pipeBE.getBehaviour().onPlace(pipeBE, level, oldState, isMoving);
   }

@@ -30,7 +30,7 @@ import java.util.Set;
 
 public class TransportBlockStateProvider extends BlockStateProvider {
   private static final Set<PipeMaterial> EXTRACTION_OVERLAY_MATERIALS = Set.of(
-    PipeMaterial.WOOD, PipeMaterial.DAIZULI, PipeMaterial.EMERALD, PipeMaterial.EMZULI
+    PipeMaterial.WOOD, PipeMaterial.EMERALD, PipeMaterial.EMZULI
   );
 
   public TransportBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -73,10 +73,12 @@ public class TransportBlockStateProvider extends BlockStateProvider {
     // 現時点では基本色のみ対応
     builder.part().modelFile(centerModel).addModel();
 
-    // Connection arms. Iron item/fluid pipes mirror their output side into EXTRACTION_SIDE (appearance only):
-    // as in the original PipeItemsIron.getIconIndex(), the output arm uses the standard texture and
-    // every other arm uses pipe_all_iron_solid.
-    boolean ironOutputSkin = material == PipeMaterial.IRON && type != PipeType.ENERGY;
+    // Connection arms. Iron item/fluid pipes and the Daizuli pipe mirror their output side into EXTRACTION_SIDE
+    // (appearance only): as in the original PipeItemsIron / PipeItemsDaizuli.getIconIndex(), the output arm uses the
+    // standard texture and every other arm uses the material's solid texture.
+    boolean ironOutputSkin = (material == PipeMaterial.IRON && type != PipeType.ENERGY) || material == PipeMaterial.DAIZULI;
+    ResourceLocation solidArmTex = modLoc(material == PipeMaterial.DAIZULI
+      ? "block/pipes/pipe_all_daizuli_solid" : "block/pipes/pipe_all_iron_solid");
     for (Direction side : Direction.values()) {
       ResourceLocation sideTex = getPipeTexture(material, type, side.getName());
       BlockModelBuilder sideModel = buildArmModel("block/pipe/" + baseName + "_" + typeName + "_" + side.getName(), side, sideTex);
@@ -97,7 +99,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
         .condition(PipeBlock.EXTRACTION_SIDE, sideValue);
 
       BlockModelBuilder solidModel = buildArmModel("block/pipe/" + baseName + "_" + typeName + "_" + side.getName() + "_solid",
-        side, modLoc("block/pipes/pipe_all_iron_solid"));
+        side, solidArmTex);
       builder.part()
         .modelFile(solidModel)
         .addModel()
@@ -147,7 +149,6 @@ public class TransportBlockStateProvider extends BlockStateProvider {
     if (!EXTRACTION_OVERLAY_MATERIALS.contains(material)) return null;
     return switch (material) {
       case WOOD -> modLoc("block/pipes/pipe_all_wood_solid");
-      case DAIZULI -> modLoc("block/pipes/pipe_all_daizuli_solid");
       case EMERALD -> modLoc("block/pipes/pipe_all_emerald_solid");
       case EMZULI -> modLoc("block/pipes/pipe_all_emzuli_solid");
       case IRON -> modLoc("block/pipes/pipe_all_iron_solid");
@@ -227,8 +228,8 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       case DIAMOND -> "block/pipes/pipe_items_diamond_" + side;
       // LAPISはカラーバリアントのみ → blueをデフォルトとして使用
       case LAPIS -> "block/pipes/pipe_items_lapis_blue";
-      // DAIZULIはカラーバリアントのみ → blueをデフォルトとして使用
-      case DAIZULI -> "block/pipes/pipe_items_daizuli_blue";
+      // Daizuli only has colour variants; the default colour is black (original EnumColor.BLACK).
+      case DAIZULI -> "block/pipes/pipe_items_daizuli_black";
     };
   }
 

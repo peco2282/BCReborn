@@ -61,7 +61,7 @@ final class MovementHelper {
 
     if (be instanceof PipeBlockEntity nextPipe) {
       if (!nextPipe.isInputOpen(dir.getOpposite())) return MovementResult.BLOCKED;
-      nextPipe.injectItemWithSpeed(item.getStack(), dir.getOpposite(), item.getSpeed());
+      nextPipe.injectItemWithSpeed(item.getStack(), dir.getOpposite(), item.getSpeed(), item.getColor());
       return MovementResult.SUCCESS;
     } else if (be != null) {
       LazyOptional<IItemHandler> capability = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());

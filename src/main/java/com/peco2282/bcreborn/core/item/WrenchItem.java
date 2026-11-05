@@ -18,6 +18,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -46,5 +48,11 @@ public class WrenchItem extends BuildCraftItem implements IToolWrench {
 
   @Override
   public void wrenchUsed(Player player, BlockPos pos) {
+  }
+
+  /** Original {@code ItemWrench.doesSneakBypassUse()}: sneak + wrench still activates the block. */
+  @Override
+  public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+    return true;
   }
 }

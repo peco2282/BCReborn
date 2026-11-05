@@ -77,6 +77,8 @@ public final class PipeRuntime {
   @Nullable private EnergyTransportModule energyTransport;
   @Nullable private FluidTank fluidTank;
   @Nullable private EnergyStorage energyStorage;
+  /** Emzuli pipes only (original {@code PipeItemsEmzuli} filters, slot colours and presets). */
+  @Nullable private EmzuliState emzuli;
 
   private int ticksSincePull;
   private int fluidRoundRobinIndex;
@@ -116,6 +118,7 @@ public final class PipeRuntime {
     fluidTransport = type == PipeType.FLUID ? new FluidTransportModule(host) : null;
     energyTransport = type == PipeType.ENERGY ? new EnergyTransportModule(host, material) : null;
     behaviour = PipeBehaviourManager.getBehaviour(type, material);
+    emzuli = material == PipeMaterial.EMZULI ? new EmzuliState(host::setChanged) : null;
   }
 
   public void tick(Level level, BlockPos pos, BlockState state) {
@@ -192,6 +195,7 @@ public final class PipeRuntime {
         if (inventory != null) inventory.readTag(entry);
       }
     }
+    if (emzuli != null && tag.contains("Emzuli")) emzuli.load(tag.getCompound("Emzuli"));
     itemTransport.load(tag);
     if (energyTransport != null) energyTransport.load(tag);
     if (fluidTransport != null) fluidTransport.load(tag);
@@ -229,6 +233,11 @@ public final class PipeRuntime {
     for (int i = 0; i < wireSet.length; i++) wires[i] = (byte) (wireSet[i] ? 1 : 0);
     tag.putByteArray("Wires", wires);
     writeWireSignals(tag);
+    if (emzuli != null) {
+      CompoundTag emzuliTag = new CompoundTag();
+      emzuli.save(emzuliTag);
+      tag.put("Emzuli", emzuliTag);
+    }
     itemTransport.save(tag);
     if (energyTransport != null) energyTransport.save(tag);
     if (fluidTransport != null) fluidTransport.save(tag);
@@ -442,10 +451,12 @@ public final class PipeRuntime {
   public long usedFilters() { return usedFilters; }
   public void setUsedFilters(long value) { usedFilters = value; }
   @Nullable public DyeColor pipeColor() { return pipeColor; }
+  @Nullable public EmzuliState emzuli() { return emzuli; }
   public void setPipeColor(@Nullable DyeColor value) { pipeColor = value; }
   public PipeBlockEntity.ExtractFilterMode extractFilterMode() { return extractFilterMode; }
   public void setExtractFilterMode(PipeBlockEntity.ExtractFilterMode value) { extractFilterMode = value; }
   public List<TravelingItem> travelingItems() { return itemTransport.getTravelingItems(); }
-  public void injectItem(ItemStack stack, Direction from, float speed) { itemTransport.injectItem(stack, from, speed); }
+  public void injectItem(ItemStack stack, Direction from, float speed) { itemTransport.injectItem(stack, from, speed, null); }
+  public void injectItem(ItemStack stack, Direction from, float speed, @Nullable DyeColor color) { itemTransport.injectItem(stack, from, speed, color); }
   public void dropItems() { itemTransport.dropItems(); }
 }

@@ -29,6 +29,7 @@ import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.runtime.EmzuliState;
 import com.peco2282.bcreborn.transport.pipe.runtime.PipeRuntime;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import com.peco2282.bcreborn.transport.pipe.transport.FluidTransportModule;
@@ -180,9 +181,18 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     }
   }
 
-  private void configureExtractionBattery() {
-    boolean needsBattery = runtime.material() == PipeMaterial.WOOD
+  /**
+   * Wood-family extraction pipes (original {@code PipeItemsWood} and its subclasses Emerald / Emzuli, plus the
+   * Wood and Emerald fluid pipes) store engine power in a battery and spend it to extract.
+   */
+  private boolean usesExtractionBattery() {
+    PipeMaterial material = runtime.material();
+    return (material == PipeMaterial.WOOD || material == PipeMaterial.EMERALD || material == PipeMaterial.EMZULI)
         && (runtime.type() == PipeType.ITEM || runtime.type() == PipeType.FLUID);
+  }
+
+  private void configureExtractionBattery() {
+    boolean needsBattery = usesExtractionBattery();
     if (needsBattery && getBattery() == null) {
       setBattery(new EnergyStorage(1024, 64, 64, 0));
     } else if (!needsBattery) {
@@ -240,6 +250,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   public void injectItemWithSpeed(ItemStack stack, Direction from, float speed) {
     runtime.injectItem(stack, from, speed);
+  }
+
+  /** Injects an item that keeps its paint (original {@code TravelingItem.color}) from the previous pipe. */
+  public void injectItemWithSpeed(ItemStack stack, Direction from, float speed, @Nullable DyeColor color) {
+    runtime.injectItem(stack, from, speed, color);
   }
 
   public void dropItems() {
@@ -462,6 +477,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
   }
 
+  /** The Emzuli pipe state, or null for every other material. */
+  public @Nullable EmzuliState getEmzuliState() {
+    return runtime.emzuli();
+  }
+
   public @Nullable DyeColor getPipeColor() {
     return runtime.pipeColor();
   }
@@ -589,7 +609,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return LazyOptional.empty();
     }
     // Powered pipe (for extract)
-    if (cap == ForgeCapabilities.ENERGY && runtime.material() == PipeMaterial.WOOD) {
+    if (cap == ForgeCapabilities.ENERGY && usesExtractionBattery()) {
       var battery = getBattery();
       if (battery != null) {
         return LazyOptional.of(() -> battery).cast();
@@ -766,7 +786,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return 0;
     }
     if (doAdd) {
-      injectItem(stack, from);
+      // The colour is a DyeColor id (original IPipeTile.injectItem(..., EnumColor color)).
+      injectItemWithSpeed(stack, from, runtime.material().getItemSpeed(), color != null ? DyeColor.byId(color) : null);
     }
     return stack.getCount();
   }

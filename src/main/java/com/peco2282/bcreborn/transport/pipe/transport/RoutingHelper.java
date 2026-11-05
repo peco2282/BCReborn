@@ -73,6 +73,7 @@ class RoutingHelper {
       if (!restricted.isEmpty()) {
         possibleDirections = restricted;
       }
+      ib.filterDestinations(pipe, item, possibleDirections);
     }
 
     if (possibleDirections.isEmpty()) {

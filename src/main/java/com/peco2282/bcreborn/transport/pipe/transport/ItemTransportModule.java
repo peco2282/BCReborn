@@ -22,6 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.DyeColor;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -152,6 +154,13 @@ public class ItemTransportModule {
    * @param from アイテムが入ってきた方向（TravelingItem.entryDirection に直接格納される）
    */
   public void injectItem(ItemStack stack, Direction from, float speed) {
+    injectItem(stack, from, speed, null);
+  }
+
+  /**
+   * @param color the paint the item already carries (original {@code TravelingItem.color}), or null
+   */
+  public void injectItem(ItemStack stack, Direction from, float speed, @Nullable DyeColor color) {
     if (pipe.getLevel() == null || pipe.getLevel().isClientSide) return;
     if (pipe.getTransportType() != PipeType.ITEM) return;
 
@@ -163,6 +172,7 @@ public class ItemTransportModule {
     }
 
     TravelingItem travelingItem = new TravelingItem(stack.copy(), from, speed);
+    travelingItem.setColor(color);
     adjustSpeed(travelingItem, behaviour);
     if (!pipe.getLevel().isClientSide) {
       chooseDestination(travelingItem, behaviour);

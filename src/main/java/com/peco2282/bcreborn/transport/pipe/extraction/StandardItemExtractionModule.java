@@ -15,11 +15,14 @@ import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import java.util.function.Predicate;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 木パイプ用の標準アイテム抽出モジュール。
@@ -34,8 +37,18 @@ public class StandardItemExtractionModule implements ExtractionModule {
 
   @Override
   public void extract(PipeBlockEntity pipe) {
+    extract(pipe, stack -> true, null);
+  }
+
+  /**
+   * Extracts the first stack accepted by {@code filter} and paints it with {@code paint} (original
+   * {@code PipeItemsEmzuli.checkExtractGeneric()} / {@code makeItem()}).
+   *
+   * @return true if an item was extracted
+   */
+  public boolean extract(PipeBlockEntity pipe, Predicate<ItemStack> filter, @Nullable DyeColor paint) {
     int energyAvailable = pipe.getExtractionEnergy();
-    if (energyAvailable <= 0) return;
+    if (energyAvailable <= 0) return false;
 
     int extractAmount = 1;
     int cooldown = 10;
@@ -58,7 +71,7 @@ public class StandardItemExtractionModule implements ExtractionModule {
       }
     }
 
-    if (pipe.getTicksSincePull() < cooldown) return;
+    if (pipe.getTicksSincePull() < cooldown) return false;
 
     Direction extractDir = pipe.getExtractionSide();
     BlockPos inventoryPos = pipe.getBlockPos().relative(extractDir);
@@ -70,17 +83,18 @@ public class StandardItemExtractionModule implements ExtractionModule {
         IItemHandler handler = cap.orElseThrow(IllegalStateException::new);
         for (int i = 0; i < handler.getSlots(); i++) {
           ItemStack stack = handler.getStackInSlot(i);
-          if (!stack.isEmpty()) {
+          if (!stack.isEmpty() && filter.test(stack)) {
             ItemStack extracted = handler.extractItem(i, extractAmount, false);
             if (!extracted.isEmpty()) {
-              pipe.injectItemWithSpeed(extracted, extractDir, pipe.getPipeMaterial().getItemSpeed());
+              pipe.injectItemWithSpeed(extracted, extractDir, pipe.getPipeMaterial().getItemSpeed(), paint);
               pipe.consumeExtractionEnergy(10);
               pipe.resetTicksSincePull();
-              return;
+              return true;
             }
           }
         }
       }
     }
+    return false;
   }
 }
