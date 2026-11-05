@@ -18,6 +18,9 @@ import com.peco2282.bcreborn.core.CoreConfig;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
+import com.peco2282.bcreborn.builders.BuildersConfig;
+import com.peco2282.bcreborn.builders.quarry.QuarryChunkLoader;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import com.peco2282.bcreborn.builders.block.FrameBlock;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.SimpleInventory;
@@ -87,6 +90,9 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     if (!getLevel().isClientSide) {
       if (!box.isInitialized() || box.xMax - box.xMin < 2 || box.zMax - box.zMin < 2) {
         setBoundaries();
+      } else {
+        // Forge restores the tickets on world load; forcing again also covers chunk loading enabled later.
+        forceChunkLoading(false);
       }
       if (!restoredHead) {
         headPosX = box.xMin + 1.5;
@@ -131,9 +137,11 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     if (provider != null) {
       int xSize = provider.xMax() - provider.xMin() + 1;
       int zSize = provider.zMax() - provider.zMin() + 1;
-      if (xSize < 3 || zSize < 3) {
-        // Original: chat.buildcraft.quarry.tooSmall, then fall back to the default area.
-        notifyPlacer(Component.translatable("chat.bcreborn.quarry.tooSmall", xSize, zSize));
+      if (xSize < 3 || zSize < 3 || QuarryChunkLoader.isTooLarge(xSize, zSize)) {
+        // Original: chat.buildcraft.quarry.tooSmall (too small, or too many chunks to keep loaded),
+        // then fall back to the default area.
+        notifyPlacer(Component.translatable("chat.bcreborn.quarry.tooSmall", xSize, zSize,
+          BuildersConfig.isQuarryDoChunkLoading() ? QuarryChunkLoader.MAX_CHUNKS : 0));
       } else {
         box.initialize(provider);
         box.createLaserData();
@@ -157,7 +165,31 @@ public class QuarryBlockEntity extends AbstractBuilderBlockEntity implements IBo
     box.createLaserData();
     createFrameList();
     stage = Stage.BUILDING;
+    forceChunkLoading(true);
     setChanged();
+  }
+
+  /**
+   * Original {@code forceChunkLoading()}: keeps the quarry chunk and every chunk of the box loaded
+   * ({@code quarryDoChunkLoading}).
+   *
+   * @param announce tell the placer how many chunks are kept loaded (original chat.buildcraft.quarry.chunkloadInfo)
+   */
+  private void forceChunkLoading(boolean announce) {
+    if (!BuildersConfig.isQuarryDoChunkLoading() || !(getLevel() instanceof ServerLevel server)) return;
+    LongSet chunks = QuarryChunkLoader.chunksFor(worldPosition, box);
+    QuarryChunkLoader.force(server, worldPosition, chunks);
+    if (announce) {
+      notifyPlacer(Component.translatable("chat.bcreborn.quarry.chunkloadInfo",
+        worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), chunks.size()));
+    }
+  }
+
+  /** Original {@code invalidate()}: releases the forced chunks when the quarry is broken. */
+  public void releaseChunkLoading() {
+    if (getLevel() instanceof ServerLevel server) {
+      QuarryChunkLoader.release(server, worldPosition, QuarryChunkLoader.chunksFor(worldPosition, box));
+    }
   }
 
   @SuppressWarnings("RedundantLabeledSwitchRuleCodeBlock")

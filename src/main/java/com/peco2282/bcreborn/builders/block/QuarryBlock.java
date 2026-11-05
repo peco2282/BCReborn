@@ -106,6 +106,7 @@ public class QuarryBlock extends BuildCraftBlock {
     if (!state.is(newState.getBlock()) && !level.isClientSide) {
       if (level.getBlockEntity(pos) instanceof QuarryBlockEntity quarry) {
         quarry.destroy();
+        quarry.releaseChunkLoading();
       }
       FrameBlock.removeNeighboringFrames(level, pos);
     }

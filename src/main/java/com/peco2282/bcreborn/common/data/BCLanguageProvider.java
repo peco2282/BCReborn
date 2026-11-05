@@ -76,7 +76,37 @@ public class BCLanguageProvider extends LanguageProvider {
     add("gui.currentOutput", "Current Output");
     add("gui.stored", "Stored");
     add("gui.heat", "Heat");
-    add("chat.bcreborn.quarry.tooSmall", "Quarry area is too small (%s x %s, at least 3 x 3 is needed); using the default area.");
+    add("chat.bcreborn.quarry.tooSmall", "Quarry area %s x %s is too small (at least 3 x 3) or covers too many chunks to keep loaded (limit %s); using the default area.");
+    add("chat.bcreborn.quarry.chunkloadInfo", "The quarry at %s %s %s will keep %s chunks loaded.");
+    // Filler GUI (original GuiFiller / pattern parameters)
+    add("fillerpattern.clear", "Clear");
+    add("fillerpattern.fill", "Fill");
+    add("fillerpattern.flatten", "Flatten");
+    add("fillerpattern.horizon", "Horizon");
+    add("fillerpattern.pyramid", "Pyramid");
+    add("fillerpattern.stairs", "Stairs");
+    add("fillerpattern.box", "Box");
+    add("fillerpattern.cylinder", "Cylinder");
+    add("fillerpattern.frame", "Frame");
+    add("fillerpattern.parameter.hollow", "Hollow");
+    add("fillerpattern.parameter.filled", "Filled");
+    add("direction.north", "North");
+    add("direction.west", "West");
+    add("direction.east", "East");
+    add("direction.south", "South");
+    add("direction.up", "Top");
+    add("direction.down", "Bottom");
+    add("direction.center.0", "North-West");
+    add("direction.center.1", "North");
+    add("direction.center.2", "North-East");
+    add("direction.center.3", "West");
+    add("direction.center.4", "Center");
+    add("direction.center.5", "East");
+    add("direction.center.6", "South-West");
+    add("direction.center.7", "South");
+    add("direction.center.8", "South-East");
+    add("tip.filler.excavate.on", "Excavate");
+    add("tip.filler.excavate.off", "Do Not Excavate");
 
     // Block and Item Names
     addBuilders();

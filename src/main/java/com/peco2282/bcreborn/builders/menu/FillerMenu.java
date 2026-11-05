@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.builders.menu;
 
+import com.peco2282.bcreborn.api.filler.IFillerPattern;
+import com.peco2282.bcreborn.api.statements.IStatementParameter;
+import com.peco2282.bcreborn.api.statements.StatementMouseClick;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.block.entity.FillerBlockEntity;
 import com.peco2282.bcreborn.common.gui.widgets.Widget;
@@ -87,6 +90,50 @@ public class FillerMenu extends BuildCraftMenu<FillerMenu> {
     for (int x = 0; x < 9; x++) {
       this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 211));
     }
+  }
+
+  /** Menu button id of the excavate toggle (original {@code setFlags} command). */
+  public static final int BUTTON_EXCAVATE = 0;
+  private static final int BUTTON_PARAMETER_BASE = 16;
+  /** Pattern parameter slots (original {@code FillerParameterSlot}s at x = 77 + i * 18, y = 30). */
+  public static final int PARAMETER_SLOTS = 4;
+
+  /** Menu button id for a click on parameter slot {@code slot}. */
+  public static int parameterButtonId(int slot, int mouseButton, boolean shift) {
+    return BUTTON_PARAMETER_BASE + slot * 8 + Math.min(Math.max(mouseButton, 0), 2) * 2 + (shift ? 1 : 0);
+  }
+
+  /**
+   * Server side of the GUI clicks (the original sent {@code setFlags} / {@code setParameters} commands).
+   * <ul>
+   *   <li>excavate: toggles {@link FillerBlockEntity#setExcavate}</li>
+   *   <li>parameter slot: an empty slot gets the pattern's default parameter, otherwise the parameter handles the
+   *   click ({@code IStatementParameter.onClick}, with the stack on the cursor); the filler then restarts</li>
+   * </ul>
+   */
+  @Override
+  public boolean clickMenuButton(Player player, int id) {
+    if (filler == null) return false;
+    if (id == BUTTON_EXCAVATE) {
+      filler.setExcavate(!filler.isExcavate());
+      return true;
+    }
+    int value = id - BUTTON_PARAMETER_BASE;
+    if (value < 0 || value >= PARAMETER_SLOTS * 8) return false;
+    int slot = value / 8;
+    int mouseButton = (value % 8) / 2;
+    boolean shift = (value & 1) != 0;
+    IFillerPattern pattern = filler.getPattern();
+    IStatementParameter[] parameters = filler.getPatternParameters();
+    if (pattern == null || slot >= parameters.length) return false;
+    IStatementParameter parameter = parameters[slot];
+    if (parameter == null) {
+      parameter = pattern.createParameter(slot);
+    } else {
+      parameter.onClick(null, pattern, getCarried(), new StatementMouseClick(mouseButton, shift));
+    }
+    filler.setPatternParameter(slot, parameter);
+    return true;
   }
 
   public int getCurrentPattern() {

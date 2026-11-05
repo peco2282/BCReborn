@@ -24,6 +24,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import com.peco2282.bcreborn.builders.quarry.QuarryChunkLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -77,9 +78,8 @@ public class BCRebornBuilders implements BCReborn {
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
-    // Some common setup code
-    LOGGER.info("HELLO FROM COMMON SETUP");
-    LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+    // Original BuildCraftBuilders: ForgeChunkManager.setForcedChunkLoadingCallback(instance, new QuarryChunkloadCallback()).
+    QuarryChunkLoader.register();
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call
