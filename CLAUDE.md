@@ -83,7 +83,7 @@ The pipe system follows strict responsibility boundaries — **do not blur these
 | `MovementHelper`, `SpeedHelper` | Stateless utilities — `final class`, private constructor, static methods only |
 | `RoutingHelper` | Direction resolution logic |
 
-**TravelingItem key fields**: `stack`, `entryDirection` (came *from*, not going *to*), `nextDirection` (null until routing), `progress` (0→1, moves at ≥1.0), `speed` (default 0.05f), `bounceCount` (reserved for future jam detection).
+**TravelingItem key fields**: `stack`, `entryDirection` (came *from*, not going *to*), `nextDirection` (null until routing), `progress` (0→1, moves at ≥1.0), `speed` (default 0.05f), `bounceCount` (saved but unused: the original has no jam counter). Jams follow the original `PipeTransportItems`: only sides that can take the item are destinations; with none the item is dropped at the centre, except on pipes whose `ItemPipeBehaviour.allowsBouncing()` is true (Iron, Daizuli, Clay); overfull pipes group items and then burst.
 
 **Design rules that must not be violated:**
 - BlockState = appearance only. No runtime state in BlockState.
@@ -110,6 +110,4 @@ After adding blocks, items, or recipes, run `gradlew.bat runData` to regenerate 
 
 See `ROADMAP.md` for full status (including the client-side verification checklist). Active work (as of last update):
 - **Client verification**: GUIs and rendering (Diamond / Emzuli Pipe GUIs, wires, gates, Landmarks, Assembly Table, engines) are implemented and GameTest-verified server-side, but not yet checked in a real client.
-- **Builders leftovers**: building-item flight sync to clients (Quarry chunk loading and the Filler GUI controls are done; the Filler GUI is not yet checked in a client).
-- **Jam handling**: `bounceCount`-based jam detection in item pipes.
 - **Colour pipe visuals**: Lapis / Daizuli colours are logic-only (the item colour is `TravelingItem.color`, not stack NBT); per-colour textures and painted-item rendering are missing.
