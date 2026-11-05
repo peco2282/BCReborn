@@ -128,8 +128,8 @@ See [ROADMAP.md](ROADMAP.md) (in Japanese) for detailed progress and plans.
 
 ### 🚀 Current focus
 - **Client verification**: check the implemented GUIs and rendering in a real client (the checklist is in ROADMAP.md)
-- **Emzuli / Daizuli pipes**: rework them to match the original
 - **Builders leftovers**: Filler settings GUI, Quarry chunk loading
+- **Colour pipe visuals**: per-colour Lapis / Daizuli textures and painted items
 
 ---
 

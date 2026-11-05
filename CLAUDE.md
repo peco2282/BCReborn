@@ -109,7 +109,7 @@ After adding blocks, items, or recipes, run `gradlew.bat runData` to regenerate 
 ## Current Focus Areas
 
 See `ROADMAP.md` for full status (including the client-side verification checklist). Active work (as of last update):
-- **Client verification**: GUIs and rendering (Diamond Pipe GUI, wires, gates, Landmarks, Assembly Table, engines) are implemented and GameTest-verified server-side, but not yet checked in a real client.
-- **Emzuli / Daizuli pipes**: the current implementations differ from the original; port the pipes, then their gate actions.
+- **Client verification**: GUIs and rendering (Diamond / Emzuli Pipe GUIs, wires, gates, Landmarks, Assembly Table, engines) are implemented and GameTest-verified server-side, but not yet checked in a real client.
 - **Builders leftovers**: Filler parameter / excavate GUI, Quarry chunk loading, building-item flight sync to clients.
 - **Jam handling**: `bounceCount`-based jam detection in item pipes.
+- **Colour pipe visuals**: Lapis / Daizuli colours are logic-only (the item colour is `TravelingItem.color`, not stack NBT); per-colour textures and painted-item rendering are missing.

@@ -128,8 +128,8 @@ com.peco2282.bcreborn
 
 ### 🚀 現在の注力タスク
 - **実機確認**: 実装済みの GUI・描画を実際のクライアントで確認する（チェックリストは ROADMAP.md）
-- **Emzuli / Daizuli Pipe**: 原作準拠への作り直し
 - **Builders の残り**: Filler の設定 GUI、Quarry のチャンクローディング
+- **色付きパイプの描画**: Lapis / Daizuli の色ごとのテクスチャ、塗られたアイテムの色表示
 
 ---
 
