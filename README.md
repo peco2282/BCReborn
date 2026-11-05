@@ -128,7 +128,7 @@ See [ROADMAP.md](ROADMAP.md) (in Japanese) for detailed progress and plans.
 
 ### 🚀 Current focus
 - **Client verification**: check the implemented GUIs and rendering in a real client (the checklist is in ROADMAP.md)
-- **Builders leftovers**: Filler settings GUI, Quarry chunk loading
+- **Builders leftovers**: building-item flight sync to clients
 - **Colour pipe visuals**: per-colour Lapis / Daizuli textures and painted items
 
 ---
