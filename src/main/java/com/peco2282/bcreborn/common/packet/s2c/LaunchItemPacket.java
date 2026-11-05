@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.packet.s2c;
 
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.builder.BuildingItem;
+import com.peco2282.bcreborn.common.builder.IBuildingItemsProvider;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,6 +22,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+/** Original {@code TileAbstractBuilder.createLaunchItemPacket()}: one building item for the flying animation. */
 @Packet(direction = NetworkDirection.PLAY_TO_CLIENT)
 public record LaunchItemPacket(
   BlockPos pos,
@@ -39,8 +41,19 @@ public record LaunchItemPacket(
     item.writeData(buffer);
   }
 
+  /**
+   * Original {@code "launchItem"} command on the client: the item joins the machine's building items, which the
+   * client advances and renders (it never places anything, as the item has no slot to build).
+   */
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
-
+    NetworkEvent.Context ctx = supplier.get();
+    ctx.enqueueWork(() -> getBlockEntity(ctx, pos).ifPresent(be -> {
+      if (be instanceof IBuildingItemsProvider provider) {
+        item.initialize();
+        provider.getBuilders().add(item);
+      }
+    }));
+    ctx.setPacketHandled(true);
   }
 }

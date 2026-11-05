@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.builder;
 
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
+import com.peco2282.bcreborn.common.packet.c2s.RequestBuildingItemsPacket;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
@@ -182,13 +184,39 @@ public abstract class AbstractBuilderBlockEntity extends BuildCraftBlockEntity i
   }
 
   /**
-   * Original {@code addAndLaunchBuildingItem()}. The original also sent the item to nearby clients for the
-   * flying-item animation; that client sync is not ported yet.
+   * Original {@code addAndLaunchBuildingItem()}: the item starts flying, and nearby clients get it for the
+   * flying-item animation ({@code launchItem} command).
    */
   @Override
   public void addAndLaunchBuildingItem(BuildingItem item) {
     item.initialize();
     buildersInAction.add(item);
+    if (level != null && !level.isClientSide) {
+      BCNetworkManager.sendNearLaunchItem(getBlockPos().getCenter(), level.dimension(), getBlockPos(), item);
+    }
+  }
+
+  /**
+   * Original {@code TileAbstractBuilder.initialize()}: a client that loads this machine asks for the items already
+   * in flight ({@code uploadBuildersInAction} command).
+   */
+  @Override
+  public void initialize() {
+    super.initialize();
+    if (level != null && level.isClientSide) {
+      BCNetworkManager.sendToServer(new RequestBuildingItemsPacket(getBlockPos()));
+    }
+  }
+
+  /**
+   * Client side of the original {@code updateEntity()}: advances the displayed building items and forgets the ones
+   * that have landed (the client never places blocks, its items have no slot to build).
+   */
+  public void tickClientBuildingItems() {
+    buildersInAction.removeIf(item -> {
+      item.update();
+      return item.isDone();
+    });
   }
 
   @Override

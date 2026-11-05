@@ -51,7 +51,6 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   private static final int POWER_ACTIVATION = 25;
 
   private final SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
-  private final List<BuildingItem> builders = new LinkedList<>();
   private List<RequirementItemStack> requiredToBuild = new ArrayList<>();
   private CompoundTag initNBT = null;
   private boolean done = true;
@@ -72,11 +71,11 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
-      for (BuildingItem b : builders) {
-        b.update();
-      }
+      tickClientBuildingItems();
       return;
     }
+    // Original: super.updateEntity() (TileAbstractBuilder) moves the building items and places their blocks.
+    updateBuildingItems();
 
     if (mode == IControllable.Mode.Off) {
       isBuilding = false;
@@ -119,24 +118,6 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
       }
     }
 
-    // Update building items
-    List<BuildingItem> toRemove = new ArrayList<>();
-    for (BuildingItem b : builders) {
-      b.update();
-      // TODO: check if building item is finished
-    }
-    builders.removeAll(toRemove);
-  }
-
-  @Override
-  public Collection<BuildingItem> getBuilders() {
-    return builders;
-  }
-
-  @Override
-  public void addAndLaunchBuildingItem(BuildingItem item) {
-    item.initialize();
-    builders.add(item);
   }
 
   public Container getInventory() {

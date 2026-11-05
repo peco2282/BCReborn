@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.block.render.BoxBlockEntityRenderer;
+import com.peco2282.bcreborn.builders.block.render.BuilderRenderer;
 import com.peco2282.bcreborn.builders.block.render.QuarryRenderer;
 import com.peco2282.bcreborn.builders.screen.ArchitectScreen;
 import com.peco2282.bcreborn.builders.screen.BlueprintLibraryScreen;
@@ -59,6 +60,7 @@ public class BCRebornBuildersEvent {
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.QUARRY.get(), QuarryRenderer::new);
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.BUILDER.get(), BuilderRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.ARCHITECT.get(), BoxBlockEntityRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.FILLER.get(), BoxBlockEntityRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get(), BoxBlockEntityRenderer::new);

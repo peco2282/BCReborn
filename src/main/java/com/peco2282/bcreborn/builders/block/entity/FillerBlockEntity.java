@@ -109,7 +109,10 @@ public class FillerBlockEntity extends AbstractBuilderBlockEntity implements Men
    */
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
-    if (level.isClientSide) return;
+    if (level.isClientSide) {
+      tickClientBuildingItems();
+      return;
+    }
     // Original: super.updateEntity() (TileAbstractBuilder) moves the building items and places their blocks.
     updateBuildingItems();
 

@@ -14,6 +14,7 @@ package com.peco2282.bcreborn.builders.block.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.peco2282.bcreborn.common.Box;
 import com.peco2282.bcreborn.common.LaserData;
+import com.peco2282.bcreborn.common.builder.IBuildingItemsProvider;
 import com.peco2282.bcreborn.common.internal.IBoxProvider;
 import com.peco2282.bcreborn.core.block.render.LaserRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,6 +28,10 @@ public class BoxBlockEntityRenderer<T extends BlockEntity & IBoxProvider> implem
 
   @Override
   public void render(T blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    // Original RenderBuilder / RenderFiller: building items in flight (Filler, construction marker).
+    if (blockEntity instanceof IBuildingItemsProvider provider && blockEntity.getLevel() != null) {
+      BuildingItemRenderer.render(provider, blockEntity.getBlockPos(), blockEntity.getLevel(), poseStack, buffer);
+    }
     Box box = blockEntity.getBox();
     if (!box.isInitialized() || box.lasersData == null) {
       return;
