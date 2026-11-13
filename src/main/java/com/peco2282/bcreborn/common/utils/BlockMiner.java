@@ -92,7 +92,7 @@ public class BlockMiner {
 
     int energyRequired = BlockUtils.computeBlockBreakEnergy(world, pos);
 
-    int usedAmount = Math.min(offeredAmount, energyRequired - energyAccepted);
+    int usedAmount = Mth.clamp(offeredAmount, 0, Math.max(0, energyRequired - energyAccepted));
     energyAccepted += usedAmount;
 
     if (energyAccepted >= energyRequired) {

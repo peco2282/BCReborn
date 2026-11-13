@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCReborn;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -28,7 +29,7 @@ public class BCBlockLoot extends BlockLootSubProvider {
 
   @Override
   protected void generate() {
-    // bcrebornで始まる全ブロックを自動的にドロップ対象にする
+    // Every block of the mod drops itself; blocks declared with noLootTable() are skipped in getKnownBlocks().
     for (Block block : getKnownBlocks()) {
       if (block.asItem() != Items.AIR) {
         this.dropSelf(block);
@@ -41,6 +42,7 @@ public class BCBlockLoot extends BlockLootSubProvider {
     return ForgeRegistries.BLOCKS.getEntries().stream()
       .filter(entry -> entry.getKey().location().getNamespace().startsWith(BCReborn.MOD_ID_BASE))
       .map(Map.Entry::getValue)
+      .filter(block -> !BuiltInLootTables.EMPTY.equals(block.getLootTable()))
       .toList();
   }
 }

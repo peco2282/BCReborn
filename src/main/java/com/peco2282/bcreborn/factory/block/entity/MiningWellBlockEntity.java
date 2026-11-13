@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.factory.block.entity;
 
 
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.api.tiles.IControllable;
 import com.peco2282.bcreborn.api.tiles.IHasWork;
@@ -85,7 +86,7 @@ public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHas
         depth = depth - 1;
       }
 
-      if (depth < level.getMinBuildHeight() || depth < getBlockPos().getY() - BuildersConfig.getMiningDepth() || !BlockUtils.canChangeBlock(level, getBlockPos().atY(depth))) {
+      if (depth < level.getMinBuildHeight() + 1 || depth < getBlockPos().getY() - BuildersConfig.getMiningDepth() || !BlockUtils.canChangeBlock(level, getBlockPos().atY(depth))) {
         isDigging = false;
         // Drain energy, because at 0 energy this will stop doing calculations.
         getBattery().useEnergy(0, 10, false);
@@ -122,8 +123,11 @@ public class MiningWellBlockEntity extends BuildCraftBlockEntity implements IHas
     }
   }
 
+  /** Original sendNetworkUpdate(): pushes the LED state (writeData) to nearby clients. */
   protected void sendNetworkUpdate() {
-    // Implementation for network update
+    if (level != null && !level.isClientSide) {
+      BCNetworkManager.sendBlockEntityUpdate(this, getBlockPos(), this::writeData);
+    }
   }
 
   @Override

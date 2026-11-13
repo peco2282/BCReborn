@@ -37,7 +37,9 @@ public class PlainPipeBlock extends Block implements SimpleWaterloggedBlock {
       .sound(SoundType.GLASS)
       .strength(0.3F)
       .noOcclusion()
-      .noCollission());
+      .noCollission()
+      // Original getItemDropped() / getDrops(): a plain pipe never drops anything.
+      .noLootTable());
     this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
   }
 
