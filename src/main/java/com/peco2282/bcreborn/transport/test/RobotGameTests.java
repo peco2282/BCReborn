@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.transport.test;
 
+import com.peco2282.bcreborn.common.block.EngineBlock;
+import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import com.peco2282.bcreborn.transport.gates.GatePluggable;
@@ -69,7 +71,11 @@ public class RobotGameTests {
   }
 
   private static DockingStation<?> placeStation(GameTestHelper helper, BlockPos pos, PipeMaterial material) {
-    BlockState state = TransportBlocks.get(PipeType.ITEM, material).get().defaultBlockState();
+    return placeStation(helper, pos, PipeType.ITEM, material);
+  }
+
+  private static DockingStation<?> placeStation(GameTestHelper helper, BlockPos pos, PipeType type, PipeMaterial material) {
+    BlockState state = TransportBlocks.get(type, material).get().defaultBlockState();
     helper.setBlock(pos, Block.updateFromNeighbourShapes(state, helper.getLevel(), helper.absolutePos(pos)));
     PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(pos);
     // The GameTest world is reused: forget a station left behind at this position by an aborted run.
@@ -210,6 +216,36 @@ public class RobotGameTests {
         "The carrier must move all items to the accepting station, moved " + moved + ", source " + from.getItem(0)
           + ", robot holds " + robot.getItem(0) + " at " + robot.blockPosition() + " docked " + robot.getDockingStation()
           + " running " + robot.mainAI.getActiveAI() + " energy " + robot.getEnergy());
+      robot.discard();
+    });
+  }
+
+  /**
+   * Original RobotStationPluggable.receiveEnergy(): a station on a power pipe charges the robot docked on it,
+   * and a robot below its safety energy stays there to recharge (AIRobotRecharge).
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 400)
+  public void powerPipeStationChargesRobot(GameTestHelper helper) {
+    BlockPos engine = new BlockPos(0, 2, 1);
+    helper.setBlock(engine.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
+    helper.setBlock(engine, EnergyBlocks.CREATIVE_ENGINE.get().defaultBlockState()
+      .setValue(EngineBlock.FACING, Direction.EAST));
+    helper.setBlock(new BlockPos(1, 2, 1), TransportBlocks.get(PipeType.ENERGY, PipeMaterial.WOOD).get().defaultBlockState());
+    DockingStation<?> station = placeStation(helper, new BlockPos(2, 2, 1), PipeType.ENERGY, PipeMaterial.GOLD);
+    check(helper, station.providesPower(), "A station on a power pipe provides power");
+
+    int start = RobotEntityBase.SAFETY_ENERGY / 2;
+    RobotEntity robot = placeRobot(helper, station, start);
+    helper.onEachTick(() -> {
+      if (helper.getTick() == 390) {
+        robot.discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      helper.assertTrue(robot.getEnergy() > start + 2000,
+        "The docked robot must be charged, has " + robot.getEnergy() + " running " + robot.mainAI.getActiveAI());
+      helper.assertTrue(robot.getDockingStation() == station, "A robot that recharges stays on its power station");
       robot.discard();
     });
   }

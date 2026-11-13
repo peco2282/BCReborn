@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.transport;
 
+import org.jetbrains.annotations.Nullable;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
@@ -98,6 +99,11 @@ public class EnergyTransportModule {
     boolean[] receivers = new boolean[6];
     for (Direction dir : Direction.values()) {
       if (!canTransfer(dir)) continue;
+      IEnergyStorage plugged = pluggableReceiver(dir);
+      if (plugged != null) {
+        receivers[dir.ordinal()] = plugged.canReceive();
+        continue;
+      }
       BlockPos neighborPos = pos.relative(dir);
       if (!level.isLoaded(neighborPos)) continue;
       BlockEntity neighbor = level.getBlockEntity(neighborPos);
@@ -123,6 +129,19 @@ public class EnergyTransportModule {
         if (j == i || !receivers[j] || powerQuery[j] <= 0 || toDistribute <= 0) continue;
 
         Direction outDir = Direction.from3DDataValue(j);
+        IEnergyStorage plugged = pluggableReceiver(outDir);
+        if (plugged != null) {
+          if (!pipe.isOutputOpen(outDir)) continue; // original valve
+          double pluggedShare = Math.min(toDistribute * powerQuery[j] / (double) currentQuerySum, toDistribute);
+          currentQuerySum -= powerQuery[j];
+          int accepted = plugged.receiveEnergy((int) pluggedShare, false);
+          internalPower[i] -= accepted;
+          toDistribute -= accepted;
+          currentTickSent += accepted;
+          transferred[i] += accepted;
+          transferred[j] += accepted;
+          continue;
+        }
         BlockPos neighborPos = pos.relative(outDir);
         if (!level.isLoaded(neighborPos)) continue;
         if (!pipe.isOutputOpen(outDir)) continue; // original valve
@@ -194,6 +213,16 @@ public class EnergyTransportModule {
     // 4. 隣接機械から需要を収集（次tick用）
     for (Direction dir : Direction.values()) {
       if (!canTransfer(dir)) continue;
+      IEnergyStorage plugged = pluggableReceiver(dir);
+      if (plugged != null) {
+        if (plugged.canReceive()) {
+          int request = plugged.receiveEnergy(maxPower, true);
+          if (request > 0) {
+            requestEnergy(dir, request);
+          }
+        }
+        continue;
+      }
       BlockPos neighborPos = pos.relative(dir);
       if (!level.isLoaded(neighborPos)) continue;
 
@@ -309,8 +338,17 @@ public class EnergyTransportModule {
     nextPowerQuery[side] = (int) Math.min(maxPower, (long) nextPowerQuery[side] + Math.max(0, amount));
   }
 
+  /**
+   * Original PipeTransportPower.getEnergyProvider(): a pluggable that takes energy (the robot station) is the
+   * receiver on its side, instead of the neighbouring block.
+   */
+  @Nullable
+  private IEnergyStorage pluggableReceiver(Direction side) {
+    return pipe.getPipePluggable(side) instanceof IEnergyStorage storage ? storage : null;
+  }
+
   public boolean canTransfer(Direction side) {
-    return pipe.canTransferEnergy(side);
+    return pluggableReceiver(side) != null || pipe.canTransferEnergy(side);
   }
 
   public boolean isOverloaded() {

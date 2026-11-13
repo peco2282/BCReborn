@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.robotics.station;
 
+import com.peco2282.bcreborn.robotics.entity.RobotEntity;
+import net.minecraftforge.energy.IEnergyStorage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -44,7 +46,7 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> implements IPipePluggableItem, IDebuggable,
-  IDockingStationProvider {
+  IDockingStationProvider, IEnergyStorage {
 
   private RobotStationState renderState = RobotStationState.Available;
   private DockingStationPipe station;
@@ -175,6 +177,43 @@ public class RobotStationPluggable extends PipePluggable<RobotStationPluggable> 
   @Override
   public RobotStationPluggable createPipePluggable(IPipe pipe, Direction side, ItemStack stack) {
     return new RobotStationPluggable();
+  }
+
+  /**
+   * Original IEnergyReceiver.receiveEnergy(): a power pipe charges the robot docked on this station.
+   */
+  @Override
+  public int receiveEnergy(int maxReceive, boolean simulate) {
+    if (station != null && station.robotTaking() instanceof RobotEntity robot
+      && robot.getDockingStation() == station) {
+      return robot.receiveEnergy(maxReceive, simulate);
+    }
+    return 0;
+  }
+
+  @Override
+  public int extractEnergy(int maxExtract, boolean simulate) {
+    return 0;
+  }
+
+  @Override
+  public int getEnergyStored() {
+    return 0;
+  }
+
+  @Override
+  public int getMaxEnergyStored() {
+    return 0;
+  }
+
+  @Override
+  public boolean canExtract() {
+    return false;
+  }
+
+  @Override
+  public boolean canReceive() {
+    return true;
   }
 
   @Override
