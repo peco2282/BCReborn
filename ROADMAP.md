@@ -92,7 +92,7 @@ BC を象徴する大型マシン。
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
 | Quarry (クァーリー) | 🔧 | TileQuarry 準拠: フレーム建設（障害物は採掘、岩盤・機械は待機）→ 列単位の掘削、Off/On/Loop、雨天減速、ヘッド周辺のアイテム回収、フレーム破損時の再建設、レンチで再起動、破壊時フレーム撤去。チャンクローディング（quarryDoChunkLoading: Quarry のチャンクと範囲の全チャンクを強制読み込み、破壊で解除、ワールド読み込み時に存在しない Quarry の分を破棄、25 チャンク相当を超える範囲は既定範囲に戻す）。GameTest 検証済み |
-| Mining Well | ⬜ | 1ブロック直下掘削 |
+| Mining Well | 🔧 | TileMiningWell 準拠: 真下を掘り進めて Plain Pipe を伸ばす、掘ったものは隣のインベントリ → パイプ → ドロップの順、岩盤などで停止、Off/On、撤去するとパイプも消える。Plain Pipe は何もドロップしない。GameTest（MiningWellGameTests）検証済み、LED 表示は実機確認待ち |
 | Filler (フィラー) | 🔧 | TileFiller 準拠: 全9パターン（パラメータ付き）、パターンを ID で保存、done の永続化、excavate、Off/On/Loop、500RF で稼働。テンプレート建設の土台（AbstractBuilder のエネルギー/建材アイテム、SchematicMask 設置、soft 判定、負の Y 座標）を修正し実際に充填できるようになった。GUI: パターン切替、パラメータ欄（クリックで切替、使わない欄は暗転、ツールチップ）、excavate ボタン、パターン名表示（GuiFiller 準拠）。建材アイテムの飛行: 打ち出し時に近くのクライアントへ送り、後から読み込んだクライアントは飛行中の分を要求（launchItem / uploadBuildersInAction 準拠）、クライアントで弧を描いて描画。GameTest 検証済み、GUI と飛行の描画は実機確認待ち |
 | Builder (ビルダー) | 🔧 | TileBuilder 準拠: スロット 0 の設計図 / テンプレートを本体と子設計図に分けて順に建築（RecursiveBlueprintBuilder）、範囲の枠表示、完成したら設計図を空きスロットへ移す（なければドロップ）、Off/On、クリエイティブではエネルギー不要、必要素材の一覧を GUI へ送る、建設途中の状態を保存。設計図は必要な素材をそのまま、テンプレートは任意のブロックを使う。GameTest 検証済み、GUI の実機確認待ち。経路マーカー（IPathProvider）に沿った建築は未移植 |
 | Architect Table | 🔧 | 範囲内を設計図・テンプレートとして記録（原作 TileArchitect / RecursiveBlueprintReader 準拠）。白紙の設計図を入れると出力スロットに記録済みの設計図が出る。Construction Marker でのリンクによる子設計図にも対応。GameTest（ArchitectGameTests）で Builder での再建築まで確認済み。GUI（名前入力・読み取り設定）は実機未確認 |
