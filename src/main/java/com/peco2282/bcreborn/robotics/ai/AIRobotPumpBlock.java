@@ -23,6 +23,7 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
   private BlockPos blockToPump;
   private long waited = 0;
+  private int pumped = 0;
 
   public AIRobotPumpBlock(RobotEntityBase iRobot) {
     super(RoboticsAIType.PUMP_BLOCK, iRobot);
@@ -53,6 +54,7 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
       if (!fluidStack.isEmpty()) {
         if (robot.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE) > 0) {
           BlockUtils.drainBlock(robot.level(), blockToPump, true);
+          pumped++;
         }
       }
       terminate();
@@ -67,6 +69,6 @@ public class AIRobotPumpBlock extends AIRobot<AIRobotPumpBlock> {
 
   @Override
   public boolean success() {
-    return false;
+    return pumped > 0;
   }
 }

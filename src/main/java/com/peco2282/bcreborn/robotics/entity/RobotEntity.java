@@ -1290,24 +1290,26 @@ public class RobotEntity extends RobotEntityBase implements
     }
   }
 
+  // The robot has one tank of four buckets (original getTankInfo()).
   @Override
   public int getTanks() {
-    return 0;
+    return 1;
   }
 
   @Override
-  public FluidStack getFluidInTank(int tank) {
-    return FluidStack.EMPTY;
+  public FluidStack getFluidInTank(int tankIndex) {
+    return tankIndex == 0 && tank != null ? tank : FluidStack.EMPTY;
   }
 
   @Override
-  public int getTankCapacity(int tank) {
-    return 0;
+  public int getTankCapacity(int tankIndex) {
+    return tankIndex == 0 ? maxFluid : 0;
   }
 
+  /** Original canFill(): an empty tank takes anything, a filled one only the same fluid. */
   @Override
-  public boolean isFluidValid(int tank, FluidStack stack) {
-    return false;
+  public boolean isFluidValid(int tankIndex, FluidStack stack) {
+    return tankIndex == 0 && (tank == null || tank.getAmount() == 0 || tank.isFluidEqual(stack));
   }
 
   @Override
@@ -1315,7 +1317,7 @@ public class RobotEntity extends RobotEntityBase implements
     boolean doFill = action.execute();
     int result;
 
-    if (tank != null && !tank.isFluidEqual(resource)) {
+    if (resource.isEmpty() || (tank != null && !tank.isFluidEqual(resource))) {
       return 0;
     }
 
@@ -1405,7 +1407,7 @@ public class RobotEntity extends RobotEntityBase implements
 
   @Override
   public IFluidHandler getFluidHandler() {
-    return new FluidTank(maxFluid, Predicate.isEqual(tank));
+    return this;
   }
 
   @Override

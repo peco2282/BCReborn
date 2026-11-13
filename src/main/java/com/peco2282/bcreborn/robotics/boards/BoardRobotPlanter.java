@@ -11,6 +11,11 @@
  */
 package com.peco2282.bcreborn.robotics.boards;
 
+import com.peco2282.bcreborn.api.crops.CropManager;
+import com.peco2282.bcreborn.common.inventory.filters.AggregateFilter;
+import com.peco2282.bcreborn.common.inventory.filters.IStackFilter;
+import com.peco2282.bcreborn.common.inventory.filters.PassThroughStackFilter;
+import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
@@ -44,14 +49,15 @@ public class BoardRobotPlanter extends RedstoneBoardRobot<BoardRobotPlanter> {
   public void update() {
     ItemStack held = robot.getMainHandItem();
     if (held.isEmpty()) {
-      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, stack -> {
-        // return CropManager.isSeed(stack); // TODO: Implement CropManager or similar
-        return !stack.isEmpty();
-      }));
+      // Original: only seeds, further limited by the linked station's filter action.
+      IStackFilter gateFilter = robot.getLinkedStation() == null ? new PassThroughStackFilter()
+        : ActionRobotFilter.getGateFilter(robot.getLinkedStation());
+      startDelegateAI(new AIRobotFetchAndEquipItemStack(robot, new AggregateFilter(CropManager::isSeed, gateFilter)));
     } else {
-      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true, (world, pos) -> !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
-        // && CropManager.canSustainPlant(world, held, pos) // TODO: Implement CropManager
-        && !robot.getRegistry().isTaken(new ResourceIdBlock(pos)), 1));
+      startDelegateAI(new AIRobotSearchAndGotoBlock(robot, true,
+        (world, pos) -> !BuildCraftAPI.getWorldProperty("replaceable").get(world, pos)
+          && CropManager.canSustainPlant(world, held, pos)
+          && !robot.getRegistry().isTaken(new ResourceIdBlock(pos)), 1));
     }
   }
 

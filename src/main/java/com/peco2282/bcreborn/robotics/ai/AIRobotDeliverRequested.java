@@ -70,7 +70,8 @@ public class AIRobotDeliverRequested extends AIRobot<AIRobotDeliverRequested> {
         int difference = slot.getStackInSlot().getCount();
         ItemStack newStack = requester.offerItem(requested.getSlot(), slot.getStackInSlot().copy());
 
-        if (newStack == null) {
+        if (newStack == null || newStack.isEmpty()) {
+          // Everything was taken (the original returned null here).
           slot.setStackInSlot(ItemStack.EMPTY);
         } else if (newStack.getCount() != slot.getStackInSlot().getCount()) {
           slot.setStackInSlot(newStack);

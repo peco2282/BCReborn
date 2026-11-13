@@ -41,6 +41,9 @@ public class AIRobotLoadFluids extends AIRobot<AIRobotLoadFluids> {
 
   public static int load(RobotEntityBase robot, DockingStation<?> station, IFluidFilter filter,
                          boolean doLoad) {
+    if (station == null) {
+      return 0;
+    }
     if (!ActionRobotFilter.canInteractWithFluid(station, filter,
       ActionStationProvideFluids.class)) {
       return 0;
@@ -55,7 +58,7 @@ public class AIRobotLoadFluids extends AIRobot<AIRobotLoadFluids> {
 
     FluidStack drainable = handler.drain(FluidType.BUCKET_VOLUME,
       IFluidHandler.FluidAction.SIMULATE);
-    if (drainable == FluidStack.EMPTY || !filter.matches(drainable.getFluid())) {
+    if (drainable.isEmpty() || !filter.matches(drainable.getFluid())) {
       return 0;
     }
 

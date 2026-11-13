@@ -57,7 +57,6 @@ public class BoardRobotFluidCarrier extends RedstoneBoardRobot<BoardRobotFluidCa
   }
 
   private boolean robotHasFluid() {
-    // Simplified fluid check
-    return false; // TODO: Implement proper fluid handler check
+    return !robot.getFluidInTank(0).isEmpty();
   }
 }

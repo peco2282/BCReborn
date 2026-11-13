@@ -11,6 +11,10 @@
  */
 package com.peco2282.bcreborn.robotics.boards;
 
+import com.peco2282.bcreborn.common.inventory.filters.IFluidFilter;
+import com.peco2282.bcreborn.common.inventory.filters.PassThroughFluidFilter;
+import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
+import net.minecraft.world.level.material.Fluid;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
@@ -31,6 +35,7 @@ import net.minecraft.world.level.Level;
 public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
 
   private BlockPos blockFound;
+  private IFluidFilter fluidFilter = null;
 
   public BoardRobotPump(RobotEntityBase iRobot) {
     super(RoboticsAIType.PUMP, iRobot);
@@ -44,13 +49,10 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
   @Override
   public void update() {
     final IWorldProperty isFluidSource = BuildCraftAPI.getWorldProperty("fluidSource");
-    // Simplified check for fluid in tank
-    boolean hasFluid = false; // TODO: Implement proper check
-
-    //noinspection ConstantValue
-    if (hasFluid) {
+    if (!robot.getFluidInTank(0).isEmpty()) {
       startDelegateAI(new AIRobotGotoStationAndUnloadFluids(robot));
     } else {
+      updateFilter();
       startDelegateAI(new AIRobotSearchAndGotoBlock(robot, false, (world, pos) -> {
         if (isFluidSource.get(world, pos)
           && !robot.getRegistry().isTaken(new ResourceIdBlock(pos))) {
@@ -87,8 +89,26 @@ public class BoardRobotPump extends RedstoneBoardRobot<BoardRobotPump> {
     }
   }
 
+  /** Original updateFilter(): the fluids named by the linked station's filter action, or no restriction. */
+  public void updateFilter() {
+    fluidFilter = robot.getLinkedStation() == null ? null
+      : ActionRobotFilter.getGateFluidFilter(robot.getLinkedStation());
+    if (fluidFilter instanceof PassThroughFluidFilter) {
+      fluidFilter = null;
+    }
+  }
+
   private boolean matchesGateFilter(Level world, BlockPos pos) {
-    return true; // Simplified for now
+    if (fluidFilter == null) {
+      return true;
+    }
+    Fluid fluid = world.getFluidState(pos).getType();
+    return fluidFilter.matches(fluid);
+  }
+
+  @Override
+  public boolean canLoadFromNBT() {
+    return true;
   }
 
   @Override

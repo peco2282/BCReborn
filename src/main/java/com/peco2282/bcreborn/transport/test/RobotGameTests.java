@@ -11,13 +11,17 @@
  */
 package com.peco2282.bcreborn.transport.test;
 
+import com.peco2282.bcreborn.core.statements.DefaultTriggerProvider;
+import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import com.peco2282.bcreborn.common.block.EngineBlock;
 import com.peco2282.bcreborn.energy.EnergyBlocks;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import com.peco2282.bcreborn.transport.gates.GatePluggable;
-import com.peco2282.bcreborn.transport.TransportStatements;
-import com.peco2282.bcreborn.transport.statements.TriggerPipeContents.PipeContents;
 import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.robotics.ai.AIRobotLoad;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
@@ -91,12 +95,12 @@ public class RobotGameTests {
     return station;
   }
 
-  /** A gate on NORTH of the station's pipe whose single rule is always active while the pipe is empty. */
+  /** A gate on NORTH of the station's pipe whose single rule is active as long as there is no redstone signal. */
   private static void stationAction(GameTestHelper helper, BlockPos pos, IStatement action) {
     PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(pos);
     Gate gate = new Gate(pipe.getPipe(), GateDefinition.GateMaterial.IRON, GateDefinition.GateLogic.AND, Direction.NORTH);
     pipe.setPipePluggable(Direction.NORTH, new GatePluggable(gate));
-    gate.setTrigger(0, TransportStatements.TRIGGER_PIPE_CONTENTS.get(PipeContents.empty).get());
+    gate.setTrigger(0, DefaultTriggerProvider.triggerRedstoneInactive);
     gate.setAction(0, action);
   }
 
@@ -246,6 +250,54 @@ public class RobotGameTests {
       helper.assertTrue(robot.getEnergy() > start + 2000,
         "The docked robot must be charged, has " + robot.getEnergy() + " running " + robot.mainAI.getActiveAI());
       helper.assertTrue(robot.getDockingStation() == station, "A robot that recharges stays on its power station");
+      robot.discard();
+    });
+  }
+
+  /**
+   * Original BoardRobotFluidCarrier: the robot fills its tank at a station that provides fluids (a wooden fluid
+   * pipe on a tank) and empties it into the pipe of a station that accepts fluids.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "quarry_13x8x13", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 1200)
+  public void fluidCarrierMovesFluidBetweenStations(GameTestHelper helper) {
+    BlockPos source = new BlockPos(3, 2, 8);
+    BlockPos target = new BlockPos(8, 2, 8);
+    helper.setBlock(source.south(), FactoryBlocks.TANK.get().defaultBlockState());
+    helper.setBlock(target.south(), FactoryBlocks.TANK.get().defaultBlockState());
+    TankBlockEntity from = (TankBlockEntity) helper.getBlockEntity(source.south());
+    TankBlockEntity to = (TankBlockEntity) helper.getBlockEntity(target.south());
+    from.tank.fill(new FluidStack(Fluids.WATER, 8000), IFluidHandler.FluidAction.EXECUTE);
+
+    DockingStation<?> home = placeStation(helper, source, PipeType.FLUID, PipeMaterial.WOOD);
+    ((PipeBlockEntity) helper.getBlockEntity(source)).setExtractionSide(Direction.SOUTH);
+    DockingStation<?> drop = placeStation(helper, target, PipeType.FLUID, PipeMaterial.COBBLESTONE);
+    check(helper, home.getFluidInput() != null, "A wooden fluid pipe station takes fluid from the pipe's tank");
+    check(helper, drop.getFluidOutput() != null && drop.getFluidInput() == null,
+      "Any fluid pipe station accepts fluid, only a wooden one provides it");
+    stationAction(helper, source, RoboticsStatements.actionStationProvideFluids);
+    stationAction(helper, target, RoboticsStatements.actionStationAcceptFluids);
+
+    RobotEntity[] holder = new RobotEntity[1];
+    helper.runAfterDelay(20, () -> {
+      holder[0] = placeRobot(helper, home, RobotEntityBase.MAX_ENERGY, RoboticsRedstoneRobots.ROBOT_FLUID_CARRIER.get());
+      RobotEntity robot = holder[0];
+      check(helper, robot.getTanks() == 1 && robot.getTankCapacity(0) == 4000 && robot.getFluidInTank(0).isEmpty(),
+        "A robot has one empty tank of four buckets");
+    });
+    helper.onEachTick(() -> {
+      if (helper.getTick() == 1190 && holder[0] != null) {
+        holder[0].discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      RobotEntity robot = holder[0];
+      helper.assertTrue(robot != null, "The robot is not placed yet");
+      PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(target);
+      int delivered = to.tank.getFluidAmount() + (pipe.getFluidTank() != null ? pipe.getFluidTank().getFluidAmount() : 0);
+      helper.assertTrue(delivered > 0,
+        "The fluid carrier must bring water to the accepting station, robot holds " + robot.getFluidInTank(0).getAmount()
+          + " at " + robot.blockPosition() + " running " + robot.mainAI.getActiveAI());
       robot.discard();
     });
   }
