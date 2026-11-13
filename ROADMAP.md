@@ -105,7 +105,7 @@ BC を象徴する大型マシン。
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
 | Assembly Table | 🔧 | TileAssemblyTable 準拠: GUI でレシピを計画（クリックで選択/解除）し、計画したものだけをレーザーエネルギーで順番に製造。計画は保存・同期。GameTest 検証済み、GUI の実機確認待ち |
-| Integration Table | ⬜ | ゲートやチップの合成 |
+| Integration Table | 🔧 | 原作の動的レシピ（IIntegrationRecipe）を移植: ゲートへの拡張追加（Pulsar / Timer / Fader / Light Sensor）と Redstone Chipset によるロジック切替（GateExpansionRecipe）、位相ファサード（AdvancedFacadeRecipe、プラグによる透明状態は未対応）、ロボットへのボード取り付け（RobotIntegrationRecipe）。拡張スロットは有効なレシピに合うものだけ受け付ける。データパックのレシピも併用可。GameTest（IntegrationTableGameTests）検証済み。GUI の出力プレビューと拡張スロット数の表示は未実装 |
 | Charging Station | ⬜ | ロボットの充電 |
 | ロボット (Robots) | ⬜ | 収穫、運搬、戦闘など多目的な自動化 |
 
