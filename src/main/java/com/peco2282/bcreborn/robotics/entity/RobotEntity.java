@@ -675,8 +675,13 @@ public class RobotEntity extends RobotEntityBase implements
     }
 
     linkedDockingStation = station;
-    linkedDockingStationIndex = linkedDockingStation.pos();
-    linkedDockingStationSide = linkedDockingStation.side();
+    if (station != null) {
+      linkedDockingStationIndex = linkedDockingStation.pos();
+      linkedDockingStationSide = linkedDockingStation.side();
+    } else {
+      linkedDockingStationIndex = null;
+      linkedDockingStationSide = null;
+    }
   }
 
   @Override
@@ -1226,6 +1231,22 @@ public class RobotEntity extends RobotEntityBase implements
   @Override
   public void onChunkUnload() {
     getRegistry().unloadRobot(this);
+  }
+
+  /**
+   * Original: unloading (onChunkUnload) keeps the robot's main station, death (convertToItems) releases
+   * everything. In 1.20 both arrive here with a removal reason.
+   */
+  @Override
+  public void remove(RemovalReason reason) {
+    if (!level().isClientSide && robotId != NULL_ROBOT_ID) {
+      if (reason.shouldDestroy()) {
+        getRegistry().killRobot(this);
+      } else {
+        getRegistry().unloadRobot(this);
+      }
+    }
+    super.remove(reason);
   }
 
   public void setUniqueRobotId(long iRobotId) {

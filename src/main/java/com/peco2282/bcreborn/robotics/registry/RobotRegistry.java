@@ -88,7 +88,8 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   @Override
   public void killRobot(RobotEntityBase robot) {
     setDirty();
-    releaseResources(robot);
+    // Original: a dead robot gives up everything, its main station included.
+    releaseResources(robot, true, false);
     if (robot instanceof RobotEntity entityRobot) {
       removeRobotLoaded(entityRobot);
     }
@@ -97,7 +98,8 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   @Override
   public void unloadRobot(RobotEntityBase robot) {
     setDirty();
-    releaseResources(robot);
+    // Original: an unloaded robot keeps its main station; the station only forgets the entity instance.
+    releaseResources(robot, false, true);
     if (robot instanceof RobotEntity entityRobot) {
       removeRobotLoaded(entityRobot);
     }
@@ -176,7 +178,16 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 
   @Override
   public synchronized void releaseResources(Object robotObj) {
-    if (!(robotObj instanceof RobotEntityBase robot)) return;
+    if (robotObj instanceof RobotEntityBase robot) {
+      releaseResources(robot, false, false);
+    }
+  }
+
+  /**
+   * Original releaseResources(robot, forceAll, resetEntities): stations that cannot be released (the main station,
+   * or the one the robot is docked on) are kept unless {@code forceAll} is set.
+   */
+  private synchronized void releaseResources(RobotEntityBase robot, boolean forceAll, boolean resetEntities) {
     setDirty();
 
     long robotId = robot.getRobotId();
@@ -187,13 +198,25 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
       }
     }
 
-    HashSet<StationIndex> stationSet = stationsTakenByRobot.remove(robotId);
+    HashSet<StationIndex> stationSet = stationsTakenByRobot.get(robotId);
     if (stationSet != null) {
-      for (StationIndex s : stationSet) {
+      for (StationIndex s : new HashSet<>(stationSet)) {
         DockingStation<?> d = stations.get(s);
         if (d != null) {
-          d.unsafeRelease(robot);
+          if (!d.canRelease()) {
+            if (forceAll) {
+              d.unsafeRelease(robot);
+            } else if (resetEntities && d.robotIdTaking() == robotId) {
+              d.invalidateRobotTakingEntity();
+            }
+          } else {
+            d.unsafeRelease(robot);
+          }
         }
+      }
+
+      if (forceAll) {
+        stationsTakenByRobot.remove(robotId);
       }
     }
   }
@@ -222,7 +245,23 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
   public synchronized void removeStation(DockingStation<?> station) {
     setDirty();
     StationIndex index = new StationIndex(station);
-    stations.remove(index);
+    if (stations.containsKey(index)) {
+      // Original: tell the robot using the station that it is gone.
+      RobotEntityBase robot = station.robotTaking();
+      if (robot != null) {
+        if (!station.isMainStation()) {
+          robot.undock();
+        } else {
+          robot.setMainStation(null);
+        }
+      } else if (station.robotIdTaking() != RobotEntityBase.NULL_ROBOT_ID) {
+        HashSet<StationIndex> taken = stationsTakenByRobot.get(station.robotIdTaking());
+        if (taken != null) {
+          taken.remove(index);
+        }
+      }
+      stations.remove(index);
+    }
   }
 
   @Override
@@ -290,6 +329,10 @@ public class RobotRegistry extends SavedData implements IRobotRegistry {
 
       try {
         registerStation(station);
+        // Original: restore the robot -> station index so that the robot can release it later.
+        if (station.linkedId() != RobotEntityBase.NULL_ROBOT_ID) {
+          take(station, station.linkedId());
+        }
       } catch (Exception e) {
         BCLog.logger.error("Could not load docking station", e);
       }
