@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
+import com.peco2282.bcreborn.common.inventory.filters.ArrayStackOrListFilter;
+import com.peco2282.bcreborn.robotics.statements.ActionRobotFilter;
+import com.peco2282.bcreborn.robotics.statements.ActionStationAcceptItems;
 import com.peco2282.bcreborn.api.core.IInvSlot;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.DockingStation;
@@ -30,6 +33,9 @@ public class AIRobotUnload extends AIRobot<AIRobotUnload> {
   }
 
   public static boolean unload(RobotEntityBase robot, DockingStation<?> station, boolean doUnload) {
+    if (station == null) {
+      return false;
+    }
     IInjectable output = station.getItemOutput();
     if (output == null) {
       return false;
@@ -45,14 +51,11 @@ public class AIRobotUnload extends AIRobot<AIRobotUnload> {
         continue;
       }
 
-      // In 1.20.1 we use a simplified version for now to avoid buildcraft API dependency issues
-      // Logic should be restored once statements API is fully ported
-      boolean canInteract = true;
-
-      if (!canInteract) {
+      // Original: the station needs an active "accept items" action that allows the item.
+      if (!ActionRobotFilter.canInteractWithItem(station, new ArrayStackOrListFilter(robotSlot.getStackInSlot()),
+        ActionStationAcceptItems.class)) {
         continue;
       }
-
       ItemStack stack = robotSlot.getStackInSlot();
       int used = output.injectItem(stack, doUnload, injectSide, null);
 
@@ -66,13 +69,10 @@ public class AIRobotUnload extends AIRobot<AIRobotUnload> {
 
     ItemStack held = robot.getMainHandItem();
     if (!held.isEmpty()) {
-      // Simplified interact check
-      boolean canInteract = true;
-
-      if (!canInteract) {
+      if (!ActionRobotFilter.canInteractWithItem(station, new ArrayStackOrListFilter(held),
+        ActionStationAcceptItems.class)) {
         return false;
       }
-
       int used = output.injectItem(held, doUnload, injectSide, null);
 
       if (used > 0) {

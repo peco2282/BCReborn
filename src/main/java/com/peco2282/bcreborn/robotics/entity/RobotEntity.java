@@ -522,7 +522,7 @@ public class RobotEntity extends RobotEntityBase implements
     for (int i = 0; i < inv.length; ++i) {
       CompoundTag stackNbt = new CompoundTag();
 
-      if (inv[i] != null) {
+      if (!inv[i].isEmpty()) {
         nbt.put("inv[" + i + "]", inv[i].save(stackNbt));
       }
     }
@@ -691,7 +691,12 @@ public class RobotEntity extends RobotEntityBase implements
 
   @Override
   public boolean isEmpty() {
-    return inv.length == 0;
+    for (ItemStack stack : inv) {
+      if (!stack.isEmpty()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
@@ -703,8 +708,8 @@ public class RobotEntity extends RobotEntityBase implements
   public ItemStack removeItem(int var1, int var2) {
     ItemStack result = inv[var1].split(var2);
 
-    if (inv[var1].getCount() == 0) {
-      inv[var1] = null;
+    if (inv[var1].isEmpty()) {
+      inv[var1] = ItemStack.EMPTY;
     }
 
     updateClientSlot(var1);
@@ -715,13 +720,13 @@ public class RobotEntity extends RobotEntityBase implements
   @Override
   public ItemStack removeItemNoUpdate(int var1) {
     ItemStack stack = inv[var1];
-    inv[var1] = null;
+    inv[var1] = ItemStack.EMPTY;
     return stack;
   }
 
   @Override
   public void setItem(int var1, ItemStack var2) {
-    inv[var1] = var2;
+    inv[var1] = var2 == null ? ItemStack.EMPTY : var2;
 
     updateClientSlot(var1);
   }
@@ -1033,8 +1038,9 @@ public class RobotEntity extends RobotEntityBase implements
 
   @Override
   public boolean containsItems() {
+    // Empty slots hold ItemStack.EMPTY (the original used null).
     for (ItemStack element : inv) {
-      if (element != null) {
+      if (!element.isEmpty()) {
         return true;
       }
     }
@@ -1045,7 +1051,7 @@ public class RobotEntity extends RobotEntityBase implements
   @Override
   public boolean hasFreeSlot() {
     for (ItemStack element : inv) {
-      if (element == null) {
+      if (element.isEmpty()) {
         return true;
       }
     }

@@ -12,6 +12,10 @@
 package com.peco2282.bcreborn.transport.gates;
 
 
+import com.peco2282.bcreborn.api.gates.IGate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
 import com.peco2282.bcreborn.api.transport.IPipe;
 import net.minecraft.core.Direction;
@@ -25,77 +29,19 @@ public class ActionIterator implements Iterable<StatementSlot> {
     pipe = iPipe;
   }
 
+  /**
+   * Original: walks the active actions of the gates on all six sides. The original stepped through
+   * ForgeDirection up to UNKNOWN; Direction has no such terminator, so the slots are collected up front.
+   */
   @Override
   public Iterator<StatementSlot> iterator() {
-    return new It();
-  }
-
-  private class It implements Iterator<StatementSlot> {
-
-    private Direction curDir = Direction.values()[0];
-    private int index = 0;
-    private StatementSlot next;
-
-    public It() {
-      while (!isValid()) {
-        if (curDir == Direction.UP) {
-          break;
-        } else if (pipe.getGate(curDir) == null
-          || index >= pipe.getGate(curDir).getActiveActions().size() - 1) {
-          index = 0;
-          curDir = Direction.values()[curDir.ordinal() + 1];
-        } else {
-          index++;
-        }
-      }
-
-      if (isValid()) {
-        next = pipe.getGate(curDir).getActiveActions().get(index);
+    List<StatementSlot> slots = new ArrayList<>();
+    for (Direction side : Direction.values()) {
+      IGate gate = pipe.getGate(side);
+      if (gate != null) {
+        slots.addAll(gate.getActiveActions());
       }
     }
-
-    @Override
-    public boolean hasNext() {
-      return next != null;
-    }
-
-    @Override
-    public StatementSlot next() {
-      StatementSlot result = next;
-
-      while (true) {
-        if (index < Gate.MAX_STATEMENTS - 1) {
-          index++;
-        } else if (curDir != Direction.UP) {
-          index = 0;
-          curDir = Direction.values()[curDir.ordinal() + 1];
-        } else {
-          break;
-        }
-
-        if (isValid()) {
-          break;
-        }
-      }
-
-      if (isValid()) {
-        next = pipe.getGate(curDir).getActiveActions().get(index);
-      } else {
-        next = null;
-      }
-
-      return result;
-    }
-
-    @Override
-    public void remove() {
-      throw new UnsupportedOperationException("Remove not supported.");
-    }
-
-    private boolean isValid() {
-      return curDir != null
-        && pipe.getGate(curDir) != null
-        && index < pipe.getGate(curDir).getActiveActions().size();
-    }
+    return Collections.unmodifiableList(slots).iterator();
   }
 }

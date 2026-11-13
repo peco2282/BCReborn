@@ -11,6 +11,18 @@
  */
 package com.peco2282.bcreborn.transport.test;
 
+import com.peco2282.bcreborn.transport.gates.Gate;
+import com.peco2282.bcreborn.transport.gates.GateDefinition;
+import com.peco2282.bcreborn.transport.gates.GatePluggable;
+import com.peco2282.bcreborn.transport.TransportStatements;
+import com.peco2282.bcreborn.transport.statements.TriggerPipeContents.PipeContents;
+import com.peco2282.bcreborn.api.statements.IStatement;
+import com.peco2282.bcreborn.robotics.ai.AIRobotLoad;
+import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.DockingStation;
@@ -53,12 +65,16 @@ public class RobotGameTests {
   }
 
   private static DockingStation<?> placeStation(GameTestHelper helper) {
-    BlockState state = TransportBlocks.get(PipeType.ITEM, PipeMaterial.COBBLESTONE).get().defaultBlockState();
-    helper.setBlock(PIPE, Block.updateFromNeighbourShapes(state, helper.getLevel(), helper.absolutePos(PIPE)));
-    PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(PIPE);
+    return placeStation(helper, PIPE, PipeMaterial.COBBLESTONE);
+  }
+
+  private static DockingStation<?> placeStation(GameTestHelper helper, BlockPos pos, PipeMaterial material) {
+    BlockState state = TransportBlocks.get(PipeType.ITEM, material).get().defaultBlockState();
+    helper.setBlock(pos, Block.updateFromNeighbourShapes(state, helper.getLevel(), helper.absolutePos(pos)));
+    PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(pos);
     // The GameTest world is reused: forget a station left behind at this position by an aborted run.
     IRobotRegistry registry = RobotManager.registry().getRegistry(helper.getLevel());
-    DockingStation<?> stale = registry.getStation(helper.absolutePos(PIPE), Direction.UP);
+    DockingStation<?> stale = registry.getStation(helper.absolutePos(pos), Direction.UP);
     if (stale != null) {
       registry.removeStation(stale);
     }
@@ -69,9 +85,22 @@ public class RobotGameTests {
     return station;
   }
 
+  /** A gate on NORTH of the station's pipe whose single rule is always active while the pipe is empty. */
+  private static void stationAction(GameTestHelper helper, BlockPos pos, IStatement action) {
+    PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(pos);
+    Gate gate = new Gate(pipe.getPipe(), GateDefinition.GateMaterial.IRON, GateDefinition.GateLogic.AND, Direction.NORTH);
+    pipe.setPipePluggable(Direction.NORTH, new GatePluggable(gate));
+    gate.setTrigger(0, TransportStatements.TRIGGER_PIPE_CONTENTS.get(PipeContents.empty).get());
+    gate.setAction(0, action);
+  }
+
   /** Places a robot on the station the way the robot item does (original ItemRobot.onItemUse). */
   private static RobotEntity placeRobot(GameTestHelper helper, DockingStation<?> station, int energy) {
-    RedstoneBoardRobotNBT board = RoboticsRedstoneRobots.ROBOT_LUMBERJACK.get();
+    return placeRobot(helper, station, energy, RoboticsRedstoneRobots.ROBOT_LUMBERJACK.get());
+  }
+
+  private static RobotEntity placeRobot(GameTestHelper helper, DockingStation<?> station, int energy,
+                                        RedstoneBoardRobotNBT board) {
     IRobotRegistry registry = RobotManager.registry().getRegistry(helper.getLevel());
     RobotEntity robot = new RobotEntity(helper.getLevel(), board);
     robot.setUniqueRobotId(registry.getNextRobotId());
@@ -133,5 +162,62 @@ public class RobotGameTests {
         robot.discard();
       }
     });
+  }
+
+  /**
+   * Original BoardRobotCarrier: the robot loads at a station that provides items (a wooden pipe on an inventory
+   * with a "provide items" gate action) and unloads at a station that accepts items.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "quarry_13x8x13", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 1200)
+  public void carrierMovesItemsBetweenStations(GameTestHelper helper) {
+    BlockPos source = new BlockPos(3, 2, 3);
+    BlockPos target = new BlockPos(8, 2, 3);
+    helper.setBlock(source.south(), Blocks.CHEST.defaultBlockState());
+    helper.setBlock(target.south(), Blocks.CHEST.defaultBlockState());
+    Container from = (Container) helper.getBlockEntity(source.south());
+    Container to = (Container) helper.getBlockEntity(target.south());
+    from.setItem(0, new ItemStack(Items.IRON_INGOT, 5));
+
+    DockingStation<?> home = placeStation(helper, source, PipeMaterial.WOOD);
+    placeStation(helper, target, PipeMaterial.COBBLESTONE);
+    check(helper, home.getItemInput() == from, "A wooden pipe station takes items from the pipe's inventory");
+    check(helper, !AIRobotLoadProbe.canLoad(home), "Without a provide action nothing may be taken");
+    stationAction(helper, source, RoboticsStatements.actionStationProvideItems);
+    stationAction(helper, target, RoboticsStatements.actionStationAcceptItems);
+
+    // The gates need a few ticks to resolve their actions; a carrier that finds nothing to do sleeps for a minute.
+    RobotEntity[] holder = new RobotEntity[1];
+    helper.runAfterDelay(20, () -> {
+      check(helper, AIRobotLoadProbe.canLoad(home), "With an active provide action the station offers its items");
+      holder[0] = placeRobot(helper, home, RobotEntityBase.MAX_ENERGY, RoboticsRedstoneRobots.ROBOT_CARRIER.get());
+    });
+    helper.onEachTick(() -> {
+      if (helper.getTick() == 1190 && holder[0] != null) {
+        holder[0].discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      RobotEntity robot = holder[0];
+      helper.assertTrue(robot != null, "The robot is not placed yet");
+      int moved = 0;
+      for (int i = 0; i < to.getContainerSize(); i++) {
+        if (to.getItem(i).is(Items.IRON_INGOT)) {
+          moved += to.getItem(i).getCount();
+        }
+      }
+      helper.assertTrue(moved == 5 && from.getItem(0).isEmpty(),
+        "The carrier must move all items to the accepting station, moved " + moved + ", source " + from.getItem(0)
+          + ", robot holds " + robot.getItem(0) + " at " + robot.blockPosition() + " docked " + robot.getDockingStation()
+          + " running " + robot.mainAI.getActiveAI() + " energy " + robot.getEnergy());
+      robot.discard();
+    });
+  }
+
+  /** Small probe so that the test reads like the rule it checks. */
+  private static final class AIRobotLoadProbe {
+    static boolean canLoad(DockingStation<?> station) {
+      return !AIRobotLoad.takeSingle(station, stack -> true, false).isEmpty();
+    }
   }
 }
