@@ -168,8 +168,11 @@ public class Blueprint extends BlueprintBase {
         for (int z = 0; z < sizeZ; ++z) {
           SchematicBlockBase schematic = get(x, y, z);
           CompoundTag cpt = new CompoundTag();
-          schematic.idsToBlueprint(mapping);
-          schematic.writeSchematicToNBT(cpt, mapping);
+          // Original: an empty position is saved as an empty compound.
+          if (schematic != null) {
+            schematic.idsToBlueprint(mapping);
+            schematic.writeSchematicToNBT(cpt, mapping);
+          }
           nbtContents.add(cpt);
         }
       }
@@ -274,7 +277,14 @@ public class Blueprint extends BlueprintBase {
 
   @Override
   public ItemStack getStack() {
-    // Item reference will be resolved at runtime via registry
-    return ItemStack.EMPTY;
+    // Original getStack(): the item carries the library id, author, name, permission and completeness.
+    ItemStack stack = new ItemStack(com.peco2282.bcreborn.builders.BuildersItems.BLUEPRINT_STANDARD.get());
+    CompoundTag nbt = stack.getOrCreateTag();
+    id.writeTag(nbt);
+    nbt.putString("author", author == null ? "" : author);
+    nbt.putString("name", id.name == null ? "" : id.name);
+    nbt.putByte("permission", (byte) buildingPermission.ordinal());
+    nbt.putBoolean("isComplete", isComplete);
+    return stack;
   }
 }

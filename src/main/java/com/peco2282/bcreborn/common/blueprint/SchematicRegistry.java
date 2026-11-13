@@ -183,8 +183,8 @@ public final class SchematicRegistry implements ISchematicRegistry {
   public SchematicBlock createSchematicBlock(BlockState state) {
     SchematicFactory<? extends SchematicBlock> factory = schematicBlocks.get(state);
     if (factory == null) {
-      // Fall back to meta 0
-      factory = schematicBlocks.get(state);
+      // The original keyed schematics by block + metadata; here a state falls back to its block's default state.
+      factory = schematicBlocks.get(state.getBlock().defaultBlockState());
     }
     if (factory == null) return new SchematicRotatableBlock(state);
 
@@ -204,7 +204,8 @@ public final class SchematicRegistry implements ISchematicRegistry {
   }
 
   @Override
+  /** Whether this state, or its block's default state, has a schematic. */
   public boolean isSupported(BlockState state) {
-    return schematicBlocks.containsKey(state);
+    return schematicBlocks.containsKey(state) || schematicBlocks.containsKey(state.getBlock().defaultBlockState());
   }
 }

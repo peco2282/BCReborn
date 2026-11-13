@@ -12,6 +12,15 @@
 package com.peco2282.bcreborn.builders.block.entity;
 
 import com.peco2282.bcreborn.api.tiles.IControllable;
+import net.minecraft.world.level.GameType;
+import com.peco2282.bcreborn.common.inventory.InvUtils;
+import com.peco2282.bcreborn.api.tiles.IHasWork;
+import com.peco2282.bcreborn.common.internal.IBoxProvider;
+import com.peco2282.bcreborn.common.blueprint.BptBuilderBlueprint;
+import com.peco2282.bcreborn.common.blueprint.BptBuilderBase;
+import com.peco2282.bcreborn.common.Box;
+import com.peco2282.bcreborn.builders.item.BlueprintItem;
+import com.peco2282.bcreborn.builders.blueprints.RecursiveBlueprintBuilder;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.block.BuilderBlock;
 import com.peco2282.bcreborn.builders.menu.BuilderMenu;
@@ -47,27 +56,136 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, ILEDProvider {
+/**
+ * Port of the original {@code TileBuilder}: builds the blueprint or template in slot 0 with the building materials
+ * in slots 1..27.
+ * <p>
+ * The blueprint is split into the main structure and its sub-blueprints ({@link RecursiveBlueprintBuilder}); each
+ * part gets its own {@link BptBuilderBase} and box. When everything is built the blueprint moves into the first free
+ * material slot (or drops). Off / On come from gates ({@link IControllable}).
+ * <p>
+ * Not ported yet: building along a path of path markers ({@code IPathProvider}).
+ */
+public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements MenuProvider, ILEDProvider, IBoxProvider,
+  IControllable, IHasWork {
+  /** Original {@code POWER_ACTIVATION}: the builder only works with more energy than this (or in creative). */
   private static final int POWER_ACTIVATION = 25;
 
   private final SimpleInventory inv = new SimpleInventory(28, "Builder", 64);
+  private final Box box = new Box();
   private List<RequirementItemStack> requiredToBuild = new ArrayList<>();
+  /** Original {@code initNBT}: the saved build state, applied on {@link #initialize()}. */
+  @Nullable
   private CompoundTag initNBT = null;
   private boolean done = true;
   private boolean isBuilding = false;
-  private BptBuilderTemplate currentBuilder;
+  private boolean shouldUpdateRequirements;
+  @Nullable
+  private BptBuilderBase currentBuilder;
+  @Nullable
+  private RecursiveBlueprintBuilder recursiveBuilder;
 
   public BuilderBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
     super(BuildersBlockEntityTypes.BUILDER.get(), p_155229_, p_155230_);
+    box.kind = Box.Kind.STRIPES;
     setBattery(new EnergyStorage(10000, 1000, 1000));
   }
 
+  /**
+   * Original {@code initialize()}: restores the saved build state, then starts the blueprint.
+   */
   @Override
   public void initialize() {
     super.initialize();
     cache = BlockEntityBuffer.makeBuffer(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), false);
+    if (level.isClientSide) {
+      return;
+    }
+    if (initNBT != null) {
+      iterateBpt(true);
+      if (currentBuilder != null && initNBT.contains("builderState")) {
+        currentBuilder.loadBuildStateToNBT(initNBT.getCompound("builderState"), this);
+      }
+      initNBT = null;
+    }
+    box.kind = Box.Kind.STRIPES;
+    iterateBpt(false);
   }
 
+  /** The direction the builder builds towards (original: the block metadata's opposite). */
+  private Direction buildDirection() {
+    return getBlockState().getValue(BuilderBlock.HORIZONTAL_FACING).getOpposite();
+  }
+
+  public boolean isBuildingBlueprint() {
+    return inv.getItem(0).getItem() instanceof BlueprintItem;
+  }
+
+  /**
+   * Original {@code iterateBpt()}: starts the blueprint in slot 0, moves on to the next part when one is built, and
+   * hands the blueprint back when everything is done.
+   */
+  public void iterateBpt(boolean forceIterate) {
+    if (!isBuildingBlueprint()) {
+      if (box.isInitialized() || currentBuilder != null) {
+        currentBuilder = null;
+        recursiveBuilder = null;
+        box.reset();
+        scheduleRequirementUpdate();
+        setChanged();
+      }
+      return;
+    }
+
+    if (currentBuilder == null || currentBuilder.isDone(this) || forceIterate) {
+      if (currentBuilder != null && currentBuilder.isDone(this) && recursiveBuilder != null) {
+        currentBuilder.postProcessing(level);
+        currentBuilder = recursiveBuilder.nextBuilder();
+        scheduleRequirementUpdate();
+      } else {
+        BlueprintBase bpt = BlueprintItem.loadBlueprint(inv.getItem(0));
+        if (bpt != null) {
+          BlockPos pos = getBlockPos();
+          recursiveBuilder = new RecursiveBlueprintBuilder(bpt, level, pos.getX(), pos.getY(), pos.getZ(), buildDirection());
+          currentBuilder = recursiveBuilder.nextBuilder();
+          scheduleRequirementUpdate();
+        } else {
+          currentBuilder = null;
+        }
+      }
+
+      if (currentBuilder == null) {
+        done = true;
+      } else {
+        box.initialize(currentBuilder);
+        done = false;
+      }
+      setChanged();
+    }
+
+    if (done && !inv.getItem(0).isEmpty()) {
+      ItemStack blueprint = inv.getItem(0);
+      boolean dropBlueprint = true;
+      for (int i = 1; i < inv.getContainerSize(); ++i) {
+        if (inv.getItem(i).isEmpty()) {
+          inv.setItem(i, blueprint);
+          dropBlueprint = false;
+          break;
+        }
+      }
+      if (dropBlueprint) {
+        InvUtils.dropItems(level, blueprint, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+      }
+      inv.setItem(0, ItemStack.EMPTY);
+      recursiveBuilder = null;
+      box.reset();
+      setChanged();
+    }
+  }
+
+  /**
+   * Original {@code updateEntity()}.
+   */
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
@@ -77,47 +195,105 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
     // Original: super.updateEntity() (TileAbstractBuilder) moves the building items and places their blocks.
     updateBuildingItems();
 
-    if (mode == IControllable.Mode.Off) {
-      isBuilding = false;
+    if (shouldUpdateRequirements && level.getGameTime() % 10 == 0) {
+      updateRequirements();
+      shouldUpdateRequirements = false;
+    }
+
+    if ((currentBuilder == null || currentBuilder.isDone(this)) && box.isInitialized()) {
+      box.reset();
+      setChanged();
       return;
     }
 
-    if (getBattery().getEnergyStored() < POWER_ACTIVATION) {
-      isBuilding = false;
-      return;
+    iterateBpt(false);
+
+    if (getControlMode() != IControllable.Mode.Off
+      && (isCreative() || getBattery().getEnergyStored() > POWER_ACTIVATION)) {
+      build();
     }
 
-    ItemStack blueprintStack = inv.getItem(0);
-    if (blueprintStack.isEmpty()) {
-      currentBuilder = null;
-      isBuilding = false;
-      return;
+    if (!isBuilding && isBuildingBlueprint()) {
+      scheduleRequirementUpdate();
     }
+    isBuilding = isBuildingBlueprint();
+  }
 
-    if (currentBuilder == null) {
-      CompoundTag nbt = blueprintStack.getTag();
-      if (nbt != null) {
-        BlueprintBase bpt = BlueprintBase.loadBluePrint(nbt);
-        Direction dir = getBlockState().getValue(BuilderBlock.HORIZONTAL_FACING);
-        BlockPos pos1 = getBlockPos();
-        bpt = bpt.adjustToWorld(level, pos1.getX(), pos1.getY(), pos1.getZ(), dir);
-        currentBuilder = new BptBuilderTemplate(bpt, level, pos1.getX(), pos1.getY(), pos1.getZ());
-        done = false;
+  private boolean isCreative() {
+    return level.getServer() != null && level.getServer().getWorldData().getGameType() == GameType.CREATIVE;
+  }
+
+  /** Original {@code build()}: places (or launches) the next block of the current part. */
+  public void build() {
+    if (currentBuilder != null && currentBuilder.buildNextSlot(level, this, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ())) {
+      scheduleRequirementUpdate();
+    }
+  }
+
+  public void scheduleRequirementUpdate() {
+    shouldUpdateRequirements = true;
+  }
+
+  @Nullable
+  private List<RequirementItemStack> computeRequirements() {
+    if (currentBuilder instanceof BptBuilderBlueprint blueprint) {
+      blueprint.initialize();
+      return blueprint.getNeededItems();
+    }
+    return null;
+  }
+
+  /** Original {@code updateRequirements()}: sends the missing items to every player with the GUI open. */
+  private void updateRequirements() {
+    List<RequirementItemStack> requirements = computeRequirements();
+    List<RequirementItemStack> list = requirements == null ? List.of() : requirements;
+    for (Player p : guiWatchers) {
+      if (p instanceof ServerPlayer serverPlayer) {
+        BCNetworkManager.sendSyncBuilderRequirements(serverPlayer, getBlockPos(), list);
       }
     }
+  }
 
-    if (currentBuilder != null) {
-      BlockPos pos2 = getBlockPos();
-      isBuilding = currentBuilder.buildNextSlot(level, this, pos2.getX(), pos2.getY(), pos2.getZ());
-      if (isBuilding) {
-        getBattery().useEnergy(POWER_ACTIVATION, POWER_ACTIVATION, false);
-      }
-      if (currentBuilder.isDone(this)) {
-        done = true;
-        currentBuilder = null;
-      }
-    }
+  @Nullable
+  public BptBuilderBase getBlueprint() {
+    return currentBuilder;
+  }
 
+  public boolean isDone() {
+    return done;
+  }
+
+  @Override
+  public boolean hasWork() {
+    return !done;
+  }
+
+  @Override
+  public Box getBox() {
+    return box;
+  }
+
+  /** Original {@code isBuildingMaterialSlot()}: slot 0 holds the blueprint. */
+  @Override
+  public boolean isBuildingMaterial(int i) {
+    return i != 0;
+  }
+
+  @Override
+  public Mode getControlMode() {
+    return mode == null ? Mode.On : mode;
+  }
+
+  @Override
+  public void setControlMode(Mode mode) {
+    this.mode = mode;
+    setChanged();
+  }
+
+  /** Original {@code acceptsControlMode()}: Off and On only. */
+  @Override
+  public boolean acceptsControlMode(Mode mode) {
+    return mode == Mode.Off || mode == Mode.On;
   }
 
   public Container getInventory() {
@@ -141,20 +317,33 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
   public void load(CompoundTag nbt) {
     super.load(nbt);
     inv.readTag(nbt);
-    done = nbt.getBoolean("done");
-    if (nbt.contains("initNBT")) {
-      initNBT = nbt.getCompound("initNBT");
+    if (nbt.contains("box")) {
+      box.initialize(nbt.getCompound("box"));
     }
+    done = nbt.getBoolean("done");
+    // Original: the rest of the load happens in initialize().
+    initNBT = nbt.getCompound("bptBuilder").copy();
   }
 
   @Override
   protected void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     inv.writeTag(nbt);
-    nbt.putBoolean("done", done);
-    if (initNBT != null) {
-      nbt.put("initNBT", initNBT);
+    if (box.isInitialized()) {
+      CompoundTag boxTag = new CompoundTag();
+      box.writeTag(boxTag);
+      nbt.put("box", boxTag);
     }
+    nbt.putBoolean("done", done);
+    CompoundTag bptNBT = new CompoundTag();
+    if (currentBuilder != null) {
+      CompoundTag builderState = new CompoundTag();
+      currentBuilder.saveBuildStateToNBT(builderState, this);
+      bptNBT.put("builderState", builderState);
+    } else if (initNBT != null && initNBT.contains("builderState")) {
+      bptNBT.put("builderState", initNBT.getCompound("builderState"));
+    }
+    nbt.put("bptBuilder", bptNBT);
   }
 
   @Override
@@ -162,6 +351,7 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
     super.writeData(data);
     data.writeBoolean(done);
     data.writeBoolean(isBuilding);
+    box.writeData(data);
   }
 
   @Override
@@ -169,11 +359,17 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
     super.readData(data);
     done = data.readBoolean();
     isBuilding = data.readBoolean();
+    box.readData(data);
+    if (box.isInitialized()) {
+      box.createLaserData();
+    }
   }
 
+  /** Original {@code updateRequirementsOnGuiOpen()}. */
   public void updateRequirementsOnGuiOpen(Player player) {
     if (player instanceof ServerPlayer serverPlayer) {
-      BCNetworkManager.sendSyncBuilderRequirements(serverPlayer, getBlockPos(), requiredToBuild);
+      List<RequirementItemStack> requirements = computeRequirements();
+      BCNetworkManager.sendSyncBuilderRequirements(serverPlayer, getBlockPos(), requirements == null ? List.of() : requirements);
     }
   }
 
@@ -266,7 +462,12 @@ public class BuilderBlockEntity extends AbstractBuilderBlockEntity implements Me
     }
   }
 
+  /** Original {@code getNeededItems()}: the client shows the synced list, the server asks the current builder. */
   public List<RequirementItemStack> getNeededItems() {
+    if (level != null && !level.isClientSide) {
+      List<RequirementItemStack> requirements = computeRequirements();
+      return requirements == null ? List.of() : requirements;
+    }
     return List.copyOf(requiredToBuild);
   }
 }

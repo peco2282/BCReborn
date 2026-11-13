@@ -251,11 +251,30 @@ public abstract class Schematic {
    * @return The stack taken from the slot, or {@link ItemStack#EMPTY} if no item was taken.
    */
   public ItemStack useItem(IBuilderContext context, ItemStack requiredStack, IInvSlot slotInv) {
+    // Original: takes as much of the requirement as the slot has and lowers the requirement by that amount, so the
+    // caller knows when it is fully covered (requiredStack count 0). An emptied slot keeps its container item.
     ItemStack stack = slotInv.getStackInSlot();
-    if (requiredStack.isEmpty() || isItemMatchingRequirement(stack, requiredStack)) {
-      return slotInv.decreaseStackInSlot(1);
+    ItemStack result = stack.copy();
+
+    if (stack.getCount() >= requiredStack.getCount()) {
+      result.setCount(requiredStack.getCount());
+      stack.shrink(requiredStack.getCount());
+      requiredStack.setCount(0);
+    } else {
+      requiredStack.shrink(stack.getCount());
+      stack.setCount(0);
     }
-    return ItemStack.EMPTY;
+
+    if (stack.getCount() == 0) {
+      stack.setCount(1);
+      if (stack.hasCraftingRemainingItem()) {
+        slotInv.setStackInSlot(stack.getCraftingRemainingItem());
+      } else {
+        slotInv.setStackInSlot(ItemStack.EMPTY);
+      }
+    }
+
+    return result;
   }
 
   /**

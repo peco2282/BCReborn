@@ -14,6 +14,8 @@ package com.peco2282.bcreborn.common.builder;
 import com.peco2282.bcreborn.api.blueprints.*;
 import com.peco2282.bcreborn.api.core.Position;
 import com.peco2282.bcreborn.api.core.BCLog;
+import com.peco2282.bcreborn.common.blueprint.IndexRequirementMap;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +28,9 @@ public class BuildingSlotBlock extends BuildingSlot {
   public SchematicBlockBase schematic;
   public Mode mode = Mode.Build;
   public int buildStage = 0;
+  /** Original {@code internalRequirementRemovalListener}: unblocks the slots that wait for this one. */
+  @Nullable
+  public IndexRequirementMap internalRequirementRemovalListener;
 
   @Override
   public SchematicBlockBase getSchematic() {
@@ -37,11 +42,8 @@ public class BuildingSlotBlock extends BuildingSlot {
 
   @Override
   public Position getDestination() {
-    Position p = new Position();
-    p.x = x;
-    p.y = y;
-    p.z = z;
-    return p;
+    // Original: the building item flies to the block centre.
+    return new Position(x + 0.5, y + 0.5, z + 0.5);
   }
 
   @Override
@@ -55,6 +57,9 @@ public class BuildingSlotBlock extends BuildingSlot {
    * </ul>
    */
   public boolean writeToWorld(IBuilderContext context) {
+    if (internalRequirementRemovalListener != null) {
+      internalRequirementRemovalListener.remove(this);
+    }
     BlockPos pos = new BlockPos(x, y, z);
     if (mode == Mode.ClearIfInvalid) {
       if (!getSchematic().isAlreadyBuilt(context, x, y, z)) {
@@ -74,14 +79,26 @@ public class BuildingSlotBlock extends BuildingSlot {
     }
   }
 
+  /** Original {@code postProcessing()}. */
   @Override
-  public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
-    return new LinkedList<>();
+  public void postProcessing(IBuilderContext context) {
+    getSchematic().postProcessing(context, x, y, z);
   }
 
+  /** Original {@code getRequirements()}: clearing needs nothing, building needs the schematic's items. */
+  @Override
+  public LinkedList<ItemStack> getRequirements(IBuilderContext context) {
+    LinkedList<ItemStack> req = new LinkedList<>();
+    if (mode == Mode.Build) {
+      getSchematic().getRequirementsForPlacement(context, req);
+    }
+    return req;
+  }
+
+  /** Original {@code isAlreadyBuilt()}: the schematic compares itself with the world. */
   @Override
   public boolean isAlreadyBuilt(IBuilderContext context) {
-    return false;
+    return getSchematic().isAlreadyBuilt(context, x, y, z);
   }
 
   @Override
@@ -104,12 +121,12 @@ public class BuildingSlotBlock extends BuildingSlot {
 
   @Override
   public int getEnergyRequirement() {
-    return 0;
+    return getSchematic().getEnergyRequirement(stackConsumed == null ? new LinkedList<>() : stackConsumed);
   }
 
   @Override
   public int buildTime() {
-    return 1;
+    return schematic == null ? 1 : schematic.buildTime();
   }
 
   public enum Mode {

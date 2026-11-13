@@ -63,7 +63,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       int yCoord = j + y - blueprint.anchorY;
 
       // 1.7.10 worlds spanned y = 0..height; use the level's real build range (negative y included).
-        if (context.world.isOutsideBuildHeight(yCoord)) {
+      if (context.world.isOutsideBuildHeight(yCoord)) {
         continue;
       }
 
@@ -75,6 +75,15 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 
           if (!isLocationUsed(xCoord, yCoord, zCoord)) {
             SchematicBlock slot = (SchematicBlock) blueprint.get(i, j, k);
+
+            // Original: an empty position is cleared (as air) only when the blueprint excavates.
+            if (slot == null && !blueprint.excavate) {
+              continue;
+            }
+            if (slot == null) {
+              slot = new SchematicBlock();
+              slot.state = Blocks.AIR.defaultBlockState();
+            }
 
             if (!SchematicRegistry.INSTANCE.isSupported(slot.state)) {
               continue;
@@ -101,7 +110,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       int yCoord = j + y - blueprint.anchorY;
 
       // 1.7.10 worlds spanned y = 0..height; use the level's real build range (negative y included).
-        if (context.world.isOutsideBuildHeight(yCoord)) {
+      if (context.world.isOutsideBuildHeight(yCoord)) {
         continue;
       }
 
@@ -113,7 +122,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 
           SchematicBlock slot = (SchematicBlock) blueprint.get(i, j, k);
 
-          if (!SchematicRegistry.INSTANCE.isSupported(slot.state)) {
+          if (slot == null || !SchematicRegistry.INSTANCE.isSupported(slot.state)) {
             continue;
           }
 
@@ -269,6 +278,7 @@ public class BptBuilderBlueprint extends BptBuilderBase {
 
     if (b.mode == Mode.Build) {
       requirementMap.add(b, context);
+      b.internalRequirementRemovalListener = requirementMap;
     }
   }
 

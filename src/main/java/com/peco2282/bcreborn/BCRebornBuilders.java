@@ -24,6 +24,11 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import com.peco2282.bcreborn.api.library.LibraryAPI;
+import com.peco2282.bcreborn.builders.blueprints.LibraryBlueprintTypeHandler;
+import com.peco2282.bcreborn.builders.blueprints.HeuristicBlockDetection;
+import com.peco2282.bcreborn.builders.blueprints.LibraryBookTypeHandler;
+import com.peco2282.bcreborn.common.blueprint.SchematicRegistry;
 import com.peco2282.bcreborn.builders.quarry.QuarryChunkLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -80,6 +85,15 @@ public class BCRebornBuilders implements BCReborn {
   private void commonSetup(final FMLCommonSetupEvent event) {
     // Original BuildCraftBuilders: ForgeChunkManager.setForcedChunkLoadingCallback(instance, new QuarryChunkloadCallback()).
     QuarryChunkLoader.register();
+    // Original BuildCraftBuilders.init(): the blueprint library file types (.tpl, .bpt and books).
+    LibraryAPI.registerHandler(new LibraryBlueprintTypeHandler(false));
+    LibraryAPI.registerHandler(new LibraryBlueprintTypeHandler(true));
+    LibraryAPI.registerHandler(new LibraryBookTypeHandler());
+    // Original: the standard schematics (preInit) and HeuristicBlockDetection.start() (postInit).
+    event.enqueueWork(() -> {
+      SchematicRegistry.init();
+      HeuristicBlockDetection.start();
+    });
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

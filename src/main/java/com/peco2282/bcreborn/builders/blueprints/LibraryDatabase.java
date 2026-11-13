@@ -25,7 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -33,14 +35,15 @@ import java.util.TreeSet;
 
 public class LibraryDatabase {
   private static final Logger LOGGER = BCRebornBuilders.LOGGER;
-  protected Set<LibraryId> blueprintIds;
+  protected Set<LibraryId> blueprintIds = new TreeSet<>();
   protected LibraryId[] pages = new LibraryId[0];
 
   private File outputDir;
-  private File inputDir;
+  /** Original {@code inputDirs}: every directory searched for blueprints (the output directory included). */
+  private final List<File> inputDirs = new ArrayList<>();
 
-  public static CompoundTag load(File blueprintFile) {
-    if (blueprintFile.exists()) {
+  public static CompoundTag load(@Nullable File blueprintFile) {
+    if (blueprintFile != null && blueprintFile.exists()) {
       try {
         return NbtIo.readCompressed(blueprintFile);
       } catch (IOException e) {
@@ -52,20 +55,20 @@ public class LibraryDatabase {
   }
 
   /**
-   * Initialize the blueprint database.
-   *
-   * @param inputPath directories to readTag the blueprints from.
+   * Original {@code init(inputPaths, outputPath)}: blueprints are read from {@code inputPath} and
+   * {@code outputPath}, and new ones are written to {@code outputPath}.
    */
   public void init(Path inputPath, Path outputPath) {
     outputDir = outputPath.toFile();
-    inputDir = inputPath.toFile();
-
     if (!outputDir.exists()) {
       outputDir.mkdirs();
     }
 
-    if (!inputDir.exists()) {
-      inputDir.mkdirs();
+    inputDirs.clear();
+    for (File dir : new File[]{inputPath.toFile(), outputDir}) {
+      if (dir.exists() && !inputDirs.contains(dir)) {
+        inputDirs.add(dir);
+      }
     }
 
     refresh();
@@ -73,8 +76,8 @@ public class LibraryDatabase {
 
   public void refresh() {
     blueprintIds = new TreeSet<>();
-    for (File f : inputDir.listFiles(File::isFile)) {
-      loadIndex(f);
+    for (File dir : inputDirs) {
+      loadIndex(dir);
     }
   }
 
@@ -91,7 +94,7 @@ public class LibraryDatabase {
   protected File getBlueprintFile(LibraryId id) {
     String name = String.format(Locale.ENGLISH, "%s." + id.extension, id);
 
-    for (File dir : inputDir.listFiles(File::isFile)) {
+    for (File dir : inputDirs) {
       File f = new File(dir, name);
 
       if (f.exists()) {
@@ -117,6 +120,7 @@ public class LibraryDatabase {
     }
   }
 
+  /** Original {@code save()}: the id is derived from the data, and the file is written once. */
   private void save(LibraryId base, CompoundTag compound) {
     byte[] data;
 
@@ -125,10 +129,21 @@ public class LibraryDatabase {
       data = baos.toByteArray();
     } catch (IOException ex) {
       BCLog.logger.error(String.format("Failed to serialize library compound: %s", ex.getMessage()));
-      data = new byte[0];
+      return;
     }
 
     base.generateUniqueId(data);
+    if (outputDir == null) {
+      return;
+    }
+    File blueprintFile = getBlueprintOutputFile(base);
+    if (!blueprintFile.exists()) {
+      try {
+        Files.write(blueprintFile.toPath(), data);
+      } catch (IOException ex) {
+        LOGGER.error("Failed to save library file: {}", blueprintFile.getName(), ex);
+      }
+    }
   }
 
   private void loadIndex(File directory) {
@@ -181,8 +196,8 @@ public class LibraryDatabase {
     return blueprintIds.contains(id);
   }
 
-  public CompoundTag load(final LibraryId id) {
-    return load(getBlueprintFile(id));
+  public CompoundTag load(@Nullable final LibraryId id) {
+    return id == null ? new CompoundTag() : load(getBlueprintFile(id));
   }
 
   public List<LibraryId> getBlueprintIds() {

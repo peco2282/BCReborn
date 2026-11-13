@@ -15,6 +15,8 @@ package com.peco2282.bcreborn.common.builder;
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 
@@ -23,9 +25,15 @@ public class BuilderItemMetaPair {
   public int meta;
   public int position = 0;
 
-  public BuilderItemMetaPair(ItemStack stack) {
-    this.item = stack.getItem();
-    this.meta = stack.getDamageValue();
+  /** Original: a slot without requirements (e.g. clearing to air) is keyed as air. */
+  public BuilderItemMetaPair(@Nullable ItemStack stack) {
+    if (stack != null && !stack.isEmpty()) {
+      this.item = stack.getItem();
+      this.meta = stack.getDamageValue();
+    } else {
+      this.item = Items.AIR;
+      this.meta = 0;
+    }
   }
 
   public BuilderItemMetaPair(IBuilderContext context, BuildingSlotBlock block) {

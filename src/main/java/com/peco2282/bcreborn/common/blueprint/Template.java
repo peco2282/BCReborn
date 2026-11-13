@@ -83,7 +83,13 @@ public class Template extends BlueprintBase {
 
   @Override
   public ItemStack getStack() {
-    // Item reference will be resolved at runtime via registry
-    return ItemStack.EMPTY;
+    // Original getStack(): the item carries the library id, author, name and completeness.
+    ItemStack stack = new ItemStack(com.peco2282.bcreborn.builders.BuildersItems.BLUEPRINT_TEMPLATE.get());
+    CompoundTag nbt = stack.getOrCreateTag();
+    id.writeTag(nbt);
+    nbt.putString("author", author == null ? "" : author);
+    nbt.putString("name", id.name == null ? "" : id.name);
+    nbt.putBoolean("isComplete", isComplete);
+    return stack;
   }
 }

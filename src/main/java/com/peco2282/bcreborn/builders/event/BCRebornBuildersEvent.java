@@ -17,7 +17,6 @@ import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.builders.BuildersConfig;
 import com.peco2282.bcreborn.builders.BuildersMenuTypes;
 import com.peco2282.bcreborn.builders.block.render.BoxBlockEntityRenderer;
-import com.peco2282.bcreborn.builders.block.render.BuilderRenderer;
 import com.peco2282.bcreborn.builders.block.render.QuarryRenderer;
 import com.peco2282.bcreborn.builders.screen.ArchitectScreen;
 import com.peco2282.bcreborn.builders.screen.BlueprintLibraryScreen;
@@ -60,7 +59,8 @@ public class BCRebornBuildersEvent {
   @SubscribeEvent
   public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.QUARRY.get(), QuarryRenderer::new);
-    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.BUILDER.get(), BuilderRenderer::new);
+    // Original RenderBuilder: the box and the building items in flight.
+    event.registerBlockEntityRenderer(BuildersBlockEntityTypes.BUILDER.get(), BoxBlockEntityRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.ARCHITECT.get(), BoxBlockEntityRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.FILLER.get(), BoxBlockEntityRenderer::new);
     event.registerBlockEntityRenderer(BuildersBlockEntityTypes.CONSTRUCTION_MARKER.get(), BoxBlockEntityRenderer::new);
@@ -69,6 +69,7 @@ public class BCRebornBuildersEvent {
   public static void onServerSetup(ServerAboutToStartEvent event) {
     Path root = event.getServer().getWorldPath(LevelResource.ROOT);
     Path blueprintPath = root.resolve(BCReborn.MOD_ID_BASE).resolve("blueprints");
-    BCRebornBuilders.getServerDB().init(Path.of(BuildersConfig.getServerDatabaseDirectory()).resolve(blueprintPath), blueprintPath);
+    // Original: serverDB.init({serverDatabaseDirectory, world blueprints}, world blueprints).
+    BCRebornBuilders.getServerDB().init(Path.of(BuildersConfig.getServerDatabaseDirectory()), blueprintPath);
   }
 }
