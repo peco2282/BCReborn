@@ -11,6 +11,10 @@
  */
 package com.peco2282.bcreborn.silicon.block.entity;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import com.peco2282.bcreborn.silicon.menu.ChargingTableMenu;
 import net.minecraft.core.BlockPos;
@@ -26,14 +30,40 @@ public class ChargingTableBlockEntity extends LaserTableBaseBlockEntity {
     super(SiliconBlockEntityTypes.CHARGING_TABLE.get(), pos, state);
   }
 
+  @Nullable
+  private IEnergyStorage itemEnergy() {
+    ItemStack stack = getItem(0);
+    return stack.isEmpty() ? null : stack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+  }
+
+  /** Original updateEntity(): laser energy goes into the item; without anything to charge it drains away. */
+  @Override
+  protected void tick(Level level, BlockPos pos, BlockState state) {
+    super.tick(level, pos, state);
+    if (level.isClientSide) {
+      return;
+    }
+
+    if (getEnergy() > 0) {
+      IEnergyStorage storage = itemEnergy();
+      if (storage != null && getRequiredEnergy() > 0) {
+        subtractEnergy(storage.receiveEnergy(getEnergy(), false));
+        setChanged();
+      } else {
+        subtractEnergy(Math.min(getEnergy(), 10));
+      }
+    }
+  }
+
   @Override
   public int getRequiredEnergy() {
-    return 0;
+    IEnergyStorage storage = itemEnergy();
+    return storage != null ? Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored()) : 0;
   }
 
   @Override
   public boolean canCraft() {
-    return false;
+    return hasWork();
   }
 
   @Override
@@ -43,7 +73,13 @@ public class ChargingTableBlockEntity extends LaserTableBaseBlockEntity {
 
   @Override
   public boolean hasWork() {
-    return false;
+    return getRequiredEnergy() > 0;
+  }
+
+  /** Original isItemValidForSlot(): only items that can hold energy. */
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    return slot == 0 && !stack.isEmpty() && stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
   }
 
   @Override

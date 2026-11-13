@@ -11,6 +11,12 @@
  */
 package com.peco2282.bcreborn.robotics.item;
 
+import com.peco2282.bcreborn.api.robots.RobotEntityBase;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.DockingStation;
@@ -87,6 +93,76 @@ public class RobotItem extends BuildCraftItem {
 
   private static void setEnergy(CompoundTag cpt, int energy) {
     cpt.putInt("energy", energy);
+  }
+
+  /**
+   * Original ItemRobot implemented IEnergyContainerItem; here the same behaviour is exposed as the Forge energy
+   * capability. A robot without a board holds no energy.
+   */
+  @Override
+  public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+    return new ICapabilityProvider() {
+      private final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> new RobotEnergy(stack));
+
+      @Override
+      public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        return ForgeCapabilities.ENERGY.orEmpty(cap, energy);
+      }
+    };
+  }
+
+  private record RobotEnergy(ItemStack stack) implements IEnergyStorage {
+    private boolean hasBoard() {
+      return !(getRobotNBT(getNBT(stack)) instanceof RedstoneBoardRobotEmptyNBT);
+    }
+
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+      if (!hasBoard()) {
+        return 0;
+      }
+      CompoundTag cpt = getNBT(stack);
+      int currentEnergy = getEnergy(cpt);
+      int energyReceived = Math.max(0, Math.min(RobotEntityBase.MAX_ENERGY - currentEnergy, maxReceive));
+      if (!simulate) {
+        setEnergy(cpt, currentEnergy + energyReceived);
+      }
+      return energyReceived;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+      if (!hasBoard()) {
+        return 0;
+      }
+      CompoundTag cpt = getNBT(stack);
+      int currentEnergy = getEnergy(cpt);
+      int energyExtracted = Math.max(0, Math.min(currentEnergy, maxExtract));
+      if (!simulate) {
+        setEnergy(cpt, currentEnergy - energyExtracted);
+      }
+      return energyExtracted;
+    }
+
+    @Override
+    public int getEnergyStored() {
+      return hasBoard() ? getEnergy(getNBT(stack)) : 0;
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+      return hasBoard() ? RobotEntityBase.MAX_ENERGY : 0;
+    }
+
+    @Override
+    public boolean canExtract() {
+      return true;
+    }
+
+    @Override
+    public boolean canReceive() {
+      return true;
+    }
   }
 
   @Override
