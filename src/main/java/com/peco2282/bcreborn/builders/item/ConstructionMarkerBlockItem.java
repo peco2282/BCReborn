@@ -43,7 +43,7 @@ public class ConstructionMarkerBlockItem extends BlockItem {
       int oy = nbt.getInt("y");
       int oz = nbt.getInt("z");
 
-      BlockEntity tile1 = world.getBlockEntity(pos);
+      BlockEntity tile1 = world.getBlockEntity(new BlockPos(ox, oy, oz));
 
       if (!new Position(ox, oy, oz).isClose(new Position(pos.getX(), pos.getY(), pos.getZ()), 64)) {
         return;

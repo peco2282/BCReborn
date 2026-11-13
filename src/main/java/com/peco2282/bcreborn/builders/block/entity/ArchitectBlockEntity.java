@@ -67,6 +67,7 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   public ArchitectBlockEntity(BlockPos pos, BlockState state) {
     super(BuildersBlockEntityTypes.ARCHITECT.get(), pos, state);
+    box.kind = Box.Kind.BLUE_STRIPES;
   }
 
   public Box getBox() {
@@ -95,6 +96,8 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
             box.createLaserData();
           }
           a.removeFromWorld();
+          setChanged();
+          level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
         if (!box.isInitialized()) {
           if (BCRebornCore.DEVELOPER_MODE) {
@@ -118,20 +121,15 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (!level.isClientSide) {
-      if (mode == Mode.COPY) {
-        if (reader == null && !getItem(0).isEmpty()) {
-          initializeBlueprint();
-        }
+      // Original TileArchitect.updateEntity(): the reader stores the finished blueprint itself (createBlueprint),
+      // so nothing is moved between the slots here.
+      if (mode == Mode.COPY && reader != null) {
+        reader.iterate();
 
-        if (reader != null) {
-          reader.iterate();
-
-          if (reader.isDone()) {
-            storeBlueprintStack(getItem(0));
-            reader = null;
-            setChanged();
-            level.sendBlockUpdated(pos, state, state, 3);
-          }
+        if (reader.isDone()) {
+          reader = null;
+          setChanged();
+          level.sendBlockUpdated(pos, state, state, 3);
         }
       }
     }
@@ -261,13 +259,15 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
   }
 
   private void initializeBlueprint() {
-    if (getLevel().isClientSide) {
+    if (getLevel() == null || getLevel().isClientSide) {
       return;
     }
 
     if (mode == Mode.COPY) {
       reader = new RecursiveBlueprintReader(this);
     }
+    setChanged();
+    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
   }
 
   @Override
@@ -329,6 +329,17 @@ public class ArchitectBlockEntity extends BuildCraftBlockEntity implements MenuP
     if (p_18944_ == 0) {
       initializeBlueprint();
     }
+  }
+
+  /** Original isItemValidForSlot(): automation cannot insert into the Architect Table. */
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    return false;
+  }
+
+  @Override
+  public int getMaxStackSize() {
+    return 1;
   }
 
   @Override

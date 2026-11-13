@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
@@ -244,7 +245,7 @@ public abstract class BlueprintBase {
     subNBT.putInt("y", y);
     subNBT.putInt("z", z);
     subNBT.putByte("dir", (byte) dir.ordinal());
-    subNBT.put("bpt", getNBT());
+    subNBT.put("bpt", subBpt.getNBT());
     subBlueprintsNBT.add(subNBT);
   }
 
@@ -259,7 +260,7 @@ public abstract class BlueprintBase {
   public BlueprintBase adjustToWorld(Level world, int x, int y, int z, Direction o) {
     if (buildingPermission == BuildingPermission.NONE
       || (buildingPermission == BuildingPermission.CREATIVE_ONLY
-      && !world.isClientSide())) {
+      && !isCreativeWorld(world))) {
       return null;
     }
 
@@ -287,6 +288,11 @@ public abstract class BlueprintBase {
 
     translateToWorld(transform);
     return this;
+  }
+
+  /** Original: {@code world.getWorldInfo().getGameType() == GameType.CREATIVE}. */
+  private static boolean isCreativeWorld(Level world) {
+    return world.getServer() != null && world.getServer().getWorldData().getGameType() == GameType.CREATIVE;
   }
 
   public abstract void loadContents(CompoundTag nbt) throws BptError;

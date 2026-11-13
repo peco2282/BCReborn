@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.common.blueprint;
 
 import com.peco2282.bcreborn.api.blueprints.IBuilderContext;
 import com.peco2282.bcreborn.api.blueprints.SchematicMask;
+import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -38,8 +39,7 @@ public class Template extends BlueprintBase {
     int posY = (int) (y - context.surroundingBox().pMin().y);
     int posZ = (int) (z - context.surroundingBox().pMin().z);
 
-    BlockPos pos = new BlockPos(x, y, z);
-    if (!context.world().isEmptyBlock(pos)) {
+    if (!BuildCraftAPI.isSoftBlock(context.world(), x, y, z)) {
       put(posX, posY, posZ, new SchematicMask(true));
     }
   }

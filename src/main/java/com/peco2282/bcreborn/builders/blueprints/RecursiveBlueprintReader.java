@@ -92,7 +92,7 @@ public class RecursiveBlueprintReader {
       writingContext = writingBlueprint.getContext(architect.getLevel(), architect.getBox());
       writingContext.readConfiguration = architect.readConfiguration;
 
-      writingBlueprint.id.name = architect.getName().getString();
+      writingBlueprint.id.name = architect.name;
       writingBlueprint.author = architect.currentAuthorName;
       writingBlueprint.anchorX = architect.getBlockPos().getX() - architect.getBox().xMin;
       writingBlueprint.anchorY = architect.getBlockPos().getY() - architect.box.yMin;
@@ -200,7 +200,7 @@ public class RecursiveBlueprintReader {
   }
 
   public void createBlueprint() {
-    writingBlueprint.id.name = architect.getName().getString();
+    writingBlueprint.id.name = architect.name;
     writingBlueprint.author = architect.currentAuthorName;
     CompoundTag nbt = writingBlueprint.getNBT();
     BCRebornBuilders.getServerDB().add(writingBlueprint.id, nbt);
