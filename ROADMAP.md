@@ -107,7 +107,7 @@ BC を象徴する大型マシン。
 | Assembly Table | 🔧 | TileAssemblyTable 準拠: GUI でレシピを計画（クリックで選択/解除）し、計画したものだけをレーザーエネルギーで順番に製造。計画は保存・同期。GameTest 検証済み、GUI の実機確認待ち |
 | Integration Table | 🔧 | 原作の動的レシピ（IIntegrationRecipe）を移植: ゲートへの拡張追加（Pulsar / Timer / Fader / Light Sensor）と Redstone Chipset によるロジック切替（GateExpansionRecipe）、位相ファサード（AdvancedFacadeRecipe、プラグによる透明状態は未対応）、ロボットへのボード取り付け（RobotIntegrationRecipe）。拡張スロットは有効なレシピに合うものだけ受け付ける。データパックのレシピも併用可。GameTest（IntegrationTableGameTests）検証済み。GUI の出力プレビューと拡張スロット数の表示は未実装 |
 | Charging Table | 🔧 | TileChargingTable 準拠: レーザーのエネルギーをスロットのアイテムへ充電、充電するものがなければ毎 tick 10 ずつ減る、エネルギーを持てるアイテムだけ受け付ける。ロボットのアイテムは Forge のエネルギー Capability を公開（原作 IEnergyContainerItem 相当、ボードなしは充電不可）。GameTest（ChargingTableGameTests）検証済み、GUI は実機確認待ち |
-| ロボット (Robots) | ⬜ | 収穫、運搬、戦闘など多目的な自動化 |
+| ロボット (Robots) | 🔧 | 基本動作を原作（EntityRobot / RobotRegistry / AIRobotMain）と照合: ステーションへの配置とリンク、ボードの実行、保存と読み込み、エネルギー切れでの停止、撤去時のステーション解放を GameTest（RobotGameTests）で確認。登録簿の解放処理（メインステーションを保持、死亡時のみ全解放、アンロード時は保持）を原作に合わせた。各ボードの作業（収穫・運搬・採掘など）とゲートとの連携は未照合。BoardRobotPlanter / Delivery / Pump / FluidCarrier に未実装箇所あり |
 
 ---
 
