@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
+import com.peco2282.bcreborn.robotics.recipe.RobotIntegrationRecipe;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.registry.BCRebornAPIRegistry;
 import com.peco2282.bcreborn.api.robots.RobotManager;
@@ -81,8 +83,11 @@ public class BCRebornRobotics implements BCReborn {
     BCRebornAPIRegistry.schematic(SchematicRegistry.INSTANCE);
     RobotManager.registry(RobotRegistryProvider.INSTANCE);
     RobotManager.setEmpty(RoboticsAIType.EMPTY);
-    event.enqueueWork(() -> ProgrammingRecipeManager.INSTANCE.register(
-      new BoardProgrammingRecipe()));
+    event.enqueueWork(() -> {
+      ProgrammingRecipeManager.INSTANCE.register(new BoardProgrammingRecipe());
+      // Original BuildCraftRobotics: robots take their board on the Integration Table.
+      IntegrationRecipeManager.INSTANCE.addRecipe(new RobotIntegrationRecipe());
+    });
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

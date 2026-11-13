@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.core.recipes;
 
 import com.google.gson.JsonElement;
 import com.peco2282.bcreborn.BCRebornCore;
+import com.peco2282.bcreborn.api.recipes.IIntegrationRecipe;
 import com.peco2282.bcreborn.api.recipes.IIntegrationRecipeManager;
 import com.peco2282.bcreborn.api.recipes.IntegrationRecipe;
 import com.peco2282.bcreborn.api.recipes.IntegrationRecipeProvider;
@@ -26,6 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +38,19 @@ public final class IntegrationRecipeManager implements IIntegrationRecipeManager
   private static final IntegrationRecipeLoader LOADER = new IntegrationRecipeLoader();
   private final Map<ResourceLocation, IntegrationRecipe> recipes = new ConcurrentHashMap<>();
 
+  private final List<IIntegrationRecipe> dynamicRecipes = new CopyOnWriteArrayList<>();
+
   private IntegrationRecipeManager() {
+  }
+
+  @Override
+  public void addRecipe(IIntegrationRecipe recipe) {
+    dynamicRecipes.add(recipe);
+  }
+
+  @Override
+  public List<? extends IIntegrationRecipe> getIntegrationRecipes() {
+    return Collections.unmodifiableList(dynamicRecipes);
   }
 
   @SubscribeEvent

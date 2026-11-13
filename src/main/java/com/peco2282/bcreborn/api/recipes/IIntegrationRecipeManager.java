@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for managing integration recipes.
@@ -43,4 +44,22 @@ public interface IIntegrationRecipeManager {
    * @return True if the recipe exists, false otherwise.
    */
   boolean contains(ResourceLocation id);
+
+  /**
+   * Registers a dynamic recipe (original {@code IIntegrationRecipeManager.addRecipe}).
+   *
+   * @param recipe The recipe to add.
+   */
+  default void addRecipe(IIntegrationRecipe recipe) {
+    throw new UnsupportedOperationException("This manager does not accept dynamic recipes");
+  }
+
+  /**
+   * Gets the dynamic recipes in registration order. The first one that accepts the input is used.
+   *
+   * @return The registered dynamic recipes.
+   */
+  default List<? extends IIntegrationRecipe> getIntegrationRecipes() {
+    return List.of();
+  }
 }

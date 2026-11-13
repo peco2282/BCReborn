@@ -11,6 +11,15 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
+import com.peco2282.bcreborn.silicon.SiliconItems;
+import com.peco2282.bcreborn.transport.gates.GateExpansionLightSensor;
+import com.peco2282.bcreborn.transport.gates.GateExpansionRedstoneFader;
+import com.peco2282.bcreborn.transport.gates.GateExpansionTimer;
+import com.peco2282.bcreborn.transport.recipes.AdvancedFacadeRecipe;
+import com.peco2282.bcreborn.transport.recipes.GateExpansionRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import com.peco2282.bcreborn.transport.statements.PipeTriggerProvider;
 import com.peco2282.bcreborn.transport.statements.PipeActionProvider;
 import com.peco2282.bcreborn.core.statements.DefaultActionProvider;
@@ -81,9 +90,14 @@ public class BCRebornTransport implements BCReborn {
 
   private void commonSetup(final FMLCommonSetupEvent event) {
     event.enqueueWork(() -> {
-      GateExpansions.registerExpansion(
-        GateExpansionPulsar.INSTANCE);
-      // 保存されたゲート条件を読む前に、標準条件を登録しておく。
+      // Original TransportSiliconRecipes: each expansion is installed with its chipset on the Integration Table.
+      GateExpansions.registerExpansion(GateExpansionPulsar.INSTANCE, new ItemStack(SiliconItems.PULSATING_CHIPSET.get()));
+      GateExpansions.registerExpansion(GateExpansionTimer.INSTANCE, new ItemStack(SiliconItems.QUARTZ_CHIPSET.get()));
+      GateExpansions.registerExpansion(GateExpansionRedstoneFader.INSTANCE, new ItemStack(SiliconItems.COMP_CHIPSET.get()));
+      GateExpansions.registerExpansion(GateExpansionLightSensor.INSTANCE, new ItemStack(Items.DAYLIGHT_DETECTOR));
+      IntegrationRecipeManager.INSTANCE.addRecipe(new GateExpansionRecipe());
+      IntegrationRecipeManager.INSTANCE.addRecipe(new AdvancedFacadeRecipe());
+      // Register the default triggers before any saved gate statement is read.
       StatementManager.registerTriggerProvider(
         new DefaultTriggerProvider());
       // Original BuildCraftCore / BuildCraftTransport registered these too; without them gates offered no

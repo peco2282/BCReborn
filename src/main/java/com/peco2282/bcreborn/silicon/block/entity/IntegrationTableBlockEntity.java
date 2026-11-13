@@ -11,11 +11,9 @@
  */
 package com.peco2282.bcreborn.silicon.block.entity;
 
-import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
+import com.peco2282.bcreborn.api.recipes.IIntegrationRecipe;
+import java.util.ArrayList;
 import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
-import com.peco2282.bcreborn.api.RegistryUtil;
-import com.peco2282.bcreborn.robotics.item.RedstoneBoardItem;
-import com.peco2282.bcreborn.robotics.item.RobotItem;
 import com.peco2282.bcreborn.silicon.menu.IntegrationTableMenu;
 import com.peco2282.bcreborn.silicon.SiliconBlockEntityTypes;
 import java.util.Comparator;
@@ -50,7 +48,69 @@ public class IntegrationTableBlockEntity extends LaserTableBaseBlockEntity {
     return false;
   }
 
+  /** Original setNewActiveRecipe(): the first dynamic recipe that accepts the input is the active one. */
+  @Nullable
+  private IIntegrationRecipe activeRecipe() {
+    var manager = BuildcraftRecipeRegistry.integration();
+    ItemStack input = getItem(0);
+    if (manager == null || input.isEmpty()) return null;
+    for (IIntegrationRecipe recipe : manager.getIntegrationRecipes()) {
+      if (recipe.isValidInput(input)) return recipe;
+    }
+    return null;
+  }
+
+  /** Original getMaximumExpansionCount(): 0 without a dynamic recipe, -1 for no limit. */
+  public int getMaxExpansionCount() {
+    IIntegrationRecipe recipe = activeRecipe();
+    return recipe != null ? recipe.getMaximumExpansionCount(getItem(0)) : 0;
+  }
+
+  /**
+   * Original isItemValidForSlot(): anything may be the input; expansions must fit the active recipe and its
+   * expansion count. Data-driven recipes accept the ingredients of the recipes matching the input.
+   */
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    if (slot == 0) return true;
+    if (slot < 0 || slot >= 9) return false;
+    IIntegrationRecipe active = activeRecipe();
+    if (active != null) {
+      int expansionCount = active.getMaximumExpansionCount(getItem(0));
+      if (expansionCount > 0 && slot > expansionCount) return false;
+      return active.isValidExpansion(getItem(0), stack);
+    }
+    var manager = BuildcraftRecipeRegistry.integration();
+    if (manager == null) return false;
+    for (var recipe : manager.getRecipes()) {
+      if (!recipe.input().test(getItem(0))) continue;
+      for (Ingredient expansion : recipe.expansions()) {
+        if (expansion.test(stack)) return true;
+      }
+    }
+    return false;
+  }
+
+  /** Plans a dynamic recipe on a copy of the inventory, so that nothing is consumed unless the output fits. */
+  @Nullable
+  private Plan planDynamic(IIntegrationRecipe recipe) {
+    ItemStack[] next = MachineInventory.copy(this);
+    List<ItemStack> expansions = new ArrayList<>();
+    for (int slot = 1; slot < 9; slot++) {
+      if (!next[slot].isEmpty()) expansions.add(next[slot]);
+    }
+    if (expansions.isEmpty()) return null;
+    ItemStack output = recipe.craft(next[0].copy(), expansions, false);
+    if (output == null || output.isEmpty()) return null;
+    // Original: the input shrinks by the size of the output.
+    next[0].shrink(output.getCount());
+    if (!MachineInventory.insert(next, 9, 10, output)) return null;
+    return new Plan(next, recipe.getEnergyCost());
+  }
+
   private Plan plan() {
+    IIntegrationRecipe active = activeRecipe();
+    if (active != null) return planDynamic(active);
     var manager = BuildcraftRecipeRegistry.integration();
     if (manager != null) {
       for (var recipe : manager.getRecipes().stream().sorted(Comparator.comparing(r -> r.id().toString())).toList()) {
@@ -64,22 +124,6 @@ public class IntegrationTableBlockEntity extends LaserTableBaseBlockEntity {
         for (int slot = 0; slot < 9; slot++) next[slot].shrink(used[slot]);
         return new Plan(next, recipe.energy());
       }
-    }
-    // Dynamic integration retains the robot's energy and applies the selected board NBT.
-    if (!(getItem(0).getItem() instanceof RobotItem)) return null;
-    for (int slot = 1; slot < 9; slot++) {
-      var board = getItem(slot);
-      if (!(board.getItem() instanceof RedstoneBoardItem) || !board.hasTag()) continue;
-      var definition = RegistryUtil.getRedstoneBoardsList().stream()
-        .filter(b -> b.getID().toString().equals(board.getTag().getString("id"))).findFirst().orElse(null);
-      if (!(definition instanceof RedstoneBoardRobotNBT)) continue;
-      var result = getItem(0).copyWithCount(1);
-      result.getOrCreateTag().put("board", board.getTag().copy());
-      var next = MachineInventory.copy(this);
-      if (!MachineInventory.insert(next, 9, 10, result)) return null;
-      next[0].shrink(1);
-      next[slot].shrink(1);
-      return new Plan(next, ROBOT_INTEGRATION_ENERGY);
     }
     return null;
   }

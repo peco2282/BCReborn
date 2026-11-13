@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.robotics.recipe;
 
+import com.peco2282.bcreborn.core.recipes.IntegrationRecipeBC;
+import com.peco2282.bcreborn.silicon.block.entity.IntegrationTableBlockEntity;
+import org.jetbrains.annotations.Nullable;
 import com.peco2282.bcreborn.api.RegistryUtil;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
@@ -25,14 +28,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RobotIntegrationRecipe {
+/** Installs a programmed redstone board in a robot (original {@code RobotIntegrationRecipe}). */
+public class RobotIntegrationRecipe extends IntegrationRecipeBC {
+  public RobotIntegrationRecipe() {
+    super(IntegrationTableBlockEntity.ROBOT_INTEGRATION_ENERGY, 1);
+  }
 
+
+  @Override
   public List<ItemStack> generateExampleInput() {
     ArrayList<ItemStack> example = new ArrayList<>();
     example.add(RobotItem.createRobotStack(RoboticsRedstoneRobots.EMPTY.get(), 0));
     return example;
   }
 
+  @Override
   public List<List<ItemStack>> generateExampleExpansions() {
     ArrayList<List<ItemStack>> list = new ArrayList<>();
     ArrayList<ItemStack> example = new ArrayList<>();
@@ -45,6 +55,7 @@ public class RobotIntegrationRecipe {
     return list;
   }
 
+  @Override
   public List<ItemStack> generateExampleOutput() {
     ArrayList<ItemStack> example = new ArrayList<>();
     for (RedstoneBoardNBT<?> nbt : RegistryUtil.getRedstoneBoardsList()) {
@@ -53,20 +64,35 @@ public class RobotIntegrationRecipe {
     return example;
   }
 
+  @Override
   public boolean isValidInput(ItemStack input) {
     return input.getItem() instanceof RobotItem;
   }
 
+  @Override
   public boolean isValidExpansion(ItemStack input, ItemStack expansion) {
     return expansion.getItem() instanceof RedstoneBoardItem;
   }
 
-  public ItemStack craft(ItemStack input, List<ItemStack> expansions, boolean preview) {
-    if (!preview) {
-      expansions.get(0).shrink(1);
+  @Override
+  public @Nullable ItemStack craft(ItemStack input, List<ItemStack> expansions, boolean preview) {
+    // Original: the board is the first expansion. Other items in the expansion slots are ignored.
+    ItemStack board = null;
+    for (ItemStack expansion : expansions) {
+      if (expansion.getItem() instanceof RedstoneBoardItem
+        && RedstoneBoardItem.getBoardNBT(expansion) instanceof RedstoneBoardRobotNBT) {
+        board = expansion;
+        break;
+      }
     }
-    RedstoneBoardRobotNBT boardNBT = (RedstoneBoardRobotNBT) RedstoneBoardItem.getBoardNBT(expansions.get(0));
+    if (board == null) {
+      return null;
+    }
 
+    RedstoneBoardRobotNBT boardNBT = (RedstoneBoardRobotNBT) RedstoneBoardItem.getBoardNBT(board);
+    if (!preview) {
+      board.shrink(1);
+    }
     int energy = RobotItem.getEnergy(input);
     if (energy == 0) {
       energy = RobotEntityBase.SAFETY_ENERGY;

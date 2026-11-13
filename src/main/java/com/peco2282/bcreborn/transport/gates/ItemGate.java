@@ -17,13 +17,14 @@ import com.peco2282.bcreborn.api.transport.IPipe;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.api.serialization.NbtReader;
-import com.peco2282.bcreborn.api.serialization.NbtWriter;
 import com.peco2282.bcreborn.common.utils.StringUtils;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateLogic;
 import com.peco2282.bcreborn.transport.gates.GateDefinition.GateMaterial;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -87,11 +88,11 @@ public class ItemGate extends Item implements IPipePluggableItem {
   }
 
   public static void addGateExpansion(ItemStack stack, IGateExpansion expansion) {
-    NbtWriter.of(stack.getOrCreateTag())
-      .putList(NBT_TAG_EX, expansionList -> {
-        expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
-      })
-      .done();
+    // Original addGateExpansion(): append to the existing list. Writing a new list dropped earlier expansions.
+    CompoundTag nbt = stack.getOrCreateTag();
+    ListTag expansionList = nbt.getList(NBT_TAG_EX, Tag.TAG_STRING);
+    expansionList.add(StringTag.valueOf(expansion.getUniqueIdentifier().toString()));
+    nbt.put(NBT_TAG_EX, expansionList);
   }
 
   public static boolean hasGateExpansion(ItemStack stack, IGateExpansion expansion) {
