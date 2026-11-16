@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
 import com.peco2282.bcreborn.core.CoreConfig;
 import net.minecraft.core.BlockPos;
@@ -327,10 +329,16 @@ public final class BlockUtils {
 
   @Nullable
   public static ChestBlockEntity getOtherDoubleChest(BlockEntity inv) {
-    if (inv instanceof ChestBlockEntity chest) {
-      // In 1.20.1, we'd use ChestBlock.getContainer or similar, but for now we'll return null to satisfy the signature.
-      // TODO: Implement correctly using 1.20.1 double chest logic
-      return chest;
+    // Original: the adjacent chest of the same type. In 1.20 the block state says which neighbour is the other half.
+    if (inv instanceof ChestBlockEntity chest && chest.getLevel() != null) {
+      BlockState state = chest.getBlockState();
+      if (state.getBlock() instanceof ChestBlock && state.getValue(ChestBlock.TYPE) != ChestType.SINGLE) {
+        BlockPos otherPos = chest.getBlockPos().relative(ChestBlock.getConnectedDirection(state));
+        if (chest.getLevel().getBlockEntity(otherPos) instanceof ChestBlockEntity other
+          && other.getBlockState().is(state.getBlock())) {
+          return other;
+        }
+      }
     }
     return null;
   }

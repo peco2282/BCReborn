@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.energy.block.entity;
 
+import com.peco2282.bcreborn.common.inventory.InvUtils;
 import com.peco2282.bcreborn.common.ResourceBuilder;
 import com.peco2282.bcreborn.common.data.tag.CommonItemTags;
 import com.peco2282.bcreborn.energy.EnergyBlockEntityTypes;
@@ -55,6 +56,12 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
     return stack.is(CommonItemTags.ENGINE_ENERGY) || ForgeHooks.getBurnTime(stack, null) > 0;
   }
 
+  /** Original isItemValidForSlot(): only fuel goes into the fuel slot. */
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    return slot == 0 && isFuelable(stack);
+  }
+
   @Override
   public boolean isBurning() {
     return burnTime > 0;
@@ -70,9 +77,8 @@ public class StoneEngineBlockEntity extends EngineBlockEntityContainer<StoneEngi
         if (time > 0) {
           totalBurnTime = burnTime = time;
           burnItem = stack.copy();
-          // 1個消費
-          stack.shrink(1);
-          if (stack.isEmpty()) setItem(0, ItemStack.EMPTY);
+          // Original: InvUtils.consumeItem() leaves the container item, e.g. the bucket of a lava bucket.
+          setItem(0, InvUtils.consumeItem(stack));
           setActive(true);
         }
       }

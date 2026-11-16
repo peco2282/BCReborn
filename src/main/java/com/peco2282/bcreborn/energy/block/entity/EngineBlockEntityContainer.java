@@ -11,6 +11,11 @@
  */
 package com.peco2282.bcreborn.energy.block.entity;
 
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import com.peco2282.bcreborn.common.IBlockEntityContainer;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.EngineBlockEntity;
@@ -99,16 +104,43 @@ public abstract class EngineBlockEntityContainer<E extends EngineBlockEntityCont
   // WorldlyContainer
   @Override
   public int[] getSlotsForFace(Direction p_19238_) {
-    return p_19238_ == orientation ? defaultSlotArray : new int[0];
+    // Original getAccessibleSlotsFromSide(): every side except the one the engine outputs to.
+    return p_19238_ == getOrientation() ? new int[0] : defaultSlotArray;
   }
 
   @Override
   public boolean canPlaceItemThroughFace(int p_19235_, ItemStack p_19236_, @Nullable Direction p_19237_) {
-    return p_19237_ != orientation;
+    return p_19237_ != getOrientation();
   }
 
   @Override
   public boolean canTakeItemThroughFace(int p_19233_, ItemStack p_19234_, Direction p_19235_) {
-    return p_19235_ != orientation;
+    return p_19235_ != getOrientation();
+  }
+
+  // Pipes and other Forge automation reach the inventory through the item handler capability; vanilla hoppers use
+  // the WorldlyContainer methods above. Both follow the same sides.
+  private LazyOptional<? extends IItemHandler>[] itemHandlers = SidedInvWrapper.create(this, Direction.values());
+
+  @Override
+  public <C> LazyOptional<C> getCapability(Capability<C> cap, @Nullable Direction side) {
+    if (cap == ForgeCapabilities.ITEM_HANDLER && side != null && !isRemoved()) {
+      return itemHandlers[side.ordinal()].cast();
+    }
+    return super.getCapability(cap, side);
+  }
+
+  @Override
+  public void invalidateCaps() {
+    super.invalidateCaps();
+    for (LazyOptional<? extends IItemHandler> handler : itemHandlers) {
+      handler.invalidate();
+    }
+  }
+
+  @Override
+  public void reviveCaps() {
+    super.reviveCaps();
+    itemHandlers = SidedInvWrapper.create(this, Direction.values());
   }
 }
