@@ -16,7 +16,9 @@ import net.minecraft.util.StringRepresentable;
 public enum PipeType implements StringRepresentable {
   ITEM("item"),
   FLUID("fluid"),
-  ENERGY("energy");
+  ENERGY("energy"),
+  /** Original {@code PipeTransportStructure}: carries nothing; it holds pluggables and pipe wires. */
+  STRUCTURE("structure");
 
   private final String name;
 

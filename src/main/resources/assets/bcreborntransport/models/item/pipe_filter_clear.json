@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bcreborntransport:item/lens/clear",
+    "layer1": "bcreborntransport:item/lens/filter_frame"
+  }
+}

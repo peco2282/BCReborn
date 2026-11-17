@@ -43,6 +43,12 @@ public class IntegrationTableScreen extends LaserTableScreen<IntegrationTableMen
       int h = table.getProgressScaled(69);
       guiGraphics.blit(TEXTURE, x + 164, y + 18 + 74 - h, 176, 18, 4, h);
     }
-    // 1.7.10 の拡張制限描画ロジックの移植は BlockEntity 側の実装を待つ
+    // Original GuiIntegrationTable: expansion slots beyond the active recipe's limit are crossed out.
+    int maxExpansions = ((IntegrationTableBlockEntity) table).getMaxExpansionCount();
+    if (maxExpansions > 0) {
+      for (int i = 8; i > maxExpansions; i--) {
+        guiGraphics.blit(TEXTURE, x + IntegrationTableMenu.SLOT_X[i] - 1, y + IntegrationTableMenu.SLOT_Y[i] - 1, 180, 17, 18, 18);
+      }
+    }
   }
 }

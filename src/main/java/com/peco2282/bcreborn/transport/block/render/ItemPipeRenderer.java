@@ -11,6 +11,13 @@
  */
 package com.peco2282.bcreborn.transport.block.render;
 
+import com.peco2282.bcreborn.BCRebornTransport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.DyeColor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
@@ -31,6 +38,7 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
   private static final int MAX_ITEMS_TO_RENDER = 10;
   // PipeTransportItemsRenderer used 0.7 and explicitly disabled bobbing/spreading.
   private static final float ITEM_SCALE = 0.7f;
+  private static final ResourceLocation ITEM_BOX = BCRebornTransport.location("block/pipes/item_box");
 
   private final ItemRenderer itemRenderer;
 
@@ -97,6 +105,17 @@ public class ItemPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
     itemRenderer.renderStatic(stack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
       poseStack, bufferSource, null, 0);
+
+    // Original PipeTransportItemsRenderer: a painted item travels inside a box of its colour.
+    DyeColor color = travelingItem.getColor();
+    if (color != null) {
+      float[] rgb = color.getTextureDiffuseColors();
+      TextureAtlasSprite box = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ITEM_BOX);
+      // BoxQuads lays the texture out by position inside 0..1, so the box is drawn around the block centre.
+      poseStack.translate(-0.5f, -0.5f, -0.5f);
+      BoxQuads.box(poseStack.last(), bufferSource.getBuffer(RenderType.cutout()), box,
+        0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f, rgb[0], rgb[1], rgb[2], 1.0f, packedLight, BoxQuads.ALL_FACES);
+    }
 
     poseStack.popPose();
   }

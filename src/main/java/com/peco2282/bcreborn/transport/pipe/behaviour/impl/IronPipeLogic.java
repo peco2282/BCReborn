@@ -204,6 +204,7 @@ public final class IronPipeLogic {
       case ITEM -> tile.getCapability(ForgeCapabilities.ITEM_HANDLER, opposite).isPresent();
       case FLUID -> tile.getCapability(ForgeCapabilities.FLUID_HANDLER, opposite).isPresent();
       case ENERGY -> tile.getCapability(ForgeCapabilities.ENERGY, opposite).isPresent();
+      case STRUCTURE -> false;
     };
   }
 

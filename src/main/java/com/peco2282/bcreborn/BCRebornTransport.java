@@ -11,6 +11,12 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.transport.statements.ActionParameterSignal;
+import com.peco2282.bcreborn.transport.statements.TriggerParameterSignal;
+import com.peco2282.bcreborn.core.statements.StatementParameterRedstoneGateSideOnly;
+import com.peco2282.bcreborn.core.statements.StatementParameterDirection;
+import com.peco2282.bcreborn.core.statements.StatementParameterItemStackExact;
+import com.peco2282.bcreborn.api.statements.StatementParameterItemStack;
 import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import com.peco2282.bcreborn.transport.gates.GateExpansionLightSensor;
@@ -33,6 +39,8 @@ import com.peco2282.bcreborn.robotics.station.RobotStationPluggable;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.gates.GatePluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable;
+import com.peco2282.bcreborn.transport.pipe.pluggable.LensPluggable;
+import com.peco2282.bcreborn.transport.pipe.pluggable.PlugPluggable;
 import com.peco2282.bcreborn.transport.stripes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -82,6 +90,8 @@ public class BCRebornTransport implements BCReborn {
 
   public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
   public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
+  public static final PluggableType<PlugPluggable> PLUG = registerPipePluggable(location("plug"), PlugPluggable::new);
+  public static final PluggableType<LensPluggable> LENS = registerPipePluggable(location("lens"), LensPluggable::new);
   public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robot_station"), RobotStationPluggable::new);
 
   public static ResourceLocation location(String path) {
@@ -97,6 +107,13 @@ public class BCRebornTransport implements BCReborn {
       GateExpansions.registerExpansion(GateExpansionLightSensor.INSTANCE, new ItemStack(Items.DAYLIGHT_DETECTOR));
       IntegrationRecipeManager.INSTANCE.addRecipe(new GateExpansionRecipe());
       IntegrationRecipeManager.INSTANCE.addRecipe(new AdvancedFacadeRecipe());
+      // Parameter kinds a saved gate may name. Without these a gate with parameters could not be loaded.
+      StatementManager.registerParameterFactory(StatementParameterItemStack::new);
+      StatementManager.registerParameterFactory(StatementParameterItemStackExact::new);
+      StatementManager.registerParameterFactory(StatementParameterDirection::new);
+      StatementManager.registerParameterFactory(StatementParameterRedstoneGateSideOnly::new);
+      StatementManager.registerParameterFactory(TriggerParameterSignal::new);
+      StatementManager.registerParameterFactory(ActionParameterSignal::new);
       // Register the default triggers before any saved gate statement is read.
       StatementManager.registerTriggerProvider(
         new DefaultTriggerProvider());

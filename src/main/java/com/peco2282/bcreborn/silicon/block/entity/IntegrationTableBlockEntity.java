@@ -28,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 
 public class IntegrationTableBlockEntity extends LaserTableBaseBlockEntity {
   public static final int ROBOT_INTEGRATION_ENERGY = 50000;
@@ -128,10 +130,45 @@ public class IntegrationTableBlockEntity extends LaserTableBaseBlockEntity {
     return null;
   }
 
+  /**
+   * Original {@code clientOutputInv} (slot 10): what the table would make from its current contents. It is not
+   * part of the inventory, so it can neither be taken nor dropped; the menu shows it in an untouchable slot.
+   */
+  private final SimpleContainer preview = new SimpleContainer(1);
+
+  public Container getPreview() {
+    return preview;
+  }
+
+  /** Original updateRecipeOutput(): the result of the active recipe, whether or not it fits the output slot. */
+  private ItemStack previewOutput() {
+    if (getItem(0).isEmpty()) return ItemStack.EMPTY;
+    IIntegrationRecipe active = activeRecipe();
+    if (active != null) {
+      List<ItemStack> expansions = new ArrayList<>();
+      for (int slot = 1; slot < 9; slot++) {
+        if (!getItem(slot).isEmpty()) expansions.add(getItem(slot).copy());
+      }
+      if (expansions.isEmpty()) return ItemStack.EMPTY;
+      ItemStack output = active.craft(getItem(0).copy(), expansions, true);
+      return output == null ? ItemStack.EMPTY : output;
+    }
+    var manager = BuildcraftRecipeRegistry.integration();
+    if (manager == null) return ItemStack.EMPTY;
+    for (var recipe : manager.getRecipes().stream().sorted(Comparator.comparing(r -> r.id().toString())).toList()) {
+      if (recipe.energy() < 0 || recipe.result().isEmpty() || !recipe.input().test(getItem(0))
+        || recipe.expansions().size() > recipe.maxExpansionCount()) continue;
+      if (match(recipe.expansions(), 0, new int[9])) return recipe.result().copy();
+    }
+    return ItemStack.EMPTY;
+  }
+
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     super.tick(level, pos, state);
     if (level.isClientSide) return;
+    ItemStack output = previewOutput();
+    if (!ItemStack.matches(output, preview.getItem(0))) preview.setItem(0, output);
     Plan plan = plan();
     clientRequiredEnergy = plan == null ? 0 : plan.energy();
     if (plan == null || getEnergy() < plan.energy()) return;

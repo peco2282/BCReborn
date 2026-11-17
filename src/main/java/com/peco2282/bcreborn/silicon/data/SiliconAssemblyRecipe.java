@@ -23,6 +23,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.tags.TagKey;
 import com.peco2282.bcreborn.transport.TransportItems;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.DyeColor;
+import com.peco2282.bcreborn.transport.TransportBlocks;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
+import org.jetbrains.annotations.Nullable;
 
 public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
   public SiliconAssemblyRecipe(PackOutput output) {
@@ -36,6 +41,20 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
     addWireRecipe("blue_pipe_wire", Tags.Items.DYES_BLUE, TransportItems.PIPE_WIRE_BLUE.get());
     addWireRecipe("green_pipe_wire", Tags.Items.DYES_GREEN, TransportItems.PIPE_WIRE_GREEN.get());
     addWireRecipe("yellow_pipe_wire", Tags.Items.DYES_YELLOW, TransportItems.PIPE_WIRE_YELLOW.get());
+
+    // Original TransportSiliconRecipes: 10000 RF each; a plug is made from a cobblestone structure pipe.
+    addRecipe(
+      AssemblyRecipeBuilder.create(loc("pipe_plug"))
+        .addIngredient(new ItemStack(TransportBlocks.get(PipeType.STRUCTURE, PipeMaterial.COBBLESTONE).get()))
+        .setEnergy(10000)
+        .setResult(new ItemStack(TransportItems.PIPE_PLUG.get(), 8))
+    );
+    for (DyeColor color : DyeColor.values()) {
+      addLensRecipe("pipe_lens_" + color.getName(), color, false);
+      addLensRecipe("pipe_filter_" + color.getName(), color, true);
+    }
+    addLensRecipe("pipe_lens_clear", null, false);
+    addLensRecipe("pipe_filter_clear", null, true);
 
     addRecipe(
       AssemblyRecipeBuilder.create(loc("redstone_chipset"))
@@ -106,6 +125,15 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
         .setEnergy(10000000)
         .setResult(new ItemStack(SiliconItems.REDSTONE_CRYSTAL.get()))
     );
+  }
+
+  /** Dye + glass (+ iron bars for a filter) -> 2 lenses; the clear variants need no dye. */
+  private void addLensRecipe(String name, @Nullable DyeColor color, boolean filter) {
+    AssemblyRecipeBuilder builder = AssemblyRecipeBuilder.create(loc(name));
+    if (color != null) builder.addIngredient(Ingredient.of(color.getTag()));
+    builder.addIngredient(Ingredient.of(Tags.Items.GLASS));
+    if (filter) builder.addIngredient(Ingredient.of(Items.IRON_BARS));
+    addRecipe(builder.setEnergy(10000).setResult(new ItemStack(TransportItems.lens(color, filter), 2)));
   }
 
   private void addWireRecipe(String name, TagKey<Item> dye, Item wire) {

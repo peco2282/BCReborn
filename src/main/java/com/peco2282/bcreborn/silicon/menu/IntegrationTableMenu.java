@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.silicon.menu;
 
+import com.peco2282.bcreborn.common.gui.slots.SlotUntouchable;
 import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.silicon.block.entity.IntegrationTableBlockEntity;
@@ -44,6 +45,14 @@ public class IntegrationTableMenu extends BuildCraftMenu<IntegrationTableMenu> {
     }
 
     addSlot(new SlotOutput(table, 9, 138, 49));
+    // Original ContainerIntegrationTable: the preview of the result, between the inputs and the output.
+    addSlot(new SlotUntouchable(table.getPreview(), 0, 101, 36) {
+      // SlotUntouchable is hidden by default; the preview has to be drawn.
+      @Override
+      public boolean isActive() {
+        return true;
+      }
+    });
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 9; x++) {

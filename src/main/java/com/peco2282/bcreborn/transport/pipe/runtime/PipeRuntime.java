@@ -127,6 +127,7 @@ public final class PipeRuntime {
     }
     if (level.isClientSide) {
       if (type == PipeType.ITEM) itemTransport.tick(level, pos);
+      if (fluidTransport != null) fluidTransport.clientTick();
       return;
     }
     ticksSincePull++;
@@ -400,6 +401,8 @@ public final class PipeRuntime {
     BlockPos pos = host.getBlockPos().relative(dir);
     if (!level.isLoaded(pos) || !(level.getBlockEntity(pos) instanceof PipeBlockEntity neighbor)) return null;
     if (!neighbor.getRuntime().wireSet[wire.ordinal()]) return null;
+    // Original: a structure pipe carries wires to and from any pipe next to it, connected or not.
+    if (type == PipeType.STRUCTURE || neighbor.getPipeType() == PipeType.STRUCTURE) return neighbor;
     if (!PipeBlock.isConnected(host.getBlockState(), dir) || !PipeBlock.isConnected(neighbor.getBlockState(), dir.getOpposite())) {
       return null;
     }

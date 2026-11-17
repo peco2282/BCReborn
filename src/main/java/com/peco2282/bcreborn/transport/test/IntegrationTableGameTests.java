@@ -145,4 +145,33 @@ public class IntegrationTableGameTests {
       "Expansions beyond the recipe's count are rejected");
     helper.succeed();
   }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void plugMakesTransparentFacadeStateAndPreviewShowsResult(GameTestHelper helper) {
+    IntegrationTableBlockEntity table = place(helper);
+    FacadeItem facadeItem = TransportItems.FACADE.get();
+    table.setItem(0, facadeItem.getFacadeForBlock(Blocks.STONE.defaultBlockState()));
+    tick(helper, table);
+    check(helper, table.getPreview().getItem(0).isEmpty(), "No preview without expansions");
+    check(helper, table.canPlaceItem(1, new ItemStack(TransportItems.PIPE_PLUG.get())), "A plug is a valid facade expansion");
+
+    table.setItem(1, PipeWire.BLUE.getStack());
+    table.setItem(2, new ItemStack(TransportItems.PIPE_PLUG.get()));
+    tick(helper, table);
+    ItemStack preview = table.getPreview().getItem(0);
+    check(helper, FacadeItem.getType(preview) == FacadeType.Phased, "The preview must show the phased facade before any energy arrives");
+    check(helper, table.getItem(9).isEmpty() && !table.getItem(1).isEmpty() && !table.getItem(2).isEmpty(),
+      "The preview must not craft or consume anything");
+
+    table.receiveLaserEnergy(COST);
+    tick(helper, table);
+    FacadeItem.FacadeState[] states = FacadeItem.getStates(table.getItem(9));
+    check(helper, states.length == 2 && states[1].state() == null && states[1].wire() == PipeWire.BLUE,
+      "A plug must add a transparent state for the wire, got " + table.getItem(9).getTag());
+    check(helper, table.getItem(2).isEmpty(), "The plug is consumed");
+    tick(helper, table);
+    check(helper, table.getPreview().getItem(0).isEmpty(), "The preview clears once the inputs are used up");
+    helper.succeed();
+  }
 }

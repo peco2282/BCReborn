@@ -17,6 +17,7 @@ import com.peco2282.bcreborn.core.recipes.IntegrationRecipeBC;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.item.FacadeItem;
 import com.peco2282.bcreborn.transport.item.PipeWireItem;
+import com.peco2282.bcreborn.transport.item.PlugItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,9 +26,8 @@ import java.util.List;
 
 /**
  * Makes a phased facade: a facade plus a pipe wire and a second basic facade gives a facade that shows the second
- * block while that wire is active (original {@code AdvancedFacadeRecipe}).
- * <p>
- * The original also accepted a pipe plug for a transparent state; the plug item is not ported yet.
+ * block while that wire is active (original {@code AdvancedFacadeRecipe}). A pipe plug in place of the second
+ * facade gives a transparent state: the facade disappears while the wire is active.
  */
 public class AdvancedFacadeRecipe extends IntegrationRecipeBC {
   public AdvancedFacadeRecipe() {
@@ -51,7 +51,7 @@ public class AdvancedFacadeRecipe extends IntegrationRecipeBC {
   @Override
   public List<List<ItemStack>> generateExampleExpansions() {
     List<List<ItemStack>> list = new ArrayList<>();
-    list.add(List.of(new ItemStack(TransportItems.FACADE.get())));
+    list.add(List.of(new ItemStack(TransportItems.FACADE.get()), new ItemStack(TransportItems.PIPE_PLUG.get())));
     List<ItemStack> pipeWires = new ArrayList<>();
     for (PipeWire wire : PipeWire.values()) {
       pipeWires.add(wire.getStack());
@@ -67,7 +67,7 @@ public class AdvancedFacadeRecipe extends IntegrationRecipeBC {
 
   @Override
   public boolean isValidExpansion(ItemStack input, ItemStack expansion) {
-    return isBasicFacade(expansion) || expansion.getItem() instanceof PipeWireItem;
+    return isBasicFacade(expansion) || expansion.getItem() instanceof PlugItem || expansion.getItem() instanceof PipeWireItem;
   }
 
   @Override
@@ -81,7 +81,7 @@ public class AdvancedFacadeRecipe extends IntegrationRecipeBC {
         if (!preview) {
           stack.shrink(1);
         }
-      } else if (facade == null && isBasicFacade(stack)) {
+      } else if (facade == null && (isBasicFacade(stack) || stack.getItem() instanceof PlugItem)) {
         // Copy before shrinking: the states are read from this stack below.
         facade = stack.copy();
         if (!preview) {
@@ -95,11 +95,20 @@ public class AdvancedFacadeRecipe extends IntegrationRecipeBC {
     }
 
     FacadeItem.FacadeState[] states = FacadeItem.getStates(input);
-    FacadeItem.FacadeState[] added = FacadeItem.getStates(facade);
-    if (states.length == 0 || added.length == 0) {
+    if (states.length == 0) {
       return null;
     }
-    FacadeItem.FacadeState additionalState = new FacadeItem.FacadeState(added[0].state(), wire, added[0].hollow());
+    FacadeItem.FacadeState additionalState;
+    if (facade.getItem() instanceof PlugItem) {
+      // Original FacadeState.createTransparent(wire).
+      additionalState = new FacadeItem.FacadeState(null, wire, false);
+    } else {
+      FacadeItem.FacadeState[] added = FacadeItem.getStates(facade);
+      if (added.length == 0) {
+        return null;
+      }
+      additionalState = new FacadeItem.FacadeState(added[0].state(), wire, added[0].hollow());
+    }
 
     FacadeItem.FacadeState[] result = null;
     // If a state with the same wire already exists, override it.

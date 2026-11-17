@@ -28,6 +28,14 @@ public class TransportRecipe extends BCRecipeHelper {
     TransportBlocks.pipesForEach((type, material, block) -> {
       if (type == PipeType.ITEM) {
         buildItemPipe(consumer, material, block.get());
+      } else if (type == PipeType.STRUCTURE) {
+        // Original: cobblestone, gravel, cobblestone -> 8 structure pipes.
+        shaped(RecipeCategory.MISC, block.get()::asItem, 8)
+          .pattern("CGC")
+          .define('C', Items.COBBLESTONE)
+          .define('G', Items.GRAVEL)
+          .unlockedBy(getHasName(Items.GRAVEL), has(Items.GRAVEL))
+          .save(consumer);
       }
     });
   }

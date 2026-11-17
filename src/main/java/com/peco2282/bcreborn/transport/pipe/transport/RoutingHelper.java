@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import com.peco2282.bcreborn.transport.pipe.pluggable.LensFilterHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,8 @@ class RoutingHelper {
       }
       ib.filterDestinations(pipe, item, possibleDirections);
     }
+    // Original LensFilterHandler (PipeEventItem.FindDest): runs after the pipe's own handler.
+    LensFilterHandler.filterDestinations(pipe, item, possibleDirections);
 
     if (possibleDirections.isEmpty()) {
       // Original allowBouncing (Iron, Daizuli, Clay): send the item back if the side it came from takes it.

@@ -82,6 +82,8 @@ public enum PipeMaterial implements StringRepresentable {
       case ITEM -> true;
       case FLUID -> fluidTransferRate != UNDEFINE_PIPE;
       case ENERGY -> energyTransferRate != UNDEFINE_PIPE;
+      // Original: the only structure pipe is PipeStructureCobblestone.
+      case STRUCTURE -> this == COBBLESTONE;
     };
   }
 

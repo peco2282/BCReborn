@@ -45,6 +45,12 @@ public class FluidTransportModule {
   private final short[] inputTTL = new short[6];
   private final short[] outputTTL = new short[6];
   private final short[] outputCooldown = new short[6];
+  /** Share of the remaining difference the displayed amount covers each client tick. */
+  private static final float RENDER_EASING = 0.25f;
+  private FluidStack flowFluid = FluidStack.EMPTY;
+  private FluidStack renderFluid = FluidStack.EMPTY;
+  private float renderAmount;
+  private float prevRenderAmount;
 
   public FluidTransportModule(PipeBlockEntity pipe) {
     this.pipe = pipe;
@@ -66,6 +72,19 @@ public class FluidTransportModule {
     FluidTank tank = pipe.getFluidTank();
     if (tank == null) return;
 
+    FluidStack before = tank.getFluid().copy();
+    int moved = transfer(level, pos, tank);
+    // The tank is often empty again by the time the client is told about it (filled and drained within one
+    // tick), so what passed through is synced as well and the renderer shows the larger of the two.
+    if (moved != flowFluid.getAmount()) {
+      flowFluid = moved > 0 ? new FluidStack(before, moved) : FluidStack.EMPTY;
+      pipe.setChanged();
+      level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), 3);
+    }
+  }
+
+  /** @return the amount that left the pipe this tick (mB) */
+  private int transfer(Level level, BlockPos pos, FluidTank tank) {
     // TTL を更新し、出力可能な方向を決定する
     int outputCount = computeTransferStates(level, pos);
 
@@ -73,16 +92,17 @@ public class FluidTransportModule {
     if (stored.isEmpty()) {
       // タンクが空になったら全状態をリセット
       resetAllStates();
-      return;
+      return 0;
     }
 
-    if (outputCount == 0) return;
+    if (outputCount == 0) return 0;
 
     PipeBehaviour behaviour = pipe.getBehaviour();
 
     // 出力方向へ均等分配
     Direction[] directions = Direction.values();
     int amountPerOutput = Math.max(1, Math.min(pipe.getPipeMaterial().getFluidTransferRate(), stored.getAmount()) / outputCount);
+    int[] moved = {0};
 
     for (int i = 0; i < directions.length; i++) {
       if (transferState[i] != TransferState.Output) continue;
@@ -112,6 +132,7 @@ public class FluidTransportModule {
           int filled = handler.fill(new FluidStack(stored, canFill), IFluidHandler.FluidAction.EXECUTE);
           if (filled > 0) {
             tank.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+            moved[0] += filled;
             pipe.setChanged();
             level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), 3);
           }
@@ -120,6 +141,48 @@ public class FluidTransportModule {
 
       if (tank.getFluid().isEmpty()) break;
     }
+    return moved[0];
+  }
+
+  // ---- Client display ----
+
+  /**
+   * Client only: eases the displayed amount towards the synced one, so the fluid rises and falls instead of
+   * jumping, and keeps showing the last fluid while it drains away.
+   */
+  public void clientTick() {
+    FluidTank tank = pipe.getFluidTank();
+    if (tank == null) return;
+    FluidStack stored = tank.getFluid();
+    if (!stored.isEmpty()) {
+      renderFluid = stored;
+    } else if (!flowFluid.isEmpty()) {
+      renderFluid = flowFluid;
+    }
+    float target = Math.max(stored.getAmount(), flowFluid.getAmount());
+    prevRenderAmount = renderAmount;
+    renderAmount += (target - renderAmount) * RENDER_EASING;
+    if (Math.abs(target - renderAmount) < 0.5f) renderAmount = target;
+    if (renderAmount <= 0.0f && prevRenderAmount <= 0.0f) renderFluid = FluidStack.EMPTY;
+  }
+
+  /** Client only: the fluid to draw; empty if there is nothing to draw. */
+  public FluidStack getRenderFluid() {
+    return renderFluid;
+  }
+
+  /**
+   * Client only: how full the pipe looks, 0..1. A pipe that passes its full transfer rate every tick looks full,
+   * and so does a pipe that is backed up.
+   */
+  public float getRenderFill(float partialTick) {
+    float amount = prevRenderAmount + (renderAmount - prevRenderAmount) * partialTick;
+    return Math.max(0.0f, Math.min(1.0f, amount / pipe.getPipeMaterial().getFluidTransferRate()));
+  }
+
+  /** The fluid that left the pipe in the last tick (synced to the client); empty if nothing moved. */
+  public FluidStack getFlowFluid() {
+    return flowFluid;
   }
 
   /**
@@ -218,6 +281,9 @@ public class FluidTransportModule {
       fluidModuleTag.putShort("outputTTL[" + i + "]", outputTTL[i]);
       fluidModuleTag.putShort("outputCooldown[" + i + "]", outputCooldown[i]);
     }
+    if (!flowFluid.isEmpty()) {
+      fluidModuleTag.put("flow", flowFluid.writeToNBT(new CompoundTag()));
+    }
     tag.put("FluidModule", fluidModuleTag);
   }
 
@@ -226,6 +292,7 @@ public class FluidTransportModule {
   public void load(CompoundTag tag) {
     if (!tag.contains("FluidModule")) return;
     CompoundTag fluidModuleTag = tag.getCompound("FluidModule");
+    flowFluid = fluidModuleTag.contains("flow") ? FluidStack.loadFluidStackFromNBT(fluidModuleTag.getCompound("flow")) : FluidStack.EMPTY;
     for (int i = 0; i < 6; i++) {
       if (fluidModuleTag.contains("transferState[" + i + "]")) {
         int ordinal = fluidModuleTag.getInt("transferState[" + i + "]");

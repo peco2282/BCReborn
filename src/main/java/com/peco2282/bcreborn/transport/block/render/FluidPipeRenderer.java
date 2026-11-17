@@ -17,7 +17,10 @@ import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableRenderer;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.pipe.transport.FluidTransportModule;
+import com.peco2282.bcreborn.transport.pipe.transport.FluidTransportModule.TransferState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -29,16 +32,27 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.joml.Matrix4f;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
+/**
+ * Draws the fluid inside a fluid pipe, after the original {@code PipeTransportFluidsRenderer}: horizontal parts
+ * fill up from the bottom, vertical parts are a column that widens with the amount.
+ * <p>
+ * The original moved the fluid through seven sections per pipe. This pipe has one tank, so the amount comes from
+ * {@link FluidTransportModule#getRenderFill(float)} (eased on the client) and the movement from the fluid's
+ * flowing texture, laid along each arm in the direction the fluid travels there (towards the centre on an input
+ * side, away from it on an output side).
+ */
 public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
 
-  // パイプ腕の断面サイズ（中心からの半幅）
-  private static final float ARM_HALF = 0.125f;
-  // 中心部のサイズ
-  private static final float CENTER_MIN = 0.5f - ARM_HALF;
-  private static final float CENTER_MAX = 0.5f + ARM_HALF;
+  /** Inside of the pipe (4/16..12/16), slightly inset so the fluid does not z-fight with the pipe walls. */
+  private static final float MIN = 0.25f + 0.01f;
+  private static final float MAX = 0.75f - 0.01f;
+  /** A vanilla flowing sprite is twice as large as a still one and is sampled at half scale. */
+  private static final float FLOWING_UV_SCALE = 8.0f;
+  private static final float STILL_UV_SCALE = 16.0f;
 
   public FluidPipeRenderer(BlockEntityRendererProvider.Context context) {
   }
@@ -49,161 +63,97 @@ public class FluidPipeRenderer implements BlockEntityRenderer<PipeBlockEntity> {
     renderPluggables(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
     PipeWireRenderer.render(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
 
-    FluidTank tank = blockEntity.getFluidTank();
-    if (tank == null) return;
+    FluidTransportModule module = blockEntity.getFluidTransportModule();
+    if (module == null) return;
+    FluidStack fluid = module.getRenderFluid();
+    float fill = module.getRenderFill(partialTick);
+    if (fluid.isEmpty() || fill <= 0.0f) return;
 
-    FluidStack fluidStack = tank.getFluid();
-    if (fluidStack.isEmpty()) return;
-
-    int capacity = tank.getCapacity();
-    int amount = fluidStack.getAmount();
-    float fillRatio = Math.min(1.0f, (float) amount / capacity);
-
-    // 液体テクスチャを取得
-    IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-    ResourceLocation stillTexture = fluidExt.getStillTexture(fluidStack);
+    IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid.getFluid());
+    ResourceLocation stillTexture = fluidExt.getStillTexture(fluid);
     if (stillTexture == null) return;
+    Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+    TextureAtlasSprite still = atlas.apply(stillTexture);
+    ResourceLocation flowingTexture = fluidExt.getFlowingTexture(fluid);
+    TextureAtlasSprite flowing = flowingTexture != null ? atlas.apply(flowingTexture) : null;
 
-    TextureAtlasSprite sprite = Minecraft.getInstance()
-      .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-      .apply(stillTexture);
-
-    int color = fluidExt.getTintColor(fluidStack);
+    // Water takes the biome colour, like the block.
+    int color = blockEntity.getLevel() != null
+      ? fluidExt.getTintColor(fluid.getFluid().defaultFluidState(), blockEntity.getLevel(), blockEntity.getBlockPos())
+      : fluidExt.getTintColor(fluid);
     float r = ((color >> 16) & 0xFF) / 255.0f;
     float g = ((color >> 8) & 0xFF) / 255.0f;
     float b = (color & 0xFF) / 255.0f;
     float a = ((color >> 24) & 0xFF) / 255.0f;
     if (a == 0.0f) a = 1.0f; // アルファが0の場合は不透明扱い
 
-    VertexConsumer consumer = bufferSource.getBuffer(RenderType.translucent());
-    Matrix4f matrix = poseStack.last().pose();
+    // Glowing fluids (lava) light themselves.
+    int glow = fluid.getFluid().getFluidType().getLightLevel(fluid);
+    int light = LightTexture.pack(Math.max(LightTexture.block(packedLight), glow), LightTexture.sky(packedLight));
 
+    VertexConsumer consumer = bufferSource.getBuffer(RenderType.translucent());
+    PoseStack.Pose pose = poseStack.last();
     BlockState state = blockEntity.getBlockState();
 
-    // 中心部を描画
-    renderCube(matrix, consumer, sprite,
-      CENTER_MIN, CENTER_MIN, CENTER_MIN,
-      CENTER_MAX, CENTER_MAX, CENTER_MAX,
-      r, g, b, a, packedLight);
+    boolean horizontal = false;
+    for (Direction dir : Direction.Plane.HORIZONTAL) {
+      horizontal |= PipeBlock.isConnected(state, dir);
+    }
+    boolean up = PipeBlock.isConnected(state, Direction.UP);
+    boolean down = PipeBlock.isConnected(state, Direction.DOWN);
+    // Original: horizontal sections fill up to a level, vertical ones are a centred column.
+    float surface = MIN + (MAX - MIN) * fill;
+    float half = (MAX - MIN) * 0.5f * fill;
+    float colMin = 0.5f - half;
+    float colMax = 0.5f + half;
+    int lateral = BoxQuads.ALL_FACES & ~BoxQuads.mask(Direction.UP) & ~BoxQuads.mask(Direction.DOWN);
 
-    // 各方向の腕を描画（接続されている方向のみ）
+    // Centre. The faces towards a horizontal arm are left out: the arm continues there at the same level.
+    float columnFrom;
+    if (!horizontal && (up || down)) {
+      // A purely vertical pipe: the column runs straight through.
+      BoxQuads.box(pose, consumer, still, colMin, MIN, colMin, colMax, MAX, colMax, r, g, b, a, light,
+        lateral | (up ? 0 : BoxQuads.mask(Direction.UP)) | (down ? 0 : BoxQuads.mask(Direction.DOWN)));
+      columnFrom = MAX;
+    } else {
+      int faces = BoxQuads.ALL_FACES;
+      for (Direction dir : Direction.Plane.HORIZONTAL) {
+        if (PipeBlock.isConnected(state, dir)) faces &= ~BoxQuads.mask(dir);
+      }
+      BoxQuads.box(pose, consumer, still, MIN, MIN, MIN, MAX, surface, MAX, r, g, b, a, light, faces);
+      // The column to the upper arm starts at the surface, so the two do not overlap.
+      columnFrom = surface;
+    }
+
     for (Direction dir : Direction.values()) {
-      if (!isConnected(state, dir)) continue;
-      renderArm(matrix, consumer, sprite, dir, fillRatio, r, g, b, a, packedLight);
-    }
-  }
-
-  private boolean isConnected(BlockState state, Direction dir) {
-    return PipeBlock.isConnected(state, dir);
-  }
-
-  private void renderArm(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-                         Direction dir, float fillRatio, float r, float g, float b, float a, int packedLight) {
-    float minX, minY, minZ, maxX, maxY, maxZ;
-
-    // 充填率に応じて液体の高さを調整（水平方向は高さ、垂直方向は全体）
-    float liquidHeight = CENTER_MIN + (CENTER_MAX - CENTER_MIN) * fillRatio;
-
-    switch (dir) {
-      case EAST -> {
-        minX = CENTER_MAX;
-        maxX = 1.0f;
-        minY = CENTER_MIN;
-        maxY = liquidHeight;
-        minZ = CENTER_MIN;
-        maxZ = CENTER_MAX;
-      }
-      case WEST -> {
-        minX = 0.0f;
-        maxX = CENTER_MIN;
-        minY = CENTER_MIN;
-        maxY = liquidHeight;
-        minZ = CENTER_MIN;
-        maxZ = CENTER_MAX;
-      }
-      case NORTH -> {
-        minX = CENTER_MIN;
-        maxX = CENTER_MAX;
-        minY = CENTER_MIN;
-        maxY = liquidHeight;
-        minZ = 0.0f;
-        maxZ = CENTER_MIN;
-      }
-      case SOUTH -> {
-        minX = CENTER_MIN;
-        maxX = CENTER_MAX;
-        minY = CENTER_MIN;
-        maxY = liquidHeight;
-        minZ = CENTER_MAX;
-        maxZ = 1.0f;
-      }
-      case UP -> {
-        minX = CENTER_MIN;
-        maxX = CENTER_MAX;
-        minY = CENTER_MAX;
-        maxY = 1.0f;
-        minZ = CENTER_MIN;
-        maxZ = CENTER_MAX;
-      }
-      case DOWN -> {
-        minX = CENTER_MIN;
-        maxX = CENTER_MAX;
-        minY = 0.0f;
-        maxY = CENTER_MIN;
-        minZ = CENTER_MIN;
-        maxZ = CENTER_MAX;
-      }
-      default -> {
-        return;
+      if (!PipeBlock.isConnected(state, dir)) continue;
+      Direction flow = flowDirection(module, dir);
+      TextureAtlasSprite sprite = flow != null && flowing != null ? flowing : still;
+      if (sprite == still) flow = null;
+      float scale = flow != null ? FLOWING_UV_SCALE : STILL_UV_SCALE;
+      // The two ends of an arm are never drawn: one touches the centre, the other the neighbour.
+      int faces = BoxQuads.ALL_FACES & ~BoxQuads.mask(dir) & ~BoxQuads.mask(dir.getOpposite());
+      switch (dir) {
+        case UP -> BoxQuads.box(pose, consumer, sprite, colMin, columnFrom, colMin, colMax, 1.0f, colMax, r, g, b, a, light, faces, flow, scale);
+        case DOWN -> BoxQuads.box(pose, consumer, sprite, colMin, 0.0f, colMin, colMax, MIN, colMax, r, g, b, a, light, faces, flow, scale);
+        case WEST -> BoxQuads.box(pose, consumer, sprite, 0.0f, MIN, MIN, MIN, surface, MAX, r, g, b, a, light, faces, flow, scale);
+        case EAST -> BoxQuads.box(pose, consumer, sprite, MAX, MIN, MIN, 1.0f, surface, MAX, r, g, b, a, light, faces, flow, scale);
+        case NORTH -> BoxQuads.box(pose, consumer, sprite, MIN, MIN, 0.0f, MAX, surface, MIN, r, g, b, a, light, faces, flow, scale);
+        case SOUTH -> BoxQuads.box(pose, consumer, sprite, MIN, MIN, MAX, MAX, surface, 1.0f, r, g, b, a, light, faces, flow, scale);
       }
     }
-
-    renderCube(matrix, consumer, sprite, minX, minY, minZ, maxX, maxY, maxZ, r, g, b, a, packedLight);
   }
 
-  private void renderCube(Matrix4f matrix, VertexConsumer consumer, TextureAtlasSprite sprite,
-                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
-                          float r, float g, float b, float a, int packedLight) {
-    float u0 = sprite.getU0();
-    float u1 = sprite.getU1();
-    float v0 = sprite.getV0();
-    float v1 = sprite.getV1();
-
-    // DOWN face (Y-)
-    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(0, -1, 0).endVertex();
-    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(0, -1, 0).endVertex();
-    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(0, -1, 0).endVertex();
-    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(0, -1, 0).endVertex();
-
-    // UP face (Y+)
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(0, 1, 0).endVertex();
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(0, 1, 0).endVertex();
-
-    // NORTH face (Z-)
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(0, 0, -1).endVertex();
-    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(0, 0, -1).endVertex();
-
-    // SOUTH face (Z+)
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(0, 0, 1).endVertex();
-    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(0, 0, 1).endVertex();
-
-    // WEST face (X-)
-    consumer.vertex(matrix, minX, maxY, minZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, maxY, maxZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, minY, maxZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(-1, 0, 0).endVertex();
-    consumer.vertex(matrix, minX, minY, minZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(-1, 0, 0).endVertex();
-
-    // EAST face (X+)
-    consumer.vertex(matrix, maxX, maxY, maxZ).color(r, g, b, a).uv(u0, v0).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, maxY, minZ).color(r, g, b, a).uv(u1, v0).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, minY, minZ).color(r, g, b, a).uv(u1, v1).uv2(packedLight).normal(1, 0, 0).endVertex();
-    consumer.vertex(matrix, maxX, minY, maxZ).color(r, g, b, a).uv(u0, v1).uv2(packedLight).normal(1, 0, 0).endVertex();
+  /**
+   * The way the fluid moves in the arm on {@code side}: into the pipe on an input side, out of it on an output
+   * side, or null if it stands still there.
+   */
+  @Nullable
+  private static Direction flowDirection(FluidTransportModule module, Direction side) {
+    TransferState state = module.getTransferState(side);
+    if (state == TransferState.Output && !module.getFlowFluid().isEmpty()) return side;
+    if (state == TransferState.Input) return side.getOpposite();
+    return null;
   }
 
   @Override

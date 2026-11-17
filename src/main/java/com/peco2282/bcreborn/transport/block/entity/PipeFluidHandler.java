@@ -76,6 +76,10 @@ public class PipeFluidHandler implements IFluidHandler {
         module.onFluidFilled(fillDirection);
       }
       pipe.setChanged();
+      // The client draws the fluid and the direction it came from.
+      if (pipe.getLevel() != null) {
+        pipe.getLevel().sendBlockUpdated(pipe.getBlockPos(), pipe.getBlockState(), pipe.getBlockState(), 3);
+      }
     }
 
     return filled;

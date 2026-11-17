@@ -219,7 +219,8 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       }
 
       if (!stack.isEmpty() && stack.getItem() instanceof IPipePluggableItem pluggableItem) {
-        Direction side = hit.getDirection();
+        // Original addOrStripPipePluggable(): the arm that was hit, otherwise the clicked face.
+        Direction side = clickedSide(pos, hit);
         if (!pipeBE.hasPipePluggable(side)) {
           if (!level.isClientSide) {
             PipePluggable<?> pluggable = pluggableItem.createPipePluggable(pipeBE.getPipe(), side, stack);
@@ -284,11 +285,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     if (state.getValue(WATERLOGGED)) {
       level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
     }
-    var bet = switch (transportType) {
-      case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
-      case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
-      case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
-    };
+    var bet = PipeBlockEntity.getBlockEntityType(transportType);
 
     // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
     level.getBlockEntity(currentPos, bet).ifPresent(be -> {
@@ -311,6 +308,9 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     BlockEntity thisBE = level.getBlockEntity(pos);
 
     if (thisBE instanceof PipeBlockEntity pipeBE) {
+      // Original TileGenericPipe.canPipeConnect(): a blocking pluggable (plug, gate, solid facade) on either side
+      // of the joint closes it.
+      if (pipeBE.hasBlockingPluggable(direction)) return false;
       if (transportType == PipeType.ENERGY && !pipeBE.canTransferEnergy(direction)) return false;
       var behaviour = pipeBE.getBehaviour();
       if (behaviour != null) {
@@ -322,6 +322,9 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
 
     // 他のパイプとの接続
     if (neighborBlock instanceof PipeBlock otherPipe) {
+      if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other && other.hasBlockingPluggable(direction.getOpposite())) {
+        return false;
+      }
       return otherPipe.getTransportType() == this.transportType;
     }
 

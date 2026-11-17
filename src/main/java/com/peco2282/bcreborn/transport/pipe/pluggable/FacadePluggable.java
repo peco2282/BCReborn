@@ -19,6 +19,12 @@ import com.peco2282.bcreborn.api.serialization.NbtReader;
 import com.peco2282.bcreborn.api.serialization.NbtWriter;
 import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.transport.item.FacadeItem;
+import com.peco2282.bcreborn.api.transport.PipeWire;
+import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
+import com.peco2282.bcreborn.transport.item.FacadeItem.FacadeState;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,10 +36,16 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * Port of the original {@code FacadePluggable}. A basic facade has one state. A phased facade has a default state
+ * and one state per pipe wire; the first state whose wire is active is shown, otherwise the default one (original
+ * {@code TileGenericPipe.refreshRenderState()}). A state without a block is transparent: nothing is drawn.
+ */
 public class FacadePluggable extends PipePluggable<FacadePluggable> {
+  private static final FacadeState EMPTY = new FacadeState(Blocks.AIR.defaultBlockState(), null, false);
 
-  private BlockState state = Blocks.AIR.defaultBlockState();
-  private boolean hollow = false;
+  private FacadeState[] states = {EMPTY};
+  private int active;
 
   public FacadePluggable() {
     super(BCRebornTransport.FACADE);
@@ -44,64 +56,131 @@ public class FacadePluggable extends PipePluggable<FacadePluggable> {
   }
 
   public FacadePluggable(BlockState state, boolean hollow) {
-    super(BCRebornTransport.FACADE);
-    this.state = state;
-    this.hollow = hollow;
+    this(new FacadeState[]{new FacadeState(state, null, hollow)});
   }
 
+  public FacadePluggable(FacadeState[] states) {
+    super(BCRebornTransport.FACADE);
+    if (states.length > 0) this.states = states.clone();
+    this.active = defaultState();
+  }
+
+  /** The state without a wire, or the first one. */
+  private int defaultState() {
+    for (int i = 0; i < states.length; i++) {
+      if (states[i].wire() == null) return i;
+    }
+    return 0;
+  }
+
+  private FacadeState activeState() {
+    return states[Math.max(0, Math.min(active, states.length - 1))];
+  }
+
+  public FacadeState[] getStates() {
+    return states.clone();
+  }
+
+  /** The block shown at the moment; air while the active state is transparent. */
   public BlockState getState() {
-    return state;
+    BlockState state = activeState().state();
+    return state != null ? state : Blocks.AIR.defaultBlockState();
+  }
+
+  /** Original {@code isTransparent()}: the active state shows nothing. */
+  public boolean isTransparent() {
+    return activeState().state() == null;
   }
 
   public boolean isHollow() {
-    return hollow;
+    return activeState().hollow();
   }
 
   public void setHollow(boolean hollow) {
-    this.hollow = hollow;
+    FacadeState state = activeState();
+    states[Math.max(0, Math.min(active, states.length - 1))] = new FacadeState(state.state(), state.wire(), hollow);
+  }
+
+  /** Picks the state for the pipe's wire signals; a change is synced and may open or close the side. */
+  @Override
+  public void update(IPipeBlockEntity pipe, Direction direction) {
+    if (states.length < 2 || !(pipe instanceof PipeBlockEntity entity)) return;
+    if (entity.getLevel() == null || entity.getLevel().isClientSide) return;
+    int wanted = defaultState();
+    for (int i = 0; i < states.length; i++) {
+      PipeWire wire = states[i].wire();
+      if (wire != null && entity.isWireActive(wire)) {
+        wanted = i;
+        break;
+      }
+    }
+    if (wanted != active) {
+      active = wanted;
+      entity.onPluggableChanged();
+    }
   }
 
   @Override
   public void writeTag(CompoundTag nbt) {
-    NbtWriter.of(nbt)
-      .putBlockState("state", state)
-      .putBoolean("hollow", hollow);
+    ListTag list = new ListTag();
+    for (FacadeState state : states) {
+      CompoundTag tag = new CompoundTag();
+      state.writeToNbt(tag);
+      list.add(tag);
+    }
+    nbt.put("states", list);
+    nbt.putByte("active", (byte) active);
   }
 
   @Override
   public void readTag(CompoundTag nbt) {
+    if (nbt.contains("states", Tag.TAG_LIST)) {
+      ListTag list = nbt.getList("states", Tag.TAG_COMPOUND);
+      if (!list.isEmpty()) {
+        states = new FacadeState[list.size()];
+        for (int i = 0; i < states.length; i++) states[i] = FacadeState.fromNbt(list.getCompound(i));
+      }
+      active = Math.max(0, Math.min(nbt.getByte("active"), states.length - 1));
+      return;
+    }
+    // Older saves: one block state and a hollow flag.
+    BlockState[] state = {Blocks.AIR.defaultBlockState()};
+    boolean[] hollow = {false};
     NbtReader.of(nbt)
-      .applyBlockState("state", state -> this.state = state)
-      .applyBoolean("hollow", hollow -> this.hollow = hollow);
+      .applyBlockState("state", value -> state[0] = value)
+      .applyBoolean("hollow", value -> hollow[0] = value);
+    states = new FacadeState[]{new FacadeState(state[0], null, hollow[0])};
+    active = 0;
   }
 
   @Override
   public void writeData(FriendlyByteBuf data) {
-    data.writeVarInt(Block.getId(state));
-    data.writeBoolean(hollow);
+    CompoundTag tag = new CompoundTag();
+    writeTag(tag);
+    data.writeNbt(tag);
   }
 
   @Override
   public void readData(FriendlyByteBuf data) {
-    state = Block.stateById(data.readVarInt());
-    hollow = data.readBoolean();
+    CompoundTag tag = data.readNbt();
+    if (tag != null) readTag(tag);
   }
 
   @Override
   public ItemStack[] getDropItems(IPipeBlockEntity pipe) {
     ItemStack stack = new ItemStack(TransportItems.FACADE.get());
-    TransportItems.FACADE.get().setFacadeStates(stack, new FacadeItem.FacadeState[]{new FacadeItem.FacadeState(state, null, hollow)});
+    TransportItems.FACADE.get().setFacadeStates(stack, states.clone());
     return new ItemStack[]{stack};
   }
 
   @Override
   public boolean isBlocking(IPipeBlockEntity pipe, Direction direction) {
-    return !hollow;
+    return !isHollow();
   }
 
   @Override
   public boolean isSolidOnSide(IPipeBlockEntity pipe, Direction direction) {
-    return !hollow;
+    return !isTransparent() && !isHollow();
   }
 
   @Override

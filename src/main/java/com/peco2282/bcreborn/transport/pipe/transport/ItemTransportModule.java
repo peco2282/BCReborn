@@ -19,6 +19,8 @@ import com.peco2282.bcreborn.transport.pipe.PipeType;
 import com.peco2282.bcreborn.transport.pipe.TravelingItem;
 import com.peco2282.bcreborn.transport.pipe.behaviour.ItemPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.behaviour.PipeBehaviour;
+import com.peco2282.bcreborn.transport.pipe.pluggable.LensFilterHandler;
+import com.peco2282.bcreborn.transport.pipe.pluggable.LensPluggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -112,6 +114,8 @@ public class ItemTransportModule {
       }
 
       if (item.isReached()) {
+        // Original PipeEventItem.ReachedEnd: a lens on the way out paints the item.
+        LensPluggable.paintLeaving(pipe, item);
         MovementResult result = MovementHelper.moveItemToNext(pipe, item);
         switch (result) {
           case SUCCESS -> {
@@ -151,6 +155,11 @@ public class ItemTransportModule {
     // A material's own choice must still respect closed valves.
     if (next != null && next != item.getEntryDirection() && !RoutingHelper.isOpenTowards(pipe, next)) {
       next = null;
+    }
+    // A material's own choice must respect lens filters as well (original LensFilterHandler runs for every pipe).
+    // A pipe that bounces (Iron, Daizuli) sends the item back; any other falls back to the default routing.
+    if (next != null && next != item.getEntryDirection() && !LensFilterHandler.canPass(pipe, item, next)) {
+      next = behaviour instanceof ItemPipeBehaviour ib && ib.allowsBouncing() ? item.getEntryDirection() : null;
     }
     if (next == null) {
       next = routingHelper.chooseNextDirection(pipe, item);
@@ -196,6 +205,8 @@ public class ItemTransportModule {
 
     TravelingItem travelingItem = new TravelingItem(stack.copy(), from, speed);
     travelingItem.setColor(color);
+    // Original PipeEventItem.Entered: a lens on the way in paints the item.
+    LensPluggable.paintEntering(pipe, travelingItem);
     adjustSpeed(travelingItem, behaviour);
     if (!pipe.getLevel().isClientSide) {
       chooseDestination(travelingItem, behaviour);

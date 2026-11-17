@@ -15,6 +15,12 @@ import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
 import com.peco2282.bcreborn.transport.item.FacadeItem;
+import com.peco2282.bcreborn.transport.item.LensItem;
+import com.peco2282.bcreborn.transport.item.PlugItem;
+import net.minecraft.world.item.DyeColor;
+import org.jetbrains.annotations.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +43,29 @@ public class TransportItems {
   public static final RegistryObject<PipeWireItem> PIPE_WIRE_GREEN = REGISTRY.registerItem("pipe_wire_green", () -> new PipeWireItem(PipeWire.GREEN));
   public static final RegistryObject<PipeWireItem> PIPE_WIRE_YELLOW = REGISTRY.registerItem("pipe_wire_yellow", () -> new PipeWireItem(PipeWire.YELLOW));
 
+  public static final RegistryObject<PlugItem> PIPE_PLUG = REGISTRY.registerItem("pipe_plug", PlugItem::new);
+  /** Original {@code ItemLens}: one lens and one filter per dye colour, plus the clear variants. */
+  private static final Map<DyeColor, RegistryObject<LensItem>> LENSES = new EnumMap<>(DyeColor.class);
+  private static final Map<DyeColor, RegistryObject<LensItem>> FILTERS = new EnumMap<>(DyeColor.class);
+  public static final RegistryObject<LensItem> PIPE_LENS_CLEAR = REGISTRY.registerItem("pipe_lens_clear", () -> new LensItem(null, false));
+  public static final RegistryObject<LensItem> PIPE_FILTER_CLEAR = REGISTRY.registerItem("pipe_filter_clear", () -> new LensItem(null, true));
+
+  static {
+    for (DyeColor color : DyeColor.values()) {
+      LENSES.put(color, REGISTRY.registerItem("pipe_lens_" + color.getName(), () -> new LensItem(color, false)));
+      FILTERS.put(color, REGISTRY.registerItem("pipe_filter_" + color.getName(), () -> new LensItem(color, true)));
+    }
+  }
+
+  /**
+   * @param color  the lens colour, or null for the clear variant
+   * @param filter true for a filter, false for a lens
+   */
+  public static LensItem lens(@Nullable DyeColor color, boolean filter) {
+    if (color == null) return (filter ? PIPE_FILTER_CLEAR : PIPE_LENS_CLEAR).get();
+    return (filter ? FILTERS : LENSES).get(color).get();
+  }
+
   /** Links each {@link PipeWire} colour to its item (original: {@code PipeWire.item = pipeWire}). */
   public static void bindPipeWires() {
     PipeWire.RED.setItem(PIPE_WIRE_RED.get());
@@ -50,6 +79,11 @@ public class TransportItems {
     output.accept(PIPE_WIRE_BLUE.get());
     output.accept(PIPE_WIRE_GREEN.get());
     output.accept(PIPE_WIRE_YELLOW.get());
+    output.accept(PIPE_PLUG.get());
+    for (DyeColor color : DyeColor.values()) output.accept(lens(color, false));
+    output.accept(PIPE_LENS_CLEAR.get());
+    for (DyeColor color : DyeColor.values()) output.accept(lens(color, true));
+    output.accept(PIPE_FILTER_CLEAR.get());
     for (var material : GateDefinition.GateMaterial.values()) {
       for (var logic : GateDefinition.GateLogic.values()) {
         var gate = ItemGate.makeGateItem(material, logic);

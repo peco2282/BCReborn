@@ -24,6 +24,19 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.level.block.state.BlockState;
+import com.peco2282.bcreborn.transport.block.render.ColoredPipeModel;
+import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
+import com.peco2282.bcreborn.transport.pipe.PipeType;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraft.world.item.DyeColor;
+import com.peco2282.bcreborn.transport.TransportItems;
+import com.peco2282.bcreborn.transport.item.LensItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -55,5 +68,39 @@ public class BCRebornTransportEvent {
     event.registerBlockEntityRenderer(TransportBlockEntityTypes.ITEM_PIPE.get(), ItemPipeRenderer::new);
     event.registerBlockEntityRenderer(TransportBlockEntityTypes.FLUID_PIPE.get(), FluidPipeRenderer::new);
     event.registerBlockEntityRenderer(TransportBlockEntityTypes.ENERGY_PIPE.get(), EnergyPipeRenderer::new);
+    // A structure pipe has nothing inside; the item renderer draws its pluggables and wires.
+    event.registerBlockEntityRenderer(TransportBlockEntityTypes.STRUCTURE_PIPE.get(), ItemPipeRenderer::new);
+  }
+
+  /** Original ItemLens.getColorFromItemStack(): layer 0 (the glass) takes the lens colour, the frame stays as is. */
+  @SubscribeEvent
+  public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event) {
+    for (boolean filter : new boolean[]{false, true}) {
+      for (DyeColor color : DyeColor.values()) {
+        LensItem item = TransportItems.lens(color, filter);
+        event.register((stack, tintIndex) -> tintIndex == 0 ? item.getTint() : 0xFFFFFF, item);
+      }
+    }
+  }
+
+  /**
+   * Lapis and Daizuli pipes take their texture from the pipe's colour: their block models are wrapped so the
+   * colour (model data) picks the texture.
+   */
+  @SubscribeEvent
+  public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+    wrapColoredPipe(event, PipeMaterial.LAPIS, "block/pipes/pipe_items_lapis_", DyeColor.BLUE);
+    wrapColoredPipe(event, PipeMaterial.DAIZULI, "block/pipes/pipe_items_daizuli_", DyeColor.BLACK);
+  }
+
+  private static void wrapColoredPipe(ModelEvent.ModifyBakingResult event, PipeMaterial material, String texturePrefix, DyeColor builtIn) {
+    var block = TransportBlocks.get(PipeType.ITEM, material);
+    if (block == null) return;
+    // Every state of a multipart block shares one baked model; keep sharing one wrapper.
+    Map<BakedModel, BakedModel> wrapped = new IdentityHashMap<>();
+    for (BlockState state : block.get().getStateDefinition().getPossibleStates()) {
+      event.getModels().computeIfPresent(BlockModelShaper.stateToModelLocation(state),
+        (location, model) -> wrapped.computeIfAbsent(model, original -> new ColoredPipeModel(original, texturePrefix, builtIn)));
+    }
   }
 }

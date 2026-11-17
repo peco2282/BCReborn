@@ -168,6 +168,10 @@ public class TransportBlockStateProvider extends BlockStateProvider {
       return resolveEnergyTexture(material, materialName);
     }
 
+    if (type == PipeType.STRUCTURE) {
+      return "block/pipes/pipe_structure_cobblestone";
+    }
+
     // FLUIDパイプのテクスチャ解決
     if (type == PipeType.FLUID) {
       return resolveFluidTexture(material, materialName);

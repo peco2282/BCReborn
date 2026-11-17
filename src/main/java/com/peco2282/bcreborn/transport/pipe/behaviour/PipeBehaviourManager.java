@@ -55,6 +55,10 @@ public class PipeBehaviourManager {
     register(PipeType.FLUID, PipeMaterial.CLAY, ClayFluidPipeBehaviour.INSTANCE);
     register(PipeType.FLUID, PipeMaterial.QUARTZ, QuartzFluidPipeBehaviour.INSTANCE);
 
+    // Original PipeStructureCobblestone: no behaviour of its own.
+    register(PipeType.STRUCTURE, PipeMaterial.COBBLESTONE, new PipeBehaviour() {
+    });
+
     // エネルギーパイプ
     register(PipeType.ENERGY, PipeMaterial.WOOD, WoodenEnergyPipeBehaviour.INSTANCE);
     register(PipeType.ENERGY, PipeMaterial.COBBLESTONE, CobblestoneEnergyPipeBehaviour.INSTANCE);

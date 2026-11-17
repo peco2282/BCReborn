@@ -58,6 +58,10 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.PipeColorLogic;
 import java.util.Collection;
 import com.peco2282.bcreborn.transport.gates.Gate;
 import com.peco2282.bcreborn.api.statements.StatementSlot;
@@ -146,6 +150,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       case ITEM -> TransportBlockEntityTypes.ITEM_PIPE.get();
       case FLUID -> TransportBlockEntityTypes.FLUID_PIPE.get();
       case ENERGY -> TransportBlockEntityTypes.ENERGY_PIPE.get();
+      case STRUCTURE -> TransportBlockEntityTypes.STRUCTURE_PIPE.get();
     };
   }
 
@@ -486,6 +491,19 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return runtime.pipeColor();
   }
 
+  /** The colour a Lapis / Daizuli pipe is drawn in; read by the client's pipe model. */
+  public static final ModelProperty<DyeColor> PIPE_COLOR = new ModelProperty<>();
+
+  private boolean hasColorTexture() {
+    return runtime.type() == PipeType.ITEM && (runtime.material() == PipeMaterial.LAPIS || runtime.material() == PipeMaterial.DAIZULI);
+  }
+
+  @Override
+  public @NotNull ModelData getModelData() {
+    if (!hasColorTexture()) return ModelData.EMPTY;
+    return ModelData.builder().with(PIPE_COLOR, PipeColorLogic.colorOf(this)).build();
+  }
+
   public void setPipeColor(@Nullable DyeColor color) {
     runtime.setPipeColor(color);
     setChanged();
@@ -568,7 +586,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     super.load(tag);
     PipeType oldType = runtime.type();
     PipeMaterial oldMaterial = runtime.material();
+    DyeColor colorBefore = runtime.pipeColor();
     runtime.load(tag);
+    // Client: the colour is part of the block's model, so a synced change redraws the block.
+    if (level != null && level.isClientSide && colorBefore != runtime.pipeColor() && hasColorTexture()) {
+      requestModelDataUpdate();
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+    }
     if (runtime.type() != oldType || runtime.material() != oldMaterial) {
       rebuildCapabilities();
       configureExtractionBattery();
@@ -660,7 +684,37 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
     setChanged();
     if (level != null) {
+      refreshConnections();
+      // A gate that broadcast a signal may be gone (original GatePluggable.onDetachedPipe -> resetGate()).
+      scheduleWireUpdate();
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+  }
+
+  /** For a pluggable whose own state changed (a phased facade switching state): syncs it and the connections. */
+  public void onPluggableChanged() {
+    setChanged();
+    if (level != null) {
+      refreshConnections();
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+  }
+
+  /**
+   * A pluggable that blocks (or no longer blocks) its side changes which sides are connected. The connections are
+   * part of the block state, so it is recomputed here; the neighbours follow through their shape update.
+   */
+  private void refreshConnections() {
+    if (level == null || level.isClientSide) return;
+    BlockState state = getBlockState();
+    if (!(state.getBlock() instanceof PipeBlock block)) return;
+    BlockState updated = state;
+    for (Direction dir : Direction.values()) {
+      updated = updated.setValue(PipeBlock.PROPERTY_MAP.get(dir), block.canConnectTo(level, worldPosition, dir));
+    }
+    if (updated != state) {
+      level.setBlock(worldPosition, updated, 3);
+      scheduleWireUpdate();
     }
   }
 
