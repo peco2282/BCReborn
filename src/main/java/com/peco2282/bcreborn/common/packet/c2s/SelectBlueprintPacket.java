@@ -41,7 +41,8 @@ public record SelectBlueprintPacket(
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
       .ifPresent(be -> {
-        if (blueprintId >= -1 && blueprintId < be.entries.size()) be.setSelectedBlueprint(blueprintId);
+        // The list is the player's own; the server cannot check the index against it.
+        if (blueprintId >= -1) be.setSelectedBlueprint(blueprintId);
       }));
     ctx.setPacketHandled(true);
   }

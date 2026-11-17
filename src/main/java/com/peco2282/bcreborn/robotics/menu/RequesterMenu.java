@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.menu;
 
+import net.minecraft.server.level.ServerPlayer;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.robotics.RoboticsMenuTypes;
@@ -63,6 +64,25 @@ public class RequesterMenu extends BuildCraftMenu<RequesterMenu> {
 
   @Override
   public boolean stillValid(Player player) {
+    return true;
+  }
+
+  /**
+   * Original {@code GuiRequester.RequestSlot.setItem()} / {@code TileRequester.setRequest()}: clicking request
+   * {@code id} sets it to the stack on the cursor (with its count), or clears it with an empty cursor. The click
+   * comes as the vanilla menu button packet; the server already knows the cursor stack.
+   */
+  @Override
+  public boolean clickMenuButton(Player player, int id) {
+    if (id < 0 || id >= RequesterBlockEntity.NB_ITEMS) return false;
+    ItemStack carried = getCarried();
+    requester.setRequest(id, carried.isEmpty() ? ItemStack.EMPTY : carried.copy());
+    requester.setChanged();
+    if (player instanceof ServerPlayer serverPlayer) {
+      ItemStack[] stacks = new ItemStack[RequesterBlockEntity.NB_ITEMS];
+      for (int i = 0; i < stacks.length; i++) stacks[i] = requester.getRequestTemplate(i);
+      BCNetworkManager.sendSyncRequesterList(serverPlayer, requester.getBlockPos(), stacks);
+    }
     return true;
   }
 

@@ -39,7 +39,7 @@ public class LibraryBookTypeHandler extends LibraryTypeHandlerNBT {
   @Override
   public String getName(ItemStack stack) {
     String s = stack.getOrCreateTag().getString("title");
-    return s.isEmpty() ? s : "";
+    return s;
   }
 
   @Override
@@ -49,7 +49,7 @@ public class LibraryBookTypeHandler extends LibraryTypeHandlerNBT {
     outNBT.putString("title", compound.getString("title"));
     outNBT.putString("author", compound.getString("author"));
     outNBT.put("pages", compound.getList("pages", Tag.TAG_STRING));
-    out.save(outNBT);
+    out.setTag(outNBT);
     return out;
   }
 

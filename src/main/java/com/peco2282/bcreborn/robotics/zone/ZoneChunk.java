@@ -60,7 +60,7 @@ public class ZoneChunk implements IBufferSerializable, INBTSerializable {
     } else {
       if (fullSet) {
         property = new BitSet(16 * 16);
-        property.flip(0, 16 * 16 - 1);
+        property.flip(0, 16 * 16);
         fullSet = false;
       } else if (property == null) {
         // Note - ZonePlan should usually destroy such chunks

@@ -48,14 +48,24 @@ public class ListItem extends BuildCraftItem implements IList {
     tag.putBoolean(TAG_WRITTEN, true);
   }
 
+  /**
+   * Original: damage 0 was the deprecated list and damage 1 the current one. 1.20 has one item, so a list that
+   * still holds data of the old format ({@code line[i]}) opens the old GUI and every other list the new one. The
+   * menus read the main hand, so only the main hand opens a list.
+   */
+  public static boolean isOldList(ItemStack stack) {
+    CompoundTag tag = stack.getTag();
+    return tag != null && tag.contains("line[0]") && !tag.contains("lines");
+  }
+
   @Override
   public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-    ItemStack stack = player.getMainHandItem();
+    ItemStack stack = player.getItemInHand(hand);
+    if (hand != InteractionHand.MAIN_HAND) {
+      return InteractionResultHolder.pass(stack);
+    }
     if (!world.isClientSide && stack.is(CoreItems.LIST.get())) {
-      // TODO: Implement GUI opening based on item metadata
-      // Modern Minecraft requires different approach for GUI handling
-      // Reference: stack.getItemDamage() == 1 ? GuiIds.LIST_NEW : GuiIds.LIST_OLD
-      var menuType = (stack.getDamageValue() == 1 ? CoreMenuTypes.LIST_NEW : CoreMenuTypes.LIST_OLD).get();
+      var menuType = (isOldList(stack) ? CoreMenuTypes.LIST_OLD : CoreMenuTypes.LIST_NEW).get();
       NetworkHooks.openScreen(
         (ServerPlayer) player,
         new SimpleMenuProvider(
@@ -64,12 +74,12 @@ public class ListItem extends BuildCraftItem implements IList {
         )
       );
     }
-    return InteractionResultHolder.success(stack);
+    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
   }
 
   @Override
   public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
-    if (!p_41421_.getOrCreateTag().getBoolean(TAG_WRITTEN)) {
+    if (isOldList(p_41421_)) {
       p_41423_.add(Component.translatable("tip.deprecated").withStyle(ChatFormatting.DARK_RED));
     }
 
@@ -81,7 +91,8 @@ public class ListItem extends BuildCraftItem implements IList {
 
   @Override
   public Component getName(ItemStack p_41458_) {
-    return Component.literal(getLabel(p_41458_));
+    String label = getLabel(p_41458_);
+    return label.isEmpty() ? super.getName(p_41458_) : Component.literal(label);
   }
 
   @Override

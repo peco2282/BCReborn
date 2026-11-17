@@ -11,6 +11,15 @@
  */
 package com.peco2282.bcreborn.robotics.block.entity;
 
+import java.util.Arrays;
+import com.peco2282.bcreborn.robotics.map.MapWorld;
+import com.peco2282.bcreborn.robotics.map.MapManager;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import com.peco2282.bcreborn.robotics.menu.ZonePlanMenu;
+import com.peco2282.bcreborn.common.packet.BCNetworkManager;
+import com.peco2282.bcreborn.core.item.MapLocationItem;
+import com.peco2282.bcreborn.api.items.IMapLocation;
 import com.peco2282.bcreborn.api.core.SafeTimeTracker;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
@@ -29,31 +38,34 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Port of the original {@code TileZonePlan}: sixteen painted zones (one per colour), a map location in slot 0 is
+ * written with the selected zone and the planner's name into slot 1, and a map location with a zone put into
+ * slot 2 is loaded into the selected zone.
+ */
 public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuProvider, Container {
 
   public static final int RESOLUTION = 2048;
   public static final int CRAFT_TIME = 120;
-  private static final int PREVIEW_BLOCKS_PER_PIXEL = 10;
   private static final int RESOLUTION_CHUNKS = RESOLUTION >> 4;
-  private final byte[] previewColors = new byte[80];
+  /** Slots: map to write, written map, map to import. */
+  public static final int SLOT_INPUT = 0;
+  public static final int SLOT_OUTPUT = 1;
+  public static final int SLOT_IMPORT = 2;
   private final SimpleInventory inv = new SimpleInventory(3, "inv", 64);
-  private final SafeTimeTracker previewRecalcTimer = new SafeTimeTracker(100);
   private final ZonePlan[] selectedAreas = new ZonePlan[16];
   public int chunkStartX, chunkStartZ;
   public short progress = 0;
   public String mapName = "";
-  private boolean previewColorsPushed = false;
+  private int currentSelectedArea = 0;
+  /** Original {@code previewColors}: 10 x 8 map colours around the planner, drawn on its front. */
+  private static final int PREVIEW_BLOCKS_PER_PIXEL = 10;
+  private static final int PREVIEW_INTERVAL = 100;
+  private final byte[] previewColors = new byte[80];
+  private boolean previewChanged = true;
 
   public ZonePlanBlockEntity(BlockPos pos, BlockState state) {
     super(RoboticsBlockEntityTypes.ZONE_PLAN.get(), pos, state);
-  }
-
-  public byte[] getPreviewTexture(boolean force) {
-    if (!previewColorsPushed || force) {
-      previewColorsPushed = true;
-      return previewColors;
-    }
-    return null;
   }
 
   @Override
@@ -67,69 +79,100 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     chunkStartZ = cz - RESOLUTION_CHUNKS / 2;
   }
 
+  /** Whether the block column is inside the area this planner maps (original: RESOLUTION blocks around it). */
+  public boolean isInMapArea(int x, int z) {
+    int ix = x - (chunkStartX << 4);
+    int iz = z - (chunkStartZ << 4);
+    return ix >= 0 && iz >= 0 && ix < RESOLUTION && iz < RESOLUTION;
+  }
+
   @Override
   protected void tick(Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) {
       return;
     }
 
-    if (previewRecalcTimer.markTimeIfDelay(level)) {
+    if ((level.getGameTime() + pos.asLong()) % PREVIEW_INTERVAL == 0) {
       recalculatePreview();
     }
 
-    // 1.7.10 logic for crafting MapLocation
-    ItemStack stack0 = inv.getItem(0);
-    ItemStack stack1 = inv.getItem(1);
-
-    // TODO: ItemMapLocation check and crafting logic porting
-        /*
-        if (!stack0.isEmpty() && stack1.isEmpty() && stack0.getItem() instanceof ItemMapLocation) {
-            if (progress < CRAFT_TIME) {
-                progress++;
-                if (level.getGameTime() % 5 == 0) {
-                    // sendNetworkUpdate();
-                }
-            } else {
-                ItemStack stack = inv.removeItem(0, 1);
-                if (selectedAreas[currentSelectedArea] != null) {
-                    ItemMapLocation.setZone(stack, selectedAreas[currentSelectedArea]);
-                    ((INamedItem) stack.getItem()).setName(stack, mapName);
-                }
-                inv.setItem(1, stack);
-            }
-        } else if (progress != 0) {
-            progress = 0;
-            // sendNetworkUpdate();
+    // Original updateEntity(): writing a map takes CRAFT_TIME ticks.
+    ItemStack input = inv.getItem(SLOT_INPUT);
+    if (!input.isEmpty() && inv.getItem(SLOT_OUTPUT).isEmpty() && input.getItem() instanceof MapLocationItem) {
+      if (progress < CRAFT_TIME) {
+        progress++;
+      } else {
+        ItemStack stack = inv.removeItem(SLOT_INPUT, 1);
+        ZonePlan zone = selectedAreas[currentSelectedArea];
+        if (zone != null) {
+          MapLocationItem.setZone(stack, zone);
+          ((MapLocationItem) stack.getItem()).setName(stack, Component.literal(mapName));
         }
-        */
+        inv.setItem(SLOT_OUTPUT, stack);
+        progress = 0;
+        setChanged();
+      }
+    } else if (progress != 0) {
+      progress = 0;
+    }
   }
 
+  /** Original {@code recalculatePreview()}: one map colour per 10 blocks, synced to the client when it changes. */
   private void recalculatePreview() {
-    byte[] newPreviewColors = new byte[80];
-    // TODO: BuildCraftRobotics.manager integration
-        /*
-        MapWorld mw = BCRebornRobotics.getManager().getWorld(level);
-        BlockPos pos = getBlockPos();
+    BlockPos pos = getBlockPos();
+    int baseX = pos.getX() - Math.floorMod(pos.getX(), PREVIEW_BLOCKS_PER_PIXEL);
+    int baseZ = pos.getZ() - Math.floorMod(pos.getZ(), PREVIEW_BLOCKS_PER_PIXEL);
+    int half = PREVIEW_BLOCKS_PER_PIXEL / 2;
+    MapWorld world = MapManager.getLoaded(level,
+      (baseX - 5 * PREVIEW_BLOCKS_PER_PIXEL) >> 4, (baseZ - 4 * PREVIEW_BLOCKS_PER_PIXEL) >> 4,
+      (baseX + 5 * PREVIEW_BLOCKS_PER_PIXEL) >> 4, (baseZ + 4 * PREVIEW_BLOCKS_PER_PIXEL) >> 4);
+    if (world == null) return;
+    byte[] colors = new byte[previewColors.length];
+    for (int y = 0; y < 8; y++) {
+      for (int x = 0; x < 10; x++) {
+        int bx = baseX + x * PREVIEW_BLOCKS_PER_PIXEL - 5 * PREVIEW_BLOCKS_PER_PIXEL + half;
+        int bz = baseZ + y * PREVIEW_BLOCKS_PER_PIXEL - 4 * PREVIEW_BLOCKS_PER_PIXEL + half;
+        colors[y * 10 + x] = world.hasChunk(bx >> 4, bz >> 4) ? (byte) world.getColor(bx, bz) : 0;
+      }
+    }
+    if (!Arrays.equals(colors, previewColors)) {
+      System.arraycopy(colors, 0, previewColors, 0, colors.length);
+      setChanged();
+      level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
+    }
+  }
 
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 10; x++) {
-                int tx = (x * PREVIEW_BLOCKS_PER_PIXEL) - (5 * PREVIEW_BLOCKS_PER_PIXEL) + (PREVIEW_BLOCKS_PER_PIXEL / 2);
-                int ty = (y * PREVIEW_BLOCKS_PER_PIXEL) - (4 * PREVIEW_BLOCKS_PER_PIXEL) + (PREVIEW_BLOCKS_PER_PIXEL / 2);
-                newPreviewColors[y * 10 + x] = (byte) mw.getColor(pos.getX() - (pos.getX() % PREVIEW_BLOCKS_PER_PIXEL) + tx, pos.getZ() - (pos.getZ() % PREVIEW_BLOCKS_PER_PIXEL) + ty);
-            }
-        }
+  /** Client: the preview colours once after they changed (or always with {@code force}), otherwise null. */
+  @Nullable
+  public byte[] getPreviewTexture(boolean force) {
+    if (previewChanged || force) {
+      previewChanged = false;
+      return previewColors;
+    }
+    return null;
+  }
 
-        if (!Arrays.equals(previewColors, newPreviewColors)) {
-            System.arraycopy(newPreviewColors, 0, previewColors, 0, 80);
-            // sendNetworkUpdate();
+  /** Original {@code importMap()}: a map that holds a zone replaces the selected zone. */
+  private void importMap(ItemStack stack) {
+    if (stack.getItem() instanceof IMapLocation map && map.getZone(stack) instanceof ZonePlan zone) {
+      selectedAreas[currentSelectedArea] = zone;
+      setChanged();
+      if (level instanceof ServerLevel serverLevel) {
+        for (ServerPlayer player : serverLevel.players()) {
+          if (player.containerMenu instanceof ZonePlanMenu menu && menu.getTile() == this) {
+            BCNetworkManager.sendSyncZonePlanAreaLoaded(player, getBlockPos(), zone);
+          }
         }
-        */
+      }
+    }
   }
 
   @Override
   public void saveAdditional(CompoundTag nbt) {
     super.saveAdditional(nbt);
     nbt.putString("name", mapName);
+    nbt.putByte("currentSelectedArea", (byte) currentSelectedArea);
+    nbt.putByteArray("preview", previewColors);
 
     CompoundTag invNBT = new CompoundTag();
     inv.writeTag(invNBT);
@@ -149,6 +192,12 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     super.load(nbt);
 
     mapName = nbt.getString("name");
+    currentSelectedArea = Math.max(0, Math.min(selectedAreas.length - 1, nbt.getByte("currentSelectedArea")));
+    byte[] preview = nbt.getByteArray("preview");
+    if (preview.length == previewColors.length) {
+      System.arraycopy(preview, 0, previewColors, 0, preview.length);
+      previewChanged = true;
+    }
 
     inv.readTag(nbt.getCompound("inv"));
 
@@ -160,10 +209,21 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
     }
   }
 
+  /** Original {@code rpcLoadArea()}: the zone of colour {@code index}, which becomes the selected one. */
   public ZonePlan selectArea(int index) {
+    currentSelectedArea = index;
     if (selectedAreas[index] == null) {
       selectedAreas[index] = new ZonePlan();
     }
+    return selectedAreas[index];
+  }
+
+  public int getCurrentSelectedArea() {
+    return currentSelectedArea;
+  }
+
+  @Nullable
+  public ZonePlan getArea(int index) {
     return selectedAreas[index];
   }
 
@@ -203,7 +263,15 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
   @Override
   public void setItem(int slotId, ItemStack itemstack) {
     inv.setItem(slotId, itemstack);
-    // TODO: importMap logic
+    if (slotId == SLOT_IMPORT && level != null && !level.isClientSide) {
+      importMap(itemstack);
+    }
+  }
+
+  @Override
+  public boolean canPlaceItem(int slot, ItemStack stack) {
+    // Original isItemValidForSlot(): only maps go in, and nothing goes into the output.
+    return slot != SLOT_OUTPUT && stack.getItem() instanceof MapLocationItem;
   }
 
   @Override
@@ -213,7 +281,7 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
 
   @Override
   public boolean stillValid(Player player) {
-    return super.stillValid(player);
+    return Container.stillValidBlockEntity(this, player);
   }
 
   @Override
@@ -227,8 +295,8 @@ public class ZonePlanBlockEntity extends BuildCraftBlockEntity implements MenuPr
   }
 
   @Override
-  public @Nullable AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
-    return null;
+  public @Nullable AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+    return new ZonePlanMenu(windowId, inventory, this);
   }
 
   public void doSetName(String name) {

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
+import com.peco2282.bcreborn.robotics.map.MapWorld;
+import com.peco2282.bcreborn.robotics.map.MapManager;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
@@ -38,10 +40,39 @@ public record RequestZonePlanComputeMapPacket(BlockPos pos, int cx, int cz, int 
     );
   }
 
-  private static void computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
+  /** Largest map a client may ask for, and the zoom range of the Zone Planner GUI. */
+  public static final int MAX_SIZE = 512;
+  public static final float MIN_BLOCKS_PER_PIXEL = 0.125f;
+  public static final float MAX_BLOCKS_PER_PIXEL = 16.0f;
+
+  /**
+   * Original {@code ContainerZonePlan.computeMap()}: the map colour of every pixel's block column, inside the area
+   * the planner maps; black outside it and where nothing is mapped yet.
+   */
+  public static byte[] computeMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel) {
     final byte[] textureData = new byte[width * height];
-    // TODO: implement actual map computation or delegate to BE
-    // For now, let's assume we send it in chunks
+    int startX = Math.round(cx - width * blocksPerPixel / 2);
+    int startZ = Math.round(cz - height * blocksPerPixel / 2);
+    int endX = Math.round(startX + (width - 1) * blocksPerPixel);
+    int endZ = Math.round(startZ + (height - 1) * blocksPerPixel);
+    MapWorld world = MapManager.getLoaded(be.getLevel(), startX >> 4, startZ >> 4, endX >> 4, endZ >> 4);
+    if (world == null) return textureData;
+    for (int i = 0; i < width; ++i) {
+      for (int j = 0; j < height; ++j) {
+        int x = Math.round(startX + i * blocksPerPixel);
+        int z = Math.round(startZ + j * blocksPerPixel);
+        if (be.isInMapArea(x, z) && world.hasChunk(x >> 4, z >> 4)) {
+          textureData[i + j * width] = (byte) world.getColor(x, z);
+        }
+      }
+    }
+    return textureData;
+  }
+
+  private static void sendMap(ZonePlanBlockEntity be, int cx, int cz, int width, int height, float blocksPerPixel, ServerPlayer player) {
+    if (width <= 0 || height <= 0 || width > MAX_SIZE || height > MAX_SIZE
+      || !(blocksPerPixel >= MIN_BLOCKS_PER_PIXEL && blocksPerPixel <= MAX_BLOCKS_PER_PIXEL)) return;
+    final byte[] textureData = computeMap(be, cx, cz, width, height, blocksPerPixel);
     int MAX_PACKET_LENGTH = 30000;
     for (int i = 0; i < textureData.length; i += MAX_PACKET_LENGTH) {
       int len = Math.min(textureData.length - i, MAX_PACKET_LENGTH);
@@ -67,8 +98,8 @@ public record RequestZonePlanComputeMapPacket(BlockPos pos, int cx, int cz, int 
     ctx.enqueueWork(() -> {
       ServerPlayer player = ctx.getSender();
       if (player == null) return;
-      getBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
-        .ifPresent(be -> computeMap(be, cx, cz, width, height, blocksPerPixel, player));
+      getMenuBlockEntity(ctx, pos, RoboticsBlockEntityTypes.ZONE_PLAN.get())
+        .ifPresent(be -> sendMap(be, cx, cz, width, height, blocksPerPixel, player));
     });
     ctx.setPacketHandled(true);
   }

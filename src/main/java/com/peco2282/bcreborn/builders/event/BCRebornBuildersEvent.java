@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.builders.event;
 
+import net.minecraftforge.fml.loading.FMLPaths;
 import com.peco2282.bcreborn.BCReborn;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
@@ -54,6 +55,9 @@ public class BCRebornBuildersEvent {
       MenuScreens.register(BuildersMenuTypes.FILLER.get(), FillerScreen::new);
       MenuScreens.register(BuildersMenuTypes.BLUEPRINT_LIBRARY.get(), BlueprintLibraryScreen::new);
     });
+    // Original: the player's own library is the "blueprints" folder next to the game (it was never opened).
+    Path library = FMLPaths.GAMEDIR.get().resolve("blueprints");
+    BCRebornBuilders.getClientDB().init(library, library);
   }
 
   @SubscribeEvent

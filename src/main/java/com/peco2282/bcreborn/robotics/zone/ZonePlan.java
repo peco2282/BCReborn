@@ -99,8 +99,8 @@ public class ZonePlan implements IZone, IBufferSerializable, INBTSerializable {
     double maxSqrDistance = Double.MAX_VALUE;
 
     for (Map.Entry<ChunkIndex, ZoneChunk> e : chunkMapping.entrySet()) {
-      double dx = (e.getKey().x << 4 + 8) - index.getX();
-      double dz = (e.getKey().z << 4 + 8) - index.getZ();
+      double dx = ((e.getKey().x << 4) + 8) - index.getX();
+      double dz = ((e.getKey().z << 4) + 8) - index.getZ();
 
       double sqrDistance = dx * dx + dz * dz;
 

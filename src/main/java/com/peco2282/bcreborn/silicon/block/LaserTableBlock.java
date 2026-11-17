@@ -55,7 +55,6 @@ public class LaserTableBlock extends BuildCraftBlock implements ILaserTargetBloc
     }
     BlockEntity tile = level.getBlockEntity(pos);
     if (tile instanceof LaserTableBaseBlockEntity table) {
-      // TODO: GUI opening logic
       NetworkHooks.openScreen((ServerPlayer) player, table, pos);
       return InteractionResult.CONSUME;
     }

@@ -56,10 +56,6 @@ public class MapChunk implements INBTSerializable {
         int y = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, bx, bz);
         int color = MapColor.NONE.id;
 
-        if (y < 0) {
-          y = 255;
-        }
-
         BlockState b;
 
         while (y >= chunk.getMinBuildHeight()) {

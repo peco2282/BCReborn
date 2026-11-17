@@ -49,14 +49,6 @@ public record SyncZonePlanImagePacket(BlockPos pos, int totalSize, int offset, b
       AbstractContainerMenu menu = ClientPacketAccess.player().containerMenu;
       if (menu instanceof ZonePlanMenu zonePlanMenu && zonePlanMenu.gui != null) {
         zonePlanMenu.gui.applyMapImageBytes(offset, data);
-        // TODO: use dynamic texture from screen
-                /*
-                for (int i = 0; i < data.length; ++i) {
-                    if (offset + i < zonePlanMenu.gui.mapTexture.colorMap.length) {
-                        zonePlanMenu.gui.mapTexture.colorMap[offset + i] = 0xFF000000 | MapColor.byId(data[i] & 0xFF).getCol();
-                    }
-                }
-                */
       }
     });
     ctx.setPacketHandled(true);

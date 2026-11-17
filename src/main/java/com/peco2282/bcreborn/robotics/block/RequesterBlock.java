@@ -62,7 +62,6 @@ public class RequesterBlock extends BuildCraftBlock {
   @Override
   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
     if (!level.isClientSide) {
-      // TODO: Menu opening logic
       BlockEntity entity = level.getBlockEntity(pos);
       if (entity instanceof RequesterBlockEntity provider) {
         NetworkHooks.openScreen((ServerPlayer) player, provider, pos);

@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet;
 
+import com.peco2282.bcreborn.common.packet.c2s.SelectBlueprintPacket;
 import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.blueprint.BlueprintReadConfiguration;
@@ -42,9 +43,10 @@ public class BCNetworkManager {
 
   /// Blueprint
   public static void sendSelectBlueprint(BlockPos pos, int blueprintId) {
-    sendToServer(new RequestSelectedBlueprintPacket(pos, blueprintId));
+    sendToServer(new SelectBlueprintPacket(pos, blueprintId));
   }
 
+  /** @param count the size of the upload in bytes */
   public static void sendUploadBlueprintBegin(BlockPos pos, LibraryId libraryId, int count) {
     sendToServer(new UploadBlueprintBeginPacket(pos, libraryId, count));
   }
@@ -69,9 +71,6 @@ public class BCNetworkManager {
     sendToServer(new UploadBuildersInActionPacket(pos));
   }
 
-  public static void sendDeleteBlueprint(BlockPos pos) {
-    sendToServer(new DeleteBlueprintPacket(pos));
-  }
 
   public static void sendEraseBuilderTank(BlockPos pos, int tankId) {
     sendToServer(new EraseBuilderTankPacket(pos, tankId));

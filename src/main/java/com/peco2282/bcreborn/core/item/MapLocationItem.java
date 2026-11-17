@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.item;
 
+import com.peco2282.bcreborn.robotics.zone.ZonePlan;
 import com.peco2282.bcreborn.api.core.IAreaProvider;
 import com.peco2282.bcreborn.api.core.IBox;
 import com.peco2282.bcreborn.api.core.IPathProvider;
@@ -79,7 +80,8 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
     switch (tag.getByte(TAG_KIND)) {
       case KIND_SPOT -> {
         Direction side = Direction.values()[tag.getByte("side")];
-        tooltip.add(Component.literal("{" + tag.getInt("x") + ", " + tag.getInt("y") + ", " + tag.getInt("z") + ", " + side + "}"));
+        BlockPos pos = BlockPos.of(tag.getLong("Pos"));
+        tooltip.add(Component.literal("{" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ", " + side + "}"));
       }
       case KIND_AREA -> {
         int x = tag.getInt("xMin");
@@ -99,7 +101,7 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
         }
       }
       case KIND_ZONE -> {
-        // ZonePlan 移植後に詳細表示を追加する。
+        // Original: the zone has no short description, only its name.
       }
       default -> {
       }
@@ -136,9 +138,21 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
     return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
+  /** The map's own name if it has one (it used to be blank for every unnamed map). */
   @Override
   public Component getName(ItemStack stack) {
-    return Component.literal(stack.getOrCreateTag().getString(TAG_NAME));
+    CompoundTag tag = stack.getTag();
+    String name = tag == null ? "" : tag.getString(TAG_NAME);
+    return name.isEmpty() ? super.getName(stack) : Component.literal(name);
+  }
+
+  /** Original {@code ItemMapLocation.setZone()}: the Zone Planner writes a painted zone onto the map. */
+  public static void setZone(ItemStack stack, ZonePlan plan) {
+    CompoundTag tag = stack.getOrCreateTag();
+    tag.putByte(TAG_KIND, KIND_ZONE);
+    CompoundTag zone = new CompoundTag();
+    plan.writeTag(zone);
+    tag.put("zone", zone);
   }
 
   @Override
@@ -209,7 +223,12 @@ public class MapLocationItem extends BuildCraftItem implements IMapLocation {
       return getPointBox(stack);
     }
 
-    // ZonePlan 移植後に KIND_ZONE を復元する。
+    if (tag.contains(TAG_KIND) && tag.getByte(TAG_KIND) == KIND_ZONE) {
+      ZonePlan plan = new ZonePlan();
+      plan.readTag(tag.getCompound("zone"));
+      return plan;
+    }
+
     return Box.EMPTY;
   }
 

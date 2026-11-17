@@ -53,7 +53,8 @@ public class RoboticsBlockStateProvider extends BCBlockStateHelper {
       .end()
     );
 
-    simpleBlockWithItem(RoboticsBlocks.ZONE_PLAN.get(), models()
+    // The planner has a facing (its front shows the map preview), so the model turns with it.
+    zonePlanModel(models()
       .getBuilder("zone_plan")
       .texture("back", modLoc("block/zone_plan/back"))
       .texture("default", modLoc("block/zone_plan/default"))
@@ -89,5 +90,11 @@ public class RoboticsBlockStateProvider extends BCBlockStateHelper {
 
     itemModels().getBuilder("robot_station")
       .parent(new ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
+  }
+
+  /** Original: the planner turns to face the player who placed it; the model's north face is its front. */
+  private void zonePlanModel(ModelFile model) {
+    horizontalBlock(RoboticsBlocks.ZONE_PLAN.get(), model);
+    simpleBlockItem(RoboticsBlocks.ZONE_PLAN.get(), model);
   }
 }

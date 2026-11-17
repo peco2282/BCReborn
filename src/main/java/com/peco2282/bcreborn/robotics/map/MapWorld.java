@@ -82,14 +82,15 @@ public class MapWorld {
     return region.hasChunk(x & 15, z & 15);
   }
 
+  /** Writes every region that changed since the last save. */
   public void save() {
-    long[] chunkList;
+    long[] regionList;
     synchronized (updatedChunks) {
-      chunkList = updatedChunks.toLongArray();
+      regionList = updatedChunks.toLongArray();
       updatedChunks.clear();
     }
 
-    for (long id : chunkList) {
+    for (long id : regionList) {
       MapRegion region = regionMap.get(id);
       if (region == null) {
         continue;
@@ -136,8 +137,9 @@ public class MapWorld {
     long id = MapUtils.getIDFromCoords(rchunk);
     MapChunk chunk = getChunk(rchunk.getPos().x, rchunk.getPos().z);
     chunk.update(rchunk);
+    // The region (16 x 16 chunks) is what is saved, so remember the region, not the chunk.
     synchronized (updatedChunks) {
-      updatedChunks.add(id);
+      updatedChunks.add(MapUtils.getIDFromCoords(rchunk.getPos().x >> 4, rchunk.getPos().z >> 4));
     }
     synchronized (timeToUpdate) {
       timeToUpdate.remove(rchunk);

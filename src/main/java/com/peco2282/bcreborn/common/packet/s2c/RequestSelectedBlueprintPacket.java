@@ -11,9 +11,8 @@
  */
 package com.peco2282.bcreborn.common.packet.s2c;
 
-import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
+import com.peco2282.bcreborn.builders.blueprints.BlueprintLibraryClient;
 import com.peco2282.bcreborn.common.bean.Packet;
-import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,14 +36,11 @@ public record RequestSelectedBlueprintPacket(
     buf.writeInt(blueprintId);
   }
 
+  /** Server → client: the library asks the player for the selected entry. */
   @Override
   public void handle(Supplier<NetworkEvent.Context> context) {
     NetworkEvent.Context ctx = context.get();
-    ctx.enqueueWork(() -> getBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
-      .ifPresent(library -> {
-        // TODO: implement when BlueprintDatabase is available
-        BCNetworkManager.sendUploadNothing(pos);
-      }));
+    ctx.enqueueWork(() -> BlueprintLibraryClient.uploadSelected(pos));
     ctx.setPacketHandled(true);
   }
 }

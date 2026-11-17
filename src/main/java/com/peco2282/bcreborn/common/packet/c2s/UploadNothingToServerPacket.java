@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.common.packet.c2s;
 
+import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.builders.BuildersBlockEntityTypes;
 import com.peco2282.bcreborn.common.bean.Packet;
 import com.peco2282.bcreborn.common.packet.CustomPacket;
@@ -37,10 +38,8 @@ public record UploadNothingToServerPacket(BlockPos pos) implements CustomPacket 
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
 
-    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get()).ifPresent(library -> {
-      library.setItem(3, library.getItem(2));
-      library.setItem(2, ItemStack.EMPTY);
-    }));
+    ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
+      .ifPresent(BlueprintLibraryBlockEntity::uploadNothing));
 
     ctx.setPacketHandled(true);
   }

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn;
 
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import com.peco2282.bcreborn.robotics.map.MapManager;
 import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
 import com.peco2282.bcreborn.robotics.recipe.RobotIntegrationRecipe;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardNBT;
@@ -93,7 +95,12 @@ public class BCRebornRobotics implements BCReborn {
   // You can use SubscribeEvent apply let the Event Bus discover methods to call
   @SubscribeEvent
   public void onServerStarting(ServerStartingEvent event) {
-    // Do something when the server starts
-    LOGGER.info("HELLO from server starting");
+    // Original BuildCraftRobotics.serverLoad(): the map for the Zone Planner.
+    MapManager.start(event.getServer());
+  }
+
+  @SubscribeEvent
+  public void onServerStopping(ServerStoppingEvent event) {
+    MapManager.stop();
   }
 }

@@ -32,7 +32,7 @@ public record UploadBlueprintBeginPacket(
   public static UploadBlueprintBeginPacket decode(FriendlyByteBuf buffer) {
     BlockPos pos = buffer.readBlockPos();
     LibraryId libraryId = LibraryId.decode(buffer);
-    short chunk = buffer.readShort();
+    int chunk = buffer.readVarInt();
     return new UploadBlueprintBeginPacket(pos, libraryId, chunk);
   }
 
@@ -40,17 +40,17 @@ public record UploadBlueprintBeginPacket(
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeBlockPos(pos);
     libraryId.writeData(buffer);
-    buffer.writeShort(chunk);
+    buffer.writeVarInt(chunk);
   }
 
   @Override
   public void handle(Supplier<NetworkEvent.Context> supplier) {
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> {
-      // Bound the allocation before accepting a client-supplied chunk count (16 MiB).
-      if (chunk <= 0 || chunk > 1024) return;
+      // "chunk" is the size of the upload in bytes; bound the allocation before accepting it.
+      if (chunk <= 0 || chunk > BlueprintLibraryBlockEntity.MAX_UPLOAD) return;
       getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
-        .ifPresent(be -> be.setBlueprintDownloadAndId(libraryId, new byte[BlueprintLibraryBlockEntity.CHUNK_SIZE * chunk]));
+        .ifPresent(be -> be.beginUpload(libraryId, chunk));
     });
     ctx.setPacketHandled(true);
   }

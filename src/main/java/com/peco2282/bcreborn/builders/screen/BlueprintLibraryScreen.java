@@ -11,11 +11,11 @@
  */
 package com.peco2282.bcreborn.builders.screen;
 
+import com.peco2282.bcreborn.builders.blueprints.BlueprintLibraryClient;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.builders.block.entity.BlueprintLibraryBlockEntity;
 import com.peco2282.bcreborn.builders.menu.BlueprintLibraryMenu;
 import com.peco2282.bcreborn.common.blueprint.LibraryId;
-import com.peco2282.bcreborn.common.packet.BCNetworkManager;
 import com.peco2282.bcreborn.common.screen.BuildCraftScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,7 +39,12 @@ public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMen
   protected void init() {
     super.init();
 
-    deleteButton = addRenderableWidget(Button.builder(Component.translatable("gui.del"), b -> BCNetworkManager.sendDeleteBlueprint(library.getBlockPos())).bounds(leftPos + 174, topPos + 109, 25, 20).build());
+    // Original: deleting removes the entry from the player's own library; the server is not involved.
+    deleteButton = addRenderableWidget(Button.builder(Component.translatable("gui.del"), b -> {
+      library.deleteSelectedBpt();
+      BlueprintLibraryClient.select(library, -1);
+      updateDeleteButton();
+    }).bounds(leftPos + 174, topPos + 109, 25, 20).build());
 
     library.refresh();
     updateDeleteButton();
@@ -58,8 +63,9 @@ public class BlueprintLibraryScreen extends BuildCraftScreen<BlueprintLibraryMen
       int off = menu.getScrollbarWidget().getPosition();
       int ySlot = (int) ((y - 22) / 9) + off;
 
-      if (ySlot >= 0 && ySlot < library.entries.size()) {
-        BCNetworkManager.sendSelectBlueprint(library.getBlockPos(), ySlot);
+      if (y >= 22 && ySlot >= 0 && ySlot < library.entries.size()) {
+        // Original: clicking the selected entry again deselects it.
+        BlueprintLibraryClient.select(library, ySlot == library.getSelectedBlueprint() ? -1 : ySlot);
         updateDeleteButton();
         return true;
       }

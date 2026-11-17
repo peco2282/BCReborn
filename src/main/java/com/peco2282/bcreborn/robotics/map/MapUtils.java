@@ -32,16 +32,15 @@ public final class MapUtils {
   }
 
   public static int getXFromID(long id) {
-    return (int) (id >> 24);
+    int x = (int) ((id >> 24) & 0xFFFFFF);
+    return x >= 0x800000 ? x - 0x1000000 : x;
   }
 
   public static int getZFromID(long id) {
+    // Two's complement of the 24 bits (it was off by one for every negative z, so regions were saved to the
+    // wrong file names).
     int z = (int) (id & 0xFFFFFF);
-    if (z >= 0x800000) {
-      return -(z ^ 0xFFFFFF);
-    } else {
-      return z;
-    }
+    return z >= 0x800000 ? z - 0x1000000 : z;
   }
 
 }

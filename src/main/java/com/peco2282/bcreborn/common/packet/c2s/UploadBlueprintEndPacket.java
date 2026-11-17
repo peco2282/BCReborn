@@ -40,7 +40,7 @@ public record UploadBlueprintEndPacket(
     NetworkEvent.Context ctx = supplier.get();
     ctx.enqueueWork(() -> getMenuBlockEntity(ctx, pos, BuildersBlockEntityTypes.BLUEPRINT_LIBRARY.get())
       .filter(be -> be.getBlueprintDownload() != null)
-      .ifPresent(BlueprintLibraryBlockEntity::completeDownload));
+      .ifPresent(BlueprintLibraryBlockEntity::finishUpload));
     ctx.setPacketHandled(true);
   }
 }

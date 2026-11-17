@@ -116,7 +116,8 @@ public abstract class AdvancedInterfaceScreen<M extends BuildCraftMenu<M>> exten
 
     AdvancedSlot slot = getSlotAtLocation((int) mouseX, (int) mouseY);
 
-    if (slot.isDefined()) {
+    // Clicks outside the advanced slots (the map, the player inventory) used to throw here.
+    if (slot != null && slot.isDefined()) {
       slotClicked(slot, mouseButton);
     }
     return result;
