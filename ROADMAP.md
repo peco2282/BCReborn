@@ -235,7 +235,7 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 ---
 
 ## 8-2. ロボット・電力の回帰テスト (既存の範囲と不足)
-2026-11-17 時点。外部レビュー（GitHub 上の `RobotGameTests` だけを見たもの）では「Pump / Planter / Delivery の専用テストなし」とされたが、未プッシュの `RobotBoardGameTests` に `pumpTakesFluidSource` / `planterPlantsSeed` / `deliveryBringsRequestedItems` がある。CI（`ci.yml`）は `runGameTestServer` を実行するので、合否はプッシュ後の CI で記録する。2026-11-17 にローカルで `runGameTestServer` を実行し、追加した 3 本を含む 150 本すべて成功。その後の 3 本を加えて 153 本すべて成功。
+2026-11-17 時点。外部レビュー（GitHub 上の `RobotGameTests` だけを見たもの）では「Pump / Planter / Delivery の専用テストなし」とされたが、未プッシュの `RobotBoardGameTests` に `pumpTakesFluidSource` / `planterPlantsSeed` / `deliveryBringsRequestedItems` がある。CI（`ci.yml`）は `runGameTestServer` を実行するので、合否はプッシュ後の CI で記録する。2026-11-17 にローカルで `runGameTestServer` を実行し、追加した 3 本を含む 150 本すべて成功。その後の 3 本を加えて 153 本、`RobotEdgeCaseGameTests` の 13 本を加えて 167 本すべて成功。
 
 ### 既存テスト
 | テスト | 確認していること | 確認していないこと |
@@ -256,14 +256,19 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | `RobotBoardGameTests`（その他のボード） | Miner / Lumberjack / Harvester / Farmer / Shovelman / Leave Cutter / Picker / Butcher / Knight / Stripes / Builder を実行、Bomber は TNT の点火まで | 失敗時の扱い（道具なし・対象なし） |
 | `ChargingTableGameTests` | Charging Table でロボットのアイテムを充電、ボードなしは電力を持たない | — |
 | `TransportCompatibilityGameTests.powerSplitExcludesInputAndUsesRemainingDemand` | 電力パイプが入力側を除き、残りの需要で分ける | ステーションと通常の機械が同じ電力網にある場合 |
+| `RobotEdgeCaseGameTests.stationWorksOnEverySide` | ステーション 6 面（UP / DOWN / EAST / WEST / NORTH）とゲートの面の 8 通りで、登録・提供アクション・ロボットのリンクとドッキング | SOUTH（チェスト側）のステーション |
+| `RobotEdgeCaseGameTests.loadingStopsAtRobotCapacity` | 満載なら積まない、要求数だけ積む、在庫より多く求めたら在るだけ積む。スタックは丸ごと入るスロットにしか入らない（62 個のスロットに 5 個は入らず、2 個なら入る。原作 `isItemValidForSlot` どおり） | — |
+| `RobotEdgeCaseGameTests.fluidLoadingStopsAtTankCapacityAndFluid` | 3999 mB のロボットは 1 mB だけ積み、満タンなら積まない、溶岩を持っていたら水を積まない | — |
+| `RobotEdgeCaseGameTests.fluidUnloadingKeepsWhatTheTargetRefuses` / `fluidUnloadingFillsOnlyTheRoomLeft` | 別の液体のタンクには混ざらず、空きが少ないタンクは空き分だけ満たす。毎 tick 総量が一定 | — |
+| `RobotEdgeCaseGameTests.brokenRequestingStationIsDeliveredOnceRebuilt` | 要求の予約中に要求元ステーションを壊すと登録から消え、作り直すと 1 回だけ届く。毎 tick 鉄の総数（チェスト＋要求先＋ロボット＋地面）が 8 | メインステーションの破壊 |
+| `RobotEdgeCaseGameTests.partlyFulfilledRequestResumesAfterReload` | 3 個中 1 個を持つ要求先には 2 個だけ積み、積んだまま読み込み直しても 1 回だけ届く | — |
+| `RobotEdgeCaseGameTests.limitedPowerPipeCapsStationAndMachine` | PowerMode M2（20 RF/t）の鉄の電力パイプから、ステーションと Refinery が受け取る合計が 200 tick で上限（＋パイプの蓄え 1 tick 分）を超えない | — |
+| `RobotEdgeCaseGameTests.pumpHoldingOtherFluidLeavesSource` / `pumpFilterLeavesOtherFluids` | 溶岩を持つ Pump、溶岩フィルタの Pump は水源を汲まない | — |
+| `RobotEdgeCaseGameTests.planterKeepsSeedsWithoutSoil` / `planterPlacesNothingThatIsNotASeed` | 石の上には植えず種を減らさない、種でないものは置かない | — |
+| `RobotEdgeCaseGameTests.shutDownRobotKeepsItsLoad` / `lowRobotRechargesThenWorks` | 電力切れで停止しても荷物と液体を保つ。安全量を下回ったロボットは電力ステーションで充電してから植える | 停止したロボットはその場では再開しない（原作どおり、回収して充電する） |
 
-### 追加するテスト（優先順）
-`f8f88b3`（充電）は共通の `EnergyTransportModule` の需要の集め方・分配を変えたので、電力系を先に確認する。
-1. **総量の保存と予約の解放**（済み: 液体の総量、要求予約中の死亡、荷物を持ったままの死亡）: ステーション破壊のあとに、別のロボットがステーションと要求を使えること。
-2. **電力の分配**（済み: ステーションと Refinery の両方に届く、満充電のロボットは受け取らない）: 有限の電源で合計が供給量を超えない、出力を絞るゲート（PowerMode）が効く。
-3. **配送要求の保存**（済み: 積んだあとの保存・読み込み）: 一部を届けたあとの保存・読み込みで二重に届けない。
-4. **面と容量の境界**: ステーションの 6 面、ロボットの満載、搬送先の満杯・一部空き、液体 3999 / 4000 mB、別の液体を持っているとき。
-5. **Pump / Planter の失敗側と停止からの復帰**: 汲めない・植えられない条件で何も消費しない、作業中の電力切れから給電で再開する。
+### 残り
+上の表の「確認していないこと」のうち、Delivery ロボットの 2 台同時の取り合い、一部を届けたあとの死亡、メインステーションの破壊、長時間の連続運転は未対応。
 
 テストの記録には対象のコミット、テスト名、成功 / 失敗、失敗した tick、期待値と実測値を残す。
 
