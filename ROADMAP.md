@@ -25,7 +25,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 
 1.  **実機での確認**: 画面を伴う部分は GameTest では検証できない。下の「実機確認チェックリスト」を `runClient` で確認し、問題がなければ 🔧 を ✅ にする。
 2.  **入手手段のないアイテム**: 流体・動力パイプ、ゲート本体、ファサードにレシピがなく、サバイバルで作れない（6 章）。
-3.  **スタブのままの機能**: ゲート拡張 Timer / Fader / Light Sensor、Stamping Table、Zone Planner の地図、Blueprint Library の一覧・同期（7 章）。Zone Plan / Requester / List / レーザーテーブルの GUI は開く（「GUI opening」の TODO コメントは古い）。
+3.  **スタブのままの機能**: 7-1 章の残り（ストライプパイプのパイプ延長、Pump の液面処理）。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
 
 ---
 
@@ -153,10 +153,12 @@ BC を象徴する大型マシン。
 ### 7-1. クラスはあるが中身がスタブ
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| ゲート拡張 Timer / Fader / Light Sensor | 🔧 | トリガー・アクションは登録済みだが、拡張の `addTriggers` / `addActions` が TODO でゲートに出てこない |
-| Stamping Table | ⬜ | `canCraft()` が常に false |
-| Zone Planner | 🔧 | 地図画像は空の配列を送るだけ（`RequestZonePlanComputeMapPacket`）。プレビュー計算と Map Location への書き込みはコメントアウト |
-| Blueprint Library | 🔧 | 一覧の更新・削除、クライアントとのダウンロード / 選択の同期が TODO。データベース（`LibraryDatabase`）は実装済み |
+| ゲート拡張 Timer / Fader / Light Sensor | ✅ | 原作 GateExpansionTimer / RedstoneFader / LightSensor 準拠: Timer は 5 / 10 / 15 秒ごとに 5 tick 有効になるトリガー 3 種、Fader は「入力がちょうど N」のトリガーと「N を出力」のアクション（N = 1〜15。以前は 0〜14 で作られていた）、Light Sensor はゲート前方のブロック光で明 / 暗のトリガー。GameTest（GateExpansionGameTests）で確認 |
+| Stamping Table | ✅ | 原作 TileStampingTable 準拠: 入力 1 個を 1 個だけのクラフトレシピに通す（原木 → 板材など）、Package は中の 3×3 をそのままレシピに、レシピがなければそのまま出力へ。容器の残り（空き瓶など）はスロット 2〜4、あふれたら隣のインベントリか上に落とす。1 個 400 RF、Package は中のスタック数 × 400 RF。メニューにエネルギーの同期を追加（進捗バーが出なかった）。GameTest で確認 |
+| Zone Planner | 🔧 | TileZonePlan / ContainerZonePlan / GuiZonePlan 準拠で実装: 地図データ（MapManager）をサーバー起動時に開始して `<world>/buildcraft/zonemap` に保存、地図画像の計算、ブロック前面のプレビュー、地図アイテムへの範囲書き込み（KIND_ZONE、名前付き）と取り込み、画面の操作（色の選択、左ドラッグで塗る・Shift で消す、右ドラッグで移動、ホイールで拡大縮小、名前欄）。以前は GUI が開かず（`createMenu` が null）、MapManager も起動していなかった。GameTest（MachineGuiGameTests）で書き込み・取り込み・地図計算を確認、画面は実機確認待ち |
+| Blueprint Library | 🔧 | TileBlueprintLibrary 準拠で実装: スロット 0 の設計図・テンプレート・本をプレイヤーのライブラリ（ゲームフォルダの `blueprints`）へ保存、選んだ項目をスロット 2 のアイテムへ書き込み（分割アップロード）、一覧の選択・削除はクライアント側。進捗はサーバーで進める（以前はクライアントだけで進み、何も起きなかった）。本の型ハンドラーの名前と読み込みの不具合も修正。GameTest で保存・読み込み・本の往復を確認、画面とクライアントとのやり取りは実機確認待ち |
+| Requester | 🔧 | GuiRequester 準拠: 左の 20 枠をクリックすると手に持ったアイテム（個数ごと）が要求になる、空の手で解除。以前は要求を設定する手段がなかった。GameTest で確認、画面は実機確認待ち |
+| List | 🔧 | 1.20 ではアイテムが 1 種類のため、旧形式のデータを持つリストだけ旧 GUI、それ以外は新 GUI を開く（以前は常に旧 GUI）。名前が空のときに表示名が消える不具合を修正 |
 | ストライプパイプのパイプ延長 | ⬜ | `StripesHandlerPipes` は常に対象外、`PipeExtensionListener` はアイテムを送り返すだけ |
 | Pump | 🔧 | 液面に着いたときの処理に `TODO: Impl Fill fluid!` が残る（汲み上げは実装済み） |
 
@@ -200,8 +202,9 @@ BC を象徴する大型マシン。
 ### Phase 5: 原作との差分の解消 (6 章・7 章)
 *   [ ] 流体・動力パイプ、ゲート、ファサードのレシピ（Pipe Sealant を含む）
 *   [ ] 動力パイプ Sandstone / Emerald
-*   [ ] ゲート拡張 Timer / Fader / Light Sensor の接続
-*   [ ] Stamping Table、Zone Planner の地図、Blueprint Library の一覧と同期
+*   [x] ゲート拡張 Timer / Fader / Light Sensor の接続
+*   [x] Stamping Table
+*   [x] Zone Planner の地図、Blueprint Library の一覧と同期、Requester の要求設定（実機確認待ち）
 *   [ ] 木パイプの搬出とストライプパイプを原作の方式へ
 *   [ ] 湧き水・油田の生成
 *   [ ] Gate Copier / Filtered Buffer / Power Adapter
@@ -229,6 +232,9 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | 色付きパイプ | Lapis / Daizuli が色ごとのテクスチャになる、レンチ・染料で色を変えるとすぐ変わる、塗られたアイテムが色の箱に入って流れる |
 | 位相ファサード | ワイヤーの信号で表示ブロックが切り替わる、透明状態で消える |
 | Integration Table | 出力プレビュー（101,36 のスロット）、使えない拡張スロットの×表示 |
+| Zone Planner | 地図が表示される、色を選んで左ドラッグで塗る・Shift＋ドラッグで消す、右ドラッグで移動・ホイールで拡大縮小、名前欄、地図アイテムの書き込みと進捗バー、ブロック前面のプレビューが向きに合う |
+| Blueprint Library | 一覧に `blueprints` フォルダの中身が出る、設計図を入れると一覧に増える、選んでから白紙を入れると書き込まれる、削除ボタン |
+| Requester | 左の要求枠に持っているアイテムと個数が表示される、ツールチップ |
 | 液体パイプ | 水位が滑らかに上下する、垂直は柱になる、流れのテクスチャが進行方向へ動く（逆向きに見えないか）、面の欠け・重なりがない、溶岩が暗所で光る |
 | エンジン | ピストンが飛ばずに動く、Stone の炎ゲージ、Iron の燃料/冷却液タンク、右側のエネルギー台帳 |
 
@@ -283,6 +289,8 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 - **ワイヤー信号の計算方法**: 原作は隣接パイプを再帰的に更新していたが、本実装はつながったパイプを `visited` 付きで探索し、信号源からの距離で強度を決める。結果は同じ（強度 255 から 1 本ごとに -1）。
 
 ## 10. 原作との意図的な差異
+- **Zone Planner の地図データ**: 原作は専用スレッドから定期保存していた。地図データはサーバースレッドでも書き換わるため、サーバースレッドで 2 分ごと・ワールドのアンロード時・サーバー停止時に保存する。サーバー起動前から読み込まれていたチャンクは、地図を計算するときにまだ記録がなければその場で記録する。
+- **Electronic Library の削除**: 原作どおりクライアントのライブラリから消す。サーバーへ削除を送るパケットは撤去した（統合サーバーでは、他のプレイヤーが送るとホストのファイルを消せた）。
 - **パイプワイヤー**: 原作は 1 アイテムをダメージ値で 4 色に分けていた。1.20 では色ごとに別アイテム。
 - **Quarry のフレーム建設**: 置き換え可能なブロックは上書き、壊せるブロックは採掘して置く。岩盤・BlockEntity を持つブロック（チェストや機械）・Quarry 自身の位置は壊さず待つ。フレーム 1 個のエネルギーは 25 RF（原作の設計図ビルダーの消費量は再現していない）。
 - **Assembly Table**: レシピはサーバーにしかないため、GUI のレシピ一覧はサーバーで作って同期する。製造は原作通りエネルギーが溜まった時点で行い、レシピの `crafting_time` は使わない。
