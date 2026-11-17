@@ -41,7 +41,7 @@ Tests use the **Forge GameTest** framework, not JUnit directly.
 | Mod ID | Package suffix | Responsibility |
 |---|---|---|
 | `bcreborncore` | `core` / `common` / `api` | Shared API, registries, utilities, base classes |
-| `bcreborntransport` | `transport` | Pipe system (item/fluid/energy), gates, facades |
+| `bcreborntransport` | `transport` | Pipe system (item/fluid/energy/structure), gates, facades, plugs, lenses |
 | `bcrebornenergy` | `energy` | Engines (Wood/Stone/Iron/Creative), fuel, FE power |
 | `bcrebornbuilders` | `builders` | Quarry, Filler, Architect Table, schematics |
 | `bcrebornfactory` | `factory` | Mining Well and future advanced machinery |
@@ -85,6 +85,8 @@ The pipe system follows strict responsibility boundaries — **do not blur these
 
 **TravelingItem key fields**: `stack`, `entryDirection` (came *from*, not going *to*), `nextDirection` (null until routing), `progress` (0→1, moves at ≥1.0), `speed` (default 0.05f), `bounceCount` (saved but unused: the original has no jam counter). Jams follow the original `PipeTransportItems`: only sides that can take the item are destinations; with none the item is dropped at the centre, except on pipes whose `ItemPipeBehaviour.allowsBouncing()` is true (Iron, Daizuli, Clay); overfull pipes group items and then burst.
 
+**Pluggables** (`PipePluggable`: facade, gate, robot station, plug, lens / filter): a blocking pluggable closes its side for both pipes (`PipeBlock.canConnectTo`), and `PipeBlockEntity.setPipePluggable` recomputes the connections. Lens filters are applied in `RoutingHelper` (and to a behaviour's own choice in `ItemTransportModule.chooseDestination`) through `LensFilterHandler`.
+
 **Design rules that must not be violated:**
 - BlockState = appearance only. No runtime state in BlockState.
 - All runtime state lives in BlockEntity.
@@ -110,4 +112,6 @@ After adding blocks, items, or recipes, run `gradlew.bat runData` to regenerate 
 
 See `ROADMAP.md` for full status (including the client-side verification checklist). Active work (as of last update):
 - **Client verification**: GUIs and rendering (Diamond / Emzuli Pipe GUIs, wires, gates, Landmarks, Assembly Table, engines) are implemented and GameTest-verified server-side, but not yet checked in a real client.
-- **Colour pipe visuals**: Lapis / Daizuli colours are logic-only (the item colour is `TravelingItem.color`, not stack NBT); per-colour textures and painted-item rendering are missing.
+- **Unverified client visuals**: plug / lens renderers and lens item tint, the rewritten `FluidPipeRenderer`, `ColoredPipeModel` (Lapis / Daizuli texture by colour, via `PipeBlockEntity.PIPE_COLOR` model data), the painted-item box, phased facade switching and the Integration Table preview slot are GameTest-verified on the server side only.
+- **Robot / power regression gaps**: ROADMAP §8-2 lists what the robot and power tests cover and what is still missing (total fluid conservation, reservation release on death, stations sharing a power network with machines, delivery requests across saves, all six station sides, full inventories). Robot coverage is split between `RobotGameTests` (station, charging, carriers) and `RobotBoardGameTests` (one test per board).
+- **Robot boards**: every board is run-verified in `RobotBoardGameTests` (the Bomber only up to priming the TNT). Robot tests must give the robot a work area (a robot without one searches 64 blocks around and works on other tests' structures). The test structures are dark and closed to the sky (crops need a light source), and a mob that is hit must be penned in or it is knocked out of the work area. Do not `switch` on a client-only enum in a class that also runs on the server: it breaks every enum switch of that class on a dedicated server.
