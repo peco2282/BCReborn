@@ -252,7 +252,9 @@ public class BptBuilderBlueprint extends BptBuilderBase {
       BuildingSlot slot = internalGetNextBlock(world, null);
       checkDone();
 
-      slot.reserved = true;
+      if (slot != null) {
+        slot.reserved = true;
+      }
 
       return slot;
     }
@@ -301,7 +303,8 @@ public class BptBuilderBlueprint extends BptBuilderBase {
   }
 
   protected boolean readyForSlotLookup(AbstractBuilderBlockEntity builder) {
-    return builder.energyAvailable() >= BuilderAPI.BREAK_ENERGY;
+    // Original: no builder (a builder robot reserving a slot at a construction marker) is always ready.
+    return builder == null || builder.energyAvailable() >= BuilderAPI.BREAK_ENERGY;
   }
 
   /**
@@ -380,6 +383,10 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               || isBlockBreakCanceled(world, slot.x, slot.y, slot.z)) {
               iterator.remove();
               markLocationUsed(slot.x, slot.y, slot.z);
+            } else if (builder == null) {
+              // Original: only reserved here; the robot breaks the block itself.
+              createDestroyItems(slot);
+              return slot;
             } else {
               if (canDestroy(builder, context, slot)) {
                 consumeEnergyToDestroy(builder, slot);
@@ -391,7 +398,10 @@ public class BptBuilderBlueprint extends BptBuilderBase {
               }
             }
           } else if (!slot.schematic.doNotBuild()) {
-            if (checkRequirements(builder, slot.schematic)) {
+            if (builder == null) {
+              // Original: only reserved here; the robot brings the requirements and builds the slot itself.
+              return slot;
+            } else if (checkRequirements(builder, slot.schematic)) {
               if (!BuildCraftAPI.isSoftBlock(world, slot.x, slot.y,
                 slot.z) || requirementMap.contains(new BlockPos(slot.x, slot.y, slot.z))) {
                 continue; // Can't build yet, wait (#2751)

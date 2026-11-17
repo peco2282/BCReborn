@@ -38,7 +38,8 @@ public class BuildingSlotMapIterator {
     this.builderBlueprint = builderBlueprint;
     this.slotMap = builderBlueprint.buildList;
     int[] buildStageOccurences = builderBlueprint.buildStageOccurences;
-    this.isCreative = builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
+    // Original: without a builder (a robot reserving slots) every slot is offered, as in creative.
+    this.isCreative = builder == null || builder.getLevel().getServer().getDefaultGameType() == GameType.CREATIVE;
 
     reset();
   }

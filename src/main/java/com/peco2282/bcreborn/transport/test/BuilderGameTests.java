@@ -11,6 +11,10 @@
  */
 package com.peco2282.bcreborn.transport.test;
 
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.BlockState;
+import com.peco2282.bcreborn.core.CoreBlocks;
+import com.peco2282.bcreborn.core.block.entity.PathMarkerBlockEntity;
 import com.peco2282.bcreborn.BCRebornBuilders;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.builders.BuildersBlock;
@@ -169,6 +173,54 @@ public class BuilderGameTests {
       check(helper, builder.getItem(0).isEmpty() && builder.getItem(1).is(BuildersItems.BLUEPRINT_TEMPLATE.get()),
         "Original iterateBpt(): with nothing to build the blueprint moves to the first free slot");
       helper.succeed();
+    });
+  }
+
+  /**
+   * Original TileBuilder.PathIterator: with path markers next to the builder, the template is built again and
+   * again along the path. The markers run east from next to the builder; the copies are 2 wide, so they land
+   * 3 blocks apart.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = TEMPLATE, templateNamespace = BCRebornTransport.MODID, timeoutTicks = 1200)
+  public void builderRepeatsTemplateAlongPathMarkers(GameTestHelper helper) {
+    BlockPos first = BUILDER.offset(0, 0, 1);
+    BlockPos last = first.offset(6, 0, 0);
+    for (int x = 0; x < 2; x++) {
+      for (int z = 0; z < 2; z++) {
+        helper.setBlock(SOURCE.offset(x, 0, z), Blocks.COBBLESTONE.defaultBlockState());
+      }
+    }
+    BlockState marker = CoreBlocks.PATH_MARKER.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP);
+    // Markers need a block to stand on, or they pop off at the next neighbour update.
+    helper.setBlock(first.below(), Blocks.STONE.defaultBlockState());
+    helper.setBlock(last.below(), Blocks.STONE.defaultBlockState());
+    helper.setBlock(first, marker);
+    helper.setBlock(last, marker);
+    PathMarkerBlockEntity start = (PathMarkerBlockEntity) helper.getBlockEntity(first);
+    start.createAndConnect((PathMarkerBlockEntity) helper.getBlockEntity(last));
+    check(helper, start.getPath().size() == 2, "The two markers must form a path");
+
+    BuilderBlockEntity builder = placeBuilder(helper);
+    ItemStack stack = record(helper, new Template(2, 1, 2), "gametest_path_template", builder);
+    builder.setItem(1, new ItemStack(Items.DIRT, 64));
+    builder.setItem(0, stack);
+
+    // The template sits at +2/+2 from its origin (see record()); the origin walks from `first` towards `last`.
+    BlockPos copy = first.offset(2, 0, 2);
+    helper.succeedWhen(() -> {
+      helper.assertBlockNotPresent(CoreBlocks.PATH_MARKER.get(), first);
+      helper.assertBlockNotPresent(CoreBlocks.PATH_MARKER.get(), last);
+      for (int n = 0; n < 3; n++) {
+        for (int x = 0; x < 2; x++) {
+          for (int z = 0; z < 2; z++) {
+            helper.assertBlockPresent(Blocks.DIRT, copy.offset(n * 3 + x, 0, z));
+          }
+        }
+        if (n < 2) helper.assertBlockPresent(Blocks.AIR, copy.offset(n * 3 + 2, 0, 0));
+      }
+      helper.assertTrue(builder.getItem(0).isEmpty(), "The template must leave the blueprint slot at the end of the path");
+      helper.assertTrue(builder.isDone(), "The builder must be done");
     });
   }
 }
