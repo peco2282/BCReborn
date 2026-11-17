@@ -51,10 +51,22 @@ public class PathFindingSearch implements IIterableAlgorithm {
 
   @Override
   public void iterate() {
+    iterate(PATH_ITERATIONS * 10, PATH_ITERATIONS);
+  }
+
+  /**
+   * One step with explicit budgets, for callers that run the search on the server thread.
+   *
+   * @param searchBudget how many candidate blocks to look at
+   * @param pathBudget   how many path finding steps to share between the candidates found so far
+   */
+  public void iterate(int searchBudget, int pathBudget) {
     if (pathFinders.size() < 5 && blockIter.hasNext()) {
-      iterateSearch(PATH_ITERATIONS * 10);
+      iterateSearch(searchBudget);
     }
-    iteratePathFind(PATH_ITERATIONS);
+    if (!pathFinders.isEmpty()) {
+      iteratePathFind(pathBudget);
+    }
   }
 
   private void iterateSearch(int itNumber) {
@@ -65,7 +77,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
 
       BlockPos delta = blockIter.next();
       BlockPos block = new BlockPos(start.getX() + delta.getX(),
-        Math.max((start.getY() + delta.getY()), 0),
+        Math.max((start.getY() + delta.getY()), world.getMinBuildHeight()),
         start.getZ() + delta.getZ());
       if (isLoadedChunk(block.getX(), block.getZ())) {
         if (isTarget(block)) {
@@ -80,7 +92,8 @@ public class PathFindingSearch implements IIterableAlgorithm {
   }
 
   private boolean isTarget(BlockPos block) {
-    if (!zone.contains(block.getX(), block.getY(), block.getZ())) {
+    // Original: a robot without a work area searches everywhere.
+    if (zone != null && !zone.contains(block.getX(), block.getY(), block.getZ())) {
       return false;
     }
     if (!pathFound.matches(world, block)) {
@@ -109,7 +122,7 @@ public class PathFindingSearch implements IIterableAlgorithm {
 
   public void iteratePathFind(int itNumber) {
     for (PathFinding pathFinding : new ArrayList<>(pathFinders)) {
-      pathFinding.iterate(itNumber / pathFinders.size());
+      pathFinding.iterate(Math.max(1, itNumber / pathFinders.size()));
       if (pathFinding.isDone()) {
         LinkedList<BlockPos> path = pathFinding.getResult();
         if (!path.isEmpty()) {

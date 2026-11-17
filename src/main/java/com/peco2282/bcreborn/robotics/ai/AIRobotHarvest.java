@@ -11,6 +11,13 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
+import java.util.List;
+import java.util.ArrayList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
+import com.peco2282.bcreborn.api.crops.CropManager;
+import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
@@ -19,7 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public class AIRobotHarvest extends AIRobot<AIRobotHarvest> {
 
-  private final int delay = 0;
+  private int delay = 0;
   private BlockPos blockFound;
 
   public AIRobotHarvest(RobotEntityBase iRobot) {
@@ -38,8 +45,30 @@ public class AIRobotHarvest extends AIRobot<AIRobotHarvest> {
       terminate();
       return;
     }
-    // Implementation simplified for now
-    terminate();
+    // Original: after a second, harvest the crop through its handler and drop what it gives at the robot.
+    if (delay++ > 20) {
+      if (!(robot.level() instanceof ServerLevel level)
+        || !BuildCraftAPI.getWorldProperty("harvestable").get(level, blockFound)) {
+        setSuccess(false);
+        terminate();
+        return;
+      }
+      List<ItemStack> drops = new ArrayList<>();
+      if (!CropManager.harvestCrop(level, blockFound, drops)) {
+        setSuccess(false);
+        terminate();
+        return;
+      }
+      for (ItemStack stack : drops) {
+        BlockUtils.dropItem(level, robot.blockPosition(), 6000, stack);
+      }
+      terminate();
+    }
+  }
+
+  @Override
+  public int getEnergyCost() {
+    return 20;
   }
 
   @Override

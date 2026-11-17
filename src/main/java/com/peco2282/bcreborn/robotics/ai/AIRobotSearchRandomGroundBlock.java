@@ -47,12 +47,14 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot<AIRobotSearchRandomG
   public void update() {
     if (filter == null) {
       terminate();
+      return;
     }
 
     attempts++;
 
     if (attempts > MAX_ATTEMPTS) {
       terminate();
+      return;
     }
 
     int x, z;
@@ -69,7 +71,8 @@ public class AIRobotSearchRandomGroundBlock extends AIRobot<AIRobotSearchRandomG
       z = b.getZ();
     }
 
-    for (int y = robot.level().getHeight(); y >= 0; --y) {
+    // From the top of the world down to the first block (the world no longer starts at y = 0).
+    for (int y = robot.level().getMaxBuildHeight() - 1; y >= robot.level().getMinBuildHeight(); --y) {
       var pos = new BlockPos(x, y, z);
       if (filter.matches(robot.level(), pos)) {
         blockFound = pos;

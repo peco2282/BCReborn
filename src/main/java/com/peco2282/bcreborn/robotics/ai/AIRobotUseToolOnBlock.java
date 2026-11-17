@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
+import net.minecraft.core.Direction;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.common.utils.BlockUtils;
@@ -49,7 +50,9 @@ public class AIRobotUseToolOnBlock extends AIRobot<AIRobotUseToolOnBlock> {
       ItemStack stack = robot.getMainHandItem();
 
       BlockPos pos = useToBlock;
-      if (BlockUtils.harvestBlock((ServerLevel) robot.level(), pos, stack)) {
+      // Original: the tool is used on top of the block (a hoe tills the dirt); it does not break the block.
+      ServerLevel level = (ServerLevel) robot.level();
+      if (BlockUtils.useItemOnBlock(level, BlockUtils.getFakePlayerWithTool(level, pos, stack), stack, pos, Direction.UP)) {
         if (stack.isDamageableItem()) {
           stack.hurtAndBreak(1, robot, r -> {
           });

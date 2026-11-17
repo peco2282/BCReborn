@@ -11,6 +11,11 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.ItemStack;
+import com.peco2282.bcreborn.common.utils.BlockUtils;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
@@ -40,22 +45,33 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
   @Override
   public void start() {
     robot.aimItemAt(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
-
     robot.setItemActive(true);
-    BlockPos pos = new BlockPos(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
-    blockState = robot.level().getBlockState(pos);
-    hardness = blockState.getDestroySpeed(robot.level(), pos);
-    // speed = getBreakSpeed(robot, robot.getMainHandItem(), blockState); // TODO
-    speed = 1.0f;
+    readBlock();
+  }
+
+  private void readBlock() {
+    blockState = robot.level().getBlockState(blockToBreak);
+    hardness = blockState.getDestroySpeed(robot.level(), blockToBreak);
+    speed = getBreakSpeed(robot.getMainHandItem(), blockState);
+  }
+
+  /** Original {@code getBreakSpeed()}: the tool's dig speed, raised by Efficiency. */
+  private float getBreakSpeed(ItemStack tool, BlockState state) {
+    float f = tool.isEmpty() ? 1.0F : tool.getDestroySpeed(state);
+    if (f > 1.0F) {
+      int efficiency = EnchantmentHelper.getBlockEfficiency(robot);
+      if (efficiency > 0) {
+        f += efficiency * efficiency + 1;
+      }
+    }
+    return f;
   }
 
   @Override
   public void update() {
-    BlockPos pos = new BlockPos(blockToBreak.getX(), blockToBreak.getY(), blockToBreak.getZ());
+    BlockPos pos = blockToBreak;
     if (blockState == null) {
-      blockState = robot.level().getBlockState(pos);
-      hardness = blockState.getDestroySpeed(robot.level(), pos);
-      speed = 1.0f;
+      readBlock();
     }
 
     if (blockState.isAir() || hardness < 0) {
@@ -75,9 +91,26 @@ public class AIRobotBreak extends AIRobot<AIRobotBreak> {
       robot.level().destroyBlockProgress(robot.getId(), pos, -1);
       blockDamage = 0;
 
-      if (robot.level() instanceof ServerLevel serverLevel) {
-        // robot.level().destroyBlock(pos, true, robot); // Simplified harvest
-        serverLevel.destroyBlock(pos, true, robot);
+      if (!(robot.level() instanceof ServerLevel serverLevel)) {
+        terminate();
+        return;
+      }
+      // Original: the tool may veto (onBlockStartBreak); otherwise the block is harvested with it, which drops
+      // the items, and the tool is worn (onBlockDestroyed).
+      ItemStack tool = robot.getMainHandItem();
+      BlockState broken = serverLevel.getBlockState(pos);
+      boolean continueBreaking = tool.isEmpty()
+        || !tool.onBlockStartBreak(pos, BlockUtils.getFakePlayerWithTool(serverLevel, pos, tool));
+      if (continueBreaking && BlockUtils.harvestBlock(serverLevel, pos, tool)) {
+        serverLevel.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(broken));
+        if (!tool.isEmpty()) {
+          tool.getItem().mineBlock(tool, serverLevel, broken, pos, robot);
+          if (tool.isEmpty() || (tool.isDamageableItem() && tool.getDamageValue() >= tool.getMaxDamage())) {
+            robot.setItemInUse(ItemStack.EMPTY);
+          }
+        }
+      } else {
+        setSuccess(false);
       }
 
       terminate();

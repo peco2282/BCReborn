@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.transport.test;
 
 import com.peco2282.bcreborn.core.statements.DefaultTriggerProvider;
 import com.peco2282.bcreborn.factory.FactoryBlocks;
+import com.peco2282.bcreborn.factory.block.entity.RefineryBlockEntity;
 import com.peco2282.bcreborn.factory.block.entity.TankBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -285,19 +286,70 @@ public class RobotGameTests {
       check(helper, robot.getTanks() == 1 && robot.getTankCapacity(0) == 4000 && robot.getFluidInTank(0).isEmpty(),
         "A robot has one empty tank of four buckets");
     });
+    // Every place the water can be: the two tanks, the two pipes and the robot. It must add up on every tick.
+    PipeBlockEntity sourcePipe = (PipeBlockEntity) helper.getBlockEntity(source);
+    PipeBlockEntity targetPipe = (PipeBlockEntity) helper.getBlockEntity(target);
     helper.onEachTick(() -> {
-      if (helper.getTick() == 1190 && holder[0] != null) {
-        holder[0].discard();
+      RobotEntity robot = holder[0];
+      int carried = robot != null ? robot.getFluidInTank(0).getAmount() : 0;
+      int total = from.tank.getFluidAmount() + pipeFluid(sourcePipe) + carried + pipeFluid(targetPipe) + to.tank.getFluidAmount();
+      check(helper, total == 8000, "Moving water must neither lose nor create any, total " + total + " (source tank "
+        + from.tank.getFluidAmount() + ", source pipe " + pipeFluid(sourcePipe) + ", robot " + carried + ", target pipe "
+        + pipeFluid(targetPipe) + ", target tank " + to.tank.getFluidAmount() + ") at tick " + helper.getTick());
+      check(helper, carried <= 4000, "The robot's tank holds at most four buckets, holds " + carried);
+      if (helper.getTick() == 1190 && robot != null) {
+        robot.discard();
       }
     });
     helper.succeedWhen(() -> {
       RobotEntity robot = holder[0];
       helper.assertTrue(robot != null, "The robot is not placed yet");
-      PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(target);
-      int delivered = to.tank.getFluidAmount() + (pipe.getFluidTank() != null ? pipe.getFluidTank().getFluidAmount() : 0);
-      helper.assertTrue(delivered > 0,
-        "The fluid carrier must bring water to the accepting station, robot holds " + robot.getFluidInTank(0).getAmount()
+      int delivered = to.tank.getFluidAmount() + pipeFluid(targetPipe);
+      helper.assertTrue(delivered >= 4000,
+        "The fluid carrier must bring at least a full robot tank to the accepting station, delivered " + delivered
+          + ", robot holds " + robot.getFluidInTank(0).getAmount()
           + " at " + robot.blockPosition() + " running " + robot.mainAI.getActiveAI());
+      robot.discard();
+    });
+  }
+
+  private static int pipeFluid(PipeBlockEntity pipe) {
+    return pipe.getFluidTank() != null ? pipe.getFluidTank().getFluidAmount() : 0;
+  }
+
+  /**
+   * The charging change made {@code EnergyTransportModule} collect demand from robot stations as well. A station
+   * and an ordinary machine on the same power pipe must both be supplied, and neither may go over its capacity.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 400)
+  public void powerPipeStationSharesNetworkWithMachine(GameTestHelper helper) {
+    BlockPos engine = new BlockPos(0, 2, 1);
+    helper.setBlock(engine.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
+    helper.setBlock(engine, EnergyBlocks.CREATIVE_ENGINE.get().defaultBlockState()
+      .setValue(EngineBlock.FACING, Direction.EAST));
+    helper.setBlock(new BlockPos(1, 2, 1), TransportBlocks.get(PipeType.ENERGY, PipeMaterial.WOOD).get().defaultBlockState());
+    BlockPos machinePos = new BlockPos(2, 2, 2);
+    helper.setBlock(machinePos, FactoryBlocks.REFINERY.get().defaultBlockState());
+    RefineryBlockEntity machine = (RefineryBlockEntity) helper.getBlockEntity(machinePos);
+    DockingStation<?> station = placeStation(helper, new BlockPos(2, 2, 1), PipeType.ENERGY, PipeMaterial.GOLD);
+    check(helper, station.providesPower(), "A station on a power pipe provides power");
+
+    int start = RobotEntityBase.SAFETY_ENERGY / 2;
+    RobotEntity robot = placeRobot(helper, station, start);
+    helper.onEachTick(() -> {
+      check(helper, robot.getEnergy() <= RobotEntityBase.MAX_ENERGY, "A robot must not be charged over its capacity, has " + robot.getEnergy());
+      check(helper, machine.getEnergyStored() <= machine.getMaxEnergyStored(),
+        "A machine must not be charged over its capacity, has " + machine.getEnergyStored());
+      if (helper.getTick() == 390) {
+        robot.discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      helper.assertTrue(robot.getEnergy() > start + 2000,
+        "The docked robot must be charged next to a machine, has " + robot.getEnergy() + " running " + robot.mainAI.getActiveAI());
+      helper.assertTrue(machine.getEnergyStored() > 0, "The machine must still be supplied next to a robot station");
+      helper.assertTrue(robot.getDockingStation() == station, "A robot that recharges stays on its power station");
       robot.discard();
     });
   }

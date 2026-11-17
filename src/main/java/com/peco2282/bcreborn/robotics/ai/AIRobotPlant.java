@@ -49,6 +49,7 @@ public class AIRobotPlant extends AIRobot<AIRobotPlant> {
     if (blockFound == null) {
       setSuccess(false);
       terminate();
+      return;
     }
 
     if (delay++ > 40) {

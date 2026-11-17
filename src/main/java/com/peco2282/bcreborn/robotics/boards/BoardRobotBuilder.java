@@ -92,7 +92,8 @@ public class BoardRobotBuilder extends RedstoneBoardRobot<BoardRobotBuilder> {
       MinecraftServer server = robot.level().getServer();
       GameType gameType = server.getForcedGameType() == null ? server.getDefaultGameType() : server.getForcedGameType();
 
-      if (gameType.isCreative()) {
+      // Original: outside creative the robot fetches what the slot needs; in creative it needs nothing.
+      if (!gameType.isCreative()) {
         requirementsToLookFor = currentBuildingSlot.getRequirements(markerToBuild
           .getContext());
       } else {

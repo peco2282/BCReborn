@@ -397,11 +397,9 @@ public class RobotEntity extends RobotEntityBase implements
   private void updateEnergyFX() {
     energyFX += energySpendPerCycle;
     ParticleStatus status = Minecraft.getInstance().options.particles().get();
-    int particleLevel = switch (status) {
-      case ALL -> 0;
-      case DECREASED -> 1;
-      case MINIMAL -> 2;
-    };
+    // No switch here: a switch on this client-only enum would put it into this class's switch table, and every
+    // other enum switch in the class (the attack damage) would then fail to load on a dedicated server.
+    int particleLevel = status.getId();
     if (energyFX >= (100 << (2 * particleLevel))) {
       energyFX = 0;
       spawnEnergyFX();
@@ -992,7 +990,8 @@ public class RobotEntity extends RobotEntityBase implements
             ItemStack itemstack = itemInUse;
 
             if (itemstack != null && par1Entity instanceof LivingEntity le) {
-              itemstack.hurtEnemy(le, lastHurtByPlayer);
+              // ItemStack.hurtEnemy needs a player (it was given the usually null lastHurtByPlayer); the item itself wears for any attacker.
+              itemstack.getItem().hurtEnemy(itemstack, le, this);
             }
 
             if (itemInUse.getCount() == 0) {

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.robotics.ai;
 
+import com.peco2282.bcreborn.common.inventory.TransactorSimple;
+import net.minecraft.core.Direction;
 import com.peco2282.bcreborn.api.core.IZone;
 import com.peco2282.bcreborn.api.robots.AIRobot;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
@@ -60,12 +62,14 @@ public class AIRobotFetchItem extends AIRobot<AIRobotFetchItem> {
       pickTime++;
 
       if (pickTime > 5) {
-        ItemStack stack = target.getItem();
-        ItemStack remaining = robot.receiveItem(null, stack);
-        target.setItem(remaining);
-
-        if (remaining.isEmpty()) {
+        // Original: the item goes into the robot's own inventory (TransactorSimple.inject).
+        ItemStack stack = target.getItem().copy();
+        int taken = new TransactorSimple(robot).inject(stack, Direction.UP, true);
+        stack.shrink(taken);
+        if (stack.isEmpty()) {
           target.discard();
+        } else {
+          target.setItem(stack);
         }
 
         terminate();

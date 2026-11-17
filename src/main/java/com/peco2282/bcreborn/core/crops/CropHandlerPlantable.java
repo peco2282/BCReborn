@@ -75,7 +75,8 @@ public class CropHandlerPlantable implements ICropHandler {
 
   @Override
   public boolean plantCrop(Level world, Player player, ItemStack seed, BlockPos pos) {
-    return seed.useOn(new UseOnContext(player, player.getUsedItemHand(), new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false))).consumesAction();
+    // The seed is the stack that is used, not whatever the (fake) player holds: the robot holds it, not the player.
+    return BlockUtils.useItemOnBlock(world, player, seed, pos, Direction.UP);
   }
 
   @Override

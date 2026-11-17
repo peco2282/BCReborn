@@ -11,6 +11,12 @@
  */
 package com.peco2282.bcreborn.common.utils;
 
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import com.peco2282.bcreborn.api.blueprints.BuilderAPI;
@@ -125,10 +131,27 @@ public final class BlockUtils {
       return false;
     }
 
+    // Original: onBlockHarvested + harvestBlock (which drops the items for this tool) + setBlockToAir.
+    BlockEntity blockEntity = world.getBlockEntity(pos);
     block.playerWillDestroy(world, pos, state, player);
     world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    block.playerDestroy(world, player, pos, state, blockEntity, tool.copy());
 
     return true;
+  }
+
+  /**
+   * Original {@code useItemOnBlock()}: uses the stack on a block face as a player would (a hoe tills, a seed is
+   * planted, ...).
+   */
+  public static boolean useItemOnBlock(Level world, Player player, ItemStack stack, BlockPos pos, Direction direction) {
+    BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos).relative(direction, 0.5), direction, pos, false);
+    UseOnContext context = new UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hit);
+    InteractionResult result = stack.onItemUseFirst(context);
+    if (!result.consumesAction()) {
+      result = stack.useOn(context);
+    }
+    return result.consumesAction();
   }
 
   public static boolean breakBlock(ServerLevel world, BlockPos pos, List<ItemStack> drops) {

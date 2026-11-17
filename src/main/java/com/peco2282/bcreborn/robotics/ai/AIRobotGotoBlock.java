@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.robotics.ai;
 
 import com.peco2282.bcreborn.api.core.BuildCraftAPI;
 import com.peco2282.bcreborn.api.robots.RobotEntityBase;
-import com.peco2282.bcreborn.common.utils.IterableAlgorithmRunner;
 import com.peco2282.bcreborn.common.utils.PathFinding;
 import com.peco2282.bcreborn.robotics.RoboticsAIType;
 import net.minecraft.core.BlockPos;
@@ -24,7 +23,13 @@ import java.util.LinkedList;
 public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
 
   private PathFinding pathSearch;
-  private IterableAlgorithmRunner pathSearchJob;
+  /** Original {@code IterableAlgorithmRunner(pathSearch, 50)}: give up after this many steps. */
+  private static final int MAX_SEARCH_STEPS = 50;
+  /** Path finding steps per tick; the original ran 1000 per step in a thread of its own. */
+  private static final int SEARCH_BUDGET = 400;
+  private int searchSteps;
+  /** Whether this AI looked for a path itself (original: {@code pathSearchJob != null}). */
+  private boolean searched;
   private LinkedList<BlockPos> path;
   private double prevDistance = Double.MAX_VALUE;
   private float finalX, finalY, finalZ;
@@ -76,9 +81,8 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
       pathSearch = new PathFinding(robot.level(), new BlockPos((int) Math.floor(robot.getX()),
         (int) Math.floor(robot.getY()), (int) Math.floor(robot.getZ())), new BlockPos(
         (int) Math.floor(finalX), (int) Math.floor(finalY), (int) Math.floor(finalZ)), maxDistance, 96);
-
-      pathSearchJob = new IterableAlgorithmRunner(pathSearch, 50);
-      pathSearchJob.start();
+      searchSteps = 0;
+      searched = true;
     } else if (path != null) {
       double distance = robot.distanceToSqr(nextX, nextY, nextZ);
 
@@ -92,8 +96,13 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
         prevDistance = robot.distanceToSqr(nextX, nextY, nextZ);
       }
     } else {
-      if (pathSearchJob.isDone()) {
+      // The search runs on the server thread, a few steps per tick: reading the world from a thread is not safe.
+      if (!pathSearch.isDone() && searchSteps++ < MAX_SEARCH_STEPS) {
+        pathSearch.iterate(SEARCH_BUDGET);
+      }
+      if (pathSearch.isDone() || searchSteps >= MAX_SEARCH_STEPS) {
         path = pathSearch.getResult();
+        pathSearch = null;
 
         if (path.isEmpty()) {
           setSuccess(false);
@@ -128,21 +137,19 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
         setDestination(robot, next.getX() + 0.5F, next.getY() + 0.5F, next.getZ() + 0.5F);
         robot.aimItemAt(next.getX(), next.getY(), next.getZ());
       } else {
-        // Path invalid!
+        // Path invalid! A new one is searched on the next update.
         path = null;
-
-        if (pathSearchJob != null) {
-          pathSearchJob.terminate();
-          robot.setDeltaMovement(0, 0, 0);
-        }
+        pathSearch = null;
+        robot.setDeltaMovement(0, 0, 0);
       }
     }
   }
 
   @Override
   public void end() {
-    if (pathSearchJob != null) {
-      pathSearchJob.terminate();
+    pathSearch = null;
+    if (searched) {
+      // Original: a robot that searched its own path stops when the AI ends (also when it is aborted on the way).
       robot.setDeltaMovement(0, 0, 0);
     }
   }

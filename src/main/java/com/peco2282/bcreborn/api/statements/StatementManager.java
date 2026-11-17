@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.api.statements;
 
+import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,6 +31,7 @@ public final class StatementManager {
   private static final List<IActionProvider> actionProviders = new LinkedList<>();
   private static final Map<ResourceLocation, IStatement> STATEMENTS = new HashMap<>();
   private static final Map<ResourceLocation, Parameter<?>> PARAMETERS = new HashMap<>();
+  private static final Map<ResourceLocation, Supplier<? extends IStatementParameter>> PARAMETER_FACTORIES = new HashMap<>();
 
   private StatementManager() {
   }
@@ -62,6 +64,15 @@ public final class StatementManager {
 
   public static <P extends IStatementParameter> void registerParameter(P parameter, Codec<P> codec) {
     PARAMETERS.put(parameter.getUniqueTag(), new Parameter<>(parameter, codec));
+  }
+
+  /**
+   * Registers a parameter kind by its factory. Saved statements name their parameters by
+   * {@link IStatementParameter#getUniqueTag()}; {@link #createParameter(ResourceLocation)} makes a new instance
+   * for each of them (original: {@code Class.newInstance()} of the registered parameter class).
+   */
+  public static void registerParameterFactory(Supplier<? extends IStatementParameter> factory) {
+    PARAMETER_FACTORIES.put(factory.get().getUniqueTag(), factory);
   }
 
   public static DataResult<Codec<? extends IStatementParameter>> getParameterCodec(ResourceLocation tag) {
@@ -154,8 +165,17 @@ public final class StatementManager {
   }
 
   public static IStatementParameter createParameter(ResourceLocation kind) {
+    // Always a new instance: the caller reads saved data into it, so it must not be shared.
+    var factory = PARAMETER_FACTORIES.get(kind);
+    if (factory != null) return factory.get();
     var parameter = PARAMETERS.get(kind);
-    if (parameter != null) return parameter.parameter();
+    if (parameter != null) {
+      try {
+        return parameter.parameter().getClass().getDeclaredConstructor().newInstance();
+      } catch (ReflectiveOperationException e) {
+        throw new IllegalArgumentException("Parameter kind " + kind + " has no public no-argument constructor", e);
+      }
+    }
     throw new IllegalArgumentException("Unknown parameter kind: " + kind);
   }
 
