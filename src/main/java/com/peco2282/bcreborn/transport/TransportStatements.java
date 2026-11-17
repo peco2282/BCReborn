@@ -75,11 +75,16 @@ public class TransportStatements {
     );
   }
 
+  /**
+   * Original {@code triggerRedstoneLevel} / {@code actionRedstoneLevel}: redstone levels 1..{@code size}. Entry
+   * {@code i} is level {@code i + 1} (they used to be built with levels 0..14, so level 15 could not be asked for
+   * and level 0 had no icon).
+   */
   private static <S extends IStatement> RegistrySizedObject<S> registerSized(String name, IntFunction<S> supplier, int size) {
     RegistrySizedObject<S> map = RegistrySizedObject.create(size);
     for (int i = 0; i < size; i++) {
-      int finalI = i;
-      map.put(i, register(name + "_" + i, () -> supplier.apply(finalI)));
+      int level = i + 1;
+      map.put(i, register(name + "_" + level, () -> supplier.apply(level)));
     }
     return map;
   }

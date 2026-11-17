@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.peco2282.bcreborn.transport.statements.TriggerClockTimer;
+import com.peco2282.bcreborn.transport.TransportStatements;
 import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
@@ -34,27 +36,32 @@ public final class GateExpansionTimer extends GateExpansionBuildcraft implements
     return new GateExpansionControllerTimer(pipeTile);
   }
 
+  /** Original: one timer per {@link TriggerClockTimer.Time}; each is active for 5 ticks every 5 / 10 / 15 s. */
   private class GateExpansionControllerTimer extends GateExpansionController {
 
-    private final Timer[] timers = new Timer[8]; // Placeholder
+    private final Timer[] timers = new Timer[TriggerClockTimer.Time.VALUES.length];
 
     public GateExpansionControllerTimer(BlockEntity pipeTile) {
       super(GateExpansionTimer.this, pipeTile);
-      for (int i = 0; i < timers.length; i++) {
-        timers[i] = new Timer(1); // Placeholder
+      for (TriggerClockTimer.Time time : TriggerClockTimer.Time.VALUES) {
+        timers[time.ordinal()] = new Timer(time);
       }
     }
 
     @Override
     public boolean isTriggerActive(IStatement trigger, IStatementParameter[] parameters) {
-      // TODO: TriggerClockTimer
+      if (trigger instanceof TriggerClockTimer timerTrigger) {
+        return timers[timerTrigger.time.ordinal()].isActive();
+      }
       return super.isTriggerActive(trigger, parameters);
     }
 
     @Override
     public void addTriggers(List<ITriggerInternal> list) {
       super.addTriggers(list);
-      // TODO: TriggerClockTimer
+      for (TriggerClockTimer.Time time : TriggerClockTimer.Time.VALUES) {
+        list.add(TransportStatements.TRIGGER_CLOCK_TIMER.get(time).get());
+      }
     }
 
     @Override
@@ -67,18 +74,18 @@ public final class GateExpansionTimer extends GateExpansionBuildcraft implements
     private static class Timer {
 
       private static final int ACTIVE_TIME = 5;
-      private final int delay;
+      private final TriggerClockTimer.Time time;
       private int clock;
 
-      public Timer(int delay) {
-        this.delay = delay;
+      public Timer(TriggerClockTimer.Time time) {
+        this.time = time;
       }
 
       public void tick() {
         if (clock > -ACTIVE_TIME) {
           clock--;
         } else {
-          clock = delay * 20 + ACTIVE_TIME;
+          clock = time.delay * 20 + ACTIVE_TIME;
         }
       }
 

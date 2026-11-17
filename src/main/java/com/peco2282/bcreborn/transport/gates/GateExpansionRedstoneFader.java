@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.peco2282.bcreborn.transport.TransportStatements;
 import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.statements.IActionInternal;
@@ -41,13 +42,15 @@ public final class GateExpansionRedstoneFader extends GateExpansionBuildcraft im
     @Override
     public void addTriggers(List<ITriggerInternal> list) {
       super.addTriggers(list);
-      // TODO: Redstone level triggers
+      // Original: "redstone input is exactly N" for N = 1..15.
+      TransportStatements.TRIGGER_REDSTONE_FADER_INPUT.values().forEach(trigger -> list.add(trigger.get()));
     }
 
     @Override
     public void addActions(List<IActionInternal> list) {
       super.addActions(list);
-      // TODO: Redstone level actions
+      // Original: "emit redstone level N" for N = 1..15.
+      TransportStatements.ACTION_REDSTONE_FADER_OUTPUT.values().forEach(action -> list.add(action.get()));
     }
   }
 }

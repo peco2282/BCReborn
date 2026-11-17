@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.silicon.menu;
 
+import com.peco2282.bcreborn.common.gui.slots.SlotOutput;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.silicon.SiliconMenuTypes;
 import com.peco2282.bcreborn.silicon.block.entity.StampingTableBlockEntity;
@@ -30,12 +31,15 @@ public class StampingTableMenu extends BuildCraftMenu<StampingTableMenu> {
   public StampingTableMenu(int windowId, Inventory playerInventory, StampingTableBlockEntity table) {
     super(SiliconMenuTypes.STAMPING_TABLE.get(), windowId, playerInventory);
     this.table = table;
+    // The energy and the energy needed, for the progress bar (it was never synced).
+    addDataSlots(new LaserTableData(table));
 
     addSlot(new Slot(table, 0, 15, 18));
-    addSlot(new Slot(table, 1, 143, 18));
-    addSlot(new Slot(table, 2, 111, 45));
-    addSlot(new Slot(table, 3, 129, 45));
-    addSlot(new Slot(table, 4, 147, 45));
+    // Original ContainerStampingTable: everything but the input is output only.
+    addSlot(new SlotOutput(table, 1, 143, 18));
+    addSlot(new SlotOutput(table, 2, 111, 45));
+    addSlot(new SlotOutput(table, 3, 129, 45));
+    addSlot(new SlotOutput(table, 4, 147, 45));
 
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 9; x++) {

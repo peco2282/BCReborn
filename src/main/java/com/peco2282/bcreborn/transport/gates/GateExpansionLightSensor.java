@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.gates;
 
+import com.peco2282.bcreborn.transport.TransportStatements;
 import com.peco2282.bcreborn.api.gates.GateExpansionController;
 import com.peco2282.bcreborn.api.gates.IGateExpansion;
 import com.peco2282.bcreborn.api.statements.ITriggerInternal;
@@ -40,7 +41,8 @@ public final class GateExpansionLightSensor extends GateExpansionBuildcraft impl
     @Override
     public void addTriggers(List<ITriggerInternal> list) {
       super.addTriggers(list);
-      // TODO: Light sensor triggers
+      list.add(TransportStatements.TRIGGER_LIGHT_SENSOR.getOnTrue().get());
+      list.add(TransportStatements.TRIGGER_LIGHT_SENSOR.getOnFalse().get());
     }
   }
 }
