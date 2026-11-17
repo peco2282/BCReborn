@@ -1218,6 +1218,29 @@ public class RobotEntity extends RobotEntityBase implements
     return drops;
   }
 
+  /**
+   * A robot that dies (for instance by /kill) drops what it carries, its tool and its wearables, the way
+   * {@link #convertToItems()} does when it is destroyed; otherwise they would disappear with it.
+   */
+  @Override
+  protected void dropEquipment() {
+    super.dropEquipment();
+    for (int i = 0; i < inv.length; i++) {
+      if (!inv[i].isEmpty()) {
+        spawnAtLocation(inv[i], 0);
+        inv[i] = ItemStack.EMPTY;
+      }
+    }
+    if (!itemInUse.isEmpty()) {
+      spawnAtLocation(itemInUse, 0);
+      itemInUse = ItemStack.EMPTY;
+    }
+    for (ItemStack wearable : wearables) {
+      spawnAtLocation(wearable, 0);
+    }
+    wearables.clear();
+  }
+
   private void convertToItems() {
     if (!level().isClientSide && !isRemoved()) {
       if (mainAI != null) {

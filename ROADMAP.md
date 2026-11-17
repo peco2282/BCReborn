@@ -109,7 +109,7 @@ BC を象徴する大型マシン。
 | Assembly Table | 🔧 | TileAssemblyTable 準拠: GUI でレシピを計画（クリックで選択/解除）し、計画したものだけをレーザーエネルギーで順番に製造。計画は保存・同期。GameTest 検証済み、GUI の実機確認待ち |
 | Integration Table | 🔧 | 原作の動的レシピ（IIntegrationRecipe）を移植: ゲートへの拡張追加（Pulsar / Timer / Fader / Light Sensor）と Redstone Chipset によるロジック切替（GateExpansionRecipe）、位相ファサード（AdvancedFacadeRecipe、プラグで透明状態を追加）、ロボットへのボード取り付け（RobotIntegrationRecipe）。拡張スロットは有効なレシピに合うものだけ受け付ける。データパックのレシピも併用可。GameTest（IntegrationTableGameTests）検証済み。GUI に出力プレビュー（触れないスロット、エネルギーが溜まる前から表示）と、使えない拡張スロットの×表示を追加（GameTest でプレビューを確認、GUI は実機確認待ち） |
 | Charging Table | 🔧 | TileChargingTable 準拠: レーザーのエネルギーをスロットのアイテムへ充電、充電するものがなければ毎 tick 10 ずつ減る、エネルギーを持てるアイテムだけ受け付ける。ロボットのアイテムは Forge のエネルギー Capability を公開（原作 IEnergyContainerItem 相当、ボードなしは充電不可）。GameTest（ChargingTableGameTests）検証済み、GUI は実機確認待ち |
-| ロボット (Robots) | 🔧 | 基本動作を原作（EntityRobot / RobotRegistry / AIRobotMain）と照合: ステーションへの配置とリンク、ボードの実行、保存と読み込み、エネルギー切れでの停止、撤去時のステーション解放。登録簿の解放処理（メインステーションを保持、死亡時のみ全解放、アンロード時は保持）を原作に合わせた。ステーション（DockingStationPipe）を移植: ゲートのアクションの参照、パイプへのアイテム投入、木パイプ経由の搬出元インベントリ、液体の入出力、電力パイプの判定、アイテム要求。荷積み・荷下ろし（AIRobotLoad / AIRobotUnload）は「アイテムを提供」「アイテムを受け取る」アクションに従う。Carrier がステーション間でアイテムを運ぶことを GameTest（RobotGameTests）で確認。充電: 電力パイプに付けたステーションが、ドッキング中のロボットへ給電する（RobotStationPluggable.receiveEnergy 準拠）。安全量を下回ったロボットは電力ステーションに留まって充電する。GameTest で確認。ボード: Fluid Carrier（タンクの中身を見て積む・下ろす、GameTest で確認）、Pump（タンクの判定とフィルタ）、Planter（種の判定と植えられる場所の判定）、Delivery（アイテム要求を探して届ける）を原作どおりに実装。ロボットのタンク（1 個、バケツ 4 杯分）を正しく公開。ブロックを探すボードは空実装だった探索（AIRobotSearchBlock）を原作通りに実装して動くようになった: Miner（ステーションからつるはしを取得して採掘、道具の消耗、ドロップ）、Lumberjack、Shovelman、Leave Cutter、Harvester（AIRobotHarvest）、Farmer（くわで耕す。以前はブロックを壊していた）、Planter、Pump、Picker（拾ったアイテムを自分のインベントリへ）、Delivery（Requester の要求を届ける）。作業範囲（ActionRobotWorkInArea＋地図アイテム）の内側だけで働く。以上を GameTest（RobotBoardGameTests）で実行して確認。Butcher（動物を倒す）、Knight（敵だけを倒す）、Stripes（持っているブロックを設置）、Builder（建設マーカーの設計図を、ステーションから素材を取って建築）も実行して確認。Bomber は TNT の投下部分だけ確認（飛行から爆発までは他のテストを壊すため未実行）。専用サーバーでロボットが攻撃すると例外になる不具合、Builder ボードがサバイバルで素材を取りに行かない不具合（クリエイティブ判定が逆）を修正。剣で攻撃したときの耐久消費が攻撃者に null（`lastHurtByPlayer`）を渡して NullPointerException になっていたのを修正（Butcher / Knight のテストは攻撃自体は通るので失敗していなかった） |
+| ロボット (Robots) | 🔧 | 基本動作を原作（EntityRobot / RobotRegistry / AIRobotMain）と照合: ステーションへの配置とリンク、ボードの実行、保存と読み込み、エネルギー切れでの停止、撤去時のステーション解放。登録簿の解放処理（メインステーションを保持、死亡時のみ全解放、アンロード時は保持）を原作に合わせた。ステーション（DockingStationPipe）を移植: ゲートのアクションの参照、パイプへのアイテム投入、木パイプ経由の搬出元インベントリ、液体の入出力、電力パイプの判定、アイテム要求。荷積み・荷下ろし（AIRobotLoad / AIRobotUnload）は「アイテムを提供」「アイテムを受け取る」アクションに従う。Carrier がステーション間でアイテムを運ぶことを GameTest（RobotGameTests）で確認。充電: 電力パイプに付けたステーションが、ドッキング中のロボットへ給電する（RobotStationPluggable.receiveEnergy 準拠）。安全量を下回ったロボットは電力ステーションに留まって充電する。GameTest で確認。ボード: Fluid Carrier（タンクの中身を見て積む・下ろす、GameTest で確認）、Pump（タンクの判定とフィルタ）、Planter（種の判定と植えられる場所の判定）、Delivery（アイテム要求を探して届ける）を原作どおりに実装。ロボットのタンク（1 個、バケツ 4 杯分）を正しく公開。ブロックを探すボードは空実装だった探索（AIRobotSearchBlock）を原作通りに実装して動くようになった: Miner（ステーションからつるはしを取得して採掘、道具の消耗、ドロップ）、Lumberjack、Shovelman、Leave Cutter、Harvester（AIRobotHarvest）、Farmer（くわで耕す。以前はブロックを壊していた）、Planter、Pump、Picker（拾ったアイテムを自分のインベントリへ）、Delivery（Requester の要求を届ける）。作業範囲（ActionRobotWorkInArea＋地図アイテム）の内側だけで働く。以上を GameTest（RobotBoardGameTests）で実行して確認。Butcher（動物を倒す）、Knight（敵だけを倒す）、Stripes（持っているブロックを設置）、Builder（建設マーカーの設計図を、ステーションから素材を取って建築）も実行して確認。Bomber は TNT の投下部分だけ確認（飛行から爆発までは他のテストを壊すため未実行）。専用サーバーでロボットが攻撃すると例外になる不具合、Builder ボードがサバイバルで素材を取りに行かない不具合（クリエイティブ判定が逆）を修正。剣で攻撃したときの耐久消費が攻撃者に null（`lastHurtByPlayer`）を渡して NullPointerException になっていたのを修正（Butcher / Knight のテストは攻撃自体は通るので失敗していなかった）。`/kill` などで死んだロボットが荷物・道具・装備品を落とさず消していたのを修正（`dropEquipment`）。経路探索の途中で保存されたロボットが読み込み時に NullPointerException になるのを修正（`AIRobotGotoBlock`） |
 
 ---
 
@@ -235,7 +235,7 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 ---
 
 ## 8-2. ロボット・電力の回帰テスト (既存の範囲と不足)
-2026-11-17 時点。外部レビュー（GitHub 上の `RobotGameTests` だけを見たもの）では「Pump / Planter / Delivery の専用テストなし」とされたが、未プッシュの `RobotBoardGameTests` に `pumpTakesFluidSource` / `planterPlantsSeed` / `deliveryBringsRequestedItems` がある。CI（`ci.yml`）は `runGameTestServer` を実行するので、合否はプッシュ後の CI で記録する。2026-11-17 にローカルで `runGameTestServer` を実行し、追加した 3 本を含む 150 本すべて成功（未コミット）。
+2026-11-17 時点。外部レビュー（GitHub 上の `RobotGameTests` だけを見たもの）では「Pump / Planter / Delivery の専用テストなし」とされたが、未プッシュの `RobotBoardGameTests` に `pumpTakesFluidSource` / `planterPlantsSeed` / `deliveryBringsRequestedItems` がある。CI（`ci.yml`）は `runGameTestServer` を実行するので、合否はプッシュ後の CI で記録する。2026-11-17 にローカルで `runGameTestServer` を実行し、追加した 3 本を含む 150 本すべて成功。その後の 3 本を加えて 153 本すべて成功。
 
 ### 既存テスト
 | テスト | 確認していること | 確認していないこと |
@@ -247,6 +247,9 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | `RobotGameTests.fluidCarrierMovesFluidBetweenStations` | タンク 1 個・4000 mB・初期は空、木パイプ側から積み、ロボット 1 杯分（4000 mB）以上が届く。毎 tick「元タンク＋元パイプ＋ロボット＋先パイプ＋先タンク = 8000」とロボットの 4000 mB 上限を確認 | 搬送先満杯、別の液体、フィルタ |
 | `RobotGameTests.powerPipeStationSharesNetworkWithMachine` | 同じ電力パイプにステーションと Refinery を置き、両方に電力が届く、どちらも容量を超えない | 有限の電源での分け方、PowerMode での制限 |
 | `RobotBoardGameTests.deadDeliveryRobotReleasesItsReservations` | 要求を予約した Delivery ロボットを `kill()` すると、死亡演出（20 tick）のあとに除去された時点で、要求・要求元ステーション・メインステーションが解放され、2 台目が同じ要求を 3 個だけ届ける。死亡演出中は除去前なので予約は残り、AI も動き続ける | 積んだあと・一部を届けたあとの死亡、ステーション破壊 |
+| `RobotBoardGameTests.deliveryResumesAfterReload` | 要求の 3 個を積んだ Delivery ロボットを保存してアンロードし、読み込み直すと、荷物と要求を保ったまま 1 回だけ届ける（チェスト 5 個、要求先 3 個） | 一部を届けたあとの保存、ワールドの再起動そのもの |
+| `RobotGameTests.killedRobotDropsWhatItCarries` | `kill()` したロボットが持っていた鉄 5 個を落とし、ステーションを解放する | 道具・装備品のドロップ |
+| `RobotGameTests.fullRobotLeavesPowerToMachine` | 満充電のロボットのステーションは電力を受け取らず、隣の Refinery が満タンになる | 有限の電源 |
 | `RobotBoardGameTests.pumpTakesFluidSource` | 水源 1 個を汲んでタンクに 1000 mB、水源が消える | 液体がない・フィルタ不一致・タンクの残り容量不足 |
 | `RobotBoardGameTests.planterPlantsSeed` | 耕地に小麦の種を植える | 種でないもの、植えられない地面、植える場所がふさがっている |
 | `RobotBoardGameTests.deliveryBringsRequestedItems` | 要求 3 個を届け、要求が満たされ、チェストから 3 個だけ減る | 要求の保存・復元、2 台が同じ要求を取り合う、要求先の消失 |
@@ -256,9 +259,9 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 
 ### 追加するテスト（優先順）
 `f8f88b3`（充電）は共通の `EnergyTransportModule` の需要の集め方・分配を変えたので、電力系を先に確認する。
-1. **総量の保存と予約の解放**（一部済み: 液体の総量、要求予約中の死亡）: 荷物を積んだあとの死亡、ステーション破壊のあとに、別のロボットがステーションと要求を使えること。
-2. **電力の分配**（一部済み: ステーションと Refinery の両方に届く）: 有限の電源で合計が供給量を超えない、満充電のロボットに送り続けない、出力を絞るゲート（PowerMode）が効く。
-3. **配送要求の保存**: 積んだあと・一部を届けたあとにロボットとステーションを保存・読み込みし、二重に届けない。
+1. **総量の保存と予約の解放**（済み: 液体の総量、要求予約中の死亡、荷物を持ったままの死亡）: ステーション破壊のあとに、別のロボットがステーションと要求を使えること。
+2. **電力の分配**（済み: ステーションと Refinery の両方に届く、満充電のロボットは受け取らない）: 有限の電源で合計が供給量を超えない、出力を絞るゲート（PowerMode）が効く。
+3. **配送要求の保存**（済み: 積んだあとの保存・読み込み）: 一部を届けたあとの保存・読み込みで二重に届けない。
 4. **面と容量の境界**: ステーションの 6 面、ロボットの満載、搬送先の満杯・一部空き、液体 3999 / 4000 mB、別の液体を持っているとき。
 5. **Pump / Planter の失敗側と停止からの復帰**: 汲めない・植えられない条件で何も消費しない、作業中の電力切れから給電で再開する。
 

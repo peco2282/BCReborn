@@ -27,6 +27,8 @@ import com.peco2282.bcreborn.api.statements.IStatement;
 import com.peco2282.bcreborn.robotics.ai.AIRobotLoad;
 import com.peco2282.bcreborn.robotics.statements.RoboticsStatements;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -351,6 +353,68 @@ public class RobotGameTests {
       helper.assertTrue(machine.getEnergyStored() > 0, "The machine must still be supplied next to a robot station");
       helper.assertTrue(robot.getDockingStation() == station, "A robot that recharges stays on its power station");
       robot.discard();
+    });
+  }
+
+  /**
+   * A full robot on a power station takes nothing, so everything the pipe carries goes to the machine next to it.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 400)
+  public void fullRobotLeavesPowerToMachine(GameTestHelper helper) {
+    BlockPos engine = new BlockPos(0, 2, 1);
+    helper.setBlock(engine.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
+    helper.setBlock(engine, EnergyBlocks.CREATIVE_ENGINE.get().defaultBlockState()
+      .setValue(EngineBlock.FACING, Direction.EAST));
+    helper.setBlock(new BlockPos(1, 2, 1), TransportBlocks.get(PipeType.ENERGY, PipeMaterial.WOOD).get().defaultBlockState());
+    BlockPos machinePos = new BlockPos(2, 2, 2);
+    helper.setBlock(machinePos, FactoryBlocks.REFINERY.get().defaultBlockState());
+    RefineryBlockEntity machine = (RefineryBlockEntity) helper.getBlockEntity(machinePos);
+    DockingStation<?> station = placeStation(helper, new BlockPos(2, 2, 1), PipeType.ENERGY, PipeMaterial.GOLD);
+    RobotEntity robot = placeRobot(helper, station, RobotEntityBase.MAX_ENERGY);
+    check(helper, robot.getEnergy() == RobotEntityBase.MAX_ENERGY, "The robot starts full, has " + robot.getEnergy());
+    check(helper, ((RobotStationPluggable) ((PipeBlockEntity) helper.getBlockEntity(new BlockPos(2, 2, 1)))
+        .getPipePluggable(Direction.UP)).receiveEnergy(1000, true) == 0, "A station with a full robot accepts no energy");
+
+    helper.onEachTick(() -> {
+      check(helper, robot.getEnergy() <= RobotEntityBase.MAX_ENERGY, "A full robot must not be charged over its capacity, has " + robot.getEnergy());
+      if (helper.getTick() == 390) {
+        robot.discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      helper.assertTrue(machine.getEnergyStored() == machine.getMaxEnergyStored(),
+        "The machine must fill up next to a full robot, has " + machine.getEnergyStored() + "/" + machine.getMaxEnergyStored());
+      robot.discard();
+    });
+  }
+
+  /**
+   * A robot that dies (like /kill) must drop what it carries instead of taking it with it: the original robot
+   * turned into items when it was destroyed.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 200)
+  public void killedRobotDropsWhatItCarries(GameTestHelper helper) {
+    DockingStation<?> station = placeStation(helper);
+    RobotEntity robot = placeRobot(helper, station, RobotEntityBase.MAX_ENERGY);
+    robot.setItem(0, new ItemStack(Items.IRON_INGOT, 5));
+    helper.runAfterDelay(5, robot::kill);
+    helper.onEachTick(() -> {
+      if (helper.getTick() == 190 && !robot.isRemoved()) {
+        robot.discard();
+      }
+    });
+    helper.succeedWhen(() -> {
+      helper.assertTrue(robot.isRemoved(), "The robot is still dying");
+      int dropped = 0;
+      for (ItemEntity item : helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(PIPE)).inflate(4))) {
+        if (item.getItem().is(Items.IRON_INGOT)) {
+          dropped += item.getItem().getCount();
+        }
+      }
+      helper.assertTrue(dropped == 5, "A killed robot must drop the five ingots it carried, dropped " + dropped);
+      check(helper, !station.isTaken(), "A killed robot must free its station");
     });
   }
 

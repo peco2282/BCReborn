@@ -127,7 +127,8 @@ public class AIRobotGotoBlock extends AIRobotGoto<AIRobotGotoBlock> {
   }
 
   private void setNextInPath() {
-    if (!path.isEmpty()) {
+    // A robot saved while it was still searching has no path yet; it searches again on the next update.
+    if (path != null && !path.isEmpty()) {
       boolean isFirst = prevDistance == Double.MAX_VALUE;
 
       BlockPos next = path.getFirst();

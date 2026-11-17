@@ -27,6 +27,7 @@ import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.core.item.MapLocationItem;
 import com.peco2282.bcreborn.core.statements.DefaultTriggerProvider;
 import com.peco2282.bcreborn.robotics.RoboticsBlocks;
+import com.peco2282.bcreborn.robotics.RoboticsEntityTypes;
 import com.peco2282.bcreborn.robotics.RoboticsRedstoneRobots;
 import com.peco2282.bcreborn.robotics.block.entity.RequesterBlockEntity;
 import com.peco2282.bcreborn.robotics.entity.RobotEntity;
@@ -426,6 +427,68 @@ public class RobotBoardGameTests {
         () -> "Exactly the requested amount must leave the chest, left " + chest.getItem(0));
       second.discard();
     });
+  }
+
+  /**
+   * A delivery robot that is unloaded with the requested items on board and loaded again (as when its chunk
+   * unloads) keeps its request and its load, and delivers the requested amount once: nothing is lost or delivered
+   * twice.
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = TEMPLATE, templateNamespace = BCRebornTransport.MODID, timeoutTicks = TIMEOUT)
+  public void deliveryResumesAfterReload(GameTestHelper helper) {
+    helper.setBlock(HOME.south(), Blocks.CHEST.defaultBlockState());
+    Container chest = (Container) helper.getBlockEntity(HOME.south());
+    chest.setItem(0, new ItemStack(Items.IRON_INGOT, 8));
+    helper.setBlock(JOB.south(), RoboticsBlocks.REQUESTER.get().defaultBlockState());
+    RequesterBlockEntity requester = (RequesterBlockEntity) helper.getBlockEntity(JOB.south());
+    requester.setRequest(0, new ItemStack(Items.IRON_INGOT, 3));
+
+    DockingStation<?> home = placeStation(helper, HOME, PipeType.ITEM, PipeMaterial.WOOD, RoboticsStatements.actionStationProvideItems);
+    placeStation(helper, JOB, PipeType.ITEM, PipeMaterial.COBBLESTONE);
+
+    RobotEntity[] robots = new RobotEntity[2];
+    helper.runAfterDelay(20, () -> robots[0] = placeRobot(helper, home, RoboticsRedstoneRobots.ROBOT_DELIVERY.get(), ItemStack.EMPTY));
+    helper.onEachTick(() -> {
+      RobotEntity first = robots[0];
+      if (first != null && robots[1] == null && first.containsItems()) {
+        int carried = carried(first, Items.IRON_INGOT);
+        check(helper, carried == 3 && chest.getItem(0).getCount() == 5,
+          "The robot loads exactly the requested amount, carries " + carried + ", chest " + chest.getItem(0));
+        CompoundTag saved = first.saveWithoutId(new CompoundTag());
+        first.remove(net.minecraft.world.entity.Entity.RemovalReason.UNLOADED_TO_CHUNK);
+        RobotEntity reloaded = new RobotEntity(RoboticsEntityTypes.ROBOT.get(), helper.getLevel());
+        reloaded.load(saved);
+        check(helper, helper.getLevel().addFreshEntity(reloaded), "The reloaded robot must spawn");
+        check(helper, carried(reloaded, Items.IRON_INGOT) == 3, "The reloaded robot keeps its load");
+        robots[1] = reloaded;
+      }
+      if (helper.getTick() == TIMEOUT - 10) {
+        for (RobotEntity robot : robots) {
+          if (robot != null) robot.discard();
+        }
+      }
+    });
+    helper.succeedWhen(() -> {
+      RobotEntity reloaded = robots[1];
+      helper.assertTrue(reloaded != null, "The robot has not loaded the request yet");
+      assertThat(helper, reloaded, requester.isFulfilled(0) && requester.getItem(0).getCount() == 3,
+        () -> "The reloaded robot must deliver the request once, requester has " + requester.getItem(0));
+      assertThat(helper, reloaded, chest.getItem(0).getCount() == 5 && !reloaded.containsItems(),
+        () -> "Exactly the requested amount must leave the chest, left " + chest.getItem(0) + ", robot still carries "
+          + carried(reloaded, Items.IRON_INGOT));
+      reloaded.discard();
+    });
+  }
+
+  private static int carried(RobotEntity robot, net.minecraft.world.item.Item item) {
+    int count = 0;
+    for (int i = 0; i < robot.getContainerSize(); i++) {
+      if (robot.getItem(i).is(item)) {
+        count += robot.getItem(i).getCount();
+      }
+    }
+    return count;
   }
 
   /** Original BoardRobotButcher / AIRobotAttack: kills animals in its work area with a sword. */
