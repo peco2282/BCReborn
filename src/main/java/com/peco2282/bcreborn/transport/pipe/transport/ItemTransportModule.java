@@ -283,6 +283,11 @@ public class ItemTransportModule {
   private void dropItem(Level level, TravelingItem item) {
     ItemStack stack = item.getStack();
     if (stack.isEmpty()) return;
+    Direction travel = item.getNextDirection() != null ? item.getNextDirection()
+      : item.getEntryDirection() != null ? item.getEntryDirection().getOpposite() : null;
+    if (travel != null && pipe.getBehaviour() instanceof ItemPipeBehaviour behaviour && behaviour.onDropItem(pipe, item, travel)) {
+      return;
+    }
     BlockPos pos = pipe.getBlockPos();
     ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack.copy());
     entity.lifespan = CoreConfig.getItemLifespan() * 20;

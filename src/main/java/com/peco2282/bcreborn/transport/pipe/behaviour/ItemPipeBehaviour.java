@@ -74,4 +74,14 @@ public interface ItemPipeBehaviour extends PipeBehaviour {
   default boolean canAcceptItem(PipeBlockEntity pipe, ItemStack stack, Direction from) {
     return true;
   }
+
+  /**
+   * Original {@code PipeEventItem.DropItem}: called before an item that has nowhere to go is dropped.
+   *
+   * @param direction the way the item was travelling
+   * @return true if the behaviour used the item, so it is not dropped
+   */
+  default boolean onDropItem(PipeBlockEntity pipe, TravelingItem item, Direction direction) {
+    return false;
+  }
 }

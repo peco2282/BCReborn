@@ -79,6 +79,7 @@ public class BCRebornTransport implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
+    MinecraftForge.EVENT_BUS.register(PipeExtensionListener.INSTANCE);
     processor.initRegister();
 
     REGISTRY.register(modEventBus);
@@ -134,19 +135,20 @@ public class BCRebornTransport implements BCReborn {
     FacadeAPI.facadeItem(TransportItems.FACADE.get());
     TransportItems.bindPipeWires();
 
+    // Original BuildCraftTransport priorities: higher first, 0 is normal; placing blocks and the generic use come last.
     PipeManager.registerStripesHandler(StripesHandlerArrow.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerBucket.INSTANCE);
-    PipeManager.registerStripesHandler(StripesHandlerDispenser.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerDispenser.INSTANCE, -49152);
     PipeManager.registerStripesHandler(StripesHandlerEntityInteract.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerHoe.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerMinecartDestroy.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerPipes.INSTANCE);
     PipeManager.registerStripesHandler(StripesHandlerPipeWires.INSTANCE);
-    PipeManager.registerStripesHandler(StripesHandlerPlaceBlock.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerPlaceBlock.INSTANCE, -65536);
     PipeManager.registerStripesHandler(StripesHandlerPlant.INSTANCE);
-    PipeManager.registerStripesHandler(StripesHandlerRightClick.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerRightClick.INSTANCE, -32768);
     PipeManager.registerStripesHandler(StripesHandlerShears.INSTANCE);
-    PipeManager.registerStripesHandler(StripesHandlerUse.INSTANCE);
+    PipeManager.registerStripesHandler(StripesHandlerUse.INSTANCE, -131072);
   }
 
   // You can use SubscribeEvent apply let the Event Bus discover methods to call

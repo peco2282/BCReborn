@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.block.entity;
 
+import com.peco2282.bcreborn.transport.stripes.StripesPipe;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
@@ -192,6 +193,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
    */
   private boolean usesExtractionBattery() {
     PipeMaterial material = runtime.material();
+    if (material == PipeMaterial.STRIPES && runtime.type() == PipeType.ITEM) return true;
     return (material == PipeMaterial.WOOD || material == PipeMaterial.EMERALD || material == PipeMaterial.EMZULI)
         && (runtime.type() == PipeType.ITEM || runtime.type() == PipeType.FLUID);
   }
@@ -200,7 +202,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     boolean needsBattery = usesExtractionBattery();
     if (needsBattery && getBattery() == null) {
       // Original PipeItemsWood: RFBattery(2560, 80, 0), filled by engines and emptied by every pull.
-      setBattery(runtime.type() == PipeType.ITEM ? new EnergyStorage(2560, 80, 0, 0) : new EnergyStorage(1024, 64, 64, 0));
+      setBattery(newExtractionBattery(0));
     } else if (!needsBattery) {
       setBattery(null);
     }
@@ -242,6 +244,41 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return getBattery().getEnergyStored();
     }
     return 0;
+  }
+
+  /**
+   * Original batteries: PipeItemsWood {@code RFBattery(2560, 80, 0)}, PipeItemsStripes {@code RFBattery(16000, 640, 0)};
+   * the wooden fluid pipes keep the 1024 RF battery.
+   */
+  private EnergyStorage newExtractionBattery(int stored) {
+    if (runtime.type() != PipeType.ITEM) return new EnergyStorage(1024, 64, 64, Math.min(stored, 1024));
+    if (runtime.material() == PipeMaterial.STRIPES) {
+      return new EnergyStorage(StripesPipe.BATTERY, StripesPipe.MAX_RECEIVE, 0, Math.min(stored, StripesPipe.BATTERY));
+    }
+    return new EnergyStorage(2560, 80, 0, Math.min(stored, 2560));
+  }
+
+  /** The side a gate's "pipe direction" action sets for a stripes pipe (original {@code actionDir}); not saved. */
+  @Nullable
+  private Direction stripesActionDirection;
+  /** Set while {@code PipeExtensionListener} moves this pipe, so removing it drops nothing. */
+  private boolean moving;
+
+  @Nullable
+  public Direction getStripesActionDirection() {
+    return stripesActionDirection;
+  }
+
+  public void setStripesActionDirection(@Nullable Direction direction) {
+    stripesActionDirection = direction;
+  }
+
+  public boolean isMoving() {
+    return moving;
+  }
+
+  public void setMoving(boolean moving) {
+    this.moving = moving;
   }
 
   /** Original {@code battery.setEnergy(0)} after a pull. */
@@ -607,9 +644,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       if (getBattery() != null && tag.contains("battery")) {
         getBattery().read(tag.getCompound("battery"));
         // Pipes saved with the older 1024 RF battery keep their energy but take the original limits.
-        if (runtime.type() == PipeType.ITEM && getBattery().getMaxEnergyStored() != 2560) {
-          int stored = Math.min(getBattery().getEnergyStored(), 2560);
-          setBattery(new EnergyStorage(2560, 80, 0, stored));
+        if (runtime.type() == PipeType.ITEM && getBattery().getMaxEnergyStored() != newExtractionBattery(0).getMaxEnergyStored()) {
+          setBattery(newExtractionBattery(getBattery().getEnergyStored()));
         }
       }
     }

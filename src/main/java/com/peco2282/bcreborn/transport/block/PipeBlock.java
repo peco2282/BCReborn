@@ -388,7 +388,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
   public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
     if (!state.is(newState.getBlock())) {
       BlockEntity blockEntity = level.getBlockEntity(pos);
-      if (blockEntity instanceof PipeBlockEntity pipeBE) {
+      if (blockEntity instanceof PipeBlockEntity pipeBE && !pipeBE.isMoving()) {
         pipeBE.dropItems();
         // Original Pipe.computeItemDrop(): installed wires drop with the pipe.
         for (PipeWire wire : PipeWire.VALUES) {

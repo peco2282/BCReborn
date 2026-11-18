@@ -25,7 +25,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 
 1.  **実機での確認**: 画面を伴う部分は GameTest では検証できない。下の「実機確認チェックリスト」を `runClient` で確認し、問題がなければ 🔧 を ✅ にする。
 2.  **入手手段のないアイテム**: 2026-11-18 にすべて解消。流体・動力パイプ（逆変換も）、ゲート本体、ファサード、Pipe Sealant、List のレシピ（RecipeGameTests）と、動力パイプ Sandstone / Emerald（PowerPipeGameTests）。Debugger は原作にもレシピがない（6 章）。
-3.  **スタブのままの機能**: 7-1 章の残り（ストライプパイプのパイプ延長、Pump の液面処理）。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
+3.  **スタブのままの機能**: 7-1 章の残り（Pump の液面処理）。ストライプパイプは 2026-11-18 に原作の方式へ。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
 
 ---
 
@@ -159,13 +159,12 @@ BC を象徴する大型マシン。
 | Blueprint Library | 🔧 | TileBlueprintLibrary 準拠で実装: スロット 0 の設計図・テンプレート・本をプレイヤーのライブラリ（ゲームフォルダの `blueprints`）へ保存、選んだ項目をスロット 2 のアイテムへ書き込み（分割アップロード）、一覧の選択・削除はクライアント側。進捗はサーバーで進める（以前はクライアントだけで進み、何も起きなかった）。本の型ハンドラーの名前と読み込みの不具合も修正。GameTest で保存・読み込み・本の往復を確認、画面とクライアントとのやり取りは実機確認待ち |
 | Requester | 🔧 | GuiRequester 準拠: 左の 20 枠をクリックすると手に持ったアイテム（個数ごと）が要求になる、空の手で解除。以前は要求を設定する手段がなかった。GameTest で確認、画面は実機確認待ち |
 | List | 🔧 | 1.20 ではアイテムが 1 種類のため、旧形式のデータを持つリストだけ旧 GUI、それ以外は新 GUI を開く（以前は常に旧 GUI）。名前が空のときに表示名が消える不具合を修正 |
-| ストライプパイプのパイプ延長 | ⬜ | `StripesHandlerPipes` は常に対象外、`PipeExtensionListener` はアイテムを送り返すだけ |
+| ストライプパイプ | ✅ | 原作 PipeItemsStripes 準拠: 開いた端から落ちるアイテムを登録済みのストライプハンドラ（原作の優先度順）に通し、ハンドラが使わなければそのまま落とす（`ItemPipeBehaviour.onDropItem`）。アイテムパイプが届くとパイプが 1 ブロック伸び（`PipeExtensionListener`: ストライプパイプを中身ごと前へ移し、元の位置に届いたパイプを置く）、Void パイプなら 1 ブロック縮んで外したパイプを送り返す。他の種類のパイプは前に置く。動力（16000 RF、640 RF/t）があれば前のブロックを 10 RF で壊し、ドロップをパイプへ戻す（岩盤・液体は壊さない、トロッコはハンドラが壊す）。ゲートの「パイプの向き」で作業面を選べる。StripesGameTests で検証 |
 | Pump | 🔧 | 液面に着いたときの処理に `TODO: Impl Fill fluid!` が残る（汲み上げは実装済み） |
 
 ### 7-2. 原作と異なる挙動
 - **木パイプの向き切替**: レンチなしの右クリックでも切り替わる。
 - **Emerald パイプのモード切替**: GUI のボタンではなくレンチ。画面にボタンがない。
-- **ストライプパイプ**: 登録したストライプハンドラ 13 種をパイプ自身は使わず、独自の「設置か破壊か」の処理（`StripesItemPipeBehaviour`）。ハンドラを使うのは Stripes ロボットだけ。動力でのブロック破壊もない。
 - **Bomber ロボット**: TNT の投下が簡略実装。
 
 ---
@@ -205,7 +204,7 @@ BC を象徴する大型マシン。
 *   [x] Stamping Table
 *   [x] Zone Planner の地図、Blueprint Library の一覧と同期、Requester の要求設定（実機確認待ち）
 *   [x] 木パイプの搬出を原作の方式へ（2026-11-18、WoodExtractionGameTests）
-*   [ ] ストライプパイプを原作の方式へ
+*   [x] ストライプパイプを原作の方式へ（ハンドラ、パイプの延長と縮小、動力での破壊）
 *   [ ] 湧き水・油田の生成
 *   [ ] Gate Copier / Filtered Buffer / Power Adapter
 
