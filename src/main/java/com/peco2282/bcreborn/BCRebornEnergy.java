@@ -51,7 +51,6 @@ public class BCRebornEnergy implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
-//    MinecraftForge.EVENT_BUS.register(OilPopulate.INSTANCE);
     processor.initRegister();
 
     var ignoredFluids = EnergyFluids.OIL_SOURCE;

@@ -11,59 +11,33 @@
  */
 package com.peco2282.bcreborn.energy.worldgen;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.BCRebornEnergy;
+import com.peco2282.bcreborn.core.worldgen.WaterSpringFeature;
+import java.util.List;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 
-import java.util.List;
-
+/**
+ * Placement: the oil well feature gets one try per chunk and rolls the original chances itself; a water spring comes
+ * in about one chunk of 40.
+ */
 public class PlacedFeaturesEnergy {
-
-  public static final ResourceKey<PlacedFeature> OIL_LAKE_DESERT =
-    ResourceKey.create(
-      Registries.PLACED_FEATURE,
-      BCRebornEnergy.location("oil_lake_desert")
-    );
-  public static final ResourceKey<PlacedFeature> OIL_LAKE_OCEAN =
-    ResourceKey.create(
-      Registries.PLACED_FEATURE,
-      BCRebornEnergy.location("oil_lake_ocean")
-    );
+  public static final ResourceKey<PlacedFeature> OIL_WELL = ResourceKey.create(Registries.PLACED_FEATURE, BCRebornEnergy.location("oil_well"));
+  public static final ResourceKey<PlacedFeature> WATER_SPRING = ResourceKey.create(Registries.PLACED_FEATURE, BCRebornCore.location("water_spring"));
 
   public static void bootstrap(BootstapContext<PlacedFeature> context) {
-
-    HolderGetter<ConfiguredFeature<?, ?>> configured =
-      context.lookup(Registries.CONFIGURED_FEATURE);
-
-    context.register(
-      OIL_LAKE_DESERT,
-      new PlacedFeature(
-        configured.getOrThrow(ConfiguredFeaturesEnergy.OIL_LAKE),
-        List.of(
-          BiomeFilter.biome(),
-          NoiseThresholdCountPlacement.of(0.7, 0, 1),
-          InSquarePlacement.spread(),
-          HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-        )
-      )
-    );
-    context.register(
-      OIL_LAKE_OCEAN,
-      new PlacedFeature(
-        configured.getOrThrow(ConfiguredFeaturesEnergy.OIL_LAKE),
-        List.of(
-          BiomeFilter.biome(),
-          NoiseThresholdCountPlacement.of(0.9, 0, 1),
-          InSquarePlacement.spread(),
-          HeightmapPlacement.onHeightmap(Heightmap.Types.OCEAN_FLOOR_WG)
-        )
-      )
-    );
+    HolderGetter<ConfiguredFeature<?, ?>> configured = context.lookup(Registries.CONFIGURED_FEATURE);
+    context.register(OIL_WELL, new PlacedFeature(configured.getOrThrow(ConfiguredFeaturesEnergy.OIL_WELL),
+      List.of(InSquarePlacement.spread(), BiomeFilter.biome())));
+    context.register(WATER_SPRING, new PlacedFeature(configured.getOrThrow(ConfiguredFeaturesEnergy.WATER_SPRING),
+      List.of(RarityFilter.onAverageOnceEvery(WaterSpringFeature.CHUNKS_PER_SPRING), InSquarePlacement.spread(), BiomeFilter.biome())));
   }
-
 }

@@ -27,7 +27,7 @@ import com.peco2282.bcreborn.core.recipes.AssemblyRecipeManager;
 import com.peco2282.bcreborn.core.recipes.IntegrationRecipeManager;
 import com.peco2282.bcreborn.core.recipes.ProgrammingRecipeManager;
 import com.peco2282.bcreborn.core.recipes.RefineryRecipeManager;
-import com.peco2282.bcreborn.core.worldgen.SpringPopulate;
+import com.peco2282.bcreborn.core.worldgen.BCFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -92,7 +92,6 @@ public class BCRebornCore implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
-    MinecraftForge.EVENT_BUS.register(new SpringPopulate());
     processor.initRegister();
     processor.packetRegister(CHANNEL);
 //    REGISTRY
@@ -102,6 +101,7 @@ public class BCRebornCore implements BCReborn {
     // Touch CoreItems to trigger static field initialization
     var ignored = CoreItems.WRENCH;
     REGISTRY.register(modEventBus);
+    BCFeatures.register(modEventBus);
     modEventBus.register(DataGatherEvent.class);
 
     String fileName = String.format(Locale.ROOT, "%s-%s.toml", MOD_ID_BASE, ModConfig.Type.COMMON.extension());

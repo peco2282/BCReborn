@@ -11,34 +11,22 @@
  */
 package com.peco2282.bcreborn.energy.worldgen;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.BCRebornEnergy;
-import com.peco2282.bcreborn.energy.EnergyFluids;
+import com.peco2282.bcreborn.core.worldgen.BCFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.LakeFeature;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
+/** Configured features for the oil wells (original OilPopulate) and water springs (original SpringPopulate). */
 public class ConfiguredFeaturesEnergy {
-  public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_LAKE = ResourceKey.create(Registries.CONFIGURED_FEATURE, BCRebornEnergy.location("oil_lake"));
+  public static final ResourceKey<ConfiguredFeature<?, ?>> OIL_WELL = ResourceKey.create(Registries.CONFIGURED_FEATURE, BCRebornEnergy.location("oil_well"));
+  public static final ResourceKey<ConfiguredFeature<?, ?>> WATER_SPRING = ResourceKey.create(Registries.CONFIGURED_FEATURE, BCRebornCore.location("water_spring"));
 
   public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
-    context.register(
-      OIL_LAKE,
-      new ConfiguredFeature<>(
-        Feature.LAKE,
-        new LakeFeature.Configuration(
-          BlockStateProvider.simple(
-            EnergyFluids.OIL_BLOCK.get()
-          ),
-          BlockStateProvider.simple(
-            Blocks.SAND
-          )
-        )
-      )
-    );
+    context.register(OIL_WELL, new ConfiguredFeature<>(BCFeatures.OIL_WELL.get(), FeatureConfiguration.NONE));
+    context.register(WATER_SPRING, new ConfiguredFeature<>(BCFeatures.WATER_SPRING.get(), FeatureConfiguration.NONE));
   }
 }

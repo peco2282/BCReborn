@@ -140,8 +140,8 @@ BC を象徴する大型マシン。
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
 | List / Debugger のレシピ | ✅ | 原作 CoreSiliconRecipes: Assembly Table で緑の染料＋レッドストーン＋紙 8 枚 → List、20000 RF。Debugger は原作にもレシピがなく、クリエイティブ専用のまま。RecipeGameTests で検証 |
-| 水の湧き水の生成 | ⬜ | `SpringPopulate` の `@SubscribeEvent` がコメントアウトされている |
-| 油田の生成 | 🔧 | 原作移植の `OilPopulate`（油井・大小の鉱床）は未登録。バニラの湖 Feature で油の池を置くだけ。Oil Desert / Oil Ocean バイオームなし |
+| 水の湧き水の生成 | ✅ | 原作 SpringPopulate 準拠のワールド生成 Feature（`WaterSpringFeature`、約 40 チャンクに 1 つ）: 最下層 5 段の岩盤を探して湧き水ブロックを置き、その上の岩を最初の空気まで水にする。オーバーワールドのみ。設定 `generateWaterSprings` で無効化（湧き水ブロックの給水も止まる）。WorldgenGameTests で検証 |
+| 油田の生成 | 🔧 | 原作 OilPopulate.generateOil を Feature 化（`OilWellFeature`、チャンクごとに 1 回）: 大型 0.04%・中型 0.1%（砂地・タイガは 3 倍）、地表の油溜まり 2%（砂地・タイガのみ）、地下 20〜29 の球状鉱床と噴出柱、大型の 1/4 は岩盤に油の湧き水。チャンクの読み込みイベントで書き換える方式とバニラ湖での油の池は廃止。Feature は周囲 1 チャンクまでしか変更できないため、大型油田の周りの油溜まりは半径を縮める（原作は 25〜44）。Oil Desert / Oil Ocean バイオームと「greatly increased」バイオームの設定はなし。WorldgenGameTests で確率と登録を検証、生成は 576 チャンクの試験生成で確認 |
 | コンパレーター出力 | ⬜ | どのブロックにもない（タンクなど） |
 | Tablet | ⬜ | API（`api/tablet`）だけ |
 | 実績 (Advancement) | ⬜ | レシピ解放用のものだけ |
@@ -205,7 +205,7 @@ BC を象徴する大型マシン。
 *   [x] Zone Planner の地図、Blueprint Library の一覧と同期、Requester の要求設定（実機確認待ち）
 *   [x] 木パイプの搬出を原作の方式へ（2026-11-18、WoodExtractionGameTests）
 *   [x] ストライプパイプを原作の方式へ（ハンドラ、パイプの延長と縮小、動力での破壊）
-*   [ ] 湧き水・油田の生成
+*   [x] 湧き水・油田の生成（Oil Desert / Oil Ocean バイオームは除く）
 *   [ ] Gate Copier / Filtered Buffer / Power Adapter
 
 ---

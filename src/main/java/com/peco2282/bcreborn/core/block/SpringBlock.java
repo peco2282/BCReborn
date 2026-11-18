@@ -120,7 +120,7 @@ public class SpringBlock extends Block {
     }
 
     public boolean canGen() {
-      return this != OIL || EnergyConfig.isSpawnOilSprings();
+      return this == OIL ? EnergyConfig.isSpawnOilSprings() : EnergyConfig.isGenerateWaterSprings();
     }
 
     @Override
