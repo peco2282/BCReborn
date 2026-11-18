@@ -102,6 +102,13 @@ public class BCRebornCore implements BCReborn {
     var ignored = CoreItems.WRENCH;
     REGISTRY.register(modEventBus);
     BCFeatures.register(modEventBus);
+    // Original AchievementManager: achievements are earned by crafting their item.
+    net.minecraft.advancements.CriteriaTriggers.register(com.peco2282.bcreborn.core.advancement.CraftedItemTrigger.INSTANCE);
+    MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent event) -> {
+      if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+        com.peco2282.bcreborn.core.advancement.CraftedItemTrigger.INSTANCE.trigger(player, event.getCrafting());
+      }
+    });
     modEventBus.register(DataGatherEvent.class);
 
     String fileName = String.format(Locale.ROOT, "%s-%s.toml", MOD_ID_BASE, ModConfig.Type.COMMON.extension());

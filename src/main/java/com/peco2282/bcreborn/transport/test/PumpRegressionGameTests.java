@@ -61,8 +61,10 @@ public class PumpRegressionGameTests {
     pump.getBattery().setEnergy(110);
     for (int i = 0; i < 300 && pump.tank.isEmpty(); i++) tick(helper, pump);
     check(helper, pump.tank.getFluidAmount() == 1000, "The pump must reach the water one block further down, has " + pump.tank.getFluidAmount());
-    check(helper, helper.getBlockState(deep).isAir() && pump.getEnergyStored() == 0,
-      "Lowering the tube costs 10 RF and the source 100 RF, left " + pump.getEnergyStored());
+    // The tube is lowered for 10 RF, or for free when the 16-tick queue rebuild finds the fluid first (the pump's
+    // tick counter starts at random), so 0 or 10 RF are left.
+    check(helper, helper.getBlockState(deep).isAir() && (pump.getEnergyStored() == 0 || pump.getEnergyStored() == 10),
+      "The source costs 100 RF and lowering the tube at most 10 RF, left " + pump.getEnergyStored());
     helper.succeed();
   }
 

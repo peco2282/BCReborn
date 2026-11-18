@@ -47,6 +47,8 @@ public class DataGatherEvent {
     generator.addProvider(true, new BCLootTableProvider(generator.getPackOutput()));
     generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
     generator.addProvider(true, new BCRecipeProvider(generator.getPackOutput()));
+    generator.addProvider(true, new net.minecraftforge.common.data.ForgeAdvancementProvider(generator.getPackOutput(), lookup, helper,
+      java.util.List.of(new com.peco2282.bcreborn.core.advancement.BCAdvancements())));
 
     generator.addProvider(true, new CoreBlockStateProvider(generator.getPackOutput(), helper));
 

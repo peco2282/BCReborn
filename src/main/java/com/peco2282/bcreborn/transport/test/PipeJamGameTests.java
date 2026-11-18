@@ -53,7 +53,8 @@ public class PipeJamGameTests {
   }
 
   private static int droppedCount(GameTestHelper helper, BlockPos pos, net.minecraft.world.item.Item item) {
-    return helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(pos)).inflate(3)).stream()
+    // Only this test's 3x3 area: the jam tests next to it drop flint too.
+    return helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(pos)).inflate(1.5)).stream()
       .filter(e -> e.getItem().is(item)).mapToInt(e -> e.getItem().getCount()).sum();
   }
 

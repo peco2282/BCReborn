@@ -71,6 +71,47 @@ public class BCLanguageProvider extends LanguageProvider {
   @Override
   protected void addTranslations() {
     add("itemGroup.bcreborn", "BCReborn");
+    // Original BuildCraft 7.1 achievements (assets/bcreborn/lang/en_US.lang), as advancements.
+    add("advancement.bcreborn.woodenGear", "A bit rough around the edges");
+    add("advancement.bcreborn.woodenGear.desc", "Craft a wooden gear");
+    add("advancement.bcreborn.stoneGear", "Hard as a rock");
+    add("advancement.bcreborn.stoneGear.desc", "Upgrade a wooden gear to a stone gear");
+    add("advancement.bcreborn.ironGear", "Is it stainless?");
+    add("advancement.bcreborn.ironGear.desc", "Upgrade a stone gear to an iron gear");
+    add("advancement.bcreborn.goldGear", "No, it isn't made of honey");
+    add("advancement.bcreborn.goldGear.desc", "Upgrade an iron gear to a gold gear");
+    add("advancement.bcreborn.diamondGear", "Shiny!");
+    add("advancement.bcreborn.diamondGear.desc", "Upgrade a gold gear to a diamond gear");
+    add("advancement.bcreborn.wrench", "Just hit it!");
+    add("advancement.bcreborn.wrench.desc", "Make a wrench");
+    add("advancement.bcreborn.engine1", "The start of something big");
+    add("advancement.bcreborn.engine1.desc", "Craft a redstone engine");
+    add("advancement.bcreborn.engine2", "High efficiency");
+    add("advancement.bcreborn.engine2.desc", "Craft a stirling engine");
+    add("advancement.bcreborn.engine3", "Powerhouse");
+    add("advancement.bcreborn.engine3.desc", "Craft a combustion engine");
+    add("advancement.bcreborn.aLotOfCrafting", "A lot of crafting");
+    add("advancement.bcreborn.aLotOfCrafting.desc", "Craft an auto workbench");
+    add("advancement.bcreborn.straightDown", "Straight down");
+    add("advancement.bcreborn.straightDown.desc", "Make a mining well");
+    add("advancement.bcreborn.chunkDestroyer", "Chunk destroyer");
+    add("advancement.bcreborn.chunkDestroyer.desc", "Craft a quarry");
+    add("advancement.bcreborn.timeForSomeLogic", "Time for some logic");
+    add("advancement.bcreborn.timeForSomeLogic.desc", "Craft an assembly table");
+    add("advancement.bcreborn.refineAndRedefine", "Refine and redefine");
+    add("advancement.bcreborn.refineAndRedefine.desc", "Make a refinery");
+    add("advancement.bcreborn.tinglyLaser", "Tingly laser");
+    add("advancement.bcreborn.tinglyLaser.desc", "Craft a laser");
+    add("advancement.bcreborn.architect", "Architecture");
+    add("advancement.bcreborn.architect.desc", "Craft an architect table");
+    add("advancement.bcreborn.builder", "I've got better things to do");
+    add("advancement.bcreborn.builder.desc", "Craft a builder");
+    add("advancement.bcreborn.blueprint", "Building reference");
+    add("advancement.bcreborn.blueprint.desc", "Craft a blueprint");
+    add("advancement.bcreborn.template", "Basis");
+    add("advancement.bcreborn.template.desc", "Craft a template");
+    add("advancement.bcreborn.blueprintLibrary", "Ideas live on");
+    add("advancement.bcreborn.blueprintLibrary.desc", "Craft an electronic library");
     // Ledgers (original GuiEngine / GuiAssemblyTable labels)
     add("gui.energy", "Energy");
     add("gui.currentOutput", "Current Output");
