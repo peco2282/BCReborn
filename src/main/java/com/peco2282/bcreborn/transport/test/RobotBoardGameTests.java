@@ -558,6 +558,7 @@ public class RobotBoardGameTests {
         int left = robot.getItem(0).getCount();
         check(helper, primed.size() == 1, "The bomber must prime exactly one TNT, found " + primed.size() + ", robot has " + left + " left");
         check(helper, left == 1, "Priming must use one TNT from the robot, left " + left);
+        check(helper, primed.get(0).getOwner() == robot, "The primed TNT belongs to the robot that dropped it");
         helper.succeed();
       } finally {
         robot.discard();

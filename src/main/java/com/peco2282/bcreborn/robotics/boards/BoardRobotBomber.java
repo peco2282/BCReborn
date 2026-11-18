@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.robotics.boards;
 
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobot;
 import com.peco2282.bcreborn.api.boards.RedstoneBoardRobotNBT;
 import com.peco2282.bcreborn.api.robots.AIRobot;
@@ -62,8 +64,7 @@ public class BoardRobotBomber extends RedstoneBoardRobot<BoardRobotBomber> {
       }
     } else if (ai instanceof AIRobotGotoBlock) {
       if (ai.success()) {
-        // Removal from inventory and spawning TNT should be handled carefully
-        // For now simplified logic
+        // Original: take one TNT from the robot and drop it primed (fuse 37) one block below, 0.25 off centre.
         ItemStack tntStack = ItemStack.EMPTY;
         for (int i = 0; i < robot.getContainerSize(); i++) {
           ItemStack s = robot.getItem(i);
@@ -77,10 +78,10 @@ public class BoardRobotBomber extends RedstoneBoardRobot<BoardRobotBomber> {
           PrimedTnt tnt = new PrimedTnt(robot.level(), robot.getX() + 0.25,
             robot.getY() - 1,
             robot.getZ() + 0.25,
-            null);
+            robot);
           tnt.setFuse(37);
           robot.level().addFreshEntity(tnt);
-          // Sound handled by fresh entity or manual call if needed
+          robot.level().playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
       } else {
         startDelegateAI(new AIRobotGotoSleep(robot));
