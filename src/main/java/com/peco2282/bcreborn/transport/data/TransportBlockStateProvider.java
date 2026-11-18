@@ -40,6 +40,7 @@ public class TransportBlockStateProvider extends BlockStateProvider {
   @Override
   protected void registerStatesAndModels() {
     TransportBlocks.pipesForEach((type, material, block) -> generatePipeBlockState(material, type, block));
+    simpleBlockWithItem(TransportBlocks.FILTERED_BUFFER.get(), models().cubeAll("filtered_buffer", modLoc("block/filtered_buffer_block/default")));
     itemModels().getBuilder("facade")
       .parent(new net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile(mcLoc("builtin/entity")));
   }

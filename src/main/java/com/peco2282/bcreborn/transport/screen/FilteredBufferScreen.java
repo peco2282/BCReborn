@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class FilteredBufferScreen extends BuildCraftScreen<FilteredBufferMenu> {
-  private static final ResourceLocation TEXTURE = BCRebornTransport.location("textures/gui/filteredBuffer_gui.png");
+  private static final ResourceLocation TEXTURE = BCRebornTransport.location("textures/gui/filtered_buffer_gui.png");
 
   public FilteredBufferScreen(FilteredBufferMenu p_97741_, Inventory p_97742_, Component p_97743_) {
     super(p_97741_, p_97742_, p_97743_);

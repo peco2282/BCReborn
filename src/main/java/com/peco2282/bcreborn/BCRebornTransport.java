@@ -43,6 +43,7 @@ import com.peco2282.bcreborn.transport.gates.GatePluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.FacadePluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.LensPluggable;
 import com.peco2282.bcreborn.transport.pipe.pluggable.PlugPluggable;
+import com.peco2282.bcreborn.transport.pipe.pluggable.PowerAdapterPluggable;
 import com.peco2282.bcreborn.transport.stripes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -94,6 +95,7 @@ public class BCRebornTransport implements BCReborn {
   public static final PluggableType<FacadePluggable> FACADE = registerPipePluggable(location("facade"), FacadePluggable::new);
   public static final PluggableType<GatePluggable> GATE = registerPipePluggable(location("gate"), GatePluggable::new);
   public static final PluggableType<PlugPluggable> PLUG = registerPipePluggable(location("plug"), PlugPluggable::new);
+  public static final PluggableType<PowerAdapterPluggable> POWER_ADAPTER = registerPipePluggable(location("power_adapter"), PowerAdapterPluggable::new);
   public static final PluggableType<LensPluggable> LENS = registerPipePluggable(location("lens"), LensPluggable::new);
   public static final PluggableType<RobotStationPluggable> ROBOT_STATION = registerPipePluggable(location("robot_station"), RobotStationPluggable::new);
 

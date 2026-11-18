@@ -43,5 +43,17 @@
   "item.bcreborntransport.pipe_filter_green": "Green Filter",
   "item.bcreborntransport.pipe_filter_red": "Red Filter",
   "item.bcreborntransport.pipe_filter_black": "Black Filter",
-  "item.bcreborntransport.pipe_filter_clear": "Clear Filter"
+  "item.bcreborntransport.pipe_filter_clear": "Clear Filter",
+  "item.bcreborntransport.gate_copier": "Gate Copier",
+  "chat.bcreborntransport.gate_copier.clear": "Gate copier cleared",
+  "chat.bcreborntransport.gate_copier.gate_copied": "Gate settings copied",
+  "chat.bcreborntransport.gate_copier.gate_pasted": "Gate settings pasted",
+  "chat.bcreborntransport.gate_copier.no_information": "The gate copier is empty",
+  "chat.bcreborntransport.gate_copier.no_gate": "There is no gate here",
+  "chat.bcreborntransport.gate_copier.warning.slots": "Warning: this gate has fewer slots, some rules were dropped",
+  "chat.bcreborntransport.gate_copier.warning.action_parameters": "Warning: this gate has fewer action parameters",
+  "chat.bcreborntransport.gate_copier.warning.trigger_parameters": "Warning: this gate has fewer trigger parameters",
+  "chat.bcreborntransport.gate_copier.warning.logic": "Warning: this gate uses other logic (AND / OR)",
+  "chat.bcreborntransport.gate_copier.warning.load": "Warning: some rules could not be loaded into this gate",
+  "item.bcreborntransport.pipe_power_adapter": "Power Adapter"
 }

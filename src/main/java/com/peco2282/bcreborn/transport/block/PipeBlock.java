@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.transport.pipe.pluggable.PowerAdapterPluggable;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
@@ -322,7 +323,13 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
 
     // 他のパイプとの接続
     if (neighborBlock instanceof PipeBlock otherPipe) {
-      if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other && other.hasBlockingPluggable(direction.getOpposite())) {
+      PipeBlockEntity other = level.getBlockEntity(neighborPos) instanceof PipeBlockEntity p ? p : null;
+      // A power pipe joins a power adapter on another kind of pipe (original PowerAdapterPluggable), although the
+      // adapter closes that side for the pipe it sits on.
+      if (transportType == PipeType.ENERGY && otherPipe.getTransportType() != PipeType.ENERGY) {
+        return other != null && other.getPipePluggable(direction.getOpposite()) instanceof PowerAdapterPluggable;
+      }
+      if (other != null && other.hasBlockingPluggable(direction.getOpposite())) {
         return false;
       }
       return otherPipe.getTransportType() == this.transportType;

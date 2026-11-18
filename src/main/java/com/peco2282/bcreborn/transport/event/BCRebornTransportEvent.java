@@ -60,6 +60,9 @@ public class BCRebornTransportEvent {
       MenuScreens.register(TransportMenuTypes.EMZULI_PIPE_MENU.get(), EmzuliPipeScreen::new);
       MenuScreens.register(TransportMenuTypes.FILTERED_BUFFER_MENU.get(), FilteredBufferScreen::new);
       MenuScreens.register(TransportMenuTypes.GATE_INTERFACE_MENU.get(), GateInterfaceScreen::new);
+      // Original ItemGateCopier icons: empty, or full once a gate was copied.
+      net.minecraft.client.renderer.item.ItemProperties.register(TransportItems.GATE_COPIER.get(), BCRebornTransport.location("full"),
+        (stack, level, entity, seed) -> com.peco2282.bcreborn.transport.item.GateCopierItem.hasCopy(stack) ? 1.0F : 0.0F);
     });
   }
 

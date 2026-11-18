@@ -132,9 +132,9 @@ BC を象徴する大型マシン。
 | 流体・動力パイプのレシピ | ✅ | アイテムパイプ＋Pipe Sealant（緑の染料から作る、ID `pipe_waterproof`）→ 液体パイプ、アイテムパイプ＋レッドストーン → 動力パイプ（不定形）。原作どおり、液体・動力パイプ単体でアイテムパイプに戻せる。RecipeGameTests で検証 |
 | ゲート本体のレシピ | ✅ | Assembly Table: チップセット＋ワイヤー（赤→青→緑→黄の順に `maxWireColor` 本）→ AND ゲート、10 万〜120 万 RF。エネルギーの値は原作と未照合。RecipeGameTests で検証 |
 | ファサードの基本レシピ | ✅ | 原作 ItemFacade.addFacade: Assembly Table で構造パイプ 3 個＋ブロック → 6 個、8000 RF。`FacadeAssemblyRecipes` がリロードのたびにファサードにできるブロックごとに作る（`AssemblyRecipeManager.addDynamicSource`、同じ ID はデータパック優先）。RecipeGameTests で検証 |
-| Gate Copier | ⬜ | 設定項目（`SiliconConfig.isGateCopier`）だけ |
-| Filtered Buffer | ⬜ | メニューと画面だけあり、ブロックがない |
-| Power Adapter | ⬜ | 痕跡なし |
+| Gate Copier | ✅ | 原作 ItemGateCopier 準拠: 右クリックでゲートの条件・動作・素材・論理をコピー、Shift＋右クリックで貼り付け。ゲート以外をコピーすると消去。スロットやパラメーターが少ないゲート、論理の違うゲートには警告を出して入る分だけ貼る。コピー済みはアイコンが変わる。レシピはレンチ＋レッドストーンチップセット（不定形）。設定 `gateCopier` は未使用。TransportExtrasGameTests で検証、アイコンは実機確認待ち |
+| Filtered Buffer | ✅ | 原作 TileFilteredBuffer / BlockFilteredBuffer / ContainerFilteredBuffer 準拠: 9 スロットそれぞれが上のフィルターと同じアイテムだけを入れる（耐久値のあるものは損耗度を問わない）、どの面からも全スロット、フィルターはスロットが空のときだけ変えられる。Shift か パイプを持っているときは GUI を開かない。コンパレーターはフィルターのあるスロットだけ数える。壊すと中身を落とす。レシピは板材・ダイヤモンドパイプ・チェスト・ピストン。TransportExtrasGameTests で検証、GUI は実機確認待ち |
+| Power Adapter | ✅ | 原作 PowerAdapterPluggable 準拠のプラガブル: 付けた面をふさぎ、そこから 1 回 40 RF までをパイプ自身のバッテリー（木・ストライプなど）へ渡す（自分では貯めない）。隣の動力パイプはアダプターに機械のように接続する（プラガブルの付け外しで隣のパイプの接続も更新）。レシピは構造パイプ 6・金インゴット・石の歯車・レッドストーン → 4 個。TransportExtrasGameTests で検証、描画は実機確認待ち |
 
 ### 6-2. Core / Energy / その他
 | 項目 | 状態 | 備考 |
@@ -206,7 +206,7 @@ BC を象徴する大型マシン。
 *   [x] 木パイプの搬出を原作の方式へ（2026-11-18、WoodExtractionGameTests）
 *   [x] ストライプパイプを原作の方式へ（ハンドラ、パイプの延長と縮小、動力での破壊）
 *   [x] 湧き水・油田の生成（Oil Desert / Oil Ocean バイオームは除く）
-*   [ ] Gate Copier / Filtered Buffer / Power Adapter
+*   [x] Gate Copier / Filtered Buffer / Power Adapter
 
 ---
 
@@ -236,6 +236,8 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | Requester | 左の要求枠に持っているアイテムと個数が表示される、ツールチップ |
 | 液体パイプ | 水位が滑らかに上下する、垂直は柱になる、流れのテクスチャが進行方向へ動く（逆向きに見えないか）、面の欠け・重なりがない、溶岩が暗所で光る |
 | エンジン | ピストンが飛ばずに動く、Stone の炎ゲージ、Iron の燃料/冷却液タンク、右側のエネルギー台帳 |
+| Filtered Buffer | フィルター 9 枠と保管 9 枠、物の入ったスロットのフィルターは変えられない、ブロックのテクスチャ |
+| Gate Copier / Power Adapter | コピー済みでアイコンが変わる、チャットのメッセージ。アダプターの板と台の描画、動力パイプのアームがアダプターへ伸びる |
 
 ---
 

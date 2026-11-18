@@ -12,44 +12,62 @@
 package com.peco2282.bcreborn.transport.menu;
 
 import com.peco2282.bcreborn.common.gui.slots.SlotPhantom;
+import com.peco2282.bcreborn.common.gui.slots.SlotValidated;
 import com.peco2282.bcreborn.common.menu.BuildCraftMenu;
 import com.peco2282.bcreborn.transport.TransportMenuTypes;
-import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
-import net.minecraft.core.Direction;
+import com.peco2282.bcreborn.transport.block.entity.FilteredBufferBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
+/** Original {@code ContainerFilteredBuffer}: a row of filters over a row of storage slots. */
 public class FilteredBufferMenu extends BuildCraftMenu<FilteredBufferMenu> {
-  private final PipeBlockEntity pipe;
+  private final FilteredBufferBlockEntity buffer;
 
-  public FilteredBufferMenu(int p_38852_, Inventory p_38853_, FriendlyByteBuf buf) {
-    super(TransportMenuTypes.FILTERED_BUFFER_MENU.get(), p_38852_, p_38853_);
-    this.pipe = getBlockEntity(p_38853_, buf);
+  /** Original {@code SlotPhantomLockable}: a filter can only change while its storage slot is empty. */
+  private static final class LockableFilterSlot extends SlotPhantom {
+    private final Container storage;
 
-    if (pipe != null) {
-      Container filters = pipe.getFilter(Direction.UP);
-      for (int col = 0; col < 9; col++) {
-        addSlot(new SlotPhantom(filters, col, 8 + col * 18, 27));
-        addSlot(new Slot(pipe, col, 8 + col * 18, 61));
-      }
+    LockableFilterSlot(Container filters, Container storage, int index, int x, int y) {
+      super(filters, index, x, y);
+      this.storage = storage;
     }
 
-    for (int l = 0; l < 3; l++) {
-      for (int k1 = 0; k1 < 9; k1++) {
-        addSlot(new Slot(p_38853_, k1 + l * 9 + 9, 8 + k1 * 18, 86 + l * 18));
-      }
-    }
-
-    for (int i1 = 0; i1 < 9; i1++) {
-      addSlot(new Slot(p_38853_, i1, 8 + i1 * 18, 144));
+    @Override
+    public boolean canAdjust() {
+      return storage.getItem(getSlotIndex()).isEmpty();
     }
   }
 
+  public FilteredBufferMenu(int id, Inventory playerInventory, FilteredBufferBlockEntity buffer) {
+    super(TransportMenuTypes.FILTERED_BUFFER_MENU.get(), id, playerInventory);
+    this.buffer = buffer;
+    for (int col = 0; col < FilteredBufferBlockEntity.SLOTS; col++) {
+      addSlot(new LockableFilterSlot(buffer.getFilters(), buffer, col, 8 + col * 18, 27));
+      addSlot(new SlotValidated(buffer, col, 8 + col * 18, 61));
+    }
+    for (int row = 0; row < 3; row++) {
+      for (int col = 0; col < 9; col++) {
+        addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 86 + row * 18));
+      }
+    }
+    for (int col = 0; col < 9; col++) {
+      addSlot(new Slot(playerInventory, col, 8 + col * 18, 144));
+    }
+  }
+
+  public FilteredBufferMenu(int id, Inventory playerInventory, FriendlyByteBuf buf) {
+    this(id, playerInventory, BuildCraftMenu.<FilteredBufferBlockEntity>getBlockEntity(playerInventory, buf));
+  }
+
+  public FilteredBufferBlockEntity getBuffer() {
+    return buffer;
+  }
+
   @Override
-  public boolean stillValid(Player p_38874_) {
-    return pipe != null && p_38874_.distanceToSqr((double) pipe.getBlockPos().getX() + 0.5D, (double) pipe.getBlockPos().getY() + 0.5D, (double) pipe.getBlockPos().getZ() + 0.5D) <= 64.0D;
+  public boolean stillValid(Player player) {
+    return buffer.stillValid(player);
   }
 }

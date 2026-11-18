@@ -12,6 +12,7 @@
 package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.transport.stripes.StripesPipe;
+import com.peco2282.bcreborn.transport.pipe.pluggable.PowerAdapterPluggable;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
@@ -673,6 +674,9 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     if (cap == ForgeCapabilities.FLUID_HANDLER && runtime.type() == PipeType.FLUID) {
       return (side == null ? fluidHandlerCap : fluidSideCaps.get(side)).cast();
     }
+    if (cap == ForgeCapabilities.ENERGY && side != null && getPipePluggable(side) instanceof PowerAdapterPluggable) {
+      return LazyOptional.of(() -> PowerAdapterPluggable.storage(this)).cast();
+    }
     if (cap == ForgeCapabilities.ENERGY && runtime.type() == PipeType.ENERGY) {
       if (side != null) {
         if (!canTransferEnergy(side)) return LazyOptional.empty();
@@ -734,6 +738,7 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     setChanged();
     if (level != null) {
       refreshConnections();
+      refreshNeighbourConnection(direction);
       // A gate that broadcast a signal may be gone (original GatePluggable.onDetachedPipe -> resetGate()).
       scheduleWireUpdate();
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -753,6 +758,20 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
    * A pluggable that blocks (or no longer blocks) its side changes which sides are connected. The connections are
    * part of the block state, so it is recomputed here; the neighbours follow through their shape update.
    */
+  /**
+   * The pipe on {@code side} may connect differently now even if this side's own state did not change (a power
+   * pipe joins a power adapter on a side that is closed for this pipe), so let it recompute that arm.
+   */
+  private void refreshNeighbourConnection(Direction side) {
+    if (level == null || level.isClientSide) return;
+    BlockPos neighbourPos = worldPosition.relative(side);
+    BlockState neighbour = level.getBlockState(neighbourPos);
+    if (!(neighbour.getBlock() instanceof PipeBlock block)) return;
+    BlockState updated = neighbour.setValue(PipeBlock.PROPERTY_MAP.get(side.getOpposite()),
+      block.canConnectTo(level, neighbourPos, side.getOpposite()));
+    if (updated != neighbour) level.setBlock(neighbourPos, updated, 3);
+  }
+
   private void refreshConnections() {
     if (level == null || level.isClientSide) return;
     BlockState state = getBlockState();
@@ -824,7 +843,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     BlockState neighborState = level.getBlockState(neighborPos);
     PipeBehaviour behaviour = runtime.behaviour();
     if (behaviour != null && !behaviour.canConnectTo(this, side, neighborState)) return false;
-    if (neighborState.getBlock() instanceof PipeBlock otherBlock && otherBlock.getTransportType() != PipeType.ENERGY) return false;
+    if (neighborState.getBlock() instanceof PipeBlock otherBlock && otherBlock.getTransportType() != PipeType.ENERGY) {
+      // Original PowerAdapterPluggable: a power adapter on the other pipe takes power like a machine.
+      return level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other
+        && other.getPipePluggable(side.getOpposite()) instanceof PowerAdapterPluggable;
+    }
     if (level.getBlockEntity(neighborPos) instanceof PipeBlockEntity other) {
       PipeBehaviour otherBehaviour = other.runtime.behaviour();
       return other.runtime.type() == PipeType.ENERGY && !other.isRemoved()

@@ -43,5 +43,19 @@
   "item.bcreborntransport.pipe_filter_green": "緑色のフィルター",
   "item.bcreborntransport.pipe_filter_red": "赤色のフィルター",
   "item.bcreborntransport.pipe_filter_black": "黒色のフィルター",
-  "item.bcreborntransport.pipe_filter_clear": "透明のフィルター"
+  "item.bcreborntransport.pipe_filter_clear": "透明のフィルター",
+  "block.bcreborntransport.filtered_buffer": "フィルター付きバッファ",
+  "menu.bcreborntransport.filtered_buffer_menu": "フィルター付きバッファ",
+  "item.bcreborntransport.gate_copier": "ゲートコピー機",
+  "chat.bcreborntransport.gate_copier.clear": "ゲートコピー機を消去しました",
+  "chat.bcreborntransport.gate_copier.gate_copied": "ゲートの設定をコピーしました",
+  "chat.bcreborntransport.gate_copier.gate_pasted": "ゲートの設定を貼り付けました",
+  "chat.bcreborntransport.gate_copier.no_information": "ゲートコピー機は空です",
+  "chat.bcreborntransport.gate_copier.no_gate": "ここにゲートはありません",
+  "chat.bcreborntransport.gate_copier.warning.slots": "注意: このゲートはスロットが少ないため、一部のルールは入りませんでした",
+  "chat.bcreborntransport.gate_copier.warning.action_parameters": "注意: このゲートはアクションのパラメーターが少ない",
+  "chat.bcreborntransport.gate_copier.warning.trigger_parameters": "注意: このゲートはトリガーのパラメーターが少ない",
+  "chat.bcreborntransport.gate_copier.warning.logic": "注意: このゲートは論理（AND / OR）が違います",
+  "chat.bcreborntransport.gate_copier.warning.load": "注意: 一部のルールはこのゲートに読み込めませんでした",
+  "item.bcreborntransport.pipe_power_adapter": "パワーアダプター"
 }

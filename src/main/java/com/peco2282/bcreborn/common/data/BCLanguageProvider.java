@@ -421,6 +421,7 @@ public class BCLanguageProvider extends LanguageProvider {
     addMenu(TransportMenuTypes.EMERALD_PIPE_MENU, "Emerald Pipe");
     addMenu(TransportMenuTypes.EMZULI_PIPE_MENU, "Emzuli Pipe");
     addMenu(TransportMenuTypes.FILTERED_BUFFER_MENU, "Filtered Buffer");
+    addBlock(TransportBlocks.FILTERED_BUFFER, "Filtered Buffer");
     addMenu(TransportMenuTypes.GATE_INTERFACE_MENU, "Gate Interface");
   }
 

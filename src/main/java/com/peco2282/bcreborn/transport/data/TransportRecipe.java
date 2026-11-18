@@ -22,6 +22,7 @@ import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -30,6 +31,34 @@ import java.util.function.Consumer;
 public class TransportRecipe extends BCRecipeHelper {
   public static void build(Consumer<FinishedRecipe> consumer) {
     buildSealant(consumer);
+    // Original BuildCraftTransport: structure pipes around a gold ingot, a stone gear and redstone make 4 adapters.
+    shaped(RecipeCategory.MISC, TransportItems.POWER_ADAPTER.get()::asItem, 4)
+      .pattern("scs")
+      .pattern("sbs")
+      .pattern("sas")
+      .define('s', TransportBlocks.get(PipeType.STRUCTURE, PipeMaterial.COBBLESTONE).get())
+      .define('c', Tags.Items.INGOTS_GOLD)
+      .define('b', com.peco2282.bcreborn.core.CoreItems.STONE_GEAR.get())
+      .define('a', Items.REDSTONE)
+      .unlockedBy("has_stone_gear", has(com.peco2282.bcreborn.core.CoreItems.STONE_GEAR.get()))
+      .save(consumer);
+    // Original TransportSiliconRecipes: a wrench and a redstone chipset make a gate copier.
+    shapeless(RecipeCategory.TOOLS, TransportItems.GATE_COPIER)
+      .requires(com.peco2282.bcreborn.core.CoreItems.WRENCH.get())
+      .requires(com.peco2282.bcreborn.silicon.SiliconItems.REDSTONE_CHIPSET.get())
+      .unlockedBy("has_chipset", has(com.peco2282.bcreborn.silicon.SiliconItems.REDSTONE_CHIPSET.get()))
+      .save(consumer);
+    // Original BuildCraftTransport: planks around a diamond pipe, a chest and a piston.
+    shaped(RecipeCategory.MISC, TransportBlocks.FILTERED_BUFFER.get()::asItem, 1)
+      .pattern("wdw")
+      .pattern("wcw")
+      .pattern("wpw")
+      .define('w', ItemTags.PLANKS)
+      .define('d', TransportBlocks.get(PipeType.ITEM, PipeMaterial.DIAMOND).get())
+      .define('c', Tags.Items.CHESTS_WOODEN)
+      .define('p', Items.PISTON)
+      .unlockedBy(getHasName(Items.PISTON), has(Items.PISTON))
+      .save(consumer);
     TransportBlocks.pipesForEach((type, material, block) -> {
       if (type == PipeType.ITEM) {
         buildItemPipe(consumer, material, block.get());

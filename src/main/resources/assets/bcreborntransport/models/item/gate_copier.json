@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "bcreborntransport:item/gate_copier/empty"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "bcreborntransport:full": 1
+      },
+      "model": "bcreborntransport:item/gate_copier_full"
+    }
+  ]
+}

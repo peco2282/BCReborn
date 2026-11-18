@@ -51,7 +51,7 @@ public class BCBlockTagsProvider extends BlockTagsProvider {
       .add(FactoryBlocks.AUTO_WORKBENCH.get(), FactoryBlocks.HOPPER.get(), FactoryBlocks.FLOOD_GATE.get(), FactoryBlocks.MINING_WELL.get(), FactoryBlocks.PLAIN_PIPE.get(), FactoryBlocks.PUMP.get(), FactoryBlocks.REFINERY.get(), FactoryBlocks.TANK.get());
     tag(CommonBlockTags.ROBOTICS).add(RoboticsBlocks.REQUESTER.get(), RoboticsBlocks.ZONE_PLAN.get());
     tag(CommonBlockTags.SILICON).addTag(CommonBlockTags.LASER_TABLE).add(SiliconBlocks.LASER.get(), SiliconBlocks.PACKAGER.get());
-    tag(CommonBlockTags.TRANSPORT).addTag(CommonBlockTags.PIPES);
+    tag(CommonBlockTags.TRANSPORT).addTag(CommonBlockTags.PIPES).add(TransportBlocks.FILTERED_BUFFER.get());
   }
 
   private void fuelTag() {

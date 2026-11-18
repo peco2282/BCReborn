@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport;
 
+import com.peco2282.bcreborn.transport.block.entity.FilteredBufferBlockEntity;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
@@ -42,6 +43,9 @@ public class TransportBlockEntityTypes {
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> FLUID_PIPE = register("fluid_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.FLUID), null));
 
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> STRUCTURE_PIPE = register("structure_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.STRUCTURE), null));
+
+  public static final RegistryObject<BlockEntityType<FilteredBufferBlockEntity>> FILTERED_BUFFER = register("filtered_buffer",
+    () -> BlockEntityType.Builder.of(FilteredBufferBlockEntity::new, TransportBlocks.FILTERED_BUFFER.get()).build(null));
 
   public static final RegistryObject<BlockEntityType<PipeBlockEntity>> ENERGY_PIPE = register("energy_pipe", () -> new BlockEntityType<>(PipeBlockEntity::new, filter(PipeType.ENERGY), null));
 }

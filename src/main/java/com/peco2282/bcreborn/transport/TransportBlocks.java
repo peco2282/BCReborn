@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.transport;
 
+import com.peco2282.bcreborn.transport.block.FilteredBufferBlock;
+import net.minecraft.world.level.material.MapColor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.peco2282.bcreborn.BCRebornTransport;
@@ -44,6 +46,10 @@ public class TransportBlocks {
     PipeType::supports
   );
 
+
+  /** Original {@code BlockFilteredBuffer}: iron, hardness 5. */
+  public static final RegistryObject<FilteredBufferBlock> FILTERED_BUFFER = REGISTRY.registerBlockItem("filtered_buffer",
+    () -> new FilteredBufferBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 10.0F)));
 
   public static List<RegistryObject<PipeBlock>> getPipeList() {
     return PIPES.getAll();
@@ -92,5 +98,6 @@ public class TransportBlocks {
 
   public static void registerCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
     output.acceptAll(getPipeList().stream().map(RegistryObject::get).map(ItemStack::new).toList());
+    output.accept(FILTERED_BUFFER.get());
   }
 }
