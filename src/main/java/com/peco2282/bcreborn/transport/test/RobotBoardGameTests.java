@@ -546,17 +546,23 @@ public class RobotBoardGameTests {
   @GameTest(template = TEMPLATE, templateNamespace = BCRebornTransport.MODID, timeoutTicks = 200)
   public void bomberDropsPrimedTnt(GameTestHelper helper) {
     DockingStation<?> home = placeStation(helper, HOME, PipeType.ITEM, PipeMaterial.COBBLESTONE);
-    RobotEntity robot = placeRobot(helper, home, RoboticsRedstoneRobots.ROBOT_BOMBER.get(), ItemStack.EMPTY);
-    robot.setItem(0, new ItemStack(Items.TNT, 2));
-    robot.getBoard().delegateAIEnded(new AIRobotGotoBlock(robot, 0, 0, 0));
+    // A few ticks after the structure is placed: at tick 0 of a busy first batch the TNT was not found.
+    helper.runAfterDelay(5, () -> {
+      RobotEntity robot = placeRobot(helper, home, RoboticsRedstoneRobots.ROBOT_BOMBER.get(), ItemStack.EMPTY);
+      try {
+        robot.setItem(0, new ItemStack(Items.TNT, 2));
+        robot.getBoard().delegateAIEnded(new AIRobotGotoBlock(robot, 0, 0, 0));
 
-    List<PrimedTnt> primed = helper.getLevel().getEntitiesOfClass(PrimedTnt.class, robot.getBoundingBox().inflate(3));
-    primed.forEach(PrimedTnt::discard);
-    int left = robot.getItem(0).getCount();
-    robot.discard();
-    check(helper, primed.size() == 1, "The bomber must prime exactly one TNT, found " + primed.size());
-    check(helper, left == 1, "Priming must use one TNT from the robot, left " + left);
-    helper.succeed();
+        List<PrimedTnt> primed = helper.getLevel().getEntitiesOfClass(PrimedTnt.class, robot.getBoundingBox().inflate(3));
+        primed.forEach(PrimedTnt::discard);
+        int left = robot.getItem(0).getCount();
+        check(helper, primed.size() == 1, "The bomber must prime exactly one TNT, found " + primed.size() + ", robot has " + left + " left");
+        check(helper, left == 1, "Priming must use one TNT from the robot, left " + left);
+        helper.succeed();
+      } finally {
+        robot.discard();
+      }
+    });
   }
 
   /**

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.core.recipes.AssemblyRecipeManager;
+import com.peco2282.bcreborn.transport.recipes.FacadeAssemblyRecipes;
 import com.peco2282.bcreborn.transport.statements.ActionParameterSignal;
 import com.peco2282.bcreborn.transport.statements.TriggerParameterSignal;
 import com.peco2282.bcreborn.core.statements.StatementParameterRedstoneGateSideOnly;
@@ -107,6 +109,8 @@ public class BCRebornTransport implements BCReborn {
       GateExpansions.registerExpansion(GateExpansionLightSensor.INSTANCE, new ItemStack(Items.DAYLIGHT_DETECTOR));
       IntegrationRecipeManager.INSTANCE.addRecipe(new GateExpansionRecipe());
       IntegrationRecipeManager.INSTANCE.addRecipe(new AdvancedFacadeRecipe());
+      // Original ItemFacade.addFacade(): structure pipes + a block -> facades on the Assembly Table.
+      AssemblyRecipeManager.addDynamicSource(FacadeAssemblyRecipes::create);
       // Parameter kinds a saved gate may name. Without these a gate with parameters could not be loaded.
       StatementManager.registerParameterFactory(StatementParameterItemStack::new);
       StatementManager.registerParameterFactory(StatementParameterItemStackExact::new);

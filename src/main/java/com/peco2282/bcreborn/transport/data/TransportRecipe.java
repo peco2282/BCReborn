@@ -11,6 +11,10 @@
  */
 package com.peco2282.bcreborn.transport.data;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.common.Tags;
+import com.peco2282.bcreborn.BCRebornTransport;
+import com.peco2282.bcreborn.transport.TransportItems;
 import com.peco2282.bcreborn.common.data.BCRecipeHelper;
 import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.transport.TransportBlocks;
@@ -25,9 +29,16 @@ import java.util.function.Consumer;
 
 public class TransportRecipe extends BCRecipeHelper {
   public static void build(Consumer<FinishedRecipe> consumer) {
+    buildSealant(consumer);
     TransportBlocks.pipesForEach((type, material, block) -> {
       if (type == PipeType.ITEM) {
         buildItemPipe(consumer, material, block.get());
+      } else if (type == PipeType.FLUID) {
+        // Original: pipe sealant + item pipe -> fluid pipe.
+        convertItemPipe(consumer, material, block.get(), TransportItems.PIPE_SEALANT.get(), "sealant");
+      } else if (type == PipeType.ENERGY) {
+        // Original: redstone + item pipe -> kinesis (power) pipe.
+        convertItemPipe(consumer, material, block.get(), Items.REDSTONE, "redstone");
       } else if (type == PipeType.STRUCTURE) {
         // Original: cobblestone, gravel, cobblestone -> 8 structure pipes.
         shaped(RecipeCategory.MISC, block.get()::asItem, 8)
@@ -38,6 +49,24 @@ public class TransportRecipe extends BCRecipeHelper {
           .save(consumer);
       }
     });
+  }
+
+  private static void buildSealant(Consumer<FinishedRecipe> consumer) {
+    // Original: cactus green -> pipe sealant.
+    shapeless(RecipeCategory.MISC, TransportItems.PIPE_SEALANT)
+      .requires(Tags.Items.DYES_GREEN)
+      .unlockedBy("has_green_dye", has(Tags.Items.DYES_GREEN))
+      .save(consumer);
+  }
+
+  private static void convertItemPipe(Consumer<FinishedRecipe> consumer, PipeMaterial material, ItemLike result,
+                                      ItemLike additive, String additiveName) {
+    ItemLike itemPipe = TransportBlocks.get(PipeType.ITEM, material).get();
+    shapeless(RecipeCategory.MISC, result::asItem)
+      .requires(itemPipe)
+      .requires(additive)
+      .unlockedBy(getHasName(itemPipe), has(itemPipe))
+      .save(consumer, BCRebornTransport.location(BuiltInRegistries.ITEM.getKey(result.asItem()).getPath() + "_from_" + additiveName));
   }
 
   private static void buildItemPipe(Consumer<FinishedRecipe> consumer, PipeMaterial material, ItemLike result) {

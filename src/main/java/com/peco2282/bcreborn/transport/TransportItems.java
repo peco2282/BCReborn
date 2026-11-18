@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport;
 
+import net.minecraft.world.item.Item;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.common.BCRegistry;
 import com.peco2282.bcreborn.common.bean.InitRegister;
@@ -44,6 +45,8 @@ public class TransportItems {
   public static final RegistryObject<PipeWireItem> PIPE_WIRE_YELLOW = REGISTRY.registerItem("pipe_wire_yellow", () -> new PipeWireItem(PipeWire.YELLOW));
 
   public static final RegistryObject<PlugItem> PIPE_PLUG = REGISTRY.registerItem("pipe_plug", PlugItem::new);
+  /** Original pipeWaterproof: turns an item pipe into a fluid pipe. */
+  public static final RegistryObject<Item> PIPE_SEALANT = REGISTRY.registerItem("pipe_waterproof", () -> new Item(new Item.Properties()));
   /** Original {@code ItemLens}: one lens and one filter per dye colour, plus the clear variants. */
   private static final Map<DyeColor, RegistryObject<LensItem>> LENSES = new EnumMap<>(DyeColor.class);
   private static final Map<DyeColor, RegistryObject<LensItem>> FILTERS = new EnumMap<>(DyeColor.class);
@@ -80,6 +83,7 @@ public class TransportItems {
     output.accept(PIPE_WIRE_GREEN.get());
     output.accept(PIPE_WIRE_YELLOW.get());
     output.accept(PIPE_PLUG.get());
+    output.accept(PIPE_SEALANT.get());
     for (DyeColor color : DyeColor.values()) output.accept(lens(color, false));
     output.accept(PIPE_LENS_CLEAR.get());
     for (DyeColor color : DyeColor.values()) output.accept(lens(color, true));

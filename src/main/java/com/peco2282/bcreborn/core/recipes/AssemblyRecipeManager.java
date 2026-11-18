@@ -26,7 +26,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Mod.EventBusSubscriber(modid = BCRebornCore.MODID)
@@ -35,7 +38,18 @@ public final class AssemblyRecipeManager implements IAssemblyRecipeManager {
   private static final AssemblyRecipeLoader LOADER = new AssemblyRecipeLoader();
   private final Map<ResourceLocation, AssemblyRecipe> recipes = new ConcurrentHashMap<>();
 
+  /** Recipes that are made from the registries rather than read from data packs (original IFlexibleRecipe). */
+  private static final List<Supplier<Collection<AssemblyRecipe>>> DYNAMIC_SOURCES = new CopyOnWriteArrayList<>();
+
   private AssemblyRecipeManager() {
+  }
+
+  /**
+   * Adds recipes that are computed on every reload, after the data pack recipes (for instance one facade recipe per
+   * block). A data pack recipe with the same id wins.
+   */
+  public static void addDynamicSource(Supplier<Collection<AssemblyRecipe>> source) {
+    DYNAMIC_SOURCES.add(source);
   }
 
   @SubscribeEvent
@@ -70,6 +84,11 @@ public final class AssemblyRecipeManager implements IAssemblyRecipeManager {
       ProfilerFiller profiler
     ) {
       doReload(jsons, profiler, AssemblyRecipe.CODEC, INSTANCE.recipes);
+      for (Supplier<Collection<AssemblyRecipe>> source : DYNAMIC_SOURCES) {
+        for (AssemblyRecipe recipe : source.get()) {
+          INSTANCE.recipes.putIfAbsent(recipe.id(), recipe);
+        }
+      }
     }
   }
 }

@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.silicon.data;
 
+import com.peco2282.bcreborn.transport.gates.ItemGate;
+import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipeBuilder;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipeProvider;
@@ -119,6 +121,15 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
         .setResult(new ItemStack(SiliconItems.COMP_CHIPSET.get()))
     );
 
+    // Original TransportSiliconRecipes: a chipset and one pipe wire per wire colour the gate can emit, at the
+    // chipset's own cost. Every gate is made with AND logic; the Integration Table switches it to OR.
+    addGateRecipe(GateDefinition.GateMaterial.REDSTONE, SiliconItems.REDSTONE_CHIPSET.get(), 100000);
+    addGateRecipe(GateDefinition.GateMaterial.IRON, SiliconItems.IRON_CHIPSET.get(), 200000);
+    addGateRecipe(GateDefinition.GateMaterial.GOLD, SiliconItems.GOLD_CHIPSET.get(), 400000);
+    addGateRecipe(GateDefinition.GateMaterial.QUARTZ, SiliconItems.QUARTZ_CHIPSET.get(), 600000);
+    addGateRecipe(GateDefinition.GateMaterial.DIAMOND, SiliconItems.DIAMOND_CHIPSET.get(), 800000);
+    addGateRecipe(GateDefinition.GateMaterial.EMERALD, SiliconItems.EMERALD_CHIPSET.get(), 1200000);
+
     addRecipe(
       AssemblyRecipeBuilder.create(loc("redstone_crystal"))
         .addIngredient(Items.REDSTONE_BLOCK)
@@ -134,6 +145,16 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
     builder.addIngredient(Ingredient.of(Tags.Items.GLASS));
     if (filter) builder.addIngredient(Ingredient.of(Items.IRON_BARS));
     addRecipe(builder.setEnergy(10000).setResult(new ItemStack(TransportItems.lens(color, filter), 2)));
+  }
+
+  private void addGateRecipe(GateDefinition.GateMaterial material, Item chipset, int energy) {
+    Item[] wires = {TransportItems.PIPE_WIRE_RED.get(), TransportItems.PIPE_WIRE_BLUE.get(),
+      TransportItems.PIPE_WIRE_GREEN.get(), TransportItems.PIPE_WIRE_YELLOW.get()};
+    AssemblyRecipeBuilder builder = AssemblyRecipeBuilder.create(loc(material.getTag() + "_gate")).addIngredient(chipset);
+    for (int i = 0; i < material.maxWireColor; i++) {
+      builder.addIngredient(wires[i]);
+    }
+    addRecipe(builder.setEnergy(energy).setResult(ItemGate.makeGateItem(material, GateDefinition.GateLogic.AND)));
   }
 
   private void addWireRecipe(String name, TagKey<Item> dye, Item wire) {
