@@ -195,7 +195,8 @@ public class ColorPipeGameTests {
     placePipe(helper, C, PipeMaterial.COBBLESTONE);
     check(helper, emzuli.getExtractionSide() == Direction.WEST, "The Emzuli pipe must extract from the chest, got " + emzuli.getExtractionSide());
     check(helper, emzuli.getBattery() != null, "The Emzuli pipe needs a battery for engine power");
-    emzuli.getBattery().setEnergy(1000);
+    // Like a running engine: every pull empties the battery (original PipeItemsWood), so keep it charged.
+    helper.onEachTick(() -> emzuli.getBattery().setEnergy(1000));
 
     EmzuliState state = emzuli.getEmzuliState();
     check(helper, state != null, "An Emzuli pipe must have Emzuli state");

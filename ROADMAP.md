@@ -24,7 +24,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 これまでの最優先タスク（Transport UI・建築マシン・エンジン）はコード上の実装を終え、GameTest で検証済み。次の優先度は以下。
 
 1.  **実機での確認**: 画面を伴う部分は GameTest では検証できない。下の「実機確認チェックリスト」を `runClient` で確認し、問題がなければ 🔧 を ✅ にする。
-2.  **入手手段のないアイテム**: 流体・動力パイプ、ゲート本体、ファサード、Pipe Sealant のレシピは 2026-11-18 に追加（RecipeGameTests）。残りは List / Debugger のレシピと Sandstone / Emerald の動力パイプ（6 章）。
+2.  **入手手段のないアイテム**: 2026-11-18 にすべて解消。流体・動力パイプ（逆変換も）、ゲート本体、ファサード、Pipe Sealant、List のレシピ（RecipeGameTests）と、動力パイプ Sandstone / Emerald（PowerPipeGameTests）。Debugger は原作にもレシピがない（6 章）。
 3.  **スタブのままの機能**: 7-1 章の残り（ストライプパイプのパイプ延長、Pump の液面処理）。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
 
 ---
@@ -36,7 +36,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
 | 基本輸送ロジック | ✅ | TravelingItem, MovementHelper, SpeedHelper |
-| Wood / Emerald | 🔧 | 抽出ロジック実装済み。搬出数の決め方、向き・モードの切替操作が原作と異なる（7-2） |
+| Wood / Emerald | 🔧 | PipeItemsWood / PipeItemsEmerald 準拠の抽出: エンジンがパイプのバッテリー（2560 RF、80 RF/t）を充電し、8 tick 以降はスタック全部を払えるとき、16 tick 以降は 10 RF あれば引き出す。1 個 10 RF で払える分だけ 1 スタックから取り、引き出すたびにバッテリーは空になる。Emerald のホワイト / ブラックリストは同じ方式、ラウンドロビンは現在のフィルターを 1 個ずつ取って次へ。Emerald も設置時に引き出す面を選ぶ。Emzuli も同じ周期で動く。WoodExtractionGameTests で検証。向き・モードの切替操作は原作と異なる（7-2） |
 | Stone / Cobblestone | ✅ | 基本輸送・摩擦の違い |
 | Iron | ✅ | PipeLogicIron 準拠: レンチ（アーム/中央）・レッドストーンで出力切替、全方向接続・出力1方向。オリジナル同様 GUI なし。出力アームは標準、それ以外は solid テクスチャで描画（EXTRACTION_SIDE に見た目としてミラー）。ゲートの「出力方向」アクションにも対応 |
 | Golden | ✅ | 加速ロジック |
@@ -128,8 +128,8 @@ BC を象徴する大型マシン。
 ### 6-1. Transport
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| 動力パイプ Sandstone / Emerald | ⬜ | `PipeMaterial` の転送量が `-1` で、ブロックが登録されない |
-| 流体・動力パイプのレシピ | ✅ | アイテムパイプ＋Pipe Sealant（緑の染料から作る、ID `pipe_waterproof`）→ 液体パイプ、アイテムパイプ＋レッドストーン → 動力パイプ（不定形）。RecipeGameTests で検証 |
+| 動力パイプ Sandstone / Emerald | ✅ | 原作 PipePowerSandstone / PipePowerEmerald: 容量は丸石の 4 倍（320 RF/t）と 32 倍（2560 RF/t）。Sandstone はパイプとだけ接続（機械・エンジンの隣を通しても触れない）、Emerald は木の動力パイプと同じくエンジンから吸い出す（`WoodenEnergyPipeBehaviour` を共用、上限は素材の転送量）。PowerPipeGameTests で検証、見た目は実機確認待ち |
+| 流体・動力パイプのレシピ | ✅ | アイテムパイプ＋Pipe Sealant（緑の染料から作る、ID `pipe_waterproof`）→ 液体パイプ、アイテムパイプ＋レッドストーン → 動力パイプ（不定形）。原作どおり、液体・動力パイプ単体でアイテムパイプに戻せる。RecipeGameTests で検証 |
 | ゲート本体のレシピ | ✅ | Assembly Table: チップセット＋ワイヤー（赤→青→緑→黄の順に `maxWireColor` 本）→ AND ゲート、10 万〜120 万 RF。エネルギーの値は原作と未照合。RecipeGameTests で検証 |
 | ファサードの基本レシピ | ✅ | 原作 ItemFacade.addFacade: Assembly Table で構造パイプ 3 個＋ブロック → 6 個、8000 RF。`FacadeAssemblyRecipes` がリロードのたびにファサードにできるブロックごとに作る（`AssemblyRecipeManager.addDynamicSource`、同じ ID はデータパック優先）。RecipeGameTests で検証 |
 | Gate Copier | ⬜ | 設定項目（`SiliconConfig.isGateCopier`）だけ |
@@ -139,7 +139,7 @@ BC を象徴する大型マシン。
 ### 6-2. Core / Energy / その他
 | 項目 | 状態 | 備考 |
 |----------------------|----|-------------------------------------------|
-| List / Debugger のレシピ | ⬜ | アイテムはある |
+| List / Debugger のレシピ | ✅ | 原作 CoreSiliconRecipes: Assembly Table で緑の染料＋レッドストーン＋紙 8 枚 → List、20000 RF。Debugger は原作にもレシピがなく、クリエイティブ専用のまま。RecipeGameTests で検証 |
 | 水の湧き水の生成 | ⬜ | `SpringPopulate` の `@SubscribeEvent` がコメントアウトされている |
 | 油田の生成 | 🔧 | 原作移植の `OilPopulate`（油井・大小の鉱床）は未登録。バニラの湖 Feature で油の池を置くだけ。Oil Desert / Oil Ocean バイオームなし |
 | コンパレーター出力 | ⬜ | どのブロックにもない（タンクなど） |
@@ -163,7 +163,6 @@ BC を象徴する大型マシン。
 | Pump | 🔧 | 液面に着いたときの処理に `TODO: Impl Fill fluid!` が残る（汲み上げは実装済み） |
 
 ### 7-2. 原作と異なる挙動
-- **木パイプの搬出数**: 原作は蓄えたエネルギーで決まる（1 個 10 RF）。本実装は隣のエンジンの色段階（青 / 緑 / 黄 / 赤）で個数と間隔を決める（`StandardItemExtractionModule` / `FilteredItemExtractionModule`）。
 - **木パイプの向き切替**: レンチなしの右クリックでも切り替わる。
 - **Emerald パイプのモード切替**: GUI のボタンではなくレンチ。画面にボタンがない。
 - **ストライプパイプ**: 登録したストライプハンドラ 13 種をパイプ自身は使わず、独自の「設置か破壊か」の処理（`StripesItemPipeBehaviour`）。ハンドラを使うのは Stripes ロボットだけ。動力でのブロック破壊もない。
@@ -201,11 +200,12 @@ BC を象徴する大型マシン。
 
 ### Phase 5: 原作との差分の解消 (6 章・7 章)
 *   [x] 流体・動力パイプ、ゲート、ファサードのレシピ（Pipe Sealant を含む）
-*   [ ] 動力パイプ Sandstone / Emerald
+*   [x] 動力パイプ Sandstone / Emerald、List のレシピ、液体・動力パイプからアイテムパイプへの逆変換
 *   [x] ゲート拡張 Timer / Fader / Light Sensor の接続
 *   [x] Stamping Table
 *   [x] Zone Planner の地図、Blueprint Library の一覧と同期、Requester の要求設定（実機確認待ち）
-*   [ ] 木パイプの搬出とストライプパイプを原作の方式へ
+*   [x] 木パイプの搬出を原作の方式へ（2026-11-18、WoodExtractionGameTests）
+*   [ ] ストライプパイプを原作の方式へ
 *   [ ] 湧き水・油田の生成
 *   [ ] Gate Copier / Filtered Buffer / Power Adapter
 

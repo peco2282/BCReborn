@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -53,6 +54,17 @@ public class EmeraldItemPipeBehaviour implements ItemPipeBehaviour {
       return be != null && be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).isPresent();
     }
     return false;
+  }
+
+  /** Original PipeItemsEmerald extends PipeItemsWood: it picks its extraction side like the wooden pipe. */
+  @Override
+  public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
+    WoodenItemPipeBehaviour.INSTANCE.onPlace(pipe, level, oldState, isMoving);
+  }
+
+  @Override
+  public void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
+    WoodenItemPipeBehaviour.INSTANCE.updateShape(entity, direction, neighbor, level, neighborPos);
   }
 
   @Override

@@ -103,11 +103,12 @@ public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
   public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
     EmzuliState emzuli = pipe.getEmzuliState();
     if (emzuli == null) return;
-    if (emzuli.canExtractCurrent()) {
-      ItemStack filter = emzuli.getCurrentFilter();
-      StandardItemExtractionModule.INSTANCE.extract(pipe, stack -> ItemStack.isSameItem(stack, filter), emzuli.currentPaint());
-    }
-    emzuli.incrementFilter();
+    // Original PipeItemsEmzuli extends PipeItemsWood: it pulls on the wooden pipe's schedule and moves on to the next
+    // slot after every pull (onPostTick), whether or not an item came out.
+    ItemStack filter = emzuli.getCurrentFilter();
+    boolean pulled = StandardItemExtractionModule.INSTANCE.pull(pipe, inventory -> emzuli.canExtractCurrent()
+      ? StandardItemExtractionModule.firstMatching(inventory, stack -> ItemStack.isSameItem(stack, filter)) : null, emzuli.currentPaint());
+    if (pulled) emzuli.incrementFilter();
   }
 
   /** Original {@code getActions()}: the four extraction presets. */

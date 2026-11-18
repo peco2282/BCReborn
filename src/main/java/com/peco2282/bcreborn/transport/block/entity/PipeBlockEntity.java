@@ -199,7 +199,8 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
   private void configureExtractionBattery() {
     boolean needsBattery = usesExtractionBattery();
     if (needsBattery && getBattery() == null) {
-      setBattery(new EnergyStorage(1024, 64, 64, 0));
+      // Original PipeItemsWood: RFBattery(2560, 80, 0), filled by engines and emptied by every pull.
+      setBattery(runtime.type() == PipeType.ITEM ? new EnergyStorage(2560, 80, 0, 0) : new EnergyStorage(1024, 64, 64, 0));
     } else if (!needsBattery) {
       setBattery(null);
     }
@@ -241,6 +242,13 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       return getBattery().getEnergyStored();
     }
     return 0;
+  }
+
+  /** Original {@code battery.setEnergy(0)} after a pull. */
+  public void setExtractionEnergy(int amount) {
+    if (getBattery() != null) {
+      getBattery().setEnergy(amount);
+    }
   }
 
   public void consumeExtractionEnergy(int amount) {
@@ -598,6 +606,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       configureExtractionBattery();
       if (getBattery() != null && tag.contains("battery")) {
         getBattery().read(tag.getCompound("battery"));
+        // Pipes saved with the older 1024 RF battery keep their energy but take the original limits.
+        if (runtime.type() == PipeType.ITEM && getBattery().getMaxEnergyStored() != 2560) {
+          int stored = Math.min(getBattery().getEnergyStored(), 2560);
+          setBattery(new EnergyStorage(2560, 80, 0, stored));
+        }
       }
     }
     if (tag.contains("SideProperties")) {
