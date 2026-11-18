@@ -11,6 +11,13 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
 
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.Direction;
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.WoodPipeLogic;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.behaviour.FluidPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.extraction.FluidExtractionModule;
@@ -26,6 +33,23 @@ public class WoodenFluidPipeBehaviour implements FluidPipeBehaviour {
   public static final WoodenFluidPipeBehaviour INSTANCE = new WoodenFluidPipeBehaviour();
 
   private WoodenFluidPipeBehaviour() {
+  }
+
+  /** Original {@code PipeLogicWood}: the side faces a fluid handler and only the wrench turns it. */
+  @Override
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (!level.isClientSide) WoodPipeLogic.onWrench(pipe, player);
+    return InteractionResult.sidedSuccess(level.isClientSide);
+  }
+
+  @Override
+  public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
+    WoodPipeLogic.switchSourceIfNeeded(pipe);
+  }
+
+  @Override
+  public void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
+    WoodPipeLogic.chooseSourceIfNeeded(entity);
   }
 
   @Override

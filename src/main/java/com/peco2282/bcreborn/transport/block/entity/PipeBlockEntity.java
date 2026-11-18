@@ -515,6 +515,14 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return runtime.filters();
   }
 
+  /**
+   * The Emerald pipes' filters (original {@code PipeItemsEmerald.filters} / {@code PipeFluidsEmerald.filters}): one
+   * set for the pipe, not one per side, so turning the extraction side keeps them.
+   */
+  public SimpleInventory getEmeraldFilters() {
+    return getFilter(Direction.UP);
+  }
+
   public SimpleInventory getFilter(Direction direction) {
     return runtime.filter(direction);
   }

@@ -30,7 +30,7 @@ public class FilteredItemExtractionModule implements ExtractionModule {
 
   @Override
   public void extract(PipeBlockEntity pipe) {
-    SimpleInventory filters = pipe.getFilter(pipe.getExtractionSide());
+    SimpleInventory filters = pipe.getEmeraldFilters();
     if (pipe.getExtractFilterMode() == PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN) {
       int[] taken = {-1};
       boolean pulled = StandardItemExtractionModule.INSTANCE.pull(pipe, inventory -> {

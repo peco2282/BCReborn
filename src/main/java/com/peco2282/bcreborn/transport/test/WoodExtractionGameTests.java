@@ -107,8 +107,8 @@ public class WoodExtractionGameTests {
   public void emeraldRoundRobinTakesOneOfEachFilter(GameTestHelper helper) {
     ChestBlockEntity chest = chest(helper, new ItemStack(Items.COBBLESTONE, 16), new ItemStack(Items.DIRT, 16));
     PipeBlockEntity pipe = pipe(helper, PipeMaterial.EMERALD);
-    pipe.getFilter(Direction.WEST).setItem(0, new ItemStack(Items.COBBLESTONE));
-    pipe.getFilter(Direction.WEST).setItem(1, new ItemStack(Items.DIRT));
+    pipe.getEmeraldFilters().setItem(0, new ItemStack(Items.COBBLESTONE));
+    pipe.getEmeraldFilters().setItem(1, new ItemStack(Items.DIRT));
     pipe.setExtractFilterMode(PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN);
     helper.onEachTick(() -> {
       pipe.getBattery().setEnergy(2560);
@@ -126,11 +126,83 @@ public class WoodExtractionGameTests {
   public void emeraldWhiteListTakesOnlyFilteredStacks(GameTestHelper helper) {
     ChestBlockEntity chest = chest(helper, new ItemStack(Items.DIRT, 16), new ItemStack(Items.COBBLESTONE, 16));
     PipeBlockEntity pipe = pipe(helper, PipeMaterial.EMERALD);
-    pipe.getFilter(Direction.WEST).setItem(0, new ItemStack(Items.COBBLESTONE));
+    pipe.getEmeraldFilters().setItem(0, new ItemStack(Items.COBBLESTONE));
     pipe.setExtractFilterMode(PipeBlockEntity.ExtractFilterMode.WHITE_LIST);
     pipe.getBattery().setEnergy(2560);
     helper.onEachTick(() -> check(helper, count(chest, 0) == 16, "Dirt is not in the white list"));
     helper.succeedWhen(() -> helper.assertTrue(chest.getItem(1).isEmpty(),
       "2560 RF pay for the whole cobblestone stack, left " + chest.getItem(1)));
+  }
+
+  private static net.minecraftforge.common.util.FakePlayer player(GameTestHelper helper) {
+    return net.minecraftforge.common.util.FakePlayerFactory.get(helper.getLevel(),
+      new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "WoodTest"));
+  }
+
+  private static void use(GameTestHelper helper, PipeBlockEntity pipe, boolean wrench) {
+    var player = player(helper);
+    player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
+      wrench ? new ItemStack(com.peco2282.bcreborn.core.CoreItems.WRENCH.get()) : ItemStack.EMPTY);
+    var hit = new net.minecraft.world.phys.BlockHitResult(pipe.getBlockPos().getCenter(), Direction.UP, pipe.getBlockPos(), false);
+    var state = pipe.getBlockState();
+    state.getBlock().use(state, helper.getLevel(), pipe.getBlockPos(), player, net.minecraft.world.InteractionHand.MAIN_HAND, hit);
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void woodPipeTurnsOnlyWithTheWrench(GameTestHelper helper) {
+    chest(helper);
+    PipeBlockEntity pipe = pipe(helper, PipeMaterial.WOOD);
+    helper.setBlock(PIPE.east(), Blocks.AIR);
+    helper.setBlock(PIPE.north(), Blocks.CHEST);
+    check(helper, pipe.getExtractionSide() == Direction.WEST, "Another chest must not take the side over, got " + pipe.getExtractionSide());
+    use(helper, pipe, false);
+    check(helper, pipe.getExtractionSide() == Direction.WEST, "A bare hand must not turn the pipe");
+    use(helper, pipe, true);
+    check(helper, pipe.getExtractionSide() == Direction.NORTH, "The wrench turns to the next inventory, skipping empty sides, got " + pipe.getExtractionSide());
+    use(helper, pipe, true);
+    check(helper, pipe.getExtractionSide() == Direction.WEST, "And back to the first one, got " + pipe.getExtractionSide());
+    check(helper, helper.getBlockState(PIPE).getValue(com.peco2282.bcreborn.transport.block.PipeBlock.EXTRACTION_SIDE) == Direction.WEST.get3DDataValue(),
+      "The block state shows the side");
+    helper.succeed();
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void woodPipeMovesOnWhenItsInventoryGoes(GameTestHelper helper) {
+    chest(helper);
+    PipeBlockEntity pipe = pipe(helper, PipeMaterial.WOOD);
+    helper.setBlock(PIPE.north(), Blocks.CHEST);
+    helper.setBlock(CHEST, Blocks.AIR);
+    check(helper, pipe.getExtractionSide() == Direction.NORTH, "Without its chest the pipe must face the other one, got " + pipe.getExtractionSide());
+    helper.succeed();
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void woodenFluidPipeFacesATank(GameTestHelper helper) {
+    helper.setBlock(PIPE.north(), com.peco2282.bcreborn.factory.FactoryBlocks.TANK.get());
+    helper.setBlock(PIPE, TransportBlocks.get(PipeType.FLUID, PipeMaterial.WOOD).get());
+    PipeBlockEntity pipe = (PipeBlockEntity) helper.getBlockEntity(PIPE);
+    check(helper, pipe.getExtractionSide() == Direction.NORTH, "A wooden fluid pipe must face the tank, got " + pipe.getExtractionSide());
+    helper.succeed();
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void emeraldButtonsSetTheModeAndFiltersStay(GameTestHelper helper) {
+    chest(helper);
+    PipeBlockEntity pipe = pipe(helper, PipeMaterial.EMERALD);
+    pipe.getEmeraldFilters().setItem(0, new ItemStack(Items.COBBLESTONE));
+    var menu = new com.peco2282.bcreborn.transport.menu.EmeraldPipeMenu(1, player(helper).getInventory(), pipe);
+    check(helper, menu.clickMenuButton(player(helper), PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN.ordinal())
+      && pipe.getExtractFilterMode() == PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN, "The round robin button sets the mode");
+    check(helper, menu.getMode() == PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN, "The menu shows the mode");
+    helper.setBlock(PIPE.north(), Blocks.CHEST);
+    use(helper, pipe, true);
+    check(helper, pipe.getExtractionSide() == Direction.NORTH && pipe.getExtractFilterMode() == PipeBlockEntity.ExtractFilterMode.ROUND_ROBIN,
+      "The wrench turns the side, not the mode");
+    check(helper, pipe.getEmeraldFilters().getItem(0).is(Items.COBBLESTONE), "The filters stay when the side turns");
+    helper.succeed();
   }
 }

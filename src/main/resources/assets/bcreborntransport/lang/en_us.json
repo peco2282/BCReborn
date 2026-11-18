@@ -55,5 +55,9 @@
   "chat.bcreborntransport.gate_copier.warning.trigger_parameters": "Warning: this gate has fewer trigger parameters",
   "chat.bcreborntransport.gate_copier.warning.logic": "Warning: this gate uses other logic (AND / OR)",
   "chat.bcreborntransport.gate_copier.warning.load": "Warning: some rules could not be loaded into this gate",
-  "item.bcreborntransport.pipe_power_adapter": "Power Adapter"
+  "item.bcreborntransport.pipe_power_adapter": "Power Adapter",
+  "gui.bcreborntransport.emerald.white_list": "White list",
+  "gui.bcreborntransport.emerald.black_list": "Black list",
+  "gui.bcreborntransport.emerald.round_robin": "Round robin",
+  "message.bcreborntransport.extraction_side": "Extraction side: %s"
 }

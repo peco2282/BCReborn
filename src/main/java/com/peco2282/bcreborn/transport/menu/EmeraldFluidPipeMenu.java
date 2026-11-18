@@ -24,12 +24,15 @@ public class EmeraldFluidPipeMenu extends BuildCraftMenu<EmeraldFluidPipeMenu> {
   private final PipeBlockEntity pipe;
 
   public EmeraldFluidPipeMenu(int p_38852_, Inventory p_38853_, FriendlyByteBuf buf) {
+    this(p_38852_, p_38853_, BuildCraftMenu.<PipeBlockEntity>getBlockEntity(p_38853_, buf));
+  }
+
+  public EmeraldFluidPipeMenu(int p_38852_, Inventory p_38853_, PipeBlockEntity pipe) {
     super(TransportMenuTypes.EMERALD_FLUID_PIPE_MENU.get(), p_38852_, p_38853_);
-    this.pipe = getBlockEntity(p_38853_, buf);
+    this.pipe = pipe;
 
     if (pipe != null) {
-      Direction extractionDir = pipe.getExtractionSide();
-      Container filterInv = pipe.getFilter(extractionDir);
+      Container filterInv = pipe.getEmeraldFilters();
       addSlot(new com.peco2282.bcreborn.common.gui.slots.SlotPhantom(filterInv, 0, 80, 18));
     }
 

@@ -11,6 +11,19 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
 
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.menu.EmeraldFluidPipeMenu;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.WoodPipeLogic;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.behaviour.FluidPipeBehaviour;
 import net.minecraft.core.BlockPos;
@@ -41,6 +54,38 @@ public class EmeraldFluidPipeBehaviour implements FluidPipeBehaviour {
   private static final int EXTRACT_COOLDOWN = 20;
 
   private EmeraldFluidPipeBehaviour() {
+  }
+
+  /** Original {@code PipeLogicWood}: the side faces a fluid handler and only the wrench turns it. */
+  @Override
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (!level.isClientSide) WoodPipeLogic.onWrench(pipe, player);
+    return InteractionResult.sidedSuccess(level.isClientSide);
+  }
+
+  @Override
+  public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
+    WoodPipeLogic.switchSourceIfNeeded(pipe);
+  }
+
+  @Override
+  public void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
+    WoodPipeLogic.chooseSourceIfNeeded(entity);
+  }
+
+  /** Original {@code PipeFluidsEmerald.blockActivated()}: opens the filter GUI unless the player holds a pipe. */
+  @Override
+  public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    if (player.getItemInHand(hand).getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock) {
+      return InteractionResult.PASS;
+    }
+    if (player instanceof ServerPlayer serverPlayer) {
+      NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+        (id, inv, user) -> new EmeraldFluidPipeMenu(id, inv, pipe),
+        Component.translatable("menu.bcreborntransport.emerald_fluid_pipe_menu")
+      ), buf -> buf.writeBlockPos(pos));
+    }
+    return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
   @Override
@@ -96,7 +141,7 @@ public class EmeraldFluidPipeBehaviour implements FluidPipeBehaviour {
    */
   private List<FluidStack> buildAllowedFluids(PipeBlockEntity pipe, Direction extractDir) {
     List<FluidStack> result = new ArrayList<>();
-    var filterInv = pipe.getFilter(extractDir);
+    var filterInv = pipe.getEmeraldFilters();
     if (filterInv == null) return result;
 
     for (int i = 0; i < filterInv.getContainerSize(); i++) {

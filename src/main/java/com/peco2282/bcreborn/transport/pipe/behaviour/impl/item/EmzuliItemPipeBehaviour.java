@@ -78,7 +78,7 @@ public class EmzuliItemPipeBehaviour implements ItemPipeBehaviour {
   @Override
   public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                        Player player, InteractionHand hand, BlockHitResult hit) {
-    return WoodenItemPipeBehaviour.INSTANCE.onUse(pipe, level, pos, player, hand, hit);
+    return WoodenItemPipeBehaviour.INSTANCE.onWrenchUse(pipe, level, pos, player, hand, hit);
   }
 
   /** Original {@code blockActivated()}: opens the GUI unless the player holds a pipe. */

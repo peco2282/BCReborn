@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.WoodPipeLogic;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
@@ -57,25 +58,11 @@ public class WoodenItemPipeBehaviour implements ItemPipeBehaviour {
     return false;
   }
 
+  /** Original {@code PipeLogicWood.blockActivated()}: only the wrench turns the extraction side. */
   @Override
-  public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
-                                 Player player, InteractionHand hand, BlockHitResult hit) {
-    if (!level.isClientSide) {
-      Direction current = pipe.getExtractionSide();
-      Direction next = Direction.values()[(current.ordinal() + 1) % Direction.values().length];
-      pipe.setExtractionSide(next);
-
-      BlockState state = level.getBlockState(pos);
-      BlockState newState = state;
-      for (Direction dir : Direction.values()) {
-        newState = newState.setValue(PipeBlock.PROPERTY_MAP.get(dir),
-          state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
-      }
-      newState = newState.setValue(PipeBlock.EXTRACTION_SIDE, next.get3DDataValue());
-      level.setBlock(pos, newState, 3);
-
-      player.displayClientMessage(Component.literal("Extraction direction: " + next.name()), true);
-    }
+  public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos,
+                                       Player player, InteractionHand hand, BlockHitResult hit) {
+    if (!level.isClientSide) WoodPipeLogic.onWrench(pipe, player);
     return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
@@ -86,38 +73,11 @@ public class WoodenItemPipeBehaviour implements ItemPipeBehaviour {
 
   @Override
   public void onPlace(PipeBlockEntity pipe, Level level, BlockState oldState, boolean isMoving) {
-    BlockPos pos = pipe.getBlockPos();
-    BlockState state = pipe.getBlockState();
-    for (Direction dir : Direction.values()) {
-      BlockPos neighborPos = pos.relative(dir);
-      BlockEntity neighborBE = level.getBlockEntity(neighborPos);
-      if (neighborBE != null && !(neighborBE instanceof PipeBlockEntity)) {
-        if (neighborBE.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).isPresent()) {
-          pipe.setExtractionSide(dir);
-          // BlockStateの接続状態を更新
-          BlockState newBlockState = state;
-          for (Direction d : Direction.values()) {
-            BlockState neighborState = level.getBlockState(pos.relative(d));
-            newBlockState = newBlockState.setValue(PipeBlock.PROPERTY_MAP.get(d), canConnectTo(pipe, d, neighborState));
-          }
-          newBlockState = newBlockState.setValue(PipeBlock.EXTRACTION_SIDE, dir.get3DDataValue());
-          level.setBlock(pos, newBlockState, 2);
-          return;
-        }
-      }
-    }
+    WoodPipeLogic.switchSourceIfNeeded(pipe);
   }
 
   @Override
   public void updateShape(PipeBlockEntity entity, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos neighborPos) {
-    BlockEntity thisBE = level.getBlockEntity(entity.getBlockPos());
-    if (thisBE instanceof PipeBlockEntity pipeBE) {
-      BlockEntity neighborBE = level.getBlockEntity(neighborPos);
-      if (neighborBE != null && !(neighborBE instanceof PipeBlockEntity)) {
-        if (neighborBE.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).isPresent()) {
-          pipeBE.setExtractionSide(direction);
-        }
-      }
-    }
+    WoodPipeLogic.chooseSourceIfNeeded(entity);
   }
 }

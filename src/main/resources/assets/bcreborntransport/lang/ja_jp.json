@@ -57,5 +57,9 @@
   "chat.bcreborntransport.gate_copier.warning.trigger_parameters": "注意: このゲートはトリガーのパラメーターが少ない",
   "chat.bcreborntransport.gate_copier.warning.logic": "注意: このゲートは論理（AND / OR）が違います",
   "chat.bcreborntransport.gate_copier.warning.load": "注意: 一部のルールはこのゲートに読み込めませんでした",
-  "item.bcreborntransport.pipe_power_adapter": "パワーアダプター"
+  "item.bcreborntransport.pipe_power_adapter": "パワーアダプター",
+  "gui.bcreborntransport.emerald.white_list": "ホワイトリスト",
+  "gui.bcreborntransport.emerald.black_list": "ブラックリスト",
+  "gui.bcreborntransport.emerald.round_robin": "ラウンドロビン",
+  "message.bcreborntransport.extraction_side": "引き出す面: %s"
 }

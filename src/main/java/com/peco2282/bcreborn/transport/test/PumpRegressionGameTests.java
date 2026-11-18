@@ -51,6 +51,21 @@ public class PumpRegressionGameTests {
     helper.succeed();
   }
 
+  /** The tube goes down through air (10 RF a block), stops on the liquid surface and pumps from there. */
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void pumpLowersItsTubeToTheLiquidSurface(GameTestHelper helper) {
+    PumpBlockEntity pump = setup(helper);
+    BlockPos deep = SOURCE.below();
+    helper.setBlock(deep, Blocks.WATER.defaultBlockState());
+    helper.setBlock(SOURCE, Blocks.AIR.defaultBlockState());
+    pump.getBattery().setEnergy(110);
+    for (int i = 0; i < 300 && pump.tank.isEmpty(); i++) tick(helper, pump);
+    check(helper, pump.tank.getFluidAmount() == 1000, "The pump must reach the water one block further down, has " + pump.tank.getFluidAmount());
+    check(helper, helper.getBlockState(deep).isAir() && pump.getEnergyStored() == 0,
+      "Lowering the tube costs 10 RF and the source 100 RF, left " + pump.getEnergyStored());
+    helper.succeed();
+  }
+
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void insufficientEnergyRetainsSourceAndResumes(GameTestHelper helper) {
     PumpBlockEntity pump = ready(helper);

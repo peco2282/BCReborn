@@ -11,6 +11,12 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.item;
 
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.server.level.ServerPlayer;
+import com.peco2282.bcreborn.transport.menu.EmeraldPipeMenu;
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
@@ -67,36 +73,25 @@ public class EmeraldItemPipeBehaviour implements ItemPipeBehaviour {
     WoodenItemPipeBehaviour.INSTANCE.updateShape(entity, direction, neighbor, level, neighborPos);
   }
 
+  /** Original PipeItemsEmerald extends PipeItemsWood: the wrench turns the extraction side. */
   @Override
   public InteractionResult onWrenchUse(PipeBlockEntity pipe, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-    if (!level.isClientSide) {
-      PipeBlockEntity.ExtractFilterMode nextMode = pipe.getExtractFilterMode().next();
-      pipe.setExtractFilterMode(nextMode);
-      player.displayClientMessage(Component.literal("Filter mode: " + nextMode.name()), true);
-    }
-    return InteractionResult.sidedSuccess(level.isClientSide);
+    return WoodenItemPipeBehaviour.INSTANCE.onWrenchUse(pipe, level, pos, player, hand, hit);
   }
 
+  /** Original {@code PipeItemsEmerald.blockActivated()}: opens the filter GUI unless the player holds a pipe. */
   @Override
   public InteractionResult onUse(PipeBlockEntity pipe, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
-    if (player.getItemInHand(hand).getItem() instanceof IToolWrench) {
-      return onWrenchUse(pipe, level, pos, player, hand, hit);
+    ItemStack held = player.getItemInHand(hand);
+    if (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock) {
+      return InteractionResult.PASS;
     }
-    if (!level.isClientSide) {
-      Direction current = pipe.getExtractionSide();
-      Direction next = Direction.values()[(current.ordinal() + 1) % Direction.values().length];
-      pipe.setExtractionSide(next);
-      BlockState state = level.getBlockState(pos);
-      BlockState newState = state;
-      for (Direction dir : Direction.values()) {
-        newState = newState.setValue(PipeBlock.PROPERTY_MAP.get(dir),
-          state.getBlock() instanceof PipeBlock pb && pb.canConnectTo(level, pos, dir));
-      }
-      newState = newState.setValue(PipeBlock.EXTRACTION_SIDE, next.get3DDataValue());
-      level.setBlock(pos, newState, 3);
-
-      player.displayClientMessage(Component.literal("Extraction direction: " + next.name()), true);
+    if (player instanceof ServerPlayer serverPlayer) {
+      NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+        (id, inv, user) -> new EmeraldPipeMenu(id, inv, pipe),
+        Component.translatable("menu.bcreborntransport.emerald_pipe_menu")
+      ), buf -> buf.writeBlockPos(pos));
     }
     return InteractionResult.sidedSuccess(level.isClientSide);
   }

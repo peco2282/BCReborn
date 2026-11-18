@@ -124,8 +124,7 @@ public class PumpBlockEntity extends BuildCraftBlockEntity implements IHasWork, 
             }
           }
         } else {
-          // 現在の場所が液体面。
-          // TODO: Impl Fill fluid!
+          // The tube is on the liquid surface: it stays here and the suction below pumps the layer.
         }
     }
 

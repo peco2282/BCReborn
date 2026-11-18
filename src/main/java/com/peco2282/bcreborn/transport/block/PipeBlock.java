@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.transport.block;
 
+import com.peco2282.bcreborn.transport.pipe.behaviour.impl.WoodPipeLogic;
 import com.peco2282.bcreborn.transport.pipe.pluggable.PowerAdapterPluggable;
 import com.peco2282.bcreborn.api.transport.PipeWire;
 import com.peco2282.bcreborn.common.utils.Utils;
@@ -288,16 +289,20 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     }
     var bet = PipeBlockEntity.getBlockEntityType(transportType);
 
-    // 木製アイテムパイプ: 隣接ブロック変化時に extractionSide を自動更新する
-    level.getBlockEntity(currentPos, bet).ifPresent(be -> {
-      be.getBehaviour().updateShape(be, direction, neighborState, level, neighborPos);
+    // Wooden-family pipes may move their extraction side when a neighbour changes.
+    PipeBlockEntity pipe = level.getBlockEntity(currentPos, bet).orElse(null);
+    if (pipe != null) {
+      pipe.getBehaviour().updateShape(pipe, direction, neighborState, level, neighborPos);
       // Connections may change, which changes the wire network.
-      be.scheduleWireUpdate();
-    });
+      pipe.scheduleWireUpdate();
+    }
 
     BlockState newState = state;
     for (Direction dir : Direction.values()) {
       newState = newState.setValue(PROPERTY_MAP.get(dir), canConnectTo(level, currentPos, dir));
+    }
+    if (pipe != null && WoodPipeLogic.isWoodFamily(material) && (transportType == PipeType.ITEM || transportType == PipeType.FLUID)) {
+      newState = newState.setValue(EXTRACTION_SIDE, pipe.getExtractionSide().get3DDataValue());
     }
     return newState;
   }
