@@ -142,7 +142,7 @@ BC を象徴する大型マシン。
 | List / Debugger のレシピ | ✅ | 原作 CoreSiliconRecipes: Assembly Table で緑の染料＋レッドストーン＋紙 8 枚 → List、20000 RF。Debugger は原作にもレシピがなく、クリエイティブ専用のまま。RecipeGameTests で検証 |
 | 水の湧き水の生成 | ✅ | 原作 SpringPopulate 準拠のワールド生成 Feature（`WaterSpringFeature`、約 40 チャンクに 1 つ）: 最下層 5 段の岩盤を探して湧き水ブロックを置き、その上の岩を最初の空気まで水にする。オーバーワールドのみ。設定 `generateWaterSprings` で無効化（湧き水ブロックの給水も止まる）。WorldgenGameTests で検証 |
 | 油田の生成 | 🔧 | 原作 OilPopulate.generateOil を Feature 化（`OilWellFeature`、チャンクごとに 1 回）: 大型 0.04%・中型 0.1%（砂地・タイガは 3 倍）、地表の油溜まり 2%（砂地・タイガのみ）、地下 20〜29 の球状鉱床と噴出柱、大型の 1/4 は岩盤に油の湧き水。チャンクの読み込みイベントで書き換える方式とバニラ湖での油の池は廃止。Feature は周囲 1 チャンクまでしか変更できないため、大型油田の周りの油溜まりは半径を縮める（原作は 25〜44）。Oil Desert / Oil Ocean バイオームと「greatly increased」バイオームの設定はなし。WorldgenGameTests で確率と登録を検証、生成は 576 チャンクの試験生成で確認 |
-| コンパレーター出力 | ⬜ | どのブロックにもない（タンクなど） |
+| コンパレーター出力 | ✅ | 原作で出力のあったブロックだけ: Tank（積んだ列全体の液体量 × 15 ÷ 容量、列のすべてのタンクが同じ値、注入・排出・破壊で更新）、Hopper（全スロット）、Requester（要求のあるスロット）、Filtered Buffer（フィルターのあるスロット）。インベントリは原作 BlockBuildCraft の式（`ComparatorHelper`）。ComparatorGameTests で検証 |
 | Tablet | ⬜ | API（`api/tablet`）だけ |
 | 実績 (Advancement) | ⬜ | レシピ解放用のものだけ |
 | Breaker ロボット | ⬜ | 原作にあったかは要確認。ボードは 17 種 |
@@ -163,6 +163,7 @@ BC を象徴する大型マシン。
 | Pump | ✅ | 管は空気中を 1 ブロック 10 RF で下り、液面で止まってその層を汲み上げる（残っていた TODO は液面では何もしない分岐で、汲み上げは直後の処理が担当）。PumpRegressionGameTests で液面まで下りることを検証 |
 
 ### 7-2. 原作と異なる挙動
+なし（2026-11-18 に木パイプ系の向き、Emerald パイプの GUI、Bomber を原作に合わせた）。意図的な差異は 10 章。
 
 ---
 
@@ -209,7 +210,7 @@ BC を象徴する大型マシン。
 *   [x] Pump の液面処理（7-1）
 *   [x] 木パイプ系の向き（原作 PipeLogicWood: 有効な面を保ち、無効になったら次へ、レンチで次の有効な面へ。液体の木・Emerald パイプも）、Emerald パイプの GUI（素手で開く、フィルターは 1 組、モードはボタン）（7-2）
 *   [x] Bomber の TNT 投下（7-2: 原作と照合済み。ロボットを TNT の持ち主にし、点火音を鳴らす）
-*   [ ] コンパレーター出力（タンクなど、6-2）
+*   [x] コンパレーター出力（タンクなど、6-2）
 *   [ ] Oil Desert / Oil Ocean バイオーム（6-2）
 *   [ ] 実績、Tablet（6-2、優先度低）
 

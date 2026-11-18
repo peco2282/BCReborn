@@ -42,6 +42,7 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   public void setRequest(int index, ItemStack stack) {
     requests.setItem(index, stack);
+    setChanged();
   }
 
   public ItemStack getRequestTemplate(int index) {
@@ -65,7 +66,9 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   @Override
   public ItemStack removeItem(int slotId, int count) {
-    return inv.removeItem(slotId, count);
+    ItemStack removed = inv.removeItem(slotId, count);
+    setChanged();
+    return removed;
   }
 
   @Override
@@ -76,6 +79,8 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
   @Override
   public void setItem(int slotId, ItemStack itemStack) {
     inv.setItem(slotId, itemStack);
+    // Also tells comparators (original IComparatorInventory).
+    setChanged();
   }
 
   @Override
@@ -148,6 +153,12 @@ public class RequesterBlockEntity extends BuildCraftBlockEntity implements MenuP
 
   @Override
   public ItemStack offerItem(int i, ItemStack stack) {
+    ItemStack result = offer(i, stack);
+    setChanged();
+    return result;
+  }
+
+  private ItemStack offer(int i, ItemStack stack) {
     ItemStack req = requests.getItem(i);
     if (req.isEmpty()) return stack;
 

@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.transport.block;
 
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.common.utils.ComparatorHelper;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.block.entity.FilteredBufferBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -76,17 +77,7 @@ public class FilteredBufferBlock extends BuildCraftBlock {
   @Override
   public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
     if (!(level.getBlockEntity(pos) instanceof FilteredBufferBlockEntity buffer)) return 0;
-    float fullness = 0;
-    int counted = 0;
-    for (int i = 0; i < buffer.getContainerSize(); i++) {
-      if (buffer.getFilters().getItem(i).isEmpty()) continue;
-      counted++;
-      ItemStack stack = buffer.getItem(i);
-      fullness += (float) stack.getCount() / Math.min(buffer.getMaxStackSize(), stack.isEmpty() ? 64 : stack.getMaxStackSize());
-    }
-    if (counted == 0) return 0;
-    fullness /= counted;
-    return (int) Math.floor(fullness * 14.0F) + (fullness > 0 ? 1 : 0);
+    return ComparatorHelper.fromContainer(buffer, slot -> !buffer.getFilters().getItem(slot).isEmpty());
   }
 
   @Override

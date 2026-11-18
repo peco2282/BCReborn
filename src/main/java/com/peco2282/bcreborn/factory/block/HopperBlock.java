@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.factory.block;
 
+import com.peco2282.bcreborn.common.utils.ComparatorHelper;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.factory.block.entity.HopperBlockEntity;
@@ -92,5 +93,16 @@ public class HopperBlock extends BuildCraftBlock {
   @Override
   public RenderShape getRenderShape(BlockState p_49232_) {
     return RenderShape.ENTITYBLOCK_ANIMATED;
+  }
+
+  /** Original {@code BlockHopper implements IComparatorInventory}: every slot counts. */
+  @Override
+  public boolean hasAnalogOutputSignal(BlockState state) {
+    return true;
+  }
+
+  @Override
+  public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    return level.getBlockEntity(pos) instanceof HopperBlockEntity hopper ? ComparatorHelper.fromContainer(hopper, slot -> true) : 0;
   }
 }

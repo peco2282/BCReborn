@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.robotics.block;
 
+import com.peco2282.bcreborn.common.utils.ComparatorHelper;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.robotics.RoboticsBlockEntityTypes;
@@ -74,5 +75,17 @@ public class RequesterBlock extends BuildCraftBlock {
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
     return createTickerHelper(type, RoboticsBlockEntityTypes.REQUESTER.get(), BuildCraftBlockEntity.ticker());
+  }
+
+  /** Original {@code BlockRequester implements IComparatorInventory}: the slots that have a request count. */
+  @Override
+  public boolean hasAnalogOutputSignal(BlockState state) {
+    return true;
+  }
+
+  @Override
+  public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    return level.getBlockEntity(pos) instanceof RequesterBlockEntity requester
+      ? ComparatorHelper.fromContainer(requester, slot -> !requester.getRequestTemplate(slot).isEmpty()) : 0;
   }
 }

@@ -64,7 +64,12 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     updateComparators();
   }
 
-  protected void updateComparators() {
+  /** Original: refresh the cached value of the column when a fill or drain changed it. */
+  private void updateComparatorsIfChanged(int before) {
+    if (before != calculateComparatorInputOverride()) updateComparators();
+  }
+
+  public void updateComparators() {
     int co = calculateComparatorInputOverride();
     TankBlockEntity uTank = getBottomTank();
     while (uTank != null) {
@@ -97,7 +102,8 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     }
 
     if (hasUpdate) {
-      level.updateNeighborsAt(pos, state.getBlock());
+      // Original BlockUtils.onComparatorUpdate().
+      level.updateNeighbourForOutputSignal(pos, state.getBlock());
       hasUpdate = false;
     }
 
@@ -187,6 +193,13 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
   @Override
   public int fill(FluidStack resource, FluidAction action) {
     if (resource.isEmpty()) return 0;
+    int before = getComparatorInputOverride();
+    int filled = fillColumn(resource, action);
+    if (filled > 0 && action.execute()) updateComparatorsIfChanged(before);
+    return filled;
+  }
+
+  private int fillColumn(FluidStack resource, FluidAction action) {
     TankBlockEntity bottom = getBottomTank();
     int totalFilled = 0;
     FluidStack toFill = resource.copy();
@@ -203,6 +216,13 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
 
   @Override
   public FluidStack drain(FluidStack resource, FluidAction action) {
+    int before = getComparatorInputOverride();
+    FluidStack drained = drainColumn(resource, action);
+    if (!drained.isEmpty() && action.execute()) updateComparatorsIfChanged(before);
+    return drained;
+  }
+
+  private FluidStack drainColumn(FluidStack resource, FluidAction action) {
     TankBlockEntity top = getTopTank();
     FluidStack totalDrained = FluidStack.EMPTY;
     FluidStack toDrain = resource.copy();
@@ -225,6 +245,13 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
 
   @Override
   public FluidStack drain(int maxDrain, FluidAction action) {
+    int before = getComparatorInputOverride();
+    FluidStack drained = drainColumn(maxDrain, action);
+    if (!drained.isEmpty() && action.execute()) updateComparatorsIfChanged(before);
+    return drained;
+  }
+
+  private FluidStack drainColumn(int maxDrain, FluidAction action) {
     TankBlockEntity top = getTopTank();
     FluidStack totalDrained = FluidStack.EMPTY;
     int remaining = maxDrain;
@@ -245,8 +272,27 @@ public class TankBlockEntity extends BuildCraftBlockEntity implements IFluidHand
     return totalDrained;
   }
 
+  /**
+   * Original {@code TileTank.calculateComparatorInputOverride()}: the fluid of the whole column, counted from the
+   * bottom tank up to the first tank with another fluid, over the capacity of the tanks counted.
+   */
   public int calculateComparatorInputOverride() {
-    return tank.getFluidAmount() * 15 / tank.getCapacity();
+    TankBlockEntity tile = getBottomTank();
+    FluidStack bottom = tile.tank.getFluid();
+    if (bottom.isEmpty()) return 0;
+    long amount = bottom.getAmount();
+    long capacity = tile.tank.getCapacity();
+    tile = getTankAbove(tile);
+    while (tile != null) {
+      FluidStack liquid = tile.tank.getFluid();
+      if (!liquid.isEmpty()) {
+        if (!liquid.isFluidEqual(bottom)) break;
+        amount += liquid.getAmount();
+      }
+      capacity += tile.tank.getCapacity();
+      tile = getTankAbove(tile);
+    }
+    return (int) (amount * 15 / capacity);
   }
 
   public int getComparatorInputOverride() {

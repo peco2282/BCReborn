@@ -93,4 +93,25 @@ public class TankBlock extends BuildCraftBlock {
     }
     return super.use(state, level, pos, player, hand, hit);
   }
+
+  /** Original {@code BlockTank}: the fluid level of the whole column of tanks. */
+  @Override
+  public boolean hasAnalogOutputSignal(BlockState state) {
+    return true;
+  }
+
+  @Override
+  public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    return level.getBlockEntity(pos) instanceof TankBlockEntity tank ? tank.getComparatorInputOverride() : 0;
+  }
+
+  /** Original {@code BlockTank.breakBlock()}: the columns above and below change. */
+  @Override
+  public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    super.onRemove(state, level, pos, newState, isMoving);
+    if (!level.isClientSide && !state.is(newState.getBlock())) {
+      if (level.getBlockEntity(pos.above()) instanceof TankBlockEntity above) above.updateComparators();
+      if (level.getBlockEntity(pos.below()) instanceof TankBlockEntity below) below.updateComparators();
+    }
+  }
 }
