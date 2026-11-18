@@ -15,6 +15,7 @@ import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipe;
 import com.peco2282.bcreborn.api.recipes.BuildcraftRecipeRegistry;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.silicon.SiliconBlocks;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import com.peco2282.bcreborn.silicon.block.entity.AssemblyTableBlockEntity;
@@ -48,7 +49,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 /**
  * The recipes that made fluid pipes, power pipes, gates and facades obtainable (ROADMAP 6-1): pipe sealant, the
- * shapeless pipe conversions, the gate and facade recipes of the Assembly Table.
+ * shapeless pipe conversions and back, the gate, facade and list recipes of the Assembly Table.
  */
 @GameTestHolder(BCRebornTransport.MODID)
 public class RecipeGameTests {
@@ -93,16 +94,20 @@ public class RecipeGameTests {
         ItemStack result = craft(helper, itemPipe, TransportItems.PIPE_SEALANT.get());
         check(helper, result.is(TransportBlocks.get(PipeType.FLUID, material).get().asItem()) && result.getCount() == 1,
           material + ": item pipe + sealant must make one fluid pipe, got " + result);
+        ItemStack back = craft(helper, TransportBlocks.get(PipeType.FLUID, material).get());
+        check(helper, back.is(itemPipe.asItem()), material + ": a fluid pipe must craft back into its item pipe, got " + back);
         fluid++;
       }
       if (PipeType.ENERGY.supports(material)) {
         ItemStack result = craft(helper, itemPipe, Items.REDSTONE);
         check(helper, result.is(TransportBlocks.get(PipeType.ENERGY, material).get().asItem()) && result.getCount() == 1,
           material + ": item pipe + redstone must make one power pipe, got " + result);
+        ItemStack back = craft(helper, TransportBlocks.get(PipeType.ENERGY, material).get());
+        check(helper, back.is(itemPipe.asItem()), material + ": a power pipe must craft back into its item pipe, got " + back);
         energy++;
       }
     }
-    check(helper, fluid > 0 && energy > 0, "Some fluid and power pipes must exist");
+    check(helper, fluid > 0 && energy == 9, "Fluid pipes and all nine power pipes must exist, power pipes: " + energy);
     helper.succeed();
   }
 
@@ -151,6 +156,26 @@ public class RecipeGameTests {
       "The table must make one iron gate, made " + gates.stream().map(e -> e.getItem().getTag()).toList());
     check(helper, table.getItem(0).isEmpty() && table.getItem(1).isEmpty() && table.getItem(2).isEmpty(),
       "The chipset and both wires must be used");
+    helper.succeed();
+  }
+
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void assemblyTableMakesList(GameTestHelper helper) {
+    ResourceLocation id = ResourceLocation.parse("bcrebornsilicon:list");
+    AssemblyTableBlockEntity table = table(helper);
+    table.setItem(0, new ItemStack(Items.GREEN_DYE));
+    table.setItem(1, new ItemStack(Items.REDSTONE));
+    table.setItem(2, new ItemStack(Items.PAPER, 7));
+    check(helper, table.getPotentialOutputs().stream().noneMatch(r -> r.id().equals(id)), "Seven paper must not make a list");
+    table.setItem(2, new ItemStack(Items.PAPER, 9));
+    check(helper, table.getPotentialOutputs().stream().anyMatch(r -> r.id().equals(id)), "Green dye, redstone and 8 paper make a list");
+    table.planOutput(id);
+    table.receiveLaserEnergy(20000);
+    tick(helper, table);
+    check(helper, dropped(helper).stream().anyMatch(e -> e.getItem().is(CoreItems.LIST.get())), "The table must make a list");
+    check(helper, table.getItem(0).isEmpty() && table.getItem(1).isEmpty() && table.getItem(2).getCount() == 1,
+      "The dye, the redstone and eight paper must be used, paper left " + table.getItem(2));
     helper.succeed();
   }
 

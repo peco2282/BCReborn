@@ -67,6 +67,8 @@ public class PipeBehaviourManager {
     register(PipeType.ENERGY, PipeMaterial.IRON, IronEnergyPipeBehaviour.INSTANCE);
     register(PipeType.ENERGY, PipeMaterial.GOLD, GoldenEnergyPipeBehaviour.INSTANCE);
     register(PipeType.ENERGY, PipeMaterial.DIAMOND, DiamondEnergyPipeBehaviour.INSTANCE);
+    register(PipeType.ENERGY, PipeMaterial.EMERALD, WoodenEnergyPipeBehaviour.INSTANCE);
+    register(PipeType.ENERGY, PipeMaterial.SANDSTONE, SandstoneEnergyPipeBehaviour.INSTANCE);
   }
 
   private static void register(PipeType type, PipeMaterial material, PipeBehaviour behaviour) {

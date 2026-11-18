@@ -64,6 +64,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -663,6 +664,8 @@ public class RobotEdgeCaseGameTests {
   public void lowRobotRechargesThenWorks(GameTestHelper helper) {
     helper.setBlock(JOB.below(), Blocks.STONE.defaultBlockState());
     helper.setBlock(JOB, Blocks.FARMLAND.defaultBlockState());
+    // Recharging takes long enough for dry farmland to turn back into dirt on a random tick; keep it hydrated.
+    helper.setBlock(JOB.north(), Blocks.STONE_SLAB.defaultBlockState().setValue(SlabBlock.WATERLOGGED, true));
     helper.setBlock(JOB.above().south(), Blocks.GLOWSTONE.defaultBlockState());
     BlockPos engine = HOME.west(2);
     helper.setBlock(engine.below(), Blocks.REDSTONE_BLOCK.defaultBlockState());
@@ -692,7 +695,7 @@ public class RobotEdgeCaseGameTests {
     helper.succeedWhen(() -> {
       RobotEntity robot = holder[0];
       helper.assertTrue(robot != null && recharged[0], "The robot has not recharged yet");
-      helper.assertTrue(helper.getBlockState(JOB.above()).is(Blocks.WHEAT), "After recharging the robot must plant, energy " + robot.getEnergy());
+      helper.assertTrue(helper.getBlockState(JOB.above()).is(Blocks.WHEAT), "After recharging the robot must plant, energy " + robot.getEnergy() + " running " + robot.mainAI.getActiveAI() + " board " + robot.getBoard() + " station " + robot.getDockingStation() + " at " + robot.blockPosition() + " block " + helper.getBlockState(JOB) + " above " + helper.getBlockState(JOB.above()));
       robot.discard();
     });
   }

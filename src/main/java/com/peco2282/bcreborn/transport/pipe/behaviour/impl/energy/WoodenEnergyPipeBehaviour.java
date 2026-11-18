@@ -12,7 +12,6 @@
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.energy;
 
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
-import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.behaviour.EnergyPipeBehaviour;
 import com.peco2282.bcreborn.transport.pipe.transport.EnergyTransportModule;
 import net.minecraft.core.Direction;
@@ -26,7 +25,7 @@ import net.minecraftforge.energy.IEnergyStorage;
  * エネルギーラインの始端（エネルギー源）としてのみ機能する。
  * エンジンなどのエネルギー源からエネルギーを吸い出し、
  * EnergyTransportModule 経由でパイプネットワークへ注入する。
- * 最大 320RF/t まで対応。
+ * 最大 320RF/t（木）、2560RF/t（エメラルド: 原作 PipePowerEmerald は PipePowerWood の派生）。
  */
 public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
   public static final WoodenEnergyPipeBehaviour INSTANCE = new WoodenEnergyPipeBehaviour();
@@ -48,7 +47,8 @@ public class WoodenEnergyPipeBehaviour implements EnergyPipeBehaviour {
     EnergyTransportModule module = pipe.getEnergyTransportModule();
     if (module == null) return;
 
-    int maxTransfer = PipeMaterial.WOOD.getEnergyTransferRate(); // 320 RF/t
+    // Wood 320 RF/t, Emerald 2560 RF/t (original PipePowerEmerald extends PipePowerWood).
+    int maxTransfer = pipe.getPipeMaterial().getEnergyTransferRate();
 
     for (Direction dir : Direction.values()) {
       BlockEntity be = pipe.getLevel().getBlockEntity(pipe.getBlockPos().relative(dir));

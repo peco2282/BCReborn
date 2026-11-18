@@ -16,6 +16,7 @@ import com.peco2282.bcreborn.transport.gates.GateDefinition;
 import com.peco2282.bcreborn.BCRebornSilicon;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipeBuilder;
 import com.peco2282.bcreborn.api.recipes.AssemblyRecipeProvider;
+import com.peco2282.bcreborn.core.CoreItems;
 import com.peco2282.bcreborn.silicon.SiliconItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemStack;
@@ -129,6 +130,13 @@ public class SiliconAssemblyRecipe extends AssemblyRecipeProvider {
     addGateRecipe(GateDefinition.GateMaterial.QUARTZ, SiliconItems.QUARTZ_CHIPSET.get(), 600000);
     addGateRecipe(GateDefinition.GateMaterial.DIAMOND, SiliconItems.DIAMOND_CHIPSET.get(), 800000);
     addGateRecipe(GateDefinition.GateMaterial.EMERALD, SiliconItems.EMERALD_CHIPSET.get(), 1200000);
+
+    // Original CoreSiliconRecipes: green dye, redstone and 8 paper make a list (the Debugger has no recipe).
+    AssemblyRecipeBuilder list = AssemblyRecipeBuilder.create(loc("list"))
+      .addIngredient(Ingredient.of(Tags.Items.DYES_GREEN))
+      .addIngredient(Ingredient.of(Tags.Items.DUSTS_REDSTONE));
+    for (int i = 0; i < 8; i++) list.addIngredient(Items.PAPER);
+    addRecipe(list.setEnergy(20000).setResult(new ItemStack(CoreItems.LIST.get())));
 
     addRecipe(
       AssemblyRecipeBuilder.create(loc("redstone_crystal"))

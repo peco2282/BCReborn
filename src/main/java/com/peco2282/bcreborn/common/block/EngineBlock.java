@@ -86,7 +86,7 @@ public abstract class EngineBlock extends BuildCraftBlock {
       if (be != null) {
         if (be.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).isPresent()) {
           return this.defaultBlockState().setValue(FACING, dir).setValue(ACTIVE, false);
-        } else if (be instanceof PipeBlockEntity pbe && pbe.getPipeMaterial() == PipeMaterial.WOOD) {
+        } else if (be instanceof PipeBlockEntity pbe && (pbe.getPipeMaterial() == PipeMaterial.WOOD || pbe.getPipeMaterial() == PipeMaterial.EMERALD)) {
           return this.defaultBlockState().setValue(FACING, dir).setValue(ACTIVE, false);
         }
       }

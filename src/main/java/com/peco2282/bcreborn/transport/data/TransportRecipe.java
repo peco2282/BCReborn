@@ -67,6 +67,12 @@ public class TransportRecipe extends BCRecipeHelper {
       .requires(additive)
       .unlockedBy(getHasName(itemPipe), has(itemPipe))
       .save(consumer, BCRebornTransport.location(BuiltInRegistries.ITEM.getKey(result.asItem()).getPath() + "_from_" + additiveName));
+    // Original buildPipe: the converted pipe crafts back into its item pipe on its own.
+    shapeless(RecipeCategory.MISC, itemPipe::asItem)
+      .requires(result)
+      .unlockedBy(getHasName(result), has(result))
+      .save(consumer, BCRebornTransport.location(BuiltInRegistries.ITEM.getKey(itemPipe.asItem()).getPath() + "_from_"
+        + BuiltInRegistries.ITEM.getKey(result.asItem()).getPath()));
   }
 
   private static void buildItemPipe(Consumer<FinishedRecipe> consumer, PipeMaterial material, ItemLike result) {
