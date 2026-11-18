@@ -51,6 +51,11 @@ public class BCRebornEnergy implements BCReborn {
 
     // Register ourselves for server apply other game events we are interested in
     MinecraftForge.EVENT_BUS.register(this);
+    // Oil fields: the noise field of the world (see OilBiomes, MultiNoiseBiomeSourceMixin).
+    MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.server.ServerAboutToStartEvent event) ->
+      com.peco2282.bcreborn.energy.worldgen.OilBiomes.onServerStarting(event.getServer()));
+    MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.server.ServerStoppedEvent event) ->
+      com.peco2282.bcreborn.energy.worldgen.OilBiomes.onServerStopped());
     processor.initRegister();
 
     var ignoredFluids = EnergyFluids.OIL_SOURCE;

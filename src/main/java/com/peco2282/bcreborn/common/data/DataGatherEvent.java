@@ -45,7 +45,10 @@ public class DataGatherEvent {
     generator.addProvider(true, new BCLanguageProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, "en_us"));
     generator.addProvider(true, new BCBlockStateProvider(generator.getPackOutput(), BCReborn.MOD_ID_BASE, helper));
     generator.addProvider(true, new BCLootTableProvider(generator.getPackOutput()));
-    generator.addProvider(true, new ResourceDataGenerator(generator.getPackOutput(), lookup));
+    ResourceDataGenerator datapackEntries = new ResourceDataGenerator(generator.getPackOutput(), lookup);
+    generator.addProvider(true, datapackEntries);
+    // The oil field biomes are datapack entries, so their tags look them up there.
+    generator.addProvider(true, new BCBiomeTagsProvider(generator.getPackOutput(), datapackEntries.getRegistryProvider(), helper));
     generator.addProvider(true, new BCRecipeProvider(generator.getPackOutput()));
     generator.addProvider(true, new net.minecraftforge.common.data.ForgeAdvancementProvider(generator.getPackOutput(), lookup, helper,
       java.util.List.of(new com.peco2282.bcreborn.core.advancement.BCAdvancements())));

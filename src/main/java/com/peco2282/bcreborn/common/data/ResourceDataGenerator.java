@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ResourceDataGenerator extends DatapackBuiltinEntriesProvider {
   private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+    .add(Registries.BIOME, com.peco2282.bcreborn.energy.worldgen.OilBiomes::bootstrap)
     .add(Registries.CONFIGURED_FEATURE, ConfiguredFeaturesEnergy::bootstrap)
     .add(Registries.PLACED_FEATURE, PlacedFeaturesEnergy::bootstrap)
     .add(ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiersEnergy::bootstrap);

@@ -101,5 +101,7 @@
   "advancement.bcreborn.template": "基礎",
   "advancement.bcreborn.template.desc": "テンプレートを作る",
   "advancement.bcreborn.blueprintLibrary": "アイデアは生き続ける",
-  "advancement.bcreborn.blueprintLibrary.desc": "電子ライブラリを作る"
+  "advancement.bcreborn.blueprintLibrary.desc": "電子ライブラリを作る",
+  "biome.bcrebornenergy.oil_desert": "砂漠の油田",
+  "biome.bcrebornenergy.oil_ocean": "海の油田"
 }

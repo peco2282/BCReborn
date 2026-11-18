@@ -141,7 +141,8 @@ BC を象徴する大型マシン。
 |----------------------|----|-------------------------------------------|
 | List / Debugger のレシピ | ✅ | 原作 CoreSiliconRecipes: Assembly Table で緑の染料＋レッドストーン＋紙 8 枚 → List、20000 RF。Debugger は原作にもレシピがなく、クリエイティブ専用のまま。RecipeGameTests で検証 |
 | 水の湧き水の生成 | ✅ | 原作 SpringPopulate 準拠のワールド生成 Feature（`WaterSpringFeature`、約 40 チャンクに 1 つ）: 最下層 5 段の岩盤を探して湧き水ブロックを置き、その上の岩を最初の空気まで水にする。オーバーワールドのみ。設定 `generateWaterSprings` で無効化（湧き水ブロックの給水も止まる）。WorldgenGameTests で検証 |
-| 油田の生成 | 🔧 | 原作 OilPopulate.generateOil を Feature 化（`OilWellFeature`、チャンクごとに 1 回）: 大型 0.04%・中型 0.1%（砂地・タイガは 3 倍）、地表の油溜まり 2%（砂地・タイガのみ）、地下 20〜29 の球状鉱床と噴出柱、大型の 1/4 は岩盤に油の湧き水。チャンクの読み込みイベントで書き換える方式とバニラ湖での油の池は廃止。Feature は周囲 1 チャンクまでしか変更できないため、大型油田の周りの油溜まりは半径を縮める（原作は 25〜44）。Oil Desert / Oil Ocean バイオームと「greatly increased」バイオームの設定はなし。WorldgenGameTests で確率と登録を検証、生成は 576 チャンクの試験生成で確認 |
+| 油田の生成 | ✅ | 原作 OilPopulate.generateOil を Feature 化（`OilWellFeature`、チャンクごとに 1 回）: 大型 0.04%・中型 0.1%（砂地・タイガは 3 倍）、地表の油溜まり 2%（砂地・タイガのみ）、地下 20〜29 の球状鉱床と噴出柱、大型の 1/4 は岩盤に油の湧き水。チャンクの読み込みイベントで書き換える方式とバニラ湖での油の池は廃止。Feature は周囲 1 チャンクまでしか変更できないため、大型油田の周りの油溜まりは半径を縮める（原作は 25〜44）。Desert / Ocean Oil Field バイオーム（下記）では油田の確率がさらに 30 倍（原作 excessiveBiomes）。WorldgenGameTests で確率と登録を検証、生成は 576 チャンクの試験生成で確認 |
+| Desert / Ocean Oil Field バイオーム | ✅ | 原作 GenLayerAddOilDesert / GenLayerAddOilOcean 準拠: 気候ではなく、バニラの砂漠・海の一部を、ワールドシードでずらした Simplex ノイズが強い場所（砂漠: 0.001 倍・0.7 超、海: 0.0005 倍・0.9 超）だけ塗り替える。Forge 1.20.1 にはオーバーワールドへバイオームを足す API がない（`BiomeManager.addAdditionalOverworldBiomes` は生成につながっていない）ため、`MultiNoiseBiomeSourceMixin` で `getNoiseBiome` の結果を置き換え、`collectPossibleBiomes` に加える。中身はバニラの砂漠・海の写し。他のワールド生成 MOD と同時に使ったときの優先は保証しない。WorldgenGameTests で実際のオーバーワールドの置き換えを検証、見た目は実機確認待ち |
 | コンパレーター出力 | ✅ | 原作で出力のあったブロックだけ: Tank（積んだ列全体の液体量 × 15 ÷ 容量、列のすべてのタンクが同じ値、注入・排出・破壊で更新）、Hopper（全スロット）、Requester（要求のあるスロット）、Filtered Buffer（フィルターのあるスロット）。インベントリは原作 BlockBuildCraft の式（`ComparatorHelper`）。ComparatorGameTests で検証 |
 | Tablet | — | 原作 7.1 でも `DEVELOPER_MODE`（false）のときしか登録されないアイテムのため実装しない。API（`api/tablet`）は残す |
 | 実績 (Advancement) | ✅ | 原作 7.1 の実績 20 個を進捗に（歯車 5・レンチ・エンジン 3・自動作業台・採掘井戸・精製機・組立台・レーザー・採掘機・設計台・建築機・設計図・テンプレート・電子ライブラリ）。原作どおりそのアイテムをクラフトしたときに達成（独自トリガー `bcreborncore:crafted_item`、拾っただけでは達成しない）、親子関係も原作どおり、名前は原作の英語と日本語訳。AdvancementGameTests で検証 |
@@ -211,7 +212,7 @@ BC を象徴する大型マシン。
 *   [x] 木パイプ系の向き（原作 PipeLogicWood: 有効な面を保ち、無効になったら次へ、レンチで次の有効な面へ。液体の木・Emerald パイプも）、Emerald パイプの GUI（素手で開く、フィルターは 1 組、モードはボタン）（7-2）
 *   [x] Bomber の TNT 投下（7-2: 原作と照合済み。ロボットを TNT の持ち主にし、点火音を鳴らす）
 *   [x] コンパレーター出力（タンクなど、6-2）
-*   [ ] Oil Desert / Oil Ocean バイオーム（6-2）— 後回し（2026-11-18）。オーバーワールドへのバイオーム追加には TerraBlender などの依存が要るため
+*   [x] Oil Desert / Oil Ocean バイオーム（6-2、依存を増やさず Mixin で）
 *   [x] 実績（原作の 20 個）。Tablet は原作でも開発者モード専用のため実装しない（6-2）
 
 ---

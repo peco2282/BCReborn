@@ -59,5 +59,7 @@
   "gui.bcreborntransport.emerald.white_list": "White list",
   "gui.bcreborntransport.emerald.black_list": "Black list",
   "gui.bcreborntransport.emerald.round_robin": "Round robin",
-  "message.bcreborntransport.extraction_side": "Extraction side: %s"
+  "message.bcreborntransport.extraction_side": "Extraction side: %s",
+  "biome.bcrebornenergy.oil_desert": "Desert Oil Field",
+  "biome.bcrebornenergy.oil_ocean": "Ocean Oil Field"
 }

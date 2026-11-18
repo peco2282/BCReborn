@@ -59,14 +59,20 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration> {
     return EnergyFluids.OIL_BLOCK.get().defaultBlockState();
   }
 
-  /** Original: biomes with increased oil ({@code increasedOilIDs}: SANDY and taiga). */
+  /** Original: biomes with increased oil ({@code increasedOilIDs}: SANDY and taiga, and the oil fields). */
   public static boolean isOilBiome(Holder<Biome> biome) {
-    return biome.is(Tags.Biomes.IS_SANDY) || biome.is(BiomeTags.IS_TAIGA);
+    return biome.is(Tags.Biomes.IS_SANDY) || biome.is(BiomeTags.IS_TAIGA) || biome.is(OilBiomes.EXCESSIVE_OIL);
   }
 
   /** The original chances, checked in this order: large 0.04%, medium 0.1%, surface lake 2% (oil biomes only). */
   public static GenType pickType(RandomSource rand, boolean oilBiome, double scalar) {
+    return pickType(rand, oilBiome, false, scalar);
+  }
+
+  /** As above; the oil fields ({@code excessiveBiomes}) multiply the chances by 30 more. */
+  public static GenType pickType(RandomSource rand, boolean oilBiome, boolean excessive, double scalar) {
     double bonus = (oilBiome ? 3.0 : 1.0) * scalar;
+    if (excessive) bonus *= 30.0;
     if (rand.nextDouble() <= 0.0004 * bonus) return GenType.LARGE;
     if (rand.nextDouble() <= 0.001 * bonus) return GenType.MEDIUM;
     if (oilBiome && rand.nextDouble() <= 0.02 * bonus) return GenType.LAKE;
@@ -81,8 +87,8 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration> {
     BlockPos origin = context.origin();
     int x = origin.getX();
     int z = origin.getZ();
-    boolean oilBiome = isOilBiome(level.getBiome(new BlockPos(x, 64, z)));
-    GenType type = pickType(rand, oilBiome, EnergyConfig.getOilWellGenerationRate());
+    Holder<Biome> biome = level.getBiome(new BlockPos(x, 64, z));
+    GenType type = pickType(rand, isOilBiome(biome), biome.is(OilBiomes.EXCESSIVE_OIL), EnergyConfig.getOilWellGenerationRate());
     return type != GenType.NONE && generate(level, rand, x, z, type);
   }
 

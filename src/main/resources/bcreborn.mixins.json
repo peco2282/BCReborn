@@ -2,12 +2,12 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.peco2282.bcreborn.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "refmap": "buildcraft.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "bcreborn.refmap.json",
   "mixins": [
+    "MultiNoiseBiomeSourceMixin"
   ],
-  "client": [
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },
