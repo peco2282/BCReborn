@@ -11,6 +11,7 @@
  */
 package com.peco2282.bcreborn.core.advancement;
 
+import com.peco2282.bcreborn.BCRebornCore;
 import com.peco2282.bcreborn.builders.BuildersBlock;
 import com.peco2282.bcreborn.builders.BuildersItems;
 import com.peco2282.bcreborn.core.CoreBlocks;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BCAdvancements implements ForgeAdvancementProvider.AdvancementGenerator {
   public static final String PREFIX = "advancement.bcreborn.";
-  private static final ResourceLocation BACKGROUND = new ResourceLocation("minecraft", "textures/block/oak_planks.png");
+  private static final ResourceLocation BACKGROUND = ResourceLocation.withDefaultNamespace("textures/block/oak_planks.png");
 
   /** One original achievement: its stat name (the language key), item and parent. */
   public record Entry(String name, ItemLike item, @Nullable String parent) {
@@ -70,7 +71,7 @@ public class BCAdvancements implements ForgeAdvancementProvider.AdvancementGener
 
   /** The advancement id: the original name in snake case ({@code woodenGear} -> {@code main/wooden_gear}). */
   public static ResourceLocation id(String name) {
-    return new ResourceLocation("bcreborncore", "main/" + name.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase(java.util.Locale.ROOT));
+    return BCRebornCore.location("main/" + name.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase(java.util.Locale.ROOT));
   }
 
   @Override
