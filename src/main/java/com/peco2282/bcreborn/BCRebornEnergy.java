@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn;
 
+import com.peco2282.bcreborn.energy.statements.EnergyStatementProvider;
+import com.peco2282.bcreborn.api.statements.StatementManager;
 import net.minecraft.world.level.material.Fluids;
 import com.peco2282.bcreborn.api.core.StackKey;
 import com.peco2282.bcreborn.api.fuels.BuildcraftFuelRegistry;
@@ -89,6 +91,8 @@ public class BCRebornEnergy implements BCReborn {
     LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
     initFuel();
+    // Original BuildCraftEnergy.init(): the engine triggers for gates.
+    event.enqueueWork(() -> StatementManager.registerTriggerProvider(EnergyStatementProvider.INSTANCE));
 
     BuildcraftFuelRegistry.setCoolantManager(
       CoolantManager.INSTANCE

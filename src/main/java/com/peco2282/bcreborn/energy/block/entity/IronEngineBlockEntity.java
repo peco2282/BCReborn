@@ -283,4 +283,20 @@ public class IronEngineBlockEntity extends EngineBlockEntityContainer<IronEngine
   public Component getDisplayName() {
     return Component.translatable("menu.bcrebornenergy.iron_engine");
   }
+
+  /** Original {@code TileEngineIron.hasFuelBelowThreshold()}: an empty tank counts as below. */
+  public boolean hasFuelBelowThreshold(float threshold) {
+    return belowThreshold(TANK_FUEL, threshold);
+  }
+
+  /** Original {@code TileEngineIron.hasCoolantBelowThreshold()}. */
+  public boolean hasCoolantBelowThreshold(float threshold) {
+    return belowThreshold(TANK_COOLANT, threshold);
+  }
+
+  private boolean belowThreshold(int tankIndex, float threshold) {
+    var tank = tankManager.get(tankIndex);
+    if (tank.getFluid().isEmpty()) return true;
+    return (float) tank.getFluidAmount() / (float) tank.getCapacity() < threshold;
+  }
 }
