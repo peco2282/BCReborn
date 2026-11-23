@@ -97,6 +97,6 @@ public class ArchitectScreen extends BuildCraftScreen<ArchitectMenu> {
   protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
     graphics.drawString(this.font, this.title, imageWidth / 2 - this.font.width(this.title) / 2, 6, 0x404040, false);
     // Inventory label position adjusted for 256 width
-    graphics.drawString(this.font, Component.translatable("gui.inventory"), 88, imageHeight - 94, 0x404040, false);
+    graphics.drawString(this.font, Component.translatable("container.inventory"), 88, imageHeight - 94, 0x404040, false);
   }
 }

@@ -88,6 +88,11 @@ public class RequesterScreen extends BuildCraftScreen<RequesterMenu> {
     }
   }
 
+  /** Original GuiRequester draws no title: the request grid starts at the top edge. */
+  @Override
+  protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+  }
+
   @Override
   public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
     this.renderBackground(graphics);

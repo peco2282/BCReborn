@@ -36,7 +36,7 @@ public class ActionExtractionPreset extends BCStatement implements IActionIntern
 
   @Override
   public String getDescription() {
-    return String.format(StringUtils.localize("gate.action.extraction"), color.getName());
+    return String.format(StringUtils.localize("gate.action.extraction"), StringUtils.localize("color.minecraft." + color.name().toLowerCase(Locale.ENGLISH)));
   }
 
   @Override

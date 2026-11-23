@@ -162,7 +162,7 @@ public class BuilderScreen extends AdvancedInterfaceScreen<BuilderMenu> {
     graphics.drawString(this.font, this.title, 178 / 2 - this.font.width(this.title) / 2, 16, 0x404040, false);
     if (!builder.getInventory().getItem(0).isEmpty()) {
       graphics.drawString(this.font, Component.translatable("gui.building.resources"), 8, 60, 0x404040, false);
-      graphics.drawString(this.font, Component.translatable("gui.inventory"), 8, imageHeight - 97, 0x404040, false);
+      graphics.drawString(this.font, Component.translatable("container.inventory"), 8, imageHeight - 97, 0x404040, false);
       graphics.drawString(this.font, Component.translatable("gui.needed"), 178, 7, 0x404040, false);
       graphics.drawString(this.font, Component.translatable("gui.building.fluids"), 178, 133, 0x404040, false);
     }

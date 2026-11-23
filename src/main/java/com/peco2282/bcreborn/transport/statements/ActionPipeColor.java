@@ -36,7 +36,7 @@ public class ActionPipeColor extends BCStatement implements IActionInternal {
 
   @Override
   public String getDescription() {
-    return String.format(StringUtils.localize("gate.action.pipe.item.color"), color.getName());
+    return String.format(StringUtils.localize("gate.action.pipe.item.color"), StringUtils.localize("color.minecraft." + color.getName()));
   }
 
   @Override

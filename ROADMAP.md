@@ -164,7 +164,11 @@ BC を象徴する大型マシン。
 | Pump | ✅ | 管は空気中を 1 ブロック 10 RF で下り、液面で止まってその層を汲み上げる（残っていた TODO は液面では何もしない分岐で、汲み上げは直後の処理が担当）。PumpRegressionGameTests で液面まで下りることを検証 |
 
 ### 7-2. 原作と異なる挙動
-なし（2026-11-18 に木パイプ系の向き、Emerald パイプの GUI、Bomber を原作に合わせた）。意図的な差異は 10 章。
+2026-11-18 に木パイプ系の向き、Emerald パイプの GUI、Bomber を原作に合わせた。意図的な差異は 10 章。
+
+| 項目 | 状態 | 備考 |
+|----------------------|----|-------------------------------------------|
+| 木 / Emerald の液体パイプの抽出にエネルギーが要らない | ⬜ | 原作 PipeFluidsWood はエンジンから受けたエネルギーの分だけ吸い出す。現状の `FluidExtractionModule.extract` はエネルギーを見ず、20 tick ごとに素材の転送量を吸い出す（2026-11-21 実機で確認）。アイテムの木パイプと同じバッテリーを持たせ、溜まった分だけ抽出する。エネルギーあたりの量は原作と未照合。GameTest を追加する |
 
 ---
 
@@ -172,7 +176,7 @@ BC を象徴する大型マシン。
 
 ### Phase 1: 輸送と UI の完成 (Transport & UI)
 *   [x] Diamond Pipe フィルター GUI / Iron Pipe 出力切替の実装（設定の保存と同期）
-*   [ ] Diamond Pipe GUI の実機確認
+*   [x] Diamond Pipe GUI の実機確認
 *   [x] Iron Pipe 出力方向の描画（出力以外の面を solid 表示）
 *   [x] パイプ内アイテムレンダリングの実装 (ワクワク感の向上)
 *   [x] パイプの動的接続モデル (見た目の改善)
@@ -247,6 +251,21 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | Gate Copier / Power Adapter | コピー済みでアイコンが変わる、チャットのメッセージ。アダプターの板と台の描画、動力パイプのアームがアダプターへ伸びる |
 
 ---
+
+### 8-1. 実機確認の結果 (2026-11-21)
+確認済み: Diamond Pipe の GUI と挙動、Iron Pipe の出力面、パイプワイヤーの形と色ごとの角、液体パイプの基本形（水平は下に溜まる、垂直は柱）、Emzuli Pipe GUI（再ログイン後の保持は未確認）、Assembly Table の静的な GUI、Filler GUI のパターン切替と excavate。
+
+| 不具合 | 状態 | 備考 |
+|---|---|---|
+| ゲート GUI が条件・アクションを文字ボタンの順送りで選ぶ | ⬜ | 原作はアイコンの一覧から選ぶ。`GateInterfaceScreen` |
+| Emzuli のゲートアクションが `Mat error: <色> Extraction Preset` と表示される | ✅ | `StringUtils.localize` が `I18n.get` を引数なしで呼び、`%s` を含む訳文が "Format error" になっていた。訳文をそのまま返すように修正（ゲートの条件・アクション 12 種の名前が同じ原因）。色の名前も存在しない `color.*` からバニラの `color.minecraft.*` に変更。実機での再確認待ち |
+| パイプにワイヤーを付けても、ゲートのアクション候補にその色のワイヤー信号が出ない | ⬜ | `Gate.addActions` / アクション提供元 |
+| 液体がパイプ内に 1000 mB で留まり、受け側の Tank へ移らない | ⬜ | `FluidTransportModule`。GameTest では流れるため、実機の条件（向き・タンクの面）を要調査 |
+| 満水の液体パイプの描画が白い塊状に途切れる | ⬜ | `FluidPipeRenderer` |
+| Filtered Buffer のブロックが欠損テクスチャ | ⬜ | blockstate とモデルは `src/generated` にある。確認に使ったチェックアウトが古いか、リソースが反映されていない可能性 |
+| Integration Table の使えない拡張スロットに × が出ない（空のとき） | ⬜ | 空のときに出すのが正しいかも要確認 |
+| Filler（ほか Builder / Architect）の `gui.inventory` が翻訳されない | ✅ | 1.20.1 のキー `container.inventory` に変更。実機での再確認待ち |
+| Requester のタイトルが最上段の要求枠と重なる | ✅ | 原作 GuiRequester どおりタイトルを描かない。実機での再確認待ち |
 
 ## 8-2. ロボット・電力の回帰テスト (既存の範囲と不足)
 2026-11-17 時点。外部レビュー（GitHub 上の `RobotGameTests` だけを見たもの）では「Pump / Planter / Delivery の専用テストなし」とされたが、未プッシュの `RobotBoardGameTests` に `pumpTakesFluidSource` / `planterPlantsSeed` / `deliveryBringsRequestedItems` がある。CI（`ci.yml`）は `runGameTestServer` を実行するので、合否はプッシュ後の CI で記録する。2026-11-17 にローカルで `runGameTestServer` を実行し、追加した 3 本を含む 150 本すべて成功。その後の 3 本を加えて 153 本、`RobotEdgeCaseGameTests` の 13 本を加えて 167 本すべて成功。

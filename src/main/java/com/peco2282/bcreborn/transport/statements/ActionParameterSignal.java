@@ -98,7 +98,7 @@ public class ActionParameterSignal implements IStatementParameter {
     if (color == null) {
       return "";
     }
-    return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
+    return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color.minecraft." + color.name().toLowerCase(Locale.ENGLISH)));
   }
 
   @Override

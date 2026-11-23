@@ -37,7 +37,7 @@ public class ActionSignalOutput extends BCStatement implements IActionInternal {
 
   @Override
   public String getDescription() {
-    return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color." + color.name().toLowerCase(Locale.ENGLISH)));
+    return String.format(StringUtils.localize("gate.action.pipe.wire"), StringUtils.localize("color.minecraft." + color.name().toLowerCase(Locale.ENGLISH)));
   }
 
   @Override

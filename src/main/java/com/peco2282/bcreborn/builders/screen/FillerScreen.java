@@ -180,7 +180,7 @@ public class FillerScreen extends BuildCraftScreen<FillerMenu> {
       graphics.drawString(font, description, imageWidth / 2 - font.width(description) / 2, 56, 0x404040, false);
     }
     graphics.drawString(font, Component.translatable("screen.filling.resources"), 8, 74, 0x404040, false);
-    graphics.drawString(font, Component.translatable("gui.inventory"), 8, 142, 0x404040, false);
+    graphics.drawString(font, Component.translatable("container.inventory"), 8, 142, 0x404040, false);
   }
 
   private static class FillerButton extends Button {
