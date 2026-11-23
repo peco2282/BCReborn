@@ -52,6 +52,12 @@ public class WoodenFluidPipeBehaviour implements FluidPipeBehaviour {
     WoodPipeLogic.chooseSourceIfNeeded(entity);
   }
 
+  /** Original {@code PipeFluidsWood.outputOpen()}: never back into the block the pipe pulls from. */
+  @Override
+  public boolean canOutputFluid(PipeBlockEntity pipe, Direction dir) {
+    return dir != pipe.getExtractionSide();
+  }
+
   @Override
   public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
     if (level.isClientSide) return;

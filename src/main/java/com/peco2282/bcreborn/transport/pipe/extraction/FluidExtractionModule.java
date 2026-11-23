@@ -11,6 +11,11 @@
  */
 package com.peco2282.bcreborn.transport.pipe.extraction;
 
+import java.util.function.Predicate;
+import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraft.world.item.ItemStack;
 import com.peco2282.bcreborn.transport.block.entity.PipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,44 +30,66 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * エンジン不要で、パイプのマテリアルに応じた量を抽出する。
  * 抽出クールダウンは20tick固定。
  */
+/**
+ * Original {@code PipeFluidsWood.updateEntity()} / {@code extractFluid()} (and {@code PipeFluidsEmerald}): every
+ * tick, a pipe with fluid to pull ({@link FluidExtractionBattery}, filled by engines) drains up to its flow rate
+ * from the block on its extraction side and puts it into itself through that side, so the side is an input and the
+ * pipe does not push the fluid back. The buffer goes down by the flow rate each tick whether or not anything came.
+ * Without energy nothing is pulled (it used to pull for free every 20 ticks).
+ */
 public class FluidExtractionModule implements ExtractionModule {
 
   public static final FluidExtractionModule INSTANCE = new FluidExtractionModule();
-
-  private static final int EXTRACT_COOLDOWN = 20;
 
   private FluidExtractionModule() {
   }
 
   @Override
   public void extract(PipeBlockEntity pipe) {
-    if (pipe.getTicksSincePull() < EXTRACT_COOLDOWN) return;
+    extract(pipe, null);
+  }
+
+  /**
+   * @param filter the fluid to pull (an Emerald pipe's filter), or null for any
+   */
+  public void extract(PipeBlockEntity pipe, @Nullable FluidStack filter) {
+    if (!(pipe.getBattery() instanceof FluidExtractionBattery battery) || battery.getLiquid() <= 0) return;
 
     Direction extractDir = pipe.getExtractionSide();
-    BlockPos inventoryPos = pipe.getBlockPos().relative(extractDir);
-    BlockEntity invBe = pipe.getLevel().getBlockEntity(inventoryPos);
-
-    if (invBe == null || invBe instanceof PipeBlockEntity) return;
-
-    int extractAmount = pipe.getPipeMaterial().getFluidTransferRate();
-
-    LazyOptional<IFluidHandler> cap = invBe.getCapability(ForgeCapabilities.FLUID_HANDLER, extractDir.getOpposite());
-    if (!cap.isPresent()) return;
-
-    IFluidHandler handler = cap.orElseThrow(IllegalStateException::new);
-
-    // タンクに既に流体がある場合は同種のみ抽出
-    FluidStack existing = pipe.getFluidTank() != null ? pipe.getFluidTank().getFluid() : FluidStack.EMPTY;
-    FluidStack drained;
-    if (!existing.isEmpty()) {
-      drained = handler.drain(new FluidStack(existing, extractAmount), IFluidHandler.FluidAction.EXECUTE);
-    } else {
-      drained = handler.drain(extractAmount, IFluidHandler.FluidAction.EXECUTE);
+    BlockEntity source = pipe.getLevel().getBlockEntity(pipe.getBlockPos().relative(extractDir));
+    IFluidHandler handler = source == null || source instanceof PipeBlockEntity ? null
+      : source.getCapability(ForgeCapabilities.FLUID_HANDLER, extractDir.getOpposite()).orElse(null);
+    if (handler == null) {
+      // Original: nothing to pull from, the buffer is dropped.
+      battery.setEnergy(0);
+      return;
     }
 
-    if (!drained.isEmpty() && pipe.getFluidTank() != null) {
-      pipe.getFluidTank().fill(drained, IFluidHandler.FluidAction.EXECUTE);
-      pipe.resetTicksSincePull();
+    int flowRate = pipe.getPipeMaterial().getFluidTransferRate();
+    int amount = Math.min(battery.getLiquid(), flowRate);
+    IFluidHandler into = pipe.getCapability(ForgeCapabilities.FLUID_HANDLER, extractDir).orElse(null);
+    if (into != null) {
+      FluidStack existing = pipe.getFluidTank() != null ? pipe.getFluidTank().getFluid() : FluidStack.EMPTY;
+      FluidStack wanted = filter != null ? new FluidStack(filter, amount)
+        : !existing.isEmpty() ? new FluidStack(existing, amount) : null;
+      FluidStack extracted = wanted != null ? handler.drain(wanted, IFluidHandler.FluidAction.SIMULATE)
+        : handler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+      if (!extracted.isEmpty()) {
+        int inserted = into.fill(extracted, IFluidHandler.FluidAction.EXECUTE);
+        if (inserted > 0) {
+          handler.drain(new FluidStack(extracted, inserted), IFluidHandler.FluidAction.EXECUTE);
+        }
+      }
     }
+    battery.spend(flowRate);
+    pipe.setChanged();
+  }
+
+  /** Original PipeFluidsEmerald: the fluid in the filter item (a bucket, a tank item...), if any. */
+  @Nullable
+  public static FluidStack filterFluid(ItemStack filter) {
+    if (filter.isEmpty()) return null;
+    Optional<FluidStack> fluid = FluidUtil.getFluidContained(filter);
+    return fluid.filter(stack -> !stack.isEmpty()).orElse(null);
   }
 }

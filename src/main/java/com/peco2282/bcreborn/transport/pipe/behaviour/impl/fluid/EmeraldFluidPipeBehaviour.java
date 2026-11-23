@@ -11,6 +11,8 @@
  */
 package com.peco2282.bcreborn.transport.pipe.behaviour.impl.fluid;
 
+import org.jetbrains.annotations.Nullable;
+import com.peco2282.bcreborn.transport.pipe.extraction.FluidExtractionModule;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.SimpleMenuProvider;
@@ -88,68 +90,30 @@ public class EmeraldFluidPipeBehaviour implements FluidPipeBehaviour {
     return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
+  /** Original {@code PipeFluidsWood.outputOpen()} (inherited): never back into the block the pipe pulls from. */
   @Override
-  public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
-    if (level.isClientSide) return;
-    if (pipe.getTicksSincePull() < EXTRACT_COOLDOWN) return;
-
-    Direction extractDir = pipe.getExtractionSide();
-    BlockPos inventoryPos = pos.relative(extractDir);
-    BlockEntity invBe = level.getBlockEntity(inventoryPos);
-
-    if (invBe == null || invBe instanceof PipeBlockEntity) return;
-
-    int extractAmount = pipe.getPipeMaterial().getFluidTransferRate();
-
-    LazyOptional<IFluidHandler> cap = invBe.getCapability(ForgeCapabilities.FLUID_HANDLER, extractDir.getOpposite());
-    if (!cap.isPresent()) return;
-
-    IFluidHandler handler = cap.orElseThrow(IllegalStateException::new);
-
-    // フィルタースロットから許可流体リストを構築
-    List<FluidStack> allowedFluids = buildAllowedFluids(pipe, extractDir);
-
-    FluidStack drained;
-    if (allowedFluids.isEmpty()) {
-      // フィルターなし: タンクに既存流体があれば同種のみ、なければ何でも抽出
-      FluidStack existing = pipe.getFluidTank() != null ? pipe.getFluidTank().getFluid() : FluidStack.EMPTY;
-      if (!existing.isEmpty()) {
-        drained = handler.drain(new FluidStack(existing, extractAmount), IFluidHandler.FluidAction.EXECUTE);
-      } else {
-        drained = handler.drain(extractAmount, IFluidHandler.FluidAction.EXECUTE);
-      }
-    } else {
-      // フィルターあり: 許可された流体のみ抽出
-      drained = FluidStack.EMPTY;
-      for (FluidStack allowed : allowedFluids) {
-        FluidStack candidate = handler.drain(new FluidStack(allowed.getFluid(), extractAmount), IFluidHandler.FluidAction.SIMULATE);
-        if (!candidate.isEmpty()) {
-          drained = handler.drain(new FluidStack(allowed.getFluid(), extractAmount), IFluidHandler.FluidAction.EXECUTE);
-          break;
-        }
-      }
-    }
-
-    if (!drained.isEmpty() && pipe.getFluidTank() != null) {
-      pipe.getFluidTank().fill(drained, IFluidHandler.FluidAction.EXECUTE);
-      pipe.resetTicksSincePull();
-    }
+  public boolean canOutputFluid(PipeBlockEntity pipe, Direction dir) {
+    return dir != pipe.getExtractionSide();
   }
 
   /**
-   * 抽出方向のフィルタースロットからバケツ等を読み取り、許可流体リストを返す。
+   * Original {@code PipeFluidsEmerald.extractFluid()}: like the wooden pipe, limited to the fluid in the filter
+   * slot (any fluid without a filter). The original had one filter slot; the first filled one is used.
    */
-  private List<FluidStack> buildAllowedFluids(PipeBlockEntity pipe, Direction extractDir) {
-    List<FluidStack> result = new ArrayList<>();
-    var filterInv = pipe.getEmeraldFilters();
-    if (filterInv == null) return result;
+  @Override
+  public void tick(PipeBlockEntity pipe, Level level, BlockPos pos, BlockState state) {
+    if (level.isClientSide) return;
+    FluidExtractionModule.INSTANCE.extract(pipe, filter(pipe));
+  }
 
+  @Nullable
+  private static FluidStack filter(PipeBlockEntity pipe) {
+    var filterInv = pipe.getEmeraldFilters();
+    if (filterInv == null) return null;
     for (int i = 0; i < filterInv.getContainerSize(); i++) {
-      ItemStack filterItem = filterInv.getItem(i);
-      if (filterItem.isEmpty()) continue;
-      Optional<FluidStack> fluid = FluidUtil.getFluidContained(filterItem);
-      fluid.ifPresent(result::add);
+      FluidStack fluid = FluidExtractionModule.filterFluid(filterInv.getItem(i));
+      if (fluid != null) return fluid;
     }
-    return result;
+    return null;
   }
 }

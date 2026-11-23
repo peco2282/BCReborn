@@ -24,6 +24,7 @@ import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.SimpleInventory;
 import com.peco2282.bcreborn.common.block.entity.BuildCraftBlockEntity;
 import com.peco2282.bcreborn.common.item.EnergyStorage;
+import com.peco2282.bcreborn.transport.pipe.extraction.FluidExtractionBattery;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.TransportBlocks;
 import com.peco2282.bcreborn.transport.block.PipeBlock;
@@ -249,10 +250,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
 
   /**
    * Original batteries: PipeItemsWood {@code RFBattery(2560, 80, 0)}, PipeItemsStripes {@code RFBattery(16000, 640, 0)};
-   * the wooden fluid pipes keep the 1024 RF battery.
+   * the wooden and emerald fluid pipes keep the fluid they may pull, PipeFluidsWood {@code liquidToExtract}
+   * ({@link FluidExtractionBattery}).
    */
   private EnergyStorage newExtractionBattery(int stored) {
-    if (runtime.type() != PipeType.ITEM) return new EnergyStorage(1024, 64, 64, Math.min(stored, 1024));
+    if (runtime.type() == PipeType.FLUID) return new FluidExtractionBattery(stored);
     if (runtime.material() == PipeMaterial.STRIPES) {
       return new EnergyStorage(StripesPipe.BATTERY, StripesPipe.MAX_RECEIVE, 0, Math.min(stored, StripesPipe.BATTERY));
     }
