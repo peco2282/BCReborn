@@ -61,13 +61,18 @@ public class PipeJamGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID, timeoutTicks = 200)
   public void deadEndDropsItemAtCentre(GameTestHelper helper) {
+    // The GameTest world is reused: items dropped here by an earlier run would be counted too.
+    helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(PIPE)).inflate(1.5)).forEach(ItemEntity::discard);
     PipeBlockEntity pipe = placePipe(helper, PIPE, PipeMaterial.COBBLESTONE);
     pipe.injectItemWithSpeed(new ItemStack(Items.FLINT, 3), Direction.WEST, 0.05f);
     check(helper, pipe.getTravelingItems().get(0).getNextDirection() == null,
       "A pipe with no other connection has no destination (original output UNKNOWN)");
     helper.succeedWhen(() -> {
       helper.assertTrue(pipe.getTravelingItems().isEmpty(), "The item must leave the pipe");
-      helper.assertTrue(droppedCount(helper, PIPE, Items.FLINT) == 3, "The item must be dropped as an entity");
+      helper.assertTrue(droppedCount(helper, PIPE, Items.FLINT) == 3, "The item must be dropped as an entity, found "
+        + droppedCount(helper, PIPE, Items.FLINT) + " nearby: " + helper.getLevel().getEntitiesOfClass(ItemEntity.class,
+          new AABB(helper.absolutePos(PIPE)).inflate(4)).stream().map(e -> e.getItem() + "@" + e.blockPosition()).toList()
+        + " pipe at " + helper.absolutePos(PIPE));
     });
   }
 
@@ -127,6 +132,8 @@ public class PipeJamGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void overfilledPipeBursts(GameTestHelper helper) {
+    // The GameTest world is reused: swords dropped here by an earlier run would be counted too.
+    helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(PIPE)).inflate(1.5)).forEach(ItemEntity::discard);
     helper.setBlock(PIPE.east(), Blocks.CHEST.defaultBlockState());
     PipeBlockEntity pipe = placePipe(helper, PIPE, PipeMaterial.COBBLESTONE);
     // Swords do not stack, so they cannot be grouped.
