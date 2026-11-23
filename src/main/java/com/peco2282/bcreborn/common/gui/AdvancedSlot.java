@@ -46,11 +46,8 @@ public abstract class AdvancedSlot {
     } else {
       ItemStack stack = getItemStack();
       if (!stack.isEmpty()) {
-        int cornerX = (gui.width - gui.getXSize()) / 2;
-        int cornerY = (gui.height - gui.getYSize()) / 2;
-        int xS = x - cornerX;
-        int yS = y - cornerY;
-        gui.renderTooltip(guiGraphics, stack, xS, yS);
+        // At the mouse: x / y are screen coordinates (they were made relative to the GUI corner).
+        gui.renderTooltip(guiGraphics, stack, x, y);
       }
     }
   }

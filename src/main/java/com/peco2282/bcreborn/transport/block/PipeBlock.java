@@ -242,7 +242,7 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
             new SimpleMenuProvider((id, inventory, user) ->
               new GateInterfaceMenu(id, inventory, pipeBE, side),
               Component.translatable("item.bcreborntransport.gate")),
-            buf -> { buf.writeBlockPos(pos); buf.writeEnum(side); });
+            buf -> GateInterfaceMenu.writeOpenData(buf, pipeBE, side));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
       }

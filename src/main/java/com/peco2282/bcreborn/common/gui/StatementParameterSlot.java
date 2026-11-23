@@ -30,7 +30,7 @@ public abstract class StatementParameterSlot extends AdvancedSlot {
 
     this.slot = slot;
     this.statementSlot = iStatementSlot;
-    // statementSlot.parameters.add(this);
+    statementSlot.parameters.add(this);
   }
 
   @Override
@@ -54,7 +54,8 @@ public abstract class StatementParameterSlot extends AdvancedSlot {
   public ItemStack getItemStack() {
     IStatementParameter parameter = getParameter();
     if (parameter != null) {
-      return parameter.getItemStack();
+      ItemStack stack = parameter.getItemStack();
+      return stack != null ? stack : ItemStack.EMPTY;
     } else {
       return ItemStack.EMPTY;
     }

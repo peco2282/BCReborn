@@ -11,6 +11,9 @@
  */
 package com.peco2282.bcreborn.transport.event;
 
+import com.peco2282.bcreborn.api.statements.StatementManager;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import com.peco2282.bcreborn.BCRebornTransport;
 import com.peco2282.bcreborn.transport.TransportBlockEntityTypes;
 import com.peco2282.bcreborn.transport.TransportBlocks;
@@ -105,5 +108,16 @@ public class BCRebornTransportEvent {
       event.getModels().computeIfPresent(BlockModelShaper.stateToModelLocation(state),
         (location, model) -> wrapped.computeIfAbsent(model, original -> new ColoredPipeModel(original, texturePrefix, builtIn)));
     }
+  }
+
+  /**
+   * The gate statement icons (original registerIcons on the item atlas). The textures in every module's
+   * {@code textures/item/triggers} are stitched into the block atlas as {@code <mod>:triggers/<name>}
+   * ({@code assets/minecraft/atlases/blocks.json}); before, they were never loaded and the gate GUI had no icons.
+   */
+  @SubscribeEvent
+  public static void onTextureStitchPost(TextureStitchEvent.Post event) {
+    if (!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) return;
+    StatementManager.registerIcons(event.getAtlas()::getSprite);
   }
 }
