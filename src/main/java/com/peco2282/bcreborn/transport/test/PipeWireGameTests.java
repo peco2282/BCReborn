@@ -169,8 +169,10 @@ public class PipeWireGameTests {
     check(helper, !gate.getAllValidActions().contains(TransportStatements.ACTION_SIGNAL_OUTPUT.get(PipeWire.BLUE).get()),
       "A redstone gate must not offer a second wire colour");
 
-    helper.setBlock(B, Blocks.AIR.defaultBlockState());
     BlockPos abs = helper.absolutePos(B);
+    // The GameTest world is reused: wires dropped here by an earlier run would be counted too.
+    helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(abs).inflate(2)).forEach(ItemEntity::discard);
+    helper.setBlock(B, Blocks.AIR.defaultBlockState());
     long wires = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(abs).inflate(2)).stream()
       .filter(e -> PipeWire.fromStack(e.getItem()) != null).mapToInt(e -> e.getItem().getCount()).sum();
     check(helper, wires == 2, "Breaking the pipe must drop its installed wires, got " + wires);

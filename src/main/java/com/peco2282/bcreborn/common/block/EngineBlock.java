@@ -24,6 +24,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -108,6 +110,17 @@ public abstract class EngineBlock extends BuildCraftBlock {
       }
     }
     return super.use(state, level, pos, player, hand, hit);
+  }
+
+  /** Turns a sideways engine with the structure (blueprints, structure blocks); an upright one stays upright. */
+  @Override
+  public BlockState rotate(BlockState state, Rotation rotation) {
+    return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+  }
+
+  @Override
+  public BlockState mirror(BlockState state, Mirror mirror) {
+    return state.setValue(FACING, mirror.mirror(state.getValue(FACING)));
   }
 
   @Override

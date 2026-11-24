@@ -149,7 +149,7 @@ BC を象徴する大型マシン。
 | Breaker ロボット | — | 原作 7.1 のボード一覧（robotics/boards）に存在しないため実装しない |
 | エンジン用ゲート条件 | ✅ | 原作 EnergyStatementProvider / TriggerEngineHeat / TriggerFuelBelowThreshold / TriggerCoolantBelowThreshold: エンジンの隣のゲートに熱段階 5 種（青・緑・黄・赤・過熱）、燃焼エンジンなら燃料・冷却液が 25% / 50% 未満。以前はクラスがなく出てこなかった。GameTest で確認 |
 | パイプの塗装（ガラス色） | ✅ | 原作 TileGenericPipe.glassColor / PipeColoringRecipe / BlockGenericPipe.recolourBlock 準拠（2026-11-24）: 同じ種類のパイプ 8 本＋染料 → 8 本の色付きパイプ（色付きでも塗り直せる）、同じ種類のパイプ＋水バケツ → 色落とし（バケツは空で戻る）。色の違うパイプ同士はつながらない（片方が無色ならつながる）。ペイントブラシで塗る、無色のブラシで落とす（プラグ・ファサードでふさいだ面からは塗れない）。色は Lapis / Daizuli の色（`pipeColor`）とは別の値 `GlassColor`。アイテムでは `BlockEntityTag.GlassColor`（原作はダメージ値）で、壊すとルートテーブルの copy_nbt で色付きのまま落ち、置くと色を引き継いで接続を計算し直す。ピックブロックも色付き。描画は原作の `pipe_stained_overlay` を色で染めて全面に重ねる（`StainedPipeModel`）、ツールチップに色。以前はペイントブラシがブロックではなくブロックエンティティの `IColoredBlock` を探していたため、パイプには何も起きなかった。StainedPipeGameTests で検証、見た目は実機確認待ち。材料の数・水バケツでの色落としは原作と未照合 |
-| エンジンの設計図対応 | ⬜ | 原作 SchematicEngine（向きと設置）。現状はスキーマの自動登録任せ |
+| エンジンの設計図対応 | ✅ | 原作 SchematicEngine 準拠（2026-11-24、`SchematicEngine`）: 木・石・鉄のエンジンは向きだけを記録し、停止状態で置く。原作は tile NBT から進捗・エネルギー・熱・タンクを消していたが、本実装の向きはブロックステートの `FACING` なので、ブロックエンティティのデータは持ち込まない（燃料も複製されない）。必要素材はエンジン 1 個。クリエイティブエンジンはクリエイティブ専用のまま。`EngineBlock` に `rotate` / `mirror` を追加し、設計図の回転で横向きのエンジンも回る（上下向きはそのまま）。以前はブロックエンティティを持つため自動登録でクリエイティブ専用になり、サバイバルの Builder では建てられなかった。BuilderGameTests（`builderBuildsEngineWithItsOrientation` / `engineSchematicRotatesAndKeepsCreativeOnly`）で検証 |
 | パイプのツールチップ | ⬜ | 原作 PipeToolTipManager: 流量・速度・接続の説明 |
 | `/buildcraft` コマンド | ⬜ | 原作 core/command（バージョン表示など）。ロボット用のコマンドだけある |
 | Pump の対象ディメンション設定 | ⬜ | 原作 PumpDimensionList（設定でディメンションごとに汲み上げ可否） |

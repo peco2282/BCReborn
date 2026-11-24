@@ -148,6 +148,71 @@ public class BuilderGameTests {
     });
   }
 
+  /**
+   * Original SchematicEngine: a survival builder builds a running, fuelled engine as an idle engine facing the same
+   * way, for one engine item and without the fuel. Before, engines were creative only (generic block entity schematic).
+   */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = TEMPLATE, templateNamespace = BCRebornTransport.MODID, timeoutTicks = 600)
+  public void builderBuildsEngineWithItsOrientation(GameTestHelper helper) {
+    clearTarget(helper);
+    for (int x = 0; x < 2; x++) {
+      for (int z = 0; z < 2; z++) {
+        helper.setBlock(SOURCE.offset(x, 0, z), Blocks.AIR.defaultBlockState());
+      }
+    }
+    helper.setBlock(SOURCE, com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get().defaultBlockState()
+      .setValue(com.peco2282.bcreborn.common.block.EngineBlock.FACING, Direction.EAST)
+      .setValue(com.peco2282.bcreborn.common.block.EngineBlock.ACTIVE, true));
+    var source = (com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity) helper.getBlockEntity(SOURCE);
+    source.setItem(0, new ItemStack(Items.COAL, 5));
+    BuilderBlockEntity builder = placeBuilder(helper);
+    ItemStack stack = record(helper, new Blueprint(2, 1, 2), "gametest_engine", builder);
+
+    builder.setItem(1, new ItemStack(com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get()));
+    builder.setItem(0, stack);
+
+    helper.succeedWhen(() -> {
+      helper.assertBlockPresent(com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get(), TARGET);
+      BlockState built = helper.getBlockState(TARGET);
+      helper.assertTrue(built.getValue(com.peco2282.bcreborn.common.block.EngineBlock.FACING) == Direction.EAST,
+        "The engine must face east like the original, got " + built);
+      var engine = (com.peco2282.bcreborn.energy.block.entity.StoneEngineBlockEntity) helper.getBlockEntity(TARGET);
+      helper.assertTrue(engine.getItem(0).isEmpty(), "The fuel must not be copied, got " + engine.getItem(0));
+      helper.assertTrue(builder.getItem(0).isEmpty(), "The finished blueprint must leave the blueprint slot");
+      // The finished blueprint moves to the first free slot, which the used engine item left.
+      for (int slot = 1; slot < builder.getContainerSize(); slot++) {
+        helper.assertFalse(builder.getItem(slot).is(com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get().asItem()),
+          "The engine must cost the one engine item, left " + builder.getItem(slot) + " in slot " + slot);
+      }
+    });
+  }
+
+  /** The engine schematic turns sideways engines with the blueprint and leaves upright ones; creative stays creative. */
+  @PrefixGameTestTemplate(false)
+  @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
+  public void engineSchematicRotatesAndKeepsCreativeOnly(GameTestHelper helper) {
+    var registry = com.peco2282.bcreborn.common.blueprint.SchematicRegistry.INSTANCE;
+    var facing = com.peco2282.bcreborn.common.block.EngineBlock.FACING;
+    for (Block block : new Block[]{CoreBlocks.WOODEN_ENGINE.get(), com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get(),
+      com.peco2282.bcreborn.energy.EnergyBlocks.IRON_ENGINE.get()}) {
+      var schematic = registry.createSchematicBlock(block.defaultBlockState().setValue(facing, Direction.EAST));
+      check(helper, schematic instanceof com.peco2282.bcreborn.builders.schematics.SchematicEngine, block + " must use the engine schematic");
+      check(helper, schematic.getBuildingPermission() == com.peco2282.bcreborn.api.blueprints.BuildingPermission.ALL,
+        block + " must be buildable in survival");
+      schematic.state = block.defaultBlockState().setValue(facing, Direction.EAST);
+      schematic.rotateLeft(null);
+      check(helper, schematic.state.getValue(facing) == Direction.NORTH, block + ": east turned left must face north, got " + schematic.state);
+      schematic.state = block.defaultBlockState().setValue(facing, Direction.UP);
+      schematic.rotateLeft(null);
+      check(helper, schematic.state.getValue(facing) == Direction.UP, block + ": an upright engine must stay upright");
+    }
+    var creative = registry.createSchematicBlock(com.peco2282.bcreborn.energy.EnergyBlocks.CREATIVE_ENGINE.get().defaultBlockState());
+    check(helper, creative.getBuildingPermission() == com.peco2282.bcreborn.api.blueprints.BuildingPermission.CREATIVE_ONLY,
+      "The creative engine must stay creative only");
+    helper.succeed();
+  }
+
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void blueprintLibrarySurvivesRefresh(GameTestHelper helper) {

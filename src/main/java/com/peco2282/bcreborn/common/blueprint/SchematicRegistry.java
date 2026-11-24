@@ -138,6 +138,11 @@ public final class SchematicRegistry implements ISchematicRegistry {
     schemes.registerSchematicBlock(BuildersBlock.QUARRY.get(), SchematicBuilderLike::new);
     schemes.registerSchematicBlock(BuildersBlock.CONSTRUCTION_MARKER.get(), SchematicIgnore::new);
     schemes.registerSchematicBlock(BuildersBlock.FRAME.get(), SchematicFree::new);
+    // Original SchematicEngine (the creative engine only for creative builders).
+    schemes.registerSchematicBlock(com.peco2282.bcreborn.core.CoreBlocks.WOODEN_ENGINE.get(), SchematicEngine::new);
+    schemes.registerSchematicBlock(com.peco2282.bcreborn.energy.EnergyBlocks.STONE_ENGINE.get(), SchematicEngine::new);
+    schemes.registerSchematicBlock(com.peco2282.bcreborn.energy.EnergyBlocks.IRON_ENGINE.get(), SchematicEngine::new);
+    schemes.registerSchematicBlock(com.peco2282.bcreborn.energy.EnergyBlocks.CREATIVE_ENGINE.get(), () -> new SchematicEngine(true));
 
   }
 

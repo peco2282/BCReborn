@@ -70,6 +70,11 @@ public class StripesGameTests {
   }
 
   /** How many of {@code item} lie around or travel in the pipes of the test. */
+  /** The GameTest world is reused: items dropped here by an earlier run would be counted by {@link #found}. */
+  private static void clearOldDrops(GameTestHelper helper) {
+    helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(STRIPES)).inflate(4)).forEach(ItemEntity::discard);
+  }
+
   private static int found(GameTestHelper helper, Item item) {
     int count = 0;
     for (ItemEntity entity : helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(STRIPES)).inflate(4))) {
@@ -88,6 +93,7 @@ public class StripesGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void stripesPlacesBlocks(GameTestHelper helper) {
+    clearOldDrops(helper);
     PipeBlockEntity stripes = line(helper);
     stripes.injectItem(new ItemStack(Items.COBBLESTONE, 2), Direction.WEST);
     helper.succeedWhen(() -> {
@@ -99,6 +105,7 @@ public class StripesGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void stripesExtendsWithAnItemPipe(GameTestHelper helper) {
+    clearOldDrops(helper);
     PipeBlockEntity stripes = line(helper);
     stripes.injectItem(new ItemStack(pipeItem(PipeMaterial.STONE)), Direction.WEST);
     helper.succeedWhen(() -> {
@@ -113,6 +120,7 @@ public class StripesGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void stripesExtensionStopsAtABlock(GameTestHelper helper) {
+    clearOldDrops(helper);
     PipeBlockEntity stripes = line(helper);
     helper.setBlock(FRONT, Blocks.STONE);
     stripes.injectItem(new ItemStack(pipeItem(PipeMaterial.STONE)), Direction.WEST);
@@ -126,6 +134,7 @@ public class StripesGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void stripesRetractsWithAVoidPipe(GameTestHelper helper) {
+    clearOldDrops(helper);
     place(helper, BACK, PipeMaterial.COBBLESTONE);
     place(helper, STRIPES, PipeMaterial.STONE);
     PipeBlockEntity stripes = place(helper, FRONT, PipeMaterial.STRIPES);
@@ -141,6 +150,7 @@ public class StripesGameTests {
   @PrefixGameTestTemplate(false)
   @GameTest(template = "empty_3x3", templateNamespace = BCRebornTransport.MODID)
   public void poweredStripesBreaksTheBlockInFront(GameTestHelper helper) {
+    clearOldDrops(helper);
     PipeBlockEntity stripes = line(helper);
     helper.setBlock(FRONT, Blocks.COBBLESTONE);
     var battery = stripes.getCapability(ForgeCapabilities.ENERGY).orElseThrow(IllegalStateException::new);
