@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -50,6 +51,7 @@ public final class BCRegistry {
   private final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES;
   private final DeferredRegister<MenuType<?>> MENU_TYPES;
   private final DeferredRegister<CreativeModeTab> CREATIVE_TABS;
+  private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
 
   private final DeferredRegister<Schematic> SCHEMATIC;
   private final DeferredRegister<IStatement> STATEMENT;
@@ -66,6 +68,7 @@ public final class BCRegistry {
     BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, modid);
     MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, modid);
     CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modid);
+    RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, modid);
 
     SCHEMATIC = DeferredRegister.create(BCRegistryKeys.SCHEMATIC, modid);
     STATEMENT = DeferredRegister.create(BCRegistryKeys.STATEMENT, modid);
@@ -119,6 +122,10 @@ public final class BCRegistry {
     return CREATIVE_TABS.register(name, tab);
   }
 
+  public <S extends RecipeSerializer<?>> RegistryObject<S> registerRecipeSerializer(String name, Supplier<S> serializer) {
+    return RECIPE_SERIALIZERS.register(name, serializer);
+  }
+
   public <S extends Schematic> RegistryObject<S> registerSchematic(String name, Supplier<S> schematic) {
     return SCHEMATIC.register(name, schematic);
   }
@@ -143,6 +150,7 @@ public final class BCRegistry {
     BLOCK_ENTITY_TYPES.register(bus);
     MENU_TYPES.register(bus);
     CREATIVE_TABS.register(bus);
+    RECIPE_SERIALIZERS.register(bus);
 
     SCHEMATIC.register(bus);
     STATEMENT.register(bus);

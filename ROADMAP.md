@@ -1,6 +1,6 @@
 # BCReborn — 実装ロードマップ (Original BuildCraft 準拠)
 
-> 最終更新: 2026-11-23
+> 最終更新: 2026-11-24
 > 対象バージョン: Minecraft 1.20.1 / Forge 47.x
 
 ---
@@ -25,7 +25,7 @@ BuildCraft 1.7.10 および 7.99 (1.12.2) の体験を現代の Minecraft 1.20.1
 
 1.  **実機での確認**: 画面を伴う部分は GameTest では検証できない。下の「実機確認チェックリスト」を `runClient` で確認し、問題がなければ 🔧 を ✅ にする。
 2.  **入手手段のないアイテム**: 2026-11-18 にすべて解消。流体・動力パイプ（逆変換も）、ゲート本体、ファサード、Pipe Sealant、List のレシピ（RecipeGameTests）と、動力パイプ Sandstone / Emerald（PowerPipeGameTests）。Debugger は原作にもレシピがない（6 章）。
-3.  **スタブのままの機能**: 7-1 章の残り（Pump の液面処理）。ストライプパイプは 2026-11-18 に原作の方式へ。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
+3.  **スタブのままの機能**: 7-1 章はすべて解消（Pump の液面処理は 2026-11-23）。ストライプパイプは 2026-11-18 に原作の方式へ。ゲート拡張 Timer / Fader / Light Sensor と Stamping Table は 2026-11-17 に実装。Zone Planner・Blueprint Library・Requester・List の GUI まわりも同日に実装（実機確認は 8 章）。
 
 ---
 
@@ -148,7 +148,7 @@ BC を象徴する大型マシン。
 | 実績 (Advancement) | ✅ | 原作 7.1 の実績 20 個を進捗に（歯車 5・レンチ・エンジン 3・自動作業台・採掘井戸・精製機・組立台・レーザー・採掘機・設計台・建築機・設計図・テンプレート・電子ライブラリ）。原作どおりそのアイテムをクラフトしたときに達成（独自トリガー `bcreborncore:crafted_item`、拾っただけでは達成しない）、親子関係も原作どおり、名前は原作の英語と日本語訳。AdvancementGameTests で検証 |
 | Breaker ロボット | — | 原作 7.1 のボード一覧（robotics/boards）に存在しないため実装しない |
 | エンジン用ゲート条件 | ✅ | 原作 EnergyStatementProvider / TriggerEngineHeat / TriggerFuelBelowThreshold / TriggerCoolantBelowThreshold: エンジンの隣のゲートに熱段階 5 種（青・緑・黄・赤・過熱）、燃焼エンジンなら燃料・冷却液が 25% / 50% 未満。以前はクラスがなく出てこなかった。GameTest で確認 |
-| パイプの塗装（ガラス色） | ⬜ | 原作 PipeColoringRecipe と TileGenericPipe.glassColor: パイプ 8 本＋染料で色付きパイプ、水バケツで色落とし。色の違うパイプ同士はつながらない。現状はペイントブラシがパイプの色（Lapis / Daizuli と共用の値）を変えるだけで、接続にも見た目にも影響しない |
+| パイプの塗装（ガラス色） | ✅ | 原作 TileGenericPipe.glassColor / PipeColoringRecipe / BlockGenericPipe.recolourBlock 準拠（2026-11-24）: 同じ種類のパイプ 8 本＋染料 → 8 本の色付きパイプ（色付きでも塗り直せる）、同じ種類のパイプ＋水バケツ → 色落とし（バケツは空で戻る）。色の違うパイプ同士はつながらない（片方が無色ならつながる）。ペイントブラシで塗る、無色のブラシで落とす（プラグ・ファサードでふさいだ面からは塗れない）。色は Lapis / Daizuli の色（`pipeColor`）とは別の値 `GlassColor`。アイテムでは `BlockEntityTag.GlassColor`（原作はダメージ値）で、壊すとルートテーブルの copy_nbt で色付きのまま落ち、置くと色を引き継いで接続を計算し直す。ピックブロックも色付き。描画は原作の `pipe_stained_overlay` を色で染めて全面に重ねる（`StainedPipeModel`）、ツールチップに色。以前はペイントブラシがブロックではなくブロックエンティティの `IColoredBlock` を探していたため、パイプには何も起きなかった。StainedPipeGameTests で検証、見た目は実機確認待ち。材料の数・水バケツでの色落としは原作と未照合 |
 | エンジンの設計図対応 | ⬜ | 原作 SchematicEngine（向きと設置）。現状はスキーマの自動登録任せ |
 | パイプのツールチップ | ⬜ | 原作 PipeToolTipManager: 流量・速度・接続の説明 |
 | `/buildcraft` コマンド | ⬜ | 原作 core/command（バージョン表示など）。ロボット用のコマンドだけある |
@@ -235,6 +235,7 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | Diamond Pipe GUI | 6行×9列のゴーストスロット、置いたフィルターが再ログイン後も残る、色覚モードのテクスチャ |
 | Iron Pipe | 出力アームだけ通常テクスチャ、レンチ（アーム／中央）とレッドストーンで向きが変わる |
 | パイプ描画 | 接続形状、パイプ内を移動するアイテム |
+| 色付きパイプ | 染めたガラスが色で重なる（Lapis / Daizuli・木の抽出面でも）、ちらつかない、塗る・落とすとすぐ描き直される、ツールチップの色 |
 | パイプワイヤー | 色ごとに別の角を通る、接続方向へ伸びる、信号ありで発光 |
 | ゲート GUI | 条件・アクションの一覧（パイプ内容、ワイヤー、Valve、機械制御、レッドストーン）と設定 |
 | Emzuli Pipe GUI | 4つのフィルタースロット、塗る色のボタン（左クリックで次、右で前、中で解除、ツールチップ）、再ログイン後も残る |
@@ -269,7 +270,7 @@ GameTest（`runGameTestServer`）はサーバー側の挙動だけを検証す�
 | パイプにワイヤーを付けても、ゲートのアクション候補にその色のワイヤー信号が出ない | ✅ | 原作どおりの仕様と確認: ゲートの素材が扱えるワイヤーの色数まで（レッドストーン: 赤のみ、鉄: 赤・青、金: 赤・青・緑、ダイヤ / エメラルド: 4 色、クォーツ: 3 色）。GameTest で確認。旧 GUI は候補を文字で順送りしていたため見つけにくかった |
 | 液体がパイプ内に 1000 mB で留まり、受け側の Tank へ移らない | 🔧 | 木・Emerald の液体パイプが、引き出したタンクへ液体を押し戻していた（原作 PipeFluidsWood.outputOpen は引き出す面を出口にしない）ため修正。満杯のパイプが隣のタンクへ空になること、木の液体パイプからタンクへ移ることを GameTest で確認。実機での再確認待ち |
 | 満水の液体パイプの描画が白い塊状に途切れる | ⬜ | `FluidPipeRenderer` |
-| Filtered Buffer のブロックが欠損テクスチャ | ⬜ | blockstate とモデルは `src/generated` にある。確認に使ったチェックアウトが古いか、リソースが反映されていない可能性 |
+| Filtered Buffer のブロックが欠損テクスチャ | 🔧 | 原因（2026-11-24）: `src/generated/` は `.gitignore` で除外されていて、blockstate・モデル・ルートテーブル・レシピはどれもコミットされていない。チェックアウトごとに `runData` を実行する必要があり、Filtered Buffer より前に `runData` したチェックアウトでは欠損になる。テクスチャ・blockstate・モデルの中身は正しい。`runData` をやり直して実機で再確認 |
 | Integration Table の使えない拡張スロットに × が出ない（空のとき） | ⬜ | 空のときに出すのが正しいかも要確認 |
 | Filler（ほか Builder / Architect）の `gui.inventory` が翻訳されない | ✅ | 1.20.1 のキー `container.inventory` に変更。実機での再確認待ち |
 | Requester のタイトルが最上段の要求枠と重なる | ✅ | 原作 GuiRequester どおりタイトルを描かない。実機での再確認待ち |

@@ -13,7 +13,6 @@ package com.peco2282.bcreborn.transport.block.entity;
 
 import com.peco2282.bcreborn.transport.stripes.StripesPipe;
 import com.peco2282.bcreborn.transport.pipe.pluggable.PowerAdapterPluggable;
-import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.gates.IGate;
 import com.peco2282.bcreborn.api.tiles.IDebuggable;
 import com.peco2282.bcreborn.api.transport.IPipe;
@@ -86,7 +85,7 @@ import java.util.Map;
  * </p>
  * Pipe state and transport selection are owned by {@link PipeRuntime}.
  */
-public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBlock, IPipeBlockEntity, Container, IDebuggable {
+public class PipeBlockEntity extends BuildCraftBlockEntity implements IPipeBlockEntity, Container, IDebuggable {
   public final SideProperties sideProperties = new SideProperties();
   private final PipeRuntime runtime;
   // Capability lazy optionals
@@ -554,10 +553,48 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     return runtime.type() == PipeType.ITEM && (runtime.material() == PipeMaterial.LAPIS || runtime.material() == PipeMaterial.DAIZULI);
   }
 
+  /** The stained glass colour of the pipe, drawn as an overlay by the client's pipe model; null if unstained. */
+  public static final ModelProperty<DyeColor> GLASS_COLOR = new ModelProperty<>();
+
   @Override
   public @NotNull ModelData getModelData() {
-    if (!hasColorTexture()) return ModelData.EMPTY;
-    return ModelData.builder().with(PIPE_COLOR, PipeColorLogic.colorOf(this)).build();
+    DyeColor glass = runtime.glassColor();
+    if (!hasColorTexture() && glass == null) return ModelData.EMPTY;
+    ModelData.Builder builder = ModelData.builder();
+    if (hasColorTexture()) builder.with(PIPE_COLOR, PipeColorLogic.colorOf(this));
+    if (glass != null) builder.with(GLASS_COLOR, glass);
+    return builder.build();
+  }
+
+  /** Original {@code TileGenericPipe.glassColor}: the stained glass colour, or null. */
+  public @Nullable DyeColor getGlassColor() {
+    return runtime.glassColor();
+  }
+
+  /**
+   * Original {@code TileGenericPipe.setPipeColor}: stains the pipe (null washes it). Pipes of different colours do
+   * not connect, so this pipe and its neighbours recompute their connections.
+   *
+   * @return true if the colour changed
+   */
+  public boolean setGlassColor(@Nullable DyeColor color) {
+    if (runtime.glassColor() == color) return false;
+    runtime.setGlassColor(color);
+    setChanged();
+    if (level != null && !level.isClientSide) {
+      refreshAllConnections();
+      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+    return true;
+  }
+
+  /**
+   * Recomputes this pipe's connections and its neighbours' joints to it; for a placed pipe whose glass colour came
+   * from the item after the block state was set.
+   */
+  public void refreshAllConnections() {
+    refreshConnections();
+    for (Direction side : Direction.values()) refreshNeighbourConnection(side);
   }
 
   public void setPipeColor(@Nullable DyeColor color) {
@@ -643,9 +680,11 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
     PipeType oldType = runtime.type();
     PipeMaterial oldMaterial = runtime.material();
     DyeColor colorBefore = runtime.pipeColor();
+    DyeColor glassBefore = runtime.glassColor();
     runtime.load(tag);
-    // Client: the colour is part of the block's model, so a synced change redraws the block.
-    if (level != null && level.isClientSide && colorBefore != runtime.pipeColor() && hasColorTexture()) {
+    // Client: the colours are part of the block's model, so a synced change redraws the block.
+    if (level != null && level.isClientSide
+      && ((colorBefore != runtime.pipeColor() && hasColorTexture()) || glassBefore != runtime.glassColor())) {
       requestModelDataUpdate();
       level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
     }
@@ -901,14 +940,6 @@ public class PipeBlockEntity extends BuildCraftBlockEntity implements IColoredBl
       }
     }
     return list;
-  }
-
-  @Override
-  public boolean recolorBlock(BlockState state, Level level, BlockPos pos, Direction side, DyeColor color) {
-    runtime.setPipeColor(color);
-    setChanged();
-    level.sendBlockUpdated(pos, state, state, 3);
-    return true;
   }
 
   @Override

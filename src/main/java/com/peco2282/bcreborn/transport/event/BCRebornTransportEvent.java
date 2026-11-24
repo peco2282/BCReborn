@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.block.state.BlockState;
 import com.peco2282.bcreborn.transport.block.render.ColoredPipeModel;
+import com.peco2282.bcreborn.transport.block.render.StainedPipeModel;
 import com.peco2282.bcreborn.transport.pipe.PipeMaterial;
 import com.peco2282.bcreborn.transport.pipe.PipeType;
 import java.util.IdentityHashMap;
@@ -97,6 +98,15 @@ public class BCRebornTransportEvent {
   public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
     wrapColoredPipe(event, PipeMaterial.LAPIS, "block/pipes/pipe_items_lapis_", DyeColor.BLUE);
     wrapColoredPipe(event, PipeMaterial.DAIZULI, "block/pipes/pipe_items_daizuli_", DyeColor.BLACK);
+    // Every pipe can be stained (original glassColor); this wraps the Lapis / Daizuli wrappers too.
+    TransportBlocks.pipesForEach((type, material, block) -> {
+      if (block == null) return;
+      Map<BakedModel, BakedModel> wrapped = new IdentityHashMap<>();
+      for (BlockState state : block.get().getStateDefinition().getPossibleStates()) {
+        event.getModels().computeIfPresent(BlockModelShaper.stateToModelLocation(state),
+          (location, model) -> wrapped.computeIfAbsent(model, StainedPipeModel::new));
+      }
+    });
   }
 
   private static void wrapColoredPipe(ModelEvent.ModifyBakingResult event, PipeMaterial material, String texturePrefix, DyeColor builtIn) {

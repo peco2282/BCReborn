@@ -18,6 +18,7 @@ import com.peco2282.bcreborn.common.utils.Utils;
 import com.peco2282.bcreborn.transport.pipe.behaviour.impl.IronPipeLogic;
 import com.peco2282.bcreborn.api.IToolWrench;
 import com.peco2282.bcreborn.api.blocks.IColorRemovable;
+import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.api.transport.pluggable.IPipePluggableItem;
 import com.peco2282.bcreborn.api.transport.pluggable.PipePluggable;
 import com.peco2282.bcreborn.common.block.BuildCraftBlock;
@@ -30,6 +31,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -49,6 +51,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import com.peco2282.bcreborn.transport.pipe.PipeGlassColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -63,7 +67,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraftforge.network.NetworkHooks;
 
-public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock, IColorRemovable {
+public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock, IColoredBlock, IColorRemovable {
   public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
   public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
   public static final BooleanProperty EAST = BlockStateProperties.EAST;
@@ -337,6 +341,11 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
       if (other != null && other.hasBlockingPluggable(direction.getOpposite())) {
         return false;
       }
+      // Original TileGenericPipe.canPipeConnect(): pipes stained in two different colours stay apart.
+      if (other != null && thisBE instanceof PipeBlockEntity self
+        && !PipeGlassColor.canConnect(self.getGlassColor(), other.getGlassColor())) {
+        return false;
+      }
       return otherPipe.getTransportType() == this.transportType;
     }
 
@@ -462,12 +471,40 @@ public class PipeBlock extends BuildCraftBlock implements SimpleWaterloggedBlock
     return material;
   }
 
+  /**
+   * Original {@code BlockGenericPipe.recolourBlock}: the paintbrush stains the pipe's glass, unless the clicked
+   * side is covered by a blocking pluggable (a facade or a plug).
+   */
+  @Override
+  public boolean recolorBlock(BlockState state, Level level, BlockPos pos, Direction side, DyeColor color) {
+    if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) || pipe.hasBlockingPluggable(side)) return false;
+    return pipe.setGlassColor(color);
+  }
+
+  /** Original {@code BlockGenericPipe.removeColorFromBlock}: washes the glass colour off. */
   @Override
   public boolean removeColorFromBlock(Level world, BlockPos pos, Direction side) {
-    BlockEntity entity = world.getBlockEntity(pos);
-    if (entity instanceof PipeBlockEntity pipe) {
-      pipe.setPipeColor(null);
+    if (!(world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) || pipe.hasBlockingPluggable(side)) return false;
+    return pipe.setGlassColor(null);
+  }
+
+  /**
+   * A stained pipe item loads its colour (vanilla {@code BlockItem.updateCustomBlockEntityTag}) after the block state
+   * was computed without it, so the connections are computed again.
+   */
+  @Override
+  public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
+    super.setPlacedBy(level, pos, state, placer, stack);
+    if (!level.isClientSide && level.getBlockEntity(pos) instanceof PipeBlockEntity pipe && pipe.getGlassColor() != null) {
+      pipe.refreshAllConnections();
     }
-    return false;
+  }
+
+  /** Pick block keeps the glass colour, like the drop. */
+  @Override
+  public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
+    ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+    return level.getBlockEntity(pos) instanceof PipeBlockEntity pipe && pipe.getGlassColor() != null
+      ? PipeGlassColor.with(stack, pipe.getGlassColor()) : stack;
   }
 }

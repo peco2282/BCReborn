@@ -31,6 +31,9 @@ import java.util.function.Consumer;
 public class TransportRecipe extends BCRecipeHelper {
   public static void build(Consumer<FinishedRecipe> consumer) {
     buildSealant(consumer);
+    // Original PipeColoringRecipe: eight pipes and a dye stain them, a water bucket washes them.
+    net.minecraft.data.recipes.SpecialRecipeBuilder.special(com.peco2282.bcreborn.transport.TransportRecipeSerializers.PIPE_COLORING.get())
+      .save(consumer, com.peco2282.bcreborn.BCRebornTransport.location("pipe_coloring").toString());
     // Original BuildCraftTransport: structure pipes around a gold ingot, a stone gear and redstone make 4 adapters.
     shaped(RecipeCategory.MISC, TransportItems.POWER_ADAPTER.get()::asItem, 4)
       .pattern("scs")

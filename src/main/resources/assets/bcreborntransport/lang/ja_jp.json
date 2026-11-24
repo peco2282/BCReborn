@@ -8,6 +8,7 @@
   "item.bcreborntransport.pipe_wire_green": "緑のパイプワイヤー",
   "item.bcreborntransport.pipe_wire_yellow": "黄のパイプワイヤー",
   "message.bcreborntransport.pipe_color": "パイプの色: %s",
+  "tip.bcreborntransport.pipe_stained": "着色: %s",
   "item.bcreborntransport.pipe_plug": "パイププラグ",
   "item.bcreborntransport.pipe_waterproof": "パイプ防水材",
   "item.bcreborntransport.pipe_lens_white": "白色のレンズ",

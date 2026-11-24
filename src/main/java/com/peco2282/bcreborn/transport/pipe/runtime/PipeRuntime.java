@@ -93,6 +93,8 @@ public final class PipeRuntime {
   private int filterSlotIndex;
   private long usedFilters;
   @Nullable private DyeColor pipeColor;
+  /** Original {@code TileGenericPipe.glassColor}; see {@link com.peco2282.bcreborn.transport.pipe.PipeGlassColor}. */
+  @Nullable private DyeColor glassColor;
   private PipeBlockEntity.ExtractFilterMode extractFilterMode = PipeBlockEntity.ExtractFilterMode.WHITE_LIST;
 
   public PipeRuntime(PipeBlockEntity host, PipeType type, PipeMaterial material) {
@@ -179,6 +181,8 @@ public final class PipeRuntime {
     if (tag.contains("ExtractionSide")) extractionSide = Direction.from3DDataValue(tag.getInt("ExtractionSide"));
     if (tag.contains("usedFilters")) usedFilters = tag.getLong("usedFilters");
     pipeColor = tag.contains("PipeColor") ? DyeColor.byId(tag.getInt("PipeColor")) : null;
+    glassColor = tag.contains(com.peco2282.bcreborn.transport.pipe.PipeGlassColor.TAG)
+      ? DyeColor.byId(tag.getInt(com.peco2282.bcreborn.transport.pipe.PipeGlassColor.TAG)) : null;
     if (tag.contains("ExtractFilterMode")) {
       int ordinal = tag.getInt("ExtractFilterMode");
       if (ordinal >= 0 && ordinal < PipeBlockEntity.ExtractFilterMode.values().length) {
@@ -229,6 +233,7 @@ public final class PipeRuntime {
     tag.put("Filters", filtersTag);
     tag.putLong("usedFilters", usedFilters);
     if (pipeColor != null) tag.putInt("PipeColor", pipeColor.getId());
+    if (glassColor != null) tag.putInt(com.peco2282.bcreborn.transport.pipe.PipeGlassColor.TAG, glassColor.getId());
     tag.putInt("ExtractFilterMode", extractFilterMode.ordinal());
     byte[] wires = new byte[wireSet.length];
     for (int i = 0; i < wireSet.length; i++) wires[i] = (byte) (wireSet[i] ? 1 : 0);
@@ -456,6 +461,10 @@ public final class PipeRuntime {
   @Nullable public DyeColor pipeColor() { return pipeColor; }
   @Nullable public EmzuliState emzuli() { return emzuli; }
   public void setPipeColor(@Nullable DyeColor value) { pipeColor = value; }
+
+  @Nullable public DyeColor glassColor() { return glassColor; }
+
+  public void setGlassColor(@Nullable DyeColor value) { glassColor = value; }
   public PipeBlockEntity.ExtractFilterMode extractFilterMode() { return extractFilterMode; }
   public void setExtractFilterMode(PipeBlockEntity.ExtractFilterMode value) { extractFilterMode = value; }
   public List<TravelingItem> travelingItems() { return itemTransport.getTravelingItems(); }

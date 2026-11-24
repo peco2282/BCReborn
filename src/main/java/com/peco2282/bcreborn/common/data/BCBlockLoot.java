@@ -14,7 +14,12 @@ package com.peco2282.bcreborn.common.data;
 import com.peco2282.bcreborn.BCReborn;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import com.peco2282.bcreborn.transport.block.PipeBlock;
+import com.peco2282.bcreborn.transport.pipe.PipeGlassColor;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -31,7 +36,11 @@ public class BCBlockLoot extends BlockLootSubProvider {
   protected void generate() {
     // Every block of the mod drops itself; blocks declared with noLootTable() are skipped in getKnownBlocks().
     for (Block block : getKnownBlocks()) {
-      if (block.asItem() != Items.AIR) {
+      if (block instanceof PipeBlock) {
+        // Original BlockGenericPipe: a stained pipe drops as a stained pipe item.
+        this.add(block, this.createSingleItemTable(block).apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
+          .copy(PipeGlassColor.TAG, BlockItem.BLOCK_ENTITY_TAG + "." + PipeGlassColor.TAG)));
+      } else if (block.asItem() != Items.AIR) {
         this.dropSelf(block);
       }
     }

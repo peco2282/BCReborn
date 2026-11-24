@@ -13,6 +13,7 @@ package com.peco2282.bcreborn.core.item;
 
 
 import com.google.common.collect.ImmutableMap;
+import com.peco2282.bcreborn.api.blocks.IColorRemovable;
 import com.peco2282.bcreborn.api.blocks.IColoredBlock;
 import com.peco2282.bcreborn.common.item.BuildCraftItem;
 import net.minecraft.core.BlockPos;
@@ -89,35 +90,22 @@ public class PaintbrushItem extends BuildCraftItem {
     BlockPos pos = context.getClickedPos();
     Direction side = context.getClickedFace();
 
-//    int color = getColor(stack);
     BlockState state = level.getBlockState(pos);
     Block block = state.getBlock();
 
-    if (block instanceof IColoredBlock colored) {
-      if (color == null) {
-        return InteractionResult.PASS;
-      }
-
-      if (colored.recolorBlock(state, level, pos, side, color)) {
-        if (!level.isClientSide) {
-          stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
-        }
-
-        if (context.getPlayer() != null) {
-          context.getPlayer().swing(context.getHand());
-        }
-
-      }
-      return InteractionResult.sidedSuccess(level.isClientSide);
+    // A clean brush washes the colour off (original IColorRemovable).
+    boolean changed;
+    if (color == null) {
+      if (!(block instanceof IColorRemovable removable)) return InteractionResult.PASS;
+      changed = !level.isClientSide && removable.removeColorFromBlock(level, pos, side);
+    } else {
+      if (!(block instanceof IColoredBlock colored)) return InteractionResult.PASS;
+      changed = !level.isClientSide && colored.recolorBlock(state, level, pos, side, color);
     }
-
-    return InteractionResult.PASS;
-  }
-
-  private boolean tryRecolorBlock(Level level, BlockPos pos, BlockState state, DyeColor dyeColor) {
-    // Custom recoloring logic for blocks that support color properties
-    // This is a placeholder - implement actual recoloring based on your block types
-    return false;
+    if (changed && context.getPlayer() != null) {
+      stack.hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
+    }
+    return InteractionResult.sidedSuccess(level.isClientSide);
   }
 
   @Override
