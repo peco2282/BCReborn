@@ -1,0 +1,105 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_down"
+      },
+      "when": {
+        "extraction_side": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_up"
+      },
+      "when": {
+        "extraction_side": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_north"
+      },
+      "when": {
+        "extraction_side": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_south"
+      },
+      "when": {
+        "extraction_side": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_west"
+      },
+      "when": {
+        "extraction_side": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/wood_energy_extract_east"
+      },
+      "when": {
+        "extraction_side": "5"
+      }
+    }
+  ]
+}

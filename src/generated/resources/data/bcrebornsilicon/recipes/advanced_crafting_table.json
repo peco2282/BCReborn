@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "bcreborncore:gold_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "IDI",
+    "IGI",
+    "IPI"
+  ],
+  "result": {
+    "item": "bcrebornsilicon:advanced_crafting_table"
+  },
+  "show_notification": true
+}

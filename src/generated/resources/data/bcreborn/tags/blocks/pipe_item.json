@@ -1,0 +1,20 @@
+{
+  "values": [
+    "bcreborntransport:pipe_obsidian_item",
+    "bcreborntransport:pipe_emzuli_item",
+    "bcreborntransport:pipe_quartz_item",
+    "bcreborntransport:pipe_clay_item",
+    "bcreborntransport:pipe_stripes_item",
+    "bcreborntransport:pipe_lapis_item",
+    "bcreborntransport:pipe_gold_item",
+    "bcreborntransport:pipe_emerald_item",
+    "bcreborntransport:pipe_diamond_item",
+    "bcreborntransport:pipe_daizuli_item",
+    "bcreborntransport:pipe_cobblestone_item",
+    "bcreborntransport:pipe_sandstone_item",
+    "bcreborntransport:pipe_iron_item",
+    "bcreborntransport:pipe_stone_item",
+    "bcreborntransport:pipe_wood_item",
+    "bcreborntransport:pipe_void_item"
+  ]
+}

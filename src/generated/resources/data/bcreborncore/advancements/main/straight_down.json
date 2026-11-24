@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/iron_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornfactory:mining_well"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.straightDown.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornfactory:mining_well"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.straightDown"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "bcreborncore:stone_gear"
+    }
+  },
+  "pattern": [
+    "ICI",
+    " S "
+  ],
+  "result": {
+    "item": "bcrebornfactory:hopper"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bookshelf"
+    },
+    "G": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "bcrebornbuilders:blueprint_template"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "BPB",
+    "IRI"
+  ],
+  "result": {
+    "item": "bcrebornbuilders:blueprint_library"
+  },
+  "show_notification": true
+}

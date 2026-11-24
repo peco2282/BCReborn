@@ -1,0 +1,74 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blueprint": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcrebornbuilders:blueprint_template"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:bookshelf"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcreborncore:iron_gear"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_redstone": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:redstone"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcrebornbuilders:blueprint_library"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_gear",
+      "has_book",
+      "has_blueprint",
+      "has_redstone",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcrebornbuilders:blueprint_library"
+    ]
+  },
+  "sends_telemetry_event": false
+}

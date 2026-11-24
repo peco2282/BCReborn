@@ -1,0 +1,73 @@
+{
+  "display": {
+    "gui": {
+      "rotation": [
+        22.5,
+        135,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    }
+  },
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#default"
+        },
+        "east": {
+          "texture": "#left"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "up": {
+          "rotation": 90,
+          "texture": "#top"
+        },
+        "west": {
+          "texture": "#right"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "back": "bcrebornrobotics:block/zone_plan/back",
+    "default": "bcrebornrobotics:block/zone_plan/default",
+    "front": "bcrebornrobotics:block/zone_plan/front",
+    "left": "bcrebornrobotics:block/zone_plan/left",
+    "right": "bcrebornrobotics:block/zone_plan/right",
+    "top": "bcrebornrobotics:block/zone_plan/top"
+  }
+}

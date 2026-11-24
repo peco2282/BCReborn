@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "bcreborncore:gold_gear"
+    }
+  },
+  "pattern": [
+    "GMG"
+  ],
+  "result": {
+    "count": 8,
+    "item": "bcreborntransport:pipe_stripes_item"
+  },
+  "show_notification": true
+}

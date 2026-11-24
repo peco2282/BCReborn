@@ -1,0 +1,17 @@
+{
+  "crafting_time": 0,
+  "energy": 600000,
+  "id": "bcrebornsilicon:comp_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:comparator"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:comp_chipset"
+  }
+}

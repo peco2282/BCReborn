@@ -1,0 +1,41 @@
+{
+  "crafting_time": 0,
+  "energy": 20000,
+  "id": "bcrebornsilicon:list",
+  "ingredients": [
+    {
+      "tag": "forge:dyes/green"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcreborncore:list"
+  }
+}

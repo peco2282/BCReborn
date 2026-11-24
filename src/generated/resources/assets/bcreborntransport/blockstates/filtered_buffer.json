@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "bcreborntransport:block/filtered_buffer"
+    }
+  }
+}

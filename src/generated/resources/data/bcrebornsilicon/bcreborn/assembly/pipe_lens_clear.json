@@ -1,0 +1,14 @@
+{
+  "crafting_time": 0,
+  "energy": 10000,
+  "id": "bcrebornsilicon:pipe_lens_clear",
+  "ingredients": [
+    {
+      "tag": "forge:glass"
+    }
+  ],
+  "result": {
+    "Count": 2,
+    "id": "bcreborntransport:pipe_lens_clear"
+  }
+}

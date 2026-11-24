@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "G": {
+      "item": "bcreborncore:wooden_gear"
+    }
+  },
+  "pattern": [
+    " C ",
+    "CGC",
+    " C "
+  ],
+  "result": {
+    "item": "bcreborncore:stone_gear"
+  },
+  "show_notification": true
+}

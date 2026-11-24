@@ -1,0 +1,21 @@
+{
+  "crafting_time": 0,
+  "energy": 100000,
+  "id": "bcrebornsilicon:redstone_gate",
+  "ingredients": [
+    {
+      "item": "bcrebornsilicon:redstone_chipset"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_red"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcreborntransport:gate",
+    "tag": {
+      "logic": 0,
+      "mat": 0
+    }
+  }
+}

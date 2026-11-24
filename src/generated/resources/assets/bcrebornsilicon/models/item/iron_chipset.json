@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bcrebornsilicon:item/chipset/redstone_iron_chipset"
+  }
+}

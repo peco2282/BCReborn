@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bcrebornbuilders:block/architect",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bcrebornbuilders:block/architect"
+    },
+    "facing=south": {
+      "model": "bcrebornbuilders:block/architect",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bcrebornbuilders:block/architect",
+      "y": 270
+    }
+  }
+}

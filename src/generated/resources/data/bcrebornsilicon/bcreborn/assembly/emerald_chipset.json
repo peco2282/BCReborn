@@ -1,0 +1,17 @@
+{
+  "crafting_time": 0,
+  "energy": 1200000,
+  "id": "bcrebornsilicon:emerald_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:emerald"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:emerald_chipset"
+  }
+}

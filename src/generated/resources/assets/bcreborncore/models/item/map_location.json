@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "bcreborncore:item/map_location_spot",
+      "predicate": {
+        "bcreborncore:kind": 1.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/map_location_area",
+      "predicate": {
+        "bcreborncore:kind": 2.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/map_location_path",
+      "predicate": {
+        "bcreborncore:kind": 3.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/map_location_zone",
+      "predicate": {
+        "bcreborncore:kind": 4.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "bcreborncore:item/map_location/clean"
+  }
+}

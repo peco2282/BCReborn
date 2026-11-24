@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gold_chipset": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcrebornsilicon:gold_chipset"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcrebornrobotics:clean_board"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_chipset",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcrebornrobotics:clean_board"
+    ]
+  },
+  "sends_telemetry_event": false
+}

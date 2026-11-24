@@ -1,0 +1,13 @@
+{
+  "values": [
+    "bcreborntransport:pipe_gold_energy",
+    "bcreborntransport:pipe_emerald_energy",
+    "bcreborntransport:pipe_diamond_energy",
+    "bcreborntransport:pipe_cobblestone_energy",
+    "bcreborntransport:pipe_sandstone_energy",
+    "bcreborntransport:pipe_quartz_energy",
+    "bcreborntransport:pipe_iron_energy",
+    "bcreborntransport:pipe_stone_energy",
+    "bcreborntransport:pipe_wood_energy"
+  ]
+}

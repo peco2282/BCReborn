@@ -1,0 +1,30 @@
+{
+  "crafting_time": 0,
+  "energy": 1200000,
+  "id": "bcrebornsilicon:emerald_gate",
+  "ingredients": [
+    {
+      "item": "bcrebornsilicon:emerald_chipset"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_red"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_blue"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_green"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_yellow"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcreborntransport:gate",
+    "tag": {
+      "logic": 0,
+      "mat": 4
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:chests/wooden"
+    },
+    "d": {
+      "item": "bcreborntransport:pipe_diamond_item"
+    },
+    "p": {
+      "item": "minecraft:piston"
+    },
+    "w": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "wdw",
+    "wcw",
+    "wpw"
+  ],
+  "result": {
+    "item": "bcreborntransport:filtered_buffer"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/engine2",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornenergy:iron_engine"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.engine3.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornenergy:iron_engine"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.engine3"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

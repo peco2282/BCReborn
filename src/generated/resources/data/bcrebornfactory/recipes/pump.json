@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "item": "bcrebornfactory:tank"
+    }
+  },
+  "pattern": [
+    "IRI",
+    "IGI",
+    "TBT"
+  ],
+  "result": {
+    "item": "bcrebornfactory:pump"
+  },
+  "show_notification": true
+}

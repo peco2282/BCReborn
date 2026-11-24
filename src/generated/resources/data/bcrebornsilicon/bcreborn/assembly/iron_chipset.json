@@ -1,0 +1,17 @@
+{
+  "crafting_time": 0,
+  "energy": 200000,
+  "id": "bcrebornsilicon:iron_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:iron_chipset"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "G": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "T": {
+      "item": "bcrebornfactory:tank"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "BTB",
+    "IBI"
+  ],
+  "result": {
+    "item": "bcrebornfactory:flood_gate"
+  },
+  "show_notification": true
+}

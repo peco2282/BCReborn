@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_pipe_diamond_energy": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcreborntransport:pipe_diamond_energy"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcreborntransport:pipe_diamond_item_from_pipe_diamond_energy"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_pipe_diamond_energy",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcreborntransport:pipe_diamond_item_from_pipe_diamond_energy"
+    ]
+  },
+  "sends_telemetry_event": false
+}

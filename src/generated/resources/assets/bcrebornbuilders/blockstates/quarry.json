@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bcrebornbuilders:block/quarry",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bcrebornbuilders:block/quarry"
+    },
+    "facing=south": {
+      "model": "bcrebornbuilders:block/quarry",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bcrebornbuilders:block/quarry",
+      "y": 270
+    }
+  }
+}

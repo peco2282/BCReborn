@@ -1,0 +1,17 @@
+{
+  "crafting_time": 0,
+  "energy": 400000,
+  "id": "bcrebornsilicon:pulsating_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    }
+  ],
+  "result": {
+    "Count": 2,
+    "id": "bcrebornsilicon:pulsating_chipset"
+  }
+}

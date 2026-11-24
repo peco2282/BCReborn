@@ -1,0 +1,25 @@
+{
+  "values": [
+    "#bcreborn:gear",
+    "bcreborncore:list",
+    "bcreborncore:map_location",
+    "bcreborncore:wrench",
+    "bcreborncore:paintbrush",
+    "bcreborncore:paintbrush_white",
+    "bcreborncore:paintbrush_orange",
+    "bcreborncore:paintbrush_magenta",
+    "bcreborncore:paintbrush_light_blue",
+    "bcreborncore:paintbrush_yellow",
+    "bcreborncore:paintbrush_lime",
+    "bcreborncore:paintbrush_pink",
+    "bcreborncore:paintbrush_gray",
+    "bcreborncore:paintbrush_light_gray",
+    "bcreborncore:paintbrush_cyan",
+    "bcreborncore:paintbrush_purple",
+    "bcreborncore:paintbrush_blue",
+    "bcreborncore:paintbrush_brown",
+    "bcreborncore:paintbrush_green",
+    "bcreborncore:paintbrush_red",
+    "bcreborncore:paintbrush_black"
+  ]
+}

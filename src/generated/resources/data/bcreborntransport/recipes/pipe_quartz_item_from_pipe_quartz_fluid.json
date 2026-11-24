@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "bcreborntransport:pipe_quartz_fluid"
+    }
+  ],
+  "result": {
+    "item": "bcreborntransport:pipe_quartz_item"
+  }
+}

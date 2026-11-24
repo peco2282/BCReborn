@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bcrebornrobotics:block/zone_plan",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bcrebornrobotics:block/zone_plan"
+    },
+    "facing=south": {
+      "model": "bcrebornrobotics:block/zone_plan",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bcrebornrobotics:block/zone_plan",
+      "y": 270
+    }
+  }
+}

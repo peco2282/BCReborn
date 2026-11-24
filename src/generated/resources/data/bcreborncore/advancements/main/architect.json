@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/gold_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornbuilders:architect"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.architect.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornbuilders:architect"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.architect"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

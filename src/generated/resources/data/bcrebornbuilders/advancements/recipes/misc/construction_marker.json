@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gold_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcreborncore:gold_gear"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_redstone_torch": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:redstone_torch"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcrebornbuilders:construction_marker"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_gear",
+      "has_redstone_torch",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcrebornbuilders:construction_marker"
+    ]
+  },
+  "sends_telemetry_event": false
+}

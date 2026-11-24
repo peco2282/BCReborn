@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_diamond_chipset": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcrebornsilicon:diamond_chipset"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcrebornrobotics:robot"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_diamond_chipset",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcrebornrobotics:robot"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "bcrebornenergy:block/fluids/fuel_still"
+    }
+  }
+}

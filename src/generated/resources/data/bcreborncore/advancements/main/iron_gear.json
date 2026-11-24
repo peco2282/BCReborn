@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/stone_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcreborncore:iron_gear"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.ironGear.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.ironGear"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

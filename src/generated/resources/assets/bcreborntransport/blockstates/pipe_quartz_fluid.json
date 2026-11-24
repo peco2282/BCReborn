@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/quartz_fluid_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    }
+  ]
+}

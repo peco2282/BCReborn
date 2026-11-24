@@ -1,0 +1,14 @@
+{
+  "crafting_time": 0,
+  "energy": 10000000,
+  "id": "bcrebornsilicon:redstone_crystal",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone_block"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:redstone_crystal"
+  }
+}

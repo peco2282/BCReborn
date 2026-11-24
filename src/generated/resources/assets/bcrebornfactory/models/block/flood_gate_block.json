@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "bcrebornfactory:block/flood_gate_block/bottom",
+    "side": "bcrebornfactory:block/flood_gate_block/side",
+    "top": "bcrebornfactory:block/flood_gate_block/top"
+  }
+}

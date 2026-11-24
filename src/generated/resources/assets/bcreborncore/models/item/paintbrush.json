@@ -1,0 +1,104 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "bcreborncore:item/paintbrush_white",
+      "predicate": {
+        "bcreborncore:color": 1.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_orange",
+      "predicate": {
+        "bcreborncore:color": 2.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_magenta",
+      "predicate": {
+        "bcreborncore:color": 3.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_light_blue",
+      "predicate": {
+        "bcreborncore:color": 4.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_yellow",
+      "predicate": {
+        "bcreborncore:color": 5.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_lime",
+      "predicate": {
+        "bcreborncore:color": 6.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_pink",
+      "predicate": {
+        "bcreborncore:color": 7.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_gray",
+      "predicate": {
+        "bcreborncore:color": 8.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_light_gray",
+      "predicate": {
+        "bcreborncore:color": 9.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_cyan",
+      "predicate": {
+        "bcreborncore:color": 10.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_purple",
+      "predicate": {
+        "bcreborncore:color": 11.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_blue",
+      "predicate": {
+        "bcreborncore:color": 12.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_brown",
+      "predicate": {
+        "bcreborncore:color": 13.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_green",
+      "predicate": {
+        "bcreborncore:color": 14.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_red",
+      "predicate": {
+        "bcreborncore:color": 15.0
+      }
+    },
+    {
+      "model": "bcreborncore:item/paintbrush_black",
+      "predicate": {
+        "bcreborncore:color": 16.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "bcreborncore:item/paintbrush/clean"
+  }
+}

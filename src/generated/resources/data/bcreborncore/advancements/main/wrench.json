@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/stone_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcreborncore:wrench"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.wrench.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcreborncore:wrench"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.wrench"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "bcreborncore:stone_gear"
+    },
+    "c": {
+      "tag": "forge:ingots/gold"
+    },
+    "s": {
+      "item": "bcreborntransport:pipe_cobblestone_structure"
+    }
+  },
+  "pattern": [
+    "scs",
+    "sbs",
+    "sas"
+  ],
+  "result": {
+    "count": 4,
+    "item": "bcreborntransport:pipe_power_adapter"
+  },
+  "show_notification": true
+}

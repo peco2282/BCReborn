@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcrebornbuilders:block/frame_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    }
+  ]
+}

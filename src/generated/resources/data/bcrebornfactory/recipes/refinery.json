@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "bcreborncore:diamond_gear"
+    },
+    "R": {
+      "item": "minecraft:redstone_torch"
+    },
+    "T": {
+      "item": "bcrebornfactory:tank"
+    }
+  },
+  "pattern": [
+    "RTR",
+    "TDT"
+  ],
+  "result": {
+    "item": "bcrebornfactory:refinery"
+  },
+  "show_notification": true
+}

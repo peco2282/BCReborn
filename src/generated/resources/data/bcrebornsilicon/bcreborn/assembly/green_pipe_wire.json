@@ -1,0 +1,20 @@
+{
+  "crafting_time": 0,
+  "energy": 5000,
+  "id": "bcrebornsilicon:green_pipe_wire",
+  "ingredients": [
+    {
+      "tag": "forge:dyes/green"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    }
+  ],
+  "result": {
+    "Count": 8,
+    "id": "bcreborntransport:pipe_wire_green"
+  }
+}

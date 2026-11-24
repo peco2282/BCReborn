@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "bcreborncore:stone_gear"
+    }
+  },
+  "pattern": [
+    "I I",
+    " S ",
+    " I "
+  ],
+  "result": {
+    "item": "bcreborncore:wrench"
+  },
+  "show_notification": true
+}

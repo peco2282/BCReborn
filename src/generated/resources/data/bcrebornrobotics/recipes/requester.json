@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": {
+      "item": "bcrebornsilicon:iron_chipset"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "RPR",
+    "RCR",
+    "RPR"
+  ],
+  "result": {
+    "item": "bcrebornrobotics:requester"
+  },
+  "show_notification": true
+}

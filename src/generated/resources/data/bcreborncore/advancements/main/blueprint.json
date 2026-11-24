@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/architect",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornbuilders:blueprint_standard"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.blueprint.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornbuilders:blueprint_standard"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.blueprint"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

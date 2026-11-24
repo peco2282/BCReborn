@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "bcrebornsilicon:diamond_chipset"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "I I",
+    "ICI",
+    "I I"
+  ],
+  "result": {
+    "item": "bcrebornrobotics:robot"
+  },
+  "show_notification": true
+}

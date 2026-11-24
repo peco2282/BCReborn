@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:black_dye"
+    },
+    "C": {
+      "tag": "forge:chests"
+    },
+    "G": {
+      "item": "bcreborncore:gold_gear"
+    },
+    "M": {
+      "item": "bcreborncore:blue_marker"
+    },
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "c": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "pattern": [
+    "BMB",
+    "YcY",
+    "GCG"
+  ],
+  "result": {
+    "item": "bcrebornbuilders:filler"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,11 @@
+{
+  "parent": "bcreborn:block/template_machine",
+  "textures": {
+    "back": "bcrebornbuilders:block/filler_block/side",
+    "bottom": "bcrebornbuilders:block/filler_block/bottom",
+    "front": "bcrebornbuilders:block/filler_block/front",
+    "left": "bcrebornbuilders:block/filler_block/side",
+    "right": "bcrebornbuilders:block/filler_block/side",
+    "top": "bcrebornbuilders:block/filler_block/top"
+  }
+}

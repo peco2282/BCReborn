@@ -1,0 +1,12 @@
+{
+  "values": [
+    "bcrebornrobotics:red_board",
+    "bcrebornrobotics:green_board",
+    "bcrebornrobotics:blue_board",
+    "bcrebornrobotics:yellow_board",
+    "bcrebornrobotics:clean_board",
+    "bcrebornrobotics:unknown_board",
+    "bcrebornrobotics:robot",
+    "bcrebornrobotics:robot_station"
+  ]
+}

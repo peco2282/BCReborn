@@ -1,0 +1,20 @@
+{
+  "crafting_time": 0,
+  "energy": 10000,
+  "id": "bcrebornsilicon:pipe_filter_gray",
+  "ingredients": [
+    {
+      "tag": "forge:dyes/gray"
+    },
+    {
+      "tag": "forge:glass"
+    },
+    {
+      "item": "minecraft:iron_bars"
+    }
+  ],
+  "result": {
+    "Count": 2,
+    "id": "bcreborntransport:pipe_filter_gray"
+  }
+}

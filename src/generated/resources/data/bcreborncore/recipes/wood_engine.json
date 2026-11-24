@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "W": {
+      "item": "bcreborncore:wooden_gear"
+    }
+  },
+  "pattern": [
+    "PPP",
+    " G ",
+    "WPW"
+  ],
+  "result": {
+    "item": "bcreborncore:wood_engine"
+  },
+  "show_notification": true
+}

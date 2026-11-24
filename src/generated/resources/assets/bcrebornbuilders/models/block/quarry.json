@@ -1,0 +1,11 @@
+{
+  "parent": "bcreborn:block/template_machine",
+  "textures": {
+    "back": "bcrebornbuilders:block/quarry_block/back",
+    "bottom": "bcrebornbuilders:block/quarry_block/bottom",
+    "front": "bcrebornbuilders:block/quarry_block/front",
+    "left": "bcrebornbuilders:block/quarry_block/side",
+    "right": "bcrebornbuilders:block/quarry_block/side",
+    "top": "bcrebornbuilders:block/quarry_block/top"
+  }
+}

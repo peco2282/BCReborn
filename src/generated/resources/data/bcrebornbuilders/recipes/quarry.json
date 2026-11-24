@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "bcreborncore:gold_gear"
+    },
+    "I": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "IRI",
+    "GIG",
+    "DPD"
+  ],
+  "result": {
+    "item": "bcrebornbuilders:quarry"
+  },
+  "show_notification": true
+}

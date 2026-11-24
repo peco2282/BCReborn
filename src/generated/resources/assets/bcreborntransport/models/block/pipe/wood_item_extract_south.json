@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "south": {
+          "texture": "#overlay"
+        }
+      },
+      "from": [
+        4,
+        4,
+        4
+      ],
+      "to": [
+        12,
+        12,
+        12
+      ]
+    },
+    {
+      "faces": {
+        "south": {
+          "texture": "#overlay"
+        }
+      },
+      "from": [
+        4,
+        4,
+        12
+      ],
+      "to": [
+        12,
+        12,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "overlay": "bcreborntransport:block/pipes/pipe_all_wood_solid",
+    "particle": "bcreborntransport:block/pipes/pipe_all_wood_solid"
+  }
+}

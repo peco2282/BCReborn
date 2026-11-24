@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "bcreborncore:iron_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "IGI",
+    "IRI"
+  ],
+  "result": {
+    "item": "bcrebornfactory:mining_well"
+  },
+  "show_notification": true
+}

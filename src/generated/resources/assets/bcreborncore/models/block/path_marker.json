@@ -1,0 +1,84 @@
+{
+  "ambientocclusion": false,
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#torch",
+          "uv": [
+            7.0,
+            13.0,
+            9.0,
+            15.0
+          ]
+        },
+        "up": {
+          "texture": "#torch",
+          "uv": [
+            7.0,
+            6.0,
+            9.0,
+            8.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "shade": false,
+      "to": [
+        9,
+        10,
+        9
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "texture": "#torch"
+        },
+        "west": {
+          "texture": "#torch"
+        }
+      },
+      "from": [
+        7,
+        0,
+        0
+      ],
+      "shade": false,
+      "to": [
+        9,
+        16,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#torch"
+        },
+        "south": {
+          "texture": "#torch"
+        }
+      },
+      "from": [
+        0,
+        0,
+        7
+      ],
+      "shade": false,
+      "to": [
+        16,
+        16,
+        9
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "torch": "bcreborncore:block/path_marker_block/default"
+  }
+}

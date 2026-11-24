@@ -1,0 +1,27 @@
+{
+  "crafting_time": 0,
+  "energy": 400000,
+  "id": "bcrebornsilicon:gold_gate",
+  "ingredients": [
+    {
+      "item": "bcrebornsilicon:gold_chipset"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_red"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_blue"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_green"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcreborntransport:gate",
+    "tag": {
+      "logic": 0,
+      "mat": 2
+    }
+  }
+}

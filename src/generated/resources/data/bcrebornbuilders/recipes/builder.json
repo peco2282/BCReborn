@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:black_dye"
+    },
+    "C": {
+      "tag": "forge:chests"
+    },
+    "D": {
+      "item": "bcreborncore:diamond_gear"
+    },
+    "M": {
+      "item": "bcreborncore:blue_marker"
+    },
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "c": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "pattern": [
+    "BMB",
+    "YcY",
+    "DCD"
+  ],
+  "result": {
+    "item": "bcrebornbuilders:builder"
+  },
+  "show_notification": true
+}

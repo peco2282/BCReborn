@@ -1,0 +1,15 @@
+{
+  "values": [
+    "bcreborntransport:pipe_gold_fluid",
+    "bcreborntransport:pipe_emerald_fluid",
+    "bcreborntransport:pipe_diamond_fluid",
+    "bcreborntransport:pipe_cobblestone_fluid",
+    "bcreborntransport:pipe_sandstone_fluid",
+    "bcreborntransport:pipe_quartz_fluid",
+    "bcreborntransport:pipe_clay_fluid",
+    "bcreborntransport:pipe_iron_fluid",
+    "bcreborntransport:pipe_stone_fluid",
+    "bcreborntransport:pipe_wood_fluid",
+    "bcreborntransport:pipe_void_fluid"
+  ]
+}

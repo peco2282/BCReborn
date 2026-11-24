@@ -1,0 +1,117 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_down"
+      },
+      "when": {
+        "down": "true",
+        "extraction_side": "0"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_down_solid"
+      },
+      "when": {
+        "down": "true",
+        "extraction_side": "1|2|3|4|5|6"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_up"
+      },
+      "when": {
+        "extraction_side": "1",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_up_solid"
+      },
+      "when": {
+        "extraction_side": "0|2|3|4|5|6",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_north"
+      },
+      "when": {
+        "extraction_side": "2",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_north_solid"
+      },
+      "when": {
+        "extraction_side": "0|1|3|4|5|6",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_south"
+      },
+      "when": {
+        "extraction_side": "3",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_south_solid"
+      },
+      "when": {
+        "extraction_side": "0|1|2|4|5|6",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_west"
+      },
+      "when": {
+        "extraction_side": "4",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_west_solid"
+      },
+      "when": {
+        "extraction_side": "0|1|2|3|5|6",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_east"
+      },
+      "when": {
+        "east": "true",
+        "extraction_side": "5"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/iron_fluid_east_solid"
+      },
+      "when": {
+        "east": "true",
+        "extraction_side": "0|1|2|3|4|6"
+      }
+    }
+  ]
+}

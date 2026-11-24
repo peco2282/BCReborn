@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:crafting_table"
+    },
+    "S": {
+      "item": "bcreborncore:stone_gear"
+    }
+  },
+  "pattern": [
+    "S",
+    "C",
+    "S"
+  ],
+  "result": {
+    "item": "bcrebornfactory:auto_workbench"
+  },
+  "show_notification": true
+}

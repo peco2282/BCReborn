@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "is_stacked=false": {
+      "model": "bcrebornfactory:block/tank"
+    },
+    "is_stacked=true": {
+      "model": "bcrebornfactory:block/tank_stacked"
+    }
+  }
+}

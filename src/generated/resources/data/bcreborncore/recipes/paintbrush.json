@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "bcreborncore:wooden_gear"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    " SW",
+    " GS",
+    "T  "
+  ],
+  "result": {
+    "item": "bcreborncore:paintbrush"
+  },
+  "show_notification": true
+}

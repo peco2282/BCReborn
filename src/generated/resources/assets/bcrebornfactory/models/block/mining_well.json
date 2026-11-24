@@ -1,0 +1,71 @@
+{
+  "display": {
+    "gui": {
+      "rotation": [
+        22.5,
+        135,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    }
+  },
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#back"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "back": "bcrebornfactory:block/mining_well_block/back",
+    "bottom": "bcrebornfactory:block/mining_well_block/bottom",
+    "front": "bcrebornfactory:block/mining_well_block/front",
+    "side": "bcrebornfactory:block/mining_well_block/side",
+    "top": "bcrebornfactory:block/mining_well_block/top"
+  }
+}

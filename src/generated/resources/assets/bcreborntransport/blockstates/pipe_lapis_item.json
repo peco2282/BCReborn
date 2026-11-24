@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/lapis_item_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "values": [
+    "bcrebornbuilders:architect",
+    "bcrebornbuilders:builder",
+    "bcrebornbuilders:frame",
+    "bcrebornbuilders:construction_marker",
+    "bcrebornbuilders:blueprint_library",
+    "bcrebornbuilders:quarry",
+    "bcrebornbuilders:filler"
+  ]
+}

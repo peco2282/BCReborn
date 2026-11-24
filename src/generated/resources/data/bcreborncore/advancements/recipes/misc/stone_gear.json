@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcreborncore:stone_gear"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wooden_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:cobblestone",
+              "bcreborncore:wooden_gear"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_gear",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcreborncore:stone_gear"
+    ]
+  },
+  "sends_telemetry_event": false
+}

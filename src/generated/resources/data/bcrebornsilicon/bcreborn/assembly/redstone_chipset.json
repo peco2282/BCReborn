@@ -1,0 +1,14 @@
+{
+  "crafting_time": 0,
+  "energy": 100000,
+  "id": "bcrebornsilicon:redstone_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:redstone_chipset"
+  }
+}

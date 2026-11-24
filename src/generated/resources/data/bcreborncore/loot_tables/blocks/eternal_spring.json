@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "bcreborncore:eternal_spring"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "bcreborncore:blocks/eternal_spring"
+}

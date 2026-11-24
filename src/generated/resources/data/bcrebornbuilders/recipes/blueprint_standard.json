@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PLP",
+    "PPP"
+  ],
+  "result": {
+    "item": "bcrebornbuilders:blueprint_standard"
+  },
+  "show_notification": true
+}

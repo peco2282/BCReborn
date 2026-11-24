@@ -1,0 +1,17 @@
+{
+  "crafting_time": 0,
+  "energy": 400000,
+  "id": "bcrebornsilicon:gold_chipset",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcrebornsilicon:gold_chipset"
+  }
+}

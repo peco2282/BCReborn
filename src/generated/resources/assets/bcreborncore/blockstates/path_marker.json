@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "bcreborncore:block/path_marker",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "bcreborncore:block/path_marker",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bcreborncore:block/path_marker",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "bcreborncore:block/path_marker",
+      "x": 270,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "bcreborncore:block/path_marker"
+    },
+    "facing=west": {
+      "model": "bcreborncore:block/path_marker",
+      "y": 270
+    }
+  }
+}

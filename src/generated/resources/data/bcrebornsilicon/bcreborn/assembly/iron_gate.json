@@ -1,0 +1,24 @@
+{
+  "crafting_time": 0,
+  "energy": 200000,
+  "id": "bcrebornsilicon:iron_gate",
+  "ingredients": [
+    {
+      "item": "bcrebornsilicon:iron_chipset"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_red"
+    },
+    {
+      "item": "bcreborntransport:pipe_wire_blue"
+    }
+  ],
+  "result": {
+    "Count": 1,
+    "id": "bcreborntransport:gate",
+    "tag": {
+      "logic": 0,
+      "mat": 1
+    }
+  }
+}

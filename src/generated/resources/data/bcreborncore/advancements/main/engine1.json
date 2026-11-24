@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/wooden_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcreborncore:wood_engine"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.engine1.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcreborncore:wood_engine"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.engine1"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

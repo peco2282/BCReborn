@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/wooden_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornfactory:auto_workbench"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.aLotOfCrafting.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornfactory:auto_workbench"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.aLotOfCrafting"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

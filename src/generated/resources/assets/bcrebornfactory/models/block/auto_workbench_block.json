@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "bcrebornfactory:block/auto_workbench_block/bottom",
+    "side": "bcrebornfactory:block/auto_workbench_block/side",
+    "top": "bcrebornfactory:block/auto_workbench_block/top"
+  }
+}

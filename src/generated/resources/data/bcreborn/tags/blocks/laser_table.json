@@ -1,0 +1,10 @@
+{
+  "values": [
+    "bcrebornsilicon:assembly_table",
+    "bcrebornsilicon:advanced_crafting_table",
+    "bcrebornsilicon:integration_table",
+    "bcrebornsilicon:charging_table",
+    "bcrebornsilicon:programming_table",
+    "bcrebornsilicon:stamping_table"
+  ]
+}

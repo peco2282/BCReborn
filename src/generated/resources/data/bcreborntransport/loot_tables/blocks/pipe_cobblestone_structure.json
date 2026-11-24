@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:block",
+  "functions": [
+    {
+      "function": "minecraft:copy_nbt",
+      "ops": [
+        {
+          "op": "replace",
+          "source": "GlassColor",
+          "target": "BlockEntityTag.GlassColor"
+        }
+      ],
+      "source": "block_entity"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "bcreborntransport:pipe_cobblestone_structure"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "bcreborntransport:blocks/pipe_cobblestone_structure"
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "G G",
+    "GGG"
+  ],
+  "result": {
+    "item": "bcrebornfactory:tank"
+  },
+  "show_notification": true
+}

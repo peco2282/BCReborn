@@ -1,0 +1,14 @@
+{
+  "crafting_time": 0,
+  "energy": 10000,
+  "id": "bcrebornsilicon:pipe_plug",
+  "ingredients": [
+    {
+      "item": "bcreborntransport:pipe_cobblestone_structure"
+    }
+  ],
+  "result": {
+    "Count": 8,
+    "id": "bcreborntransport:pipe_plug"
+  }
+}

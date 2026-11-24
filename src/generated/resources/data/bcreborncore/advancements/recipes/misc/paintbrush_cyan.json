@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cyan_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:cyan_dye"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_nocolor_brush": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bcreborncore:paintbrush"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bcreborncore:paintbrush_cyan"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_cyan_dye",
+      "has_nocolor_brush",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bcreborncore:paintbrush_cyan"
+    ]
+  },
+  "sends_telemetry_event": false
+}

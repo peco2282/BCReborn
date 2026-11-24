@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_center"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_down"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_up"
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_north"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_south"
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_west"
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "bcreborntransport:block/pipe/cobblestone_structure_east"
+      },
+      "when": {
+        "east": "true"
+      }
+    }
+  ]
+}

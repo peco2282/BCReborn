@@ -21,7 +21,7 @@ gradlew.bat runData                # Re-generate blockstates/models/lang/recipes
 
 - **Java 17** is required (Gradle will auto-provision if missing). Gradle 8.8 itself must also run on Java 17 or 21: on Java 25 it cannot compile the build script (`Unsupported class file major version 69`), so set `JAVA_HOME` accordingly.
 - Mixins: `bcreborn.mixins.json` (package `com.peco2282.bcreborn.mixin`), wired by MixinGradle (`mixin { }` in `build.gradle`, which writes `bcreborn.refmap.json` and the `MixinConfigs` manifest entry). Only `MultiNoiseBiomeSourceMixin` exists: it paints the oil field biomes, since Forge 1.20.1 has no API to add overworld biomes.
-- Generated resources output to `src/generated/resources/` — treat as a build artifact, commit when up to date.
+- Generated resources output to `src/generated/resources/` and are committed (only the data generator's `.cache` is ignored): run `runData` after changing blocks, items, recipes or loot and commit the output with the change. Before 2026-11-24 the folder was ignored, so older checkouts may hold stale generated files.
 - `run/` and `run-data/` are ephemeral; do not commit their contents.
 
 ## Testing

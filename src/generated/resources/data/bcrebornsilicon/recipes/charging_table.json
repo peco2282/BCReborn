@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "IDI",
+    "IGI",
+    "IPI"
+  ],
+  "result": {
+    "item": "bcrebornsilicon:charging_table"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "I": {
+      "item": "bcreborncore:iron_gear"
+    }
+  },
+  "pattern": [
+    " G ",
+    "GIG",
+    " G "
+  ],
+  "result": {
+    "item": "bcreborncore:gold_gear"
+  },
+  "show_notification": true
+}

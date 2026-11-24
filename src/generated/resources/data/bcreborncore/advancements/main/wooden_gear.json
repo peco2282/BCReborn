@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcreborncore:wooden_gear"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/block/oak_planks.png",
+    "description": {
+      "translate": "advancement.bcreborn.woodenGear.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcreborncore:wooden_gear"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.woodenGear"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

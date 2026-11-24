@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PYP",
+    "PPP"
+  ],
+  "result": {
+    "item": "bcreborncore:map_location"
+  },
+  "show_notification": true
+}

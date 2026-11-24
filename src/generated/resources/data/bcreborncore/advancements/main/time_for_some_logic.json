@@ -1,0 +1,36 @@
+{
+  "parent": "bcreborncore:main/diamond_gear",
+  "criteria": {
+    "crafted": {
+      "conditions": {
+        "item": {
+          "items": [
+            "bcrebornsilicon:assembly_table"
+          ]
+        }
+      },
+      "trigger": "bcreborncore:crafted_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.bcreborn.timeForSomeLogic.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "bcrebornsilicon:assembly_table"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.bcreborn.timeForSomeLogic"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
