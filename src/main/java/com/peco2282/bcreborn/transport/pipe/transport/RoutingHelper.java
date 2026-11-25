@@ -108,10 +108,6 @@ class RoutingHelper {
    * Original {@code PipeTransportItems.getPossibleMovements()}: this pipe's output and the next pipe's input must
    * be open (gate valve action).
    */
-  /**
-   * Original {@code canReceivePipeObjects()}: the neighbour must be an item pipe, or an inventory that accepts at
-   * least part of the stack.
-   */
   static boolean canReceive(PipeBlockEntity pipe, Direction dir, ItemStack stack) {
     Level level = pipe.getLevel();
     if (level == null) return true;

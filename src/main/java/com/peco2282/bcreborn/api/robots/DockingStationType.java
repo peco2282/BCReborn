@@ -26,12 +26,12 @@ import java.util.function.Supplier;
  * @param <T> the specific type of DockingStation this type represents
  */
 public record DockingStationType<T extends DockingStation<T>>(
-  /**
-   * The unique identifier for this docking station type.
+  /*
+    The unique identifier for this docking station type.
    */
   ResourceLocation id,
-  /**
-   * Factory supplier that creates new instances of the docking station.
+  /*
+    Factory supplier that creates new instances of the docking station.
    */
   Supplier<@NotNull T> factory
 ) {

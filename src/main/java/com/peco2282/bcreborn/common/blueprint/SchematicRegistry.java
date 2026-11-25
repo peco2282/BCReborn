@@ -208,8 +208,10 @@ public final class SchematicRegistry implements ISchematicRegistry {
     return s;
   }
 
+  /**
+   * Whether this state, or its block's default state, has a schematic.
+   */
   @Override
-  /** Whether this state, or its block's default state, has a schematic. */
   public boolean isSupported(BlockState state) {
     return schematicBlocks.containsKey(state) || schematicBlocks.containsKey(state.getBlock().defaultBlockState());
   }

@@ -46,7 +46,6 @@ public class BuildingSlotBlock extends BuildingSlot {
     return new Position(x + 0.5, y + 0.5, z + 0.5);
   }
 
-  @Override
   /**
    * Original {@code BuildingSlotBlock.writeToWorld()}.
    * <ul>
@@ -56,6 +55,7 @@ public class BuildingSlotBlock extends BuildingSlot {
    *       instead of leaving a half-written block.</li>
    * </ul>
    */
+  @Override
   public boolean writeToWorld(IBuilderContext context) {
     if (internalRequirementRemovalListener != null) {
       internalRequirementRemovalListener.remove(this);
